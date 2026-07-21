@@ -1,0 +1,237 @@
+<title>ARD — AI 에이전트 발견계층의 길목 | 2026-07-21</title>
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="AI 구조">
+<meta name="vault-date" content="2026-07-21">
+<meta name="description" content="구글 ARD 표준 정리 — 에이전트용 검색+신원인증 계층, 진짜 권력은 레지스트리">
+<style>
+  :root{
+    --bg:#FDF6E3; --ink:#1f2328; --muted:#5c6672; --line:#e8e1cf;
+    --card:#fffdf6; --accent:#b5651d; --accent2:#2b6a8f; --thead:#f4ecd6;
+    --chip:#f0e9d4;
+  }
+  *{box-sizing:border-box}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",
+      "Helvetica Neue",Arial,sans-serif;
+    line-height:1.72; margin:0; padding:0;
+    -webkit-font-smoothing:antialiased;
+    font-size:16.5px;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:40px 22px 72px;}
+  header.doc{border-bottom:2px solid var(--line); padding-bottom:20px; margin-bottom:30px;}
+  .kicker{font-size:12.5px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent); font-weight:700; margin-bottom:10px;}
+  h1{font-size:29px; line-height:1.28; margin:0 0 12px; font-weight:800; letter-spacing:-.01em;}
+  .sub{color:var(--muted); font-size:15px; margin:0;}
+  .meta-row{margin-top:16px; display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{background:var(--chip); border:1px solid var(--line); border-radius:20px;
+    padding:3px 12px; font-size:12.5px; color:var(--muted);}
+  h2{font-size:20px; margin:44px 0 14px; font-weight:800; letter-spacing:-.01em;
+    padding-bottom:7px; border-bottom:1px solid var(--line);}
+  h3{font-size:16.5px; margin:26px 0 8px; font-weight:700; color:var(--ink);}
+  p{margin:12px 0;}
+  strong{font-weight:700;}
+  .lead{font-size:17.5px; line-height:1.7;}
+  .summary{background:var(--card); border:1px solid var(--line); border-left:4px solid var(--accent);
+    border-radius:10px; padding:20px 24px; margin:8px 0 6px;}
+  .summary ul{margin:6px 0 0; padding-left:20px;}
+  .summary li{margin:9px 0;}
+  .tag{display:inline-block; font-size:12px; font-weight:700; padding:1px 7px; border-radius:5px;
+    background:var(--thead); color:var(--accent); margin-right:5px; vertical-align:middle;}
+  figure{background:#fff; border:1px solid var(--line); border-radius:10px;
+    margin:22px 0; padding:20px; overflow-x:auto;}
+  figure figcaption{color:var(--muted); font-size:13px; margin-top:12px; text-align:center;}
+  table{border-collapse:collapse; width:100%; margin:18px 0; font-size:14.5px;
+    background:#fff; border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+  th,td{border-bottom:1px solid var(--line); padding:10px 13px; text-align:left; vertical-align:top;}
+  th{background:var(--thead); font-weight:700; font-size:13.5px;}
+  tr:last-child td{border-bottom:none;}
+  .tblwrap{overflow-x:auto;}
+  code{background:var(--chip); padding:1px 6px; border-radius:4px; font-size:13.5px;
+    font-family:"SF Mono",Menlo,Consolas,monospace;}
+  .note{background:var(--card); border:1px solid var(--line); border-radius:8px;
+    padding:14px 18px; margin:20px 0; font-size:14.5px; color:var(--muted);}
+  a{color:var(--accent2); text-decoration:none; border-bottom:1px solid rgba(43,106,143,.3);}
+  a:hover{border-bottom-color:var(--accent2);}
+  .src{font-size:13.5px; word-break:break-all;}
+  footer.doc{margin-top:48px; padding-top:18px; border-top:1px solid var(--line);
+    color:var(--muted); font-size:12.5px;}
+  .swrap{max-width:100%;}
+  svg{max-width:100%; height:auto; display:block; margin:0 auto;}
+  @media print{
+    body{background:#fff;}
+    figure,table{border-color:#ddd;}
+    .summary,.note{background:#fff;}
+  }
+  @media (max-width:560px){
+    h1{font-size:24px;} .wrap{padding:28px 16px 56px;} body{font-size:15.5px;}
+  }
+</style>
+
+<div class="wrap">
+<header class="doc">
+  <div class="kicker">Research · AI 구조</div>
+  <h1>ARD — AI 에이전트 발견계층의 길목</h1>
+  <p class="sub">구글이 공개한 에이전트 기능 발견·검증 개방 표준. "찾고(검색) + 진짜인지 확인(신원)"의 공통 규칙과, 그 안에 숨은 길목 권력.</p>
+  <div class="meta-row">
+    <span class="chip">관찰 시점 2026-06-17</span>
+    <span class="chip">정리 2026-07-21</span>
+    <span class="chip">개방 표준 · Apache 2.0</span>
+  </div>
+</header>
+
+<div class="summary">
+  <ul>
+    <li><span class="tag">한 줄</span><strong>ARD(Agentic Resource Discovery)</strong> = AI 에이전트들이 서로의 도구·기능·다른 에이전트를 인터넷에서 <strong>찾고(검색) + 진짜인지 확인(검증)</strong>하는 공통 규칙. 조직 경계를 넘어 capability(기능)를 발견·검증·연결하는 개방형 명세다.</li>
+    <li><span class="tag">발표</span>구글 개발자 블로그, 2026-06-17. 라이선스는 Apache 2.0, 기반 데이터 모델은 Linux Foundation의 "AI Catalog".</li>
+    <li><span class="tag">2 부품</span><strong>카탈로그</strong>(회사가 자기 도메인에 올리는 메뉴판) + <strong>레지스트리</strong>(그 메뉴판을 크롤링·색인하는 "에이전트 세상의 검색엔진").</li>
+    <li><span class="tag">위치</span>MCP·A2A가 "연결 후 대화하는 법"이라면, ARD는 그 <strong>이전 단계</strong> — "상대를 찾고 진짜인지 확인하는 법". 경쟁이 아니라 다른 층이다.</li>
+    <li><span class="tag">🔴 핵심</span>발견 계층의 진짜 권력은 <strong>표준 문서가 아니라 "레지스트리를 누가 쥐느냐"</strong>. 규격은 열되 검색 길목은 선점하려는 구도로 읽힌다.</li>
+  </ul>
+</div>
+
+<h2>1. ARD가 풀려는 문제 — 에이전트의 세 가지 질문</h2>
+<p class="lead">한 AI 에이전트가 자기 조직 밖의 도구·기능·다른 에이전트를 쓰려면 세 가지를 먼저 알아야 한다.</p>
+
+<div class="tblwrap">
+<table>
+  <tr><th>질문</th><th>지금까지</th><th>ARD가 주는 것</th></tr>
+  <tr><td>① 그게 <strong>어디에</strong> 있나</td><td rowspan="3">회사마다 자기 registry를 따로 운영 → 서로 못 넘는 칸막이(silo)</td><td>조직을 넘는 공통 발견 규칙</td></tr>
+  <tr><td>② <strong>어떤 걸</strong> 써야 하나</td><td>평범한 말로 검색해 매칭되는 capability를 받음</td></tr>
+  <tr><td>③ 연결해도 <strong>안전</strong>한가</td><td>연결 전에 "진짜 그 회사 맞나"를 암호학적으로 검증</td></tr>
+</table>
+</div>
+<p>즉 ARD는 흩어진 registry의 칸막이를 걷어내고, <strong>조직을 넘는 발견·신뢰 계층</strong>을 하나 얹는 시도다.</p>
+
+<h2>2. 핵심 부품 2개 — 카탈로그와 레지스트리</h2>
+
+<figure>
+<div class="swrap">
+<svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="카탈로그와 레지스트리 구조도">
+  <!-- catalog side -->
+  <rect x="20" y="40" width="300" height="220" rx="12" fill="#fffdf6" stroke="#e8e1cf" stroke-width="1.5"/>
+  <text x="170" y="66" text-anchor="middle" font-size="15" font-weight="700" fill="#b5651d">카탈로그 (Catalog)</text>
+  <text x="170" y="86" text-anchor="middle" font-size="12" fill="#5c6672">회사가 자기 도메인에 올리는 "메뉴판"</text>
+  <rect x="50" y="102" width="240" height="30" rx="6" fill="#f0e9d4" stroke="#e8e1cf"/>
+  <text x="170" y="122" text-anchor="middle" font-size="12.5" fill="#1f2328">ai-catalog.json (well-known 경로)</text>
+  <rect x="50" y="140" width="112" height="26" rx="5" fill="#fff" stroke="#e8e1cf"/>
+  <text x="106" y="157" text-anchor="middle" font-size="11" fill="#1f2328">MCP 서버</text>
+  <rect x="178" y="140" width="112" height="26" rx="5" fill="#fff" stroke="#e8e1cf"/>
+  <text x="234" y="157" text-anchor="middle" font-size="11" fill="#1f2328">A2A 에이전트</text>
+  <rect x="50" y="172" width="112" height="26" rx="5" fill="#fff" stroke="#e8e1cf"/>
+  <text x="106" y="189" text-anchor="middle" font-size="11" fill="#1f2328">OpenAPI 도구</text>
+  <rect x="178" y="172" width="112" height="26" rx="5" fill="#fff" stroke="#e8e1cf"/>
+  <text x="234" y="189" text-anchor="middle" font-size="11" fill="#1f2328">중첩 카탈로그</text>
+  <text x="170" y="224" text-anchor="middle" font-size="11.5" font-weight="700" fill="#2b6a8f">🔑 도메인 소유권 = 신뢰의 뿌리</text>
+  <text x="170" y="242" text-anchor="middle" font-size="10.5" fill="#5c6672">그 도메인 주인만 게시 가능</text>
+
+  <!-- arrow -->
+  <path d="M330 150 L410 150" stroke="#b5651d" stroke-width="2" marker-end="url(#ah)"/>
+  <text x="370" y="140" text-anchor="middle" font-size="10.5" fill="#5c6672">크롤링·색인</text>
+
+  <!-- registry side -->
+  <rect x="420" y="40" width="320" height="220" rx="12" fill="#fffdf6" stroke="#e8e1cf" stroke-width="1.5"/>
+  <text x="580" y="66" text-anchor="middle" font-size="15" font-weight="700" fill="#2b6a8f">레지스트리 (Registry)</text>
+  <text x="580" y="86" text-anchor="middle" font-size="12" fill="#5c6672">"에이전트 세상의 검색엔진"</text>
+  <rect x="450" y="104" width="260" height="34" rx="6" fill="#f0e9d4" stroke="#e8e1cf"/>
+  <text x="580" y="126" text-anchor="middle" font-size="12" fill="#1f2328">평범한 말로 검색 (plain-language intent)</text>
+  <path d="M580 138 L580 162" stroke="#5c6672" stroke-width="1.5" marker-end="url(#ah2)"/>
+  <rect x="450" y="166" width="260" height="30" rx="6" fill="#fff" stroke="#e8e1cf"/>
+  <text x="580" y="185" text-anchor="middle" font-size="11.5" fill="#1f2328">매칭 capability + 발행자 검증 메타데이터</text>
+  <text x="580" y="228" text-anchor="middle" font-size="11.5" font-weight="700" fill="#b5651d">← 발견 계층의 길목(통행료) 후보</text>
+  <text x="580" y="246" text-anchor="middle" font-size="10.5" fill="#5c6672">누가 이걸 쥐느냐가 권력</text>
+
+  <defs>
+    <marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0 0 L9 4.5 L0 9 z" fill="#b5651d"/>
+    </marker>
+    <marker id="ah2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#5c6672"/>
+    </marker>
+  </defs>
+</svg>
+</div>
+<figcaption>카탈로그(공급자가 게시) → 레지스트리(색인·검색)의 2부품 구조</figcaption>
+</figure>
+
+<h3>카탈로그 (Catalog)</h3>
+<p>회사가 자기 도메인의 정해진(well-known) 경로에 <code>ai-catalog.json</code>을 게시하는 방식이다. 그 안에 MCP 서버·A2A 에이전트·OpenAPI 도구·중첩 카탈로그의 목록이 담긴다. 핵심은 <strong>도메인 소유권 자체가 암호학적 신원·신뢰의 뿌리</strong>라는 점 — 그 도메인의 주인만 게시할 수 있으므로, "누가 발행했는가"가 DNS처럼 자연히 보증된다.</p>
+
+<h3>레지스트리 (Registry)</h3>
+<p>카탈로그들을 크롤링·색인하는 "에이전트 세상의 검색엔진"이다. 에이전트가 평범한 말(plain-language intent)로 검색하면, 매칭되는 capability와 함께 <strong>발행자 검증 메타데이터</strong>를 돌려준다. 발견의 편의는 여기서 나오고, 뒤에서 다룰 권력 문제도 바로 이 지점에 걸린다.</p>
+
+<h2>3. 작동 4단계 — 검색은 경유, 연결은 직접</h2>
+
+<figure>
+<div class="swrap">
+<svg viewBox="0 0 760 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ARD 작동 4단계">
+  <g font-size="12.5" fill="#1f2328">
+    <rect x="14" y="45" width="160" height="60" rx="10" fill="#fffdf6" stroke="#e8e1cf" stroke-width="1.5"/>
+    <text x="94" y="70" text-anchor="middle" font-weight="700">① 게시</text>
+    <text x="94" y="90" text-anchor="middle" font-size="10.5" fill="#5c6672">ai-catalog.json</text>
+
+    <rect x="200" y="45" width="160" height="60" rx="10" fill="#fffdf6" stroke="#e8e1cf" stroke-width="1.5"/>
+    <text x="280" y="70" text-anchor="middle" font-weight="700">② 발견</text>
+    <text x="280" y="90" text-anchor="middle" font-size="10.5" fill="#5c6672">레지스트리 or 직접 fetch</text>
+
+    <rect x="386" y="45" width="160" height="60" rx="10" fill="#fffdf6" stroke="#e8e1cf" stroke-width="1.5"/>
+    <text x="466" y="70" text-anchor="middle" font-weight="700">③ 암호학적 검증</text>
+    <text x="466" y="90" text-anchor="middle" font-size="10.5" fill="#5c6672">발행자 신원 확인</text>
+
+    <rect x="572" y="45" width="174" height="60" rx="10" fill="#f4ecd6" stroke="#b5651d" stroke-width="1.5"/>
+    <text x="659" y="70" text-anchor="middle" font-weight="700" fill="#b5651d">④ 직접 연결</text>
+    <text x="659" y="90" text-anchor="middle" font-size="10.5" fill="#5c6672">ARD 빠짐 · native 규격</text>
+  </g>
+  <g stroke="#b5651d" stroke-width="2" fill="none">
+    <path d="M174 75 L198 75" marker-end="url(#a4)"/>
+    <path d="M360 75 L384 75" marker-end="url(#a4)"/>
+    <path d="M546 75 L570 75" marker-end="url(#a4)"/>
+  </g>
+  <defs>
+    <marker id="a4" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0 0 L9 4.5 L0 9 z" fill="#b5651d"/>
+    </marker>
+  </defs>
+</svg>
+</div>
+<figcaption>검색은 레지스트리를 경유하지만, 실제 연결은 제공자와 직접(레지스트리 우회)</figcaption>
+</figure>
+
+<p>주목할 설계는 <strong>검색과 연결의 분리</strong>다. 찾는 과정(②)은 레지스트리를 거치지만, 신원 검증(③)이 끝나 실제로 통신을 시작하면(④) <strong>ARD는 빠지고</strong> 도구 고유의 native 규격으로 제공자와 직접 연결한다. 레지스트리는 "찾아주는" 역할까지만 하고, 오가는 실제 데이터의 길목에는 앉지 않는다 — 이 점이 뒤의 권력 논의를 미묘하게 만든다.</p>
+
+<h2>4. MCP·A2A와의 관계 — 경쟁 아닌 다른 층</h2>
+<p>흔한 혼동은 ARD를 MCP나 A2A의 경쟁 규격으로 보는 것이다. 실제로는 층이 다르다.</p>
+
+<div class="tblwrap">
+<table>
+  <tr><th></th><th>ARD</th><th>MCP · A2A</th></tr>
+  <tr><td>역할</td><td>상대를 <strong>찾고 진짜인지 확인</strong>하는 법</td><td>연결한 뒤 <strong>대화하는</strong> 법</td></tr>
+  <tr><td>비유</td><td>전화번호부 + 발신자 진위 확인</td><td>실제 통화</td></tr>
+  <tr><td>시점</td><td>연결 <strong>이전</strong></td><td>연결 <strong>이후</strong></td></tr>
+</table>
+</div>
+<p>검증이 끝나면 ARD는 물러나고, 그다음부터는 MCP·A2A·OpenAPI로 직접 대화한다. 발견 계층(ARD)과 대화 계층(MCP·A2A)은 서로를 대체하는 것이 아니라 위아래로 쌓인다.</p>
+
+<h2>5. 구글 제품과의 연결 — Agent Registry</h2>
+<p>표준의 기업용 구현체로는 <strong>Gemini Enterprise Agent Platform의 "Agent Registry"</strong>가 제시됐다. 고유 URN 부여, egress(외부 전송) 정책, 도구 pinning(고정), Agent Identity 기반 trust manifest 검증, HIPAA 준수 같은 거버넌스 장치를 갖췄고, ARD 네이티브 지원은 "앞으로 몇 달 내"로 예고됐다.</p>
+<div class="note">여기서 구도가 드러난다. 개방 규격(ARD)은 누구나 쓰도록 열어두면서, 그 규격을 실제로 굴리는 <strong>검색엔진(Agent Registry)</strong>은 자사 플랫폼으로 밀고 있다. 규격과 길목이 분리돼 움직인다.</div>
+
+<h2>6. 구조적 함의 — 진짜 권력은 "누가 레지스트리를 쥐느냐"</h2>
+<p>ARD는 이른바 "agentic web(에이전트들이 서로를 발견·연결하는 웹)"의 발견·신뢰 계층을 표준화하려는 시도로 볼 수 있다. 다만 <strong>표준을 발표한 것과 표준이 정착하는 것은 다른 문제</strong>다.</p>
+<p>과거 웹에서 HTML 문법 자체는 공짜였지만, "무엇이 어디 있는지 찾아주는" 검색 길목의 권력은 소수에게 집중됐다. ARD도 같은 구조를 품고 있다 — 규격 문서는 열려 있어도, 발견 계층의 실질 권력은 <strong>카탈로그를 크롤링·색인하는 레지스트리를 누가 쥐느냐</strong>에서 갈린다. 구글이 규격을 개방형으로 내면서 동시에 Agent Registry를 미는 것은 "규격은 열되 길목은 선점"하는 포석으로 읽을 수 있다.</p>
+<p>결론적으로, 곡괭이·병목 렌즈로 보면 <strong>레지스트리 = 발견 계층의 길목(통행료) 후보</strong>다. 그러나 앞서 본 설계상 실제 연결은 레지스트리를 우회하므로, 길목의 두께가 검색 유통의 통제만큼 깊을지는 아직 열린 문제다. 채택이 여러 레지스트리로 분산될지, 소수에 집중될지가 이 표준의 실제 무게를 결정한다. 정리하자면 <strong>ARD는 판을 비추는 거울이지, 특정 종목의 직접 노출로 곧장 연결되는 신호는 아니다</strong> — 추적할 질문은 하나로 압축된다: <em>"레지스트리는 누가 쥐는가."</em></p>
+
+<h2>관찰 시점</h2>
+<p class="note">본 정리는 <strong>2026-06-17 구글 개발자 블로그 발표문</strong>을 기준으로 한다. "ARD 네이티브 지원은 앞으로 몇 달 내" 등 시점 표현은 모두 <strong>발표 당시 기준</strong>이며, 이후 채택·구현 상황은 별도 확인이 필요하다.</p>
+
+<h2>출처</h2>
+<ul class="src">
+  <li>Junjie Bu, Srinivas Krishnan, "Announcing the Agentic Resource Discovery specification", Google Developers Blog, 2026-06-17 — <a href="https://developers.googleblog.com/en/announcing-the-agentic-resource-discovery-specification/">developers.googleblog.com</a></li>
+  <li>기반 데이터 모델: "AI Catalog" — Linux Foundation AI Catalog Working Group / 라이선스 Apache 2.0</li>
+</ul>
+
+<footer class="doc">
+  본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.
+</footer>
+</div>

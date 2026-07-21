@@ -1,0 +1,270 @@
+<title>AI 생산성 7-고리 — 역량은 생산성이 아니다 | 2026-07-21</title>
+<meta name="vault-stage" content="Thesis">
+<meta name="vault-topic" content="생산성">
+<meta name="vault-date" content="2026-07-21">
+<meta name="description" content="AI 역량은 생산성이 아니다 — 7-고리 직렬 사슬과 병목 3분류(소프트·준하드·하드) 투자 lens">
+<style>
+  :root{
+    --bg:#FDF6E3; --ink:#1f2328; --muted:#5b6169; --line:#e8e1cf;
+    --head:#f3ecd6; --accent:#7a5c1e; --card:#fffdf7;
+    --soft:#2f6d4f;   /* 소프트: 빨리 녹음 */
+    --semi:#b07d16;   /* 준-하드: 천천히 */
+    --hard:#a3382f;   /* 하드: 안 녹음 */
+    --neu:#8a8270;    /* 입력/출력 */
+  }
+  *{box-sizing:border-box}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    line-height:1.72; margin:0; padding:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:40px 22px 72px;}
+  h1{font-size:1.7rem; line-height:1.3; margin:0 0 6px; letter-spacing:-.01em;}
+  .sub{color:var(--muted); font-size:.94rem; margin:0 0 26px;}
+  h2{font-size:1.26rem; margin:44px 0 12px; padding-bottom:7px; border-bottom:2px solid var(--line); letter-spacing:-.01em;}
+  h3{font-size:1.05rem; margin:24px 0 8px;}
+  p{margin:10px 0;}
+  a{color:var(--accent);}
+  small,.note{color:var(--muted); font-size:.86rem;}
+  .lead{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:20px 22px; margin:8px 0 8px;
+  }
+  .lead ul{margin:8px 0 0; padding-left:20px;}
+  .lead li{margin:7px 0;}
+  ul,ol{padding-left:20px;}
+  li{margin:5px 0;}
+  table{border-collapse:collapse; width:100%; margin:14px 0; font-size:.92rem;}
+  .scroll{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  th,td{border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top;}
+  th{background:var(--head); font-weight:600;}
+  td strong{font-weight:600;}
+  figure{
+    background:#fff; border:1px solid var(--line); border-radius:12px;
+    margin:20px 0; padding:16px 14px 10px; text-align:center;
+  }
+  figure figcaption{color:var(--muted); font-size:.84rem; margin-top:8px;}
+  .tag{display:inline-block; font-size:.74rem; font-weight:700; padding:2px 9px; border-radius:999px; color:#fff; letter-spacing:.02em;}
+  .t-soft{background:var(--soft);}
+  .t-semi{background:var(--semi);}
+  .t-hard{background:var(--hard);}
+  .card{border:1px solid var(--line); border-left:5px solid var(--line); border-radius:10px; padding:6px 20px 16px; margin:16px 0; background:var(--card);}
+  .card.soft{border-left-color:var(--soft);}
+  .card.semi{border-left-color:var(--semi);}
+  .card.hard{border-left-color:var(--hard);}
+  blockquote{
+    margin:14px 0; padding:10px 16px; border-left:3px solid var(--accent);
+    background:var(--head); border-radius:0 8px 8px 0; color:#3a3f46; font-size:.94rem;
+  }
+  .dp{border:1px solid var(--line); border-radius:10px; padding:6px 20px 16px; margin:18px 0; background:var(--card);}
+  .dp .when{display:inline-block; font-size:.78rem; font-weight:700; color:var(--accent); background:var(--head); padding:2px 10px; border-radius:999px; margin:12px 0 2px;}
+  .foot{margin-top:48px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:.84rem;}
+  hr{border:none; border-top:1px solid var(--line); margin:34px 0;}
+  .kw{font-weight:600;}
+  @media print{
+    body{background:#fff;}
+    .lead,.card,.dp,figure{background:#fff;}
+  }
+</style>
+
+<div class="wrap">
+
+  <h1>AI 생산성 7-고리 — 역량은 생산성이 아니다</h1>
+  <p class="sub">AI 능력과 실제 생산성 사이의 "다리"를 직렬 사슬로 보고, 병목을 세 종류로 나눠 투자 위치를 판별하는 재사용 렌즈 · 2026-07-21 정리</p>
+
+  <!-- ① 한 장 요약 -->
+  <div class="lead">
+    <strong>🔴 한 장 요약</strong>
+    <ul>
+      <li>핵심 명제: <span class="kw">AI 역량(모델 성능·벤치마크) ≠ 생산성(TFP·총요소생산성)</span>. 둘 사이를 메우는 다리는 하나가 아니라 <span class="kw">직렬 7-고리 사슬</span>이다 — 역량 → 전력 → 신뢰성 → 확산 → 재배치 → 측정 → 순증.</li>
+      <li>직렬이므로 <span class="kw">가장 약한 고리가 전체 속도를 지배</span>한다(암달의 법칙의 동태적 확장). 모델만 좋아진다고 생산성이 따라오지 않는 이유.</li>
+      <li>고리를 <span class="kw">3분류</span>: <span class="tag t-soft">소프트</span> 기술·인지(추론 단가 붕괴가 빨리 녹임) · <span class="tag t-semi">준-하드</span> 제도·거버넌스(인간·제도 시간에 묶여 천천히) · <span class="tag t-hard">하드</span> 물리(전력·로봇·노동 재배치, 단가 곡선이 못 녹임).</li>
+      <li>투자 함의: 인프라(곡괭이)는 <b>하드 고리</b> 위, 응용(application) layer는 <b>소프트~준-하드 고리</b> 위에 올라탄다. 응용 layer가 올라탄 고리가 녹으면 그 매출도 함께 빠진다 → 가치는 <span class="kw">준-하드 비중이 클수록 방어</span>된다.</li>
+      <li>한 기업 안에 방어력이 다른 두 사업이 공존할 수 있다(예: 정부·기밀 = 번들 불가 = 진짜 캡처 vs 상업 = 번들 노출 = 메타 곡괭이). <b>성장 엔진이 오히려 덜 방어되는 쪽일 수 있는 아이러니</b>를 점검해야 한다.</li>
+      <li>최근 세 진술(Nadella·Maverick·Ghodsi)이 모두 같은 방향을 가리킨다: <b>모델 능력은 상품화, 조직·통합·학습루프(준-하드)가 진짜 가치</b>. 다만 이 프레임은 판별 도구일 뿐 매수 신호가 아니다.</li>
+    </ul>
+  </div>
+
+  <!-- ② 본문 -->
+  <h2>1. 7-고리 직렬 사슬</h2>
+  <p>모델 벤치마크 점수가 오른다고 국가·기업 단위 생산성이 곧바로 오르지는 않는다. 역량이 생산성으로 전환되려면 여러 단계를 순서대로 통과해야 하고, 그 단계들은 병렬이 아니라 <b>직렬</b>이다. 하나라도 막히면 뒤가 다 막힌다. 7단계는 생산성 진단 스키마에서 가져온 것이다.</p>
+
+  <figure>
+    <svg viewBox="0 0 940 250" width="100%" role="img" aria-label="AI 생산성 7-고리 직렬 사슬 도식">
+      <defs>
+        <marker id="arw" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto">
+          <path d="M0,0 L9,4.5 L0,9 z" fill="#8a8270"/>
+        </marker>
+      </defs>
+      <text x="8" y="28" font-size="13" font-weight="700" fill="#5b6169">입력: AI 역량 (모델·벤치마크)</text>
+      <text x="932" y="28" text-anchor="end" font-size="13" font-weight="700" fill="#5b6169">출력: 생산성(TFP) 순증</text>
+
+      <!-- nodes -->
+      <!-- 역량 -->
+      <rect x="8"   y="92" width="108" height="64" rx="9" fill="#efe9d7" stroke="#8a8270" stroke-width="1.4"/>
+      <text x="62"  y="120" text-anchor="middle" font-size="15" font-weight="700" fill="#3a3f46">역량</text>
+      <text x="62"  y="140" text-anchor="middle" font-size="10.5" fill="#6b6455">입력</text>
+      <!-- 전력 -->
+      <rect x="138" y="92" width="108" height="64" rx="9" fill="#f3d9d4" stroke="#a3382f" stroke-width="1.4"/>
+      <text x="192" y="120" text-anchor="middle" font-size="15" font-weight="700" fill="#7a2b24">전력</text>
+      <text x="192" y="140" text-anchor="middle" font-size="10.5" fill="#7a2b24">하드</text>
+      <!-- 신뢰성 -->
+      <rect x="268" y="92" width="108" height="64" rx="9" fill="#d8e9df" stroke="#2f6d4f" stroke-width="1.4"/>
+      <text x="322" y="120" text-anchor="middle" font-size="15" font-weight="700" fill="#245b41">신뢰성</text>
+      <text x="322" y="140" text-anchor="middle" font-size="10.5" fill="#245b41">소프트</text>
+      <!-- 확산 (약한 고리) -->
+      <rect x="398" y="92" width="108" height="64" rx="9" fill="#f6e6c4" stroke="#b07d16" stroke-width="2.4"/>
+      <text x="452" y="120" text-anchor="middle" font-size="15" font-weight="700" fill="#8a5f10">확산</text>
+      <text x="452" y="140" text-anchor="middle" font-size="10.5" fill="#8a5f10">소프트·준하드</text>
+      <rect x="410" y="66" width="84" height="20" rx="10" fill="#b07d16"/>
+      <text x="452" y="80" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff">현재 약한 고리</text>
+      <!-- 재배치 -->
+      <rect x="528" y="92" width="108" height="64" rx="9" fill="#f3d9d4" stroke="#a3382f" stroke-width="1.4"/>
+      <text x="582" y="120" text-anchor="middle" font-size="15" font-weight="700" fill="#7a2b24">재배치</text>
+      <text x="582" y="140" text-anchor="middle" font-size="10.5" fill="#7a2b24">하드(노동)</text>
+      <!-- 측정 -->
+      <rect x="658" y="92" width="108" height="64" rx="9" fill="#f6e6c4" stroke="#b07d16" stroke-width="1.4"/>
+      <text x="712" y="120" text-anchor="middle" font-size="15" font-weight="700" fill="#8a5f10">측정</text>
+      <text x="712" y="140" text-anchor="middle" font-size="10.5" fill="#8a5f10">준-하드</text>
+      <!-- 순증 -->
+      <rect x="788" y="92" width="108" height="64" rx="9" fill="#efe9d7" stroke="#8a8270" stroke-width="1.4"/>
+      <text x="842" y="120" text-anchor="middle" font-size="15" font-weight="700" fill="#3a3f46">순증</text>
+      <text x="842" y="140" text-anchor="middle" font-size="10.5" fill="#6b6455">출력</text>
+
+      <!-- arrows -->
+      <line x1="116" y1="124" x2="136" y2="124" stroke="#8a8270" stroke-width="1.6" marker-end="url(#arw)"/>
+      <line x1="246" y1="124" x2="266" y2="124" stroke="#8a8270" stroke-width="1.6" marker-end="url(#arw)"/>
+      <line x1="376" y1="124" x2="396" y2="124" stroke="#8a8270" stroke-width="1.6" marker-end="url(#arw)"/>
+      <line x1="506" y1="124" x2="526" y2="124" stroke="#8a8270" stroke-width="1.6" marker-end="url(#arw)"/>
+      <line x1="636" y1="124" x2="656" y2="124" stroke="#8a8270" stroke-width="1.6" marker-end="url(#arw)"/>
+      <line x1="766" y1="124" x2="786" y2="124" stroke="#8a8270" stroke-width="1.6" marker-end="url(#arw)"/>
+
+      <text x="470" y="210" text-anchor="middle" font-size="13" font-style="italic" fill="#5b6169">직렬 사슬 — 가장 약한 고리가 전체 속도를 지배한다</text>
+      <!-- legend -->
+      <rect x="150" y="228" width="12" height="12" rx="3" fill="#d8e9df" stroke="#2f6d4f"/><text x="167" y="238" font-size="11" fill="#5b6169">소프트(빨리 녹음)</text>
+      <rect x="330" y="228" width="12" height="12" rx="3" fill="#f6e6c4" stroke="#b07d16"/><text x="347" y="238" font-size="11" fill="#5b6169">준-하드(천천히)</text>
+      <rect x="500" y="228" width="12" height="12" rx="3" fill="#f3d9d4" stroke="#a3382f"/><text x="517" y="238" font-size="11" fill="#5b6169">하드(안 녹음)</text>
+      <rect x="650" y="228" width="12" height="12" rx="3" fill="#efe9d7" stroke="#8a8270"/><text x="667" y="238" font-size="11" fill="#5b6169">입력/출력</text>
+    </svg>
+    <figcaption>7-고리 직렬 사슬과 병목 3분류(색상은 각 고리의 지배적 마찰 유형을 해석적으로 표시)</figcaption>
+  </figure>
+
+  <h2>2. 고리 3분류 — 단가 곡선이 녹이는 정도가 다르다</h2>
+  <p>이 프레임의 핵심은 <b>추론(inference) 단가 붕괴가 모든 고리를 똑같이 녹이지 않는다</b>는 데 있다. 어떤 병목은 값이 싸지면 저절로 풀리고, 어떤 병목은 값과 무관하게 인간·제도·물리 시간에 묶인다.</p>
+
+  <div class="card soft">
+    <h3><span class="tag t-soft">소프트</span> 기술·인지 — 빨리 풀림</h3>
+    <p>신뢰성·통합·확산의 <b>기술적</b> 부분. 추론 단가 붕괴(당시 기준 연 −70~−97%)가 이 고리를 녹인다 — 여러 번 시도해 최선을 고르는 방식(best-of-N)으로 우회하거나, 모델이 스스로 도구를 붙여 통합하거나(tool-use·MCP), 소프트웨어의 한계비용이 0에 수렴하기 때문이다.</p>
+  </div>
+  <div class="card semi">
+    <h3><span class="tag t-semi">준-하드</span> 제도 — 천천히 녹음</h3>
+    <p>거버넌스·규제·감사·기밀·조직 신뢰. 모델 능력과 <b>별개로</b> 인간과 제도의 시간에 묶여 있다. 값이 싸진다고 규제 승인이나 조직 재편이 빨라지지 않는다.</p>
+  </div>
+  <div class="card hard">
+    <h3><span class="tag t-hard">하드</span> 물리 — 못 녹음</h3>
+    <p>전력·물리 실행(로봇)·노동 재배치. 단가 곡선이 아무리 내려가도 계통(전력망)과 물리적 마찰은 그대로다. "자금은 국경을 넘어 빨리 흐르지만 실물(전력·인력)은 국내에 묶여 느리다"는 관찰과 정합한다.</p>
+  </div>
+
+  <h2>3. 투자 적용 4패턴</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>#</th><th>패턴</th><th>요지</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>1</b></td><td>위치</td>
+        <td>인프라(곡괭이)는 <b>하드 고리</b> 위에, 응용 layer는 <b>소프트~준-하드 고리</b> 위에 올라탄다. 종목이 어느 고리 위에 서 있는지부터 확인.</td>
+      </tr>
+      <tr>
+        <td><b>2</b></td><td>통행료 지속성</td>
+        <td>응용 layer가 올라탄 고리가 <b>녹으면 그 매출도 함께 빠진다</b>. 그 종목의 가치는 <b>준-하드 비중</b>이 클수록 방어된다. "이 병목은 안 녹는다"에 거는 베팅인지 점검.</td>
+      </tr>
+      <tr>
+        <td><b>3</b></td><td>한 기업 안의 두 종목</td>
+        <td>한 회사가 방어력이 다른 두 사업을 가질 수 있다 — 정부·기밀(준-하드·번들 불가 = <b>진짜 캡처</b>) vs 상업(소프트·번들 노출 = <b>메타 곡괭이</b>). <b>성장 엔진이 덜 방어되는 쪽일 수 있는 아이러니</b>(성장과 해자 희석이 함께 오는 양날).</td>
+      </tr>
+      <tr>
+        <td><b>4</b></td><td>3 용해 경로</td>
+        <td>응용 layer 해자를 잠식하는 경로 셋 — ①우회(best-of-N) ②흡수(모델 자기통합) ③번들(하이퍼스케일러 OS). 후보별 방어선(인증·기밀·전환비용·수직 깊이)을 평가.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">패턴 3의 대표 사례로 흔히 거론되는 것이 정부·기밀 데이터 분석 사업과 상업 소프트웨어를 함께 가진 기업들이다. 정부·기밀 쪽은 번들이 어려워 방어력이 높지만, 성장은 상업 쪽에서 더 빨리 나올 수 있어 "성장할수록 해자가 옅어지는" 미해결 질문이 남는다.</p>
+
+  <h2>4. 판별 계기판 — 메타 곡괭이냐 진짜 캡처냐</h2>
+  <p>응용 layer가 <b>(A) 메타 곡괭이</b>(단가·좌석 lock-in에 기댐)인지 <b>(B) 진짜 캡처</b>(신규 용도로 실제 가치를 만들어 냄)인지는, 순매출유지율(net retention)을 다섯 갈래로 쪼개면 드러난다.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>확장 출처</th><th>해석</th></tr></thead>
+    <tbody>
+      <tr><td>① 신규 용도 확장</td><td><b>(B) 진짜 캡처</b> 신호 — ROI 기반, 방어적</td></tr>
+      <tr><td>② 단가·좌석 증가</td><td><b>(A) 메타 곡괭이</b> 신호 — lock-in 기반</td></tr>
+      <tr><td>③ 신규 logo(고객)</td><td>중립</td></tr>
+      <tr><td>④ 세그먼트 분리</td><td>방어력 다른 사업의 mix 확인용</td></tr>
+      <tr><td>⑤ 단위 경제</td><td>단가 하락을 흡수하는가 vs 유지하는가</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><b>lock-in과 ROI는 서로 뒤섞이기 쉽다(confound).</b> 그래서 retention의 <b>레벨</b>이 아니라 100%를 넘는 <b>확장분</b>이 어디에서 나왔는지, 그 <b>출처</b>로 판별해야 한다.</p>
+
+  <h2>5. 최근 세 진술 — 같은 방향을 가리킨다</h2>
+  <p>이 프레임이 나온 뒤 관찰된 세 개의 1차 진술이 모두 "모델은 상품, 준-하드(조직·통합·학습루프)가 가치"라는 같은 결론으로 모인다. 셋 다 이해당사자 발언이라는 한계는 있으나, 특히 세 번째는 <b>자사에 불리한 방향</b>의 사례라 corroboration으로 무게가 크다.</p>
+
+  <div class="dp">
+    <span class="when">2026-06-15 · Satya Nadella</span>
+    <h3>"프런티어 생태계" — 준-하드 방어선 + 번들 용해 경로 실증</h3>
+    <p>Microsoft CEO의 에세이 제목 <b>"A frontier without an ecosystem is not stable"</b>(Satya Nadella, X, 조회 2,227만)은 응용 layer 방어선 논쟁에 대한 업계 정상의 1차 진술이다.</p>
+    <ul>
+      <li><b>준-하드 고리 = 방어선 명시</b>: 학습 루프 + 비공개 평가·강화학습 + 자사 IP 통제 + 베테랑 사원 전문성을 유지하며 범용 모델을 <i>교체</i>한다는 주장은, 해자를 정확히 <b>준-하드(거버넌스·기밀·조직 지식) 고리</b>에 위치시킨다. "과업은 위임해도 학습은 위임 못 한다"는 취지 — 모델 능력은 상품, 누적된 학습 루프가 가치.</li>
+      <li><b>번들 경로(양날)</b>: 그 레이어에 #1 클라우드가 <i>직접</i> 깃발을 꽂는다는 것은 하이퍼스케일러 OS 번들 위협(패턴 4-③)의 실물 사례이자, 동시에 "그 레이어가 전략 핵심"이라는 카테고리 검증이기도 하다.</li>
+    </ul>
+  </div>
+
+  <div class="dp">
+    <span class="when">2026-06-19 · Maverick Capital</span>
+    <h3>에어포켓 = 확산 고리 + 하류로의 가치 회귀</h3>
+    <p>Maverick Capital 공동 CIO(Ben Silver·David Tykocinski)의 골드만삭스 인터뷰(녹음 6/4)는 buy-side의 1차 진술이다(2차 소스·의견).</p>
+    <ul>
+      <li><b>에어포켓(air pocket) = 확산 고리</b>: 훈련 인프라 빌드아웃과 생산성 애플리케이션 사이의 공백을 "변동성의 창"으로 봤다. 코딩 agentic 추론은 이미 붙었지만(소프트 고리의 빠른 용해 실증), 더 넓은 지식노동으로 확산이 breakout하지 못하면 수요를 못 지탱한다 — 즉 <b>확산(4번째 고리)이 현재 약한 고리</b>라는 진술.</li>
+      <li><b>하류로의 회귀 = 패턴 2·4 실증</b>: 가치가 다시 하류 인프라·서비스, 데이터베이스, 엣지로 이동하고 대형 모델은 기존 엔터프라이즈 워크플로우에 통합된다는 관찰. 응용 layer가 준-하드(통합·기밀·조직) 고리 위일수록 통행료가 방어된다는 패턴 2와, 통합 인터페이스가 가치를 엔드유저로 이전한다는 패턴 4의 거울상을 함께 보여 준다.</li>
+    </ul>
+  </div>
+
+  <div class="dp">
+    <span class="when">2026-07-14 · Ali Ghodsi (Databricks CEO)</span>
+    <h3>커넥터 사례 — 소프트 −1.5개월 vs 준-하드 재배선이 진짜 배수</h3>
+    <p>Stanford MS&amp;E435 대담. 실물 운영자의 1차 진술이자 자사 정량 사례다. 이해당사자 발언이지만 아래 사례는 "AI 덕이 아니다"라는 <b>자사에 불리한 방향</b>이라 채택한다.</p>
+    <ul>
+      <li><b>핵심 = 재배선(rewiring)</b>: 조직 안 사람이 쌓은 10~30년치 암묵지(맥락)가 병목이라는 것. 1990년 David의 다이나모→컴퓨터 논문을 인용 — 전기모터가 1880~1920년 <b>약 40년</b> 확산 지연을 겪은 이유는, 증기기관을 전기모터로 교체만 하면 생산성이 0이고 공장 배치 전체를 재설계해야 효과가 나왔기 때문이다. 하드·준-하드(물리·제도) 고리가 40년 lag의 원인이라는 역사 실증.</li>
+      <li><b>정량 분해</b>: 데이터 커넥터 1개 개발 = 9개월. ① <b>AI만 투입</b>하면 9개월 → 7.5개월(<b>−1.5개월뿐</b>). ② <b>프로세스 재배선</b>(요구사항 정의를 1분기에서 1주로, 테스트 외주 병렬화, 1인1커넥터를 7인 공동으로 바꿔 담당자 리스크 제거) 하면 <b>1분기에 7개</b>. 소프트 고리 용해는 −1.5개월에 그치고, 준-하드(조직·프로세스) 재배선이 진짜 배수라는 교과서적 정량이다.</li>
+      <li><b>함의</b>: "PoC 95% 실패"라는 통념은 방향은 맞되 원인이 모델이 아니라 재배선 미완이다. 응용 layer 통행료가 준-하드(조직 통합·컨텍스트) 고리 위일수록 방어된다는 패턴 2를 보강한다.</li>
+    </ul>
+  </div>
+
+  <!-- 결론 -->
+  <h2>6. 결론 — 프레임의 무게는 "준-하드 비중"에 있다</h2>
+  <ul>
+    <li>세 진술이 한 방향(모델=상품, 준-하드=가치)으로 모이지만, <b>"소프트 고리는 결국 녹는다"가 5년 안에 실현될 증거는 아직 약하다</b>. 바로 그렇기 때문에, 역설적으로 <b>종목의 실제 방어력은 준-하드 비중이 결정</b>한다 — 소프트 고리가 빨리 녹지 않는 동안에도, 매출이 올라탄 고리가 언젠가 녹을 위험을 준-하드 비중이 상쇄해 주기 때문이다.</li>
+    <li>능력 천장(점근선)이 실재한다면 모델 흡수 위험은 낮아지지만, 동시에 도달 가능한 시장(TAM)도 좁아진다 — 흡수 위험과 TAM은 <b>양날</b>이라 어느 쪽도 공짜 점심이 아니다.</li>
+    <li>따라서 이 프레임은 종목을 <b>발굴</b>하는 도구가 아니라, 이미 후보에 오른 종목이 (A) 메타 곡괭이인지 (B) 진짜 캡처인지, 그리고 그 매출이 어느 고리 위에 얼마나 방어적으로 서 있는지를 <b>판별</b>하는 렌즈다. <b>매수 신호가 아니다.</b></li>
+  </ul>
+
+  <!-- ③ 관찰 시점 -->
+  <hr>
+  <p class="note"><b>관찰 시점</b> — 본 정리는 2026년 6~7월 기록 기준이다. 추론 단가 붕괴폭(연 −70~−97%), Nadella 에세이 조회수(2,227만), Ghodsi 커넥터 정량(9개월 → 7.5개월 / 1분기 7개) 등은 모두 <b>당시 기준</b>이며 이후 갱신됐을 수 있다. 프레임 자체는 2026-06-11 도출, 이후 6-15·6-19·7-14 세 데이터포인트로 보강됐다.</p>
+
+  <!-- ④ 출처 -->
+  <h2>출처</h2>
+  <ul>
+    <li>Satya Nadella, "A frontier without an ecosystem is not stable", X(2026-06-15) — <a href="https://x.com/satyanadella/status/2066182223213293753">x.com/satyanadella/status/2066182223213293753</a></li>
+    <li>Maverick Capital(Ben Silver·David Tykocinski), Goldman Sachs <i>Exchanges</i> 인터뷰(녹음 2026-06-04).</li>
+    <li>Ali Ghodsi(Databricks CEO), Stanford MS&amp;E435 대담(2026-07-14).</li>
+    <li>배경 이론: 다이나모→컴퓨터 확산 지연은 Paul A. David(1990) 논문에서 인용.</li>
+  </ul>
+  <p class="note">외부 저작물의 직접 인용은 15단어 미만·출처 병기 원칙으로 옮겼고, 발언 세부는 위 원출처를 참조. 인용된 정량 수치는 원 기록 그대로다.</p>
+
+  <!-- ⑤ 푸터 -->
+  <div class="foot">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+
+</div>

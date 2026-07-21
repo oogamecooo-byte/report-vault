@@ -1,0 +1,1021 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IREN 인프라 현황 — 시각 대시보드 | 2026-07-20</title>
+<meta name="vault-stage" content="Analysis">
+<meta name="vault-topic" content="IREN">
+<meta name="vault-date" content="2026-07-20">
+<meta name="description" content="IREN(NASDAQ:IREN) 인프라 현황을 1차 공시만으로 정리한 시각 대시보드 — 전력 5GW·사이트별 상태·ARR·자금조달을 3등급(확정/목표/미공개)으로 표기.">
+<style>
+:root{
+  --bg:#FDF6E3; --card:#FFFCF5; --ink:#1f2328; --line:#E3D9C2; --fline:#e8e1cf;
+  --teal:#1E6F8C; --red:#B03A2E; --green:#1E7A4C; --amber:#8a5c14; --muted:#7d7362;
+  --steel:#4E8FA8;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  font-size:15px; line-height:1.6; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+}
+.wrap{max-width:1060px; margin:0 auto; padding:26px 18px 72px}
+h1{font-size:24px; line-height:1.32; margin:6px 0 4px}
+h2{font-size:18px; margin:30px 0 12px; padding-bottom:7px; border-bottom:2px solid var(--line); color:#26211a}
+h2 .no{color:var(--teal); font-weight:800; margin-right:6px}
+h3{font-size:15px; margin:18px 0 8px; color:#33291f}
+a{color:var(--teal); text-decoration:none} a:hover{text-decoration:underline}
+.small{font-size:12.5px; color:var(--muted)} .tiny{font-size:11.5px; color:var(--muted); line-height:1.5}
+.b{font-weight:700}
+
+/* tier badges */
+.bd{display:inline-block; font-size:11px; font-weight:700; padding:1px 7px; border-radius:99px; vertical-align:1px; white-space:nowrap; line-height:1.5}
+.tc{background:#E4F0E7; color:#1E7A4C; border:1px solid rgba(30,122,76,.4)}
+.tt{background:#F7ECD2; color:#8a5c14; border:1px solid rgba(183,121,31,.45)}
+.tu{background:#EFEAE0; color:#7a7161; border:1px solid #CFC5AD}
+.tv{background:#FBF3E2; color:#8a5c14; border:1px dashed rgba(183,121,31,.6)}
+.tdv{background:#E4EDF2; color:#1E6F8C; border:1px solid rgba(30,111,140,.4)}
+
+/* header */
+.head{border:1px solid var(--fline); border-radius:12px; padding:22px 24px; background:var(--card)}
+.chips{display:flex; flex-wrap:wrap; gap:7px; margin-top:12px}
+.chip{background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:4px 10px; font-size:12px}
+.chip .k{color:var(--muted); margin-right:5px}
+
+/* summary box */
+.sumbox{border:2px solid var(--teal); border-radius:12px; background:#FBF6E9; padding:16px 20px; margin:16px 0}
+.sumbox h3{margin:0 0 8px; color:var(--teal); font-size:15.5px}
+.sumbox ul{margin:0; padding-left:20px} .sumbox li{margin:6px 0; line-height:1.5}
+
+/* KPI */
+.kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr)); gap:11px; margin-top:14px}
+.kpi{background:var(--card); border:1px solid var(--fline); border-radius:10px; padding:13px 15px}
+.kpi .lab{font-size:12px; color:var(--muted); display:flex; justify-content:space-between; align-items:center; gap:6px; line-height:1.4}
+.kpi .val{font-size:24px; font-weight:800; margin:4px 0 2px; letter-spacing:-.3px}
+.kpi .sub{font-size:11.5px; color:var(--muted); line-height:1.45}
+
+/* legend row */
+.legend{display:flex; flex-wrap:wrap; gap:10px; margin:10px 0}
+.lg{flex:1 1 200px; background:var(--card); border:1px solid var(--fline); border-radius:9px; padding:9px 12px; font-size:12.5px}
+
+/* site cards */
+.sites{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr)); gap:12px; margin-top:12px}
+.site{border:1px solid var(--fline); border-radius:11px; background:var(--card); overflow:hidden; display:flex; flex-direction:column}
+.site .top{padding:9px 13px; display:flex; justify-content:space-between; align-items:baseline; gap:8px; border-bottom:1px solid var(--fline)}
+.site .nm{font-weight:800; font-size:14.5px}
+.site .loc{font-size:11px; color:var(--muted); white-space:nowrap}
+.site .body{padding:11px 13px; font-size:12.5px; display:flex; flex-direction:column; gap:6px; flex:1}
+.site .mw{font-size:22px; font-weight:800; letter-spacing:-.3px}
+.site .mw small{font-size:12px; font-weight:600; color:var(--muted)}
+.site .st{display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:99px}
+.site .row{color:#4a4033; line-height:1.4}
+.site .row .k{color:var(--muted)}
+.st-op{background:#E4F0E7; color:#1a6b43} .top-op{border-top:4px solid var(--green)}
+.st-uc{background:#E4EDF2; color:#1E6F8C} .top-uc{border-top:4px solid var(--teal)}
+.st-pr{background:#E6EFF3; color:#3d7690} .top-pr{border-top:4px solid var(--steel)}
+.st-dev{background:#F5ECD2; color:#8a5c14} .top-dev{border-top:4px solid #C9A94E}
+.st-acq{background:#EFEAE0; color:#6f6555} .top-acq{border-top:4px solid #B8A97F}
+.st-plan{background:#FBF3E2; color:#8a5c14; border:1px dashed rgba(183,121,31,.6)} .top-plan{border-top:4px dashed #C9A94E}
+
+/* bars */
+.bar{display:flex; width:100%; height:30px; border-radius:7px; overflow:hidden; border:2px solid #fff; box-shadow:0 0 0 1px var(--line)}
+.bar>div{display:flex; align-items:center; justify-content:center; font-size:11.5px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; padding:0 4px}
+.seg-na{background:var(--teal)} .seg-eu{background:#4E8FA8}
+.seg-op{background:var(--green)} .seg-uc{background:#4E8FA8} .seg-dev{background:#C9B486; color:#5d4f33!important}
+.seg-d{background:var(--green)} .seg-p{background:#4E8FA8} .seg-t{background:#D9C795; color:#5d4f33!important}
+.seg-un{background:repeating-linear-gradient(45deg,#EDE6D3,#EDE6D3 6px,#E0D7C0 6px,#E0D7C0 12px); color:#7a7161!important}
+.seg-con{background:var(--green)} .seg-unc{background:repeating-linear-gradient(45deg,#E8DFC8,#E8DFC8 6px,#DCD1B4 6px,#DCD1B4 12px); color:#6b5d45!important}
+.bar-dash{border:2px dashed #B7791F; box-shadow:none; background:#FBF3E2}
+.bar-legend{display:flex; flex-wrap:wrap; gap:11px; margin-top:8px; font-size:11.8px; color:#5d5344; line-height:1.5}
+.sw{display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:4px; vertical-align:-1.5px; border:1px solid rgba(0,0,0,.12)}
+
+/* row charts */
+.rowchart{display:flex; flex-direction:column; gap:6px; margin:12px 0}
+.crow{display:grid; grid-template-columns:170px 1fr; gap:10px; align-items:center}
+.crow .lb{font-size:12px; line-height:1.3; text-align:right; color:#41382d}
+.track{position:relative; display:flex; height:25px; border:1px solid var(--line); border-radius:6px; overflow:hidden;
+  background-color:#FBF7EA;
+  background-image:repeating-linear-gradient(to right, transparent 0, transparent calc(25% - 1px), #EAE2CC calc(25% - 1px), #EAE2CC 25%)}
+.track>i{display:flex; align-items:center; padding:0 7px; font-style:normal; font-size:11px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; height:100%; border-right:2px solid #fff}
+.track>i:last-child{border-right:none}
+.track>b{display:flex; align-items:center; padding:0 8px; font-size:11px; font-weight:600; color:#7a7161; white-space:nowrap}
+.track.mir{justify-content:flex-end} .track.empty{border-style:dashed; background-image:none; justify-content:center}
+.f1{background:var(--green)} .f2{background:#4E8FA8}
+.f2p{background:repeating-linear-gradient(45deg,#4E8FA8,#4E8FA8 7px,#88B2C3 7px,#88B2C3 12px)}
+.f3{background:#D9A94E; color:#4a3a14!important}
+.f3p{background:repeating-linear-gradient(45deg,#E8CE93,#E8CE93 7px,#D9A94E 7px,#D9A94E 12px); color:#4a3a14!important}
+.f4{background:#C46A5A}
+
+/* source vs use */
+.srcuse{display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#FFFDF6; margin:10px 0}
+.su-col{padding:13px 15px; min-width:0} .su-col.right{border-left:2px solid var(--line)}
+.su-col h4{margin:0 0 4px; font-size:13px; color:#41382d}
+.su-col .axis{font-size:10.5px; color:var(--muted); display:flex; justify-content:space-between; margin-bottom:7px}
+.su-row{margin:9px 0}
+.su-row .cap{font-size:11.8px; margin-bottom:3px; display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; line-height:1.3}
+
+/* callouts */
+.warn{border-left:4px solid var(--red); background:#FAEFE9; border-radius:0 9px 9px 0; padding:11px 15px; margin:13px 0; font-size:13px}
+.note{border-left:4px solid #B7791F; background:#FBF3E2; border-radius:0 9px 9px 0; padding:11px 15px; margin:13px 0; font-size:13px}
+.info{border-left:4px solid var(--teal); background:#EDF3F6; border-radius:0 9px 9px 0; padding:11px 15px; margin:13px 0; font-size:13px}
+
+/* cards */
+.cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr)); gap:11px}
+.card{background:var(--card); border:1px solid var(--fline); border-radius:10px; padding:12px 14px; font-size:12.5px}
+.card .h{font-weight:700; font-size:13px; margin-bottom:4px}
+.card .v{font-size:20px; font-weight:800; margin:2px 0}
+
+/* customer chips */
+.cust{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0}
+.cu{border-radius:9px; padding:7px 12px; font-size:12.5px; background:#fff}
+.cu-solid{border:2px solid var(--teal)} .cu-dash{border:2px dashed #B8A97F; color:#5d5344}
+.cu .nm{font-weight:700} .cu .meta{font-size:10.5px; color:var(--muted); display:block}
+
+/* diagram */
+.diag{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:10px}
+.dg{border:2px solid var(--teal); border-radius:10px; background:#fff; padding:11px 13px; font-size:12.3px}
+.dg.gray{border-color:#CFC5AD; background:#F7F2E4; color:#6b6152}
+.dg .t{font-weight:800; font-size:13px; margin-bottom:4px}
+.dg ul{margin:4px 0 0 16px; padding:0} .dg li{margin:3px 0}
+.arrow-note{grid-column:1/-1; text-align:left; font-size:12.3px; color:#5d5344; background:#FAEFE9; border-radius:8px; padding:9px 13px}
+
+/* tables */
+.scroll{overflow-x:auto; border:1px solid var(--fline); border-radius:10px; background:#fff}
+table{border-collapse:collapse; width:100%; font-size:12.5px; background:#FFFDF6}
+th{background:#F4EDDA; color:#41382d; font-weight:700; text-align:left; padding:7px 9px; border-bottom:2px solid var(--line); white-space:nowrap}
+td{padding:6px 9px; border-bottom:1px solid #EFE8D5; vertical-align:top}
+tr:last-child td{border-bottom:none}
+.tot-row td{background:#F4EDDA; font-weight:700}
+td.num,th.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+
+details{border:1px solid var(--line); border-radius:10px; background:var(--card); padding:10px 15px; margin:12px 0}
+summary{cursor:pointer; font-weight:700; font-size:13.5px; color:#41382d}
+details[open]{padding-bottom:15px}
+
+.svgbox{background:#fff; border:1px solid var(--fline); border-radius:10px; padding:8px}
+svg{max-width:100%; height:auto}
+ul.cl{margin:6px 0 0 18px; padding:0} ul.cl li{margin:4px 0; font-size:13px}
+ol.cl{margin:6px 0 0 20px; padding:0} ol.cl li{margin:4px 0; font-size:12.5px}
+ul.cl li,ol.cl li,.card,.kpi .sub,.lg,.dg li,.su-row .cap,.cu,.chip,.site .row{overflow-wrap:anywhere}
+
+footer{margin-top:30px; padding-top:14px; border-top:2px solid var(--line); font-size:12px; color:var(--muted); line-height:1.6}
+
+@media print{
+  body{background:#ffffff!important; -webkit-print-color-adjust:exact; print-color-adjust:exact; font-size:11.5px}
+  .wrap{max-width:100%; padding:0}
+  section,.head{box-shadow:none; break-inside:avoid-page}
+  .scroll{overflow:visible} details{display:block} summary{display:block}
+  a{color:var(--ink)}
+}
+@media (max-width:720px){ .diag{grid-template-columns:1fr} .srcuse{grid-template-columns:1fr} .su-col.right{border-left:none; border-top:2px solid var(--line)} .track.mir{justify-content:flex-start} .crow{grid-template-columns:100px 1fr} }
+</style>
+
+<div class="wrap">
+
+<!-- ===== HEADER ===== -->
+<div class="head">
+  <div class="small b" style="color:var(--teal); letter-spacing:.4px">IREN INFRASTRUCTURE STATUS — 시각 대시보드</div>
+  <h1>IREN Limited (NASDAQ: IREN) 인프라 현황</h1>
+  <div class="small">1차 공시(SEC 원문·회사 공식 PR·iren.com)만으로 재구축한 인프라 팩트 대시보드. 목표주가·투자의견·매수/매도 판단을 포함하지 않는다.</div>
+  <div class="chips">
+    <span class="chip"><span class="k">기준일</span><span class="b">2026-07-20</span></span>
+    <span class="chip"><span class="k">최신 8-K</span><span class="b">2026-07-20</span> Item 2.02 · 0001140361-26-028871</span>
+    <span class="chip"><span class="k">최신 정기보고서</span>10-Q Q3 FY26 (2026-03-31)</span>
+    <span class="chip"><span class="k">회계연도</span>6/30 종료 (FY26 = 2025-07~2026-06)</span>
+    <span class="chip"><span class="k">CIK</span>0001878848</span>
+  </div>
+</div>
+
+<!-- ===== 한 장 요약 ===== -->
+<div class="sumbox">
+  <h3>한 장 요약 — 여기까지만 읽어도 되는 핵심</h3>
+  <ul>
+    <li>🟢 <span class="b">총 확보 전력 5GW</span>(회사 공식) — 북미 4,510MW + 스페인 490MW = 5,000MW <span class="bd tdv">🧮</span>(구성은 회사 미명시). 호주 Bundey 800MW는 <span class="b">5GW 미포함</span>·ARR·자금 기여 0.</li>
+    <li>🟢 <span class="b">가동 데이터센터 810MW</span> — 값은 2025-06-30(FY25) 기준·비트코인 채굴 포함. AI Cloud 배포 용량(3MW→480MW→1.2GW)과는 <span class="b">다른 지표</span>.</li>
+    <li>🟠 2026년 말 <span class="b">AI Cloud ARR 목표 &gt;$4bn</span>(약 85% 계약 확보 🟢) — 내부 가정 기반·달성 보장 없음. 최신 <span class="b">신규 다년 계약 $2.8bn</span>·고객 10곳 공개.</li>
+    <li>🟢 <span class="b">현금 $7.6bn</span>(2026-06-30·미감사 예비치·제한현금 $1.7bn 포함) · 계약 확정 ARR 마지막 절대값 $3.1bn(2026-05-07).</li>
+    <li>🔴 <span class="b">데이터 정직성 4대 공백</span> — ① NVIDIA $3.4bn 계약 <span class="b">SEC Item 1.01 미제출</span>(조건 확인 불가) ② Mirantis 인수 closing·13,673,894주 발행 <span class="b">미확인</span> ③ ARR <span class="b">$4.4bn ↔ &gt;$4bn 기준선 미조정</span> ④ 사이트별 GPU·자금 금액 대부분 <span class="b">미공개</span>(공란 유지).</li>
+  </ul>
+</div>
+
+<!-- ===== 읽는 법 (등급 범례) ===== -->
+<div class="legend">
+  <div class="lg"><span class="bd tc">🟢 확정</span> SEC 원문·회사 공식 PR에 확정 사실로 기재된 값.</div>
+  <div class="lg"><span class="bd tt">🟡 목표</span> 회사 목표·가이던스·내부 가정. 원문에 target / "no assurance" 명시 — <span class="b">달성 보장 없음</span>.</div>
+  <div class="lg"><span class="bd tu">⬜ 미공개</span> 회사 미공개 — <span class="b">추정으로 채우지 않고 공란</span>. 공란 자체가 정보.</div>
+  <div class="lg"><span class="bd tdv">🧮 계산값</span> 1차 수치로부터 산출 — 산식·분모 기준일 병기. 회사 공식 수치 아님.</div>
+</div>
+<div class="tiny">본 대시보드는 3자 추정(개인 분석·2차 전언·애널리스트 목표가·매체 논평·행사 참관기 34건)을 전면 배제했다. <span class="bd tv">원본 미검증</span> = 2026-05-07 IR deck PDF(호스트 차단·원본 대조 불가) 인용 표기.</div>
+
+<!-- ===== §1 KPI ===== -->
+<h2><span class="no">§1</span>오늘의 숫자</h2>
+<div class="kpi-grid">
+  <div class="kpi"><div class="lab">총 확보 전력 <span class="bd tc">🟢</span></div><div class="val">5 GW</div><div class="sub">iren.com 홈·2026-07-20 조회. 구성(북미 4,510+스페인 490) 🧮 — 회사 미명시. 호주 Bundey 800MW 미포함.</div></div>
+  <div class="kpi"><div class="lab">가동 중 DC 용량 <span class="bd tc">🟢</span></div><div class="val">810 MW</div><div class="sub">iren.com = FY25 10-K 동일치(기준일 2025-06-30). 채굴 포함 — AI Cloud 배포 용량과 다른 지표. 현재 사이트별 구성 ⬜.</div></div>
+  <div class="kpi"><div class="lab">2026 말 AI Cloud ARR 목표 <span class="bd tt">🟡</span></div><div class="val">&gt;$4bn</div><div class="sub">8-K 2026-07-20. 480MW(gross) 계획 + GPU·가동률·가격 내부 가정. 비GAAP·달성 보장 없음.</div></div>
+  <div class="kpi"><div class="lab">ARR 목표 중 계약 확보 <span class="bd tc">🟢</span></div><div class="val">약 85%</div><div class="sub">원문 "approximately 85% is now under contract". 절대값 미공시 — 85%×$4bn 곱셈 금지.</div></div>
+  <div class="kpi"><div class="lab">현금 및 현금성자산 <span class="bd tc">🟢</span></div><div class="val">$7.6bn</div><div class="sub">2026-06-30·미감사 예비치. 제한현금 $1.7bn(MS Horizon 1-4 GPU 파이낸싱 관련) 포함 — 비제한 $5.9bn 🧮.</div></div>
+  <div class="kpi"><div class="lab">다음 검증일 (Q4/FY26 발표) <span class="bd tu">⬜</span></div><div class="val" style="color:var(--muted)">미공지</div><div class="sub">IR 이벤트 API 예정 0건(2026-07-20). 관례(FY25 10-K = 2025-08-28)만 존재 — 확정 일정 아님.</div></div>
+</div>
+
+<!-- ===== §2 전력 포트폴리오 ===== -->
+<h2><span class="no">§2</span>전력 포트폴리오</h2>
+
+<h3>지역별 구성 — 회사 공식 5GW <span class="bd tc">🟢</span></h3>
+<div class="bar">
+  <div class="seg-na" style="width:90.2%">북미 4,510MW (7개 사이트 · 10-Q · 2026-03-31)</div>
+  <div class="seg-eu" style="width:9.8%">스페인 490</div>
+</div>
+<div class="bar-legend">
+  <span><span class="sw seg-na"></span>북미 4,510MW 🟢 — 10-Q Q3 FY26 "seven data center sites … 4,510MW"</span>
+  <span><span class="sw seg-eu"></span>스페인(Nostrum) 490MW 🟢 — 인수 완료 PR 2026-06-15</span>
+</div>
+<div style="margin-top:10px" class="bar bar-dash">
+  <div style="width:16%; color:#8a5c14; font-weight:700; font-size:11.5px; display:flex; align-items:center; justify-content:center">호주 Bundey 800MW 🟡</div>
+  <div style="flex:1; color:#8a7d68; font-size:11.5px; display:flex; align-items:center; padding-left:10px">planned · 규제승인 조건부 · <b>&nbsp;회사 공식 5GW 미포함&nbsp;</b> · ARR·자금 기여 0 · 고객 미계약</div>
+</div>
+
+<h3>북미 4,510MW의 상태 분해 — iren.com/data-centers <span class="bd tc">🟢</span> (2026-07-20 조회)</h3>
+<div class="bar">
+  <div class="seg-op" style="width:17.96%">가동 810</div>
+  <div class="seg-uc" style="width:46.56%">건설 중 2,100MW</div>
+  <div class="seg-dev" style="width:35.48%">개발 중 1,600MW</div>
+</div>
+<div class="bar-legend">
+  <span><span class="sw seg-op"></span>Operational 810 — 값은 FY25 10-K(2025-06-30) 동일. 채굴 시대 용량 포함</span>
+  <span><span class="sw seg-uc"></span>Under Construction 2,100</span>
+  <span><span class="sw seg-dev"></span>In Development 1,600</span>
+</div>
+<div class="tiny" style="margin-top:6px">810+2,100+1,600 = 4,510MW로 SEC 7개 사이트 합계와 정확히 일치. 810MW의 FY25 분해(BC 160 + TX 650)는 2025-06-30 기준이며 이후 채굴장비 해체·AI 전환 진행으로 현재 구성은 ⬜.</div>
+
+<div class="note">
+  <span class="b">"5.8GW" 표기 정정</span> — 구판 헤드라인 "총 확보 5,800MW"는 자체 합산(4,510+490+800)이었다. 회사 공식 총량은 <span class="b">5GW</span>이며 구성조차 명시하지 않는다(4,510+490=5,000은 🧮 산술 일치). 본 판은 회사 공식 5GW로 통일한다.
+  <span class="tiny" style="display:block; margin-top:5px">부지 면적: 홈 헤드라인 4,900 acres 🟢 vs 사이트 카드 합계 4,809 acres 🧮 — 91 acres 불일치·단일값 확정 불가. 램프 출발점 FY25말(2025-06-30) 확보 2,910MW → 2026-07-20 공식 5GW: 기준일·집계 범위가 달라 배수·% 환산 금지. 에너지 100% Renewable 🟢.</span>
+</div>
+
+<!-- ===== §3 사이트 대시보드 ===== -->
+<h2><span class="no">§3</span>사이트별 상태 대시보드</h2>
+<div class="small" style="margin-bottom:4px">각 카드 상단 색 = 현 단계. <span class="b">D</span>eployed 실운영 · <span class="b">P</span>rocured 발주·계약 확정 · <span class="b">T</span>arget 계획. GPU·자금 금액은 회사 공시 3건 외 전부 ⬜(공란 유지).</div>
+<div class="legend" style="margin:8px 0">
+  <div class="lg"><span class="st st-op">가동</span> Prince George · Childress/Canal Flats(채굴)</div>
+  <div class="lg"><span class="st st-uc">건설 중</span> Sweetwater 1 · 2</div>
+  <div class="lg"><span class="st st-pr">발주·준비</span> Mackenzie</div>
+  <div class="lg"><span class="st st-dev">개발·계획</span> Oklahoma</div>
+  <div class="lg"><span class="st st-acq">인수완료</span> Spain (Nostrum)</div>
+  <div class="lg"><span class="st st-plan">계획 (5GW 밖)</span> Bundey</div>
+</div>
+
+<div class="sites">
+  <!-- Childress -->
+  <div class="site">
+    <div class="top top-op"><span class="nm">Childress</span><span class="loc">Texas · ERCOT</span></div>
+    <div class="body">
+      <div><span class="mw">750<small>MW</small></span> <span class="bd tc">🟢</span> <span class="st st-op">채굴 가동</span></div>
+      <div class="row">혼합 (하위 5단계) · 냉각 Air+Liquid 🟢 · 면적 576/약500 acres(웹/10-K)</div>
+      <div class="row"><span class="k">고객</span> <span class="b">Microsoft $9.7bn·5년</span> 🟢(Horizon 1-4) + <span class="b">NVIDIA $3.4bn·5년</span> 🟢(60MW retrofit) · 채굴 전면 중단 예정 🟢</div>
+      <div class="row tiny"><span class="k">GPU</span> ⬜(계약 원문서도 마스킹) · Horizon 1-4 랙밀도 130-200kW·Tier III 🟢</div>
+    </div>
+  </div>
+  <!-- Sweetwater 1 -->
+  <div class="site">
+    <div class="top top-uc"><span class="nm">Sweetwater 1</span><span class="loc">Texas · ERCOT</span></div>
+    <div class="body">
+      <div><span class="mw">1,400<small>MW</small></span> <span class="bd tc">🟢</span> <span class="st st-uc">건설 중 (T)</span></div>
+      <div class="row">변전소 통전 완료 2026-05-01(345kV/138kV) 🟢 · first phase IT 200MW 🟡<span class="bd tv">미검증</span> · Air+Liquid 🟢</div>
+      <div class="row"><span class="k">고객</span> ⬜ 미공개 · NVIDIA DSX 아키텍처 flagship 배치 예정 🟡</div>
+      <div class="row tiny"><span class="k">GPU</span> 이론 수용 &gt;700,000 🟡 (SW1+2 합산·설치 아님) · 면적 1,700/1,836(SW1+2)</div>
+    </div>
+  </div>
+  <!-- Sweetwater 2 -->
+  <div class="site">
+    <div class="top top-uc"><span class="nm">Sweetwater 2</span><span class="loc">Texas · ERCOT</span></div>
+    <div class="body">
+      <div><span class="mw">600<small>MW</small></span> <span class="bd tc">🟢</span> <span class="st st-uc">건설 중 (T)</span></div>
+      <div class="row">UNDER CONSTRUCTION 🟢 · 2027 변전소 통전 목표 🟡 · Air+Liquid 🟢</div>
+      <div class="row"><span class="k">고객</span> ⬜ 미공개</div>
+      <div class="row tiny"><span class="k">GPU</span> ⬜ · 면적 500</div>
+    </div>
+  </div>
+  <!-- Oklahoma -->
+  <div class="site">
+    <div class="top top-dev"><span class="nm">Oklahoma</span><span class="loc">내부표기 Kiowa</span></div>
+    <div class="body">
+      <div><span class="mw">1,600<small>MW</small></span> <span class="bd tc">🟢</span> <span class="st st-dev">개발 중 (T)</span></div>
+      <div class="row">IN DEVELOPMENT 🟢 · 2028부터 전력 ramp 🟡 · 계통 SPP는 1차 미확인 ⬜</div>
+      <div class="row"><span class="k">고객</span> ⬜ 미계약</div>
+      <div class="row tiny"><span class="k">GPU</span> ⬜ · 면적 2,000</div>
+    </div>
+  </div>
+  <!-- Prince George -->
+  <div class="site">
+    <div class="top top-op"><span class="nm">Prince George</span><span class="loc">BC, Canada · BC Hydro</span></div>
+    <div class="body">
+      <div><span class="mw">50<small>MW</small></span> <span class="bd tc">🟢</span> <span class="st st-op">가동 (D)</span> <span class="bd tv">deck 근거</span></div>
+      <div class="row">가동 중 🟢 · PUE 1.1 · 랙 70kW 🟢 · 냉각 공랭 🟢 · 면적 12/21 🔴불일치</div>
+      <div class="row"><span class="k">고객</span> 계약 확정 ARR $0.5bn 귀속 🟢(2026-05-07) · 고객명 ⬜</div>
+      <div class="row tiny"><span class="k">GPU</span> <span class="b">&gt;23,000</span> 🟢 (설치+발주 · 6개 사이트 중 유일 공개)</div>
+    </div>
+  </div>
+  <!-- Mackenzie -->
+  <div class="site">
+    <div class="top top-pr"><span class="nm">Mackenzie</span><span class="loc">BC, Canada · BC Hydro</span></div>
+    <div class="body">
+      <div><span class="mw">80<small>MW</small></span> <span class="bd tc">🟢</span> <span class="st st-pr">발주·준비 (P)</span></div>
+      <div class="row">DC 준비 완료·GPU 설치 H2 2026 개시 예정 🟡<span class="bd tv">미검증</span> · PUE 1.1·70kW 🟢 · 공랭 🟢</div>
+      <div class="row"><span class="k">고객</span> ⬜ 사이트 귀속 미공개(7/20 $2.8bn 배분 미공개)</div>
+      <div class="row tiny"><span class="k">GPU</span> ⬜ · Dell B300 발주 배치 사이트 · 면적 11/11</div>
+    </div>
+  </div>
+  <!-- Canal Flats -->
+  <div class="site">
+    <div class="top top-op"><span class="nm">Canal Flats</span><span class="loc">BC, Canada · BC Hydro</span></div>
+    <div class="body">
+      <div><span class="mw">30<small>MW</small></span> <span class="bd tc">🟢</span> <span class="st st-op">채굴 가동 (T)</span></div>
+      <div class="row">가동 중(채굴) 🟢 · AI retrofit 2027 ramp 🟡<span class="bd tv">미검증</span> · 공랭 🟢</div>
+      <div class="row"><span class="k">고객</span> ⬜ 사이트 귀속 미공개</div>
+      <div class="row tiny"><span class="k">GPU</span> ⬜ · 면적 10/10</div>
+    </div>
+  </div>
+  <!-- Spain -->
+  <div class="site">
+    <div class="top top-acq"><span class="nm">Spain (Nostrum)</span><span class="loc">Europe</span></div>
+    <div class="body">
+      <div><span class="mw">490<small>MW</small></span> <span class="bd tc">🟢</span> <span class="st st-acq">인수완료 (T)</span></div>
+      <div class="row">인수 완료 2026-06-15 회사 PR 🟢 · <span class="b" style="color:var(--red)">SEC Item 2.01 미제출 🔴</span> · 공식홈 미등재 · 계통 ⬜</div>
+      <div class="row"><span class="k">고객</span> ⬜ 미계약 · 개별 DC 제원 미공개</div>
+    </div>
+  </div>
+  <!-- Bundey -->
+  <div class="site">
+    <div class="top top-plan"><span class="nm">Bundey</span><span class="loc">South Australia</span></div>
+    <div class="body">
+      <div><span class="mw">800<small>MW</small></span> <span class="bd tt">🟡 planned</span> <span class="st st-plan">계획 · 5GW 밖</span></div>
+      <div class="row">planned 캠퍼스·규제승인 조건부 🟡 · 2028부터 통전 개시 예정 🟡 · 송전연결계약 4×330kV feeder exit 🟢</div>
+      <div class="row"><span class="k">고객</span> ⬜ 미계약 · <span class="b">회사 5GW 미포함 · ARR·자금 기여 0</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="note" style="margin-top:12px">
+  <span class="b">(귀속 미공개) 2026-07-20 신규 다년 계약 묶음</span> — 총계약가치 $2.8bn 🟢 · 고객별·사이트별 배분 ⬜. Item 2.02 furnish only이므로 <span class="b">어느 사이트 카드에도 배분하지 않는다.</span>
+</div>
+
+<h3>사이트별 확보 전력 규모 — 위 대시보드의 파생 렌더 <span class="tiny">(막대 폭 = MW · 공통 스케일 0–1,600 · 색 = D/P/T · 빗금 = 분류 근거 없음)</span></h3>
+<div class="rowchart">
+  <div class="crow"><div class="lb"><span class="b">Oklahoma</span> 1,600 🟢</div><div class="track"><i class="seg-t" style="width:100%">T 1,600 — 개발 중 · 2028 ramp 🟡</i></div></div>
+  <div class="crow"><div class="lb"><span class="b">Sweetwater 1</span> 1,400 🟢</div><div class="track"><i class="seg-t" style="width:87.5%">T 1,400 — 건설 중 · 변전소 통전 완료</i></div></div>
+  <div class="crow"><div class="lb"><span class="b">Childress</span> 750 🟢</div><div class="track"><i class="seg-p" style="width:22.5%">P 360</i><i class="seg-t" style="width:12.5%">T 200</i><i class="seg-un" style="width:11.9%"></i><b>빗금 190 = 하위 단계 미공시</b></div></div>
+  <div class="crow"><div class="lb"><span class="b">Sweetwater 2</span> 600 🟢</div><div class="track"><i class="seg-t" style="width:37.5%">T 600 — 2027 통전 목표 🟡</i></div></div>
+  <div class="crow"><div class="lb"><span class="b">Spain (Nostrum)</span> 490 🟢</div><div class="track"><i class="seg-t" style="width:30.6%">T 490 — 개별 DC 제원 ⬜</i></div></div>
+  <div class="crow"><div class="lb"><span class="b">Mackenzie</span> 80 🟢</div><div class="track"><i class="seg-p" style="width:5%"></i><b>P 80 — Dell B300 · GPU 설치 H2 2026 🟡</b></div></div>
+  <div class="crow"><div class="lb"><span class="b">Prince George</span> 50 🟢</div><div class="track"><i class="seg-d" style="width:3.1%"></i><b>D 50 — 실운영 (deck 근거)</b></div></div>
+  <div class="crow"><div class="lb"><span class="b">Canal Flats</span> 30 🟢</div><div class="track"><i class="seg-t" style="width:1.9%"></i><b>T 30 — 채굴 가동 · AI retrofit 2027 🟡</b></div></div>
+  <div class="tiny" style="text-align:center; margin:2px 0">─── 이하: 회사 공식 5GW 밖 ───</div>
+  <div class="crow"><div class="lb"><span class="b">Bundey</span> 800 🟡</div><div class="track" style="border:2px dashed #B7791F; background-image:none"><i class="seg-t" style="width:50%">T 800 — planned · 규제승인 조건부</i><b>기여 0</b></div></div>
+</div>
+<div class="bar-legend">
+  <span><span class="sw seg-d"></span>D 실운영</span>
+  <span><span class="sw seg-p"></span>P 발주·계약 확정</span>
+  <span><span class="sw seg-t"></span>T 계획·목표</span>
+  <span><span class="sw seg-un"></span>분류 근거 없음 — 임의 값으로 채우지 않는다</span>
+  <span>Childress 내부: P 360 = Horizon 1-4 300 + NVIDIA retrofit 60 · T 200 = Horizon 5-6 150 + 2026 retrofit 50</span>
+</div>
+
+<details>
+  <summary>Childress 5단계 상세 + 사이트별 정량 매트릭스 (단일 사실 원천)</summary>
+  <div class="tiny" style="margin:8px 0">본 표가 사이트 수치의 유일한 원천이며 다른 모든 시각화는 여기서 파생된다.</div>
+  <div class="scroll"><table>
+    <thead><tr><th>사이트/단계</th><th class="num">전력(MW)</th><th>D/P/T</th><th>상태·통전</th><th>고객·계약</th></tr></thead>
+    <tbody>
+      <tr><td class="b">Childress 계</td><td class="num">750 🟢</td><td>혼합</td><td>FY25 10-K 기준 650MW 채굴 가동</td><td>비트코인 채굴 전면 중단 예정 🟢</td></tr>
+      <tr><td style="padding-left:18px">└ Horizon 1-4</td><td class="num">gross 300 🟢 / IT 200 🟢*</td><td>P 300 (Dell $5.8bn)</td><td>2026년 중 복수 tranche 인도 · handoff 목표 Q3 CY2026 🟡<span class="bd tv">미검증</span></td><td class="b">Microsoft $9.7bn·5년 🟢 (Item 1.01+계약원문)</td></tr>
+      <tr><td style="padding-left:18px">└ Horizon 5-6</td><td class="num">150(10-Q) 🟢 / 100(deck IT) 🟡</td><td>T 150</td><td>10-Q Note 22 신규 개발 · 통전 ⬜ · Direct-to-chip 액랭 🟢</td><td>⬜ 고객·사이트 귀속 미공개</td></tr>
+      <tr><td style="padding-left:18px">└ NVIDIA 공랭 retrofit</td><td class="num">60 🟢</td><td>P 60 (Dell $1.6bn)</td><td>2027년 초 ramp·커미셔닝 목표 🟡 · 공랭 🟢</td><td class="b">NVIDIA $3.4bn·5년 🟢 — Item 1.01 미제출 🔴</td></tr>
+      <tr><td style="padding-left:18px">└ 2026 공랭 initial retrofit</td><td class="num">50 🟡<span class="bd tv">미검증</span></td><td>T 50</td><td>H2 2026 GPU 인도 대비 retrofit 🟡</td><td>⬜ 사이트 귀속 미공개</td></tr>
+      <tr><td style="padding-left:18px">└ Horizon 5-10 잔여</td><td class="num">450 🟢</td><td>T</td><td>캠퍼스 750MW 중 잔여분 (8-K 2025-11-03 EX-99.2)</td><td>⬜</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tiny" style="margin-top:6px">* Horizon 1-4 "합산 IT load 약 200MW"는 8-K 서술 — Microsoft 계약 원문에 MW·megawatt 문구는 0회이며 200MW는 계약상 의무가 아니다. 면적 열 웹/10-K 두 값이 다른 사이트는 어느 쪽도 단일 확정하지 않는다.</div>
+</details>
+
+<!-- ===== §4 GPU ===== -->
+<h2><span class="no">§4</span>GPU — 회사 공시 수치는 정확히 3건</h2>
+<div class="cards">
+  <div class="card"><div class="h">전사 GPU (설치+발주 합산) <span class="bd tc">🟢</span></div><div class="v">약 150,000</div>2026-03-31 · 10-Q MD&amp;A "installed or on order". 설치/발주 분해 ⬜.</div>
+  <div class="card"><div class="h">Prince George (설치+발주) <span class="bd tc">🟢</span></div><div class="v">&gt;23,000</div>iren.com 사이트 페이지 · 6개 사이트 중 유일한 GPU 공개.</div>
+  <div class="card"><div class="h">Sweetwater 1+2 이론 수용량 <span class="bd tt">🟡</span></div><div class="v">&gt;700,000</div>"capable of supporting" — <span class="b">설치·발주 대수 아님.</span> 오독 최다 지점.</div>
+</div>
+<div class="warn">이 3건 외 사이트별 GPU 대수는 전부 <span class="b">⬜ 미공개</span>. Microsoft Horizon 1-4 투입 GPU 수량은 <span class="b">계약 원문(EX-10.3)에서도 [***] 마스킹</span>, NVIDIA 계약은 60MW만 공시. MW→GPU 환산·계약금액÷단가 역산은 수행하지 않는다.</div>
+<ul class="cl">
+  <li><span class="b">비트코인 채굴 축소</span> — 설치 해시레이트 38 EH/s(2026-03-31) 🟢, FY25말 50 EH/s에서 감소(AI 전환·장비 해체). Childress 채굴 전면 중단 예정 🟢. 비트코인 보유 0 BTC(일 단위 전량 매도) 🟢.</li>
+  <li><span class="b">가동분 계약 상태</span> — 경영진 2026-05-07 어닝콜 "All of our operational capacity is fully contracted … There are no idle GPUs" 🟢 — 단 범위는 <span class="b">그 시점 가동 용량에 한정</span>(5GW 전체 계약 아님).</li>
+  <li><span class="b">미계약 잔여</span> — 공랭 GPU 약 50,000대(H2 2026 단계 인도) 🟡 — 2026-05-08 컨콜 기준·2.5개월 경과. 7/20 신규 $2.8bn 계약 반영 갱신 없음.</li>
+  <li><span class="b">공개 SKU</span> — NVIDIA H100(80GB)·H200(141GB)·B200(180GB)·B300(288GB)·GB300 NVL72(288GB) 🟢 · InfiniBand 3.2TB/s. 가격 전 SKU "Contact sales" — $/GPU-hr ⬜.</li>
+</ul>
+
+<!-- ===== §5 고객·계약 ===== -->
+<h2><span class="no">§5</span>고객·계약</h2>
+<h3>고객 명단 10곳 <span class="bd tc">🟢</span> (8-K 2026-07-20 EX-99.1) <span class="tiny">실선 = 금액 공개 · 점선 = 명단만</span></h3>
+<div class="cust">
+  <div class="cu cu-solid"><span class="nm">Microsoft</span><span class="meta">$9.7bn · 5년 · Item 1.01 + 계약 원문</span></div>
+  <div class="cu cu-solid"><span class="nm">NVIDIA</span><span class="meta">$3.4bn · 5년 · 🔴 Item 1.01 미제출</span></div>
+  <div class="cu cu-dash"><span class="nm">Perplexity</span><span class="meta">금액 ⬜ · 2.02 furnish</span></div>
+  <div class="cu cu-dash"><span class="nm">Figure AI</span><span class="meta">금액 ⬜ · 2.02 furnish</span></div>
+  <div class="cu cu-dash"><span class="nm">Together AI</span><span class="meta">금액 ⬜ · 최초 2025-10-07</span></div>
+  <div class="cu cu-dash"><span class="nm">Fluidstack</span><span class="meta">금액 ⬜ · 최초 2025-10-07</span></div>
+  <div class="cu cu-dash"><span class="nm">Fireworks AI</span><span class="meta">금액 ⬜ · 최초 2025-10-07</span></div>
+  <div class="cu cu-dash"><span class="nm">Fal AI</span><span class="meta">금액 ⬜ · 2.02 furnish</span></div>
+  <div class="cu cu-dash"><span class="nm">Hume AI</span><span class="meta">금액 ⬜ · 2.02 furnish</span></div>
+  <div class="cu cu-dash"><span class="nm">a new leading AI developer (미공개)</span><span class="meta">실명·후보·확률 서술 일절 금지</span></div>
+</div>
+<ul class="cl">
+  <li><span class="b">2026-07-20 신규 계약 묶음</span> — 총계약가치 $2.8bn 🟢 · 고객별 배분 ⬜ · 2026-06-01 이후 체결분은 관련 GPU capex의 <span class="b">약 45% 고객 선급</span>(지급 예정액 — 수령액 아님) 🟢.</li>
+  <li>계약 포트폴리오 가중평균 기간 약 4년 🟢 (ARR 기여 가중·개별 계약 기간 아님) · 고객 집중도(단일 고객 매출 비중) ⬜(10-Q concentration disclosure 0건).</li>
+  <li>수요 상황(회사 서술) "demand continues to exceed available and planned capacity" 🟡 (정성 주장·정량 근거 없음).</li>
+</ul>
+
+<h3>계약 구조 — 4주체와 비대칭 <span class="tiny">(계약 원문에서만 확인되는 조항)</span></h3>
+<div class="diag">
+  <div class="dg">
+    <div class="t">Microsoft Corporation</div>
+    <ul>
+      <li><span class="b">take-or-pay</span>(실사용 무관 확정 최소 약정) · 편의해지 불가 — 해지 시 make-whole 지급</li>
+      <li>단, <span class="b">tranche 단위 해지권</span>: 최소 GPU가 Delivery Delay Window 내 미인도 시 해당 tranche만 해지 + 선급금 환불</li>
+      <li>GB300 → VR200 대체 요청 옵션(인도 4개월 전)</li>
+    </ul>
+  </div>
+  <div class="dg">
+    <div class="t">IE US Hardware 3 LLC (IREN 100% SPV)</div>
+    <ul>
+      <li>Microsoft 계약 현금흐름·GPU·전자산·지분 100%를 파이낸싱 담보로 제공</li>
+      <li>모회사 <span class="b">Limited Parent Guarantee</span> — managed services 이행 + Microsoft 미수락/해지 시 GPU 처분·재마케팅 미충당 부족분 한정. SPV 자체 채무는 미보증</li>
+    </ul>
+  </div>
+  <div class="dg">
+    <div class="t">Dell (Marketing L.P. 외)</div>
+    <ul>
+      <li>GPU 공급 $5.8bn (Horizon 1-4용) — <span class="b">NC/NR: 취소·반품·일정변경 불가</span></li>
+      <li>대금: 각 tranche 선적 후 30일 분할 · Microsoft SOW 서명본 제출이 발주 선행조건이었음</li>
+    </ul>
+  </div>
+  <div class="dg">
+    <div class="t">Financing Parties (Goldman Sachs · JPMorgan)</div>
+    <ul>
+      <li>GPU 프로젝트 파이낸싱 $3.6bn(8-K)/$3.65bn(PR) · 만기 2031-12-31</li>
+      <li>DSCR ≥ 1.05 분기 · loan-to-cost ≤ 65% · 금리 헤지 85-105% · 인출액 ⬜</li>
+    </ul>
+  </div>
+  <div class="arrow-note">🔴 <span class="b">구조적 비대칭</span> — Microsoft는 tranche 단위로 빠져나갈 수 있으나(선급금 환불 발생), Dell GPU 발주는 취소 불가(NC/NR). 한 tranche가 해지돼도 해당 GPU 대금 지급 의무는 IREN에 남는다 → 이때 Limited Parent Guarantee (b)항과 재마케팅 조항이 발동하는 경로가 리스크의 실체.</div>
+</div>
+
+<div class="warn">
+  <span class="b">NVIDIA 계약 — Microsoft와 공시 위계가 다르다 🔴</span> — $3.4bn·5년·Childress 60MW 공랭 Blackwell·3개 tranche·2027 배치 목표·through 2032 🟢, 기대 연 ARR $0.7bn 🟡. <span class="b">Item 1.01(Material Definitive Agreement) 미제출</span> — 계약 원문·SPA 모두 SEC 부존재. 선급·담보·해지권·SLA 전부 ⬜ 확인 불가. <span class="b">Microsoft 조건(20% 선급·take-or-pay·make-whole)을 NVIDIA에 유추 적용하지 않는다.</span> NVIDIA Investment Rights: 최대 30,000,000주 @ $70(총 최대 $2.1bn)·만료 2031-05-07·<span class="b">GPU 600,000개 배포 시 완전 vesting</span>(미달성 시 vesting 0)·진척률 ⬜. "up to 5GW DSX 파트너십"은 헤드라인 문구이며 계약 물량이 아니다.
+</div>
+
+<details>
+  <summary>Microsoft 계약 원문(EX-10.3) 구조 12항 + Dell 공급계약 4건</summary>
+  <div class="scroll" style="margin-top:8px"><table>
+    <thead><tr><th>항목</th><th>내용</th><th>tier</th></tr></thead>
+    <tbody>
+      <tr><td class="b">총계약가치</td><td>약 $9.7bn. 상한 TCV $9,666,845,337.60 · Table 1 tranche 합계 $9,664,199,424.00 — 두 값 병존(약 $2.6M 차이)</td><td>🟢</td></tr>
+      <tr><td class="b">대상</td><td>Childress Horizon 1-4 · IT load 약 200MW(8-K 서술·계약 원문에 MW 조항 없음) · NVIDIA GB300</td><td>🟢</td></tr>
+      <tr><td class="b">선급금</td><td>각 tranche 20% — 계약상 확정 총액 $1,932,839,884.80. <span class="b">수령액 아님</span>: B/S 반영 이연수익 $120.4M뿐. Service Term 24개월차 이후 pro-rata 상계</td><td>🟢</td></tr>
+      <tr><td class="b">take-or-pay</td><td>"non-refundable, non-cancellable … firm minimum commitment" — 실사용 무관 확정 최소 약정(확정 임차)</td><td>🟢</td></tr>
+      <tr><td class="b">make-whole</td><td>해지·만료 시 Microsoft는 TCV − 기지급 Service Fees − 정지기간 미지급분 지급(IREN 중대 위반 등 예외) — <span class="b">편의해지권 사실상 없음</span></td><td>🟢</td></tr>
+      <tr><td class="b">인도 지연</td><td>지연·Exhibit A 미준수는 material breach 아님. 구제 = ① Delay Credit(요율 [***]) ② tranche 단독 해지 + 선급금 환불. NVIDIA 공급 지연은 IREN 면책(Excluded Delay)</td><td>🟢</td></tr>
+      <tr><td class="b">하드웨어 대체</td><td>Microsoft는 각 인도일 4개월 전까지 GB300 → VR200 대체 요청 가능(합의 실패 시 GB300 유지)</td><td>🟢</td></tr>
+      <tr><td class="b">월 지급 step-down</td><td>첫 24개월 월 $161,180,236.80 → 25개월차 월 $107,199,838.11(각주 "illustrative only"). 연환산 🧮 $1.934bn → $1.286bn(−33.5%)</td><td>🟢</td></tr>
+      <tr><td class="b">운영 SLA</td><td>가동률 보장·서비스 크레딧 — 본문 문구 0건·Exhibit A 이관·제출본 미포함</td><td>⬜</td></tr>
+      <tr><td class="b">인도일·GPU 수량·단가</td><td>전부 [***] 마스킹. 인도 일정은 "2026년 중 복수 tranche"까지만</td><td>⬜</td></tr>
+      <tr><td class="b">경제성</td><td>Estimated Project EBITDA Margin 85%(비GAAP·조정표 미제공·Horizon 1-4 한정) · all-in capex $14-16m/MW(IT load) · GPU capex 약 $5.8bn(8-K)/$5.81bn(PR)</td><td>🟡</td></tr>
+      <tr><td class="b">계약 주체</td><td>Microsoft Corp ↔ IE US Hardware 3 Inc.(이후 LLC) · 준거법 New York · Financing Parties 담보부 양도 허용 · 서명 2025-10-31/11-02</td><td>🟢</td></tr>
+    </tbody>
+  </table></div>
+  <h3 style="margin-top:14px">공급 계약 (Dell 4건) — 발주 측 확정 의무</h3>
+  <div class="scroll"><table>
+    <thead><tr><th>발주</th><th class="num">금액</th><th>용도</th><th>특기 조항</th></tr></thead>
+    <tbody>
+      <tr><td>2025-11-03</td><td class="num">$5.8bn 🟢</td><td>Microsoft Horizon 1-4 (GB300·InfiniBand)</td><td>🔴 NC/NR 취소 불가 · Phase 3·4 조건부 대체권 · 랙 수량·인도일 ⬜ 마스킹</td></tr>
+      <tr><td>2026-03-04</td><td class="num">$2.3bn 🟢</td><td>NVIDIA B300 — Mackenzie 등 (IE CA Leasing)</td><td>tranche 선적 후 30일 분할</td></tr>
+      <tr><td>2026-03-04</td><td class="num">$1.2bn 🟢</td><td>NVIDIA B300 — Childress 공랭 (IE US HW4 → HW1, 2026-04-27 경개)</td><td>🔴 원가 상승 시 가격 상방 조정권 — 금액 상한 미고정</td></tr>
+      <tr><td>2026-05-19</td><td class="num">$1.6bn 🟢</td><td>NVIDIA $3.4bn 계약 서비스용 공랭 Blackwell (2027 초 커미셔닝)</td><td>post-shipment 30일</td></tr>
+      <tr class="tot-row"><td>합계</td><td class="num">$10.9bn 🧮</td><td colspan="2">4건 산술 합 — 회사 미공시 합계. $1.2bn 상방 조정 가능으로 상한 미고정</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tiny" style="margin-top:6px">별도: 2025-07-03 Prince George용 B200 1.3k + B300 1.1k 약 $130m(fit-out 포함·전액 보유현금) 🟢.</div>
+</details>
+
+<!-- ===== §6 ARR ===== -->
+<h2><span class="no">§6</span>ARR — 목표 이력과 미해소 쟁점</h2>
+<div class="info"><span class="b">ARR</span>(Annual Recurring Revenue·연환산 반복매출) 회사 정의 — 2026-12-31 기준 커미셔닝된 GPU 시간당 가격 × 연 8,760시간 + 스토리지 연환산. <span class="b">100% 가동 전제 비GAAP 운영지표</span>이며 "not … a substitute for … GAAP revenue" — GAAP 매출과 같은 축에 놓지 않는다.</div>
+
+<h3>ARR 목표 이력 — 기준선이 다른 별개 수치들 <span class="tiny">(표로만 제시 — 시계열로 이으면 "연속 상향" 오독)</span></h3>
+<div class="scroll"><table>
+  <thead><tr><th>발표일</th><th class="num">목표값</th><th>기준 시점·전제</th><th>계약 확보분</th></tr></thead>
+  <tbody>
+    <tr><td>2025-08-28</td><td class="num">$200–250m 🟡</td><td>2025-12 · 10.9k GPU</td><td>—</td></tr>
+    <tr><td>2025-09-22</td><td class="num">&gt;$500m 🟡</td><td>Q1 2026 말 · 23k GPU</td><td>—</td></tr>
+    <tr><td>2025-11-06</td><td class="num">$3.4bn 🟡</td><td>2026년 말 · 140k GPU</td><td>—</td></tr>
+    <tr><td>2026-03-04</td><td class="num">&gt;$3.7bn 🟡</td><td>2026년 말 · 150k GPU</td><td>—</td></tr>
+    <tr><td>2026-05-07</td><td class="num">$3.7bn 🟡</td><td>2026년 말 · MS $1.9bn + BC·Childress ~74k GPU 내부가정 $1.8bn</td><td class="b">$3.1bn 절대값 🟢 (MS 1.9+NVIDIA 0.7+PG 0.5)</td></tr>
+    <tr><td>2026-05-26</td><td class="num">$4.4bn 🟡</td><td><span class="b" style="color:var(--red)">🔴 기준 상이</span> — NVIDIA 커미셔닝(2027 초) 완료 후 도달 예상치</td><td>—</td></tr>
+    <tr class="tot-row"><td>2026-07-20</td><td class="num">&gt;$4bn 🟡</td><td>2026년 말 · 480MW(gross) 계획 용량</td><td>약 85% 🟢 (절대값 미공시)</td></tr>
+  </tbody>
+</table></div>
+<div class="tiny" style="margin-top:6px">각 목표에 원문 disclaimer: "based on internal company assumptions … It is not fully contracted, there can be no assurance that it will be achieved." 각 막대의 전제(기준 시점·용량·GPU 대수)가 서로 다른 별개 기준선이므로 증가율·상향폭으로 환산하지 않는다.</div>
+
+<h3>2026년 말 목표 &gt;$4bn 계약 커버리지 (ARR 기준 · % 전용)</h3>
+<div class="bar">
+  <div class="seg-con" style="width:85%">계약 확보 약 85% 🟢</div>
+  <div class="seg-unc" style="width:15%">미계약 ~15%</div>
+</div>
+<div class="tiny" style="margin-top:6px">🔴 절대값 환산 금지 — 회사가 절대값을 제시하지 않았다. MW 기준 계약 확보율도 ⬜(분자를 만들 수 없어 해당 막대는 그리지 않는다).</div>
+
+<h3>계약 확정 ARR 마지막 절대값 — $3.1bn (2026-05-07 기준) <span class="bd tc">🟢</span></h3>
+<div class="bar">
+  <div class="seg-na" style="width:61.3%">Microsoft $1.9bn</div>
+  <div class="seg-eu" style="width:22.6%">NVIDIA $0.7bn</div>
+  <div class="seg-op" style="width:16.1%">PG $0.5bn</div>
+</div>
+<div class="tiny" style="margin-top:6px">Q3 FY26 PR 각주3 그대로. 2026-07-20 발표는 비율(85%)만 갱신·절대값 갱신 없음. 실현 매출과의 거리: 최신 실측 AI Cloud 분기 매출 $33.6M(Q3 FY26) 🟢 — ARR은 연환산·100% 가동 전제라 두 수치 비율은 "정의가 다른 지표의 비율"로만 읽는다.</div>
+
+<div class="warn">
+  <span class="b">🔴 미해소 쟁점 — $4.4bn ↔ &gt;$4bn 기준선</span> — 2026-05-26 $4.4bn(NVIDIA 커미셔닝 후 도달치)과 2026-07-20 &gt;$4bn(2026년 말·480MW 기준)은 <span class="b">기준 시점·대상 용량이 다른 별개 수치</span>이며, 회사 reconcile 공시가 없다. 본 판은 ① 두 값을 같은 시계열에 올리지 않고 ② 차이를 "하향"으로 서술하지 않으며 ③ 7/20의 85%가 NVIDIA 2027 ramp분 포함인지 미공시임을 그대로 남긴다. 해소 시점 = Q4 FY26 어닝.
+</div>
+
+<details>
+  <summary>ARR 층위 3계층 + Microsoft 시간 구조(step-down) 상세</summary>
+  <div class="cards" style="margin-top:8px">
+    <div class="card" style="border-left:4px solid var(--green)"><div class="h">계약 확정 계열 🟢</div>MS $1.9bn + NVIDIA $0.7bn + PG $0.5bn = $3.1bn (2026-05-07). 서명된 계약 근거.</div>
+    <div class="card" style="border-left:4px solid #B7791F"><div class="h">내부 가정 계층 🟡</div>BC·Childress 계획 배치 추정 $1.8bn — internal assumptions·no assurance. 기준 GPU ~63k($1.5bn, 2025-11) → ~74k($1.8bn, 2026-05)로 가정 변경.</div>
+    <div class="card" style="border-left:4px solid var(--red)"><div class="h">Microsoft ARR 시간 구조 🔴</div>월 지급 첫 24개월 $161.2M → 25개월차 $107.2M. 연환산 🧮 $1.934bn → $1.286bn(−33.5%). "ARR $1.9bn"은 첫 24개월 run-rate이자 5년 평균 — 전 기간 평평하게 깔면 후반 3년 과대표시. step-down을 확정 매출로 쓰는 것도 금지(예시치).</div>
+  </div>
+</details>
+
+<!-- ===== §7 자금조달 ===== -->
+<h2><span class="no">§7</span>자금조달 — 원천 vs 소요</h2>
+<div class="bar-legend" style="margin-bottom:10px; font-size:12px">
+  <span><span class="sw" style="background:var(--green)"></span><span class="b">① 유입·지불 완료</span></span>
+  <span><span class="sw" style="background:#4E8FA8"></span><span class="b">② 확정·미인출/미지불</span></span>
+  <span><span class="sw" style="background:#D9A94E"></span><span class="b">③ 조건부·Target</span></span>
+  <span><span class="sw" style="background:#C46A5A"></span><span class="b">④ 필요(미확보)</span></span>
+</div>
+<div class="warn" style="margin-top:0">확실성이 다른 항목(비제한 현금·미인출 파이낸싱·조건부 선급)을 <span class="b">단일 합계·단일 "확보율 %"로 제시하지 않는다.</span> 사이트별 자금 금액은 회사가 공시한 적 없어 전면 삭제(분류 장치만 계승).</div>
+
+<h3>현금 $7.6bn 구성 — 제한/비제한 <span class="bd tc">🟢</span> <span class="tiny">2026-06-30 · 미감사 예비치</span></h3>
+<div class="bar" style="height:32px">
+  <div class="f1" style="width:77.6%">비제한(자유현금) $5.9bn 🧮 = $7.6bn − $1.7bn</div>
+  <div class="f2p" style="width:22.4%">제한 $1.7bn</div>
+</div>
+<div class="bar-legend">
+  <span><span class="sw f1"></span>비제한 $5.9bn 🧮 (8-K 미표기 차감값·총 현금 자체가 미감사 예비치)</span>
+  <span><span class="sw f2p"></span>제한현금 $1.7bn 🟢 — MS Horizon 1-4 GPU 파이낸싱 관련 용도제한. 10-Q Q3(3/31)엔 없던 항목 → FY26 Q4 중 신규 발생</span>
+</div>
+
+<h3>원천 ↔ 소요 대응 구조 — 공통 스케일 $0–12bn <span class="tiny">(색 = 확실성 4단계+번호 · 좌우가 같은 축으로 마주 본다)</span></h3>
+<div class="srcuse">
+  <div class="su-col">
+    <h4>조달 원천 (Sources) — 왼쪽으로</h4>
+    <div class="axis"><span>$12bn</span><span>$9</span><span>$6</span><span>$3</span><span>$0</span></div>
+    <div class="su-row"><div class="cap"><span>전환사채 FY26 4시리즈 합 🧮</span><span class="b">$6.3bn</span></div><div class="track mir"><i class="f1" style="width:52.5%">① 유입 완료</i></div></div>
+    <div class="su-row"><div class="cap"><span>현금 — 비제한 (6/30) 🧮</span><span class="b">$5.9bn</span></div><div class="track mir"><i class="f1" style="width:49.2%">① 보유</i></div></div>
+    <div class="su-row"><div class="cap"><span>유상증자 39,699,102주 × $41.12 🧮</span><span class="b">약 $1.632bn</span></div><div class="track mir"><i class="f1" style="width:13.6%">①</i></div></div>
+    <div class="su-row"><div class="cap"><span>ATM 사용분 누적 (4/30) 🟢</span><span class="b">$1.0635bn</span></div><div class="track mir"><i class="f1" style="width:8.9%">①</i></div></div>
+    <div class="su-row"><div class="cap"><span>GPU 프로젝트 파이낸싱 🟢 — 인출액 ⬜</span><span class="b">$3.6bn/$3.65bn</span></div><div class="track mir"><i class="f2p" style="width:30%">② 확정·인출 미공시</i></div></div>
+    <div class="su-row"><div class="cap"><span>제한현금 용도제한 (6/30) 🟢</span><span class="b">$1.7bn</span></div><div class="track mir"><i class="f2p" style="width:14.2%">②</i></div></div>
+    <div class="su-row"><div class="cap"><span>Microsoft 선급 계약상 총액 🟢 <span class="b">수령액 아님</span>(B/S $120.4M)</span><span class="b">$1.9328bn</span></div><div class="track mir"><i class="f2p" style="width:16.1%">②</i></div></div>
+    <div class="su-row"><div class="cap"><span>신규 계약 고객 선급 — GPU capex 약 45% 🟢</span><span class="b">금액 ⬜</span></div><div class="track empty"><b>금액 미공시 — 막대를 그리지 않는다</b></div></div>
+    <div class="su-row"><div class="cap"><span>ATM 잔여 한도 🧮 = $6.0bn − $1.0635bn (4/30) · 희석성</span><span class="b">$4.936bn</span></div><div class="track mir"><i class="f3p" style="width:41.1%">③ 미실행·시장 조건부</i></div></div>
+    <div class="su-row"><div class="cap"><span>NVIDIA Investment Rights — 600k GPU 배포 조건 🟢</span><span class="b">최대 $2.1bn</span></div><div class="track mir"><i class="f3" style="width:17.5%">③ 마일스톤 조건부</i></div></div>
+  </div>
+  <div class="su-col right">
+    <h4>소요 (Uses) — 오른쪽으로</h4>
+    <div class="axis"><span>$0</span><span>$3</span><span>$6</span><span>$9</span><span>$12bn</span></div>
+    <div class="su-row"><div class="cap"><span>총 약정 Commitments (3/31·Note 21) 🟢</span><span class="b">$11.90bn</span></div><div class="track"><i class="f2" style="width:99.2%">② 12개월 내 $11.899bn</i></div></div>
+    <div class="su-row"><div class="cap"><span>Microsoft 관련 GPU capex 🟢</span><span class="b">$5.81bn</span></div><div class="track"><i class="f2" style="width:48.4%">② — 96%를 파이낸싱+선급 조달</i></div></div>
+    <div class="su-row"><div class="cap"><span>전환사채 원리금 — 미전환 가정 (3/31) 🟢</span><span class="b">$3.746bn</span></div><div class="track"><i class="f2" style="width:31.2%">②</i></div></div>
+    <div class="su-row"><div class="cap"><span>2026 하반기 추가 capex — 회사 예상 (3/4) 🟡</span><span class="b">약 $3.5bn</span></div><div class="track"><i class="f4" style="width:29.2%">④ 조달원 미특정</i></div></div>
+    <div class="su-row"><div class="cap"><span>사이트별 capex 분해 · 5년+ 총 소요</span><span class="b">⬜</span></div><div class="track empty"><b>회사 미공시 — 총소요 추정을 만들지 않는다</b></div></div>
+  </div>
+</div>
+<div class="tiny" style="margin-top:4px">🔴 좌·우 어느 쪽도 합계를 만들지 않는다 — 확실성이 다른 항목은 같은 돈이 아니다. Uses 항목 간 범위 중복 가능(Commitments에 Dell 발주 포함·분해 ⬜)하므로 좌우 차액("gap")도 계산하지 않는다.</div>
+
+<h3>전환사채(CB) 만기 지도 — 만기 × 원금 × 쿠폰 × 전환가 <span class="bd tc">🟢</span> <span class="tiny">(막대 높이 = 원금 · @ = 전환가 · cap = capped call 상단)</span></h3>
+<div class="svgbox">
+<svg viewBox="0 0 720 330" role="img" aria-label="전환사채 만기 지도">
+  <defs>
+    <pattern id="cbres" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="7" height="7" fill="#EDE6D3"/><line x1="0" y1="0" x2="0" y2="7" stroke="#CFC5AD" stroke-width="3"/>
+    </pattern>
+  </defs>
+  <g stroke="#E3D9C2" stroke-width="1">
+    <line x1="60" y1="260" x2="680" y2="260"/><line x1="60" y1="193.3" x2="680" y2="193.3"/>
+    <line x1="60" y1="126.7" x2="680" y2="126.7"/><line x1="60" y1="60" x2="680" y2="60"/>
+  </g>
+  <g stroke="#EFE8D5" stroke-width="1">
+    <line x1="172.7" y1="20" x2="172.7" y2="260"/><line x1="285.4" y1="20" x2="285.4" y2="260"/>
+    <line x1="398.1" y1="20" x2="398.1" y2="260"/><line x1="510.8" y1="20" x2="510.8" y2="260"/><line x1="623.5" y1="20" x2="623.5" y2="260"/>
+  </g>
+  <g font-size="11" fill="#7d7362" text-anchor="end" font-family="-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+    <text x="52" y="264">$0</text><text x="52" y="197.3">$1bn</text><text x="52" y="130.7">$2bn</text><text x="52" y="64">$3bn</text>
+  </g>
+  <g font-size="11" fill="#7d7362" text-anchor="middle" font-family="-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+    <text x="60" y="278">2029</text><text x="172.7" y="278">2030</text><text x="285.4" y="278">2031</text>
+    <text x="398.1" y="278">2032</text><text x="510.8" y="278">2033</text><text x="623.5" y="278">2034</text>
+    <text x="370" y="298">만기 연도</text>
+  </g>
+  <g font-family="-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+    <rect x="148" y="230.3" width="97" height="29.7" fill="url(#cbres)" stroke="#fff" stroke-width="1.5"/>
+    <text x="196" y="207" text-anchor="middle" font-size="10" fill="#7a7161">2029·2030 잔존 합 $445.7M (2026-03-31)</text>
+    <text x="196" y="220" text-anchor="middle" font-size="10" fill="#7a7161">@$13.64 / $16.81 — 유도전환으로 대부분 재매입</text>
+    <rect x="321.8" y="193.3" width="40" height="66.7" fill="#1E6F8C" stroke="#fff" stroke-width="2"/>
+    <text x="341.8" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="#1f2328">$1.0bn · 0.00%</text>
+    <text x="341.8" y="184" text-anchor="middle" font-size="10" fill="#5d5344">@$85.63 · cap $120.18</text>
+    <rect x="425.4" y="183.3" width="40" height="76.7" fill="#1E6F8C" stroke="#fff" stroke-width="2"/>
+    <text x="445.4" y="160" text-anchor="middle" font-size="11" font-weight="700" fill="#1f2328">$1.15bn · 0.25%</text>
+    <text x="445.4" y="174" text-anchor="middle" font-size="10" fill="#5d5344">@$51.40 · cap $82.24</text>
+    <rect x="538.1" y="183.3" width="40" height="76.7" fill="#1E6F8C" stroke="#fff" stroke-width="2"/>
+    <text x="546" y="160" text-anchor="middle" font-size="11" font-weight="700" fill="#1f2328">$1.15bn · 1.00%</text>
+    <text x="546" y="174" text-anchor="middle" font-size="10" fill="#5d5344">@$51.40</text>
+    <rect x="594.4" y="60" width="40" height="200" fill="#1E6F8C" stroke="#fff" stroke-width="2"/>
+    <text x="614.4" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#1f2328">$3.0bn · 1.00%</text>
+    <text x="614.4" y="52" text-anchor="middle" font-size="10" fill="#5d5344">@$73.07 · cap $110.30</text>
+  </g>
+</svg>
+</div>
+<div class="tiny" style="margin-top:4px">전환가(@)가 낮을수록 희석 문턱이 낮다 — 잔존 저전환가 물량($13.64/$16.81)은 원금 $445.7M(3/31)뿐. FY26 발행 4시리즈(합 $6.3bn 🧮)는 전환가 $51.40–$85.63 · capped call 상단 $82.24–$120.18. 시리즈별 최대 전환주식(16.64M/27.97M/27.97M/54.40M주)은 이론 상한이며 capped call이 부분 상쇄.</div>
+
+<h3>연도별 AI Cloud 램프 — 3MW → 480MW → 1.2GW <span class="tiny">(가로축 = 로그 스케일 · 선형 비율로 읽지 말 것)</span></h3>
+<div class="svgbox">
+<svg viewBox="0 0 660 250" role="img" aria-label="AI Cloud 램프 로그축">
+  <text x="120" y="16" font-size="12" font-weight="800" fill="#B03A2E" font-family="-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif">가로축 = 로그 스케일 (log₁₀ · MW) — 막대 길이를 선형 비율로 읽지 말 것</text>
+  <g stroke="#E3D9C2" stroke-width="1">
+    <line x1="120" y1="26" x2="120" y2="200"/><line x1="271.5" y1="26" x2="271.5" y2="200"/>
+    <line x1="423" y1="26" x2="423" y2="200"/><line x1="574.5" y1="26" x2="574.5" y2="200"/><line x1="620" y1="26" x2="620" y2="200"/>
+  </g>
+  <g font-size="10.5" fill="#7d7362" text-anchor="middle" font-family="-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+    <text x="120" y="216">1MW</text><text x="271.5" y="216">10MW</text><text x="423" y="216">100MW</text><text x="574.5" y="216">1,000MW</text><text x="630" y="216">2,000</text>
+  </g>
+  <g font-size="11.5" fill="#41382d" text-anchor="end" font-weight="700" font-family="-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+    <text x="112" y="57">2025 중반</text><text x="112" y="117">2026 목표</text><text x="112" y="177">2027 목표</text>
+  </g>
+  <g font-family="-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+    <rect x="120" y="35" width="72.3" height="34" fill="#1E7A4C" stroke="#fff" stroke-width="2"/>
+    <text x="200" y="57" font-size="11.3" fill="#1f2328">3MW — 자체 구축 AI Cloud 🟢 (8-K 2026-07-20)</text>
+    <rect x="120" y="95" width="406" height="34" fill="#D9A94E" stroke="#B7791F" stroke-width="2" stroke-dasharray="6,4"/>
+    <text x="130" y="117" font-size="11.5" font-weight="700" fill="#4a3a14">480MW (gross) — 2026년 인도 예정 🟡</text>
+    <rect x="120" y="155" width="466.5" height="34" fill="#E7CD8F" stroke="#B7791F" stroke-width="2" stroke-dasharray="6,4"/>
+    <text x="130" y="177" font-size="11.5" font-weight="700" fill="#4a3a14">1.2GW — 2027년 목표 🟡 (Q3 PR 1,210MW "in build")</text>
+  </g>
+</svg>
+</div>
+<div class="tiny" style="margin-top:4px">원문(8-K 2026-07-20): "expanded from approximately 3MW … to 480MW being delivered this year, with 1.2GW targeted for 2027." 480MW는 <span class="b">gross</span> 기준 — Horizon 1-4의 200MW는 <span class="b">IT load</span> 기준(같은 열에 놓으면 오독). 2026·2027 목표의 사이트별 구성은 ⬜. 유일한 부분 분해는 2026 공랭 180MW(PG 50+Mackenzie 80+Childress 초기 50) 🟡<span class="bd tv">미검증</span>. MW 기준 계약 확보율 ⬜(회사는 ARR 기준 85%만 제시).</div>
+
+<details>
+  <summary>자금 원천/소요 상세 표 + 전환사채 시리즈 + 주식수·희석 + 재무 스냅샷 + 현금 시계열</summary>
+
+  <h3 style="margin-top:12px">자금 원천 (Sources)</h3>
+  <div class="scroll"><table>
+    <thead><tr><th>원천</th><th class="num">금액</th><th>확실성</th><th>조건·주의</th><th>기준일</th></tr></thead>
+    <tbody>
+      <tr><td class="b">현금(비제한)</td><td class="num">$5.9bn 🧮</td><td>①</td><td>$7.6bn(미감사 예비치) − 제한 $1.7bn. 4/30 $2.6bn → 6/30 $7.6bn 증가의 조달원천 bridge ⬜</td><td>2026-06-30</td></tr>
+      <tr><td class="b">제한현금</td><td class="num">$1.7bn 🟢</td><td>② 용도제한</td><td>MS Horizon 1-4 GPU 파이낸싱 관련. 발생 시점·해제 조건 ⬜. 10-Q Q3(3/31)엔 없던 항목 → FY26 Q4 중 신규 발생</td><td>2026-06-30</td></tr>
+      <tr><td class="b">GPU 프로젝트 파이낸싱</td><td class="num">$3.6bn(8-K)/$3.65bn(PR) 🟢</td><td>② 인출액 ⬜</td><td>DDTL ~$1.5bn(SOFR+2.25%·미인출 수수료 0.40%) + Senior Notes $2.1bn(5.96% 고정)·만기 2031-12-31·인출가능 2027-05-29까지·DSCR ≥1.05 분기·LTC ≤65%·담보 = SPV 전자산+지분+MS 현금흐름·Fitch A/DBRS A(low)는 회사 PR 인용 등급</td><td>2026-05-29 체결</td></tr>
+      <tr><td class="b">Microsoft 선급금</td><td class="num">계약상 $1.9328bn 🟢</td><td>② 유입액 ⬜</td><td>🔴 계약상 확정 총액이지 수령액 아님 — B/S 반영 이연수익 $120.4M(3/31)뿐. "$1.94bn 수령" 표기 금지</td><td>계약 2025-11-02</td></tr>
+      <tr><td class="b">신규 계약 고객 선급</td><td class="num">금액 ⬜</td><td>②</td><td>관련 GPU capex 약 45% — 계약상 지급 예정액. 전사 capex에 45% 곱해 조달액 만들지 않는다</td><td>2026-07-20</td></tr>
+      <tr><td class="b">전환사채 FY26 발행분</td><td class="num">$6.3bn 🧮</td><td>①</td><td>4개 시리즈 산술 합(하단 표) — 회사 미공시 합계</td><td>~2026-05-14</td></tr>
+      <tr><td class="b">ATM 프로그램($6.0bn 한도)</td><td class="num">사용 $1.0635bn 🟢</td><td>① 사용분 / ③ 잔여</td><td>누적 24,734,805주(4/30). 잔여 $4.936bn 🧮(=$6.0bn − $1.0635bn·4/30 기준·희석성). 5/1 이후 사용액 ⬜</td><td>2026-04-30</td></tr>
+      <tr><td class="b">유상증자(registered direct)</td><td class="num">약 $1.632bn 🧮</td><td>①</td><td>39,699,102주 × $41.12 (2025-12-08 완료·Citi/GS/JPM)</td><td>2025-12-08</td></tr>
+      <tr><td class="b">NVIDIA Investment Rights</td><td class="num">최대 $2.1bn 🟢</td><td>③ 조건부</td><td>30,000,000주 @ $70 · GPU 600,000개 배포 마일스톤 vesting · 진척 ⬜ · 미달성 시 0 — 근시일 자금 gap 충당원 아님</td><td>2026-05-07</td></tr>
+      <tr><td class="b">금융리스(GPU 리스)</td><td class="num">PV $274.3M 🟢</td><td>② 기확보 부채</td><td>미할인 $307.8M · 가중평균 잔여 2.2년 · 할인율 9.7% · 리스제공자 ⬜</td><td>2026-03-31</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tiny" style="margin-top:6px">회사 자체 집계 🟢: "직전 8개월간 $9.3bn 조달"(2026-03-04 기준 — 선급금을 조달원에 포함한 회사 기준).</div>
+
+  <h3 style="margin-top:14px">자금 소요 (Uses)</h3>
+  <div class="scroll"><table>
+    <thead><tr><th>소요</th><th class="num">금액</th><th>확실성</th><th>내용</th><th>기준일</th></tr></thead>
+    <tbody>
+      <tr><td class="b">총 약정(Commitments)</td><td class="num">$11.90bn 🟢</td><td>②</td><td>10-Q Note 21. 12개월 내 $11.899bn / 이후 $3.4M. 전년 동기(2025-06-30) $369M 🟢 — 기준일 달라 배수 환산 금지. 항목별·사이트별 분해 ⬜. $1.2bn Dell 건은 상방 조정 가능</td><td>2026-03-31</td></tr>
+      <tr><td class="b">전환사채 원리금(미전환 가정)</td><td class="num">$3.746bn 🟢</td><td>②</td><td>원금 + 만기까지 이자 (10-Q MD&amp;A)</td><td>2026-03-31</td></tr>
+      <tr><td class="b">Microsoft 관련 GPU capex</td><td class="num">$5.81bn 🟢</td><td>②</td><td>이 중 $5.59bn(약 96%)를 파이낸싱+선급으로 조달(회사 산출). "all-in 3.31%"는 회계상 조달원가 아니므로 단독 인용 금지</td><td>2026-06-01</td></tr>
+      <tr><td class="b">2026 하반기 추가 capex</td><td class="num">약 $3.5bn 🟡</td><td>④</td><td>회사 예상(2026-03-04) — 조달원 특정 없음</td><td>2026-03-04</td></tr>
+      <tr><td class="b">사이트별 capex / 5년+ 총 소요</td><td class="num">⬜</td><td>—</td><td>회사 미공시. Horizon 1-4 $14-16m/MW(IT load) 외 사이트별 근거 0 — 총소요 추정 미기재</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 style="margin-top:14px">전환사채(Convertible Notes) 시리즈 전체 <span class="bd tc">🟢</span></h3>
+  <div class="scroll"><table>
+    <thead><tr><th>시리즈</th><th>발행일</th><th class="num">원금</th><th class="num">쿠폰</th><th class="num">전환가</th><th class="num">cap 상단</th><th class="num">최대 전환주식</th><th>만기</th></tr></thead>
+    <tbody>
+      <tr><td>2030 Notes</td><td>2024-12-06</td><td class="num">$400M</td><td class="num">3.25%</td><td class="num">$16.81</td><td class="num">—</td><td class="num">—</td><td>2030-06-15</td></tr>
+      <tr><td>2029 Notes</td><td>2025-06-13</td><td class="num">$550M</td><td class="num">3.50%</td><td class="num">$13.64</td><td class="num">—</td><td class="num">—</td><td>2029-12-15</td></tr>
+      <tr><td>2031 Notes</td><td>2025-10-14</td><td class="num">$1,000M</td><td class="num">0.00%</td><td class="num">$85.63</td><td class="num">$120.18</td><td class="num">16,641,700</td><td>2031-07-01</td></tr>
+      <tr><td>2032 Notes</td><td>2025-12-08</td><td class="num">$1,150M</td><td class="num">0.25%</td><td class="num">$51.40</td><td class="num">$82.24</td><td class="num">27,966,850</td><td>2032-06-01</td></tr>
+      <tr><td>2033 Notes (구)</td><td>2025-12-08</td><td class="num">$1,150M</td><td class="num">1.00%</td><td class="num">$51.40</td><td class="num">$82.24</td><td class="num">27,966,850</td><td>2033-06-01</td></tr>
+      <tr><td>2033 Notes (신)</td><td>2026-05-14</td><td class="num">$3,000M</td><td class="num">1.00%</td><td class="num">$73.07</td><td class="num">$110.30</td><td class="num">54,396,900</td><td>2033-12-01</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="cl" style="font-size:12.5px">
+    <li>2025-12-02 유도전환: 저전환가 2029/2030 CB 원금 $544.3M을 현금 $1,632.4M에 재매입(잔존 $445.7M) — 저전환가($13.64/$16.81) 부채를 고전환가($51.40)로 교체한 자본구조 재편 🟢.</li>
+    <li>교차부도 기준: 차입금 $125M 이상 채무불이행 🟢. fundamental change 시 make-whole 조건은 ⬜(Indenture 원문 미열람 — 표준 조항 가정 금지).</li>
+  </ul>
+
+  <h3 style="margin-top:14px">주식수·희석 — 분모가 낡았다는 사실 자체가 정보</h3>
+  <ul class="cl" style="font-size:12.8px">
+    <li><span class="b">발행주식수</span> 357,378,674주(2026-04-30, 10-Q 표지) 🟢가 마지막 SEC 확인치. 이후 약 3개월 공백 ⬜(다음 확정 = FY26 10-K). 아래 희석률은 모두 stale 분모(4/30) 기반 <span class="b">상한 표기</span>.</li>
+    <li>분기 추이(자본변동표): 257.2M(2025-06-30) → 282.9M(9/30) → 331.8M(12/31) → 341.0M(2026-03-31) 🟢.</li>
+    <li><span class="b">Co-CEO RSU</span> — William Roberts·Daniel Roberts 각 9,099,328 RSU(합 18,198,656) 🟢 · 4년 균등 vest + tranche별 2년 보유(합산 6년)·성과조건 없음·FY2031까지 추가 부여 없음. 잠재 희석 🧮 약 5.09%(4/30 상한). 회사 기준선: "2025+2026 Award 합산 1인당 약 3%"(2026-07-09 DEFA14A) 🟢.</li>
+    <li>NVIDIA Investment Rights 30,000,000주 조건부 — 🧮 상한 약 8.4%(600k GPU 미달 시 0).</li>
+    <li>전환사채 최대 전환 4개 시리즈 합 126,972,300주 🧮(이론 상한 약 35.5%·4/30) — 전환가 초과 시에만 발생·capped call(FY26 발행분 투입 합 $459.0M 🧮 = $56.7M+$104.3M+$96.7M+$201.3M)이 부분 상쇄.</li>
+    <li>10-Q Note 19의 192,422,422주 — "반희석이라 EPS 계산 제외 증권" 목록 합계일 뿐 순희석 규모 아님 🟢.</li>
+    <li>주식보상 pool: 2025 Omnibus 잔여 17.5M(3/31) + 연례 증액 8.0M(7/1 S-8·즉시 발행 아님) 🟢. Co-CEO 18.2M 부여 후 잔여 ⬜. 배당: FY26 중 선언 없음 🟢.</li>
+  </ul>
+
+  <h3 style="margin-top:14px">재무 스냅샷·우발부채 (10-Q Q3 FY26 · 2026-03-31) <span class="bd tc">🟢</span></h3>
+  <ul class="cl" style="font-size:12.8px">
+    <li>총자산 $7.26bn · 총부채 $4.60bn · 자본 $2.66bn · PP&amp;E $4.37bn. 9개월 현금흐름: 영업 +$289.3M / 투자 −$2,608.9M / 재무 +$3,968.8M.</li>
+    <li>9개월 누적: 매출 $569.8M · 영업손실 −$426.3M · 순손실 −$18.6M — 순손익은 비현금·비영업 항목 지배(미실현 평가이익 +$533.9M·유도전환비용 −$111.8M) → 영업 추세로 제시하지 않음.</li>
+    <li>손상: Q3 −$140.4M(채굴장비·BC/Childress 전환) 🟢 + 3/31 이후 추가 약 $520M 예상 🟡(예비 평가·확정 아님).</li>
+    <li>우발부채: 미국 수입관세 분쟁 ~$100M(충당금 미인식)·캐나다 GST $27.7M(조세법원 항소)·증권집단소송(2026-02-18 전부 각하 → 원고 항소).</li>
+    <li>비유동자산 분포: 미국 70% / 캐나다 30%. 유동성(회사 판단 🟡): 12개월+ 충족 가능 기재. 전력 헤지 🟢: 2026-05 MS Horizon 1-4 대상 5년 고정가 헤지 체결 — 물량·가격 ⬜(카운터파티 JPMorgan·J. Aron).</li>
+  </ul>
+
+  <h3 style="margin-top:14px">현금 시계열 (회사 공시 시점별) <span class="bd tc">🟢</span></h3>
+  <div class="svgbox">
+  <svg viewBox="0 0 660 320" role="img" aria-label="현금 시계열 막대">
+    <defs>
+      <pattern id="cashres" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+        <rect width="7" height="7" fill="#4E8FA8"/><line x1="0" y1="0" x2="0" y2="7" stroke="#9DBECB" stroke-width="3"/>
+      </pattern>
+    </defs>
+    <g stroke="#E3D9C2" stroke-width="1">
+      <line x1="70" y1="270" x2="640" y2="270"/><line x1="70" y1="207.5" x2="640" y2="207.5"/>
+      <line x1="70" y1="145" x2="640" y2="145"/><line x1="70" y1="82.5" x2="640" y2="82.5"/><line x1="70" y1="20" x2="640" y2="20"/>
+    </g>
+    <g font-size="11" fill="#7d7362" text-anchor="end" font-family="-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+      <text x="62" y="274">$0</text><text x="62" y="211.5">$2bn</text><text x="62" y="149">$4bn</text><text x="62" y="86.5">$6bn</text><text x="62" y="24">$8bn</text>
+    </g>
+    <g font-family="-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+      <rect x="80" y="239" width="56" height="31" fill="#1E6F8C" stroke="#fff" stroke-width="2"/>
+      <text x="108" y="231" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f2328">$1.0bn</text>
+      <text x="108" y="288" text-anchor="middle" font-size="10.5" fill="#1f2328">25-09-30</text><text x="108" y="302" text-anchor="middle" font-size="9.5" fill="#7d7362">8-K</text>
+      <rect x="162" y="214" width="56" height="56" fill="#1E6F8C" stroke="#fff" stroke-width="2"/>
+      <text x="190" y="206" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f2328">$1.8bn</text>
+      <text x="190" y="288" text-anchor="middle" font-size="10.5" fill="#1f2328">25-10-31</text><text x="190" y="302" text-anchor="middle" font-size="9.5" fill="#7d7362">Q1 PR</text>
+      <rect x="244" y="168" width="56" height="102" fill="#1E6F8C" stroke="#fff" stroke-width="2"/>
+      <text x="272" y="160" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f2328">$3.26bn</text>
+      <text x="272" y="288" text-anchor="middle" font-size="10.5" fill="#1f2328">25-12-31</text><text x="272" y="302" text-anchor="middle" font-size="9.5" fill="#7d7362">10-Q B/S</text>
+      <rect x="326" y="182" width="56" height="88" fill="#1E6F8C" stroke="#fff" stroke-width="2"/>
+      <text x="354" y="174" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f2328">$2.8bn</text>
+      <text x="354" y="288" text-anchor="middle" font-size="10.5" fill="#1f2328">26-01-31</text><text x="354" y="302" text-anchor="middle" font-size="9.5" fill="#7d7362">Q2 PR</text>
+      <rect x="408" y="201" width="56" height="69" fill="#1E6F8C" stroke="#fff" stroke-width="2"/>
+      <text x="436" y="193" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f2328">$2.21bn</text>
+      <text x="436" y="288" text-anchor="middle" font-size="10.5" fill="#1f2328">26-03-31</text><text x="436" y="302" text-anchor="middle" font-size="9.5" fill="#7d7362">10-Q B/S</text>
+      <rect x="490" y="189" width="56" height="81" fill="#1E6F8C" stroke="#fff" stroke-width="2"/>
+      <text x="518" y="181" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f2328">$2.6bn</text>
+      <text x="518" y="288" text-anchor="middle" font-size="10.5" fill="#1f2328">26-04-30</text><text x="518" y="302" text-anchor="middle" font-size="9.5" fill="#7d7362">Q3 PR</text>
+      <rect x="572" y="86" width="56" height="184" fill="#1E6F8C" stroke="#fff" stroke-width="2"/>
+      <rect x="572" y="33" width="56" height="53" fill="url(#cashres)" stroke="#fff" stroke-width="2"/>
+      <text x="600" y="25" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f2328">$7.6bn*</text>
+      <text x="600" y="288" text-anchor="middle" font-size="10.5" fill="#1f2328">26-06-30</text><text x="600" y="302" text-anchor="middle" font-size="9.5" fill="#7d7362">8-K 각주5</text>
+      <rect x="70" y="0" width="11" height="11" fill="#1E6F8C" stroke="#fff"/><text x="86" y="10" font-size="11" fill="#5d5344">현금 및 현금성자산</text>
+      <rect x="220" y="0" width="11" height="11" fill="url(#cashres)" stroke="#fff"/><text x="236" y="10" font-size="11" fill="#5d5344">제한현금 $1.7bn (6/30만)</text>
+    </g>
+  </svg>
+  </div>
+  <div class="tiny" style="margin-top:6px">* 미감사 예비치·제한현금 $1.7bn 포함. 막대 간격은 공시 순서이며 시간 간격에 비례하지 않는다(월말 PR·분기말 B/S 혼재). 4/30 $2.6bn → 6/30 $7.6bn 증가분의 조달원천 bridge ⬜ — 구성 서술하지 않는다. GPU 파이낸싱 인출액도 ⬜("인출 $0" 확정 표기 금지). Commitments 추이(동일 지표 3개 기준일): $0.369bn(2025-06-30·FY25 10-K) → $8.786bn(2025-12-31·10-Q Q2) → $11.902bn(2026-03-31·Note 21) 🟢 — 기준일 달라 배수·증가율 환산 금지.</div>
+</details>
+
+<!-- ===== §8 분기 매출 ===== -->
+<h2><span class="no">§8</span>분기 매출 — 실측 3개 분기만 <span class="bd tc">🟢</span></h2>
+<div class="small" style="margin-bottom:8px">세그먼트: Bitcoin mining / AI Cloud Services 2개(10-Q Note 6). 예측 막대는 싣지 않는다 — Q4 FY26 실측(일정 미공지)으로 교체 예정.</div>
+<div class="svgbox">
+<svg viewBox="0 0 660 310" role="img" aria-label="분기 매출 스택 막대">
+  <g stroke="#E3D9C2" stroke-width="1">
+    <line x1="70" y1="270" x2="640" y2="270"/><line x1="70" y1="220" x2="640" y2="220"/>
+    <line x1="70" y1="170" x2="640" y2="170"/><line x1="70" y1="120" x2="640" y2="120"/>
+    <line x1="70" y1="70" x2="640" y2="70"/><line x1="70" y1="20" x2="640" y2="20"/>
+  </g>
+  <g font-size="11" fill="#7d7362" text-anchor="end" font-family="-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+    <text x="62" y="274">$0</text><text x="62" y="224">$50M</text><text x="62" y="174">$100M</text>
+    <text x="62" y="124">$150M</text><text x="62" y="74">$200M</text><text x="62" y="24">$250M</text>
+  </g>
+  <rect x="120" y="37" width="100" height="233" fill="#1E6F8C" stroke="#fff" stroke-width="2"/>
+  <rect x="120" y="29.7" width="100" height="7.3" fill="#1E7A4C" stroke="#fff" stroke-width="2"/>
+  <text x="170" y="20" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1f2328">$240.3M</text>
+  <text x="170" y="288" text-anchor="middle" font-size="12" fill="#1f2328" font-weight="700">Q1 FY26</text>
+  <text x="170" y="303" text-anchor="middle" font-size="10.5" fill="#7d7362">AI 3% ($7.3M)</text>
+  <rect x="300" y="102.6" width="100" height="167.4" fill="#1E6F8C" stroke="#fff" stroke-width="2"/>
+  <rect x="300" y="85.3" width="100" height="17.3" fill="#1E7A4C" stroke="#fff" stroke-width="2"/>
+  <text x="350" y="76" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1f2328">$184.7M</text>
+  <text x="350" y="288" text-anchor="middle" font-size="12" fill="#1f2328" font-weight="700">Q2 FY26</text>
+  <text x="350" y="303" text-anchor="middle" font-size="10.5" fill="#7d7362">AI 9% ($17.3M)</text>
+  <rect x="480" y="158.8" width="100" height="111.2" fill="#1E6F8C" stroke="#fff" stroke-width="2"/>
+  <rect x="480" y="125.2" width="100" height="33.6" fill="#1E7A4C" stroke="#fff" stroke-width="2"/>
+  <text x="530" y="116" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1f2328">$144.8M</text>
+  <text x="530" y="288" text-anchor="middle" font-size="12" fill="#1f2328" font-weight="700">Q3 FY26</text>
+  <text x="530" y="303" text-anchor="middle" font-size="10.5" fill="#7d7362">AI 23% ($33.6M)</text>
+  <rect x="70" y="0" width="11" height="11" fill="#1E6F8C" stroke="#fff"/><text x="86" y="10" font-size="11" fill="#5d5344">Bitcoin mining</text>
+  <rect x="185" y="0" width="11" height="11" fill="#1E7A4C" stroke="#fff"/><text x="201" y="10" font-size="11" fill="#5d5344">AI Cloud Services</text>
+</svg>
+</div>
+<ul class="cl">
+  <li>총매출 감소 추세(채굴 wind-down), AI Cloud 비중 3% → 9% → 23%로 확대 — Q3 AI 비중 23.2% 🧮 = $33.635M ÷ $144.795M.</li>
+  <li>매출 인식 지역(10-Q Note 5): BTC 매출 100% 호주 / AI Cloud 매출 100% 캐나다(계약주체 소재지) — <span class="b">Texas(Childress) 매출 인식은 2026-03-31 시점 0</span>. Microsoft handoff가 시작돼야 TX 인식 등장.</li>
+  <li>Q3 FY26 단독: 매출 $144.8M · 순손실 −$247.8M(EPS −$0.74) · Adj. EBITDA $59.5M — 손상 −$140.4M 등 비현금 포함.</li>
+  <li>FY25 연간(비교 기준선): 매출 $501.0M(+168% YoY) · 순이익 $86.9M · Adj. EBITDA $269.7M 🟢.</li>
+</ul>
+
+<!-- ===== §9 검증 캘린더 ===== -->
+<h2><span class="no">§9</span>미해소 쟁점·검증 캘린더</h2>
+<div class="small" style="margin-bottom:8px">"언제 무엇을 보면 이 문서가 틀렸다고 인정하는가"의 사전 고정. 본 판은 전 항목 <span class="b">미도래</span>.</div>
+<div class="scroll"><table>
+  <thead><tr><th>#</th><th>쟁점</th><th>현재 상태</th><th>다음 확인</th></tr></thead>
+  <tbody>
+    <tr><td>OQ-01</td><td class="b">$4.4bn ↔ &gt;$4bn ARR 기준선</td><td>reconcile 공시 없음 — 직접 비교 불가. 85%의 NVIDIA 2027 ramp 포함 여부도 미공시</td><td>Q4 FY26 어닝</td></tr>
+    <tr><td>OQ-02</td><td>계약 확정 ARR 절대값(85%의 분자)</td><td>미공시 — 마지막 $3.1bn(2026-05-07)</td><td>Q4 FY26 어닝</td></tr>
+    <tr><td>OQ-03</td><td>$2.8bn 신규 계약의 고객·사이트 배분</td><td>Item 2.02 furnish — 전부 미공개</td><td>FY26 10-K / Q4 deck</td></tr>
+    <tr><td>OQ-05</td><td>현금 $2.6bn → $7.6bn 급증 조달원천 bridge</td><td>8-K 미제공 — 구성 서술 금지</td><td>FY26 10-K 현금흐름표</td></tr>
+    <tr><td>OQ-06</td><td>GPU 파이낸싱 인출액</td><td>미공시. 6/30 제한현금 $1.7bn과 "인출 $0"이 정합하지 않을 수 있음</td><td>FY26 10-K</td></tr>
+    <tr><td>OQ-08</td><td>Mirantis closing + 13,673,894주 발행</td><td>🔴 Item 2.01 8-K 부존재 · 종결기한 2026-08-03 — "closed"도 "PENDING"도 단정 불가</td><td>EDGAR Item 2.01 / FY26 10-K</td></tr>
+    <tr><td>OQ-11</td><td>스페인 490MW 개별 DC 제원</td><td>미공시 · 공식홈 미등재</td><td>Q4 deck / FY26 10-K</td></tr>
+    <tr><td>OQ-12</td><td>Horizon 5-6: 150MW(10-Q) vs 100MW(deck)</td><td>정의 차이로 보이나 회사 미조정</td><td>Q4 deck 원본</td></tr>
+    <tr><td>OQ-14</td><td>NVIDIA 계약 SEC 공시 비대칭</td><td>계약 Item 1.01·사모 Item 3.02 모두 미제출 — 이유 미상</td><td>FY26 10-K exhibit</td></tr>
+    <tr><td>OQ-15</td><td>Q4/FY26 실적 발표일</td><td>미공지(IR 이벤트 0건)</td><td>IREN IR 이벤트</td></tr>
+    <tr><td>OQ-18</td><td>Microsoft handoff Q3 CY2026 준수</td><td>인도일은 계약서 마스킹 — 목표만 존재(과거 Q2→Q3 지연 이력)</td><td>Q4 FY26 어닝</td></tr>
+  </tbody>
+</table></div>
+<details>
+  <summary>전체 쟁점 18건 (OQ-04·07·09·10·13·16·17 포함)</summary>
+  <div class="scroll" style="margin-top:8px"><table>
+    <thead><tr><th>#</th><th>쟁점</th><th>현재 상태</th><th>다음 확인</th></tr></thead>
+    <tbody>
+      <tr><td>OQ-04</td><td>미공개 고객 1사의 정체</td><td>회사 미공개 — 실명·후보·확률 서술 금지</td><td>회사 공식 발표만</td></tr>
+      <tr><td>OQ-07</td><td>고객 선급금 실제 누적 유입액</td><td>마지막 확인 = 이연수익 $120.4M(3/31)</td><td>FY26 10-K</td></tr>
+      <tr><td>OQ-09</td><td>가동 810MW의 현재 사이트별 구성</td><td>FY25 분해(BC 160+TX 650)는 2025-06-30 기준 — 이후 전환 진행</td><td>FY26 10-K Item 2</td></tr>
+      <tr><td>OQ-10</td><td>사이트 면적 웹 ↔ 10-K 불일치</td><td>회사 설명 없음 — 병기 유지</td><td>FY26 10-K Item 2</td></tr>
+      <tr><td>OQ-13</td><td>IE US Hardware 3 Inc.→LLC 전환 사유</td><td>표기 변경만 관찰 — SPV 재편 신호(Dell novation과 동시기)</td><td>FY26 10-K Exhibit 21</td></tr>
+      <tr><td>OQ-16</td><td>2026-05-07 IR deck 원본 검증</td><td>PDF 호스트 차단 — 슬라이드 인용 전부 "원본 미검증" 라벨 유지</td><td>브라우저 경유 확보</td></tr>
+      <tr><td>OQ-17</td><td>전환사채 make-whole 조항</td><td>10-Q 본문 0회 — Indenture 원문 미열람</td><td>각 발행 8-K 첨부 Indenture</td></tr>
+    </tbody>
+  </table></div>
+</details>
+
+<!-- ===== §10 공란 선언 ===== -->
+<details>
+  <summary>§10 의도적 공란 선언 — 추정으로 채우지 않은 20칸</summary>
+  <div class="small" style="margin:8px 0">회사 미공개 또는 1차 확인 불가 항목. 비워두는 것을 정확성의 일부로 간주한다. (괄호 = 채웠을 때의 실패 모드)</div>
+  <ol class="cl">
+    <li>사이트별 GPU 대수 — PG &gt;23,000 제외 전부 (계약금액÷단가 역산이 골격이 되는 것)</li>
+    <li>MW 기준 계약 확보율·사이트별 계약 귀속 (ARR 비율을 MW 칸에 옮겨 적으면 "용량 vs 계약 격차" 논증이 허구)</li>
+    <li>사이트별 자금 소요·확보 금액 (막대 길이가 근거 없는 추정에서 나오면 시각화가 정밀도 허위 주장)</li>
+    <li>고객별 ARR·고객 집중도 % (10-Q concentration disclosure 0건)</li>
+    <li>NVIDIA $3.4bn 계약의 선급·담보·해지·SLA·GPU 대수 (Microsoft 조건 유추 금지 — 공시 위계 상이)</li>
+    <li>2026-05-01 이후 발행주식수·ATM 사용액·잔여한도 (시가총액·희석률 분모 오염)</li>
+    <li>Microsoft tranche별 인도일·Delivery Delay Window·GPU 단가 (계약서에서도 [***] 마스킹)</li>
+    <li>가동 810MW의 2026-07 시점 사이트별 구성 (13개월 전 분해를 현재로 제시 = 기준일 위조)</li>
+    <li>스페인 490MW의 사이트별 제원 (3자 분해 편입 금지)</li>
+    <li>Bundey 800MW의 GPU·ARR·고객·면적·냉각 (총량 합산에 넣으면 부풀려짐 — 기여 0 고정)</li>
+    <li>Mirantis closing 일자·13,673,894주 발행 여부 (어느 쪽 단정도 근거 불충분)</li>
+    <li>고객 선급금 실제 누적 유입액 (계약상 $1.93bn ≠ 수령액 — 분자 최대 16배 과대계상 위험)</li>
+    <li>다음 검증일(Q4/FY26 발표일) (관례 추정을 확정 일정처럼 표기)</li>
+    <li>PUE·최대 랙밀도 — BC 3개 사이트 외 (BC 공랭 값을 TX 액랭 사이트에 전용하면 물리적 오류)</li>
+    <li>전력 헤지 물량·가격 / 전환사채 make-whole 조항 (근거 없는 정밀도 부여)</li>
+    <li>사이트 면적 단일값 (웹·10-K 불일치 — 병기가 유일한 정직한 표기)</li>
+    <li>Microsoft ARR의 연도별 확정 프로파일 (평균을 전 기간 깔면 후반 3년 과대표시)</li>
+    <li>2026-05-07 IR deck 슬라이드 인용 수치의 원본 확정 ("원본 미검증" 라벨 유지)</li>
+    <li>GPU 파이낸싱 인출액 ("인출 $0" 확정 표기 금지)</li>
+    <li>2026-06-25 "Golden State and IREN Landmark Partnership"의 내용 (본문 미수집 — 제목·날짜만 기록)</li>
+  </ol>
+</details>
+
+<!-- ===== §11 타임라인 ===== -->
+<h2><span class="no">§11</span>FY26 타임라인 <span class="tiny">(2025-07 ~ 2026-07 · 가로 위치 = 실제 날짜 비례)</span></h2>
+<div class="svgbox">
+<svg viewBox="0 0 960 300" role="img" aria-label="FY26 타임라인">
+  <g font-family="-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+    <text x="40" y="16" font-size="11" fill="#5d5344">축 위 = 계약·자금 (<tspan fill="#1E7A4C" font-weight="800">●</tspan> 대형 계약 ★ · <tspan fill="#1E6F8C" font-weight="800">●</tspan> 자금·기타) · 축 아래 = 인프라·실적·M&amp;A (<tspan fill="#B7791F" font-weight="800">●</tspan>)</text>
+    <line x1="40" y1="160" x2="920" y2="160" stroke="#1f2328" stroke-width="2"/>
+    <g stroke="#CFC5AD" stroke-width="1">
+      <line x1="40" y1="155" x2="40" y2="165"/><line x1="175.4" y1="155" x2="175.4" y2="165"/><line x1="310.8" y1="155" x2="310.8" y2="165"/>
+      <line x1="446.2" y1="155" x2="446.2" y2="165"/><line x1="581.5" y1="155" x2="581.5" y2="165"/><line x1="716.9" y1="155" x2="716.9" y2="165"/><line x1="852.3" y1="155" x2="852.3" y2="165"/>
+    </g>
+    <g font-size="9.8" fill="#7d7362" text-anchor="middle">
+      <text x="40" y="178">25-07</text><text x="175.4" y="178">25-09</text><text x="310.8" y="178">25-11</text>
+      <text x="446.2" y="178">26-01</text><text x="581.5" y="178">26-03</text><text x="716.9" y="178">26-05</text><text x="852.3" y="178">26-07</text>
+    </g>
+    <g stroke="#B8A97F" stroke-width="1">
+      <line x1="274" y1="154" x2="274" y2="102"/><line x1="316" y1="154" x2="316" y2="132"/><line x1="396" y1="154" x2="396" y2="132"/>
+      <line x1="588" y1="154" x2="588" y2="132"/><line x1="731" y1="154" x2="731" y2="102"/><line x1="746" y1="154" x2="746" y2="72"/>
+      <line x1="780" y1="154" x2="780" y2="132"/><line x1="895" y1="154" x2="895" y2="46"/>
+    </g>
+    <circle cx="274" cy="160" r="4" fill="#1E6F8C"/><circle cx="316" cy="160" r="6" fill="#1E7A4C"/><circle cx="396" cy="160" r="4" fill="#1E6F8C"/>
+    <circle cx="588" cy="160" r="4" fill="#1E6F8C"/><circle cx="731" cy="160" r="6" fill="#1E7A4C"/><circle cx="746" cy="160" r="4" fill="#1E6F8C"/>
+    <circle cx="780" cy="160" r="4" fill="#1E6F8C"/><circle cx="895" cy="160" r="6" fill="#1E7A4C"/>
+    <g font-size="10.8" fill="#1f2328">
+      <text x="274" y="96" text-anchor="end">10/14 CB 2031물 $1.0bn</text>
+      <text x="316" y="126" text-anchor="middle" font-weight="800">★11/2 Microsoft $9.7bn · Dell $5.8bn</text>
+      <text x="402" y="96" text-anchor="start">12/8 CB 2시리즈 · 유상증자 · 유도전환</text>
+      <text x="588" y="126" text-anchor="middle">3/4 Dell 2건 · ATM $6bn 확대</text>
+      <text x="731" y="96" text-anchor="middle" font-weight="800">★5/7 NVIDIA $3.4bn · Nostrum SPA</text>
+      <text x="746" y="66" text-anchor="middle">5/14 CB 2033물 $3.0bn</text>
+      <text x="786" y="126" text-anchor="start">5/29 GPU 파이낸싱 $3.6bn</text>
+      <text x="910" y="40" text-anchor="end" font-weight="800">★7/20 신규 계약 $2.8bn · ARR &gt;$4bn · 현금 $7.6bn</text>
+    </g>
+    <g stroke="#B8A97F" stroke-width="1">
+      <line x1="40" y1="166" x2="40" y2="188"/><line x1="169" y1="166" x2="169" y2="218"/><line x1="322" y1="166" x2="322" y2="188"/>
+      <line x1="528" y1="166" x2="528" y2="188"/><line x1="717" y1="166" x2="717" y2="218"/><line x1="791" y1="166" x2="791" y2="188"/>
+      <line x1="817" y1="166" x2="817" y2="248"/>
+    </g>
+    <circle cx="40" cy="160" r="4" fill="#B7791F"/><circle cx="169" cy="160" r="4" fill="#B7791F"/><circle cx="322" cy="160" r="4" fill="#B7791F"/>
+    <circle cx="528" cy="160" r="4" fill="#B7791F"/><circle cx="717" cy="160" r="4" fill="#B7791F"/><circle cx="791" cy="160" r="4" fill="#B7791F"/>
+    <circle cx="817" cy="160" r="4" fill="#B7791F"/>
+    <g font-size="10.8" fill="#1f2328">
+      <text x="40" y="200" text-anchor="start">7/1 미국 국내발행자 전환</text>
+      <text x="169" y="230" text-anchor="middle">8/28 FY25 실적 · 확보 2,910MW</text>
+      <text x="322" y="200" text-anchor="middle">11/6 Q1 실적 · ARR 목표 $3.4bn</text>
+      <text x="528" y="200" text-anchor="middle">2/5 Q2 · Oklahoma 1.6GW 확보</text>
+      <text x="717" y="230" text-anchor="middle">5/1 Sweetwater 1 변전소 통전</text>
+      <text x="791" y="200" text-anchor="middle">6/3 Bundey 800MW (5GW 밖)</text>
+      <text x="890" y="260" text-anchor="end">6/15 Nostrum 인수 완료 — 스페인 490MW</text>
+    </g>
+  </g>
+</svg>
+</div>
+<details>
+  <summary>주요 이벤트 28건 전체 — SEC 양식·accession 병기</summary>
+  <div class="scroll" style="margin-top:8px"><table>
+    <thead><tr><th>일자</th><th>분류</th><th>내용</th><th>양식·Accession</th></tr></thead>
+    <tbody>
+      <tr><td>2025-07-01</td><td>공시지위</td><td>foreign private issuer 지위 상실 → 미국 국내발행자 양식 전환</td><td>8-K · 0000950103-25-008477</td></tr>
+      <tr><td>2025-07-01</td><td>인사</td><td>Anthony Lewis, 신설 Chief Capital Officer 선임</td><td>8-K · 0001140361-25-024305</td></tr>
+      <tr><td>2025-07-03</td><td>GPU</td><td>B200 1.3k + B300 1.1k 약 $130m 구매(전액 보유현금) — Prince George</td><td>8-K · 0001140361-25-024747</td></tr>
+      <tr><td>2025-08-28</td><td>실적</td><td>FY25 — 매출 $501.0m(+168%)·순이익 $86.9m·확보 2,910MW·가동 810MW·50 EH/s</td><td>8-K · 0001878848-25-000062</td></tr>
+      <tr><td>2025-09-08</td><td>인사</td><td>Anthony Lewis CFO 선임(전임 Belinda Nucifora 퇴임)</td><td>8-K · 0001140361-25-034232</td></tr>
+      <tr><td>2025-09-22</td><td>ARR</td><td>AI Cloud 23k GPU 2배 확대 · ARR 목표 &gt;$500m</td><td>IREN PR</td></tr>
+      <tr><td>2025-10-07</td><td>계약</td><td>신규 다년 AI Cloud — Together AI·Fluidstack·Fireworks AI</td><td>IREN PR</td></tr>
+      <tr><td>2025-10-14</td><td>자금</td><td>0.00% CB 2031물 $1.0bn (전환가 $85.63·capped call $56.7m)</td><td>8-K · 0001140361-25-038083</td></tr>
+      <tr><td class="b">2025-11-02</td><td class="b">대형계약</td><td class="b">Microsoft SOW $9.7bn·5년(Horizon 1-4·IT 200MW·GB300·20% 선급) + Dell $5.8bn NC/NR</td><td>8-K Item 1.01 · 0001140361-25-040072</td></tr>
+      <tr><td>2025-11-06</td><td>실적</td><td>Q1 FY26 — 매출 $240.3m · ARR 목표 $3.4bn(140k GPU)</td><td>8-K · 0001878848-25-000079</td></tr>
+      <tr><td>2025-11-19</td><td>지배구조</td><td>정기주총 — 2025 Omnibus Plan 승인(반대 약 12%)</td><td>8-K Item 5.07</td></tr>
+      <tr><td>2025-11-27</td><td>감사인</td><td>KPMG LLP 선임 / Raymond Chabot Grant Thornton 해임(reportable event: 내부통제 중대 취약점)</td><td>8-K Item 4.01</td></tr>
+      <tr><td>2025-12-08</td><td>자금</td><td>CB 2032물 $1.15bn + 2033물(구) $1.15bn + 유상증자 39.7M주 @$41.12 + 기존 CB $544.3m 유도전환($1,632.4m)</td><td>8-K</td></tr>
+      <tr><td>2026-02-05</td><td>실적·전력</td><td>Q2 FY26 — 매출 $184.7m · Oklahoma 1.6GW 확보(전력 4.5GW 초과)</td><td>8-K · 0001878848-26-000014</td></tr>
+      <tr><td>2026-03-04</td><td>GPU·자금</td><td>Dell Canada $2.3bn + Dell USA $1.2bn · fleet 150,000 GPU · ARR &gt;$3.7bn · ATM $1bn→$6bn</td><td>8-K · 0001140361-26-007905</td></tr>
+      <tr><td>2026-04-27</td><td>구조</td><td>Dell USA $1.2bn 경개(novation): IE US Hardware 4 → 1</td><td>10-Q EX-10.5</td></tr>
+      <tr><td>2026-05-01</td><td>인프라</td><td>Sweetwater 1(1.4GW) 고압 변전소 ERCOT 통전 완료</td><td>IREN PR</td></tr>
+      <tr><td>2026-05-04/05</td><td>M&amp;A</td><td>Mirantis 100% 인수 합병계약 — 약 $625m(주식 13,673,894주 + 약 10% 현금)·종결기한 2026-08-03·closing 미확인</td><td>10-Q Note 22</td></tr>
+      <tr><td class="b">2026-05-07</td><td class="b">대형계약</td><td class="b">NVIDIA $3.4bn(60MW·2027 초 ramp) + up to 5GW DSX 파트너십 + Investment Rights 30M주 @$70 · 동시 Nostrum(스페인 490MW) SPA</td><td>8-K Item 2.02 (🔴 1.01 미제출) · 0001878848-26-000025</td></tr>
+      <tr><td>2026-05-08</td><td>실적</td><td>Q3 FY26 10-Q — 매출 $144.8m · Commitments $11.90bn(Note 21) · 계약 확정 ARR $3.1bn</td><td>10-Q · 0001878848-26-000026</td></tr>
+      <tr><td>2026-05-14</td><td>자금</td><td>1.00% CB 2033물(신) $3.0bn — FY26 최대 단일 조달 (전환가 $73.07·capped call $201.3m)</td><td>8-K · 0001140361-26-021285</td></tr>
+      <tr><td>2026-05-19</td><td>GPU</td><td>Dell $1.6bn 공랭 Blackwell — NVIDIA 계약 서비스용 (Childress·2027 초 커미셔닝)</td><td>8-K · 0001878848-26-000030</td></tr>
+      <tr><td>2026-05-26</td><td>ARR</td><td>"커미셔닝 완료 시 ARR $3.7bn → $4.4bn" 발표</td><td>8-K EX-99.1 · 0001878848-26-000030</td></tr>
+      <tr><td class="b">2026-05-29</td><td class="b">자금</td><td class="b">Microsoft 계약용 GPU 프로젝트 파이낸싱 확정 — SEC "약 $3.6bn" / PR "$3.65bn·blended 6.00%·Fitch A/DBRS A(low)"</td><td>8-K Item 1.01/2.03(6/1 제출) · 0001140361-26-023427</td></tr>
+      <tr><td>2026-06-03</td><td>인프라</td><td>호주 첫 캠퍼스 — Bundey 800MW 송전연결계약(4×330kV)·2028 통전·고객 미명시</td><td>IREN PR</td></tr>
+      <tr><td>2026-06-15</td><td>M&amp;A</td><td>Nostrum Group 인수 완료(스페인 490MW) — SEC Item 2.01 미제출</td><td>IREN PR</td></tr>
+      <tr><td>2026-06-25</td><td>미상</td><td>"Golden State and IREN Announce Landmark Partnership" — 본문 미수집·해석 보류</td><td>IREN PR (제목만)</td></tr>
+      <tr><td>2026-06-29</td><td>지수</td><td>Russell 1000 지수 편입</td><td>IREN PR</td></tr>
+      <tr><td>2026-07-01</td><td>보상</td><td>Co-CEO 각 9,099,328 RSU(합 18,198,656·4년 vest+2년 보유) + S-8 8.0M주 등록</td><td>8-K Item 5.02 · 0001140361-26-027202</td></tr>
+      <tr><td>2026-07-09</td><td>지배구조</td><td>독립 이사회 의장 주주서한(RSU 방어) — "2025+2026 합산 1인당 약 3%"·"시총 $16bn 초과"</td><td>DEFA14A · 0001140361-26-028014</td></tr>
+      <tr><td class="b">2026-07-20</td><td class="b">최신</td><td class="b">신규 계약 $2.8bn · ARR 목표 &gt;$4bn(85% 계약)·고객 10곳·현금 $7.6bn(6/30)·3MW→480MW→1.2GW 재확인</td><td>8-K Item 2.02 · 0001140361-26-028871</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tiny" style="margin-top:6px">기타 인사(2026-02-17 CIO John Gross · 2026-07-02 CPO/CDO · 2026-07-15 CISO — 후자 2건 PR 제목만) · 2026-02-12 MSCI USA 편입 · 2026-05-18 브랜드 에이전시 Awaken 인수(대가 미공시).</div>
+</details>
+
+<!-- ===== §12 방법론 ===== -->
+<details>
+  <summary>§12 방법론 · 핵심 1차 출처 (accession)</summary>
+  <ol class="cl" style="margin-top:8px">
+    <li><span class="b">단일 사실 원천</span> — 모든 수치는 2026-07-20자 데이터 계약(FY26 8-K 28건 전수 + 10-Q/10-K + 계약 exhibit 원문 + iren.com)에서만 취했다.</li>
+    <li><span class="b">충돌 시 우선순위</span> — SEC 원문 &gt; IREN 공식홈/PR &gt; 어닝 프레젠테이션 &gt; 메모리. ($3.6bn(8-K) vs $3.65bn(PR) 병기 · Horizon 5-6 150MW(10-Q)로 deck 100MW 정정)</li>
+    <li><span class="b">3자 추정 전면 배제</span> — 개인 분석·2차 전언·셀사이드 목표주가·매체 논평·행사 참관기 등 34건을 본문·표·차트·KPI에서 제외.</li>
+    <li><span class="b">계산값 규율</span> — 산출값은 전부 🧮 라벨 + 산식 + 분모 기준일 동반.</li>
+    <li><span class="b">시각화 규율</span> — 막대·면적 기하는 데이터 계약 수치에서만 파생. 값 없는 구간은 빗금/빈 점선. 정의가 다른 지표(가동 810MW ↔ AI Cloud 배포 · 총계약가치 ↔ 연 ARR · gross ↔ IT load)는 같은 축에 놓지 않는다. 예측 막대 없음.</li>
+    <li><span class="b">투자판단 배제</span> — 목표주가·적정가치·투자의견·매수/매도 신호 없음. 시장 데이터(주가·공매도)는 회사 공시가 아니므로 싣지 않는다.</li>
+  </ol>
+  <h3 style="margin-top:12px">핵심 1차 출처</h3>
+  <ul class="cl" style="font-size:12.5px">
+    <li>8-K 2026-07-20 (Item 2.02/9.01) — <a href="https://www.sec.gov/Archives/edgar/data/1878848/000114036126028871/ef20078253_ex99-1.htm">0001140361-26-028871</a> · $2.8bn·ARR &gt;$4bn·현금 $7.6bn</li>
+    <li>Form 10-Q Q3 FY26 (2026-03-31, 제출 2026-05-08) — <a href="https://www.sec.gov/Archives/edgar/data/1878848/000187884826000026/iren-20260331.htm">0001878848-26-000026</a> · 4,510MW·150k GPU·Commitments·Dell exhibit 5건</li>
+    <li>Form 10-K FY25 (2025-06-30) — <a href="https://www.sec.gov/Archives/edgar/data/1878848/000187884825000063/iren-20250630.htm">0001878848-25-000063</a> · Item 2 Properties·810MW·2,910MW</li>
+    <li>Microsoft Partner SOW 원문 (10-Q Q2 FY26 EX-10.3) — <a href="https://www.sec.gov/Archives/edgar/data/1878848/000187884826000015/exhibit103-partnerstatem.htm">0001878848-26-000015</a> · TCV·take-or-pay·make-whole·step-down·VR200 옵션([***] 마스킹 82곳)</li>
+    <li>Dell Purchase Agreement + NC/NR (동 10-Q EX-10.4/10.5) · 8-K 2025-11-03 Microsoft·Dell — <a href="https://www.sec.gov/Archives/edgar/data/1878848/000114036125040072/ef20058139_8k.htm">0001140361-25-040072</a></li>
+    <li>8-K 2026-06-01 GPU 프로젝트 파이낸싱 — <a href="https://www.sec.gov/Archives/edgar/data/1878848/000114036126023427/ef20075181_8k.htm">0001140361-26-023427</a> · 8-K 2026-05-26 Dell $1.6bn·ARR $4.4bn — <a href="https://www.sec.gov/Archives/edgar/data/1878848/000187884826000030/iren-20260519.htm">0001878848-26-000030</a></li>
+    <li>8-K 2026-05-14 CB 2033물 $3.0bn — 0001140361-26-021285 · 8-K 2026-03-04 Dell·ATM — 0001140361-26-007905 · 8-K 2026-07-01 Co-CEO RSU — 0001140361-26-027202 · DEFA14A 2026-07-09 — 0001140361-26-028014</li>
+    <li>Q3 FY26 실적 보도자료 — <a href="https://www.sec.gov/Archives/edgar/data/1878848/000187884826000025/irenreportsq3fy26results.htm">0001878848-26-000025</a> · ARR $3.1bn 구성·NVIDIA 계약</li>
+    <li>iren.com (홈·data-centers·사이트·ai-cloud — 2026-07-20 조회) · Nostrum PR 2026-06-15 · Bundey PR 2026-06-03</li>
+  </ul>
+  <div class="tiny">알려진 한계: 2026-05-07 IR deck PDF 호스트 차단으로 원본 미검증(해당 인용 라벨 부착) · FY26 10-K 미제출(주식수·ATM·810MW 구성은 FY26 10-K 재기준화 예정) · Q4/FY26 발표일 미공지.</div>
+</details>
+
+<div class="warn" style="margin-top:16px">
+  <span class="b">면책</span> — 본 문서는 IREN Limited의 인프라 현황에 대한 <span class="b">사실 정리 문서</span>다. 목표주가·적정가치·투자의견·매수/매도 판단을 포함하지 않으며, 🟡 표기 항목은 회사 목표로서 <span class="b">달성이 보장되지 않는다</span>. 모든 수치는 기재된 기준일의 것이며 이후 변동되었을 수 있다.
+</div>
+
+<footer>
+  IREN 인프라 현황 시각 대시보드 · 기준일 2026-07-20 · 1차 공시(SEC 원문·회사 공식 PR·iren.com)만으로 재구축 · 외부 리소스를 로드하지 않는다(오프라인 열람 가능).<br>
+  본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.
+</footer>
+
+</div>

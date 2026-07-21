@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>암묵지 복리 루프 — Nadella의 프런티어 생태계론 | 2026-07-21</title>
+<meta name="vault-stage" content="Thesis">
+<meta name="vault-topic" content="AI 구조">
+<meta name="vault-date" content="2026-07-21">
+<meta name="description" content="Nadella '프런티어 생태계' 에세이를 층위 교정해 만든 재사용 lens — 3단 사다리·7층·통행료 지도.">
+<style>
+  :root{
+    --page:#FDF6E3; --card:#FDF6E3; --ink:#1f2328; --muted:#6b6256;
+    --line:#e8e1cf; --line2:#cfc6b0;
+    --green:#2f7d4f; --amber:#9a6b00; --red:#a83232; --blue:#2c5d8a; --purple:#6b4a86;
+    --chip:#f4ecd3;
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--page);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard',sans-serif;
+    line-height:1.78;margin:0;padding:32px 16px;font-size:16px;}
+  .container{max-width:960px;margin:0 auto;padding:8px 4px 40px;}
+  header{border-bottom:3px solid var(--line2);padding-bottom:22px;margin-bottom:8px;}
+  .kicker{font-size:13px;letter-spacing:.04em;color:var(--muted);font-weight:600;margin-bottom:8px;}
+  h1{font-size:27px;line-height:1.34;margin:0 0 14px;font-weight:800;letter-spacing:-.015em;}
+  .meta{font-size:13px;color:var(--muted);line-height:1.6;}
+  .tldr{background:var(--chip);border:2px solid var(--line2);border-radius:11px;padding:22px 26px;margin:26px 0;}
+  .tldr h3{margin:0 0 12px;font-size:18px;}
+  .tldr p{margin:8px 0;}
+  .tldr ul{margin:10px 0 4px;}
+  h2{font-size:21px;margin:44px 0 8px;padding-top:24px;border-top:1px solid var(--line);font-weight:800;letter-spacing:-.01em;}
+  h2 .num{display:inline-block;min-width:32px;color:var(--purple);}
+  h3{font-size:16.5px;margin:24px 0 6px;font-weight:700;color:#3a3430;}
+  p{margin:11px 0;}
+  .tblwrap{overflow-x:auto;margin:18px 0;}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:520px;}
+  th,td{border:1px solid var(--line2);padding:9px 12px;text-align:left;vertical-align:top;}
+  th{background:#efe6cf;font-weight:700;}
+  .tag{display:inline-block;padding:1px 8px;border-radius:20px;font-size:12.5px;font-weight:700;border:1px solid;white-space:nowrap;}
+  .t-soft{color:var(--blue);border-color:var(--blue);background:#e8eff5;}
+  .t-semi{color:var(--amber);border-color:var(--amber);background:#f6efda;}
+  .t-hard{color:var(--red);border-color:var(--red);background:#f6e9e6;}
+  .note{background:#e8eff5;border:1px solid #cad9e6;border-left:5px solid var(--blue);border-radius:8px;padding:13px 18px;margin:16px 0;font-size:14.5px;}
+  .note .lbl{font-weight:800;color:var(--blue);font-size:13px;display:block;margin-bottom:4px;}
+  .caveat{background:#f6e9e6;border:1px solid #e3c9c2;border-left:5px solid var(--red);border-radius:8px;padding:13px 18px;margin:16px 0;font-size:14.5px;}
+  .caveat .lbl{font-weight:800;color:var(--red);font-size:13px;display:block;margin-bottom:4px;}
+  strong.hl{background:#f6efce;color:#5c4a00;padding:0 3px;border-radius:3px;border:1px solid #e6d9a8;font-weight:700;}
+  ul,ol{margin:10px 0;padding-left:24px;} li{margin:7px 0;}
+  .fig{background:#fff;border:1px solid #e8e1cf;border-radius:10px;padding:18px 16px 10px;margin:22px 0;overflow-x:auto;}
+  .fig svg{display:block;width:100%;min-width:520px;height:auto;}
+  .fig figcaption{font-size:12.5px;color:var(--muted);margin-top:8px;text-align:center;}
+  .def{background:#f2eedf;border:1px solid var(--line2);border-radius:10px;padding:16px 20px;margin:14px 0;}
+  .def .term{font-size:16px;font-weight:800;color:#3a3430;margin-bottom:2px;}
+  .fn{font-size:12.5px;color:var(--muted);}
+  sup.fnr{color:var(--purple);font-weight:700;font-size:11px;}
+  .foot{margin-top:46px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);}
+  @media print{ body{background:#fff;padding:0;} .container{max-width:100%;}
+    .tldr,.note,.caveat,.fig,.def{background:#fff;} }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="kicker">AI 구조 · Thesis · 재사용 분석 lens</div>
+  <h1>암묵지 복리 루프 — Nadella의 &lsquo;프런티어 생태계&rsquo;를 층위 교정하다</h1>
+  <div class="meta">본 정리는 2026-06-15 기록 기준 · Satya Nadella의 에세이 <i>&ldquo;A frontier without an ecosystem is not stable&rdquo;</i>(X, 2026-06-15) 정독에서 출발<br>
+  목적: &ldquo;AI가 생산성으로 연결되는 시대&rdquo;에 한 기업 내부의 AI 시스템 구조를 분해하는 <b>재사용 가능한 사고 지도</b>. 매수·매도 신호가 아니라 어느 기업·섹터든 대볼 수 있는 격자다.</div>
+</header>
+
+<div class="tldr">
+  <h3>🎯 한 장 요약</h3>
+  <p>🔴 <b>핵심 교정</b> — Nadella의 어휘는 사다리인데 통째로 뭉뚱그려져 쓰인다. &lsquo;프런티어 생태계&rsquo;는 <strong class="hl">경제 전체가 가치를 나눠 갖는 거시 상태</strong>이지 한 기업의 자산이 아니다. 한 기업 내부의 선순환에는 다른 이름이 맞다 — <strong class="hl">암묵지 복리 루프</strong>(Nadella가 말한 learning loop의 우리말).</p>
+  <ul>
+    <li>🟠 <b>3단 사다리</b>: 🌐 프런티어 생태계(거시) ⊃ 🏢 자립형 지능 스택(한 조직) = 🔁 암묵지 복리 루프 + 인프라 (+ 제조라면 물리).</li>
+    <li>🟠 <b>3 자본</b>이 모델 <i>위에서</i> 복리로 쌓인다: 인적 자본 + 토큰 자본(소유한 AI 역량) + 체화 자본(로봇·공정과 그 데이터). 토큰 자본을 인프라와 혼동하지 말 것.</li>
+    <li>🟠 <b>7 기능 층 + 4 세로 이음매</b> — 병목·해자는 깔끔한 층 <i>안</i>보다 층 <i>사이</i>(레거시 설비·IT/OT 봉합·sim-to-real)에 사는 경우가 많다.</li>
+    <li>🟠 <b>소유/임대 = 통행료 지도</b>: 임대·구독되는 층 = 외부 벤더 반복매출(수혜 후보), 소유되는 층 = 기업 자신의 해자. 여기서 3 수혜 zone + 1 해자 zone이 갈린다.</li>
+    <li>⚪ <b>미검증</b> — 집중이냐 분배냐는 아직 열린 실증 질문이고, 이 지도의 여러 전제(&ldquo;소프트는 녹는다&rdquo; 등)도 점검 대상이다. 결론이 아니라 사고 도구로 쓴다.</li>
+  </ul>
+</div>
+
+<h2><span class="num">1</span>층위 교정 — 이 정리가 바꾼 한 가지</h2>
+<p>Nadella 에세이의 &lsquo;프런티어 생태계&rsquo;가 establishment 공통어로 굳는 중이다. 문제는 이 말이 종종 <b>단일 기업의 경쟁력</b>을 가리키는 데 잘못 쓰인다는 점이다. 원문을 정독하면 어휘가 사다리로 정렬된다.</p>
+<div class="def">
+  <div class="term">🌐 프런티어 생태계 <span style="font-weight:600;color:var(--muted)">— 거시 배열(다수 조직)</span></div>
+  많은 조직이 <i>각자</i> 학습 루프를 소유해 가치가 모든 기업·산업·국가로 넓게 분배되는 <b>경제 전체의 상태</b>. 이것을 한 기업 자산에 갖다 붙이면 층위 오류다.
+</div>
+<div class="def">
+  <div class="term">🏢 자립형 지능 스택 <span style="font-weight:600;color:var(--muted)">— 한 조직 내부</span></div>
+  한 조직이 위→아래로 갖춘 AI 풀스택. Nadella가 &ldquo;주권(sovereignty)&rdquo;이라 부른 것이다. 단 그는 선을 <b>학습 루프까지</b>만 긋고 컴퓨트는 클라우드 임대를 권한다. 여기서 다루는 확장판은 인프라·물리까지 소유를 포함한 <b>한 칸 더 깊은 주권</b>이다.
+</div>
+<div class="def">
+  <div class="term">🔁 암묵지 복리 루프 <span style="font-weight:600;color:var(--muted)">— 엔진</span></div>
+  모델 <i>위에서</i> 자본들이 복리로 쌓이는 선순환. Nadella가 learning loop, 즉 스스로 언덕을 오르는 기계에 비유한 그것. 산출 = <b>그 기업 고유의 암묵지</b>.
+</div>
+<div class="note"><span class="lbl">🔑 델타 — 무엇이 바뀌었나</span>
+흩어져 쓰이던 어휘를 세 칸으로 분리한 것이 이번 정리의 전부이자 핵심이다. 앞으로 &ldquo;소버린 AI&rdquo; &middot; &ldquo;모델 독립&rdquo; &middot; &ldquo;AI 내재화&rdquo; 서사를 들으면 이 사다리로 층위를 먼저 맞춘 뒤 분석을 시작한다.
+</div>
+
+<h2><span class="num">2</span>3 자본 — 루프에 들어가는 복리 연료</h2>
+<p>루프가 도는 원리는 세 종류의 자본이 모델 위에 쌓이는 것이다. 앞의 둘은 Nadella의 용어, 셋째는 제조업으로의 확장이다.</p>
+<div class="tblwrap">
+<table>
+  <tr><th>자본</th><th>무엇</th><th>주의</th></tr>
+  <tr><td><b>인적 자본</b></td><td>사람의 지식·판단·현장 암묵지</td><td>방향타가 없으면 컴퓨트는 제자리만 돈다</td></tr>
+  <tr><td><b>토큰 자본</b></td><td>기업이 짓고 소유하는 AI 역량 — 평가셋(evals)·강화학습·지식베이스·가중치</td><td>🔴 <b>인프라와 혼동 금지</b> — 토큰 자본은 루프 <i>안</i>의 소유 자산, 컴퓨트·전력은 그 아래 하드 칸</td></tr>
+  <tr><td><b>체화 자본</b><br><span class="fn">(제조 확장)</span></td><td>소유한 로봇·공정과 그것이 낳는 물리 데이터·기술</td><td>순수 SW엔 없는 칸 — 루프가 물리를 통과해 닫힐 때 생긴다</td></tr>
+</table>
+</div>
+
+<h2><span class="num">3</span>자립형 지능 스택 — 7 기능 층 + 4 세로 이음매</h2>
+<p>&ldquo;AI 역량&rdquo;을 실제 생산성으로 바꾸려면 한 제조 기업 내부에 반드시 존재해야 하는 7개 기능 층이 있고, 그 사이를 잇는 4개 세로 이음매가 있다. 이음매는 곁다리가 아니라 <b>층과 동등한 급으로 이름 붙여 추적하는 정식 구성요소</b><sup class="fnr">1</sup>다 — 제조 AI에서 좌초는 층 안보다 층 사이에서 일어나기 때문이다.</p>
+
+<div class="fig">
+<svg viewBox="0 0 980 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="자립형 지능 스택 7층과 4 세로 이음매">
+  <text x="298" y="24" text-anchor="middle" font-size="13.5" font-weight="800" fill="#6b4a86">🏢 7 기능 층 (위=추상·전략 → 아래=물리)</text>
+  <text x="792" y="24" text-anchor="middle" font-size="13.5" font-weight="800" fill="#9a6b00">🔗 4 세로 이음매</text>
+
+  <rect x="28" y="42" width="540" height="48" rx="9" fill="#eef2e8" stroke="#2f7d4f" stroke-width="1.6"/>
+  <text x="44" y="64" font-size="13.5" font-weight="800" fill="#2f7d4f">G · 인간·전략</text>
+  <text x="44" y="82" font-size="11.5" fill="#6b6256">목표 설정 · 방향타 + 현장 베테랑(암묵지 원천)</text>
+
+  <rect x="28" y="96" width="540" height="48" rx="9" fill="#e8eff5" stroke="#2c5d8a" stroke-width="1.6"/>
+  <text x="44" y="118" font-size="13.5" font-weight="800" fill="#2c5d8a">F · 거버넌스·주권·신뢰</text>
+  <text x="44" y="136" font-size="11.5" fill="#6b6256">IP·데이터 통제 · 안전·인증·규제 · OT 보안</text>
+
+  <rect x="28" y="150" width="540" height="48" rx="9" fill="#f6efda" stroke="#9a6b00" stroke-width="2.4"/>
+  <text x="44" y="172" font-size="13.5" font-weight="800" fill="#9a6b00">E · 🔁 암묵지 복리 루프</text>
+  <text x="44" y="190" font-size="11.5" fill="#6b6256">private evals · 강화학습 · 기관 기억 · 데이터 플라이휠 ← 복리가 도는 곳</text>
+
+  <rect x="28" y="204" width="540" height="48" rx="9" fill="#faf4e4" stroke="#cfc6b0" stroke-width="1.6"/>
+  <text x="44" y="226" font-size="13.5" font-weight="800" fill="#3a3430">D · 오케스트레이션·에이전트</text>
+  <text x="44" y="244" font-size="11.5" fill="#6b6256">에이전트·워크플로 · IT↔OT 통합(ERP·MES·PLM)</text>
+
+  <rect x="28" y="258" width="540" height="48" rx="9" fill="#faf4e4" stroke="#cfc6b0" stroke-width="1.6"/>
+  <text x="44" y="280" font-size="13.5" font-weight="800" fill="#3a3430">C · 모델·지능</text>
+  <text x="44" y="298" font-size="11.5" fill="#6b6256">범용 모델(LLM·VLM) + 🤖 로봇 모델 · 도메인 파인튜닝 · 디지털트윈</text>
+
+  <rect x="28" y="312" width="540" height="48" rx="9" fill="#faf4e4" stroke="#cfc6b0" stroke-width="1.6"/>
+  <text x="44" y="334" font-size="13.5" font-weight="800" fill="#3a3430">B · 연산·데이터 기반</text>
+  <text x="44" y="352" font-size="11.5" fill="#6b6256">컴퓨트·전력 · 네트워크·엣지 · 데이터레이크·파이프</text>
+
+  <rect x="28" y="366" width="540" height="48" rx="9" fill="#f6e9e6" stroke="#a83232" stroke-width="2"/>
+  <text x="44" y="388" font-size="13.5" font-weight="800" fill="#a83232">A · 물리 기반</text>
+  <text x="44" y="406" font-size="11.5" fill="#6b6256">생산자산(기계·로봇·라인) · 센싱(입구) · 제어·액추에이션(출구)</text>
+
+  <circle cx="568" cy="174" r="11" fill="#a83232"/><text x="568" y="178" text-anchor="middle" font-size="11.5" font-weight="800" fill="#fff">4</text>
+  <circle cx="568" cy="228" r="11" fill="#a83232"/><text x="568" y="232" text-anchor="middle" font-size="11.5" font-weight="800" fill="#fff">1</text>
+  <circle cx="568" cy="336" r="11" fill="#a83232"/><text x="568" y="340" text-anchor="middle" font-size="11.5" font-weight="800" fill="#fff">3</text>
+  <path d="M582,258 L589,258 L589,414 L582,414" fill="none" stroke="#a83232" stroke-width="1.6"/>
+  <circle cx="589" cy="336" r="11" fill="#a83232"/><text x="589" y="340" text-anchor="middle" font-size="11.5" font-weight="800" fill="#fff">2</text>
+
+  <rect x="620" y="42" width="342" height="52" rx="8" fill="#f6efda" stroke="#9a6b00" stroke-width="1.4"/>
+  <text x="632" y="63" font-size="12.5" font-weight="800" fill="#9a6b00">① C↔D · IT/OT 통합</text>
+  <text x="632" y="82" font-size="11" fill="#6b6256">정보계(ERP·MES)↔운영계(PLC) 봉합 · 제조 고유 난소</text>
+
+  <rect x="620" y="102" width="342" height="52" rx="8" fill="#f6efda" stroke="#9a6b00" stroke-width="1.4"/>
+  <text x="632" y="123" font-size="12.5" font-weight="800" fill="#9a6b00">② C↔A · sim-to-real</text>
+  <text x="632" y="142" font-size="11" fill="#6b6256">디지털트윈 ↔ 실제 물리의 간극 (로봇 정책 이식)</text>
+
+  <rect x="620" y="162" width="342" height="52" rx="8" fill="#f6efda" stroke="#9a6b00" stroke-width="1.4"/>
+  <text x="632" y="183" font-size="12.5" font-weight="800" fill="#9a6b00">③ A↔B · 물리 데이터 캡처</text>
+  <text x="632" y="202" font-size="11" fill="#6b6256">노후(brownfield) 설비에서 신호를 뽑아내기</text>
+
+  <rect x="620" y="222" width="342" height="52" rx="8" fill="#f6efda" stroke="#9a6b00" stroke-width="1.4"/>
+  <text x="632" y="243" font-size="12.5" font-weight="800" fill="#9a6b00">④ E · 루프 닫힘</text>
+  <text x="632" y="262" font-size="11" fill="#6b6256">물리 트레이스로 루프가 실제로 닫혀 복리가 도는가</text>
+
+  <text x="792" y="308" text-anchor="middle" font-size="11.5" fill="#a83232" font-weight="700">병목·해자는 층 안보다 이 &lsquo;사이&rsquo;에 산다</text>
+  <text x="792" y="328" text-anchor="middle" font-size="11" fill="#6b6256">→ 층과 동등한 급으로 추적</text>
+
+  <path d="M20,392 C4,300 4,224 20,166" fill="none" stroke="#9a6b00" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#fa2)"/>
+  <defs><marker id="fa2" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#9a6b00"/></marker></defs>
+  <text x="12" y="288" font-size="10.5" fill="#9a6b00" transform="rotate(-90 12,288)" font-weight="700">물리 결과가 루프로 되먹임</text>
+</svg>
+<figcaption>위=추상·전략, 아래=물리. 오른쪽 4 이음매가 층 사이를 잇는 정식 구성요소. 왼쪽 점선 = 물리(A)의 결과가 루프(E)로 되먹임.</figcaption>
+</div>
+
+<p>층마다 녹는 속도가 다르다. <span class="tag t-soft">소프트</span>는 단가 곡선이 빨리 녹이고, <span class="tag t-semi">준-하드</span>는 제도·인간 시간에 묶여 천천히, <span class="tag t-hard">하드</span>는 물리 friction으로 거의 안 녹는다.</p>
+<div class="tblwrap">
+<table>
+  <tr><th>층</th><th>한 줄 기능</th><th>성격</th></tr>
+  <tr><td><b>G 인간·전략</b></td><td>목표·방향타 + 현장 베테랑(암묵지 원천)</td><td><span class="tag t-semi">준-하드</span></td></tr>
+  <tr><td><b>F 거버넌스·주권·신뢰</b></td><td>우리 것으로·안전하게·합법적으로 돌릴 수 있나. 제조는 기능안전·인증·OT 보안이 무겁다</td><td><span class="tag t-semi">준-하드</span></td></tr>
+  <tr><td><b>E 🔁 암묵지 복리 루프</b></td><td>우리 기준 평가 + 실제 트레이스 강화 + 암묵지를 검색 가능하게. 복리가 도는 칸</td><td><span class="tag t-semi">준-하드</span></td></tr>
+  <tr><td><b>D 오케스트레이션·에이전트</b></td><td>지능을 &lsquo;일&rsquo;로 바꾸는 신경계. IT↔OT 통합이 제조 특유의 난소</td><td><span class="tag t-soft">소프트</span> + <span class="tag t-semi">준-하드</span></td></tr>
+  <tr><td><b>C 모델·지능</b></td><td>지능의 근육. 범용·로봇 모델은 갈아끼우는 부품(commodity 수렴)</td><td><span class="tag t-soft">소프트</span></td></tr>
+  <tr><td><b>B 연산·데이터 기반</b></td><td>AI가 계산하고 기억하는 곳. 컴퓨트·전력·데이터 배관</td><td><span class="tag t-hard">하드</span>(전력) + <span class="tag t-soft">소프트</span></td></tr>
+  <tr><td><b>A 물리 기반</b></td><td>생산이 실제로 일어나는 곳. 센싱=물리→디지털 입구, 제어=디지털→물리 출구</td><td><span class="tag t-hard">하드</span></td></tr>
+</table>
+</div>
+
+<h2><span class="num">4</span>루프는 물리로 닫힌다</h2>
+<p>순수 SW 회사는 루프가 디지털 안에서만 돈다. 제조사는 <strong class="hl">물리(A)를 통과해 루프가 닫힌다</strong> — 그래서 산출이 디지털 암묵지에 더해 <b>체화된 운영 암묵지</b>까지 쌓인다. 이것이 앞의 &lsquo;체화 자본&rsquo;이 생기는 자리다.</p>
+<div class="fig">
+<svg viewBox="0 0 920 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="물리로 닫히는 학습 루프">
+  <defs><marker id="ar" markerWidth="10" markerHeight="10" refX="7.5" refY="3" orient="auto"><path d="M0,0 L7.5,3 L0,6 Z" fill="#8a8174"/></marker>
+  <marker id="arr" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#a83232"/></marker></defs>
+  <text x="460" y="24" text-anchor="middle" font-size="13" font-weight="800" fill="#6b4a86">A를 통과하는 순환 — 디지털 + 체화 암묵지가 함께 쌓인다</text>
+
+  <g font-size="12" font-weight="700">
+  <rect x="24" y="52" width="138" height="54" rx="9" fill="#f6e9e6" stroke="#a83232" stroke-width="1.6"/><text x="93" y="77" text-anchor="middle" fill="#a83232">A · 센싱(입구)</text><text x="93" y="95" text-anchor="middle" font-size="10.5" font-weight="400" fill="#6b6256">물리→디지털</text>
+  <rect x="196" y="52" width="138" height="54" rx="9" fill="#faf4e4" stroke="#cfc6b0" stroke-width="1.6"/><text x="265" y="83" text-anchor="middle" fill="#3a3430">B · 데이터</text>
+  <rect x="368" y="52" width="138" height="54" rx="9" fill="#faf4e4" stroke="#cfc6b0" stroke-width="1.6"/><text x="437" y="83" text-anchor="middle" fill="#3a3430">C · 모델</text>
+  <rect x="540" y="52" width="138" height="54" rx="9" fill="#faf4e4" stroke="#cfc6b0" stroke-width="1.6"/><text x="609" y="83" text-anchor="middle" fill="#3a3430">D · 결정</text>
+  <rect x="712" y="52" width="184" height="54" rx="9" fill="#f6e9e6" stroke="#a83232" stroke-width="1.6"/><text x="804" y="77" text-anchor="middle" fill="#a83232">A · 제어·집행(출구)</text><text x="804" y="95" text-anchor="middle" font-size="10.5" font-weight="400" fill="#6b6256">디지털→물리</text>
+  </g>
+  <line x1="162" y1="79" x2="196" y2="79" stroke="#8a8174" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="334" y1="79" x2="368" y2="79" stroke="#8a8174" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="506" y1="79" x2="540" y2="79" stroke="#8a8174" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="678" y1="79" x2="712" y2="79" stroke="#8a8174" stroke-width="2" marker-end="url(#ar)"/>
+
+  <path d="M804,106 C804,162 360,172 93,146 L93,110" fill="none" stroke="#a83232" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arr)"/>
+  <text x="430" y="166" text-anchor="middle" font-size="11.5" font-weight="700" fill="#a83232">물리 결과 (실제 세계의 변화) — 순수 SW 회사엔 없는 구간</text>
+
+  <rect x="318" y="200" width="284" height="44" rx="9" fill="#f6efda" stroke="#9a6b00" stroke-width="2"/>
+  <text x="460" y="227" text-anchor="middle" font-size="12.5" font-weight="800" fill="#9a6b00">🔁 E · 학습 추출 → C 개선 (복리)</text>
+  <line x1="460" y1="200" x2="460" y2="112" stroke="#9a6b00" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#ar)"/>
+</svg>
+<figcaption>A 센싱 → B → C → D → A 집행 → (물리 결과) → 다시 A. E가 순환에서 학습을 추출해 C를 개선한다.</figcaption>
+</div>
+
+<h2><span class="num">5</span>소유 vs 임대 — 통행료 지도</h2>
+<p>7층과 4이음매 각각에 대해 제조사가 <b>소유</b>할지 <b>임대·구독·구매</b>할지의 기본 경향을 매기면 한 가지 통찰이 드러난다 — <strong class="hl">소유/임대 지도가 곧 통행료(수혜) 지도다.</strong> 임대·구독되는 층은 외부 벤더가 반복 매출을 걷는 자리(수혜 후보)이고, 소유되는 층은 그 기업 자신의 해자(외부 진입 기회 없음)다.</p>
+
+<div class="fig">
+<svg viewBox="0 0 900 384" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="스택을 따라 갈리는 3 수혜 zone과 1 해자 zone">
+  <text x="450" y="22" text-anchor="middle" font-size="13.5" font-weight="800" fill="#6b4a86">소유/임대 = 통행료 지도 — 스택을 따라 zone이 갈린다</text>
+
+  <rect x="24" y="38" width="852" height="120" rx="10" fill="#eef3ea" stroke="#2f7d4f" stroke-width="1.6"/>
+  <rect x="40" y="50" width="264" height="28" rx="6" fill="#fff" stroke="#cfe0c8"/><text x="54" y="69" font-size="12" font-weight="700" fill="#3a3430">G · 인간·전략</text>
+  <rect x="40" y="84" width="264" height="28" rx="6" fill="#fff" stroke="#cfe0c8"/><text x="54" y="103" font-size="12" font-weight="700" fill="#3a3430">F · 거버넌스·주권·신뢰</text>
+  <rect x="40" y="118" width="264" height="28" rx="6" fill="#fff" stroke="#cfe0c8"/><text x="54" y="137" font-size="12" font-weight="700" fill="#3a3430">E · 🔁 암묵지 복리 루프 (+이음매④)</text>
+  <text x="330" y="90" font-size="13.5" font-weight="800" fill="#2f7d4f">🟢 해자 zone (소유)</text>
+  <text x="330" y="112" font-size="11.5" fill="#6b6256">운영자 자신이 수혜 — 외부 벤더 기회 희박</text>
+
+  <rect x="24" y="166" width="852" height="120" rx="10" fill="#e8eff5" stroke="#2c5d8a" stroke-width="1.6"/>
+  <rect x="40" y="178" width="264" height="28" rx="6" fill="#fff" stroke="#c7d6e4"/><text x="54" y="197" font-size="12" font-weight="700" fill="#3a3430">D · 오케스트레이션·에이전트(툴)</text>
+  <rect x="40" y="212" width="264" height="28" rx="6" fill="#fff" stroke="#c7d6e4"/><text x="54" y="231" font-size="12" font-weight="700" fill="#3a3430">C · 모델·지능</text>
+  <rect x="40" y="246" width="264" height="28" rx="6" fill="#fff" stroke="#c7d6e4"/><text x="54" y="265" font-size="12" font-weight="700" fill="#3a3430">B · 연산(컴퓨트)</text>
+  <text x="330" y="206" font-size="13.5" font-weight="800" fill="#2c5d8a">❶ commodity 구독 zone</text>
+  <text x="330" y="228" font-size="11.5" fill="#6b6256">반복매출 벤더(하이퍼스케일러·모델 랩·플랫폼)</text>
+  <text x="330" y="248" font-size="11.5" fill="#a83232" font-weight="700">⚠ 가장 경쟁·단가붕괴 — 임대된다고 좋은 마진 아님</text>
+
+  <rect x="24" y="294" width="852" height="52" rx="10" fill="#f6e9e6" stroke="#a83232" stroke-width="1.6"/>
+  <rect x="40" y="304" width="264" height="30" rx="6" fill="#fff" stroke="#e2c8c2"/><text x="54" y="323" font-size="12" font-weight="700" fill="#3a3430">A · 물리 기반 + B 전력</text>
+  <text x="330" y="316" font-size="13.5" font-weight="800" fill="#a83232">❷ 물리 capex zone</text>
+  <text x="330" y="336" font-size="11.5" fill="#6b6256">산업 하드웨어(로봇·센서)·전력 — 내구·공급제약 = 마진 방어</text>
+
+  <rect x="24" y="354" width="852" height="24" rx="7" fill="#f6efda" stroke="#9a6b00" stroke-width="1.4"/>
+  <text x="40" y="370" font-size="11.5" font-weight="700" fill="#9a6b00">❸ 통합·조력 zone — 이음매 ①②③ (SI · 산업 IoT · 구현 조력자) · 구축기에 집중 포식</text>
+</svg>
+<figcaption>상단 = 소유(기업 해자, 벤더 기회 희박) / 중단 ❶ = commodity 구독(반복매출이나 단가붕괴) / 하단 ❷ = 물리 capex(내구·공급제약) / 이음매 ❸ = 통합·조력(구축기 집중).</figcaption>
+</div>
+
+<h3>3 수혜 zone + 1 해자 zone</h3>
+<div class="tblwrap">
+<table>
+  <tr><th>zone</th><th>어느 층</th><th>성격 · 주의</th></tr>
+  <tr><td><b>🟢 해자 zone</b></td><td>상단 G·F·E + 이음매 ④</td><td>소유 = 운영자 자신이 수혜. 외부 투자 대상이 아니다</td></tr>
+  <tr><td><b>❶ commodity 구독</b></td><td>중단 C·컴퓨트·D 툴</td><td>반복매출 벤더. ⚠ 가장 경쟁·단가붕괴 — 임대된다고 좋은 마진 보장 안 됨</td></tr>
+  <tr><td><b>❷ 물리 capex</b></td><td>하단 A 장비·B 전력</td><td>산업 하드웨어·전력. 내구·공급제약이 마진을 방어</td></tr>
+  <tr><td><b>❸ 통합·조력</b></td><td>이음매 ①②③</td><td>SI·산업 IoT·구현 조력자. 구축기에 집중 포식</td></tr>
+</table>
+</div>
+<p class="fn">운영자 해자 zone의 대표적 예로는 창고 운영 데이터로 자기 루프를 닫는 자동화 운영사(예: Symbotic)를 든다 — 개별 종목 추천이 아니라 zone 유형의 예시다.</p>
+
+<h2><span class="num">6</span>시간 축 — 병목은 고정이 아니다</h2>
+<p>&ldquo;구축하는 과정&rdquo;의 병목과 &ldquo;구축된 시대&rdquo;의 병목은 다르다. 단가 곡선<sup class="fnr">2</sup>이 소프트 층을 녹이는 동안, 지배 병목이 위(준-하드 이음매)에서 아래(하드-물리)와 루프 소유자로 이동한다.</p>
+<div class="tblwrap">
+<table>
+  <tr><th>축</th><th>국면 1 · 구축하는 과정</th><th>국면 2 · 구축된 시대</th></tr>
+  <tr><td><b>지배 병목</b></td><td>준-하드 이음매: ① IT/OT 통합 · ③ 데이터 캡처 · ④ 루프 닫힘 · 신뢰성</td><td>하드-물리: A 로봇 신뢰성 · B 전력 + <b>루프 소유자</b>(F·E 주권)</td></tr>
+  <tr><td><b>왜</b></td><td>아직 시스템을 엮는 중 — 통합·데이터·신뢰가 안 풀림</td><td>소프트 층이 commodity로 녹은 뒤, 안 녹는 물리와 독점 루프만 남음</td></tr>
+  <tr><td><b>수혜 성격</b></td><td>❶ + ❸ — 통합·데이터·구현 조력자(붙여주는 자)가 포식</td><td>❷ 물리 병목 소유자(곡괭이) + 기업 자신의 소유 루프로 가치 집중</td></tr>
+</table>
+</div>
+
+<h2><span class="num">7</span>재사용 방법 — 3-step + 필수 필터 2</h2>
+<p>이 지도는 특정 기업 이야기가 아니라 어느 기업·섹터든 대볼 수 있는 절차다.</p>
+<ol>
+  <li><b>① 기능 구조</b> — 그 기업의 자립형 지능 스택을 층 + 이음매로 그린다.</li>
+  <li><b>② 통행료 지도</b> — 층·이음매별로 소유인지 임대인지 매긴다(= 수혜 자리 판별).</li>
+  <li><b>③ 병목·수혜 매핑</b> — zone × 국면(구축/성숙)으로 병목과 그 자리를 쥔 기업 유형을 좁힌다. 병목을 쥔 곡괭이와 최종 소유자(운영자)를 구분한다.</li>
+</ol>
+<div class="note"><span class="lbl">🔎 필수 필터 2</span>
+<b>(1) 분포·기업 이질성</b> — 소유/임대는 층의 고정 속성이 아니라 기업 규모·야망별 선택이다. 거대 완성차는 컴퓨트·로봇·모델까지 소유하지만 중소 부품사는 거의 다 임대한다. 진짜 신호는 분포에 있다 — <strong class="hl">&ldquo;작은 기업도 반드시 임대하는 층 = 가장 크고 방어적인 벤더 TAM(렌터의 롱테일)&rdquo;.</strong><br>
+<b>(2) 가격 결정력</b> — 가장 많이 임대되는 commodity 중단(❶)은 바로 그 이유로 가장 경쟁·단가붕괴가 심하다. 임대된다고 다 좋은 수혜가 아니다 — <b>공급 제약·해자</b>가 함께 있어야 내구적 수혜다.
+</div>
+
+<h2><span class="num">8</span>이 지도가 틀릴 수 있는 지점 (열린 질문)</h2>
+<p>이 정리는 결론이 아니라 사고 도구다. 스스로 무너질 수 있는 지점을 균형 있게 남겨둔다.</p>
+<div class="caveat"><span class="lbl">① 관점의 출처 — 중립 예측이 아닐 수 있음</span>
+Nadella 에세이는 중립적 미래 예측이라기보다 <b>2등 클라우드 사업자의 포지셔닝</b>으로 읽을 여지가 크다(&ldquo;모델이 commodity가 되기를 바라는 자&rdquo;의 역인과). 압도적 1등 모델을 쥔 CEO라면 굳이 쓰지 않을 글이다. 따라서 <b>집중이냐 분배냐는 어느 쪽도 정산되지 않은 열린 실증 질문</b>으로 남긴다.
+</div>
+<div class="caveat"><span class="lbl">② 거짓 모듈성 — 병목은 깔끔한 층이 아니다</span>
+수평 7층 그림은 현실을 오도할 수 있다. 실제 제조사는 레거시 설비와 뒤엉켜 층이 안 나뉜다. 그래서 병목·해자는 층 <i>안</i>보다 <i>이음매</i>에 산다 — 이음매를 정식 구성요소로 올려 일부 방어했지만, &ldquo;박스 7개&rdquo;라는 그림 자체가 병목 찾기를 박스로 끌고 갈 위험은 남는다. 실제 분석은 층보다 이음매를 먼저 본다.
+</div>
+<div class="caveat"><span class="lbl">③ &ldquo;소프트는 녹는다&rdquo; · 체화 해자도 녹을 수 있음</span>
+&ldquo;소프트 층은 commodity로 녹는다&rdquo;는 검증된 명제가 아니다. 준-하드 이음매(IT/OT 통합·인증)가 5년 내에도 안 녹으면 그것이 곧 <b>영구 병목</b>이고 두 국면 구분은 무의미해진다. 나아가 로봇 파운데이션 모델이 체화 지능의 전이 가능성을 노리는 만큼, 제조사의 &ldquo;체화 암묵지&rdquo;도 commoditize될 수 있다 — 그렇다면 진짜 잔존 해자는 로봇 지능이 아니라 <b>물리공정·소재·인허가</b>뿐일 수 있다. &ldquo;녹는다&rdquo;는 가정이 아니라 점검 항목으로 다룬다.
+</div>
+
+<h2 style="border:none;padding-top:8px;"><span class="num">📎</span>각주 · 출처</h2>
+<p class="fn"><b>[1] 정식 구성요소(first-class citizen)</b> — 설계 용어. 부산물·곁다리가 아니라 이름을 갖고 독립적으로 다뤄지는 요소를 뜻한다.<br>
+<b>[2] 단가 곡선</b> — 동일 성능의 AI를 얻는 비용이 시간이 지나며 급격히 떨어지는 추세.</p>
+<p class="fn"><b>출처</b> — Satya Nadella, <i>&ldquo;A frontier without an ecosystem is not stable&rdquo;</i> (X 게시 에세이, 2026-06-15). 본 정리는 원문 정독 후 층위를 재정렬한 것이며, 원문 인용은 위 제목 한 구절로 한정한다.</p>
+
+<div class="foot">
+  본 정리는 2026-06-15 기록 기준의 개념 프레임이며, 담긴 매핑은 전부 1차 검증 이전 단계다(&ldquo;당시 기준&rdquo;). 특정 종목 언급은 zone 유형의 예시일 뿐 추천이 아니다.<br>
+  본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,539 @@
+<title>엔캐리 청산 프레임 — 4지표 합성과 구조 | 2026-07-21</title>
+<meta name="vault-stage" content="Thesis">
+<meta name="vault-topic" content="엔캐리">
+<meta name="vault-date" content="2026-07-21">
+<meta name="description" content="엔캐리 청산 위험을 4개 지표 합성으로 진단 — 캐리 ROI 소멸과 3단계 시나리오 구조">
+<style>
+  :root {
+    --bg: #FDF6E3;
+    --ink: #1f2328;
+    --muted: #5b6169;
+    --line: #e8e1cf;
+    --line-strong: #d8cfb4;
+    --panel: #fbf3da;
+    --panel-2: #f6edd4;
+    --accent: #9a6b1f;
+    --red: #a13d2d;
+    --amber: #b07a1a;
+    --green: #4d7a3a;
+    --blue: #2f6690;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+    line-height: 1.72;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 44px 22px 72px;
+  }
+  header.doc {
+    border-bottom: 2px solid var(--line-strong);
+    padding-bottom: 18px;
+    margin-bottom: 30px;
+  }
+  .kicker {
+    font-size: 12.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-size: 27px;
+    line-height: 1.32;
+    margin: 0 0 12px;
+    font-weight: 800;
+    letter-spacing: -.01em;
+  }
+  .meta-line {
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+  }
+  .meta-line b { color: var(--ink); font-weight: 600; }
+  h2 {
+    font-size: 20px;
+    margin: 42px 0 14px;
+    padding-top: 8px;
+    font-weight: 800;
+    letter-spacing: -.01em;
+  }
+  h3 {
+    font-size: 16px;
+    margin: 28px 0 10px;
+    font-weight: 700;
+    color: #33383f;
+  }
+  p { margin: 12px 0; }
+  a { color: var(--blue); text-decoration: none; border-bottom: 1px solid rgba(47,102,144,.35); }
+  a:hover { border-bottom-color: var(--blue); }
+  strong { font-weight: 700; }
+  .lede {
+    font-size: 15.5px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin: 8px 0 8px;
+  }
+  .lede ul { margin: 10px 0 2px; padding-left: 20px; }
+  .lede li { margin: 7px 0; }
+  .tag { font-weight: 700; }
+  .r { color: var(--red); }
+  .a { color: var(--amber); }
+  .g { color: var(--green); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13.5px;
+  }
+  .scroll { overflow-x: auto; }
+  th, td {
+    border: 1px solid var(--line);
+    padding: 9px 11px;
+    text-align: left;
+    vertical-align: top;
+  }
+  thead th {
+    background: var(--panel-2);
+    font-weight: 700;
+    font-size: 12.5px;
+  }
+  tbody tr:nth-child(even) td { background: rgba(246,237,212,.45); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .callout {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 18px 0;
+    font-size: 14.5px;
+  }
+  .callout .h {
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  figure {
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 20px 14px;
+    margin: 22px 0;
+  }
+  figure figcaption {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 10px;
+    text-align: center;
+  }
+  .fig-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: #33383f;
+  }
+  .steps { list-style: none; padding: 0; margin: 14px 0; counter-reset: s; }
+  .steps li {
+    position: relative;
+    padding: 10px 12px 10px 46px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    margin: 8px 0;
+    background: var(--panel);
+    font-size: 14px;
+  }
+  .steps li::before {
+    counter-increment: s;
+    content: counter(s);
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    width: 22px; height: 22px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .note-inline { color: var(--muted); font-size: 13px; }
+  .scen {
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    padding: 4px 18px 14px;
+    margin: 14px 0;
+    background: #fff;
+  }
+  .scen h3 { border: 0; margin: 14px 0 6px; }
+  .scen.base { border-left: 4px solid var(--amber); }
+  .scen.accel { border-left: 4px solid var(--red); }
+  .scen.shock { border-left: 4px solid #7a2418; }
+  .prob { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+  footer.doc {
+    margin-top: 46px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line-strong);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .obsnote {
+    font-size: 13px;
+    color: var(--muted);
+    background: var(--panel-2);
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin: 18px 0;
+  }
+  @media print {
+    body { background: #fff; }
+    .lede, .callout, figure, .scen, .obsnote, .steps li { background: #fff !important; }
+  }
+  @media (max-width: 560px) {
+    h1 { font-size: 22px; }
+    .wrap { padding: 30px 15px 54px; }
+  }
+</style>
+
+<div class="wrap">
+
+<header class="doc">
+  <div class="kicker">Macro Thesis · 엔캐리</div>
+  <h1>엔캐리 청산 프레임 — 4지표 합성과 구조</h1>
+  <div class="meta-line">
+    <span><b>정리일</b> 2026-07-21</span>
+    <span><b>기록 기준</b> 2026-05-15 미국 장 종료</span>
+    <span><b>성격</b> 지표 프레임 · 시나리오 매트릭스</span>
+  </div>
+</header>
+
+<div class="lede">
+  <p style="margin-top:0"><strong>현재 엔캐리트레이드는 <span class="tag a">🟡 1단계 점진적 unwind(청산) 진행 중</span></strong>. 2024-08-05식 급격 청산이 아니라 완만한 압축(slow grind) 패턴이다. 당시 기록 기준 진단 요지는 다음과 같다.</p>
+  <ul>
+    <li><span class="tag r">🔴</span> 캐리 매력도 합성 지표 <b>(US10Y−JP10Y)/USDJPY = 0.012</b> — 2024-07 캐리 황금기(0.022) 대비 <b>약 −45% 압축</b>으로 캐리 ROI(투자 수익률)가 사실상 소멸.</li>
+    <li><span class="tag r">🔴</span> JP10Y(일본 10년 금리) <b>2.718%</b>로 2008년 이후 최고. 미·일 금리차는 1.879%까지 좁혀져 2024-07 대비 −46%.</li>
+    <li><span class="tag a">🟠</span> USDJPY 158.71로 아직 엔약세를 유지하나 압박이 강화되는 국면.</li>
+    <li><span class="tag r">🔴</span> <b>2024-08-05 재현(reprise) 트리거 3종</b>: ① USDJPY &lt;140 ② JP10Y &gt;3.0% ③ 일본은행(BOJ) 추가 0.25~0.50% 인상 — 동시 발현 시 가속 청산 국면 진입.</li>
+  </ul>
+</div>
+
+<div class="obsnote">
+  본 정리는 <b>2026-05-15(미국 장 종료) 시점의 기록</b>을 압축·정돈한 것이다. 이하 수치·가격은 별도 표기가 없으면 모두 <b>당시 기준</b>이며, 이후 정책·시장 변화는 반영되어 있지 않다.
+</div>
+
+<h2>1. 엔캐리트레이드의 본질</h2>
+
+<h3>거래 구조 — 저금리 차입으로 고금리 자산을 사는 4단계</h3>
+<p>엔캐리트레이드는 금리가 낮은 통화(엔)로 빌려서 금리가 높은 자산(미국 채권·주식)을 사는 국제 자금 흐름이다. 수익은 금리차에서 나오지만, 환율이 반대로 움직이면 손실이 커진다.</p>
+<ol class="steps">
+  <li>일본에서 저금리로 차입 (JP10Y 2.7%)</li>
+  <li>엔을 달러로 환전 (USDJPY 158.71에서 매수)</li>
+  <li>미국 자산 매수 (US10Y 4.60%, S&amp;P·Treasury 등)</li>
+  <li>만기 시 청산 — 순수익 = 금리차(확실) ± 환율 변동(위험)</li>
+</ol>
+
+<h3>글로벌 규모 — 추정 $1.2조~$4조</h3>
+<div class="scroll">
+<table>
+  <thead>
+    <tr><th>추정치</th><th>출처</th><th>적용 시기</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><b>$2조~$4조</b></td><td>BIS 2024 Q2 추정</td><td>2024-08 충격 직전</td></tr>
+    <tr><td>~$1.5조 (약 50% 청산)</td><td>2024-08-05 청산 직후 추정</td><td>충격 후</td></tr>
+    <tr><td>~$1.2조~$1.8조</td><td>2026-Q1 IMF 추정</td><td>당시(현재)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>청산이 시장에 충격을 주는 4개 경로</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th>경로</th><th>메커니즘</th></tr></thead>
+  <tbody>
+    <tr><td><b>① 환율 직접</b></td><td>엔 매수(청산) → 엔강세 가속 → 추가 청산을 부르는 자기강화 소용돌이</td></tr>
+    <tr><td><b>② 미 국채 매도</b></td><td>일본 보험사·연기금이 미국 채권 매도 → 미국 금리 상승</td></tr>
+    <tr><td><b>③ 미국 주식 매도</b></td><td>캐리 자금이 흘러간 S&amp;P·QQQ 부분 청산 → 지수 하락</td></tr>
+    <tr><td><b>④ 변동성 폭발</b></td><td>USDJPY 단기 변동성 급등 → VIX 동반 상승 → 전 위험자산 마진콜</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>2. 4개 지표 — 무엇을 재고, 어디까지 믿는가</h2>
+
+<p>진단에 쓰는 4개 지표는 각각 강점과 사각지대가 뚜렷하다. 아래는 지표별 본질과 함의를 정리하되, 각 지표가 <em>가격을 재는 것이지 시장의 실제 포지션을 재는 것은 아니라는</em> 한계를 함께 짚는다.</p>
+
+<h3>2.1 JP10Y — 일본 10년 국채 금리 (2.718%)</h3>
+<p>본질은 <strong>일본은행(BOJ) 금융 정상화 진행도의 온도계</strong>다. 정책 기준금리(당시 0.50%)와 사실상 폐기된 수익률곡선통제(YCC)를 바탕으로, 일본 정부부채/GDP 263%라는 세계 최고 부담이 만기 프리미엄을 위로 누른다.</p>
+<div class="scroll">
+<table>
+  <thead><tr><th>시기</th><th class="num">JP10Y</th><th>의미</th></tr></thead>
+  <tbody>
+    <tr><td>2016–2022</td><td class="num">0.0~0.25%</td><td>마이너스금리 + YCC 시대 (0% 천장)</td></tr>
+    <tr><td>2024-03</td><td class="num">0.75%</td><td>마이너스금리 종료 + YCC 폐기 (역사적 전환점)</td></tr>
+    <tr><td>2024-08</td><td class="num">0.90%</td><td>BOJ 0.25% 인상 직후, 캐리 청산 직전</td></tr>
+    <tr><td><b>2026-05-15</b></td><td class="num"><b>2.718%</b></td><td><b>2008년 이후 최고</b></td></tr>
+  </tbody>
+</table>
+</div>
+<p><strong>함의:</strong> 금리 상승은 (1) 일본 정부 이자 부담을 가속(부채 약 $9.5조, 차환 시 이자 +$190B/년 ≈ GDP의 4.5%), (2) 캐리 차입 비용을 0.9%→2.7%로 3배로 키우며, (3) 세계 최대 해외자산 보유국(약 $3.4조)인 일본 투자자의 <b>자본 역송금</b>을 유발한다. 실제로 2024-08 청산 때 일본 보험사의 미국 채권 매도가 분기 −$50B로 확인됐다. 다만 이 금리는 BOJ가 의도적으로 통제할 수 있는(YCC 재도입·직매입) 변수라, 구조적 신호로는 JP30Y나 엔화 기대 인플레이션이 더 정확할 수 있다.</p>
+
+<h3>2.2 USDJPY — 엔/달러 환율 (158.71)</h3>
+<p>본질은 <strong>청산의 방아쇠 변수이자 무역수지·통화정책·외환개입의 합산 결과물</strong>이다. 금리차가 벌어지면 엔약세(상승), 위험회피가 오면 엔강세(하락), BOJ 개입 시 즉각 −3~5% 급락한다.</p>
+<div class="scroll">
+<table>
+  <thead><tr><th>시기</th><th class="num">USDJPY</th><th>의미</th></tr></thead>
+  <tbody>
+    <tr><td>2022-10</td><td class="num">151</td><td>35년 최고, BOJ 개입 ($158억)</td></tr>
+    <tr><td>2024-04</td><td class="num">160</td><td>BOJ 사상 최대 개입 ($620억)</td></tr>
+    <tr><td>2024-07</td><td class="num">161</td><td>캐리 절정 (청산 직전 최고점)</td></tr>
+    <tr><td><b>2024-08-05</b></td><td class="num"><b>141</b></td><td><b>1주 −12%, 캐리 청산 충격</b></td></tr>
+    <tr><td><b>2026-05-16</b></td><td class="num"><b>158.71</b></td><td>재차 엔약세, 압박 강화</td></tr>
+  </tbody>
+</table>
+</div>
+<p><strong>단계별 방아쇠:</strong> USDJPY &lt;150 = 1단계 경고, &lt;140 = 2단계 가속 청산(대규모 마진콜), &lt;130 = 3단계 충격. 환율은 위험자산 흐름과도 연동돼, 청산 직후 S&amp;P와의 상관이 +0.65까지 오른다(평시 +0.30~0.45). 한편 이 변수 역시 BOJ·미 재무부가 대규모 개입으로 직접 흔들 수 있어, 구조 측정에는 실질실효환율(REER)이나 12개월 무역수지가 보완재로 쓰인다.</p>
+
+<h3>2.3 US10Y − JP10Y 금리차 — 캐리 차익의 절대값 (1.879%)</h3>
+<p>본질은 <strong>캐리의 단순 ROI(환율 변동 제외)</strong>다. 금리차가 1% 밑으로 내려가면 환율 변동 위험을 정당화할 수 없어 <em>신규 진입 동기가 사실상 소멸</em>한다.</p>
+<div class="scroll">
+<table>
+  <thead><tr><th>시기</th><th class="num">US10Y</th><th class="num">JP10Y</th><th class="num">금리차</th></tr></thead>
+  <tbody>
+    <tr><td>2022-10</td><td class="num">4.2%</td><td class="num">0.25%</td><td class="num">4.0% (성수기 시작)</td></tr>
+    <tr><td>2024-07</td><td class="num">4.4%</td><td class="num">0.9%</td><td class="num">3.5% (절정)</td></tr>
+    <tr><td>2024-08-05</td><td class="num">3.85%</td><td class="num">0.75%</td><td class="num">3.10%</td></tr>
+    <tr><td><b>2026-05-15</b></td><td class="num"><b>4.597%</b></td><td class="num"><b>2.718%</b></td><td class="num"><b>1.879% (−46%)</b></td></tr>
+  </tbody>
+</table>
+</div>
+<p><strong>함의:</strong> USDJPY의 연 실현변동성이 약 10%인데, 금리차 1.879%는 위험 대비 보상이 1:5 수준으로 <b>신규 진입이 매우 약하다</b>. 다만 이미 들어간 캐리는 매몰비용 논리로 유지될 수 있다. 이 금리차는 Fed(연준)와 BOJ의 4분면 정책 조합 결과물이라, 연준 인하 + BOJ 인상이 겹치면 압축이 가속된다. 단, 금리차는 명목 비교라 환헤지 비용·만기 차이를 무시한다는 점에서 3개월 엔-달러 스왑 스프레드가 더 정밀한 보완 지표다.</p>
+
+<h3>2.4 (US10Y − JP10Y) / USDJPY — 합성 캐리 매력도 (0.012)</h3>
+<p>이 합성 지표의 본질은 <strong>1엔당 받는 금리차 차익 = 진입 비용으로 정규화한 캐리 매력도</strong>다. 단순 금리차보다 나은 이유는, 같은 금리차라도 환율 수준(진입 비용)이 다르면 실제 ROI가 달라지기 때문이다.</p>
+<div class="scroll">
+<table>
+  <thead><tr><th>사례</th><th class="num">금리차</th><th class="num">USDJPY</th><th class="num">Ratio</th><th>ROI 평가</th></tr></thead>
+  <tbody>
+    <tr><td>A</td><td class="num">4.0%</td><td class="num">100</td><td class="num">0.040</td><td>매우 매력 (낮은 진입비용)</td></tr>
+    <tr><td>B</td><td class="num">4.0%</td><td class="num">160</td><td class="num">0.025</td><td>매력 ↓ (높은 진입비용)</td></tr>
+    <tr><td><b>당시</b></td><td class="num"><b>1.9%</b></td><td class="num"><b>159</b></td><td class="num"><b>0.012</b></td><td><b>매우 약함</b></td></tr>
+  </tbody>
+</table>
+</div>
+<p><strong>핵심:</strong> 단순 금리차만 보면 A=B이지만, 환율을 정규화한 Ratio로 보면 A가 1.6배 우수하다. 이 합성 지표는 정통 위험조정 ROI(금리차÷변동성)에 근접하면서도 5초면 점검할 수 있다는 실용성이 크다. 2024-07 절정 0.022, 2024-08-05 충격 시에도 0.022(환율 급락이 금리차 압축을 상쇄)였는데, 당시 0.012는 그 대비 −45%로 <b>시장이 이미 캐리를 청산 중임을 정량으로 보여준다</b>. 다만 이 비율은 차원상 엄밀하지 않은 근사치이므로, 정밀 위험관리보다는 빠른 모니터링용으로 이해하는 것이 옳다.</p>
+
+<h3>합성 지표 임계값 밴드</h3>
+<figure>
+  <div class="fig-title">캐리 매력도 Ratio — 구간별 환경 판정</div>
+  <div class="scroll">
+  <svg viewBox="0 0 760 210" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ratio 임계값 밴드">
+    <defs>
+      <linearGradient id="band" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#4d7a3a"/>
+        <stop offset="30%" stop-color="#7a8a2e"/>
+        <stop offset="55%" stop-color="#b07a1a"/>
+        <stop offset="80%" stop-color="#a13d2d"/>
+        <stop offset="100%" stop-color="#7a2418"/>
+      </linearGradient>
+    </defs>
+    <!-- band -->
+    <rect x="40" y="70" width="680" height="30" rx="6" fill="url(#band)"/>
+    <!-- segment ticks -->
+    <g font-family="sans-serif" font-size="11" fill="#5b6169">
+      <line x1="40" y1="66" x2="40" y2="104" stroke="#d8cfb4"/>
+      <line x1="176" y1="66" x2="176" y2="104" stroke="#d8cfb4"/>
+      <line x1="312" y1="66" x2="312" y2="104" stroke="#d8cfb4"/>
+      <line x1="448" y1="66" x2="448" y2="104" stroke="#d8cfb4"/>
+      <line x1="584" y1="66" x2="584" y2="104" stroke="#d8cfb4"/>
+      <line x1="720" y1="66" x2="720" y2="104" stroke="#d8cfb4"/>
+      <text x="40" y="122" text-anchor="middle">&gt;0.025</text>
+      <text x="312" y="122" text-anchor="middle">0.018</text>
+      <text x="448" y="122" text-anchor="middle">0.012</text>
+      <text x="584" y="122" text-anchor="middle">0.008</text>
+      <text x="720" y="122" text-anchor="middle">&lt;0.008</text>
+    </g>
+    <!-- segment labels -->
+    <g font-family="sans-serif" font-size="10.5" fill="#33383f" text-anchor="middle" font-weight="700">
+      <text x="108" y="58">황금기</text>
+      <text x="244" y="58">안정</text>
+      <text x="380" y="58">약화</text>
+      <text x="516" y="58">가속</text>
+      <text x="652" y="58">충격</text>
+    </g>
+    <!-- 2024-07 marker (0.022) approx at x for 0.022 between 0.025(40) and 0.018(312) -->
+    <g>
+      <line x1="150" y1="55" x2="150" y2="100" stroke="#2f6690" stroke-width="2"/>
+      <circle cx="150" cy="70" r="4" fill="#2f6690"/>
+      <text x="150" y="150" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#2f6690" font-weight="700">2024-07</text>
+      <text x="150" y="166" text-anchor="middle" font-family="sans-serif" font-size="10.5" fill="#5b6169">0.022 · 절정</text>
+    </g>
+    <!-- 현재 marker (0.012) at x=448 -->
+    <g>
+      <line x1="448" y1="55" x2="448" y2="100" stroke="#a13d2d" stroke-width="2.5"/>
+      <circle cx="448" cy="70" r="5" fill="#a13d2d"/>
+      <text x="448" y="150" text-anchor="middle" font-family="sans-serif" font-size="11.5" fill="#a13d2d" font-weight="800">당시 0.012</text>
+      <text x="448" y="166" text-anchor="middle" font-family="sans-serif" font-size="10.5" fill="#5b6169">황금기 대비 −45%</text>
+    </g>
+    <!-- 충격 threshold -->
+    <g>
+      <text x="584" y="150" text-anchor="middle" font-family="sans-serif" font-size="10.5" fill="#7a2418" font-weight="700">0.008</text>
+      <text x="584" y="166" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5b6169">충격 임계</text>
+    </g>
+  </svg>
+  </div>
+  <figcaption>구간: 황금기(&gt;0.025) · 안정(0.018~0.025) · 약화(0.012~0.018) · 가속(0.008~0.012) · 충격(&lt;0.008). 당시 위치 0.012는 '약화'와 '가속' 경계.</figcaption>
+</figure>
+
+<h2>3. 4개 지표 종합 — 정확도 대 실용성</h2>
+<div class="scroll">
+<table>
+  <thead><tr><th>지표</th><th>측정 대상</th><th>측정 정확도</th><th>모니터링 실용성</th><th>권고 주기</th></tr></thead>
+  <tbody>
+    <tr><td><b>JP10Y</b></td><td>BOJ 정상화 + 일본 재정</td><td>★★★★★</td><td>★★★★</td><td>주 1회</td></tr>
+    <tr><td><b>USDJPY</b></td><td>청산 방아쇠 + 정책 결과</td><td>★★★★</td><td>★★★★★</td><td>일 1회(위기 시 시간 단위)</td></tr>
+    <tr><td><b>US10Y−JP10Y</b></td><td>캐리 단순 차익</td><td>★★★</td><td>★★★</td><td>주 1회</td></tr>
+    <tr><td><b>(US10Y−JP10Y)/USDJPY</b></td><td>위험조정 캐리 매력도</td><td>★★★★</td><td>★★★★★</td><td>주 1회 (단일 최선)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>4. 시나리오 매트릭스 — 3단계 청산 위험</h2>
+
+<div class="scen base">
+  <h3>🟡 시나리오 1 · 점진적 Unwind <span class="prob">— Base, 확률 60% · 당시 진행 중</span></h3>
+  <div class="scroll">
+  <table>
+    <tbody>
+      <tr><td>USDJPY</td><td>158 → 145~150 (5~6개월)</td></tr>
+      <tr><td>JP10Y</td><td>2.7% → 2.9~3.0%</td></tr>
+      <tr><td>S&amp;P 영향</td><td>−3~5% 누적 (급락 없음)</td></tr>
+      <tr><td>VIX</td><td>18~25 범위</td></tr>
+      <tr><td>추가 청산</td><td>$300~500B (잔량 $1.5조 중 20~30%)</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="scen accel">
+  <h3>🔴 시나리오 2 · 가속 청산 <span class="prob">— 확률 25% · 2024-08 재현</span></h3>
+  <div class="scroll">
+  <table>
+    <tbody>
+      <tr><td><b>방아쇠 3종 동시</b></td><td>USDJPY &lt;140 + JP10Y &gt;3.0% + BOJ 추가 0.25~0.50% 인상</td></tr>
+      <tr><td>USDJPY</td><td>158 → 135~140 (1~2주)</td></tr>
+      <tr><td>S&amp;P</td><td>−5~10% (1~2주)</td></tr>
+      <tr><td>VIX</td><td>30+ 급등</td></tr>
+      <tr><td>청산 규모</td><td>$500~800B (1~2주 집중)</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="scen shock">
+  <h3>🔴🔴 시나리오 3 · 급격 충격 <span class="prob">— 확률 15% · 2024-08-05 reprise</span></h3>
+  <div class="scroll">
+  <table>
+    <tbody>
+      <tr><td>방아쇠</td><td>연준 인하 + BOJ 인상 정책 충돌 + USDJPY 130 도달</td></tr>
+      <tr><td>USDJPY</td><td>158 → 130 (1주)</td></tr>
+      <tr><td>JP10Y</td><td>3.5%+ 급등</td></tr>
+      <tr><td>S&amp;P / Nikkei</td><td>−10~15% / −15~20% (1주)</td></tr>
+      <tr><td>VIX</td><td>50~65 급등 (2024-08-05 = 65)</td></tr>
+      <tr><td>청산 규모</td><td>$800B+ (1주 집중) + 글로벌 위험자산 전염</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<h2>5. 2024-08-05 충격과의 비교</h2>
+
+<h3>당시 사건 타임라인</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th>일자</th><th>사건</th><th>영향</th></tr></thead>
+  <tbody>
+    <tr><td>2024-07-31</td><td>BOJ 0.25% 인상 발표</td><td>JP10Y 0.65 → 0.90</td></tr>
+    <tr><td>2024-08-01</td><td>FOMC 인하 시사</td><td>US10Y 4.4 → 3.85</td></tr>
+    <tr><td><b>2024-08-05</b></td><td><b>글로벌 위험자산 일제 폭락</b></td><td>USDJPY 141, S&amp;P −3%(당일), Nikkei −12.4%</td></tr>
+    <tr><td>2024-08-06</td><td>BOJ 부총재 "긴축 안 함" 발언</td><td>USDJPY 145 회복, 안정</td></tr>
+    <tr><td>2024-08-12</td><td>VIX 65 → 22 정상화</td><td>1주 이내 회복</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>당시(2026-05-16)와의 차이</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th>측면</th><th>2024-08-05 직전</th><th>2026-05-16</th></tr></thead>
+  <tbody>
+    <tr><td>시장 포지셔닝</td><td>극단적 과레버리지 캐리</td><td>부분 청산됨 (이후 약 50% 감소)</td></tr>
+    <tr><td>연준 정책</td><td>완화 전환 직전</td><td>매파 기조</td></tr>
+    <tr><td>BOJ 정책</td><td>첫 인상 후 단기 서프라이즈</td><td>점진 인상 누적 (4~5라운드)</td></tr>
+    <tr><td>글로벌 위험</td><td>단일 충격 (BOJ+연준 동시 서프라이즈)</td><td>다중 스트레스 (지정학·중국·AI 밸류)</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="callout">
+  <div class="h">비교 요지</div>
+  2026-05 환경은 2024-08과 다르다. 시장이 이미 BOJ 정책에 적응했고 캐리 잔량이 절반 수준이라 <b>가속 청산 확률은 낮으나</b>, 완만한 압축이 오래 지속될 가능성은 오히려 높다.
+</div>
+
+<h2>6. 한계와 보완 — 이 프레임이 놓치는 것</h2>
+<p>4개 지표는 단기(1~3개월) 위험 온도계로는 매우 유효하지만, 세 가지 사각지대를 함께 인식해야 균형이 잡힌다.</p>
+<div class="scroll">
+<table>
+  <thead><tr><th>차원</th><th>사각지대</th><th>보완 지표</th></tr></thead>
+  <tbody>
+    <tr><td>데이터</td><td>가격을 재는 것이지 시장 포지션을 재지 못함 (청산 강도 측정 정확도 제한적)</td><td>CFTC 투기적 순포지션, DTCC 레포 포지션, 변동성 스큐</td></tr>
+    <tr><td>구조</td><td>엔 단일 캐리만 봄 — 스위스 프랑·위안 캐리도 동시 진행</td><td>DXY + USDJPY + USDCHF + USDCNH 4통화 동시</td></tr>
+    <tr><td>시간 지평</td><td>단기 심리에 강하나 5~10년 구조 변화에 약함 (캐리는 영구적이 아닌 순환적일 수 있음)</td><td>IMF 실질실효환율(REER), 12개월 무역수지</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="note-inline">보조 지표(분기 점검): USDJPY 단기 옵션 변동성, VIX·Nikkei 변동성(JNIV), BOJ 정책결정 일정, 일본 근원 CPI, 3개월 엔-달러 베이시스 스왑. 이 반박들은 결론(4지표 단기 프레임 유효)을 뒤집지는 않으나, 장기 horizon 분석에는 REER·무역수지 보강이 필요하다는 수정 판단으로 이어진다.</p>
+
+<h2>7. 결론</h2>
+<div class="callout">
+  <div class="h">핵심 메시지</div>
+  <p style="margin-top:0">현재 엔캐리 청산은 <b>🟡 1단계 점진적 unwind 진행 중</b>이다. 4개 지표는 모두 유효하며, 특히 <b>(US10Y−JP10Y)/USDJPY = 0.012</b>가 단일 최선 지표다. 2024-07 황금기(0.022) 대비 −45% 압축으로 캐리 ROI가 거의 소멸했다.</p>
+  <p style="margin-bottom:0"><b>2024-08-05 재현 트리거</b>: ① USDJPY &lt;140 ② JP10Y &gt;3.0% ③ BOJ 추가 0.25~0.50% 인상 — 3종 동시 발현 시 시나리오 2(가속 청산) 진입.</p>
+</div>
+<p>활용 측면에서는 4개 지표를 주 1회(약 5분) 점검하고, BOJ 정책결정 일정을 월 단위로 확인하는 것이 실용적이다. 위기 국면에서는 USDJPY와 합성 Ratio의 점검 주기를 시간 단위로 좁힌다.</p>
+
+<h2>참고 출처</h2>
+<div class="scroll">
+<table>
+  <thead><tr><th>항목</th><th>링크</th></tr></thead>
+  <tbody>
+    <tr><td>BOJ 정책결정 일정</td><td><a href="https://www.boj.or.jp/en/mopo/mpmsche_minu/index.htm">boj.or.jp — Monetary Policy Schedule</a></td></tr>
+    <tr><td>일본 10년 국채 금리</td><td><a href="https://www.investing.com/rates-bonds/japan-10-year-bond-yield">investing.com — Japan 10Y</a></td></tr>
+    <tr><td>CFTC 투기적 포지션(COT)</td><td><a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm">cftc.gov — Commitments of Traders</a></td></tr>
+    <tr><td>IMF 실질실효환율(REER)</td><td><a href="https://data.imf.org/">data.imf.org</a></td></tr>
+    <tr><td>BIS 캐리트레이드 자료</td><td><a href="https://www.bis.org/topic/8.htm">bis.org — Carry Trades</a></td></tr>
+    <tr><td>한국 연기금 배분 관련(배경)</td><td><a href="https://blog.naver.com/PostView.naver?blogId=ranto28&logNo=224286008861">blog.naver.com/ranto28</a></td></tr>
+  </tbody>
+</table>
+</div>
+<p class="note-inline">지표 수치와 역사적 가격 데이터는 공개 시세 서비스에서 확인한 값이며, 시나리오·판정은 자체 분석이다.</p>
+
+<footer class="doc">
+  본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.
+</footer>
+
+</div>

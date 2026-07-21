@@ -1,0 +1,268 @@
+<title>AI 의존성 탈피와 가치 분배 — 모델이 SPOF가 될 때 | 2026-07-21</title>
+<meta name="vault-stage" content="Thesis">
+<meta name="vault-topic" content="AI 구조">
+<meta name="vault-date" content="2026-07-21">
+<meta name="description" content="AI 모델이 단일 장애점이 될 때, 가치·병목이 하드·준하드로 분배되는 흐름 정리">
+<style>
+  :root{
+    --bg:#FDF6E3; --ink:#1f2328; --muted:#5b6266; --line:#e8e1cf;
+    --accent:#b58900; --accent2:#268bd2; --soft:#f6efd9; --chip:#efe7cf;
+    --red:#c0392b; --orange:#c77b16; --hardc:#2a6f97; --semic:#7a5195;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",Roboto,sans-serif;
+    line-height:1.72; font-size:16px;
+    -webkit-font-smoothing:antialiased; word-break:keep-all;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:44px 22px 80px;}
+  header.rpt{border-bottom:2px solid var(--line); padding-bottom:20px; margin-bottom:26px;}
+  .kicker{font-size:12.5px; letter-spacing:.14em; color:var(--accent); font-weight:700; text-transform:uppercase;}
+  h1{font-size:27px; line-height:1.32; margin:.35em 0 .3em; font-weight:800; letter-spacing:-.01em;}
+  .sub{color:var(--muted); font-size:14.5px;}
+  .meta-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;}
+  .tag{background:var(--chip); border:1px solid var(--line); border-radius:999px; padding:3px 11px; font-size:12px; color:var(--muted);}
+  h2{font-size:20px; margin:2.1em 0 .5em; padding-top:.3em; font-weight:800; letter-spacing:-.01em;}
+  h2 .n{color:var(--accent); font-weight:800; margin-right:.4em;}
+  h3{font-size:16.5px; margin:1.5em 0 .35em; font-weight:700;}
+  p{margin:.55em 0;}
+  a{color:var(--accent2); text-decoration:none; border-bottom:1px solid rgba(38,139,210,.35);}
+  a:hover{border-bottom-color:var(--accent2);}
+  strong{font-weight:700;}
+  .lead{font-size:15px;}
+  .summary{background:var(--soft); border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:10px; padding:18px 22px; margin:8px 0 6px;}
+  .summary ul{margin:.4em 0; padding-left:1.15em;}
+  .summary li{margin:.42em 0;}
+  ul,ol{padding-left:1.3em;}
+  li{margin:.34em 0;}
+  .dot{display:inline-block; min-width:1.35em;}
+  table{width:100%; border-collapse:collapse; margin:1em 0; font-size:14px;}
+  th,td{border:1px solid var(--line); padding:9px 11px; text-align:left; vertical-align:top;}
+  th{background:var(--soft); font-weight:700; font-size:13px;}
+  tbody tr:nth-child(even){background:rgba(238,232,213,.32);}
+  .fig{background:#fff; border:1px solid var(--line); border-radius:12px; padding:20px 18px 14px; margin:1.4em 0; overflow-x:auto;}
+  .fig figcaption{font-size:12.5px; color:var(--muted); margin-top:10px; text-align:center;}
+  .callout{background:#fff; border:1px solid var(--line); border-left:4px solid var(--accent2); border-radius:10px; padding:14px 18px; margin:1.1em 0; font-size:14.5px;}
+  .callout.warn{border-left-color:var(--orange);}
+  .term{background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin:.9em 0;}
+  .term .name{font-weight:800; font-size:15.5px;}
+  .term .name .en{color:var(--muted); font-weight:600; font-size:13px; margin-left:.4em;}
+  .muted{color:var(--muted);}
+  .src-list{font-size:13.5px; color:var(--muted);}
+  .src-list li{margin:.3em 0;}
+  footer.rpt{margin-top:40px; padding-top:16px; border-top:1px solid var(--line); font-size:12.5px; color:var(--muted);}
+  .pill{display:inline-block; font-size:11.5px; font-weight:700; padding:1px 8px; border-radius:5px; vertical-align:middle;}
+  .pill.hard{background:rgba(42,111,151,.14); color:var(--hardc);}
+  .pill.semi{background:rgba(122,81,149,.14); color:var(--semic);}
+  @media (max-width:560px){
+    h1{font-size:22px;} .wrap{padding:30px 16px 60px;}
+    table{font-size:13px;} th,td{padding:7px 8px;}
+  }
+  @media print{
+    body{background:#fff;} .fig,.callout,.term,.summary{break-inside:avoid;}
+  }
+</style>
+
+<div class="wrap">
+
+<header class="rpt">
+  <div class="kicker">Thesis · AI 구조</div>
+  <h1>AI 의존성 탈피와 가치 분배 —<br>모델이 SPOF가 될 때</h1>
+  <div class="sub">프런티어 모델 접근이 한 국가가 통제 가능한 단일 장애점(SPOF)임이 드러난 뒤, 가치·병목이 어디로 내려앉는가</div>
+  <div class="meta-row">
+    <span class="tag">2026-07-21 정리</span>
+    <span class="tag">관찰 기준: 2026-06~07</span>
+    <span class="tag">SPOF · 소버린 · 토큰 자본</span>
+  </div>
+</header>
+
+<!-- ① 한 장 요약 -->
+<div class="summary">
+  <p style="margin-top:0;"><strong>한 장 요약</strong></p>
+  <ul>
+    <li><span class="dot">🔴</span><strong>발단</strong> — 2026-06-12 미국 상무부의 국가안보 디렉티브로 프런티어 모델(Fable 5·Mythos 5)의 외국인 접근이 차단됐다. 이는 프런티어 모델 접근이 <strong>한 국가(미국)가 통제 가능한 단일 장애점(SPOF)</strong>임을 드러낸 사건이다. "칩 통제 → 모델 통제"의 한 칸 위 무기화.</li>
+    <li><span class="dot">🔴</span><strong>핵심 명제</strong> — 모델=SPOF 자각은 반응을 낳는다(국가 소버린화·기업 모델 독립·"프런티어 생태계" 담론). 그 결과 <strong>가치·병목이 프런티어 모델에서 끌려 내려와 분배</strong>된다 = <span class="pill hard">하드</span> 컴퓨트·전력·관할 + <span class="pill semi">준-하드</span> 학습루프·통합·신뢰로 이동한다.</li>
+    <li><span class="dot">🟠</span><strong>분배의 동력</strong> — 이번엔 시장(오픈소스)이 아니라 <strong>정책(수출금지)이 강제</strong>한다. 더 강하지만 그만큼 <strong>더 가역적</strong>이다(정권·무역딜로 되돌 수 있음).</li>
+    <li><span class="dot">🟠</span><strong>수요의 질 변화</strong> — 의존성 탈피는 중복성(redundancy)을 하나의 기능으로 구매하게 만든다 = 전략적·비탄력적·끈끈한 수요. 단 "위협이 사라지면 가장 먼저 잘리는" 정치적 취소 가능성이 붙는다.</li>
+    <li><span class="dot">⚪</span><strong>경계</strong> — 이 분배 서사를 외친 업계 거물 4명(대형 클라우드·방산 소프트웨어·오픈모델 인프라·GPU 플랫폼 CEO)은 <strong>전부 이해당사자</strong>다. 같은 방향을 가리켜도 독립 확증이 아니라 확증 편향 클러스터일 수 있다.</li>
+  </ul>
+</div>
+
+<!-- ② 본문 -->
+
+<h2><span class="n">1.</span>SPOF의 발견 — 수출금지가 드러낸 것</h2>
+<p>2026-06-12, 미국이 최전선 모델의 외국인 접근을 국가안보 명령으로 차단하면서, 그동안 암묵적으로만 알려져 있던 사실이 표면화됐다. <strong>프런티어 모델은 소수의 관할권 안에 있고, 그 접근권은 언제든 끊길 수 있다.</strong> 소프트웨어 공학에서 쓰는 표현을 빌리면, 프런티어 모델은 하나가 멈추면 전체가 멈추는 <strong>단일 장애점(SPOF, Single Point of Failure)</strong>이다.</p>
+<p>이미 진행되던 "칩 통제(수출 규제)"가 여기서 한 칸 위로 올라갔다. 칩을 넘어 <strong>모델 자체의 접근을 무기화</strong>할 수 있다는 것이 확인되자, 이에 노출된 조직들(국가·기업)은 곧바로 대응 논리를 세우기 시작한다. 국가는 <strong>소버린 AI</strong>(주권적 AI), 기업은 <strong>모델 독립</strong>이다.</p>
+
+<h2><span class="n">2.</span>병목은 어디로 이동하나</h2>
+<p>모델이 SPOF임을 자각한 조직이 의존성을 줄이려 움직이면, 가치와 병목은 프런티어 모델 한 점에서 <strong>그 아래·옆으로 재분배</strong>된다. 모델은 점점 대체 가능한 상품(commodity)이 되고, 걷을 수 있는 지대는 두 층으로 내려간다.</p>
+
+<div class="fig">
+<svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="가치 이동 다이어그램">
+  <!-- top: model SPOF -->
+  <rect x="255" y="14" width="210" height="52" rx="9" fill="#fff" stroke="#c0392b" stroke-width="2"/>
+  <text x="360" y="38" text-anchor="middle" font-size="15" font-weight="700" fill="#c0392b">프런티어 모델 = SPOF</text>
+  <text x="360" y="56" text-anchor="middle" font-size="11.5" fill="#5b6266">한 관할권이 통제 · 접근 차단 가능</text>
+
+  <!-- arrow -->
+  <line x1="360" y1="70" x2="360" y2="112" stroke="#b58900" stroke-width="2.4"/>
+  <polygon points="360,120 353,106 367,106" fill="#b58900"/>
+  <text x="378" y="98" font-size="11.5" fill="#b58900" font-weight="700">정책(수출금지) 강제 · 가역적</text>
+
+  <!-- split arrows -->
+  <line x1="360" y1="120" x2="200" y2="158" stroke="#9a9482" stroke-width="1.6"/>
+  <line x1="360" y1="120" x2="520" y2="158" stroke="#9a9482" stroke-width="1.6"/>
+
+  <!-- semi-hard band -->
+  <rect x="40" y="160" width="300" height="150" rx="10" fill="rgba(122,81,149,.07)" stroke="#7a5195" stroke-width="1.6"/>
+  <text x="190" y="184" text-anchor="middle" font-size="14" font-weight="800" fill="#7a5195">준-하드</text>
+  <text x="190" y="205" text-anchor="middle" font-size="12" fill="#3b3f42">학습 루프 (소유된 데이터·운영능력)</text>
+  <text x="190" y="226" text-anchor="middle" font-size="12" fill="#3b3f42">통합 · 온톨로지</text>
+  <text x="190" y="247" text-anchor="middle" font-size="12" fill="#3b3f42">신뢰 · 인증 · 거버넌스 · 관할</text>
+  <text x="190" y="284" text-anchor="middle" font-size="11" fill="#5b6266">번들·단가붕괴가 못 뚫으면 = 자본</text>
+  <text x="190" y="300" text-anchor="middle" font-size="11" fill="#5b6266">못 지키면 = 감가상각되는 렌트</text>
+
+  <!-- hard band -->
+  <rect x="380" y="160" width="300" height="150" rx="10" fill="rgba(42,111,151,.07)" stroke="#2a6f97" stroke-width="1.6"/>
+  <text x="530" y="184" text-anchor="middle" font-size="14" font-weight="800" fill="#2a6f97">하드</text>
+  <text x="530" y="209" text-anchor="middle" font-size="12" fill="#3b3f42">컴퓨트 (데이터센터·GPU)</text>
+  <text x="530" y="233" text-anchor="middle" font-size="12" fill="#3b3f42">전력 (발전·계통·연료 주권)</text>
+  <text x="530" y="257" text-anchor="middle" font-size="12" fill="#3b3f42">관할 (물리적 위치·법적 통제)</text>
+  <text x="530" y="293" text-anchor="middle" font-size="11" fill="#5b6266">국경을 넘지 못하는 병목</text>
+</svg>
+<figcaption>모델 = SPOF → 정책이 가치를 하드·준-하드 두 층으로 밀어 내린다</figcaption>
+</div>
+
+<p>핵심은 <strong>생산성 다리(7개 고리)에서 지배 병목이 이동</strong>한다는 점이다. 지금까지의 병목은 "모델의 역량"이라는 소프트 고리였다. 이 흐름에서는 병목이 <strong>분배·통합·신뢰(준-하드)</strong>와 <strong>컴퓨트·전력·관할(하드)</strong>로 옮겨간다. 모델 성능은 상향 평준화되는데, 그것을 각 조직의 현실에 붙여 넣고 운영·검증·규율하는 자리가 오히려 희소해지기 때문이다.</p>
+
+<h2><span class="n">3.</span>정의 어휘 2개</h2>
+<p>이 흐름을 반복해서 분석하려면 두 단어를 정확히 구분해 두는 게 유용하다.</p>
+
+<div class="term">
+  <div class="name">토큰 자본 <span class="en">token capital</span></div>
+  <p style="margin-bottom:.2em;">토큰(AI 연산)을 <strong>소모</strong>하는 게 아니라 <strong>자본화</strong>하는 것 = "소유된 학습 루프." 빠지면 자본이라 부를 수 없는 4속성: <strong>① 소유 ② 복리 축적 ③ 독점(비복제) ④ 모델 독립.</strong></p>
+  <p class="muted" style="font-size:13.5px; margin-bottom:0;">주의 — 회계상 opex를 capex로 재프레임하는 서사이므로, "자본·복리"라는 라벨은 <strong>준-하드 해자가 실제로 성립할 때만</strong> 붙는다. 소프트 고리 위에 얹힌 것이라면 시간이 지나며 깎여 나가는 렌트에 가깝다.</p>
+</div>
+
+<div class="term">
+  <div class="name">프런티어 생태계 <span class="en">frontier ecosystem</span></div>
+  <p style="margin-bottom:.2em;">"프런티어 <em>모델</em> 독점(가치 집중)"의 <strong>반대 배열.</strong> 프런티어 역량을 공유 기반(substrate)으로 깔고, 그 <em>위에서</em> 다수가 토큰 자본을 쌓아 가치를 분산시키는 구조다. 판별 기준은 "기반 <em>위</em>에서 만드는 가치가 기반을 <em>직접</em> 포착하는 가치보다 큰가"이다.</p>
+  <p class="muted" style="font-size:13.5px; margin-bottom:0;">가장 무거운 함정 — 생태계에는 반드시 <strong>기반 소유자</strong>가 있다. 즉 모델이 분산된다고 가치까지 분산되는 것은 아니다(집중의 역설: 집중점이 모델에서 플랫폼으로 이동할 뿐). "네 학습 루프를 우리 클라우드 위에 쌓아라"는 영업 논리가 이 단어에 그대로 숨어 있다.</p>
+</div>
+
+<h2><span class="n">4.</span>두 개의 분배 통로 — 정책 vs 시장</h2>
+<p>가치가 모델에서 내려와 분배되는 통로는 하나가 아니다. 서로 보강하는 두 갈래가 있다.</p>
+<table>
+  <thead><tr><th>통로</th><th>동력</th><th>특징</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>정책-주도 분배</strong></td>
+      <td>수출금지 등 국가 강제</td>
+      <td>강하지만 <strong>가역적</strong>. 정권·무역딜에 따라 양방향으로 스윙(수출금지 → 소버린 분배 / 규제 포획 → 재집중).</td>
+    </tr>
+    <tr>
+      <td><strong>시장-주도 분배</strong></td>
+      <td>모듈화 · 표준 인터페이스</td>
+      <td>트랜스포머·API·에이전트 하네스라는 표준 인터페이스와 레시피 확산, 오픈웨이트의 10배 이상 저가화가 아래에서 밀어 올림.</td>
+    </tr>
+  </tbody>
+</table>
+<p>두 통로 모두 결론은 같다 — <strong>모델은 상품화되고, 걷을 수 있는 지대는 하드와 준-하드로 이동한다.</strong> 정책 통로가 이 정리의 출발점이었고, 시장 통로(모듈화)는 그와 독립적으로 같은 지점을 채워 넣는다. 다만 시장 통로를 강하게 주장한 목소리가 오픈·분산 진영의 이해당사자라는 점은 뒤(6절)에서 짚는다.</p>
+
+<h2><span class="n">5.</span>'조력자 layer' 해부 — 누가 자체 학습 루프를 짓게 돕는가</h2>
+<p>조직(기업·정부)이 자사 데이터·암묵지로 <strong>스스로 소유하는 학습 루프</strong>를 짓도록 돕는 현장의 조력자는 누구인가. 답은 특정 종목이 아니라 <strong>좁은 layer</strong>다 — "번들·단가붕괴·모델의 자기 통합이 못 뚫는 준-하드 고리(거버넌스·기밀·인증·관할·20년 현장 경험) 위에서, 조직의 운영 능력을 그 조직의 장부에 lock-in시키는 구현 조력자." 여기서 <strong>카테고리 명제는 참이지만 개별 종목 명제는 미결</strong>이다.</p>
+
+<h3>6개 아키타입 스택 (위→아래)</h3>
+<table>
+  <thead><tr><th>층</th><th>대표</th><th>미션 부합 판정</th></tr></thead>
+  <tbody>
+    <tr><td>① 모델랩 FDE</td><td>프런티어 랩의 현장 엔지니어</td><td>학습 루프가 <strong>랩 모델에 anchor</strong> → 모델 독립 위반 = 조력자의 반대(번들러)</td></tr>
+    <tr><td>② 하이퍼스케일러 + 풀스택</td><td>대형 클라우드 파운드리 + GPU 스택</td><td>조력 레이어를 <strong>OS 번들로 흡수</strong> = #1 위협. "완제품 토대"일 뿐 조직 것으로 전유되진 않음</td></tr>
+    <tr><td>③ 데이터 플랫폼</td><td>데이터 웨어하우스/레이크</td><td>학습 루프를 <strong>벤더 위에</strong> 쌓게 함(사용량·NRR lock-in) = 재종속 배반</td></tr>
+    <tr><td>④ 🎯 구현 조력자 <span class="muted">(찾는 층)</span></td><td>온톨로지·정부·기밀 특화 vs 상업·일반 통합</td><td>좁고 비싸며 번들이 못 뚫는 쪽만 준-하드 캡처 후보. 넓고 일반적인 통합은 번들에 노출</td></tr>
+    <tr><td>⑤ SI · 컨설팅</td><td>대형 시스템 통합/자문</td><td>학습을 <strong>SI사가 가져감</strong>(소유권 역방향) + man-month 단가 붕괴. 정부·클리어런스 영역만 조건부</td></tr>
+    <tr><td>⑥ 국내 SI</td><td>대기업 계열 SI</td><td>소버린 관문의 통행료 = 방어적 점유(내수 관할 방어)</td></tr>
+  </tbody>
+</table>
+
+<div class="callout warn">
+<strong>4개 핵심 긴장</strong> — ① 카테고리는 참이나 <strong>종목은 미결</strong>(핵심 지표가 구조적으로 미공시라 추정치에 의존) ② <strong>번들 victim</strong>(조력자를 파는 자가 곧 흡수하는 자) ③ <strong>모델 독립 배반</strong>(가장 흔한 해법이 도리어 재종속을 부름) ④ <strong>성장-방어 아이러니</strong>(미션에 가장 부합하는 코어가 가장 작고 잘 자라지 않음).
+</div>
+
+<h2><span class="n">6.</span>소버린 목소리의 '합창' — 이해당사자 경계</h2>
+<p>2026년 중반, 이 분배·의존성 탈피 서사를 업계 거물들이 잇달아 같은 언어("모델 독립"·"소유된 학습 루프"·"생산수단 소유")로 재진술했다. 신호처럼 보이지만, <strong>네 목소리 모두 그 서사가 자기 사업 확장과 일치하는 이해당사자</strong>라는 점이 결정적이다.</p>
+<table>
+  <thead><tr><th>목소리</th><th>시점</th><th>요지</th><th>이해관계(역인과) 경계</th></tr></thead>
+  <tbody>
+    <tr><td>대형 클라우드 CEO</td><td>2026-06-15 에세이</td><td>"생태계 없는 프런티어는 불안정하다" — 분배 진영</td><td>"네 토큰 자본을 우리 클라우드 위에 쌓아라"의 다른 표현(#2 층 포지셔닝)</td></tr>
+    <tr><td>방산 소프트웨어 CEO</td><td>2026-06~07 인터뷰들</td><td>"국유화가 온다" · 기업은 GPU·데이터·모델·<strong>알파(생산수단)</strong>를 소유하려 하고 가중치는 고객이 통제</td><td>매출 상당수가 정부 의존 → "국유화 예고"가 곧 본인 TAM 확장 내러티브. 게다가 "오픈모델+가중치 고객통제" 주장은 자기 앱레이어 해자를 침식하는 논거이기도 함(자기모순)</td></tr>
+    <tr><td>오픈모델 인프라 CEO</td><td>2026-06-29</td><td>모듈화·표준 인터페이스·오픈웨이트 저가화 = <strong>시장-주도 분배</strong> 통로</td><td>오픈+분산 서사가 곧 자사 사업. 4절 시장 통로의 독립 확증은 아님</td></tr>
+    <tr><td>GPU 플랫폼 CEO</td><td>2026-07-10</td><td>"지능을 외주화하는 건 개인·기업·국가 누구에게도 말이 안 된다" — 오픈웨이트로 보완재 상품화</td><td><strong>메타곡괭이</strong>(오픈웨이트가 GPU 수요를 키워 폐쇄·오픈 양쪽 수혜). "스택 파는 자가 오픈이 답"이라 말하는 구도</td></tr>
+  </tbody>
+</table>
+<p>네 목소리가 같은 방향을 가리킨다는 사실 자체가 확증이 되지 못한다 — <strong>모두의 이해관계가 그 방향</strong>이기 때문이다(confirmation 함정). 분배 흐름이 실재하더라도, 그 실재는 이들의 합창이 아니라 정책·시장 구조로부터 별도로 검증돼야 한다.</p>
+
+<h2><span class="n">7.</span>산업 지도 — 하드·준-하드의 곡괭이 후보</h2>
+<p>이 흐름에서 수혜가 기대되는 자리는 '모델'이 아니라 그것을 떠받치거나(하드) 조직에 붙여 넣는(준-하드) 곡괭이다. 다만 아래 종목별 정리는 흐름의 성격을 이해하기 위한 예시이며, 매수·매도 판단이 아니다.</p>
+<table>
+  <thead><tr><th>후보</th><th>포지션</th><th>검증 포인트 / 양날</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>하드 기반 인프라</strong> <span class="pill hard">하드</span></td>
+      <td>컴퓨트 기반 곡괭이(분배 수혜, 칩-관할 모서리)</td>
+      <td>매출 집중(예: 한 대형 클라우드가 매출의 약 84%, AI-native 직접 계약은 아직 초기)에서 소버린·AI-native 타깃으로의 <strong>서술 → 실현</strong> 전환이 검증돼야 함. 비-미국 소버린에 미국 통제 GPU를 서비스하는 순간 수출 규제의 모서리에 걸림(해외 확장의 양날)</td>
+    </tr>
+    <tr>
+      <td><strong>소버린 전력·연료</strong> <span class="pill hard">하드</span></td>
+      <td>소버린 AI → 소버린 전력 칸(자국 핵연료 주권)</td>
+      <td>정책 수혜가 크되 <strong>국가 자금 순환</strong>에 의존 → catalyst 가역성 리스크(정책이 되돌면 수요도 정치적으로 취소 가능)</td>
+    </tr>
+    <tr>
+      <td><strong>준-하드 구현 조력자</strong> <span class="pill semi">준-하드</span></td>
+      <td>온톨로지·정부·기밀 기반의 "진짜 캡처" 후보</td>
+      <td>번들(대형 클라우드) 위협에 노출. 밸류에이션이 이미 높게(예: 매출 대비 약 58.7배) 선반영돼 있어, 텐배거 구조로는 오히려 더 깊은 버티컬 마이크로캡 쪽이 열려 있음</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+<strong>확증 편향 경계</strong> — 위 시사점이 <em>전부</em> 곡괭이(인프라) 우호로 쏠린다는 점 자체가 경계 지점이다. 반대 논거도 강하다: <strong>①</strong> 컴퓨트는 다음 chokepoint이고, 하드 기반 곡괭이도 그 통제 구조의 <em>내부</em>(GPU·금융·지분의 순환)에 있어 양날이다. <strong>②</strong> 전략·중복 수요는 역설적으로 가장 과잉 건설되기 쉽다(닷컴 시기 광섬유 glut의 패턴). <strong>③</strong> 이 모든 흐름의 catalyst가 정책이라 <em>가역적</em>이다(정권·무역딜). 요컨대 흐름의 방향은 그럴듯하나, 각 후보의 실현·지속성은 별도 검증을 요한다.
+</div>
+
+<h2><span class="n">8.</span>의존성-탈피 논리의 종착점</h2>
+<p>"모델 독립"이라는 미션을 끝까지 밀면 흔한 조력자 대부분이 <strong>재종속</strong>으로 탈락한다. 논리적 종착점은 둘로 좁혀진다.</p>
+<ol>
+  <li><strong>오픈웨이트 + 자체 호스팅</strong> — 조직이 가중치·평가(eval)·인프라를 스스로 소유하는, 가장 순수한 형태. 단 순수한 공개 종목이 적고 곡괭이·미들웨어로 우회되기 쉽다.</li>
+  <li><strong>깊은 버티컬 마이크로캡</strong> — 단일 관할의 준-하드 최심부. 이미 높게 선반영된 대형주보다 텐배거 구조에 가까운 자리일 수 있으나, 발굴·검증이 선행돼야 한다.</li>
+</ol>
+
+<h2><span class="n">9.</span>적용법 — 서사를 들었을 때의 4단계</h2>
+<p>"소버린 / 모델 독립 / 생태계" 담론을 마주치면 다음을 차례로 점검한다.</p>
+<ol>
+  <li>가치가 모델에서 <strong>어디로</strong> 이동하는가 — 하드인가 준-하드인가.</li>
+  <li>거기서 말하는 "토큰 자본"이 <strong>준-하드 해자 위</strong>인가(자본) <strong>소프트 위</strong>인가(렌트).</li>
+  <li><strong>누가 기반을 소유</strong>하는가 — 생태계라는 단어에 숨은 기반 소유자를 찾는다.</li>
+  <li>4개 반례 점검 — 곡괭이 편향 / 컴퓨트 chokepoint / glut 위험 / catalyst 가역성.</li>
+</ol>
+
+<!-- ③ 관찰 시점 -->
+<h2><span class="n">·</span>관찰 시점</h2>
+<p class="lead muted">본 정리는 <strong>2026년 6월 15일</strong> 종합을 토대로, 2026-06-29 · 07-02 · 07-10에 추가된 데이터포인트를 반영한 기록이다. 매출 집중도·밸류에이션 배수 등 정량 수치는 모두 <strong>당시 기준</strong>이며, 이후 변동됐을 수 있다. 수출금지·소버린 정책은 가역적이라 여기 담긴 방향성은 정책 스윙에 따라 재평가될 수 있다.</p>
+
+<!-- ④ 출처 -->
+<h2><span class="n">·</span>출처</h2>
+<ul class="src-list">
+  <li>대형 클라우드 CEO 에세이 "A frontier without an ecosystem is not stable" (2026-06-15) — "토큰 자본"·"프런티어 생태계" 어휘의 출처</li>
+  <li>오픈모델 인프라 CEO, "토큰 경제" 에세이 — <a href="https://x.com/vipulved/status/2071404852908081211" target="_blank" rel="noopener">x.com/vipulved/status/2071404852908081211</a> (2026-06-29)</li>
+  <li>방산 소프트웨어 CEO 인터뷰들 (2026-06 및 2026-07-02, "국유화"·"생산수단 소유" 데이터포인트)</li>
+  <li>GPU 플랫폼 CEO 대담 (2026-07-10, 오픈웨이트·메타곡괭이 데이터포인트)</li>
+  <li>배경 사건: 프런티어 모델 수출금지 국가안보 디렉티브 (2026-06-12)</li>
+</ul>
+
+<!-- ⑤ 푸터 -->
+<footer class="rpt">
+  본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.
+</footer>
+
+</div>

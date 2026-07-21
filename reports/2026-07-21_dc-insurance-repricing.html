@@ -1,0 +1,296 @@
+<title>데이터센터 보험 repricing — 2026 $10B → 2030 $24B | 2026-07-21</title>
+<meta name="vault-stage" content="Thesis">
+<meta name="vault-topic" content="데이터센터">
+<meta name="vault-date" content="2026-07-21">
+<meta name="description" content="DC 보험료 급팽창이 냉각 아키텍처 선택을 좌우한다는 구조적 압력 프레임 정리.">
+<style>
+  :root {
+    --bg: #FDF6E3;
+    --ink: #1f2328;
+    --muted: #5c5348;
+    --line: #e8e1cf;
+    --line-strong: #d8cfb8;
+    --accent: #b5651d;
+    --accent2: #2f6f7a;
+    --danger: #a3341f;
+    --safe: #3f7a3f;
+    --thead: #f3ecd6;
+    --chip: #efe6cd;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", Roboto, sans-serif;
+    line-height: 1.72;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 40px 22px 72px; }
+  header.doc { border-bottom: 2px solid var(--line-strong); padding-bottom: 18px; margin-bottom: 26px; }
+  .kicker { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  h1 { font-size: 27px; line-height: 1.28; margin: 10px 0 8px; font-weight: 800; letter-spacing: -.01em; }
+  .subtitle { color: var(--muted); font-size: 15px; margin: 0; }
+  .meta-row { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { background: var(--chip); border: 1px solid var(--line-strong); border-radius: 999px; padding: 3px 11px; font-size: 12.5px; color: var(--muted); }
+  h2 { font-size: 20px; margin: 40px 0 12px; font-weight: 800; letter-spacing: -.01em; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16.5px; margin: 24px 0 8px; font-weight: 700; }
+  p { margin: 12px 0; }
+  .lead { font-size: 16.5px; }
+  strong { font-weight: 700; }
+  .summary {
+    background: #fbf1d8;
+    border: 1px solid var(--line-strong);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 0 0 8px;
+  }
+  .summary h2 { border: 0; margin: 0 0 10px; font-size: 17px; }
+  .summary ul { margin: 0; padding-left: 20px; }
+  .summary li { margin: 7px 0; }
+  ul, ol { padding-left: 22px; }
+  li { margin: 6px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14.5px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  thead th { background: var(--thead); border-bottom: 2px solid var(--line-strong); font-weight: 700; }
+  td.num, th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .figure {
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 18px 12px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .figure figcaption { color: var(--muted); font-size: 12.5px; margin-top: 8px; text-align: center; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 18px 0; }
+  @media (max-width: 620px) { .two-col { grid-template-columns: 1fr; } }
+  .card { border: 1px solid var(--line-strong); border-radius: 10px; padding: 16px 18px; background: #fdfaf0; }
+  .card.danger { border-left: 4px solid var(--danger); }
+  .card.safe { border-left: 4px solid var(--safe); }
+  .card h3 { margin-top: 0; }
+  .tag-danger { color: var(--danger); font-weight: 700; }
+  .tag-safe { color: var(--safe); font-weight: 700; }
+  blockquote {
+    margin: 16px 0;
+    padding: 6px 0 6px 18px;
+    border-left: 3px solid var(--accent2);
+    color: var(--muted);
+    font-style: italic;
+  }
+  .note { color: var(--muted); font-size: 13.5px; }
+  a { color: var(--accent2); text-decoration: none; border-bottom: 1px solid var(--line-strong); }
+  a:hover { border-bottom-color: var(--accent2); }
+  footer.doc { margin-top: 44px; padding-top: 16px; border-top: 1px solid var(--line-strong); color: var(--muted); font-size: 12.5px; }
+  .src-list { font-size: 13.5px; }
+  .src-list li { margin: 5px 0; }
+  @media print { body { background: #fff; } .figure, .card { break-inside: avoid; } }
+</style>
+
+<div class="wrap">
+
+<header class="doc">
+  <div class="kicker">Thesis · 데이터센터</div>
+  <h1>데이터센터 보험 repricing — 2026 $10B → 2030 $24B</h1>
+  <p class="subtitle">보험료 급팽창이 AI 인프라의 냉각 아키텍처 선택을 성능 문제에서 리스크 관리 문제로 바꾸고 있다.</p>
+  <div class="meta-row">
+    <span class="chip">단계 · Thesis</span>
+    <span class="chip">주제 · 데이터센터</span>
+    <span class="chip">정리일 · 2026-07-21</span>
+    <span class="chip">기록 기준 · 2026-05</span>
+  </div>
+</header>
+
+<section class="summary">
+  <h2>🔴 한 장 요약</h2>
+  <ul>
+    <li><strong>보험이 이제 AI 인프라 아키텍처의 가격을 매긴다.</strong> 보험사가 보험료를 올리는 이유는 "새로워서"가 아니라 <strong>손실 분포가 구조적으로 바뀌었기 때문</strong>이다. 이 관점은 sell-side(증권사 리서치) 커버리지에서 사실상 빠져 있다.</li>
+    <li>글로벌 데이터센터(DC) 보험료는 <strong>2026년 약 $10B</strong>로, 항공 보험의 2배이자 특수보험(specialty) 라인 <strong>세계 3위</strong>. <strong>2030년 $24.2B(2.4배)</strong>로 가장 빠르게 성장 중이며, 몇 년 안에 사이버 보험을 추월할 전망이다.</li>
+    <li>핵심 축은 냉각 방식. <strong>단상(1P) 수냉</strong>은 전도성 냉각수 + 에너지화된 반도체 조합이라 누수 시 하드웨어 손상 위험이 크고, <strong>이상(2P) 유전체 냉매</strong>는 비전도성이라 같은 누수가 하드웨어 폐기가 아닌 <strong>정비 이벤트</strong>로 끝난다.</li>
+    <li>일부 보험 상품(예: CNA 백업 랙당 최대 $10만 warranty)은 <strong>유전체 아키텍처에서만 인수 가능</strong>해, 보험 인수(underwriting) 계층 자체가 구조적 해자로 작동하기 시작했다.</li>
+    <li>다만 이 프레임에는 반론도 뚜렷하다 — 신규 DC의 1P 채택률, 하이퍼스케일러의 자가보험 비중, 가격만 맞으면 1P도 인수 가능한 점 때문에 압력 강도는 <strong>과대평가 가능성</strong>이 있다.</li>
+  </ul>
+</section>
+
+<h2>1. 프레임 — "보험이 아키텍처의 가격을 매긴다"</h2>
+<p class="lead">
+  이 정리의 출발점은 단순하다. 보험료 인상은 신기술이라서가 아니라 <strong>손실 분포가 구조적으로 변했을 때</strong> 일어난다는 것. AI 데이터센터가 GPU 밀도를 높이고 액체 냉각으로 전환하면서, 보험사가 계산하는 손실 기대값의 모양 자체가 달라졌다.
+</p>
+<p>
+  중요한 것은 이 관점이 증권가 커버리지에서 거의 다뤄지지 않는다는 점이다. 대부분의 AI 인프라 분석은 전력·칩·자본지출(capex)에 집중하지, 보험 인수 계층이 냉각 아키텍처 채택에 가하는 압력은 놓친다. 여기에 정보 비대칭에서 오는 알파(초과수익) 가능성과, 반대로 숨은 하방 위험이 동시에 존재한다.
+</p>
+
+<h2>2. 정량 데이터</h2>
+<div class="figure">
+  <svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="특수보험 라인 규모 비교 막대그래프">
+    <!-- baseline -->
+    <line x1="150" y1="30" x2="150" y2="250" stroke="#d8cfb8" stroke-width="1.5"/>
+    <!-- gridlines -->
+    <g stroke="#efe6cd" stroke-width="1">
+      <line x1="264" y1="30" x2="264" y2="250"/>
+      <line x1="378" y1="30" x2="378" y2="250"/>
+      <line x1="492" y1="30" x2="492" y2="250"/>
+      <line x1="606" y1="30" x2="606" y2="250"/>
+    </g>
+    <g font-family="sans-serif" font-size="11" fill="#5c5348" text-anchor="middle">
+      <text x="150" y="268">$0</text>
+      <text x="264" y="268">$10B</text>
+      <text x="378" y="268">$20B</text>
+      <text x="492" y="268">$30B</text>
+      <text x="606" y="268">$40B</text>
+    </g>
+    <!-- bars: scale 11.4px per $B, start x=150 -->
+    <!-- marine $39B -->
+    <rect x="150" y="42" width="444.6" height="28" fill="#8a9ba8"/>
+    <text x="600" y="61" font-family="sans-serif" font-size="12" fill="#1f2328">$39B · marine</text>
+    <!-- cyber $16B -->
+    <rect x="150" y="90" width="182.4" height="28" fill="#a8b0b8"/>
+    <text x="338" y="109" font-family="sans-serif" font-size="12" fill="#1f2328">$16B · cyber</text>
+    <!-- DC 2026 $10B -->
+    <rect x="150" y="138" width="114" height="28" fill="#b5651d"/>
+    <text x="270" y="157" font-family="sans-serif" font-size="12" fill="#1f2328" font-weight="700">$10B · DC (2026, #3)</text>
+    <!-- DC 2030 $24.2B projected -->
+    <rect x="150" y="186" width="275.9" height="28" fill="#b5651d" fill-opacity="0.42" stroke="#b5651d" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="432" y="205" font-family="sans-serif" font-size="12" fill="#1f2328" font-weight="700">$24.2B · DC (2030 전망)</text>
+    <!-- title -->
+    <text x="20" y="20" font-family="sans-serif" font-size="12.5" fill="#5c5348">글로벌 특수보험 라인 규모 (연간 보험료)</text>
+  </svg>
+  <figcaption>DC 보험은 2026년 특수보험 3위($10B)에서 2030년 $24.2B로 팽창해 사이버($16B)를 추월할 전망. 출처: Bloomberg·S&P(규모·순위), Swiss Re(2030 전망). 수치는 당시 기준.</figcaption>
+</div>
+
+<table>
+  <thead>
+    <tr><th>항목</th><th class="num">값</th><th>출처</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>2026년 DC 보험료</td><td class="num">$10B (항공 보험의 2배)</td><td>Bloomberg · S&P</td></tr>
+    <tr><td>특수보험 라인 세계 순위</td><td class="num">#3 (marine $39B, cyber $16B 다음)</td><td>Bloomberg</td></tr>
+    <tr><td>성장 속도</td><td class="num">가장 빠른 특수보험 라인</td><td>Bloomberg</td></tr>
+    <tr><td>2030년 전망</td><td class="num">$24.2B (2.4배)</td><td>Swiss Re</td></tr>
+    <tr><td>DC 손실 중 액체 관련 비중</td><td class="num">약 24%</td><td>Swiss Re</td></tr>
+    <tr><td>사이버 보험 추월 시점</td><td class="num">"몇 년 내"</td><td>Bloomberg</td></tr>
+  </tbody>
+</table>
+
+<h2>3. 구조적 손실 메커니즘 — 1P vs 2P</h2>
+<p>
+  냉각 방식이 손실 분포를 가른다. 여기서 <strong>1P(단상 수냉)</strong>는 전도성 냉각수를 쓰고, <strong>2P(이상 유전체 냉매)</strong>는 전기가 통하지 않는 냉매를 쓴다. 같은 배관 사고라도 결과가 근본적으로 다르다.
+</p>
+<div class="two-col">
+  <div class="card danger">
+    <h3><span class="tag-danger">1P</span> 단상 수냉 — 위험</h3>
+    <ul>
+      <li>전도성 냉각수 + 에너지화된 반도체 조합.</li>
+      <li>랙 단위 격리(CDU 분리·차단 밸브)로 단일 콜드플레이트 누수는 한 랙에 국한.</li>
+      <li>그러나 H100 한 장 $3~4만, Blackwell 랙 72개 GPU → 랙 단위 사건도 수백만 달러.</li>
+      <li>Pod 단위 사건 = 수십~수백만 달러 + 사업 중단 + SLA 위약금 + 교체 리드타임.</li>
+    </ul>
+  </div>
+  <div class="card safe">
+    <h3><span class="tag-safe">2P</span> 이상 유전체 냉매 — 안전</h3>
+    <ul>
+      <li>비전도성 유전체 냉매.</li>
+      <li>누수가 나도 하드웨어 단락(short-circuit)이 물리적으로 불가능.</li>
+      <li>동일한 배관 실패가 <strong>하드웨어 폐기가 아니라 정비 이벤트</strong>로 종결.</li>
+      <li>→ 같은 사고의 보험 손실 기대값이 크게 낮아짐.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>4. 보험 인수 계층이 해자가 되는 지점</h2>
+<p>
+  이 메커니즘이 가장 뚜렷하게 상품화된 예가 유전체 전용 warranty 프로그램이다. 대표 사례로 <strong>CNA Financial이 백업하는 랙당 최대 $10만 누수 손상 warranty</strong>가 있는데, 핵심은 이 정책이 <strong>유전체 아키텍처에서만 인수 가능</strong>하다는 점이다. 1P 수냉 루프에는 동일 조건의 인수가 불가능하다.
+</p>
+<p>
+  즉 보험 인수 계층 자체가 아키텍처 선택을 강제하는 <strong>구조적 해자</strong>로 작동하기 시작한다. 특정 냉각 방식을 택해야만 대형 캠퍼스의 보험 인수가 성립하는 구도다.
+</p>
+
+<h2>5. 의사결정자의 질문이 바뀐다</h2>
+<p>
+  과거 냉각 선택 기준은 전력효율(PUE) 하나였다. "어떤 냉각이 최고의 PUE를 주는가?" 이제 질문은 확장된다 — "어떤 냉각이 <strong>$20B 규모 캠퍼스를 애초에 보험 인수 가능하게</strong> 만드는가?"
+</p>
+<p>
+  결정의 주체도 이동한다. 냉각 결정이 하이퍼스케일러의 최고위험책임자(CRO)와 최고재무책임자(CFO)에게까지 도달한다. 냉각은 이제 성능 선택이 아니라, 원본 표현으로 <strong>"리스크 관리 명령(risk management mandate)"</strong>에 가깝다.
+</p>
+<blockquote>"Risk management mandate, not performance choice" — Markos</blockquote>
+
+<h2>6. 증권가 커버리지의 공백 = 정보 비대칭</h2>
+<p>
+  이 압력 메커니즘은 여러 독립 자료에서 <strong>"증권가 커버리지에 구조적으로 부재"</strong>하다고 지적된다. 전력·칩·capex 중심의 표준 AI 인프라 분석 틀에는 보험 인수 계층이 잘 들어오지 않는다.
+</p>
+<p>
+  이 공백은 양날이다. 시장이 아직 반영하지 않은 구조라면 초과수익의 여지가 되지만, 반대로 1P를 대규모 채택한 사업자에게는 아직 가격에 반영되지 않은 <strong>숨은 하방 위험</strong>이기도 하다.
+</p>
+
+<h2>7. 수혜·영향 지도</h2>
+<p>보험 repricing 프레임이 맞다고 가정할 때, 냉각 아키텍처를 축으로 수혜와 역풍이 갈린다.</p>
+<table>
+  <thead>
+    <tr><th>구분</th><th>대상</th><th>경로</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>직접 수혜</strong></td>
+      <td>2P 유전체 냉각 + 보험 warranty 결합 사업자</td>
+      <td>유전체 전용 인수 정책이 진입장벽이자 프리미엄. 냉각 하드웨어와 보험 해자를 동시에 판매.</td>
+    </tr>
+    <tr>
+      <td><strong>간접 수혜</strong></td>
+      <td>자체 운영 데이터센터 사업자</td>
+      <td>보험 인수 호환 냉각을 채택하면 보험료 하락 → 마진 개선.</td>
+    </tr>
+    <tr>
+      <td><strong>간접 수혜</strong></td>
+      <td>안정 전력 공급(예: 원자력 PPA) 관련</td>
+      <td>안정적 전력은 보험사 리스크 모델에 우호적으로 반영될 여지.</td>
+    </tr>
+    <tr>
+      <td><strong>간접 역풍</strong></td>
+      <td>1P를 대규모 채택한 하이퍼스케일러</td>
+      <td>향후 retrofit(개조) 비용 상승 → AI capex 가속 압박.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>8. 추적 KPI</h2>
+<ul>
+  <li><strong>Swiss Re 분기 outlook</strong> — DC 보험 풀 사이즈 갱신.</li>
+  <li><strong>Bloomberg·S&P specialty 라인 비교</strong> — DC의 순위·성장률, 사이버 추월 시점.</li>
+  <li><strong>다른 보험사의 유전체 정책 출시</strong> — CNA 외 Chubb·AIG 등이 유전체 전용 정책을 내놓는지.</li>
+  <li><strong>보험사 직접 자료</strong> — 업계 컨퍼런스 등에서의 DC 냉각 리스크 논의.</li>
+  <li><strong>대형 누수 사고 보고</strong> — 대형 leak 사건 발생 시 1P 보험료 추가 인상 트리거.</li>
+</ul>
+
+<h2>9. 한계와 반론 (균형 관점)</h2>
+<p>이 프레임의 압력 강도를 그대로 받아들이기 전에, 결론을 실제로 흔들 수 있는 반론 네 가지를 함께 저울에 올려야 한다.</p>
+<ol>
+  <li><strong>24% 액체 손실은 누적 통계다.</strong> 신규 데이터센터의 1P 채택률이 이미 절반을 넘었다면, 앞으로의 통계 노출은 과거만큼 크지 않을 수 있다.</li>
+  <li><strong>하이퍼스케일러 자가보험.</strong> Microsoft·Google·AWS 등은 자가보험 비중이 커서 외부 보험 의존도가 colocation(임대형) 사업자보다 낮다 — 보험 압력의 전달 경로가 약해진다.</li>
+  <li><strong>1P도 인수 가능할 수 있다.</strong> 가격이 충분히 높으면 CNA 외 보험사가 1P에도 정책을 낼 여지가 있어, "유전체 전용" 해자의 배타성이 시간이 갈수록 희석될 수 있다.</li>
+  <li><strong>보험료 포함 ROI.</strong> 1P가 더 높은 보험료를 지불하더라도 capex 절감으로 전체 ROI가 정당화될 수 있다면, 아키텍처 강제 압력은 약해진다.</li>
+</ol>
+<p>
+  종합하면, "보험이 냉각 아키텍처를 강제한다"는 방향성 자체는 손실 분포·순위·성장 데이터로 뒷받침되지만, <strong>압력의 강도와 속도는 위 네 반론만큼 불확실</strong>하다. 유전체 해자의 배타성이 얼마나 오래 유지되는지, 자가보험 사업자에게 압력이 실제로 전달되는지가 이 프레임의 유효기간을 결정한다.
+</p>
+
+<h2>관찰 시점</h2>
+<p class="note">
+  본 정리는 2026-05 기록을 기준으로 한다(원본 essay 2026-05-05, 프레임 확립 2026-05-13). 표의 정량 수치($10B / $24.2B / 순위 등)는 모두 당시 발표·전망 기준이며, 이후 갱신되었을 수 있다. Swiss Re 분기 outlook 등으로 재확인 필요.
+</p>
+
+<h2>출처</h2>
+<ul class="src-list">
+  <li>Markos / AAIG, "Liquid Cooling: Power, Premiums, and the Two-Phase Pivot" (2026-05-05) — 원본 프레임·인용.</li>
+  <li>Bloomberg — DC 보험료 규모·특수보험 순위·사이버 추월 전망.</li>
+  <li>S&P — 특수보험 라인 규모.</li>
+  <li>Swiss Re — 2030년 $24.2B 전망 및 액체 관련 손실 비중(약 24%).</li>
+</ul>
+
+<footer class="doc">
+  본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.
+</footer>
+
+</div>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compute Dollar 5-Layer — 컴퓨트가 달러를 재정박하는 경로 | 2026-07-21</title>
+<meta name="vault-stage" content="Thesis">
+<meta name="vault-topic" content="달러">
+<meta name="vault-date" content="2026-07-21">
+<meta name="description" content="AI 컴퓨트 선물의 USD 결제가 달러 패권에 더하는 다섯 번째 층위 가설과 그 검증 경로">
+<style>
+  :root {
+    --bg: #FDF6E3;
+    --text: #1f2328;
+    --text-sec: #4c5560;
+    --text-mute: #8a8272;
+    --border: #e8e1cf;
+    --border-soft: #efe8d6;
+    --head: #586e75;
+    --green: #157347;
+    --green-bg: #e9f3ec;
+    --yellow: #9a7400;
+    --yellow-bg: #f6efd9;
+    --red: #b3402b;
+    --red-bg: #f6e6df;
+    --blue: #275b8e;
+    --blue-bg: #e7eef5;
+    --panel: #fffdf7;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.78;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 24px 90px;
+    font-size: 16px;
+  }
+  header { margin-bottom: 36px; padding-bottom: 24px; border-bottom: 2px solid var(--border); }
+  .kicker { font-size: 0.8rem; letter-spacing: 0.5px; color: var(--text-mute); margin-bottom: 10px; }
+  .kicker b { color: var(--red); font-weight: 700; }
+  h1 { font-size: 1.8rem; font-weight: 800; line-height: 1.32; letter-spacing: -0.5px; margin-bottom: 12px; }
+  .sub { font-size: 1rem; color: var(--text-sec); line-height: 1.65; }
+  h2 {
+    font-size: 1.28rem; font-weight: 700; margin-top: 48px; margin-bottom: 16px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border); color: var(--head); letter-spacing: -0.2px;
+  }
+  h3 { font-size: 1.05rem; font-weight: 700; margin-top: 28px; margin-bottom: 10px; }
+  p { margin-bottom: 14px; }
+  strong { font-weight: 700; }
+  ul, ol { margin: 8px 0 16px 22px; }
+  li { margin-bottom: 6px; }
+
+  .summary {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+    padding: 22px 26px; margin: 8px 0 12px;
+  }
+  .summary h2 { margin-top: 0; border: none; padding: 0; font-size: 1.1rem; color: var(--text); }
+  .summary ul { margin-left: 20px; }
+  .summary li { margin-bottom: 9px; }
+
+  .table-wrap { overflow-x: auto; margin: 16px 0 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th, td { padding: 10px 14px; border: 1px solid var(--border); text-align: left; vertical-align: top; }
+  th { background: var(--border-soft); font-weight: 700; font-size: 0.83rem; letter-spacing: 0.2px; color: var(--head); }
+  td:first-child { font-weight: 600; }
+
+  figure { background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 22px 20px 14px; margin: 24px 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  figcaption { font-size: 0.82rem; color: var(--text-mute); text-align: center; margin-top: 12px; }
+
+  .tag { display: inline-block; padding: 2px 9px; border-radius: 11px; font-size: 0.76rem; font-weight: 700; white-space: nowrap; }
+  .tag-g { background: var(--green-bg); color: var(--green); }
+  .tag-y { background: var(--yellow-bg); color: var(--yellow); }
+  .tag-r { background: var(--red-bg); color: var(--red); }
+
+  .note {
+    border-left: 4px solid var(--blue); background: var(--blue-bg);
+    padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0; font-size: 0.94rem;
+  }
+  .note.warn { border-left-color: var(--yellow); background: var(--yellow-bg); }
+  .note.strong { border-left-color: var(--green); background: var(--green-bg); }
+
+  blockquote {
+    border-left: 3px solid var(--head); background: var(--panel);
+    padding: 12px 20px; margin: 18px 0; font-style: italic; color: var(--text-sec); border-radius: 0 8px 8px 0;
+  }
+  blockquote .attr { display: block; font-style: normal; font-size: 0.82rem; color: var(--text-mute); margin-top: 6px; }
+
+  .flow {
+    background: #ffffff; border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px 24px; margin: 20px 0; font-size: 0.86rem; line-height: 2; overflow-x: auto;
+    font-family: 'SF Mono', 'Menlo', 'Consolas', monospace; white-space: pre; color: var(--text-sec);
+  }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; }
+  .card h4 { font-size: 0.92rem; font-weight: 700; color: var(--head); margin-bottom: 8px; }
+  .card ul { margin: 0 0 0 18px; }
+  .card li { font-size: 0.88rem; margin-bottom: 5px; }
+
+  .asof { font-size: 0.86rem; color: var(--text-mute); background: var(--panel); border: 1px dashed var(--border); border-radius: 8px; padding: 12px 16px; margin: 20px 0; }
+  .src { font-size: 0.86rem; color: var(--text-sec); }
+  .src a { color: var(--blue); text-decoration: none; word-break: break-all; }
+  .src a:hover { text-decoration: underline; }
+  footer { margin-top: 44px; padding-top: 18px; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-mute); }
+
+  @media print { body { background: #fff; } figure, .flow { background: #fff; } }
+  @media (max-width: 640px) {
+    body { padding: 28px 16px 60px; font-size: 15px; }
+    h1 { font-size: 1.45rem; }
+    .two-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Thesis · 달러 · <b>가설 단계</b> · 2026-07-21 정리</div>
+  <h1>Compute Dollar 5-Layer — 컴퓨트가 달러를 재정박하는 경로</h1>
+  <p class="sub">CME와 ICE가 동시에 연 AI 컴퓨트 선물 시장이 왜 달러 순환의 새로운 층위를 만드는가, 그리고 그것이 스테이블코인·토큰화 자산·AI 인프라 기업에 미치는 구조적 영향</p>
+</header>
+
+<!-- ① 한 장 요약 -->
+<div class="summary">
+  <h2>한 장 요약</h2>
+  <ul>
+    <li>🔴 <strong>촉발 사건</strong> — 세계 1·2위 파생상품 거래소가 8일 간격으로 AI 컴퓨트 선물을 발표했다. CME × Silicon Data(5.12), ICE × Ornn(5.19). 공통점은 <strong>USD 표시, 현금 결제</strong>.</li>
+    <li>🔴 <strong>핵심 가설</strong> — 컴퓨트 선물이 USD로 결제·증거금 예치되면, 전 세계 AI 경제 참여자에게 <strong>구조적 달러 수요</strong>가 생긴다. 페트로달러 약화분을 부분 대체하는 달러 패권의 "5번째 층위(Compute Dollar)".</li>
+    <li>🟠 <strong>3대 전달 경로</strong> — ① 거래 매개(USD 결제) ② 담보·증거금(미국채·MMF·스테이블코인 예치) ③ 인프라 귀속(미국 거래소 수수료·데이터가 미국 GDP로).</li>
+    <li>🟠 <strong>스테이블코인 연결</strong> — 온체인 담보가 허용되면 Layer 4(스테이블코인)와 Layer 5(Compute Dollar)가 상호 강화. 컴퓨트 → 스테이블코인 → 미국채 → 달러 신뢰의 양의 피드백.</li>
+    <li>⚪ <strong>균형 잡힌 결론</strong> — 석유와 달리 컴퓨트는 자체 구축 가능한 자원이라 달러 결제의 "강제성"이 약하다. 따라서 페트로달러 동격이 아니라 <strong>유로달러의 디지털 확장판에 가까운 보완적 채널</strong>. 다만 유동성 집중·벤치마크 관성·규제 프레임·스테이블코인 상호강화라는 네 힘이 "선택"을 "관성"으로 굳힐 경로는 열려 있다.</li>
+  </ul>
+</div>
+
+<!-- ② 본문 -->
+<h2>1. 촉발 사건 — 두 거래소가 동시에 움직였다</h2>
+
+<p>2026년 5월, 세계 2대 파생상품 거래소가 나란히 AI 컴퓨트 선물 시장 출시를 발표했다. 두 발표의 공통 문구는 "USD 표시, 현금 결제(cash-settled)"였다.</p>
+
+<div class="table-wrap">
+<table>
+  <tr><th>항목</th><th>CME Group × Silicon Data</th><th>ICE × Ornn</th></tr>
+  <tr><td>발표일</td><td>2026.5.12</td><td>2026.5.19</td></tr>
+  <tr><td>기초 지수</td><td>Silicon Data 일일 GPU 벤치마크(온디맨드 임대료)</td><td>OCPI — 실거래(printed transactions) 기반</td></tr>
+  <tr><td>추적 GPU</td><td>전 GPU 커버리지 추정</td><td>H100, H200, B200, RTX 5090+</td></tr>
+  <tr><td>결제</td><td>USD 표시</td><td>USD 표시, 현금 결제</td></tr>
+  <tr><td>출시</td><td>2026 하반기 (규제 심사 대기)</td><td>규제 승인 대기</td></tr>
+  <tr><td>후원</td><td>DRW (Silicon Data + The Compute Exchange 수직 통합)</td><td>Hyperbolic Labs</td></tr>
+</table>
+</div>
+
+<blockquote>
+  "Compute is the new oil of the 21st century."
+  <span class="attr">— Terry Duffy, CME Group 회장 겸 CEO (CME 보도자료 2026.5.12)</span>
+</blockquote>
+
+<p>마케팅 수사일 수 있다. 그러나 세계 1·2위 거래소가 같은 자산군에 동시에 베팅했다는 사실 자체가 컴퓨트의 <strong>원자재화(commoditization)</strong>가 이미 시작됐음을 시사한다. DRW는 CME 선물과 별도로 스팟 거래소 <strong>The Compute Exchange</strong>도 세워, 과거 원유 시장의 NYMEX(선물)+현물 병행 발전 패턴을 재현하려는 구도를 드러낸다. Silicon Data는 이미 <strong>포워드 커브(선도 가격 곡선)</strong>와 LLM 토큰 가격까지 추적 범위에 넣어, 장차 "AI 추론 비용" 자체가 파생상품 기초자산이 될 여지를 남겼다.</p>
+
+<h2>2. 가설 — 3대 축과 달러 패권 5-Layer</h2>
+
+<p>가설의 핵심은 단순하다. USD 표시 컴퓨트 선물이 글로벌 거래소에서 운영되면, 세 갈래로 구조적 달러 수요가 만들어진다.</p>
+
+<div class="table-wrap">
+<table>
+  <tr><th>#</th><th>축</th><th>메커니즘</th></tr>
+  <tr><td>1</td><td>거래 매개</td><td>선물이 USD로 결제 → 전 세계 AI 기업·투자자가 거래 참여를 위해 달러 확보 필요</td></tr>
+  <tr><td>2</td><td>담보·증거금</td><td>포지션 유지에 증거금 필요 → 미국채·MMF·스테이블코인으로 예치 → 미국 금융자산 수요 증가</td></tr>
+  <tr><td>3</td><td>인프라 귀속</td><td>CME·ICE·CFTC = 미국 인프라 → 수수료·결제·데이터가 미국 GDP로 귀속(디지털 서비스 수출)</td></tr>
+</table>
+</div>
+
+<p>기존에 달러 패권의 본질은 3개 층위(미국채 시장 + 유로달러 시스템 + 동아시아 제조업 흑자)로 설명돼 왔다. 여기에 스테이블코인(4번째)과 컴퓨트(5번째)를 얹는 것이 이 가설의 프레임이다.</p>
+
+<figure>
+  <svg viewBox="0 0 720 396" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="달러 패권 5-Layer 타워">
+    <style>
+      .lb { font: 700 15px -apple-system, 'Noto Sans KR', sans-serif; }
+      .lm { font: 12px -apple-system, 'Noto Sans KR', sans-serif; }
+      .ls { font: 700 13px -apple-system, sans-serif; }
+      .st { font: 700 11px -apple-system, 'Noto Sans KR', sans-serif; }
+    </style>
+    <!-- Layer 5 (top) -->
+    <rect x="30" y="14" width="660" height="64" rx="8" fill="#f6e6df" stroke="#b3402b" stroke-width="1.5"/>
+    <text x="46" y="40" class="lb" fill="#b3402b">Layer 5 · Compute Dollar</text>
+    <text x="46" y="62" class="lm" fill="#4c5560">AI 컴퓨트 선물 USD 결제 + 증거금</text>
+    <text x="540" y="42" class="ls" fill="#1f2328" text-anchor="end">$1T+ 기초시장</text>
+    <rect x="556" y="30" width="118" height="20" rx="10" fill="#b3402b"/>
+    <text x="615" y="44" class="st" fill="#fff" text-anchor="middle">가설 단계</text>
+    <!-- Layer 4 -->
+    <rect x="30" y="86" width="660" height="60" rx="8" fill="#f6efd9" stroke="#9a7400" stroke-width="1.5"/>
+    <text x="46" y="110" class="lb" fill="#9a7400">Layer 4 · 스테이블코인</text>
+    <text x="46" y="131" class="lm" fill="#4c5560">GENIUS Act → 미국채 준비금 의무</text>
+    <text x="540" y="112" class="ls" fill="#1f2328" text-anchor="end">$320B → $2–3T</text>
+    <rect x="556" y="100" width="118" height="20" rx="10" fill="#9a7400"/>
+    <text x="615" y="114" class="st" fill="#fff" text-anchor="middle">형성 중</text>
+    <!-- Layer 3 -->
+    <rect x="30" y="154" width="660" height="60" rx="8" fill="#e9f3ec" stroke="#157347" stroke-width="1.5"/>
+    <text x="46" y="178" class="lb" fill="#157347">Layer 3 · 동아시아 흑자</text>
+    <text x="46" y="199" class="lm" fill="#4c5560">한·일·대만 제조업 흑자 → USD 재순환</text>
+    <text x="540" y="180" class="ls" fill="#1f2328" text-anchor="end">~$1.5T / 년</text>
+    <rect x="556" y="168" width="118" height="20" rx="10" fill="#157347"/>
+    <text x="615" y="182" class="st" fill="#fff" text-anchor="middle">확립</text>
+    <!-- Layer 2 -->
+    <rect x="30" y="222" width="660" height="60" rx="8" fill="#e9f3ec" stroke="#157347" stroke-width="1.5"/>
+    <text x="46" y="246" class="lb" fill="#157347">Layer 2 · 유로달러 시스템</text>
+    <text x="46" y="267" class="lm" fill="#4c5560">미국 밖에서 유통되는 USD 예금·대출</text>
+    <text x="540" y="248" class="ls" fill="#1f2328" text-anchor="end">~$15T</text>
+    <rect x="556" y="236" width="118" height="20" rx="10" fill="#157347"/>
+    <text x="615" y="250" class="st" fill="#fff" text-anchor="middle">확립</text>
+    <!-- Layer 1 (foundation) -->
+    <rect x="30" y="290" width="660" height="64" rx="8" fill="#e9f3ec" stroke="#157347" stroke-width="1.5"/>
+    <text x="46" y="316" class="lb" fill="#157347">Layer 1 · 미국채 시장</text>
+    <text x="46" y="338" class="lm" fill="#4c5560">대안 부재한 유동성·안전자산</text>
+    <text x="540" y="318" class="ls" fill="#1f2328" text-anchor="end">$28T+</text>
+    <rect x="556" y="306" width="118" height="20" rx="10" fill="#157347"/>
+    <text x="615" y="320" class="st" fill="#fff" text-anchor="middle">확립</text>
+    <!-- reinforcement arrow between 4 and 5 -->
+    <text x="360" y="378" class="st" fill="#8a8272" text-anchor="middle">↑ Layer 4 · 5 상호 강화 (컴퓨트 → 스테이블코인 → 미국채 → 달러 신뢰 → 참여자 유입)</text>
+  </svg>
+  <figcaption>규모·상태는 원본 기록(2026.5) 기준 추정치. Layer 5는 아직 가설 단계.</figcaption>
+</figure>
+
+<h2>3. 페트로달러와 무엇이 같고, 무엇이 다른가</h2>
+
+<div class="two-col">
+  <div class="card">
+    <h4>페트로달러 (20세기)</h4>
+    <ul>
+      <li>석유 = 수입 불가피한 유한 자원</li>
+      <li>OPEC → USD 결제 관행 (1974)</li>
+      <li>NYMEX·ICE에서 USD 선물 거래</li>
+      <li>WTI·Brent = 글로벌 벤치마크</li>
+      <li><strong>강제적 달러 수요</strong></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Compute Dollar (21세기)</h4>
+    <ul>
+      <li>컴퓨트 = AI 경제의 핵심 투입재</li>
+      <li>CME·ICE → USD 결제 선물 출시</li>
+      <li>CME·ICE에서 USD 선물 거래</li>
+      <li>OCPI·Silicon Data = 벤치마크 후보</li>
+      <li><strong>선택적 달러 수요</strong></li>
+    </ul>
+  </div>
+</div>
+
+<p>결정적 차이는 <strong>"강제" vs "선택"</strong>이다. 석유는 물리적으로 수입해야 하므로 달러 결제가 강제적이었다. 반면 컴퓨트는 각국이 자체 GPU 클러스터를 구축할 수 있고, 오픈소스 모델과 온프레미스 추론으로 클라우드 임대 없이도 작동한다. 게다가 GPU 시장에는 OPEC식 카르텔이 없고, 미국의 수출 통제(Entity List)는 사용을 "강제"하는 것이 아니라 "차단"하는 도구다. 이 세 가지 이유 때문에 Compute Dollar를 페트로달러의 <strong>동격이 아닌 보완적 층위</strong>로 봐야 한다 — 구조적으로는 오히려 미국 밖에서 USD가 쓰이는 또 하나의 채널, 즉 유로달러 시스템의 디지털 확장판에 가깝다.</p>
+
+<p>다만 "선택"이 "관성"으로 굳는 경로는 실재한다. 페트로달러 자체도 원래 강제가 아니라 "대안 부재로 인한 선택"이었다(CSIS Paul Blustein의 1974년 사우디 합의 재해석). 컴퓨트도 같은 길을 밟을 수 있다.</p>
+
+<ol>
+  <li><strong>유동성 집중</strong> — CME·ICE에 유동성이 쏠리면 다른 거래소로의 이탈 비용이 커진다(자연스러운 lock-in).</li>
+  <li><strong>벤치마크 관성</strong> — WTI·Brent가 40년간 대체 불가였듯, 초기 선점 벤치마크가 유리하다.</li>
+  <li><strong>규제 프레임</strong> — CFTC 규제 하의 선물은 기관 참여가 가능해, 유럽·아시아 기관도 CME에 접근 → 달러 의존 심화.</li>
+  <li><strong>담보 생태계</strong> — 미국채·토큰화 MMF 기반 증거금이 표준이 되면 위안화·유로 기반 대안 구축 비용이 매우 높아진다.</li>
+</ol>
+
+<p>또한 NVIDIA 수출 통제가 "GPU 접근권 = 미국 동맹 자격"으로 작동하는 현 구도에서는, 석유의 (c) 군사적 강제력이 변형된 형태로나마 존재한다. 종합하면 "5번째 layer"라는 프레임은 유지하되 그 강도는 <strong>보완적 채널</strong> 수준으로 놓는 것이 타당하다.</p>
+
+<h2>4. 스테이블코인에 미치는 영향 — 두 시나리오</h2>
+
+<p>영향의 크기는 결제 방식에 달렸다.</p>
+
+<div class="table-wrap">
+<table>
+  <tr><th>시나리오</th><th>내용</th><th>스테이블코인 영향</th><th>시간 지평</th></tr>
+  <tr><td>A. 전통 결제</td><td>CME 기존 청산소 + 은행 결제</td><td>직접 영향 제한적. 기초자산(GPU 임대)의 온체인 비중 증가로 간접 영향</td><td>2026–27 (즉시)</td></tr>
+  <tr><td>B. 하이브리드·온체인</td><td>CFTC 토큰화 담보 허용 + 스테이블코인 증거금</td><td><strong>구조적 스테이블코인 수요 $수십~수백B</strong></td><td>2028+ (허용 후)</td></tr>
+</table>
+</div>
+
+<p>시나리오 B의 인과 사슬은 아래와 같다. 핵심은 이 수요가 <strong>비가격 민감 수요</strong> — 금리 수준과 무관하게 컴퓨트 거래를 위해 반드시 예치해야 하는 구조적 수요라는 점이다.</p>
+
+<div class="flow">컴퓨트 선물 거래 (CME/ICE)
+  → 증거금 예치 필요 (OI의 10–15%)
+    → USDC / 미국채 / 토큰화 MMF로 예치
+      → GENIUS Act: 스테이블코인 발행사 미국채 준비금 의무
+        → 미국채 구조적 수요 증가
+          → 이자비용 절감 + term premium 압축
+            → 달러 신뢰 강화 → 글로벌 참여자 유입 (양의 피드백)</div>
+
+<div class="table-wrap">
+<table>
+  <tr><th>항목</th><th>현재</th><th>정착 후 (2028~)</th><th>성숙 (2030~)</th></tr>
+  <tr><td>컴퓨트 기초 시장</td><td>$1T</td><td>$2–3T</td><td>$3–5T</td></tr>
+  <tr><td>선물 미결제약정(OI)</td><td>0</td><td>$100–300B</td><td>$300–500B</td></tr>
+  <tr><td>증거금 (OI의 10–15%)</td><td>0</td><td>$10–45B</td><td>$30–75B</td></tr>
+  <tr><td>스테이블코인 비중 (20–50%)</td><td>0</td><td>$2–22B</td><td>$6–37B</td></tr>
+  <tr><td>→ 미국채 준비금 수요</td><td>0</td><td>$2–22B</td><td>$6–37B</td></tr>
+</table>
+</div>
+
+<p>현재 스테이블코인 총 시가 약 $3,200억 대비 1~12% 수준으로, 절대 규모는 크지 않다. 그러나 금리에 반응하지 않는 구조적 예치라는 성격이 미국채 시장에서 갖는 의미는 규모 이상이다.</p>
+
+<h2>5. 이미 시작된 파생상품 담보의 토큰화</h2>
+
+<p>"선물에 토큰화 자산·스테이블코인이 쓰인다"는 말이 먼 미래처럼 들리지만, 담보 토큰화는 이미 진행 중이다. BlackRock의 토큰화 미국채 MMF <strong>BUIDL</strong>이 파생상품 거래소 Deribit의 담보로 실제 사용되고 있고, CFTC는 2025년 9월 토큰화 담보 이니셔티브를 발족해 토큰화 자산을 미청산 스왑의 마진으로 인정하는 방안을 검토 중이다. 같은 시기 ISDA(국제스왑파생상품협회)도 토큰화 MMF를 담보로 직접 활용하는 방안을 공식화했으며, Canton Network 기반 Broadridge DLT 레포와 JP Morgan Onyx의 토큰화 담보 시스템도 이미 운영 중이다.</p>
+
+<div class="table-wrap">
+<table>
+  <tr><th>층위</th><th>내용</th><th>현재 상태</th></tr>
+  <tr><td>Layer 1 · 선물 계약 자체</td><td>선물 계약을 온체인 토큰으로 발행</td><td><span class="tag tag-r">미존재</span></td></tr>
+  <tr><td>Layer 2 · 담보·증거금</td><td>토큰화 자산을 선물 증거금으로 사용</td><td><span class="tag tag-g">이미 실행 중</span></td></tr>
+  <tr><td>Layer 3 · 결제</td><td>선물 결제를 온체인으로 수행</td><td><span class="tag tag-y">초기 단계</span></td></tr>
+</table>
+</div>
+
+<p><strong>Layer 2가 이미 작동한다</strong>는 사실이 관건이다. 컴퓨트 선물이 상장되면, 검증된 경로를 확장하는 방식으로 토큰화 담보 → 스테이블코인 증거금 전환이 비교적 자연스럽게 이뤄질 수 있다.</p>
+
+<h2>6. 재무부 2-Track·금융억압과의 정합</h2>
+
+<p>미국 재무부는 두 트랙으로 달러 패권을 관리한다. <strong>Track 1</strong>은 걸프·아시아 동맹에 대한 통화 스왑라인 확대(위기 시 달러 안전판), <strong>Track 2</strong>는 GENIUS Act를 통한 스테이블코인 발행사의 단기 미국채 100% 준비금 의무화다. 컴퓨트 선물 시장은 별도 정책 개입 없이 <strong>Track 2를 자연 가속</strong>시킨다 — 시장 메커니즘 자체가 스테이블코인 수요 → 미국채 수요 → 달러 신뢰 강화의 사이클을 돌리기 때문이다.</p>
+
+<p>금융억압 맥락을 얹으면 구도가 완성된다. 부채/GDP 125%+ 상태에서 컴퓨트 선물화는 두 가지로 기여한다. ① 컴퓨트 증거금으로 예치되는 미국채·토큰화 MMF·스테이블코인은 금리에 둔감한 <strong>비가격 민감 수요</strong>라 수익률을 억제하고 이자비용을 절감한다. ② 선물 시장이 AI 투자를 가속하고 AI 생산성이 명목 GDP를 키우면 부채/GDP 비율이 자연 하락한다. 이는 "준비금 동결 + 명목 GDP 성장으로 reserves/GDP 자연 감소"라는 가설과 구조적으로 맞물린다.</p>
+
+<h2>7. 글로벌 정책 수렴 — 중국도 컴퓨트를 정책 도구로 쓴다</h2>
+
+<p>이것은 미국만의 현상이 아니다. 중국 베이징시는 이미 <strong>"연산력 바우처"</strong> 정책을 시행 중인데, 기업 보조금 기준을 GPU 보유량이 아니라 실제 호출량·토큰 소비량(연산력)으로 전환했다. 컴퓨트가 정책 도구로 글로벌하게 인정받기 시작한 것이다.</p>
+
+<p>만약 이 수렴이 <strong>위안화 표시 컴퓨트 시장</strong>으로 이어지면 Compute Dollar의 독점성은 약화된다. 다만 위안화의 구조적 한계가 제약으로 작동한다.</p>
+
+<div class="note warn">
+  <strong>위안화의 구조적 한계</strong> — CPS(위안 결제 시스템) 일평균 처리량 1조 위안 vs CHIPS(달러 결제 시스템) 22조 달러. 국제무역 위안화 비중 &lt;3%(USD ~50%). 위안 역외 유동성 $2,300억 vs USD $15조. 무엇보다 <strong>자본 통제</strong>로 외국인 투자자의 자유로운 진출입이 불가능하다. 페트로위안이 실패한 것과 같은 제약이 컴퓨트 위안에도 적용될 가능성이 높다.
+</div>
+
+<h2>8. 기업 영향 — AI 인프라(IREN) · 토큰화 인프라(SECZ)</h2>
+
+<h3>AI 인프라 기업 (IREN)</h3>
+<p>가격 벤치마크가 형성되면 AI 인프라 기업은 여러 층위에서 영향을 받는다.</p>
+
+<div class="table-wrap">
+<table>
+  <tr><th>차원</th><th>방향</th><th>메커니즘</th></tr>
+  <tr><td>밸류에이션 정량화</td><td><span class="tag tag-g">호재</span></td><td>벤치마크 가격 → ARR·매출 단가 객관 검증. "내러티브 → 숫자" 전환</td></tr>
+  <tr><td>자금 조달 혁신</td><td><span class="tag tag-g">강한 호재</span></td><td>컴퓨트 = 담보 자산 → GPU 파이낸싱 금리 인하 + 프로젝트 파이낸싱 신규 경로</td></tr>
+  <tr><td>효율성 프리미엄</td><td><span class="tag tag-g">호재</span></td><td>"보유량 &lt; 연산 효율"로 가치 기준 이동 → 풀스택 managed services 프리미엄 가시화</td></tr>
+  <tr><td>장기 계약 재평가</td><td><span class="tag tag-y">양면</span></td><td>고정가 계약의 상방 포기 vs 현금흐름 예측 가능성 프리미엄</td></tr>
+  <tr><td>경쟁 투명화</td><td><span class="tag tag-y">경계</span></td><td>$/MW 단가 직접 비교 → 가격 경쟁 심화, 비효율 사업자 도태 가속</td></tr>
+</table>
+</div>
+
+<p>원유 선물 등장 후 석유 메이저가 취한 전략(장기 공급 계약으로 기본 물량 안정 + 잔여 물량은 spot으로 상방 포착)을 AI 인프라 기업도 답습할 가능성이 높다. 즉 대규모 장기 계약으로 자금 구조를 안정시키면서 미계약 잔여 용량은 선물 벤치마크 기반 단기·spot으로 상방을 포착하는 구도다. Silicon Data 측이 말한 "불투명한 운영비를 성숙한 리스크 관리형 금융시장으로 전환"한다는 메시지는, AI 인프라 투자가 성숙 단계로 진입하는 신호로 읽힌다.</p>
+
+<h3>토큰화 인프라 기업 (SECZ)</h3>
+<p>컴퓨트 선물이 토큰화될 경우, RWA(실물자산) 토큰화 플랫폼에는 두 갈래 잠재 호재가 있다.</p>
+<ul>
+  <li><strong>TAM 확장</strong> — 기존 토큰화 대상(레포 $4.5T + MMF $8.27T + RWA $26B)에 컴퓨트 시장 $1T+가 추가되면, 토큰화 대상이 "금융 자산"에서 "산업 원자재형 자산"으로 확장되는 전환점이 된다.</li>
+  <li><strong>AI 에이전트 유스케이스</strong> — AI 에이전트가 컴퓨트를 실시간 조달하는 시대가 오면, 에이전트가 선물 시장에서 컴퓨트를 자동 매매하고 결제는 스테이블코인(x402 프로토콜에서 USDC가 이미 99.8% 점유)으로, 거래는 규제 준수 프레임(s402)으로, 소유권 기록은 Vault Registrar로 이뤄지는 조합이 자연스러운 실전 적용이 된다.</li>
+</ul>
+
+<div class="note warn">
+  <strong>현실화 3조건</strong> — 이 잠재 호재가 실제 매출로 연결되려면 ① CFTC가 토큰화 선물 결제를 명시적으로 허용 ② 기관 참여자가 온체인 결제를 선호(비용·속도 우위 입증) ③ DeFi 담보 수요가 청산 수요를 보완 — 세 가지가 동시에 충족돼야 한다. 현재는 ①만 초기 단계이며, <strong>직접 매출 영향은 아직 0</strong>이다.
+</div>
+
+<h2>9. 모니터링 — 강화·약화 시그널과 변곡점</h2>
+
+<div class="two-col">
+  <div class="card" style="border-left:4px solid var(--green)">
+    <h4 style="color:var(--green)">가설 강화 시그널</h4>
+    <ul>
+      <li>CME·ICE 컴퓨트 선물 CFTC 정규 승인 (2026 H2)</li>
+      <li>CFTC 토큰화 증거금 공식 허용</li>
+      <li>컴퓨트 선물 OI $10B+ 돌파</li>
+      <li>Round One GPUX ETF 상장 + AUM 성장</li>
+      <li>The Compute Exchange 스팟 시장 출시</li>
+      <li>비미국 거래소(SGX·HKEX·Eurex)의 USD 컴퓨트 선물</li>
+    </ul>
+  </div>
+  <div class="card" style="border-left:4px solid var(--red)">
+    <h4 style="color:var(--red)">가설 약화 시그널</h4>
+    <ul>
+      <li>중국의 위안화 표시 컴퓨트 벤치마크·선물</li>
+      <li>CME·ICE 선물 OI 장기 정체 (&lt;$1B)</li>
+      <li>GPU 임대료 장기 하락 (공급 과잉)</li>
+      <li>CFTC의 토큰화 결제·담보 명시적 거부</li>
+      <li>EU·인도의 non-USD 컴퓨트 거래 플랫폼</li>
+    </ul>
+  </div>
+</div>
+
+<div class="table-wrap">
+<table>
+  <tr><th>시점</th><th>이벤트</th><th>체크 항목</th></tr>
+  <tr><td>2026 H2</td><td>CME·ICE 선물 상장</td><td>CFTC 승인 여부, 초기 OI·거래량</td></tr>
+  <tr><td>2026 Q4</td><td>GPUX ETF 상장</td><td>AUM 성장 속도, 개인 투자자 반응</td></tr>
+  <tr><td>2027 H1</td><td>Silicon Data forward curve 시장 반응</td><td>OTC 선도 거래량, 기관 참여도</td></tr>
+  <tr><td>2027–28</td><td>CFTC 토큰화 증거금 규칙</td><td>스테이블코인·토큰화 MMF 허용 범위</td></tr>
+  <tr><td>2028+</td><td>비미국 거래소 USD 컴퓨트 선물</td><td>글로벌 확산 속도</td></tr>
+</table>
+</div>
+
+<h2>맺음 — 체온계의 눈금</h2>
+<p>과거 원유 가격이 세계 경제의 체온계였다면, 앞으로는 컴퓨트 가격이 AI 경제의 체온계가 될 수 있다. 그리고 그 체온계가 달러로 눈금이 매겨진다는 것 — 이것이 Compute Dollar 가설의 본질이다. 페트로달러처럼 물리적 강제력에 기반한 체제는 아닐 것이다. 그러나 유동성 집중·벤치마크 관성·규제 프레임, 그리고 스테이블코인과의 상호 강화라는 네 힘이 "선택"을 "관성"으로 굳힐 여지는 열려 있다. 2026년 하반기 CFTC의 승인 결정과 함께, 그 가능성의 크기가 처음으로 측정될 것이다.</p>
+
+<!-- ③ 관찰 시점 -->
+<div class="asof">
+  <strong>관찰 시점</strong> — 본 정리는 2026년 5월 기록(CME 5.12·ICE 5.19 발표 직후)을 기준으로 한다. 규모·정량 추정치와 규제 상태(CFTC 심사 대기, GENIUS Act 등)는 모두 당시 기준이며, 이후 변동됐을 수 있다.
+</div>
+
+<!-- ④ 출처 -->
+<h2 style="font-size:1.05rem;margin-top:40px;">출처</h2>
+<p class="src">
+  CME Group 보도자료 (2026.5.12): <a href="https://www.cmegroup.com/media-room/press-releases/2026/5/12/cme_group_and_silicondatapartnertolaunchfirstcomputefutures.html">cmegroup.com</a><br>
+  ICE 보도자료 (2026.5.19): <a href="https://ir.theice.com/press/news-details/2026/ICE-and-Ornn-to-Launch-GPU-Compute-Futures-Contracts/default.aspx">theice.com</a><br>
+  페트로달러 재해석 참조: CSIS, Paul Blustein.
+</p>
+
+<!-- ⑤ 푸터 -->
+<footer>
+  본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.
+</footer>
+
+</body>
+</html>
