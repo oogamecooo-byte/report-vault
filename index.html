@@ -40,9 +40,12 @@ footer{margin-top:34px;font-size:12px;color:#7A867C;text-align:center;line-heigh
 <div class="layout">
 <aside id="nav"><button class="nav all active" data-kind="all"><span class="nm">전체</span><span class="ct">47</span></button>
 <div class="grp">메인 커버리지</div>
-<button class="nav pin" data-kind="topic" data-value="IREN"><span class="bd" style="background:#2F7D5B">IREN</span><span class="nm">IREN</span><span class="ct">2</span></button>
-<button class="nav pin" data-kind="topic" data-value="SECZ"><span class="bd" style="background:#8A6D2F">SECZ</span><span class="nm">SECZ</span><span class="ct">1</span></button>
-<button class="nav pin" data-kind="topic" data-value="스크리닝"><span class="bd" style="background:#3E5C8A">SCAN</span><span class="nm">Daily Screening</span><span class="ct">1</span></button>
+<button class="nav pin" data-kind="pin" data-topic="IREN 인프라" data-stage-is="" data-stage-not=""><span class="bd" style="background:#1E5F45">IREN</span><span class="nm">IREN 인프라</span><span class="ct">1</span></button>
+<button class="nav pin" data-kind="pin" data-topic="IREN" data-stage-is="" data-stage-not="Monitoring"><span class="bd" style="background:#2F7D5B">IREN</span><span class="nm">IREN 중요</span><span class="ct">0</span></button>
+<button class="nav pin" data-kind="pin" data-topic="IREN" data-stage-is="Monitoring" data-stage-not=""><span class="bd" style="background:#6FA98C">IREN</span><span class="nm">IREN 루틴</span><span class="ct">1</span></button>
+<button class="nav pin" data-kind="pin" data-topic="SECZ" data-stage-is="" data-stage-not="Monitoring"><span class="bd" style="background:#8A6D2F">SECZ</span><span class="nm">SECZ 중요</span><span class="ct">0</span></button>
+<button class="nav pin" data-kind="pin" data-topic="SECZ" data-stage-is="Monitoring" data-stage-not=""><span class="bd" style="background:#B79A5E">SECZ</span><span class="nm">SECZ 루틴</span><span class="ct">1</span></button>
+<button class="nav pin" data-kind="pin" data-topic="스크리닝" data-stage-is="" data-stage-not=""><span class="bd" style="background:#3E5C8A">SCAN</span><span class="nm">Daily Screening</span><span class="ct">1</span></button>
 <div class="grp">보기</div>
 <button class="nav" data-kind="stage" data-value="Monitoring"><span class="bd" style="background:#2f9e8f">MO</span><span class="nm">Monitoring</span><span class="ct">7</span></button>
 <button class="nav" data-kind="stage" data-value="Research"><span class="bd" style="background:#a98ee0">RS</span><span class="nm">Research</span><span class="ct">14</span></button>
@@ -281,9 +284,9 @@ footer{margin-top:34px;font-size:12px;color:#7A867C;text-align:center;line-heigh
   <span class="meta">Research · AI Bio</span><span class="date">2026-07-21</span></div>
   <div class="title">AI 바이오 산업 지도 — 파이프라인 병목과 가치포획 논쟁</div>
   <div class="sum">AI 신약개발 산업이 어떻게 작동하고 어디가 병목인지, 그리고 가치는 어느 층에 쌓이는지 정리.</div>
-</a><a class="card" data-stage="Analysis" data-topic="IREN" href="reports/2026-07-20_iren-infrastructure-status.html">
+</a><a class="card" data-stage="Analysis" data-topic="IREN 인프라" href="reports/iren-infrastructure.html">
   <div class="row"><span class="bd sm" style="background:#e06c5f">AN</span>
-  <span class="meta">Analysis · IREN</span><span class="date">2026-07-20</span></div>
+  <span class="meta">Analysis · IREN 인프라</span><span class="date">2026-07-20</span></div>
   <div class="title">IREN 인프라 현황 — 시각 대시보드</div>
   <div class="sum">IREN(NASDAQ:IREN) 인프라 현황을 1차 공시만으로 정리한 시각 대시보드 — 전력 5GW·사이트별 상태·ARR·자금조달을 3등급(확정/목표/미공개)으로 표기.</div>
 </a></div>
@@ -293,21 +296,31 @@ footer{margin-top:34px;font-size:12px;color:#7A867C;text-align:center;line-heigh
 </div>
 <script>
 const navs=[...document.querySelectorAll('.nav')],cards=[...document.querySelectorAll('.card')],q=document.getElementById('q'),now=document.getElementById('now'),cnt=document.getElementById('cnt');
-let sel={kind:'all',value:null,label:'전체'};
+let sel={kind:'all',label:'전체'};
+function okSel(c){
+  if(sel.kind==='all') return true;
+  if(sel.kind==='stage') return c.dataset.stage===sel.value;
+  if(sel.kind==='pin'){
+    if(c.dataset.topic!==sel.topic) return false;
+    if(sel.stageIs && c.dataset.stage!==sel.stageIs) return false;
+    if(sel.stageNot && c.dataset.stage===sel.stageNot) return false;
+    return true;
+  }
+  return true;
+}
 function apply(){
   const t=q.value.trim().toLowerCase();let n=0;
   cards.forEach(c=>{
-    const okSel = sel.kind==='all'
-      || (sel.kind==='topic' && c.dataset.topic===sel.value)
-      || (sel.kind==='stage' && c.dataset.stage===sel.value);
     const okT = !t || c.textContent.toLowerCase().includes(t) || (c.dataset.topic||'').toLowerCase().includes(t);
-    const show = okSel && okT; c.style.display = show?'':'none'; if(show)n++;
+    const show = okSel(c) && okT; c.style.display = show?'':'none'; if(show)n++;
   });
   now.textContent = sel.label; cnt.textContent = n+'건';
 }
 navs.forEach(b=>b.onclick=()=>{
   navs.forEach(x=>x.classList.remove('active')); b.classList.add('active');
-  sel={kind:b.dataset.kind, value:b.dataset.value||null, label:(b.querySelector('.nm')?.textContent||'전체')};
+  sel={kind:b.dataset.kind, value:b.dataset.value||null,
+        topic:b.dataset.topic||null, stageIs:b.dataset.stageIs||null, stageNot:b.dataset.stageNot||null,
+        label:(b.querySelector('.nm')?.textContent||'전체')};
   apply();
 });
 q.oninput=apply;
