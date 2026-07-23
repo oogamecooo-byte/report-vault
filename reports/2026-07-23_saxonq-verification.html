@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaxonQ 512큐비트 상온 양자 프로세서 주장 — 1차 자료 교차검증 | 2026-07-23</title>
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="양자">
+<meta name="vault-date" content="2026-07-23">
+<meta name="description" content="독일 삭손큐(SaxonQ)의 '512큐비트 상온 양자 프로세서 출시' 보도를 공식 백서 2편·arXiv·회사 사이트로 교차검증. 실제 데모는 2코어×4~5큐비트(≈10큐비트), 512는 2027 로드맵·다중코어 집계, arXiv 장비 논문 0건 — 기사 프레임과 1차 자료의 격차를 정리.">
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --page-bg: #EBE4D3;
+    --card-bg: #FDF6E3;
+    --ink: #1f2328;
+    --ink-2: #57534a;
+    --ink-3: #8a8578;
+    --accent: #1a73e8;
+    --accent-dark: #174ea6;
+    --line: #e8e1cf;
+    --line-2: #d9d0b8;
+    --up: #137333;
+    --down: #b3261e;
+    --quote-bg: #f7efd8;
+    --warn-ink: #5c4a00;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--page-bg);
+    color: var(--ink);
+    font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Pretendard", -apple-system, sans-serif;
+    line-height: 1.75;
+    padding: 28px 16px 60px;
+    font-size: 16px;
+  }
+  .card {
+    max-width: 960px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 2px 14px rgba(90, 75, 40, 0.10);
+    padding: 46px 52px 56px;
+  }
+  @media (max-width: 700px) { .card { padding: 28px 20px 40px; } body { padding: 12px 6px 30px; } }
+
+  .rpt-kicker { color: var(--accent-dark); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.08em; margin-bottom: 8px; }
+  h1 { font-size: 1.68rem; line-height: 1.35; font-weight: 800; margin-bottom: 10px; }
+  .rpt-sub { color: var(--ink-2); font-size: 0.95rem; margin-bottom: 18px; }
+  .rpt-meta { font-size: 0.85rem; color: var(--ink-3); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 10px 2px; margin-bottom: 30px; }
+  .rpt-meta a { color: var(--accent); text-decoration: none; }
+  .rpt-meta a:hover { text-decoration: underline; }
+
+  .toc { background: var(--quote-bg); border: 1px solid var(--line-2); border-radius: 10px; padding: 18px 24px; margin-bottom: 38px; font-size: 0.93rem; }
+  .toc b { display: block; margin-bottom: 6px; }
+  .toc a { color: var(--accent-dark); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .toc ol { margin-left: 20px; }
+
+  h2.sec { font-size: 1.3rem; font-weight: 800; border-left: 5px solid var(--accent); padding-left: 12px; margin: 52px 0 18px; }
+  h3.tr-h { font-size: 1.08rem; font-weight: 800; margin: 30px 0 10px; color: var(--accent-dark); }
+  p { margin-bottom: 13px; }
+  .muted { color: var(--ink-2); font-size: 0.9rem; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin: 18px 0 8px; }
+  .stat { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px 12px; }
+  .stat .lbl { font-size: 0.78rem; color: var(--ink-3); font-weight: 600; margin-bottom: 2px; }
+  .stat .val { font-size: 1.3rem; font-weight: 800; line-height: 1.2; }
+  .stat .sub { font-size: 0.8rem; color: var(--ink-2); margin-top: 2px; }
+  .d-up { color: var(--up); font-weight: 700; }
+  .d-down { color: var(--down); font-weight: 700; }
+
+  .tbl-wrap { overflow-x: auto; margin: 14px 0 20px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; background: #fff; border: 1px solid var(--line); }
+  th { background: #f3ecd4; text-align: left; padding: 9px 12px; border-bottom: 2px solid var(--line-2); font-size: 0.84rem; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  td.c { text-align: center; white-space: nowrap; }
+
+  ul.sum { margin: 0 0 16px 22px; }
+  ul.sum li { margin-bottom: 9px; }
+  ul.pts { margin: 0 0 16px 22px; }
+  ul.pts li { margin-bottom: 7px; }
+
+  .callout { border-radius: 10px; padding: 15px 20px; margin: 18px 0; font-size: 0.94rem; }
+  .callout.red { background: #fbecea; border: 1px solid #e6b8b1; }
+  .callout.amber { background: var(--quote-bg); border: 1px solid var(--line-2); }
+  .callout.green { background: #eaf4ec; border: 1px solid #b8d8bf; }
+  .callout b { color: var(--ink); }
+
+  .verdict { background: var(--quote-bg); border-left: 4px solid var(--accent); border-radius: 0 10px 10px 0; padding: 16px 20px; margin: 16px 0; }
+  .flip { font-size: 0.85rem; color: var(--warn-ink); font-weight: 600; }
+
+  .footer { margin-top: 44px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 0.82rem; color: var(--ink-3); }
+  .footer a { color: var(--accent); }
+
+  @media print {
+    body { background: #ffffff; padding: 0; }
+    .card { box-shadow: none; border: none; background: #ffffff; max-width: 100%; padding: 10mm; }
+    .stat, table, .callout { background: #ffffff; }
+    .quote, .toc, .verdict { background: #f8f5ec; }
+  }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <div class="rpt-kicker">RESEARCH · 양자 · 1차 자료 교차검증</div>
+  <h1>SaxonQ "512큐비트 상온 양자 프로세서 출시" 보도<br>— 공식 백서·arXiv 교차검증</h1>
+  <div class="rpt-sub">SaxonQ GmbH (독일 라이프치히 · 비상장) | 다이아몬드 NV 센터 · 상온 양자컴퓨팅 | 검증·정리: Claude · 2026-07-23</div>
+  <div class="rpt-meta">
+    검증 대상 보도: <a href="https://www.qdaily.co.kr/news/articleView.html?idxno=635" target="_blank">퀀텀데일리 — "삭손큐, 512큐비트 상온 양자 프로세서 출시"</a> (2026-07-22)
+    &nbsp;·&nbsp; 1차 자료: 삭손큐 공식 백서 2편 · arXiv · saxonq.com
+  </div>
+
+  <div class="toc">
+    <b>목차</b>
+    <ol>
+      <li><a href="#s1">한 장 요약</a></li>
+      <li><a href="#s2">검증한 1차 자료</a></li>
+      <li><a href="#s3">삭손큐는 어떤 회사인가</a></li>
+      <li><a href="#s4">다이아몬드 NV 모달리티 — 원리와 병목</a></li>
+      <li><a href="#s5">기사 주장 vs 1차 자료 (교차검증표)</a></li>
+      <li><a href="#s6">세 가지 핵심 발견</a></li>
+      <li><a href="#s7">종합 판정 · 해석·시사점</a></li>
+      <li><a href="#s8">추적 트리거 (falsifier)</a></li>
+    </ol>
+  </div>
+
+  <!-- 1 -->
+  <h2 class="sec" id="s1">1. 한 장 요약</h2>
+  <div class="stat-grid">
+    <div class="stat"><div class="lbl">실제 데모된 하드웨어</div><div class="val">2코어 × 4~5큐비트</div><div class="sub">≈10큐비트 (Gen3, 2026 스펙시트)</div></div>
+    <div class="stat"><div class="lbl">"512큐비트" (SXQ512)</div><div class="val">2027년 2분기 로드맵</div><div class="sub">출시 아님 · 다중코어 집계</div></div>
+    <div class="stat"><div class="lbl">2큐비트 게이트 충실도(실측)</div><div class="val">0.97</div><div class="sub">기사의 "99.92%"는 1큐비트 최고값</div></div>
+    <div class="stat"><div class="lbl">"SaxonQ" arXiv 장비 논문</div><div class="val">0건</div><div class="sub">피어리뷰 검증 부재</div></div>
+  </div>
+  <ul class="sum">
+    <li><b>기사의 핵심 프레임이 1차 자료와 어긋난다.</b> 퀀텀데일리는 삭손큐의 <b>2026년 7월 백서·제품페이지 공개</b>를 "512큐비트 프로세서 출시"로 옮겼으나, 회사 스스로 밝힌 <b>검증·데모 하드웨어는 2코어 × 큐비트 4~5개(≈10큐비트)</b>다. SXQ512는 <b>2027년 2분기 로드맵 제품</b>이다.</li>
+    <li><b>"512큐비트"는 하나로 얽힌 프로세서가 아니다.</b> 소형 코어(코어당 수 큐비트)를 <b>고전 회로 커팅으로 이어붙인 다중코어 집계</b>이며, 완전한 얽힘은 코어 내부에서만 일어난다 — 회사 백서가 직접 명시한다.</li>
+    <li><b>충실도 숫자는 이중장부.</b> 기사의 "99.92%"는 <b>핵스핀 1큐비트 게이트 3개 중 최고값</b>(나머지 99.69%)이고, 실제 <b>2큐비트 게이트 충실도는 0.97(97%)</b>이다. 백서의 화려한 표(0.9993 등)는 자기 장비가 아니라 <b>외부 학술 문헌 인용값</b>이다.</li>
+    <li><b>피어리뷰 장비 논문이 없다.</b> arXiv에서 "SaxonQ" 검색 결과 <b>0건</b>. 실제 NV 과학자(Pezzagna·Meijer)의 논문 39편은 단일 결함·양자네트워크 물리이지 다중큐비트 NV 프로세서가 아니다.</li>
+    <li>🟢 <b>단, 삭손큐는 사기(vaporware)가 아니다.</b> 세계급 NV 이온주입 과학자·실제 특허 220+·DLR/프라운호퍼 실납품·공개 라이브 데모가 있는 <b>진짜지만 초기 단계</b> 회사다. 문제는 회사의 정직성이 아니라 <b>한국 보도의 프레이밍</b>이다.</li>
+  </ul>
+
+  <!-- 2 -->
+  <h2 class="sec" id="s2">2. 검증한 1차 자료</h2>
+  <ul class="pts">
+    <li>백서① <a href="https://www.saxonq.com/wp-content/uploads/2026/07/SaxonQ-Whitpaper-QC2026-web.pdf" target="_blank">The SaxonQ QC2026 Dual Core Quantum Computer</a> (Kneiß·Gemsheim·Grundmann, 2026.07) — 실측 스펙시트 수록</li>
+    <li>백서② <a href="https://www.saxonq.com/wp-content/uploads/2026/07/SaxonQ-Whitepaper-Advantages-of-NV-Technology.pdf" target="_blank">The Unique Advantages of NV Technology</a> (Grundmann, 2025) — 충실도·확장성·로드맵</li>
+    <li>arXiv <a href="https://arxiv.org/search/?searchtype=all&query=SaxonQ" target="_blank">전체검색 "SaxonQ" → 0건</a> / <a href="https://arxiv.org/search/?searchtype=author&query=Pezzagna%2C+S" target="_blank">저자 Pezzagna, S → 39건</a> (단일 결함·양자네트워크·타 색중심)</li>
+    <li>회사 사이트 <a href="https://saxonq.com" target="_blank">saxonq.com</a> — 제품 로드맵·뉴스룸·"제품 사양"</li>
+  </ul>
+
+  <!-- 3 -->
+  <h2 class="sec" id="s3">3. 삭손큐는 어떤 회사인가</h2>
+  <p>삭손큐(SaxonQ GmbH)는 <b>독일 라이프치히대 스핀오프</b>(비상장)로, 극저온 냉각 없이 <b>상온(293K)에서 작동하는 다이아몬드 NV 센터 양자컴퓨터</b>를 만든다. CEO는 반도체물리 교수 마리우스 그룬드만이고, 실제 NV 이온주입 기술의 뿌리는 라이프치히대의 얀 마이어·세바스티앙 페차냐 그룹이다. 특허 220건+, 하노버 메세 공개 라이브 데모(2025·2026), DLR(독일항공우주센터)·프라운호퍼 IWU 실납품, Bechtle 인증 파트너(2026-06), 철학자·딥테크 투자자 Anders Indset 지분 참여(2026-04) 등 <b>실체가 있는 조직</b>이다.</p>
+  <p class="muted">제품 계보: <b>SXQ4</b>(4큐비트, 2023~2025 인도 완료·"데스크톱 양자컴") → <b>SXQ128</b>(주문가능·3개월 인도) → <b>SXQ512</b>(2027 2분기) → <b>SXQ10k</b>(2030+·"칩스케일 1만 큐비트"). 즉 <b>실제 인도·검증된 것은 SXQ4(4큐비트)</b>이고 나머지는 주문·로드맵 단계다.</p>
+
+  <!-- 4 -->
+  <h2 class="sec" id="s4">4. 다이아몬드 NV 모달리티 — 원리와 병목</h2>
+  <p>다이아몬드는 탄소 격자다. 탄소 자리 하나를 <b>질소(N)</b>가 대체하고 바로 옆이 <b>비어(공극·V)</b> 있는 결함이 <b>NV 센터</b>로, 다이아몬드에 박힌 인공 원자처럼 행동한다. 큐비트는 그 전자의 <b>스핀</b>(m<sub>s</sub>=0/±1)이며, 초록 레이저로 초기화하고 마이크로파(≈2.87GHz)로 게이트를 걸고 형광으로 읽는다.</p>
+  <p><b>상온이 되는 이유</b> = 다이아몬드 격자가 극도로 단단해(디바이 온도 ~2,200K) 스핀을 흩는 격자 진동이 상온에서도 억제되고, 주 동위원소 탄소-12는 핵스핀이 0이라 환경이 "조용"하다. 그래서 스핀 결맞음이 상온에서도 밀리초급이다. 초전도 큐비트가 15밀리켈빈을 쓰는 것과 대조되는 유일무이한 장점이다.</p>
+  <div class="callout amber"><b>근본 병목:</b> NV 센터를 많이 <b>만드는 것</b>과 그것들을 서로 <b>얽는 것</b>은 완전히 다른 문제다. NV끼리 2큐비트 게이트를 걸려면 나노미터급 정밀 배치(제조 난제)이거나 광자 연결(상온에서 광 결맞음 저하)이 필요하다. 그래서 NV 계산은 그동안 코어당 ~10큐비트 벽에 막혀 있었다. 아래 §6의 "다중코어 집계"는 정확히 이 병목을 우회하려는 설계다.</div>
+
+  <!-- 5 -->
+  <h2 class="sec" id="s5">5. 기사 주장 vs 1차 자료 (교차검증표)</h2>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>기사 주장</th><th>1차 자료 검증</th><th class="c">판정</th></tr></thead>
+    <tbody>
+      <tr><td>"512큐비트 상온 프로세서 <b>출시</b>"</td><td>SXQ512 = <b>2027년 2분기 로드맵</b>. 실제 데모(Gen3, 2026)는 2코어 × 4~5큐비트</td><td class="c">❌ 오독</td></tr>
+      <tr><td>"100큐비트+ 세계 최초 개발·상용화"</td><td>100+는 로드맵(2026 목표 120). 스펙시트 실측은 코어당 4~5큐비트</td><td class="c">❌ 미검증</td></tr>
+      <tr><td>"게이트 충실도 <b>99.92%</b>, 1000연산당 오류 1개 미만"</td><td>99.92% = 핵스핀 <b>1큐비트</b> 게이트 3개 중 최고값(나머지 99.69%). 실제 <b>2큐비트 게이트는 0.97</b></td><td class="c">⚠️ 체리피킹</td></tr>
+      <tr><td>"황 동시 주입으로 <b>큐비트 수율 85%+</b>"</td><td>백서에 85% 수치 <b>없음</b>. 황 코도핑의 실제 목적은 <b>NV⁻ 전하상태 안정화</b>(수율 아님). 백서는 "high creation yield"를 아직 <b>풀 과제</b>로 명시</td><td class="c">❌ 오귀속</td></tr>
+      <tr><td>"GPU 대비 에너지 6~10배 절감"</td><td>백서엔 정량 비교 없음. 시스템 소비전력 <b>~600W</b> 명시만</td><td class="c">⚠️ 미확인</td></tr>
+      <tr><td>"30년 제조 공정 문제 <b>완벽 해결</b>"(CEO)</td><td>백서 자체 문장: "NV 시스템은 <b>현재 소규모 데모에 한정</b>"·"코어당 큐비트 확장은 <b>여전히 도전 과제</b>"</td><td class="c">❌ 자기모순</td></tr>
+      <tr><td>특허 220+ / DLR·프라운호퍼 납품 / SXQ128 3개월·SXQ512 2027 Q2 / 1만 큐비트 2030 목표</td><td>사이트·백서 로드맵과 일치</td><td class="c">✅ 사실</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted">단, ✅로 확인된 납품(DLR·프라운호퍼)은 <b>4큐비트급 SXQ4/초기 세대</b> 시스템이지 512큐비트가 아니다.</p>
+
+  <!-- 6 -->
+  <h2 class="sec" id="s6">6. 세 가지 핵심 발견</h2>
+
+  <h3 class="tr-h">① "512큐비트"의 정체 — 하나로 얽힌 게 아니다</h3>
+  <p>백서의 자체 로드맵 표를 그대로 옮기면, "총 큐비트"는 (NV 전자 + 주변 핵스핀) × 코어 수의 <b>집계</b>다.</p>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>항목</th><th class="c">2023</th><th class="c">2025</th><th class="c">2026</th><th class="c">2027</th><th class="c">2030</th></tr></thead>
+    <tbody>
+      <tr><td>NV 개수</td><td class="c">1</td><td class="c">2</td><td class="c">3</td><td class="c">4</td><td class="c">&gt;8</td></tr>
+      <tr><td>NV당 핵</td><td class="c">3</td><td class="c">5</td><td class="c">9</td><td class="c">10</td><td class="c">&gt;10</td></tr>
+      <tr><td><b>코어당 큐비트</b></td><td class="c">4</td><td class="c">12</td><td class="c">30</td><td class="c">&gt;40</td><td class="c">&gt;80</td></tr>
+      <tr><td><b>코어 수</b></td><td class="c">1</td><td class="c">2</td><td class="c">4</td><td class="c">32</td><td class="c">128</td></tr>
+      <tr><td>총 큐비트</td><td class="c">4</td><td class="c">24</td><td class="c">120</td><td class="c">&gt;1,000</td><td class="c">&gt;10,000</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>완전한 얽힘은 <b>코어 안(현재 4~5개)에서만</b> 일어나고, 코어끼리는 <b>고전 회로 커팅</b>으로 연결된다. 백서도 "다중코어는 <b>분리 가능한/약하게 결합된 문제에만 적합</b>"·"고도로 얽힌 문제엔 확장 안 됨"이라고 직접 쓴다. 즉 삭손큐식 "512큐비트" ≈ <b>수십 개의 소형(≤수십 큐비트) 양자컴을 병렬로 돌리며 고전 접착제로 잇는 구조</b>이지, 단일 512큐비트 얽힘 레지스터가 아니다. <b>주의:</b> 같은 백서의 실측 스펙시트는 2026년 현세대를 "코어당 4~5큐비트, 2코어"로 적어, 로드맵 표의 "2026년 코어당 30·총 120"과 <b>6배 넘게 어긋난다</b>(로드맵=열망, 스펙=실측).</p>
+
+  <h3 class="tr-h">② 충실도의 이중장부 — 문헌 인용값 vs 자기 장비</h3>
+  <p>백서②의 화려한 표(NV 0.99995 / NV-N 0.9993 등)에는 각주 [1][2][3]가 붙어 있고, 이는 <b>외부 학술 문헌(최고 실험실 기록)</b>이다. 반면 백서①의 스펙시트가 밝힌 <b>자기 장비(Gen3) 실측</b>은 1큐비트 게이트 최대 0.9992, <b>2큐비트 게이트 0.97</b>이다. 기사는 문헌 최고값과 1큐비트 최고값만 골라 붙였다. 참고로 백서의 ">0.99 다중큐비트"는 본문에 <b>"시뮬레이션"</b>이라고 명시돼 있다.</p>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>구분</th><th>1큐비트 게이트</th><th>2큐비트 게이트</th><th>출처</th></tr></thead>
+    <tbody>
+      <tr><td>백서② "충실도" 표</td><td class="c">NV 0.99995</td><td class="c">NV-N 0.9993</td><td>외부 문헌 인용 [1][2][3]</td></tr>
+      <tr><td><b>백서① 자기 장비 실측(Gen3)</b></td><td class="c">up to 0.9992</td><td class="c"><b>0.97</b></td><td>SaxonQ 스펙시트</td></tr>
+      <tr><td>랜덤 벤치마킹(핵스핀 1Q)</td><td class="c">q0 99.69 / q1 99.69 / <b>q2 99.92</b></td><td class="c">—</td><td>백서① 그래프</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 class="tr-h">③ arXiv 장비 논문 부재</h3>
+  <p>"SaxonQ" arXiv 검색은 <b>0건</b>이다. 실제 NV 과학자 페차냐·마이어(라이프치히대)는 39편의 논문이 있으나 모두 <b>단일 색중심·양자네트워크·타 색중심(니켈공극·실리콘 G센터·산소 ST1)</b> 물리이지, <b>다중큐비트 NV 프로세서 특성화 논문은 없다</b>. 가장 최근 논문(2026-07)조차 확장성이 "여전히 핵심 병목"이라고 인정한다. 512큐비트급 장비를 뒷받침하는 <b>피어리뷰 근거가 존재하지 않으며</b>, 실측 스펙(2코어·RB 충실도)은 오직 마케팅 백서에만 있다.</p>
+
+  <!-- 7 -->
+  <h2 class="sec" id="s7">7. 종합 판정 · 해석·시사점</h2>
+  <div class="verdict">
+    <p style="margin-bottom:6px;"><b>판정:</b> 실체는 <b>"신뢰할 만한 ~10물리큐비트 상온 시제품 + 공격적 다중코어 로드맵 + 피어리뷰 장비 논문 0"</b>이다. 회사는 진짜지만 <b>초기 단계</b>이고, 한국 보도가 로드맵을 "출시"로, 최고 1큐비트값을 "시스템 충실도"로, 미검증 수율(85%)을 사실로 바꿔 부풀렸다.</p>
+    <p class="flip" style="margin-bottom:0;">⚠️ 당초 "출처 불명 PR 숫자 마케팅(회사 신뢰성 의심)"으로 봤으나, 백서가 이례적으로 정직하게 "소규모 데모 한정"·"측정 vs 시뮬레이션"을 구분하는 점을 확인 → <b>"회사는 정직·초기 단계, 과장은 기사 프레이밍"으로 수정</b>.</p>
+  </div>
+  <p><b>Steelman(회사 편):</b> 소형 코어를 다중화하는 설계는 지적으로 정직한 엔지니어링 베팅이다. 이미지 분류·일부 ML처럼 <b>분리 가능한 문제</b>엔 거대 얽힘 레지스터가 실제로 불필요하고, 상온·엣지 배치는 초전도·이온트랩이 못 따라오는 진짜 차별점이다. 다이아몬드 NV의 상용 성공은 <b>대형 범용 양자컴이 아니라 상온 엣지·양자 센싱</b>에 있을 가능성이 높다.</p>
+  <p><b>양자 섹터 함의:</b> 삭손큐가 스스로 "코어 간 확장은 고전 회로 커팅뿐"이라고 인정한 대목은, <b>네이티브 다체(多體) 얽힘·전(全)연결을 확보한 중성원자·이온트랩 모달리티의 상대적 우위 논거를 오히려 강화</b>한다. "상온이라 냉각이 필요 없다"는 서사가 곧 "대규모 얽힘에 유리하다"를 뜻하지 않는다는 점 — 개수(count)가 아니라 <b>연결성·논리큐비트·충실도</b>가 가치를 정한다는 원칙을 재확인시키는 사례다.</p>
+
+  <!-- 8 -->
+  <h2 class="sec" id="s8">8. 추적 트리거 (falsifier)</h2>
+  <p class="muted">아래 신호가 충족되면 삭손큐 서사는 "마케팅 백서"에서 "검증된 돌파"로 재분류된다. Q-weekly에 상시 추적 항목으로 등재.</p>
+  <ul class="pts">
+    <li><b>① 최우선 —</b> "SaxonQ" 이름의 <b>arXiv/피어리뷰 장비 특성화 논문</b> 첫 등장 (현재 0)</li>
+    <li><b>②</b> SXQ128 <b>실제 인도</b> vs 로드맵 슬립 (주문가능→인도 전환 여부)</li>
+    <li><b>③</b> 신규 <b>펀딩 라운드·전략 투자자</b> 유입</li>
+    <li><b>④</b> 코어당 30+ 큐비트 또는 <b>다중코어 얽힘의 독립(제3자) 검증</b></li>
+    <li><b>⑤</b> 코어당 <b>2큐비트 게이트 충실도 0.97 → 개선</b> 발표 (오류정정 문턱 접근 여부)</li>
+  </ul>
+  <p class="muted">수집 소스: saxonq.com/news · saxonq.com/whitepapers · arXiv 저자검색(Pezzagna,S / Meijer,J / Grundmann,M) · The Quantum Insider.</p>
+
+  <div class="footer">
+    본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다. · 1차 자료 교차검증 2026-07-23
+  </div>
+
+</div>
+</body>
+</html>
