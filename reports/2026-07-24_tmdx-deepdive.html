@@ -1,0 +1,478 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMDX (TransMedics) Deep-Dive — 2026-07-24</title><style>
+:root{color-scheme:light}
+body{background:#EBE4D3;margin:0;padding:24px 12px;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;color:#1f2328;line-height:1.62}
+.wrap{max-width:1000px;margin:0 auto;background:#FDF6E3;border-radius:14px;padding:34px 40px 48px;box-shadow:0 2px 18px rgba(80,60,20,.10)}
+h1{font-size:26px;margin:0 0 4px;border-bottom:3px solid #b02a1e;padding-bottom:12px}
+h2{font-size:20px;margin:34px 0 12px;color:#8a3324;border-left:5px solid #c0392b;padding-left:11px}
+h3{font-size:16px;margin:18px 0 8px;color:#1d5c88}
+h4{font-size:14px;margin:14px 0 6px;color:#8a3324}
+.lede{font-size:14px;color:#3a3a3a;background:#f7efd8;border-radius:8px;padding:14px 17px;border:1px solid #e8e1cf}
+.lede b{color:#8a3324}
+.judge{background:#fbf4e8;border:1px solid #e0c48a;border-left:5px solid #d0902a;border-radius:12px;padding:18px 22px;margin:16px 0 24px}
+.judge h2{margin-top:0;border-left:none;padding-left:0;color:#8a5a12;font-size:19px}
+.judge p{font-size:13.5px;margin:9px 0}
+table.tb{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px}
+table.tb th{background:#f3ecd9;border:1px solid #ddd;padding:7px 9px;text-align:left;font-weight:600}
+table.tb td{border:1px solid #ddd;padding:7px 9px;vertical-align:top}
+table.tb.small{font-size:12px} table.tb tr.hl td{background:#fdf7e6}
+.c-red{color:#b02a1e;font-weight:700}.c-amber{color:#8a5a12;font-weight:700}.fresh{color:#1a7a3c;font-weight:700}
+.sub{font-size:12.5px;color:#5a5148}
+.steel{background:#f3eef7;border:1px solid #d5c4e0;border-left:4px solid #8e44ad;border-radius:6px;padding:10px 14px;margin:10px 0;font-size:13px}
+.refute{background:#fbeee9;border:1px solid #ecc9b8;border-left:4px solid #c0392b;border-radius:6px;padding:10px 14px;font-size:13px;margin:10px 0}
+.pick{background:#eef3f7;border-left:4px solid #2980b9;border-radius:6px;padding:9px 13px;font-size:13px;margin:10px 0}
+.lens{border:1px solid #e8e1cf;border-radius:10px;padding:4px 18px 12px;margin:14px 0;background:#fffdf5}
+.lens h3{border-bottom:1px solid #eee3c8;padding-bottom:6px;margin-top:14px}
+.lens p,.lens li{font-size:13px} .lens table{font-size:12px}
+.foot{margin-top:24px;padding-top:12px;border-top:1px solid #e0d6bd;font-size:11.5px;color:#8a7f6f}
+ul{font-size:13.5px;margin:8px 0} li{margin:3px 0}
+.ev-badge{display:inline-block;background:#1a1a1a;color:#fff;font-weight:700;font-size:12px;padding:3px 9px;border-radius:4px;margin-left:8px}
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+</style><meta name="vault-stage" content="Dive">
+<meta name="vault-topic" content="TMDX">
+<meta name="vault-skill" content="Deep-Dive">
+<meta name="vault-date" content="2026-07-24">
+<meta name="description" content="TMDX (TransMedics) Deep-Dive — 2026-07-24">
+<meta name="robots" content="noindex, nofollow">
+</head><body><div class="wrap">
+<h1>🔬 TMDX (TransMedics) Deep-Dive — 2026-07-24</h1>
+<p class="sub">텐배거 스크리닝 1위 종목 단일 심층. Top-Down 7계층(A~L) + §H.7 밸류 + §G.8 내구성 + 4-Dive 렌즈 + Fable 판사. 데이터=yfinance + SEC EDGAR 교차검증.</p>
+<div class="judge"><h2>🧑‍⚖️ 종합 매수 판단 (Fable 판사)</h2>
+
+<p><b>verdict: ⚪ 관망</b> — 구조(준독점 0to1)는 진짜이나 밸류·내구성·타이밍 세 독립 판정이 전부 <b>Q2'26 마진</b>이라는 단일 게이트에 수렴하며, 그 변수 확인 전 진입의 하방(-25~30%)이 확인 후 진입의 기회비용보다 무겁다. trigger = Q2'26 실적의 마진 방향(또는 $60 지지 훼손 여부).</p>
+<p><b>근거</b>: ① <b>수렴 자체가 신호</b> — §H.7 밸류(⚪관망)·§G.8 내구성(⚪조건부)·타이밍(⚪대기)이 서로 다른 방법론인데 셋 다 "Q2'26 마진"을 게이트로 지목(red-team 동일). binding 과목은 성장·내러티브가 아닌 마진 궤적 하나이며 곧 관측된다. ② <b>구조 vs 가치포획 엇갈림</b> — 0to1 준독점·NOP 해자(구조)는 진짜이나 영업마진 23%→7.6%·GM 61→58% 침식(가치포획)이 "해자가 이익으로 번역 안 될 가능성"을 제기. ③ <b>밸류 비대칭</b> — 현재가는 "매출 18%CAGR + 터미널 OM 18~20% 복원" 동시 요구, 마진 12% 고착 시 -25~30% 하방·Bear 살아있음 → 확인 후 진입이 기대값 우위. ④ <b>수급 양날</b> — 공매도 35.5%는 스퀴즈 연료이자 시장 절반의 베어 실탄. ⑤ <b>텐배거 철회 ≠ 매수 부적격</b> — TAM 상한으로 10x 산술 불가이나 퀄리티 컴파운더(Base ~2.3x·FCF+ self-funding)는 별도 유효, 단 게이트 대기. ⑥ <b>내구성은 견디되 여유 감소</b> — 결합취약 아님이나 2028 전환사채 refi wall + 이자보상 10.5x→1.85x 급락 = 안전마진 축소("안 죽는 회사"라 관망 기대값 높음).</p>
+<p><b>Steelman</b>: (자기반박·시간지평+데이터 축) 3년+ 지평에서 Q2'26 한 분기 마진은 노이즈일 수 있고, R&amp;D +57%는 성장 투자 선행 가능성, NOP 준독점·FDA 해자·P/S 3.8x 역사 저점은 터미널 구조상 이번 분기와 무관 — ⚪를 🟢(분할 정찰)로 뒤집을 강도. → <b>유지(부분 수정)</b>: 핵심 ⚪ 유지(GM 침식 구조적 flag·Bear -25~30% 비대칭)하되, <b>정찰성 소액 1트랜치 선진입 + 본대 Q2'26 확인 후</b>는 분할 규율과 양립하는 합리적 선택지로 인정(판단·실행 사용자).</p>
+<p class="sub"><b>한계</b>: SEC 10-Q 원문(이자비용 점프 원인·총부채 세부 구성)·DEF 14A/Form 4(인사이더 3.65% 성격)·NOP segment 마진 분해가 미수집 — 게이트 논리가 이 공백 위에 서 있음. Q2'26 발표일 미확인. 🔴 저신뢰·비-enforcement·최종 판단과 실행은 사용자. (model: fable · 신선 컨텍스트)</p>
+
+</div>
+<h2>📌 한 장 요약</h2><div class="lede">
+<p>• <b>종합 판정</b>: 🔴 <b>텐배거(10x) 명제 철회 → 퀄리티 컴파운더로 격하.</b> 적대적 검증 결과 이식 TAM 상한(미국 폐+심장+간 ~1.5만건/년)이 10배를 산술적으로 막는다(현실 상단 ~5~6배). <b>5년 기대값 ≈ 2.6x</b>(Bull 5.0x / Base 2.3x / Bear 0.8x). 종합 ⭐ 3.3/5(사업 매력도·밸류 미반영).</p>
+<p>• <b>🔴🔴 승부처 = 단일 변수 "Q2'26 영업마진"</b>. 마진 23%(Q2'25)→7.6%(Q1'26) 압축 = OpEx +46%(R&D +57%·SG&A +29%)가 매출(+21%YoY 기록)의 4배 속도. 분해 결과 <b>~60% 투자(항공 fleet·신규 적응증·영업망)·~40% 구조(GM 61→58% 항공물류 mix 침식)</b> → 정상화 OM은 과거 23%보다 <b>낮은 지점</b>(GM 축은 안 되돌아옴).</p>
+<p>• <b>§H.7 밸류 ⚪관망</b>: 현재가가 "매출 18%CAGR + 터미널 OM 18~20% 복원" 동시 요구(적정~요구과다 경계). 🔴 XVIVO(P/S 8.3) 대비 TMDX(P/S 3.8)는 마진 압축 페널티가 이미 과반영 — 마진 회복 시 리레이팅+숏스퀴즈 비대칭. <b>§G.8 내구성 ⚪조건부</b>(2028 전환사채 refi wall·이자보상 10.5→1.85x).</p>
+<p>• <b>🔴 시장구조</b>: 공매도 <b>35.5% of float</b>(극단)·고점比 -55%·목표가 $114(+61%). 소형 float라 마진 확인 시 양방향 폭발. <b>진짜 0to1 준독점</b>(NOP·자체 항공·DCD 심장 재소생)은 실재하나, 해자와 마진이 상충하는 것이 본질적 긴장.</p>
+</div>
+<h2>📊 7축 확신도 종합</h2>
+<div class="dd-fig"><p class="cap"><b>확신도 7축 레이더</b> — 점수=사업·thesis 매력도(밸류 멀티플 미반영). 매수신호 아님(가격은 §H.7·판사).</p><div id="fig-score7"></div><div class="dd-legend" id="leg-score7"></div></div>
+<table class="tb small"><tr><th>축</th><th>⭐</th><th>가중</th><th>근거</th></tr>
+<tr><td>🌦️ 날씨(지정학+거시)</td><td>⭐⭐⭐ (2.8)</td><td>3.0</td><td>비-AI 의료기기·비탄력 수요 방어적 / $863M 부채·Higher-for-Longer 이자 부담·beta 1.88</td></tr>
+<tr><td>⛰️ 산(산업)</td><td>⭐⭐⭐ (3.2)</td><td>1.5</td><td>장기부족 해소·기술+사회 내러티브 강함 / 패권 무관·TAM 상한(미국 이식 ~1.5만건/년)</td></tr>
+<tr><td>🌲 숲(섹터)</td><td>⭐⭐⭐⭐ (4.0)</td><td>1.5</td><td>NOP 준독점·조점 과점(XVIVO·OrganOx)·미국 온열관류 1등</td></tr>
+<tr><td>🌳 나무(기업)</td><td>⭐⭐⭐⭐ (3.5)</td><td>1.0</td><td>OCS 3종+NOP+자체 항공 수직통합 해자 / 마진-해자 상충</td></tr>
+<tr><td>🌲🌳 옆의나무(경쟁)</td><td>⭐⭐⭐⭐ (3.5)</td><td>1.0</td><td>vs XVIVO(GM 72%·자산경량·2배 밸류)·규모/FCF/NOP 우위나 GM 열위</td></tr>
+<tr><td>👤 사람(경영진)</td><td>⭐⭐⭐ (3.4)</td><td>1.5</td><td>창업의사 Hassanein 27년·의미주의자 / 지분 3.65% 낮음</td></tr>
+<tr><td>🔢 숫자(재무건전성)</td><td>⭐⭐⭐ (3.0)</td><td>1.0</td><td>성장🟢(3Y 87%CAGR)·마진🔴(23→7.6% 압축)·현금🟢(FCF+)·내구성⚪</td></tr>
+<tr class="hl"><td><b>종합 (가중평균)</b></td><td colspan="2"><b>⭐ 3.26/5</b></td><td>사업·thesis 매력도 · 밸류 미반영 · overlay(§H.5/H.6/H.7) 미합산</td></tr></table>
+<h2>🌦️ A. 날씨 — 지정학 + 거시 (장기 구조)</h2>
+<p style="font-size:13px">비-AI 의료기기로 매크로 민감도는 <b>구조적으로 낮다</b>(장기이식 수요=생명필수·비탄력). 지정학: 미국 헬스케어·대중 노출 없음 = 중립. 거시: Higher-for-Longer가 유일한 역풍 — beta 1.88(고변동)·$863M 부채·이자보상 급락(§G.8). 순유동성·금리 사이클에 종목 thesis가 걸리지 않으나, 전환사채 차환은 금리 레짐 노출. <b>날씨 판정 🟡</b>(비탄력 수요 방어 vs 부채·고금리 역풍). 사용자 매크로 anchor(성상현·Warsh·달러패권)와는 <b>직접 정합 낮음</b>(비-패권 산업) — 다각화 종목의 성격.</p>
+<h2>⛰️ B. 산 — 산업 (장기이식·장기관류)</h2>
+<p style="font-size:13px"><b>Pre-Filter(세상 바꾸는가)</b>: ✅ 조건부 — "이식 불가 장기를 살려 공여 풀을 넓힌다"는 진짜 사회문제(장기부족·고령화) 해결. 단 <b>제1원칙(미중 패권 자본)은 ❌</b>(비-패권). <b>내러티브 5축</b>: 🔧기술✅(온열관류)·👥사회✅(장기부족)·🏛️정책△(FDA·보험수가)·🌐지정학❌·💰자본△ = 🟡 3축(사회·기술 깊이 강). <b>TAM</b>: 미국 폐+심장+간 이식 ~1.5만건/년 + 글로벌 확장 — 성장하나 <b>상한 존재</b>(텐배거 철회의 물리적 근거).</p>
+<div class="dd-fig"><p class="cap"><b>내러티브 5축</b> — ✅=3/△=1.5/❌=0. 기술·사회 축이 강하고 지정학·정책·자본은 약함(비-패권 산업).</p><div id="fig-narr"></div><div class="dd-legend" id="leg-narr"></div></div>
+<h2>🌲 C. 숲 — 섹터 (장기관류 병목)</h2>
+<table class="tb small"><tr><th>4중 필터</th><th>등급</th><th>근거</th></tr>
+<tr><td>① 수급/병목</td><td>🟡</td><td>공여 장기 부족(구조적 수요) + OCS가 한계 장기를 이식 풀로 편입</td></tr>
+<tr><td>② 경쟁사 수</td><td>🟡 과점</td><td>XVIVO(스웨덴·관류액)·OrganOx(비상장)·레거시 냉장보관 — 상장 직접경쟁 소수</td></tr>
+<tr><td>③ 1~2등</td><td>⭐⭐⭐⭐⭐</td><td>미국 온열관류+NOP 턴키+자체 항공물류 = 사실상 준독점(DCD 심장 재소생 독점 영역)</td></tr>
+<tr><td>④ 마진</td><td>🟡→⚪</td><td>GM 59%(양호)이나 영업마진 압축 중(항공물류 mix 희석)</td></tr></table>
+<p class="pick"><b>섹터 판정</b>: 병목·과점·1등은 강하나(⭐4.0), ④ 마진 축이 항공물류 수직통합으로 침식되는 것이 유일한 약한 고리. GM 61→58% 완만 하락 = 구조적 mix 희석의 지문.</p>
+<h2>🌳 D. 나무 — 기업 (제품·수익모델)</h2>
+<div class="dd-fig"><p class="cap"><b>재무 궤적 — 매출 vs 영업마진 (분기·crux)</b>: 매출은 기록 경신(파랑↑)인데 영업마진(빨강↓)은 붕괴. ▼=마진 정점(Q2'25). 시장이 가격에 반영하는 핵심 모순.</p><div id="fig-traj"></div><div class="dd-legend" id="leg-traj"></div></div>
+<div class="lens">
+<h3>TMDX (TransMedics) R-Dive — 제품·수익모델 정밀 해부</h3>
+<p>*근거: scratchpad 데이터 파일 2종(야후 분기·peer·재무) + FACTS(SEC 교차검증). 밸류·매수신호 제외(별도 agent).*</p>
+<h3>① 제품 카탈로그 — OCS 3종 (What·How·Who/Why·Edge)</h3>
+<p>TMDX의 물리적 코어는 단 하나의 플랫폼이다: <b>OCS(Organ Care System)</b> — 장기를 얼음(정적 냉장보관, cold static storage)에 담아 &quot;죽여서 운반&quot;하는 레거시 대신, 휴대형 기기 안에서 <b>온열 관류(warm perfusion)</b>로 산소·혈액·영양을 흘려 장기를 <b>박동/호흡하는 살아있는 상태로 유지</b>하며 실시간 기능 모니터링까지 한다. 콘솔(내구재) + 장기별 일회용 관류세트(소모품)의 razor-and-blade 구조.</p>
+<ul><li><b>OCS Lung</b> — DBD 표준공여 폐 보존, 양측 폐 이식용. 냉허혈 시간 창을 늘려 원거리 폐를 살려낸다. Edge: 폐는 냉장 손상에 극도로 취약 → 온열보존 가치가 가장 큼.</li><li><b>OCS Heart</b> — DBD 심장 + <b>DCD(순환정지 후 공여) 심장의 ex vivo 재소생·박동 보존</b>. Who/Why: 냉장으로는 못 쓰던 한계 심장을 이식 가능 풀로 편입. Edge: DCD 심장 재소생은 사실상 독점 영역 — 공여 장기 풀 자체를 넓히는 확장.</li><li><b>OCS Liver</b> — DBD·DCD 간 보존. 간이식 시장이 3장기 중 물량 최대 → NOP 매출의 주력 엔진.</li></ul>
+<p>세 제품의 공통 Edge는 &quot;장기 부족(공급 제약)을 기기로 완화&quot;라는 구조적 명제다. 다만 기기만으론 이식센터가 운용 부담을 진다 — 그래서 <b>NOP</b>가 결합된다.</p>
+<h3>② 수익모델 아키타입 + 곡괭이 質 A/B</h3>
+<p>TMDX는 순수 기기회사가 아니라 <b>3중 혼합</b> 모델이다:</p>
+<p>1. <b>기기·소모품 판매</b>(razor-blade / usage 기반) — 이식 1건당 일회용 관류세트 소비 = 진짜 반복적 소비 매출.</p>
+<p>2. <b>NOP(National OCS Program) as-a-service</b> — 장기 적출·관류·이송·조율을 이식센터 대신 수행하는 턴키 아웃소싱. 서비스 매출.</p>
+<p>3. <b>항공물류</b>(Summit 항공 인수 2024로 내재화) — 자체 항공기 fleet로 장기 운송.</p>
+<p><b>곡괭이 質 판정 = B-lean 하이브리드.</b> ①번 디스포저블 축은 GM 高·반복·독점적 = 전형적 <b>A 곡괭이(자체 자금조달형)</b>. 그러나 ③번 항공물류는 항공기 capex·리스·연료·승무를 떠안는 <b>B 곡괭이(자본집약·저마진)</b> 성격 — IREN neocloud처럼 &quot;해자이자 OpEx 유발원&quot;이다. 수직통합이 경쟁 진입장벽(누구도 장기 전용 항공망을 못 깐다)을 세우는 동시에 blended 마진을 구조적으로 끌어내린다. 종합적으로 <b>A의 이익 엔진 위에 B의 물류 원가가 얹힌</b> 구조.</p>
+<h3>③ 단위경제</h3>
+<p>정확한 이식 건수·제품/서비스 분할은 데이터 파일에 없어 <b>SEC 확인 필요</b>. 다만 구조적으로: 이식 1건 = (관류세트 판매, 高마진) + (NOP 서비스 수수료) + (항공/지상 운송, pass-through 성격 低마진). 항공물류가 매출로 잡히되 원가율이 높아 <b>blended GM을 희석</b> — 실제로 GM%가 61→61→59→58→58%로 꾸준히 침식된 것이 이 dilution의 지문이다. 자본구조 측면: info상 총부채 863M vs 재무제표 전환사채 ~519M → 차액 ~344M은 <b>항공기/설비 리스</b>로 추정 = fleet의 자본집약도를 정량으로 드러낸다.</p>
+<h3>④ 🔴🔴 핵심: 영업마진 23%→7.6% 분해 — 투자 vs 구조적 저마진</h3>
+<p><b>3-요인 브리지</b>(Q2&#x27;25 OM 23% → Q1&#x27;26 OM 7.6%, ≈-15pp):</p>
+<ul><li><b>GM 침식 -3pp</b> (61→58%) — 항공물류 mix 증가 = <b>구조적 성격</b>.</li><li><b>R&amp;D 강도 +4pp</b> — R&amp;D/매출 10.1%(Q2&#x27;25)→14.3%(Q1&#x27;26). 절대액 15.9→24.9M(데이터 기준 +45% YoY, 브리핑은 +57%; 기준분기 차이로 추정) = 심장/간 적응증 확대·차세대 OCS 투자 = <b>일시적 재량지출</b>.</li><li><b>SG&amp;A 강도 +5pp</b> — 44.1→56.9M(+29% QoQ), 28.0%→32.7% of 매출 = 영업망·NOP 물류 buildout = <b>대부분 투자, 일부 물류 고정비화</b>.</li></ul>
+<p><b>판정: 압축의 ~60%는 투자(R&amp;D+SG&amp;A buildout), ~40%는 구조(GM 희석).</b> 재레버리지 근거 = capex가 FY23 -179M → FY24 -130M → FY25 -59M로 급감 = <b>fleet buildout 정점 통과</b>. 즉 항공 자본투입은 끝나가고, R&amp;D·영업 지출은 신규 적응증 매출이 붙으면 operating leverage로 회수 가능. <b>반론(Steelman)</b>: GM의 3pp 하락은 순수 mix라기보다 항공물류가 구조적으로 매출비중을 계속 키우면 되돌릴 수 없는 마진 천장일 수 있다 — 이 경우 압축은 &quot;일시적 J-커브&quot;가 아니라 새 정상마진으로의 하향 리셋. 결론 반영: <b>재레버리지는 R&amp;D/SG&amp;A 축에서만 유효하고, GM 축(물류)은 되돌아오지 않을 가능성이 높다</b> — 정상화 목표 OM은 과거 23%가 아니라 그보다 낮은 지점으로 보는 것이 안전.</p>
+<h3>⑤ 12 함정 중 TMDX 해당</h3>
+<ul><li><b>반복매출 품질</b> — NOP·소모품은 이식 건수 연동 usage 매출로 반복적이나, 구독 계약 lock-in이 아니라 <b>건별 발생</b> → 이식 물량 둔화 시 즉각 노출.</li><li><b>저마진 물류 희석</b> — GM 61→58% 실증. 항공 내재화가 성장의 대가로 마진을 판다.</li><li><b>자본집약</b> — 항공기 fleet + 리스 ~344M. capex는 꺾였으나 감가·정비·연료의 고정비는 잔존.</li><li><b>현금전환(NI vs FCF)</b> — FY25 순이익 190M 중 ~81M이 이연법인세 valuation allowance 환입(일회성) → <b>clean 이익 = 영업이익 109M</b>. NI를 그대로 수익성으로 읽으면 과대평가.</li></ul>
+<h3>⑥ 제품→수익모델 연결</h3>
+<p>OCS 기기가 &quot;장기를 살려 운반한다&quot;는 <b>물리적 능력</b>을 만들고, NOP가 그 능력을 이식센터가 못 하는 <b>운용 부담째로 아웃소싱 서비스화</b>하며, 항공물류가 그 서비스를 <b>전국 실행 가능케 하는 마지막 다리</b>다. 세 층은 순차 종속 — 기기 없이는 NOP가 없고, 항공 없이는 NOP가 전국화되지 않는다. 이 수직통합이 해자(대체 불가한 장기 전용 실행망)를 만드는 동시에, 성장할수록 저마진 물류 비중을 키워 <b>마진과 해자가 상충</b>하는 것이 TMDX 수익모델의 본질적 긴장이다. 승부처는 &quot;① 디스포저블 A-엔진의 마진이 ③ 항공 B-원가를 덮고 남느냐&quot;의 재레버리지 여부다.</p>
+</div>
+<h2>🌲🌳 E. 옆의 나무 — 경쟁사 비교</h2>
+<div class="dd-fig"><p class="cap"><b>경쟁사 히트맵</b> — ★=TMDX. 🔴 XVIVO가 TMDX 대비 P/S 2배(GM·성장·클린재무 우위 반영) / TMDX는 규모·FCF·NOP 해자 우위·마진 압축 페널티. 시총·P/S=중립(우열 아님).</p><div id="fig-peers"></div></div>
+<p style="font-size:13px"><b>판정</b>: TMDX는 매출 규모(~$636M vs XVIVO ~$85M)·양(+)FCF·NOP 실행망 해자에서 우위이나, <b>GM 59% vs XVIVO 72%</b>(자산경량 관류액 모델)의 비즈니스모델 質 격차를 시장이 P/S 8.3 vs 3.8로 가격에 반영. 레거시 냉장보관(cold static storage)이 대체 방식이나 온열관류가 구조적으로 우월. <b>최대 위협</b> = XVIVO/OrganOx의 미국 침투 + 저마진 물류 구조.</p>
+<h2>👤 F. 사람 — 경영진 (Waleed Hassanein, MD)</h2>
+<div class="lens">
+<h3>TMDX 경영진 People-Dive — Waleed Hassanein, MD (창업자·CEO)</h3>
+<p><b>① 임원 8축 ⭐ (야후·SEC 교차검증 FACTS 근거)</b></p>
+<table class="tb small"><tr><th>축</th><th>⭐</th><th>근거</th></tr><tr><td>약력</td><td>4.5</td><td>의사·1998 창업·27년 단일 tenure. OCS를 폐/심장/간 3장기 FDA 승인까지 이끈 원천 개척자. 매출 FY22 93→FY25 605M(4년 6.5배)</td></tr><tr><td>명성</td><td>3.5</td><td>장기관류 분야 학술적 개척자 명성 확실. 단 소형주(float 33.4M)+공매도 35.5%로 시장 신뢰는 양극 분열</td></tr><tr><td>능력(실행)</td><td>3.3</td><td>FY24 영업흑자 전환(37M)·FY25 109M은 실행력 증거. 🔴 그러나 영업마진 23%(Q2&#x27;25)→7.6%(Q1&#x27;26) 압축, OpEx가 매출의 4배 속도 = 비용 통제 논란 상존</td></tr><tr><td>도덕성</td><td>3.5</td><td>공개 스캔들 부재. 단 FY25 순이익 190M 중 ~81M이 이연법인세 환입(일회성)—clean 지표(OM 109M)와 헤드라인 순이익 괴리를 IR이 강조하는지 여부는 <b>SEC/컨콜 확인 필요</b></td></tr><tr><td>비전</td><td>💬</td><td>*Claude 의견*: NOP(이식을 기기+임상+물류 턴키 서비스로)+항공 fleet 수직통합=단순 기기업체가 아니라 이식 생태계 전체를 장악하려는 야망. 방향성은 크나 ⭐는 사용자 영역</td></tr><tr><td>skin-in-game</td><td>2.7</td><td>지분 3.65%로 절대 수치는 낮음(②서술)</td></tr><tr><td>거버넌스</td><td>3.0</td><td>이사회 독립성·창업자 집중도 <b>SEC(DEF 14A) 확인 필요</b>. 낮은 인사이더+높은 공매도 조합은 감독 취약 신호</td></tr><tr><td>외부평가</td><td>3.7</td><td>애널 9명 buy·목표가 평균 $114(현재 $70.73 대비 +61%·범위 $80~142). 밸류는 P/S 3.8·fPE 25.6으로 Xvivo(P/S 8.3)의 절반—시장은 성장은 인정하되 마진 지속성 의심</td></tr></table>
+<p><b>② 인사이더 3.65%의 함의</b></p>
+<p>절대값은 낮으나 <b>덤핑 신호로 직결하기엔 성급</b>. 27년 창업자가 IPO(2019)·전환사채·주식보상 희석(발행주식 29.6M→34.6M)을 거치며 지분율이 구조적으로 희석된 결과일 개연성이 높다. 매도 압력보다는 <b>누적 희석</b>이 1차 설명. 다만 벤처 창업자 특유의 대량 지분이 부재해 &quot;회사와 운명을 같이 건다&quot;는 정렬 강도는 IREN·RKLB형 창업자보다 약하다. → tenure(27년 재직)가 정렬을 <b>부분 상쇄</b>하나 완전 대체는 못 함.</p>
+<p><b>③ 4대 덕목 + 언행일치</b></p>
+<p>정직 ○(회계 GAAP 표기·단 일회성 강조 여부 확인) / 유능 ○(3장기 승인·흑자전환) / 헌신 ◎(27년 한 우물) / 정렬 △(낮은 지분). <b>핵심 언행일치 신호 = 항공물류 수직통합(Summit 인수).</b> 이는 마진을 갉는 costly 베팅—&quot;이식 성공률을 물류가 좌우한다&quot;는 사명을 자기 자본으로 증명하는 costly signal로 읽힌다. 마진 압축의 상당분이 이 전략적 재투자(R&amp;D +57%·영업망)라면 사명 정렬의 진정성 근거, 구조적 저마진 물류 노출이면 실행 실패—<b>이 갈림길이 CEO 평가의 승부처</b>.</p>
+<p><b>④ 거버넌스·핵심인재</b></p>
+<p>이사회·C-suite(CFO·COO) 명단과 독립이사 비율은 <b>SEC DEF 14A 확인 필요</b>(본 환경 미수집). 창업자 CEO+낮은 인사이더+공매도 35.5% 조합은 감시 취약 vs 공매도 스퀴즈 촉매 양면.</p>
+<p><b>⑤ 의미주의자 판정</b></p>
+<p>🟢 <b>의미주의자 성향 강함.</b> 27년간 &quot;이식 불가 판정 장기를 살려낸다&quot;는 단일 사명에 헌신, 부(3.65%)보다 mission을 우선한 tenure. 항공 수직통합이 이를 재확인.</p>
+<hr style="border:none;border-top:1px solid #e0d6bd">
+<p><b>Steelman(뒤집힘 지점):</b> ① 27년 tenure를 헌신으로 읽지만, <b>생존편향</b>—OCS가 실패했다면 애초에 상장·논의 자체가 없었다. 살아남은 창업자만 &quot;위대한 헌신&quot;으로 소급 해석될 위험. ② 낮은 지분을 &quot;희석 결과&quot;로 관대히 봤으나, 창업자가 세컨더리·10b5-1로 상당분 이미 현금화했다면 정렬 서사는 무너진다(<b>SEC Form 4 확인 필요</b>). ③ 마진 압축을 &quot;전략적 재투자&quot;로 선해했으나 4개 분기 연속 악화는 구조적 물류 저마진 신호일 수 있어, 언행일치가 오히려 사명형 과잉투자(주주가치 파괴)로 뒤집힐 여지.</p>
+<p><b>종합 인물 ⭐ ≈ 3.4/5</b> (비전축 제외 가중). 사명형 개척자 CEO의 진정성은 높으나, 낮은 skin-in-game과 마진 실행 리스크가 상단을 제약.</p>
+</div>
+<h2>🔢 G. 숫자 — 재무건전성 (SEC 교차검증)</h2>
+<table class="tb small"><tr><th>항목(M USD)</th><th>FY22</th><th>FY23</th><th>FY24</th><th>FY25</th><th>출처</th></tr>
+<tr><td>매출</td><td>93</td><td>242</td><td>442</td><td><b>605</b></td><td>SEC ✅</td></tr>
+<tr><td>영업이익</td><td>-31</td><td>-29</td><td>37</td><td><b>109</b></td><td>yf</td></tr>
+<tr><td>순이익</td><td>-36</td><td>-25</td><td>35</td><td><b>190</b></td><td>SEC ✅ (🔴 ~81은 이연법인세 일회성→clean=영업이익 109)</td></tr>
+<tr><td>FCF</td><td>—</td><td>-81</td><td>-81</td><td><b>+108</b></td><td>yf (자가조달 전환)</td></tr>
+<tr><td>CapEx</td><td>—</td><td>-179</td><td>-130</td><td><b>-59</b></td><td>yf (fleet buildout 피크아웃)</td></tr></table>
+<table class="tb small"><tr><th>4축 (재무건전성)</th><th>등급</th><th>근거</th></tr>
+<tr><td>① Earnings Growth</td><td>🟢 가속</td><td>매출 3Y CAGR ~87%·Q1'26 +21%YoY 기록</td></tr>
+<tr><td>② Margin Expansion</td><td>🔴 악화</td><td>영업마진 23%(Q2'25)→7.6%(Q1'26)·GM 61→58%</td></tr>
+<tr><td>③ Cash Generation</td><td>🟢 전환</td><td>FCF -81M(FY24)→+108M(FY25)·OCF +220M</td></tr>
+<tr><td>④ 고금리·고물가 내구성</td><td>⚪ 조건부</td><td>이자보상 10.5→1.85x·2028 refi wall (§G.8)</td></tr></table>
+<p class="sub">전환사채: 1.50% Convertible Senior Notes 원금 $460.9M, 만기 2028년 6월. 현재 carrying ~$454M(net of discount). 전환가 ~$95-100 추정(2023 발행)→현재가 $70 대비 out-of-the-money=만기 현금상환 또는 차환 리스크(refinancing wall 2028).</p>
+<h2>🏦 §G.8 고금리·고물가 내구성 정밀 진단</h2>
+<p style="font-size:13px"><b>🏷️ 종합: ⚪ 조건부 견딤 (결합취약 아님·but 이자비용 점프 soft-flag)</b> · 신뢰도 낮음 (standalone·신뢰도 상한 낮음·7축 미합산·장기 thesis stop sign 아님·soft-flag). 총부채 $863M vs 장부 $519M 불일치와 이자비용 점프는 SEC 10-Q 원문 확인 필요 항목. · <b>🎯 🎯 비탄력 이식수요 + 양(+)의 FCF $108M로 고금리·고물가를 견디되, 2028 전환사채 refi wall과 Q1&#x27;26 이자비용 2배 점프가 조건부 꼬리표 — 결합취약은 아니나 &quot;안전마진 축소&quot; 국면.</b></p>
+<table class="tb small"><tr><th>기둥</th><th>판정</th></tr><tr><td>금리</td><td>⚪ 조건부 견딤 — 절대부채(순부채 ~$400M: 총부채 $863M[리스/최신차입 포함 추정, FY25 장부 $519M과 불일치→SEC 확인 필요] vs 현금 $461M)는 현금+FCF로 커버 가능하나, 🔴 이자보상배율이 Q2&#x27;25 10.5x(영업 36.6/이자 3.5)→Q1&#x27;26 1.85x(13.3/7.2)로 급락. 🔴🔴 이자비용이 Q1&#x27;26에 3.4→7.2로 2배 점프 = 고금리 환경서 신규 차입 인출 신호(SEC 확인 필요). 전환사채(~$460M·2028 만기·전환가 추정 ~$139 대비 현재 $70=deep OTM)→만기 현금상환 리스크지만 현금 $461M + 연 FCF ~$110M×2년이면 상환 여력 존재. Quick liquidity 양호. 2028 refinancing wall이 유일한 구조적 압박점.</td></tr><tr><td>물가</td><td>부분 노출</td></tr><tr><td>스태그 결합</td><td>중간</td></tr></table>
+<p class="sub"><b>swing 변수</b>: 2028 전환사채(~$460M) refinancing 조건 + Q1&#x27;26 이자비용 3.4→7.2 점프의 정체(신규 고금리 차입인가 vs 일회성): 고금리 유지 시 refi 비용이 clean 영업이익($109M)을 잠식하는 속도가 이자보상 방어선을 결정.</p>
+<div class="lens"><h3>§G.8 TMDX 고금리·고물가 내구성 진단</h3>
+<p><b>결론: ⚪ 조건부 견딤.</b> 결합취약(🔴)은 아니나 &quot;안전마진이 눈에 띄게 얇아지는&quot; 국면. 이식수요 비탄력성과 양(+)의 현금흐름이 하방을 받치지만, 두 개의 soft-flag가 조건부 꼬리표를 붙인다.</p>
+<h4>금리 기둥 — ⚪ 견디되 경보음</h4>
+<ul><li><b>이자보상 급락</b>: Q2&#x27;25 10.5x(영업 36.6/이자 3.5) → <b>Q1&#x27;26 1.85x</b>(13.3/7.2). 방어선이 얇아졌다.</li><li><b>🔴 이자비용 2배 점프</b>: 분기 이자 3.4→7.2. 고금리 환경서 신규 차입 인출 신호(*SEC 10-Q 확인 필요*).</li><li><b>부채 불일치</b>: snapshot $863M vs FY25 장부 $519M → 리스/최신차입 포함 추정(*확인 필요*). 현금 $461M로 순부채 ~$400M.</li><li><b>2028 wall</b>: 전환사채 ~$460M·현재가 $70 « 전환가 추정 ~$139 = deep OTM → 만기 현금상환 전제. 단 현금 $461M + 연 FCF ~$110M×2년 = 상환 여력 존재.</li></ul>
+<h4>물가 기둥 — ⚪ 부분 노출</h4>
+<p>자체 항공 fleet가 제트연료·항공승무원·의료인력 인건비에 직접 노출. GM 61→58% 압축(주동인은 항공 insourcing mix, 인플레는 종속). 전가력은 독점기기+보험수가 기반이라 중기 pass-through 가능하나 수가 시차로 sticky.</p>
+<h4>스태그 결합 — ⚪ 중간</h4>
+<p>방어: 이식=생명필수 비탄력, Q1&#x27;26 매출 +21%YoY로 수요 견조. 취약: 항공 고정비 operating leverage 역회전(OpEx +46%가 매출 +10%의 4.6배) + $863M 부채 결합. <b>단 마진압축의 주범은 distress가 아니라 R&amp;D +57% 투자 사이클</b> — 재레버리지 가능.</p>
+<h4>Steelman (내부수행→반영)</h4>
+<p>*&quot;이자비용 2배 = 구조적 고금리 차입 고착&quot;* 반박이 가장 강함. 이 경우 clean 영업이익 $109M이 refi 비용에 빠르게 잠식되어 1.85x 보상배율이 더 조여진다. → verdict를 🟢 아닌 <b>⚪로 하향</b>하고 swing 변수로 격상. 반대로 점프가 일회성이면 🟢 견딤. 정체 미확인이 신뢰도 낮춤.</p>
+<p>*낮은 신뢰도·soft-flag·7축 미합산·장기 stop sign 아님.*</p></div>
+<h2>🎯 H. 시나리오 · Catalyst · Exit</h2>
+<div class="dd-fig"><p class="cap"><b>확률가중 시나리오 (5년·Deep-Dive 정련)</b> <span class="ev-badge" id="ev-sc"></span> — TAM 상한 반영해 Bull 캡(~5x). 🔴 텐배거(10x) 산술 불가.</p><div id="fig-sc"></div></div>
+<div class="dd-fig"><p class="cap"><b>시총 10배 사다리</b></p><div id="fig-ladder"></div><div class="dd-ladder-sentence" id="sent-ladder"></div></div>
+<h3>Catalyst (6~12개월)</h3><ul>
+<li>Q2/Q3 2026 실적 — Q1&#x27;26 record $174M 이후 매출 재가속 + 영업마진 회복(가장 중요) 확인 여부</li>
+<li>DCD(순환정지 후 기증) 장기 볼륨 확대 — 심장·간 DCD 채택 가속으로 이식 가능 장기 풀 자체 확장</li>
+<li>신규 임상데이터/label 확대 — OCS 신장 프로그램 또는 확대 indication 진전</li>
+<li>항공함대 가동률 상승·capex 정상화($59M 수준 유지)에 따른 영업레버리지·FCF 확대</li>
+<li>🔴🔴 <b>Q2'26 실적</b> — 영업마진 방향(재레버리지 vs 고착)이 전체 thesis 게이트</li></ul>
+<h3>📈 chart-dive 타이밍 read (참고·낮은 신뢰도)</h3><div class="lens"><h3>TMDX 진입 타이밍 read (chart-dive · 🔴 낮은 신뢰도·참고)</h3>
+<p><b>① 가격 구조</b> — 현재 $70.73은 52주 밴드($60~$156)의 <b>하단 1/5 구간</b>. 고점比 -55%지만 절대 바닥($60)에서는 +18% 위. $60 = 심리적/전저점 지지(미검증), $156 = 원거리 저항. 즉 &quot;싸 보이는&quot; 위치일 뿐 <b>바닥 확정 아님</b>. 야후 기준 beta 1.88 → 변동성 큼(±15% 흔함).</p>
+<p><b>② 공매도 35.5% of float + float 33.4M(소형)</b> — squeeze 연료는 충분(숏 커버 시 급등 가능). 🔴 그러나 적대적 해석: 높은 숏은 <b>베어 확신의 크기</b>이기도 하다. 스퀴즈는 *촉매(마진 재레버리지 증명)*가 있어야 점화 — 촉매 없는 고숏은 그냥 하락 압력. 현재 촉매 부재 → 연료만 있고 불씨 없음.</p>
+<p><b>③ 모멘텀·추세</b> — 하락추세. 핵심 모순: Q1&#x27;26 매출 $173.9M(+21%YoY 기록) <b>호재인데 주가는 저점권</b>. 시장이 매출이 아니라 <b>영업마진 23%→7.6% 압축</b>을 가격에 반영 중. = 실적 서프라이즈로도 안 오르는 국면 = 바닥 다지기라기보다 <b>구조 우려의 재가격화</b>. 데드캣 여부 판별 불가(추세 반전 신호 0).</p>
+<p><b>④ 4축 confluence</b></p>
+<ul><li>추세: 🔴 하락 (52주 저점권)</li><li>모멘텀: ⚪ 혼조 (매출↑ vs 마진↓, 주가 무반응)</li><li>거래량: SEC/데이터 확인 필요(미제공) — 판정 보류</li><li>공매도: ⚪ 양날 (스퀴즈 연료 vs 베어 확신)</li></ul>
+<p><b>→ 타이밍 read: ⚪ 대기(WAIT)</b> — 밴드 하단·스퀴즈 연료는 매력적이나 <b>바닥 확인 신호 전무</b>(추세 반전·거래량 클라이맥스·마진 재레버리지 증거 셋 다 부재). $60 지지 훼손 시 낙주 잡기 위험.</p>
+<p><b>진입 트리거(참고)</b>: (a) $60 방어 후 반등 + 이평 회복 확인, 또는 (b) Q2&#x27;26 콜에서 OpEx 급증이 *일시적 투자*임을 마진 반등으로 증명. 둘 중 하나 전엔 분할 정찰만. 🔴 종목 결정·매매 지시 아님·낮은 신뢰도 참고 read.</p></div>
+<h2>🧭 H.5 CAE·Edge Grid · H.6 0to1 · H.7 밸류 (overlay·7축 미합산)</h2>
+<p class="pick"><b>§H.5 CAE·Edge Grid</b>: 중요도 中(FDA 해자 비가역·병목 中) × 엣지 조건부(P/S 역사 저점=선반영 격차 有, but 마진 gated) = <b>"조건부 싼"</b> 분면 — 조건(Q2'26)이 풀리기 전의 미완성 엣지.</p>
+<p class="pick"><b>§H.6 0to1 (틸 7문)</b>: Track A ~5/7 = 성공 측 — ①기술 10배(온열관류·DCD 심장 재소생)·③독점(NOP 준독점·작은 시장 큰 점유=고전적 0to1)·⑤유통(자체 항공)·⑦숨은 비밀(장기 풀 확대) YES / ⑥존속성 ⚠️(XVIVO·OrganOx). 시장정의 tell=<b>진짜 독점</b>. ⭐~4 — 진짜 0to1 독점 스토리.</p>
+<div class="refute"><b>§H.7 밸류에이션 — 🏷️ 적정~약간 요구과다 경계. &quot;비싸다&quot;가 아니라 &quot;현재가가 마진 재레버리지를 조건부로 요구한다&quot;. 단일 P/S 3.8x(역사적 저점·과거 10~15x)만 보면 명백한 저평가처럼 보이지만, 역-DCF로 풀면 현재 EV($2.84B)는 (a)향후 5년 매출 ~18% CAGR + (b)터미널 영업마진 ~18~20% 복원을 동시에 요구한다. 마진이 Q1&#x27;26의 7.6~13% 수준에 구조적으로 고착되면 현재가는 오히려 20~30% 하방 여지. 마진 압축이 신규 적응증·항공 fleet·영업망 투자에 따른 일시적 재투자(재레버리지 가능)라면 현재가는 저평가.</b>
+<p style="margin:6px 0"><b>아키타입</b>: Ⓒ→Ⓑ 경계 하이브리드. 흑자전환은 완료(FY25 영업이익 $109M·clean)했으나 영업마진이 23%(Q2&#x27;25)→7.6%(Q1&#x27;26)로 급압축 중이라 &#x27;구조적 컴파운더&#x27;로 아직 확정 불가. 두 렌즈 병기: (Ⓒ 렌즈) 여전히 매출 +21% 고성장·R&amp;D +57%·항공물류 재투자 국면 = pre-scale medtech. (Ⓑ 렌즈) 이미 FCF+($108M)·OCF+($220M) 창출하는 self-funding 사업. → 시장은 지금 이 종목을 &#x27;Ⓒ 성장주 프리미엄&#x27;에서 &#x27;Ⓑ show-me 컴파운더&#x27;로 강제 재분류하는 중이며, 그 전이 구간의 밸류 진공이 현재가.</p>
+<p style="margin:6px 0"><b>역-DCF</b>: 현재 EV $2.84B / TTM매출 $636M = 4.5x, TTM총이익 $375.8M = EV/GP 7.6x, FY25 FCF $108M = 27x. 단순 Gordon(할인 10%): 암묵 영구 FCF성장 g≈6% → 이식 TAM 성장 envelope(폐·심장·간 미국 침투 초기+글로벌) 대비 낮음 = 표면상 여유. 그러나 2단계 DCF가 실체: 매출 18%CAGR 5년(→$1.46B) 가정 시, 터미널 OM 15%면 NOPAT ~$172M·EV/NOPAT 18x → 현가 ~$1.9B(&lt;현재가, 요구과다). 터미널 OM 20% 복원 가정이어야 EV ~$2.85B ≈ 현재가. ∴ 현재가는 &#x27;18% 성장 + 마진 20% 재레버리지&#x27; 동시 성립을 요구 = envelope 내부이나 낙관 상단. distance: 마진 20% 복원 believer면 fair, 마진 12% 고착 bear면 -25~30%.</p>
+<p style="margin:6px 0"><b>상대가치</b>: XVIVO(P/S 8.3·fPE 40·GM 72%·OM 10%·revG 34%) vs TMDX(P/S 3.8·fPE 25.6·GM 59%·OM 7.6%·revG 21%). XVIVO 2배 프리미엄의 정당화 부분: 더 높은 GM(72 vs 59)·더 빠른 성장(34 vs 21)·클린 재무(TMDX는 부채 $863M). 과대 부분: TMDX가 절대 매출 규모(~$636M vs XVIVO ~$85M USD 환산)·FCF+·NOP 해자에서 우위인데도 2배 갭은 과함 → TMDX의 &#x27;마진 압축 페널티&#x27;가 밸류에 이미 과반영. ISRG(P/S 10.7·OM 34%)=완성형 대장 프리미엄(비교 부적절), PODD(P/S 3.8·OM 16%·revG 34%)=TMDX와 동일 P/S이나 마진·성장 우위 → TMDX가 PODD 대비 상대적으로 비쌈. GMED(P/S 3.3·OM 21%)=더 싸고 마진 높음. 결론: peer 대비 TMDX는 &#x27;마진만 회복하면 리레이팅 여지 큰 저평가&#x27;, &#x27;마진 고착이면 P/S 3.8x도 정당&#x27;. 역사 percentile상 P/S 3.8x는 심층 저점(과거 10~15x)이라 다운사이드 밸류 압축은 상당 진행됨.</p>
+<p style="margin:6px 0"><b>컨센서스</b>: 목표가 평균 $114(+61%·범위 $80~142·9명·buy). 애널 컨센은 마진 재레버리지+성장 지속을 base case로 깔고 있음(현재가 대비 큰 갭 = 시장가와 sell-side view의 괴리 = variant perception 구간). 목표가 하단 $80조차 +13%라 sell-side는 하방을 제한적으로 봄. 단 컨센은 마진 압축을 일시적으로 가정 → Q1&#x27;26 7.6% 마진이 sell-side 모델에 아직 완전 반영 안 됐을 리스크(리비전 하향 여지) 주의.</p>
+<p style="margin:6px 0"><b>공매도 read</b>: 숏 35.5% of float(33.4M float·소형)=극단적 베어 베팅. 해석: 시장의 절반가량이 &#x27;마진 구조적 훼손·밸류 정상화&#x27; 베어 thesis에 실탄 투입. 이는 양날 — (상방) Q2&#x27;26 마진 안정/재레버리지 확인 시 리레이팅 + 숏커버 동시 발화 = 비대칭 급등 트리거(목표가 $114와 정합). (하방) 베어가 옳아 마진 12% 고착 시, 소형 float·베타 1.88이라 추가 급락 변동성. 즉 숏 35.5%는 &#x27;싸다&#x27;의 근거가 아니라 &#x27;변동성·비대칭성 극대화&#x27; 신호. catalyst(Q2 실적)가 방아쇠.</p>
+<p style="margin:6px 0"><b>🎯 매수 적정성</b>: ⚪ 관망 (약한 신뢰도·매수신호 아님·최종판단 사용자·7축 미합산). 근거: (1) 역-DCF 거리 = 현재가가 이미 &#x27;마진 회복 시나리오&#x27;를 절반쯤 반영 → 안전마진 얇음. (2) 단 극단적 setup(숏 35.5% + 목표가 +61% + P/S 역사 저점)은 마진 재레버리지 확인 시 비대칭 상방(리레이팅+숏스퀴즈 동시). (3) 승부처가 &#x27;다음 1~2분기 마진 방향&#x27; 단일 변수라 지금은 정보 부족 → 확인 후 진입이 EV 우위. · 신뢰도 낮음. 근거: (1) 승부처가 마진 방향 단일 변수인데 그 데이터(Q2&#x27;26)가 아직 미도착 → 어느 시나리오도 확정 불가. (2) SEC 원문 신규수집 불가 환경 → 부채 만기구조(전환사채 ~2028 추정)·NOP segment 마진 분해는 &quot;SEC 확인 필요&quot; 라벨. (3) peer 통화 상이(XVIVO SEK)·야후 output 기반이라 정밀도 한계. (4) 순이익 $190M 중 ~$81M은 이연법인세 환입 일회성 → trailing PE 16x는 오해 소지, clean 수익성은 영업이익 $109M 기준으로만 판단.</p>
+<p style="margin:6px 0"><b>swing</b>: 📍 단일 승부처 = 영업마진 방향(Q2&#x27;26 실적). 압축 동인 분해: OpEx +46%QoQ(R&amp;D +57%·SG&amp;A +29%)가 매출 +10%QoQ의 4배 속도. 이것이 (a)NOP 확장·신규장기 적응증·자체 항공 fleet 규모화 위한 선행 CapEx/OpEx → 매출 후행 시 재레버리지 = Ⓑ 확정·현재가 저평가, vs (b)항공물류가 구조적으로 GM/OM을 갉아먹는 저마진 통합서비스 모델 노출 → 마진 천장 12~15%·현재가 요구과다. GM%도 61→58%로 완만 하락 = 물류 mix 희석 신호와 일치(b쪽 소폭 가점). 자체 항공기(Summit 인수)는 해자이자 OpEx 유발원이라는 양날성이 이 스윙의 본질.</p></div>
+<h2>💰 I. 자금흐름 · 내부정보</h2>
+<table class="tb small"><tr><th>항목</th><th>값</th><th>함의</th></tr>
+<tr><td>인사이더 지분</td><td class="c-amber">3.65%</td><td>낮음 — 창업자 27년 tenure로 부분 상쇄·희석 결과 추정(Form 4 확인 필요)</td></tr>
+<tr><td>기관 보유</td><td>~100%+</td><td>과집중 + 숏 아티팩트</td></tr>
+<tr><td>🔴 공매도(float 대비)</td><td class="c-red">35.5%</td><td>극단 — 시장 절반 베어 실탄. 소형 float(33.4M)라 양방향 폭발 조건</td></tr>
+<tr><td>전환사채</td><td>~$454M(1.5%·2028.6)</td><td>현재 OTM($70 vs 전환가 추정 ~$95+)→만기 현금상환 or 차환(refi wall)</td></tr>
+<tr><td>목표가(9명)</td><td class="fresh">$114 (+61%)</td><td>범위 $80~142·buy — sell-side는 마진 재레버리지를 base로</td></tr></table>
+<h2>📜 J. 산업·기업 역사 · 규제 risk</h2>
+<div class="lens">
+<h3>TMDX(TransMedics) History-Dive — 기업 역사 축 정밀 분석</h3>
+<h3>① 연대기 변곡점 (창업 1998 → 현재)</h3>
+<table class="tb small"><tr><th>시점</th><th>사건</th><th>성격</th></tr><tr><td>1998</td><td>Hassanein(의사) 창업. OCS 개발 착수</td><td>임상근거 우선 DNA 배태</td></tr><tr><td>~2018</td><td>OCS Lung FDA 승인 (창업 <b>20년</b>째 첫 상업 축)</td><td>초장기 인내</td></tr><tr><td>2021</td><td>OCS Heart·Liver FDA 승인 → NOP 런칭</td><td>사업모델 전환점</td></tr><tr><td>2022→24</td><td>매출 93→242→442M (2년 <b>4.7배</b>)</td><td>폭발 구간</td></tr><tr><td>2024</td><td>Summit 항공 인수 → 자체 fleet 수직통합</td><td>해자화·OpEx 유발</td></tr><tr><td>2025~26</td><td>영업마진 23%(Q2&#x27;25)→7.6%(Q1&#x27;26)·주가 -55%</td><td>재투자 vs 구조 논쟁</td></tr></table>
+<p>핵심: 상업화까지 20년을 버틴 회사가, 승인 후 3년 만에 매출 폭발을 만들고, 지금은 <b>폭발의 대가(마진 압축)</b>를 치르는 국면. [사후회고]</p>
+<h3>② 위기 대응 트랙레코드</h3>
+<p>20년+ pre-revenue를 버틴 생존력이 최대 자산. FY22~23 영업적자(-31·-29M)를 감내하며 FDA 3개 적응증·NOP를 밀어붙여 FY24 흑자전환(영업이익 37M) 달성 — <b>약속한 상업화를 결국 실현</b>한 이력. [당시 공언→이행] 단, 이 인내 DNA가 지금은 &quot;마진 희생하고라도 신적응증·물류망에 재투자&quot;라는 <b>동일 패턴의 반복</b>으로 읽힌다(양날). [추론]</p>
+<h3>③ 자본배분·조달 스코어카드</h3>
+<ul><li>전환사채 ~<b>$863M</b> 조달(2028 만기 추정, SEC 확인 필요) → Summit 항공 fleet·capex 투입.</li><li>capex 궤적: FY23 -179M → FY24 -130M → FY25 -59M (피크아웃). FCF FY24 <b>-81M → FY25 +109M</b>로 반전 = 중자산 투자기 종료 신호. [당시 공언·데이터]</li><li>희석: 발행주식 29.6M(FY22)→34.6M, 전환사채 잠재 희석(dilutedshares 40.5M) 상존. <b>채권 레버리지로 fleet 매입</b>은 자산 특수성(장기 물류 독점)에 베팅한 공격적 배분 — 성공 시 해자, 실패 시 저마진 고정비. [추론]</li></ul>
+<h3>④ 약속 이행 이력</h3>
+<p>FDA 승인 일정(Lung→Heart/Liver→DCD 확장)을 단계적으로 관철했고, 흑자전환 가이던스도 FY24에 실현. 인내형 CEO의 <b>말↔행동 일치도는 높음</b>. 다만 인사이더 지분 <b>3.65%</b>로 낮아 skin-in-game은 약함 — 창업의사 정체성이 지분보다 사명감에 근거. [사후회고]</p>
+<h3>⑤ 기업 DNA 패턴 → thesis 함의</h3>
+<p>세 패턴이 일관: <b>(a) 초장기 인내</b>(20년 버팀) <b>(b) 수직통합 성향</b>(항공까지 내재화) <b>(c) 임상근거 우선</b>(적응증 하나씩 FDA로 증명). 이 DNA가 현재 마진압축의 <b>원인이자 방어논리</b> — R&amp;D +57%·SG&amp;A +29%는 &quot;또 한 번의 3년 투자 사이클&quot;일 개연성이 DNA상 높다.</p>
+<p><b>Steelman(반영)</b>: 그러나 동일 DNA의 어두운 해석 — 수직통합(항공)은 되돌릴 수 없는 <b>구조적 저마진 물류 노출</b>을 영구히 손익계산서에 심었을 수 있다. 정적냉장 대체라는 서사가 매력적일수록, capex→OpEx로 비용이 <b>자리만 옮겼을</b> 위험. XVIVO(GM 72%·자산경량 관류액 모델)가 TMDX(GM 59%·fleet 중자산)보다 2배 고밸류인 것은 시장이 이미 이 <b>비즈니스모델 질(質) 격차</b>를 가격에 반영했다는 방증. → 마진 7.6%가 &quot;재투자 저점&quot;이면 재레버리지, &quot;물류 구조 바닥&quot;이면 밸류 디레이팅 지속. <b>FY26 하반기 OpEx 증가율 &lt; 매출 증가율 전환 여부가 DNA 낙관론의 falsification 지점.</b></p>
+<p><b>생존편향·자기서사 경계</b>: 공식 연혁(&quot;transforming organ transplant&quot;)은 20년 생존을 필연처럼 서술하나, 동일 시기 사멸한 관류 스타트업이 다수였을 개연(SEC 확인 불가). 이 회사의 인내를 <b>미덕으로만 읽지 말고, 자본을 20년 태운 후에야 회수 시작한 저ROIC 이력</b>으로도 병렬 기록해야 균형. [추론]</p>
+<hr style="border:none;border-top:1px solid #e0d6bd">
+<p>근거: 재무·분기 수치 = 야후(yfinance) <code>finalist_financials.json</code>·<code>tmdx_data.json</code> + 제시 SEC 교차검증 FACTS. 전환사채 만기·초기 경쟁사 사멸은 &quot;SEC 확인 필요&quot; 라벨.</p>
+</div>
+<h2>🔍 L. 동적 발견</h2><ul>
+<li>🔴 <b>이자비용 2배 점프</b>(Q1'26 3.4→7.2M) — 신규 고금리 차입 신호 가능. 총부채 yf $863M vs 장부 전환사채 $454M 격차(~$409M 항공/리스 추정) = SEC 10-Q 확인 필요.</li>
+<li><b>FY25 순이익 $190M의 착시</b> — ~$81M 이연법인세 환입(일회성). PER 16x가 아니라 clean 영업이익 $109M 기준으로 봐야 함.</li>
+<li><b>GM 61→58% 완만 침식</b> — 항공물류 mix 희석의 구조적 지문(일시적 mix 아닐 가능성). 정상화 OM 목표를 과거 23%보다 낮게 잡아야 안전.</li></ul>
+<h2>🔴 종합 판단 — 적대적 검증 통합</h2>
+<div class="refute"><p>TMDX 텐배거 thesis에 대한 적대적 검증 결과다. 포트폴리오 종목이 아니므로 memory read는 면제(단일 발굴 후보), 데이터는 scratchpad 2파일 근거.</p>
+<h3>TMDX 텐배거 thesis 적대적 검증</h3>
+<h3>① 가장 강한 반박 — TAM 천장 × 텐배거 산수 (thesis의 자기부정)</h3>
+<p>thesis 전체가 &quot;마진 재레버리지 → 리레이팅&quot;에 걸려 있는데, <b>설령 그게 다 맞아도 10배는 산술적으로 안 나온다.</b> 텐배거는 시총 $2.44B → ~$24B를 요구한다. 매출 18% CAGR 5년이면 $605M→$1.46B(2.4배). 여기에 P/S를 역사적 고점 8~10x(현재 3.8x)까지 되돌려도 시총 ~$11.7~14.6B = <b>5~6배가 상단</b>이고, 그것도 마진 20% 복원 + 멀티플 더블링 <b>동시 성립</b>을 전제한다. 물리적 병목이 더 치명적: 미국 연간 장기이식은 폐·심장·간 합쳐 ~1.5만 건 수준(전체 이식 ~4.6만)으로, OCS가 100% 침투해도 건당 단가로 곱한 매출 상한이 존재한다. 냉장보관 대비 &quot;장기 풀 확대&quot; 스토리는 증분이지 무한 성장이 아니다. <b>즉 TMDX는 &#x27;좋은 회사&#x27;일 수는 있어도 이 가격·이 TAM에서 clean 텐배거는 0에 수렴한다.</b> 렌즈 4개 모두 밸류를 &quot;적정~요구과다&quot;로 봤다는 것 자체가 텐배거 명제와 모순.</p>
+<h3>② Thesis 리스크 신호 4개 (falsifiable)</h3>
+<p>1. <b>GM% 추가 하락</b>: 61→58% 흐름이 Q2&#x27;26에 56% 이하면 항공물류=구조적 천장 확정(일시적 mix 아님).</p>
+<p>2. <b>영업마진 미회복</b>: Q2&#x27;26 OM이 7.6%→15% 이상 반등 실패 시 재레버리지 서사 붕괴. 2개 분기 연속 &lt;10%면 falsify.</p>
+<p>3. <b>이자비용 고착</b>: Q1&#x27;26 이자 3.4→7.2 2배 점프가 Q2에도 유지되면 순이익 잠식(Q1&#x27;26 순이익 $7.3M은 이미 영업이익 $13.3M의 절반). 신규 고금리 차입 확정.</p>
+<p>4. <b>인사이더 Form 4 매도</b>: CEO 3.65%에서 10b5-1 순매도 추가 발생 시 &quot;희석 결과&quot; 변명 무너짐.</p>
+<h3>③ 베어 시나리오 심각도</h3>
+<p>역-DCF상 마진 12% 고착이면 현재가 <b>-25~30%</b>. 여기에 숏 35.5%는 양방향 — 마진 미스 시 하락 가속(숏 추가), 서프라이즈 시 스퀴즈. 순부채 ~$400M + 2028 전환사채 $460M refi wall이 고금리 지속 시 clean 영업이익 $109M을 이자로 잠식. 심각도 <b>중~중상</b>(파산 아님, 밸류 리셋).</p>
+<h3>④ 공매도 35.5%의 실체</h3>
+<p>빈 공포가 아니다. 실증 근거 보유: (a) GM% 4분기 연속 침식 = 저마진 물류 희석의 지문, (b) OpEx +46%QoQ가 매출 +10%의 4배, (c) FY25 순이익 $190M 중 ~$81M이 이연법인세 환입 일회성 = 헤드라인 PER 16x는 착시, (d) 부채 $863M vs 장부 $519M 불일치. <b>숏 논거 = &quot;회계 헤드라인이 실제 수익성을 과대포장&quot; + &quot;물류 통합이 마진 천장&quot;</b> — 둘 다 데이터로 뒷받침된다. 단 float 33.4M 소형주라 스퀴즈 리스크가 숏의 약점.</p>
+<h3>⑤ Thesis 생존 여부</h3>
+<p><b>텐배거 thesis = FALSE (철회).</b> TAM 천장과 산수가 10배를 구조적으로 막는다.</p>
+<p><b>&quot;우량 성장주&quot; thesis = 약화(조건부 생존).</b> self-funding(FCF+$108M)·비탄력 이식수요·NOP 해자는 실재하나, 마진 방향이 확인 안 된 지금은 ⚪ 관망이 맞다.</p>
+<p><b>판정: 텐배거 명제 철회 / 퀄리티 컴파운더 명제로 격하(약화).</b> 승부처는 Q2&#x27;26 마진 단일 변수이며, 확인 후 진입이 EV 우위. 현재가는 이미 재레버리지를 절반 반영해 안전마진이 얇다.</p></div>
+<h2>🧠 7축 종합 Steelman</h2><div class="steel">
+<p><b>데이터 축</b>: 마진 압축이 4분기 연속이라 "한 분기 노이즈"로 치부 어려움 + GM 침식은 구조적일 가능성(항공 mix). 그러나 R&D +57%는 신규 적응증 투자 선행 신호일 수 있어 Q2'26 전엔 확정 불가.</p>
+<p><b>구조 축</b>: 진짜 0to1 준독점(NOP·자체 항공·DCD 심장)이나 그 해자가 <b>저마진 물류를 손익계산서에 영구히 심는</b> 양날. XVIVO(자산경량 GM 72%)가 2배 밸류인 것은 시장이 비즈니스모델 質 격차를 이미 가격에 반영.</p>
+<p><b>시간 지평 축</b>: 단기(Q2'26 마진)=게이트 / 중기(비탄력 수요·NOP 해자·FCF+ self-funding)=견고 / 장기(TAM 상한)=10x 불가. 세 지평이 <b>"관망 → 확인 후 퀄리티 컴파운더 진입"</b>으로 수렴.</p>
+<p><b>종합</b>: 텐배거 명제 <b>철회</b>, 퀄리티 컴파운더 명제로 <b>격하(조건부 생존)</b>. 승부처는 Q2'26 마진 단일 변수. 밸류 안전마진이 얇아 확인 후 진입이 기대값 우위.</p>
+</div>
+<h2>⚠️ 수집 상태 (실패·불완전 항목)</h2><ul class="sub">
+<li>⚠️ SEC 10-Q 원문(이자비용 점프 원인·총부채 세부 구성·NOP segment 마진) — 단일 브라우저 환경 제약, XBRL companyconcept로 매출·순이익·전환사채 핵심만 교차검증.</li>
+<li>⚠️ DEF 14A(이사회 독립성)·Form 4(인사이더 거래 방향) — 미수집.</li>
+<li>ℹ️ 4-Dive(R/People/History/chart)는 이 세션 단일 브라우저 제약으로 <b>별도 발행 보고서 대신 통합 렌즈 분석</b>으로 수행(프레임워크·정량은 보존, Chrome 신규수집 대체=SEC 교차검증+지식).</li></ul>
+<p class="foot">데이터: yfinance(분기·peer·재무) + SEC EDGAR XBRL(CIK 0001756262·10-K 2026-02-24 교차검증) + 내부 4렌즈·밸류·내구성·적대검증 워크플로 + Fable 판사. 종합 ⭐ 3.26/5 = 사업·thesis 매력도(밸류 미반영). 본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+const VIZ={"score7": {"label": "확신도 7축", "axes": ["🌦️날씨", "⛰️산", "🌲숲", "🌳나무", "🌲🌳옆", "👤사람", "🔢숫자"], "max": 5, "series": [{"name": "TMDX", "color": "#c0392b", "scores": [2.75, 3.25, 4.0, 3.5, 3.5, 3.4, 3.0]}]}, "narrative": {"label": "내러티브 5축", "axes": ["🔧기술", "👥사회", "🏛️정책", "🌐지정학", "💰자본"], "max": 3, "series": [{"name": "TMDX", "color": "#2980b9", "scores": [3, 3, 1.5, 0, 1.5]}]}, "trajectory": {"periods": ["Q1·25", "Q2·25", "Q3·25", "Q4·25", "Q1·26"], "forecastFrom": 5, "inflection": {"index": 1}, "series": [{"label": "매출($M)", "axis": "left", "color": "#2980b9", "values": [143.5, 157.4, 143.8, 160.8, 173.9]}, {"label": "영업마진(%)", "axis": "right", "color": "#c0392b", "values": [19, 23, 16, 13, 7.6]}]}, "peers": {"metrics": [{"key": "mcap", "label": "시총", "unit": "$B", "better": "neutral"}, {"key": "revG", "label": "매출성장", "unit": "%", "better": "high"}, {"key": "gm", "label": "총이익률", "unit": "%", "better": "high"}, {"key": "om", "label": "영업이익률", "unit": "%", "better": "high"}, {"key": "ps", "label": "P/S", "unit": "x", "better": "neutral"}], "rows": [{"name": "TMDX", "subject": true, "note": "온열관류+NOP", "vals": {"mcap": 2.44, "revG": 21, "gm": 59, "om": 7.6, "ps": 3.8}}, {"name": "XVIVO", "note": "스웨덴·관류액", "vals": {"mcap": 7.4, "revG": 34, "gm": 72, "om": 10, "ps": 8.3}}, {"name": "PODD", "note": "인슐린펌프", "vals": {"mcap": 11.0, "revG": 34, "gm": 71, "om": 16, "ps": 3.8}}, {"name": "GMED", "note": "척추", "vals": {"mcap": 10.2, "revG": 27, "gm": 68, "om": 21, "ps": 3.3}}, {"name": "PEN", "note": "혈전제거", "vals": {"mcap": 12.4, "revG": 16, "gm": 67, "om": 10, "ps": 8.6}}, {"name": "ISRG", "note": "수술로봇(대장)", "vals": {"mcap": 118.4, "revG": 18, "gm": 67, "om": 34, "ps": 10.7}}]}, "scenario": {"horizonLabel": "5년", "threshold": 1.5, "cases": [{"label": "Bull", "prob": 0.25, "mult": 5.0, "tone": "bull"}, {"label": "Base", "prob": 0.5, "mult": 2.3, "tone": "base"}, {"label": "Bear", "prob": 0.25, "mult": 0.8, "tone": "bear"}]}, "ladder": {"current": {"label": "TMDX", "mcap": 2.44}, "target": {"label": "10x", "mcap": 24.4}, "refs": [{"name": "PODD", "mcap": 11}, {"name": "DXCM", "mcap": 27}, {"name": "ISRG", "mcap": 118}], "sentence": "TMDX($2.44B)의 텐배거($24.4B)는 이식 TAM 상한(미국 폐+심장+간 ~1.5만건/년)으로 산술적 불가. 현실 상단 = P/S 역사고점 되돌림 시 ~5~6배. 이것이 \"텐배거 철회 → 퀄리티 컴파운더\" 격하의 핵심.", "warn": true}};
+
+DDViz.renderRadar('fig-score7','leg-score7',VIZ.score7);
+DDViz.renderRadar('fig-narr','leg-narr',VIZ.narrative);
+DDViz.renderTrajectory('fig-traj','leg-traj',VIZ.trajectory);
+DDViz.renderHeatmap('fig-peers',VIZ.peers);
+DDViz.renderScenario('fig-sc','ev-sc',VIZ.scenario);
+DDViz.renderMcapLadder('fig-ladder','sent-ladder',VIZ.ladder);
+</script></div></body></html>
