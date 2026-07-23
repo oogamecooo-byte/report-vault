@@ -1,0 +1,910 @@
+<meta charset="utf-8"><title>SECZ (Securitize Corp.) Deep-Dive — 2026-07-23</title>
+<meta name="vault-stage" content="Dive">
+<meta name="vault-topic" content="SECZ">
+<meta name="vault-skill" content="Deep-Dive">
+<meta name="vault-date" content="2026-07-23">
+<meta name="description" content="SECZ (Securitize Corp.) Deep-Dive — 2026-07-23">
+<meta name="robots" content="noindex, nofollow">
+
+<style>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Helvetica Neue','Apple SD Gothic Neo',sans-serif;line-height:1.6;margin:0;padding:0;}
+.container{max-width:920px;margin:24px auto;background:#FDF6E3;padding:36px 44px;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.08);}
+h1{font-size:1.7em;border-bottom:3px solid #c0392b;padding-bottom:.3em;margin-top:.2em;}
+h2{font-size:1.32em;border-bottom:1px solid #c9bfa3;padding-bottom:.24em;margin-top:1.7em;color:#8a2415;}
+h3{font-size:1.1em;margin-top:1.3em;color:#5c4a00;}
+h4{font-size:1.0em;margin-top:1.1em;color:#5c4a00;}
+blockquote{border-left:4px solid #c9a227;background:#f5ecd3;margin:.8em 0;padding:.5em 1em;color:#4a4230;border-radius:0 6px 6px 0;}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.9em;display:block;overflow-x:auto;}
+th,td{border:1px solid #e8e1cf;padding:6px 9px;text-align:left;vertical-align:top;}
+th{background:#efe6cc;color:#5c4a00;font-weight:600;}
+tr:nth-child(even) td{background:#faf4e2;}
+code{background:#efe6cc;padding:1px 5px;border-radius:4px;font-size:.88em;}
+pre{background:#f0e8cf;padding:12px;border-radius:6px;overflow-x:auto;border:1px solid #e8e1cf;}
+a{color:#b0562a;text-decoration:none;} a:hover{text-decoration:underline;}
+hr{border:none;border-top:1px solid #d8cca8;margin:1.6em 0;}
+strong{color:#3a2f18;}
+.judge{background:#f3ead0;border:2px solid #c0392b;border-radius:8px;padding:16px 20px;margin:1.2em 0;}
+.judge h2{border:none;color:#8a2415;margin-top:0;}
+.dd-fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:12px;margin:1em 0;}
+.dd-fig figcaption{font-size:.82em;color:#6b5d3a;margin-top:6px;text-align:center;}
+@media print{body{background:#fff;}.container{box-shadow:none;background:#fff;}}
+@media (max-width:640px){.container{padding:20px 16px;}}
+</style>
+<div class="container">
+<h1>SECZ (Securitize Corp.) Deep-Dive — 2026-07-23</h1>
+<blockquote>
+<p><strong>방법론</strong>: Deep-Dive SKILL v1.24 · 점수 stamp <code>DD-v1.7</code> · <code>--full</code> 모드 · <strong>Step 1.5 4-Dive 선행 오케스트레이션 첫 적용</strong>(R-Dive·People-Dive 재사용 / History-Dive·chart-dive 신규 서브에이전트) · §H.7·§G.8 전담 서브에이전트 위임 · Fable 판사(Step 7.5)
+<strong>직전 Deep-Dive</strong>: <a href="SECZ_DeepDive_2026-07-13.html">2026-07-13 (합병 후 첫, $7.90)</a> — 본 보고서는 <strong>그 10일 델타 재점검</strong>
+<strong>기준가</strong>: <strong>$7.44</strong> (2026-07-23 라이브 yfinance) · 시총 <strong>$1.21B</strong> (163.22M주, 7/8 Super 8-K 1차) · P/S ~18x</p>
+</blockquote>
+<hr />
+<h2>🧑‍⚖️ 종합 매수 판단 (Fable 판사 · Step 7.5 · 전-축 통합)</h2>
+<blockquote>
+<p>🔴 신선 컨텍스트의 Fable 5 판사가 밸류(§H.7)·EV(§H.1)·CAE(§H.5)·0to1(§H.6)·내구성(§G.8)·chart 타이밍을 <strong>하나의 read로 통합</strong>한 종합 매수 적정성 판단. <strong>낮은 신뢰도·enforcement 아님·최종 판단·실행은 사용자.</strong> 장기 thesis 종목엔 🔴 보류도 매도 신호 아님(Thesis 리스크 신호 입력). 7축 ⭐ 점수를 매수신호로 읽지 말 것.</p>
+</blockquote>
+<p><strong>verdict: ⚪ 관망 — $6.0~6.6 가격대 또는 8월 Q2 유기 토큰화 매출 ≥$13M(첫 10-Q) trigger에서 재고. 구조(thesis)는 살아있고 생존은 견디나, 현 밸류는 아직 오지 않은 bull-tail에 선불을 요구하며 그 판정 관문이 수주 내 이산적으로 열린다.</strong></p>
+<p><strong>근거</strong></p>
+<ol>
+<li><strong>밸류 축 (🔴 기움)</strong>: P/S 18.0x·EV/S 13.2x(브리프 A)는 Distributed 레인 peer 최고이고, 역-DCF 요구 10yr CAGR ~40-50%가 유기 토큰화 매출 <strong>-1.1% 정체</strong>(§V36.1-①·브리프 C3)와 정면 충돌 — Q1 헤드라인 +38.8%는 사실상 전부 인수효과다. 암묵 exit 멀티플 9-11x &lt; 현재 = 성장이 멀티플 압축을 <em>이겨야만</em> 수익이 나는 구조(§V38.3·브리프 D §H.7.3 "미결·질 조정 시 rich").</li>
+<li><strong>기댓값 축</strong>: 5년 EV ~1.6x이나 <strong>2년 EV ~1.0x = bull-tail 의존</strong>(브리프 D §H.1) — 향후 2년 기대수익이 사실상 0이라는 뜻이므로, 확인 전 대기의 기회비용이 구조적으로 낮다. 이것이 "관망의 값이 싸다"는 본 verdict의 산술적 core다.</li>
+<li><strong>시간 축</strong>: 모든 관문이 <strong>8월 Q2 실적 + 첫 10-Q로 수렴</strong>(§V38.3 "모든 관문 = 8월 Q2 수렴"·브리프 C2). 7/9 이후 공시 0건의 정보 진공 속 10일 -6.3%는 신규 정보 없는 매크로 베타(브리프 C1)다. 판정 변수는 이산적: 유기 ≥$13M 반등 = "정체" 서사 철회 / 2분기 연속 역성장 = 재평가 roll-up(§V36.2·Open Verif §122).</li>
+<li><strong>구조 축 — 🔴 보류가 아닌 이유</strong>: Distributed AUM $5.09B 1위·30d 순유입 +$902M 전 플랫폼 최대(§V38.2), Kill Switch 9개 발동 0(§V38.3), 무차입·net cash·런웨이 9-15년으로 §G.8 내구성 🟢 견딤(브리프 D) — thesis는 미붕괴이고 즉사 채널이 없다. 고금리 환경은 float 이자·토큰화 국채 수요에 오히려 우호(양면 중 순방향, 브리프 C1).</li>
+<li><strong>구조 축 — 그러나 AUM이 면죄부가 아닌 이유</strong>: 회사 스스로 <em>"revenue is not substantially directly tied to AUM"</em>을 자인(§V36.1-②) — 라이브 AUM 급성장이 유기 매출 정체를 상쇄한다고 판정할 수 없다. History-Dive의 이행 이원성(절차 정시 vs <strong>재무 가이던스 EBITDA 실현율 20%</strong>, 브리프 C4)은 FY26 $32M 가이던스에 큰 haircut을 요구한다.</li>
+<li><strong>수급·거버넌스 꼬리</strong>: 유통 float ~20-25%·PIPE 12.1% 무락업(브리프 C6)이라 현 가격은 "시장 컨센서스"가 아니고, 락업 38.2% 해제 12/28(브리프 C7·§V38.1)·evergreen 5%/년 희석(C9)·ICFR material weakness(C8)가 확인 전 프리미엄 지불을 더 어렵게 만든다.</li>
+<li><strong>모듈 간 엇갈림 명시 (봉합 없이)</strong>: §H.7.3(⚪ 더 싸게 대기)과 §H.5 CAE(정찰~1단 분할 <em>허용</em>)는 방향이 다르다. 본 종합은 §H.7.3 쪽을 본선으로 채택하되 — 근거 2(대기 비용 저렴) + 근거 3(관문 임박) — §H.5의 정찰 허용을 기각하지 않는다: 관문 <em>전</em> 본격 진입만 보류 대상이며, 정찰성 소액 분할은 본 ⚪와 모순이 아니다(verdict 룰 상속·enforcement 아님).</li>
+<li>타이밍 뉘앙스 1줄: chart-dive 참고 read도 ⚪ 중립(상장 3주 TA 신뢰도 ≈0·VWAP $8.17 매물벽 아래 = 추격도 바닥반등도 아님) — 참고 수준으로만 정합(브리프 D).</li>
+</ol>
+<p><strong>Steelman</strong></p>
+<ul>
+<li><strong>본 분석</strong>: 확인(8월 Q2) 전 $7.44 진입은 bull-tail에 선불하는 행위 — 관망이 우월.</li>
+<li><strong>자기 반박 (구조 + 데이터 2축)</strong>: ① <em>구조</em> — 얇은 float(20-25%) + 이산 관문 구조는 Q2 유기 반등 확인 시 가격이 <strong>갭으로</strong> 반영됨을 뜻한다. "확인 후 매수"는 구조적으로 더 비싸게 사거나 영원히 실기하는 전략이다(과거 Intel $40 대기→$100 급등 실기·§5 "체크리스트 ㅅ" — 트리거가 발생하면 목표가는 도달하지 않는다). ② <em>데이터</em> — 내 ⚪의 핵심 근거인 유기 -1.1%는 3/31 분기 = 4개월 묵은 수치이고, 반대편 AUM +$902M/30d는 7/13 라이브다. 강세 근거만 신선하고 약세 근거만 stale이라면, 이 ⚪는 오래된 데이터에 anchoring한 것일 수 있다(§V38.3 Steelman과 동일 긴장).</li>
+<li><strong>유지 / 수정 / 철회</strong>: <strong>유지하되 수정 1건.</strong> 유지 이유 — 반박 ②는 회사 자인 "AUM≠매출"(§V36.1)에 막혀 관문을 대체하지 못하고, EV 2년 ~1.0x(§H.1)라 대기 손실 기대값도 낮다. 수정 — 반박 ①을 수용해, 갭 리스크 헷지로서의 <strong>정찰성 소액 분할 진입은 ⚪와 양립</strong>함을 verdict 본문(근거 7)에 명시했다. 전면 진입 보류만 유지.</li>
+</ul>
+<p><strong>한계</strong></p>
+<ul>
+<li>첫 10-Q 미발행 — net cash $300-350M은 추정치·유기 토큰화 Q2 수치 부재 (브리프 E)</li>
+<li>Short interest·옵션 데이터 없음 (fintel 봇 차단)</li>
+<li>AUM은 7/13 carry (10일 전·rwa.xyz 재갱신 404) — "라이브"조차 완전 신선 아님</li>
+<li>FY26 가이던스 애널리스트 커버리지 0 — 컨센서스 교차 검증 불가</li>
+<li>Hanwha 9.6% 취득 경로 미확인·13D/13G 미제출 (브리프 C5, 시한 ~8월 중순)</li>
+<li>사람축 비전 ⭐ 사용자 수기 미입력·X 임원 동향 미수집</li>
+<li>chart-dive read 자체가 저신뢰 (상장 3주 데이터)</li>
+</ul>
+<p><em>🧑‍⚖️ 판사 model: Fable 5 · 신선 컨텍스트 · 근거 §번호 = SECZ-Memory · 🔒 개인 규율 점검표는 내부 파일(JudgeVerdict)에만.</em></p>
+<hr />
+<h2>📌 한 장 요약</h2>
+<p><strong>10일 만의 델타는 단순하다 — 펀더멘털은 얼어붙었고(7/9 이후 신규 공시 0건·첫 10-Q는 8월), 매크로 역풍은 첨예해졌으며(이란전·유가 $100·미 10Y 국채금리 2026년 최고·연준 인상 관측), 주가는 6% 더 싸졌다($7.94→$7.44).</strong> 사업 지표(AUM 1위·순유입 최대)와 수익 구조(유기 매출 정체·GM 하락)의 긴장은 그대로이고, 모든 관문은 여전히 <strong>8월 Q2 첫 실적 하나로 수렴</strong>한다. 7축 종합 <strong>⭐4.0 유지</strong>(신규 데이터 부재 — 재확인). 이번 실행의 진짜 신규 가치 = <strong>History-Dive·chart-dive 축 최초 추가</strong> + 매크로 양면(국채 yield 매력 AUM+ / risk-off 멀티플 압축−)의 첨예화.</p>
+<ul>
+<li>🧭 CAE·분면 〔§H.5〕: A1·A3·E1 다층 · 약한 고리 = A3 규제 | 중요도 <code>L2-R2-H1</code>(中上) × 엣지 <code>G2-P2-D2</code>(中上) → <strong>"강하고 싼" 경계 — 잠금장치 부분 통과, 정찰~1단 분할까지만</strong> 〔CAE: C=제약/A=조정/E=표현 · A1 국가·주권 / A3 규제·정책 / E1 자본시장〕〔중요도 L 다층성·R 비가역성·H 병목경도 / 엣지 G 선반영격차·P 연료잔량·D 컨센서스반증, 각 0~3〕</li>
+<li>💎 0to1 〔틸 렌즈〕: Track A <strong>5/7 → 성공(하한 경계)</strong> ‖ Track B ⭐4.5 ‖ tell = <strong>혼재</strong> · 별도렌즈(7축 미합산) — 7/13 대비 변동 없음</li>
+<li>💰 밸류 〔H.7〕: <strong>분모 의존적·미결(🔴 질 조정 시 rich로 기움)</strong> ‖ 신뢰도 낮음 ‖ 아키타입 Ⓒ·역-DCF <strong>상단의존</strong>(요구 10yr CAGR ~40-50% vs 유기 -1.1% 충돌)·§H.1 재평가의존 낮음(현재 P/S 18x &gt; exit 9-11x = <strong>압축 역풍</strong>) ‖ swing = 8월 Q2 유기 토큰화 ‖ <strong>🎯 매수적정성 = ⚪ 관망</strong> (더 싸게: $6.0-6.6 재테스트[EV/S~10x] or Q2 유기 ≥$13M · 낮은 신뢰도·최종 판단 사용자) ‖ BRCR ~0.08 낮음 × EV/GP 高 괴리·[부분 올라탐/소유 미완] · 별도렌즈(7축 미합산)·보유 stop sign ❌ — <strong>7/13 대비 실질 불변</strong>(가격 -6%가 매크로 역풍과 상쇄)</li>
+<li>🌡️ 내구성 〔G.8〕: <strong>🟢 견딤</strong> ‖ 신뢰도 낮음 ‖ 무차입·net cash ~$325M·float 이자수익 ~$12-15M/년(연환산 burn -$36M의 1/3~2/5 상쇄)·런웨이 9-15년·<strong>즉사(차환·covenant) 채널 부재</strong> ‖ 🆕 매크로 델타로 <strong>금리 부호 강화</strong>(10Y 4.70%·short-rate↑) ‖ 🔴 유일 열위 = <strong>저금리·디스인플레형 침체</strong>(Fed 인하 = ⚠️ 리스크 신호 #6) — float·yield-magnet·AUM 3중 지지 동시 소멸(단 <strong>주가/thesis 채널이지 solvency 아님</strong>) ‖ swing = short-rate 레짐·8월 첫 10-Q ‖ <strong>🎯 버티는가 = 예</strong>(solvency 차원) · 별도렌즈(점수 미합산)·보유 stop sign ❌</li>
+<li>🕰️ 역사 〔History-Dive · v0.1 첫 실행〕: DNA = ①바퀴벌레 pivot 생존[강화]·②라이선스·기관관계 = <strong>진짜 해자(코드 아님)</strong>[강화]·③이익 과다낙관[약화]·④인수효과가 유기 둔화 마스킹[약화]·⑤거버넌스 미성숙[🟠]. 🔴 <strong>이행 이원성</strong>: 절차·법적 마일스톤 <strong>정시(지연 계수 1.0×)</strong> / 재무 규모 가이던스 <strong>심한 낙관</strong>(FY25 매출 실현율 90%·<strong>EBITDA 실현율 20%</strong> → FY26 $32M EBITDA에 큰 haircut 권고)</li>
+<li><strong>7축</strong>: 🌦️4.5 ⛰️4.0 🌲4.5 🌳3.5 🌲🌳4.0 👤4.0 🔢2.5 → <strong>종합 ⭐4.0</strong> (가중평균 42.25/10.5 = 4.02 · 날씨 3.0 / 산·숲·사람 1.5 / 나머지 1.0) — <strong>사업·thesis 매력도(밸류 멀티플 미반영)</strong></li>
+</ul>
+<figure class="dd-fig"><div id="fig-score7"></div><div class="dd-legend" id="fig-score7-leg"></div><figcaption id="fig-score7-cap"></figcaption></figure>
+
+<h3>7/13 대비 무엇이 바뀌었나 (10일 델타)</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>7/13</th>
+<th>7/23 (본 보고서)</th>
+<th>판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>주가</td>
+<td>$7.90 (7/10 종가 기준)</td>
+<td><strong>$7.44</strong> (라이브·밴드 $6.62~$8.44 chop)</td>
+<td>-6.3% · 저거래·유동성 얇음</td>
+</tr>
+<tr>
+<td>신규 SEC 공시</td>
+<td>7/8 Super 8-K·7/9 13D</td>
+<td><strong>7/9 이후 0건</strong> (Form 4 매도 클러스터·ATM·신규 13D 전무)</td>
+<td>펀더 동결 (첫 10-Q 8월)</td>
+</tr>
+<tr>
+<td>매크로 (날씨)</td>
+<td>고금리 양면·midterms 리스크</td>
+<td><strong>이란전 격화·유가 $100·미 10Y 2026 최고·연준 인상 관측</strong></td>
+<td>🔴 양면 첨예화</td>
+</tr>
+<tr>
+<td>AUM (rwa.xyz)</td>
+<td>$5.09B 1위·순유입 +$902M</td>
+<td>미갱신 (issuer 경로 404 — secz-weekly owner)</td>
+<td>7/13값 carry</td>
+</tr>
+<tr>
+<td>7축 종합</td>
+<td>⭐4.0</td>
+<td><strong>⭐4.0</strong> (신규 데이터 부재·재확인)</td>
+<td>변동 없음</td>
+</tr>
+<tr>
+<td>신규 분석 축</td>
+<td>—</td>
+<td><strong>History-Dive·chart-dive 최초 추가</strong> (v1.24)</td>
+<td>🆕</td>
+</tr>
+<tr>
+<td>Hanwha 13D</td>
+<td>미확인</td>
+<td><strong>여전히 미제출</strong> (passive 보유 정합·13G 시한 ~8월 중순)</td>
+<td>추적 유지</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1>Part 1 — Top-Down 7계층 (델타 중심 — 불변 축은 7/13 baseline 재확인)</h1>
+<h2>Section A. 🌦️ 날씨 — 지정학 + 거시 ⭐4.5 〔🔴 유일한 실질 델타 축〕</h2>
+<blockquote>
+<p>anchor 의무: 사용자 거시·지정학 thesis 메모리 cross-ref만 — 재분석 ❌ (owner = macro-weekly). SECZ <strong>노출·민감도</strong>만.</p>
+</blockquote>
+<p><strong>델타</strong>: 7/13~7/23 사이 매크로 기후가 <strong>양방향으로 동시에 세졌다</strong>. 이란전 격화 → 유가 2개월 만에 <strong>$100 돌파</strong>, 미 10Y 국채금리 <strong>18개월/2026년 최고</strong>, 시장은 <strong>연준 다음 주 인상 가능성</strong>까지 반영, 인플레 변동성 재부상. SECZ에 이건 하나의 방향이 아니라 <strong>날씨의 양면을 동시에 증폭</strong>한다:</p>
+<table>
+<thead>
+<tr>
+<th>채널</th>
+<th style="text-align: center;">부호</th>
+<th>메커니즘 (델타)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>토큰화 국채 yield 매력</td>
+<td style="text-align: center;"><strong>양(+) 강화</strong></td>
+<td>H4L·금리 상승·연준 인상 관측 = BUIDL 등 토큰화 국채의 실질 yield 매력 유지·확대 → AUM 유입 동력. net cash ~$325M 이자수익도 상승. Warsh 이중전략(실질 긴축) 정합</td>
+</tr>
+<tr>
+<td>risk-off 멀티플 압축</td>
+<td style="text-align: center;"><strong>음(−) 강화</strong></td>
+<td>유가·전쟁·인플레 = risk-off. SECZ = de-SPAC 소형주 + 크립토 인접 고beta → 압축 최전선. 주가 -6.3%·밴드 하단 재접근이 이 채널의 실현</td>
+</tr>
+<tr>
+<td>디스인플레·금리인하 시나리오</td>
+<td style="text-align: center;">부호 반전 대기</td>
+<td>이번 델타는 인하가 아니라 <strong>인상 관측</strong> 쪽 — SECZ 금리 양(+) 노출의 유효기간을 연장 (7/13 "인하 시 부호 반전" 리스크는 당분간 후퇴)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>thesis anchor 매핑 (변동분만)</strong>: 달러 패권/GENIUS 🟢🟢 유지 · 금융억압 🟢 유지 · <strong>Warsh 이중전략 🟡→🟡+</strong>(실질 긴축 첨예화로 국채 yield 매력 채널 강화·단 소형주 압축도 강화·순 양면 유지) · Fryman/이란 ⚪→🟡(이란전 격화로 간접 risk-off 전이 경로 활성 — 단 SECZ 실물 공급망 노출 없음).</p>
+<p><strong>⭐ 산출 근거</strong>: 장기 구조 순풍 1차 증거(서명된 GENIUS·EO 14178·BlackRock 자본)는 불변 → <strong>날씨 ⭐4.5 유지</strong>. 단기 감점(고beta risk-off)이 델타로 심화됐으나 이는 §H.3 roll-up 입력이지 장기 구조 점수를 깎지 않음(가중 3.0 장기축).</p>
+<ul>
+<li><strong>▶ Flip</strong>: 🟢 CLARITY 상원 통과·GENIUS 효력 가속 / 🔴 midterms 상원 역전 + 크립토 규제 재긴축 · <strong>🆕 이란전 확전 → 광범위 risk-off 지속으로 소형주 유동성 고갈</strong>(락업 해제 12/28과 중첩 시 하방 증폭)</li>
+</ul>
+<hr />
+<h2>Section B. ⛰️ 산 — 산업 (RWA 토큰화) ⭐4.0 · <strong>변동 없음</strong></h2>
+<p>7/13 baseline 유지 — 산업 구조·내러티브 5축(4~5축 수렴 🔴)·미·중 자본 투입 제1원칙 불변. <figure class="dd-fig"><div id="fig-c3"></div><div class="dd-legend" id="fig-c3-leg"></div></figure> 신규 산업 데이터(RWA 시장 규모 재갱신)는 rwa.xyz 미접속으로 carry. 🔴 Steelman 상수: RWA 성장의 상당분 = 토큰화 국채 = 금리 산물 → <strong>이번 델타(금리 상승)는 오히려 이 산업 동력을 단기 보강</strong>(디스인플레 시 소멸 리스크는 후퇴). ⭐4.0 유지.</p>
+<ul>
+<li><strong>▶ Flip</strong>: 🟢 RWA 시장 QoQ +15% 지속·첫 mega-cap 주식 토큰화 / 🔴 시장 QoQ 성장 2분기 연속 5% 미만</li>
+</ul>
+<hr />
+<h2>Section C. 🌲 숲 — 섹터 (L2 발행·컴플라이언스 레이어) ⭐4.5 · <strong>변동 없음</strong></h2>
+<p>L2 = 규제가 만든 병목(BD+ATS+TA 미·EU 유일 인가)·Distributed 1위 $5.09B(Ondo 대비 +40% 격차)·4중 필터 불변. 신규 경쟁 진입 이벤트(Citi DR 2~3번째 은행 채택·DTCC×Stellar) 10일 내 없음 → ⭐4.5 유지. 약한 고리 = 병목 경도 H1(준-하드, 라이선스는 M&amp;A 6-12개월 복제 가능·Bullish×Equiniti $4.2B 실증) 불변.</p>
+<ul>
+<li><strong>▶ Flip</strong>: 🟢 첫 IST 발행·NYSE 첫 토큰화 주식 deal / 🔴 BlackRock DTC 채널 발행(⚠️ 리스크 신호 #6)·2~3번째 은행 Citi 인프라 채택</li>
+</ul>
+<hr />
+<h2>Section D. 🌳 나무 — 기업 ⭐3.5 · <strong>변동 없음</strong> (🔗 R-Dive [재사용: 2026-06-10] + History-Dive 신규 소비)</h2>
+<blockquote>
+<p>§D.0·§E = <a href="../../RDive_Reports/SECZ/SECZ_RDive_2026-06-10.html">SECZ R-Dive 2026-06-10</a> 재사용(90일 게이트 통과·7/13 보고서에 이미 통합). 제품·수익모델 재작성 ❌ — 델타만.</p>
+</blockquote>
+<ul>
+<li><strong>아키타입 + 주력 (불변)</strong>: "② AUM 곡괭이 지향 / 현재 실체 = ⑥ 서비스·구독 40% + 프로젝트성 토큰화 60%". BD+ATS+TA 풀스택(미·EU 유일) + 펀드 서비스(650펀드·AUA $24.9B).</li>
+<li><strong>치명 함정 2개 (불변·8월 판별)</strong>: ① 424B3 자인 <em>"revenue not substantially directly tied to AUM"</em> — 곡괭이 미완성 ② Q1'26 헤드라인 +38.8%의 실체 = 인수효과, 유기 토큰화 $11.14M <strong>-1.1% 정체</strong>. RPO $6.8M vs "$85M contracted" 12.5배 격차.</li>
+<li><strong>GM 궤적 (불변)</strong>: 90.1%→78.3%→77.1% (인수 믹스 하락). FY25 매출 구성 Tokenization 60% / Services 40%. <figure class="dd-fig"><div id="fig-d0"></div></figure></li>
+</ul>
+<p><strong>🆕 History-Dive 소비 (기업 역사 축 — 나무 맥락 · <a href="../../HistoryDive_Reports/SECZ/HistoryDive_Securitize_2026-07-23.html">History-Dive 2026-07-23</a>)</strong>:</p>
+<blockquote>
+<p>2017 창업 이후 <strong>2회 크립토 윈터(2018 ICO·2022 FTX)를 매번 인접 합법 니치로 피벗하며 생존</strong> — 토큰 표준 경쟁에 남은 경쟁자(Polymath·Harbor)가 소멸한 자리에서 살아남음(#1 바퀴벌레). 🔴 <strong>핵심 재독</strong>: 진짜 해자는 "DS Protocol 코드"가 아니라 <strong>라이선스·기관관계</strong>(2019 SEC transfer agent 등록 → 2021 KKR → 2024 BlackRock BUIDL)로 역사가 확증(#2 — §D.6 "코드 해자" 서사 강등 정합). 조달 이력(2018 지분 $12.6M → 2019 채무 → 2021 Series B ~$48M → 2024 BlackRock $47M → 2026 PIPE $225M+현금 $400M)은 <strong>성장 국면 연동(고점 기회주의 아님)</strong>이나 5년 희석 +40.8%·자가조달 미달 = <strong>(B) 자본갈증형</strong> 이력 확증. M&amp;A 스코어카드: MG Stover(2025-04·규모 1위 650펀드·AUA $24.9B)는 <strong>규모✅/마진❌</strong>(GM 90→77% 희석 주범)·통합 판정 아직 too early(감액 창 12-18M 미경과).</p>
+</blockquote>
+<ul>
+<li><strong>곡괭이 질</strong>: (B) 자본갈증형 이력 → 합병 net cash ~$300-350M로 <strong>B→A 전환 시도</strong> 구간(8월 첫 10-Q가 확정). 4축: GM 77% 🟡 / capex 미미 🟢 / financing 의존 이력 🔴(현금으로 완화) / OCF -$9.1M/Q 🔴.</li>
+<li><strong>해자 ⭐4 (불변)</strong>: BD+ATS+TA+EU DLT 번들 · BlackRock 2펀드 · NYSE·Computershare 파트너십 · 8년 규제 이력 — 단 🔴 계약 실체(BlackRock 1년 자동갱신·90일 통지 해지)로 지속성(D)은 계약 아닌 관성 의존.</li>
+<li><strong>나무 ⭐3.5 유지</strong> — 유기 정체 vs AUM 선행지표 긴장 그대로. 8월 Q2가 ±0.5 스윙 예약(토큰화 라인 $13M+ = 3.5→4.0 복원 / 2분기 연속 유기 역성장 = roll-up).</li>
+</ul>
+<hr />
+<h2>Section E. 🌲🌳 옆의 나무 — 경쟁 비교 ⭐4.0 · peer 시세 델타 갱신</h2>
+<h3>E.1 종합 비교 (yfinance 2026-07-23 1차 · peer 시총 갱신)</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th><strong>SECZ</strong></th>
+<th>CRCL</th>
+<th>FIGR</th>
+<th>COIN</th>
+<th>BR (anchor)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>시총</td>
+<td><strong>$1.21B</strong></td>
+<td>$17.0B</td>
+<td>$6.4B</td>
+<td>$42.8B</td>
+<td>$16.7B</td>
+</tr>
+<tr>
+<td>Δ vs 7/13</td>
+<td><strong>-6.3%</strong></td>
+<td>-3%</td>
+<td>~보합</td>
+<td>+1%</td>
+<td>-3%</td>
+</tr>
+<tr>
+<td>P/S (TTM)</td>
+<td><strong>~18x</strong></td>
+<td>~5.7x</td>
+<td>~13x</td>
+<td>~6.4x</td>
+<td>~2.3x</td>
+</tr>
+<tr>
+<td>매출 YoY</td>
+<td>+38.8% (유기 -1.1%)</td>
+<td>+20%</td>
+<td><strong>+119%</strong></td>
+<td>-30.8%</td>
+<td>+7.8%</td>
+</tr>
+<tr>
+<td>GM</td>
+<td>77.1%</td>
+<td>8.1%⚠️</td>
+<td>~100%⚠️</td>
+<td>85.5%</td>
+<td>31.3%</td>
+</tr>
+<tr>
+<td>라이선스 (BD/ATS/TA)</td>
+<td><strong>3/3 (미·EU 유일)</strong></td>
+<td>0/3</td>
+<td>부분</td>
+<td>Trust</td>
+<td>TA 인접</td>
+</tr>
+</tbody>
+</table>
+<p>⚠️ CRCL/FIGR GM은 yfinance COGS 처리 방식 artifact — 방향 참고만. peer 대체로 보합(COIN 소폭↑·CRCL/BR 소폭↓), <strong>SECZ가 -6.3%로 소폭 언더퍼폼</strong> = de-SPAC 소형주가 risk-off에 더 민감함의 실현. <figure class="dd-fig"><div id="fig-e1"></div></figure></p>
+<h3>E.2 판정 (불변)</h3>
+<ul>
+<li>구조(라이선스·Distributed 1위·락인) 우위 / 실적(성장 질·수익성) 열위 — <strong>⭐4.0 유지</strong>. FIGR(+119%·흑자·P/S 13x)이 가장 아픈 직접 비교(불변).</li>
+<li>최대 위협: ① DTCC(×Stellar H1'27) ② Citi 토큰화 DR ③ Bullish×Equiniti — 10일 내 진전 이벤트 없음.</li>
+<li><strong>▶ Flip</strong>: 🟢 순유입 1위 3개월 지속·Ondo 격차 2배 / 🔴 BlackRock DTC 채널 발행·은행 2~3사 Citi 인프라 채택</li>
+</ul>
+<hr />
+<h2>Section F. 👤 사람 — 경영진 ⭐4.0 · <strong>변동 없음</strong> (🔗 People-Dive [재사용: 2026-06-01])</h2>
+<p>Carlos Domingo 8축 baseline 불변(<a href="../../PeopleDive_Reports/SECZ/PeopleDive_CarlosDomingo_2026-06-01.html">People-Dive 2026-06-01</a> 재사용·90일 게이트). 객관 7축 평균 3.93 → ⭐4.0. 신규 인사 이벤트(경영진 이탈·영입)·Form 4 매도 클러스터 10일 내 0건.</p>
+<ul>
+<li>🔴 도덕성 2.5 상수: Material weakness(ICFR) + FY23-24 restatement — 첫 10-K(연차) 해소 여부가 재채점 트리거(8월 Q2는 분기라 material weakness 판정은 통상 연차 10-K).</li>
+<li>⑤ 비전축: 🚨 <strong>사용자 ⭐ 미입력 — 대기 flag 유지</strong>. Claude 💬: 추진력(야망 상방·talking-his-book 상시) + 정렬(창업자-CEO✅·Skin 5.4%✅·사명 일관✅). <em>증거 기반 의견이지 매수신호 아님</em>.</li>
+<li><strong>▶ Flip</strong>: 🟢 material weakness 해소·가이던스 첫 달성 / 🔴 CEO 이탈(⚠️ 리스크 신호 #3)·락업 해제 직후 대량 매도</li>
+</ul>
+<hr />
+<h2>Section G. 🔢 숫자 — 재무건전성 ⭐2.5 · <strong>변동 없음</strong> (신규 재무 공시 부재)</h2>
+<p>7/13 baseline 전면 유지 — Q1'26이 여전히 최신 분기(첫 10-Q 8월). 재무건전성 4축(성장 질 혼합·마진 하락·burn·무차입 내구성) 불변 → <strong>숫자 ⭐2.5 유지</strong>.</p>
+<p><strong>핵심 상수</strong>: FY25 매출 $62.2M(유기 토큰화 -1.1%)·Adj EBITDA $3.4M·GAAP -$48.5M / Q1'26 OCF -$9.1M(연환산 -$36M) / net cash ~$300-350M(첫 10-Q 미확정) / 무차입 / ICFR material weakness / FY26 가이던스 $110M·$32M(커버리지 0·FY25 자사 추정 미달 이력).</p>
+<p><strong>매출·마진 trajectory</strong> (FY24 $18.6M → FY25 $62.2M → Q1'26 연환산 $77.9M → FY26E $110M · GM 하락 동반 · 🔴 History-Dive: EBITDA 실현율 20% = FY26 $32M 큰 haircut): <figure class="dd-fig"><div id="fig-g5"></div><div class="dd-legend" id="fig-g5-leg"></div></figure></p>
+<h3>G.1.5 🎯 시총 10배 랜드마크 (런타임 갱신)</h3>
+<p>현재 <strong>$1.21B</strong> → ×10 = <strong>$12.1B</strong>. 💡 지금은 소형 핀테크급(FIGR $6.4B 아래) → 텐배거면 <strong>Broadridge($16.7B)·Circle($17.0B) 조금 아래</strong> 체급 (규모 좌표일 뿐 — 사업 유사성 아님). 참조: COIN $42.8B · ICE $81.0B. <figure class="dd-fig"><div id="fig-g15"></div><figcaption id="fig-g15-cap"></figcaption></figure></p>
+<h3>§G.8 고금리·고물가 내구성 정밀 진단 〔전담 서브에이전트 산출 roll-up · overlay(점수 미합산) · soft-flag〕</h3>
+<blockquote>
+<p>📌 <strong>내구성 〔G.8〕: 🟢 견딤 ‖ 신뢰도 낮음 ‖ 금리{무차입·차환/covenant 채널 부재·float 이자 ~$12-15M/년} 물가{투입재 &lt;15%·인건비 ~60%/매출이 유일 축·인플레 부호 양(+)} 스태그{디플레형 침체가 유일 열위 — 런웨이 압축, 즉사 아님} ‖ swing = short-rate 레짐·8월 첫 10-Q ‖ 🎯 버티는가 = 예(solvency) · 별도렌즈(점수 미합산)·보유 stop sign ❌</strong></p>
+</blockquote>
+<p><strong>사전 게이트 (8-K 1차 재확인)</strong>: 전환사채·SAFE <strong>전량 클로징 시 주식 전환·소거</strong>, 이자부 부채(credit facility/term loan/bond) <strong>0</strong> → "부채 차환 위험 구조적 부재" 성립. 잔존 interest payable $6.2M = 정산 대상(immaterial vs net cash $325M).</p>
+<p><strong>3기둥 핵심 (서브에이전트 1차 — Bash yfinance + curl SEC)</strong>:
+- <strong>① 금리</strong>: 부채 wall/covenant/헤지 채널 <strong>N/A</strong>(이자부 부채 0). <strong>float 비대칭 순호재</strong> — net cash ~$325M × 측정 short rate <strong>3.78%(13주 T-bill·↑)~4.5% ≈ 이자수익 ~$12-15M/년</strong> = 연환산 gross burn -$36M의 <strong>1/3~2/5 상쇄</strong>. 런웨이: $325M ÷ $36M ≈ <strong>9년</strong>(offset 후 net burn ~$22M → ~15년, burn 2배여도 4-5년). ⑤ 주식조달 이중압박 = ATM 미등장·잠복(evergreen 5%/년 + Incentive 8% + ESPP 2% = 5년 FD +40.8%이나 $325M로 수년 조달 불필요 → 저밸류 지속 시에만 활성). Warsh 실질긴축 leg(10Y 4.70% 18개월 고점) = float·BUIDL yield-magnet 유지 정합.
+- <strong>② 물가</strong>: 자산-light 투입재 &lt;15% → 대부분 🟢. 유일 실질 축 = <strong>인건비 FY25 ~$37M(+101% YoY)≈매출의 ~60%·고정비</strong>(침체 시 역레버리지). 인플레 부호 = <strong>양(+)</strong>(net-cash float형·AUM 연동 수수료). 🔴 디스인플레·인하 시 부호 반전(yield-magnet 소멸).
+- <strong>③ 스태그 결합</strong>: 경미/기준/심각 1970s형 모두 런웨이 5년+·즉사 없음(고 노출 2개[멀티플 de-rate·장기 약세]는 전부 <strong>주가/thesis 채널이지 solvency 아님</strong> — 이미 상장가 $12.30→$7.44 -40% 실현). 🆕 <strong>디플레형 침체(최악·⚪ 조건부)</strong> = Fed 인하+디스인플레+침체 3중 → float·yield-magnet·AUM 3중 지지 동시 반전·offset 소거로 net burn = gross ~$45-50M 복귀, 그래도 런웨이 ~6-7년(insolvency 미도달) — <strong>durability는 버티나 verdict 부호가 뒤집히는 유일 레짐</strong>(리스크 신호 #6 정합).
+- <strong>2차 효과</strong>: 락업 해제 2026-12-28(38.2%) × 주가 침체 중첩 — 현재 $7.44 ≪ 조기해제 VWAP $15/$17.5/$20 = 조기 채널 <strong>far-OOM·dormant(현 mitigant)</strong>, 단 180일 무조건 해제는 존치(주가 리스크이지 durability 아님·회사는 매도 불필요) / 인건비 역레버리지 / evergreen 복리 희석.
+- <strong>1970s analog 5특성</strong>: 유리 2·중 1·고 2 — <strong>고 노출 2개가 전부 주가/thesis 채널, solvency 아님</strong> = 진단 핵심 분기.</p>
+<p><strong>🎯 버티는가 (직접·낮은 신뢰·enforcement 아님·최종 판단 사용자)</strong>: <strong>예, 버틴다.</strong> 무차입 + net cash ~$325M + float 이자 $12-15M/년이 burn을 상쇄해 고금리·고물가·스태그 결합에서도 5년+ 런웨이 확보·즉사 채널 구조적 부재. <strong>단 solvency 차원의 버팀이며 주가/멀티플 버팀은 별개.</strong></p>
+<p><strong>7/13 대비 델타</strong>: 🟢 견딤 유지 · 매크로 델타(10Y 4.70%·short-rate↑·Fed 인상 리스크)로 <strong>금리 부호 강화</strong>(float 쿠션 두꺼워짐) · 첫 10-Q 여전히 8월 대기(신뢰도 미개선).</p>
+<ul>
+<li><strong>Steelman (구조·핵심 반박)</strong>: "고금리=SECZ 순호재"는 float 채널만 본 것 — 동일 고금리가 (a) 소형 de-SPAC 멀티플 압축 (b) risk-off AUM 위축(매출 대부분 AUM 연동)의 (−) 채널이 float $14M보다 클 수 있음. <strong>동일 고금리가 durability엔 (+), thesis/매출엔 (−)</strong> = "견딤(solvency)≠주가 버팀"의 구조적 근거. → 유지(견딤은 solvency 질문에 대한 답, 시간축 충돌은 부호로 명시).</li>
+<li><strong>▶ Flip</strong>: 🔴 레짐 falsifier = Fed 인하+디스인플레(short rate &lt;~2.5%) → float·yield 소멸·부호 반전(리스크 신호 #6) / 첫 10-Q net cash &lt;$250M or 분기 burn &gt;$15M / ATM 등장+주가 $7 이하 지속 / 유기 토큰화 2분기 연속 역성장(#8) / 락업 12-28 × 주가 침체 중첩.</li>
+</ul>
+<p><strong>🔴🔴 의무 라벨 4종</strong>: ①낮은 신뢰도 참고(첫 10-Q 전 프로포마 추정) ②🎯 버티는가 직접 답변(예·solvency) ③보유 종목 stop sign ❌(⚠️ Thesis 리스크 신호 입력일 뿐) ④점수 미반영(7축·§G.3 ④축 미합산).</p>
+<hr />
+<h1>Part 2 — 추가 심층</h1>
+<h2>Section H. 시나리오 · Catalyst · Exit</h2>
+<h3>H.1 Bull / Base / Bear (2/3/5년 · 기준 <strong>$7.44</strong> · 5년 FD ~200M주 가정)</h3>
+<table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: center;">확률</th>
+<th style="text-align: center;">2년</th>
+<th style="text-align: center;">3년</th>
+<th>5년 목표 (배수)</th>
+<th>핵심 가정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🟢 Bull</td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: center;">1.7x</td>
+<td style="text-align: center;">2.2x</td>
+<td>시총 ~$5.0B (<strong>~3.4x</strong>)</td>
+<td>2030 매출 ~$450M·토큰화 주식 ramp·NYSE 실체화·P/S ~11x</td>
+</tr>
+<tr>
+<td>🟡 Base</td>
+<td style="text-align: center;">50%</td>
+<td style="text-align: center;">1.1x</td>
+<td style="text-align: center;">1.2x</td>
+<td>시총 ~$2.1B (<strong>~1.4x</strong>)</td>
+<td>2030 매출 ~$230M·P/S ~9x·AUM 성장·유기 반등 지연</td>
+</tr>
+<tr>
+<td>🔴 Bear</td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: center;">0.4x</td>
+<td style="text-align: center;">0.35x</td>
+<td>시총 ~$0.42B (<strong>~0.35x</strong>)</td>
+<td>유기 정체·가이던스 미달·락업 매도·크립토 침체</td>
+</tr>
+</tbody>
+</table>
+<p><strong>기댓값</strong>: 5년 <strong>~1.6x</strong>(기준가 하락으로 7/13 1.52x → 소폭 상향) · 2년 ~1.05x → ⚠️ <strong>Base 2년 ~1.0x = bull-tail 의존 플래그</strong>(게이트 ❌·보유 매도신호 ❌ — 8월 Q2로 판별). <figure class="dd-fig"><div id="fig-h1"></div><figcaption id="fig-h1-cap"></figcaption></figure></p>
+<ul>
+<li><strong>암묵 exit 멀티플 (5년 targets 불변)</strong>: Bull $5.0B÷$450M = <strong>P/S ~11x</strong> / Base $2.1B÷$230M = <strong>~9x</strong> — 현재 ~18x보다 낮음 → <strong>재평가 의존 낮음(매출 성장 주도형)</strong>. 기준가 하락으로 진입가-대비 배수만 개선, "멀티플 압축을 성장으로 이겨야 하는 구조"는 불변.</li>
+<li><strong>🆕 History-Dive 지연 계수 적용(이원적)</strong>: 절차·법적 마일스톤 = <strong>정시(계수 1.0×)</strong> — Bull/Base의 규제·상장·NYSE 실체화 일정은 지연 haircut 최소. <strong>재무 규모 가이던스 = 심한 낙관 편향</strong>(FY25 매출 실현율 90%·<strong>EBITDA 실현율 20%</strong>) → Bull/Base의 <strong>매출</strong> 경로는 근접 가능하나 <strong>EBITDA/이익 마일스톤에 큰 haircut</strong> 배선(FY26 $32M EBITDA는 대폭 미달 리스크). → <strong>Base 50%가 이 이원성의 정직한 중심</strong>(매출 성장 실현·이익 전환 지연).</li>
+<li><strong>Steelman(내부)</strong>: 합병 완료로 실행 리스크 소멸 → Bear 25%가 과대일 수도(단 유기 정체가 추세면 과소). 3년 열 = 외삽(형태 진단).</li>
+</ul>
+<h3>H.2 Catalyst 캘린더 (델타: 7/18 §404 유예 만료 경과·나머지 유지)</h3>
+<table>
+<thead>
+<tr>
+<th>일시</th>
+<th>이벤트</th>
+<th style="text-align: center;">영향</th>
+<th>source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>~~2026-07-18~~</td>
+<td>GENIUS §404 yield-ban 유예 만료 (경과 — 시장 무반응)</td>
+<td style="text-align: center;">~~🟡~~</td>
+<td>법률</td>
+</tr>
+<tr>
+<td>2026-07 말~</td>
+<td>트럼프 관세(Section 122 10%) 7/24 만료 등 매크로 변곡</td>
+<td style="text-align: center;">🟡</td>
+<td>정책</td>
+</tr>
+<tr>
+<td><strong>2026-08 (예상)</strong></td>
+<td><strong>Q2'26 실적 = 최대 관문</strong> — 유기 토큰화 반등 + EBITDA(⚠️ #8) + 첫 10-Q 확정 현금·material weakness</td>
+<td style="text-align: center;">🔴🔴🔴</td>
+<td>SEC</td>
+</tr>
+<tr>
+<td>2026-08 휴회 전</td>
+<td>CLARITY Senate 본회의 데드라인</td>
+<td style="text-align: center;">🔴</td>
+<td>Senate</td>
+</tr>
+<tr>
+<td>2026 Q3</td>
+<td>BRSRV effective · Arc mainnet + validator 명단</td>
+<td style="text-align: center;">🔴</td>
+<td>SEC/Circle</td>
+</tr>
+<tr>
+<td>2026-09-29~</td>
+<td>락업 조기해제 워치 개시 (VWAP $15/$17.5/$20 트리거)</td>
+<td style="text-align: center;">🟡</td>
+<td>424B3</td>
+</tr>
+<tr>
+<td><strong>2026-12-28 (est)</strong></td>
+<td><strong>락업 해제 (클로징+180일)</strong> — 38.2% 물량</td>
+<td style="text-align: center;">🔴🔴</td>
+<td>8-K/424B3</td>
+</tr>
+<tr>
+<td>2027-01-18</td>
+<td>GENIUS Act 효력 (스테이블코인 준비금 → 국채 의무)</td>
+<td style="text-align: center;">🔴</td>
+<td>법률</td>
+</tr>
+<tr>
+<td>2027 H1</td>
+<td>DTCC×Stellar 자산 가용 (⚠️ 리스크 신호 #6 vector)</td>
+<td style="text-align: center;">🔴</td>
+<td>DTCC</td>
+</tr>
+</tbody>
+</table>
+<p><strong>타이밍 참고</strong>: 상장 3주(짧은 히스토리)라 기술적 분석의 신뢰도가 구조적으로 낮아(이동평균·패턴·자동 지지·저항 계산 불가) 타이밍은 판단의 유의미한 입력이 아니다 — 구속 관문은 어차피 <strong>8월 Q2 실적</strong>이므로 타이밍은 반올림 오차 수준. (세부 타이밍 평가는 별도 비공개 도구로 수행 — 본 발행본에서는 제외.)</p>
+<h3>H.3 ⚠️ Thesis 리스크 신호 9종 현황 (구 Kill Switch · 관측 가능 조기경보만)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>조건</th>
+<th>상태 (7/23)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BlackRock 파트너십 해지</td>
+<td>✅ 반대 (2펀드 운영)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>SEC 집행조치/소송</td>
+<td>✅ (tZERO는 민간·SECZ 원고)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>CEO 이탈</td>
+<td>✅ (10일 내 0건)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>BUIDL/AUM 2분기 연속 감소</td>
+<td>✅ 회복 방향 (7/13 AUM +18% 30d·BUIDL $2.87B)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>규제 라이선스 상실</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>6</td>
+<td>BlackRock 경쟁 채널 이전 (Canton/DTC)</td>
+<td>⏳ 추적 (DTCC×Stellar H1'27)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>RWA 시장 QoQ 5% 미만 2분기</td>
+<td>✅ (7/13 +3.9% 30d)</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Q2'26 EBITDA &lt;$2M</strong></td>
+<td>⏳ <strong>8월 판정</strong></td>
+</tr>
+<tr>
+<td>9</td>
+<td>NYSE 협력 12개월 실체 부재</td>
+<td>⏳ (2027-03 시한)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>신규 roll-up (본 보고서 🔴 Flip 집계)</strong>: §A 🆕 이란전 확전 risk-off 지속(소형주 유동성 고갈)·midterms 상원 역전 / §G.8 첫 10-Q 현금 &lt;$250M·ATM 8-K / §H.7 2분기 연속 유기 마이너스·BlackRock 90일 통지 / §I 락업 해제 직후 내부자 대량 매도.</p>
+<h3>H.5 🧭 CAE·Edge Grid 좌표 · <strong>변동 없음</strong></h3>
+<p>(a) CAE: A1(달러 패권)→A3(규제·라이선스 병목 원천)→A6(BlackRock·NYSE 락인)→E1(자본시장 재배선). 무게중심 A3+E1. 🔴 약한 고리 = A3(규제가 준 해자는 규제가 회수·재배분 가능). (b) Edge Grid: 중요도 <code>L2-R2-H1</code>(中上) × 엣지 <code>G2-P2-D2</code>(中上). (c) 분면: <strong>"강하고 싼" 경계부</strong> — 기준가 -6.3%로 엣지 G(선반영 격차)가 미세하게 더 벌어짐(더 싸짐)이나 분면 이동은 없음. </p>
+<p>(d) 판정 + 3 잠금장치: ① 자본 약정 부분 개시(BlackRock·PIPE·Hanwha costly signal / 매출 전환 미약정) = 정찰~1단 분할 ② D 게이트 = 8월 Q2·첫 10-Q가 "정당한 회의 vs 먼저 본 훼손" 판별 — 그 전 (a) 가정 금지 ③ 유효범위 = 준-하드(H1) 병목이라 집중매수 요건 미충족 → <strong>정찰~1단 분할까지만</strong>. 〔중요도 L 다층성·R 비가역성·H 병목경도 / 엣지 G 선반영격차·P 연료잔량·D 컨센서스반증〕</p>
+<h3>H.6 💎 0to1 독점 판정 (틸 렌즈 · 별도렌즈 — 7축 미합산) · <strong>변동 없음</strong></h3>
+<p>Track A <strong>5/7 → 성공(하한 경계)</strong> ‖ Track B ⭐4.5 ‖ tell = <strong>혼재</strong>("$4T·주식시장 1%" 합집합 거대시장 화법 + GM 하락·EBITDA 미미 병치 = 부분 '말≠숫자' 🔴). ① 기술 10배 ⚠️ / ② 시기 YES / ③ 독점(작은 시장) YES(§D.5 곡괭이 미완성 soft-flag) / ④ 사람 YES / ⑤ 유통 YES / ⑥ 존속성 ⚠️(BlackRock 90일 해지권) / ⑦ 숨겨진 비밀 YES(DTCC 방식은 네이티브 수요 못 가져간다). 점수 = 매력도 ≠ 매수신호.</p>
+<h3>H.7 💰 밸류에이션 정밀 판정 〔전담 서브에이전트 산출 roll-up · 별도렌즈(7축 미합산) · soft-flag〕</h3>
+<blockquote>
+<p>📌 <strong>밸류 〔H.7〕: 분모 의존적·미결 (🔴 질 조정 시 rich로 기움) ‖ 신뢰도 낮음 ‖ 아키타입 Ⓒ·역-DCF 상단의존·§H.1 재평가의존 낮음(압축 역풍) ‖ swing = 8월 Q2 유기 토큰화 ‖ 🎯 매수적정성 = ⚪ 관망 ‖ BRCR ~0.08 × EV/GP 高 괴리·[부분 올라탐/소유 미완] · 별도렌즈·보유 stop sign ❌</strong></p>
+</blockquote>
+<p><strong>정량 재확인 (서브에이전트 1차 · yfinance + curl SEC)</strong>: 현재가 <strong>$7.44</strong> · 발행주식 <strong>163,218,683</strong>(8-K · 🔴 yfinance 148.06M/EV $264M/P/S 16.25x는 stale 주식수+합병 전 trust 회계 아티팩트로 폐기) · MC <strong>$1,214M</strong> · net cash ~$325M → <strong>EV ~$889M</strong> · TTM 매출 $67.6M → <strong>P/S(MC) 18.0x · EV/S 13.2x · EV/GP ~17x</strong>. 아키타입 <strong>Ⓒ 고성장 pre-profit</strong>(부 Ⓑ 지향) · §D.5 곡괭이 질 (B) → B→A 전환 시도.</p>
+<p><strong>5렌즈 핵심</strong>:
+- <strong>① 역-DCF "무엇이 참이어야 하나"</strong>(WACC 9-12%·g 2.5-3.5%): EV $889M 정당화 = 10년 매출 CAGR 중앙 <strong>~40-50%</strong> → §B.4 산업 천장(60%+) <em>안</em>이나 <strong>envelope 상단 절반 의존</strong> + 가장 최근 <em>유기</em> 데이터(Q1 토큰화 -1.1%)와 <strong>정면 충돌</strong>. 현재 EV는 "인수 성장 → 지속 유기 성장" 전환 + 곡괭이 완성을 전제로만 성립.
+- <strong>② 아키타입 Ⓒ</strong>: EV/GP ~17x = 저렴하지 않음 · op leverage FY25 incremental <strong>1.8%</strong>(연간 미실증) · 흑자전환 runway 8-10년·net cash → <strong>rich-지향·신뢰도 낮음</strong>.
+- <strong>③ 상대가치</strong>(USD 정규화·라이브): <strong>P/S 18x = peer 세트 최고</strong>. 🔴 <strong>FIGR가 아픈 비교</strong> — +119% 성장·흑자(순마진 35%)인데 12.6x &lt; SECZ 18x. 단 net cash 차감 시 SECZ EV/S 13.2x ≈ FIGR 12.7x로 수렴("18x vs 12.6x"의 상당분이 net-cash 아티팩트) — 그러나 <strong>질 조정(적자+유기정체 vs 흑자+119%)하면 EV/S 동률에서도 SECZ가 비싸다</strong>. premium은 펀더가 아니라 lane(Distributed 1위)+옵셔널리티 내러티브. 자기 역사 percentile = <strong>N/A</strong>(상장 3주·현재 18x = 상장 밴드 하위-중간).
+- <strong>④ 컨센서스</strong>: 애널리스트 <strong>n=2 → "컨센서스 아님·신뢰 매우 낮음"</strong> 클램프(de-SPAC 가격발견). FY26 가이던스 $110M/$32M = 회사 자체 추정(FY25 자사 추정 미달 이력). rwa.xyz 순유입 +$902M/30d를 variant 승격 근거로 쓸 땐 424B3 AUM 비연동 자인이 자동성 부정 → <strong>'가설' 등급까지만</strong>(§B.3 1차 = Q2 매출 필요).
+- <strong>⑤ §H.1 교차</strong>(재계산 ❌): 현재 P/S 18x &gt; exit 9-11x → <strong>멀티플 압축 역풍</strong> = "성장이 전부 해줘야 하는 구조"(재평가 의존 낮음).
+- <strong>⑥ BRCR</strong>(overlay·약한 신호): S ~0.65(라이선스 해자) · R ~0.45(통행세 미완성·GM 하락) · D ~0.60 · C ~0.45(자본갈증·OCF−) → <strong>BRCR ≈ 0.08 (낮음)</strong> × EV/GP 高 백분위 = 괴리(병목 S·D는 쥐었으나 렌트 흐름 R·C 미포획). 구속 병목 = <strong>R(통행세 미완성)·C(음(−)FCF)</strong>. 태그 = <strong>[부분 올라탐/소유 미완]</strong>(라이선스 해자는 소유·자동 통행세 미완성). 🔴 EV/EBITDA 교차축 N/A(적자근접) 한계 명시.</p>
+<p><strong>🏷️ 종합 판정 = 분모 의존적·미결 (질 조정 시 🔴 rich로 기움) · 신뢰도 낮음</strong>. 순현금 차감 전 18x는 peer 최고이나 EV/S 13.2x는 FIGR와 수렴 → <em>분모 선택</em>이 판정을 지배(순현금 아티팩트)·질 조정하면 rich. 역-DCF 요구 CAGR 40%+는 envelope 안이나 상단 의존 + 유기 -1.1% 충돌. §H.1 exit &lt; 현재 = 압축 역풍.</p>
+<p><strong>🎯 매수 적정성 (직접·낮은 신뢰도·enforcement 아님·최종 판단 사용자)</strong>: <strong>⚪ 관망</strong> — $7.44는 명백한 저평가도 함정도 아님. <strong>더 싸게 사는 trigger</strong> = 상장 저점대 <strong>$6.0-6.6 재테스트</strong>(EV/S ~10x·요구 CAGR ~30%로 envelope 안쪽 = 안전마진 확보) <em>또는</em> 8월 Q2 유기 토큰화 ≥$13M 확인 후 분할. <strong>Swing 변수(단 1개) = 8월 Q2'26 유기 토큰화 라인</strong>(≥$13M → ⚪/🟢 재점화 / 2분기 연속 역성장 → 🔴 확정·envelope밖 이동).</p>
+<p><strong>7/13 대비 델타</strong>: 가격 -6%·P/S 19.1x→18.0x·신규 공시 0·매크로 역풍 첨예화(유가$100·美10Y 2026최고·연준 인상 관측 → WACC↑로 요구 CAGR↑ 악화) → <strong>실질 판정 불변</strong>(미결·🔴기움·⚪관망), swing 변수만 ~2-3주 근접.</p>
+<ul>
+<li><strong>Steelman 3축(내부)</strong>: 데이터 — rwa.xyz +$902M/30d를 매출 선행지표로 읽으면 -1.1%는 노이즈 1분기 → ⚪/🟢로 뒤집힐 수 있음(단 자동성 부정 자인이 '가설' 클램프) / 구조 — "Stocks on Securitize" 자사주 토큰화 $179.5M + NYSE 24/7 ATS 실현 시 SECZ가 $4T 마이그레이션의 transfer-agent 통행세가 되어 현재 EV/S 13x가 <em>싸</em> 보임(누락 매개 = TTM에 없는 주식-토큰화 램프) / 시간 — 역-DCF "rich"는 단기에서 가장 유효·장기에서 가장 약함.</li>
+<li><strong>▶ Flip</strong>: 🟢 = Q2 유기 ≥$13M+EBITDA ≥$3M(통행세 전환 실증) or 주가 $6.0-6.6(envelope 안쪽) / 🔴 = 2분기 연속 유기 역성장 + 매크로 WACC 급등 지속 → 요구 CAGR 달성가능 envelope 이탈.</li>
+</ul>
+<p><strong>🔴🔴 의무 라벨 4종</strong>: ①낮은 신뢰도 참고(Intel $40→$100·강점은 구조 분석) ②🎯 매수 적정성 직접 제시(⚪ 관망) ③구조 thesis 보유엔 stop sign ❌(⚠️ 리스크 신호 입력일 뿐) ④점수 미반영(7축 미합산 — 밸류 rich 기움이어도 7축 4.0 유효).</p>
+<h3>H.4 Section H Steelman (내부 수행 — 결론 반영)</h3>
+<p>모든 관문이 8월 Q2로 수렴 = "확인 후 행동"이 구조적으로 유리한 시간표. 시간 축 자기반박: "확인 후"의 대가 = Q2가 좋으면 가격은 $7.44에 없다. 다만 락업 해제(12/28) 물량이 별도 매수 창을 열 수 있다는 베팅이 병존(조기해제 VWAP $15+ 미도달 시 물량 출회) — 이 창이 공창일 시나리오는 §L.deferred 유지.</p>
+<hr />
+<h2>Section I. 자금흐름 · 내부정보 · <strong>변동 없음</strong> (신규 지분 공시 0건)</h2>
+<h3>I.0 Cap Table (1차: 2026-07-08 Super 8-K · 7/9 이후 변동 공시 없음)</h3>
+<table>
+<thead>
+<tr>
+<th>주체</th>
+<th>주식수</th>
+<th style="text-align: center;">%</th>
+<th>source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Carlos Domingo (CEO)</td>
+<td>9,016,960</td>
+<td style="text-align: center;">5.4%</td>
+<td>13D 7/9 (5개 Dynasty Trust)</td>
+</tr>
+<tr>
+<td>임원·이사 전체</td>
+<td>19,557,191</td>
+<td style="text-align: center;">11.7%</td>
+<td>8-K</td>
+</tr>
+<tr>
+<td><strong>Hanwha (한화)</strong></td>
+<td><strong>15,689,509</strong></td>
+<td style="text-align: center;"><strong>9.6%</strong></td>
+<td>8-K (🔴 13D/G 여전히 미제출 — passive 정합·13G 시한 ~8월 중순)</td>
+</tr>
+<tr>
+<td>Blockchain Capital</td>
+<td>9,831,423</td>
+<td style="text-align: center;">6.0%</td>
+<td>13D 7/9</td>
+</tr>
+<tr>
+<td>Cantor Sponsor</td>
+<td>6,000,000</td>
+<td style="text-align: center;">3.7%</td>
+<td>S-4 (Earnout vesting)</td>
+</tr>
+<tr>
+<td>PIPE 참여자</td>
+<td>19,735,000</td>
+<td style="text-align: center;">12.1%</td>
+<td>8-K ($10·락업 없음)</td>
+</tr>
+<tr>
+<td><strong>Total outstanding</strong></td>
+<td><strong>163,218,683</strong></td>
+<td style="text-align: center;">100%</td>
+<td>8-K</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>락업</strong>: 38.2% 서명 · 해제 ≈ <strong>2026-12-28</strong> · 조기해제 VWAP $15/$17.5/$20 (9/29~ · 현재가 $7.44는 트리거 크게 하회). PIPE 12.1%·공개주 락업 없음.</li>
+<li><strong>I.2 Form 3/4</strong>: 7/6 클로징 등록분 이후 <strong>신규 0건</strong> — 락업 해제 후 Form 144·10b5-1 개시가 진짜 신호.</li>
+<li><strong>I.3 Short / I.4 옵션</strong>: ❌ 미수집 (fintel 봇 차단·CAPTCHA 우회 금지) — secz-weekly 대체 소스.</li>
+<li><strong>유통 float ~20-25%로 얇음</strong> + PIPE 무락업 → 가격 정보값 낮음(저거래량 $7.44가 "시장 컨센서스"가 아님).</li>
+</ul>
+<hr />
+<h2>Section J. 산업·규제·정책 risk · <strong>변동 없음</strong> + History-Dive 소비</h2>
+<ul>
+<li><strong>tZERO 특허전</strong>(민간·SECZ 원고)·<strong>material weakness</strong>(첫 10-K 해소 여부)·<strong>규제 blow-up</strong>(CEO 본인 지목 tail risk) 불변.</li>
+<li><strong>정책 sensitivity 델타</strong>: 7/18 §404 유예 만료 경과(시장 무반응) · CLARITY §401(은행 진입 양날)·§505(custody 규칙) 진행 유지 · 🔴 이번 매크로 델타(인플레 재부상·연준 인상)가 정책보다 단기 주가를 지배.</li>
+<li><strong>🆕 History-Dive 소비 (산업 진화·기업 행동 트랙레코드)</strong>: 산업 S-curve = 2017 ICO 붕괴 → 2018-20 STO 겨울(생존) → 2022 FTX·Terra(파이프라인 증발·CEO 최대 리스크 원형) → 2024 BUIDL 기관 변곡 → 2026 상장. <strong>미션 드리프트는 2022 이후 STABLE</strong>(buzzword rebrand 아님·Wayback 2018→2026 원문 확인) = 이 축은 리스크 없음. 🟠 <strong>거버넌스 미성숙</strong>(ICFR material weakness + FY23·24 restatement)은 단일·구조적이나 은폐 아닌 공개 처리 — 첫 10-K(연차) 해소 여부가 §F④ 재채점 트리거.</li>
+</ul>
+<hr />
+<h2>Section K. 공시·컨콜·가이던스 · <strong>변동 없음</strong> + History-Dive 이행 이력</h2>
+<ul>
+<li><strong>8월 Q2'26 = 공개기업 첫 실적</strong>(최대 관문·미개최). </li>
+<li><strong>K.2 화법 vs 공시 괴리</strong>: "inevitable·$4T·폭발"(확장 화법) vs 424B3 "not substantially tied to AUM"·추정 미달(공시 화법) — 리딩의 핵심 기술 불변.</li>
+<li><strong>🆕 History-Dive 이행 이력 소비 (약속 이행률·지연 계수)</strong>: <strong>이원적 트랙레코드</strong> — (a) 절차·법적 마일스톤(BCA→S-4 effective→주총 6/29→클로징 7/1) <strong>전부 정시 적중</strong>(지연 계수 1.0×·프로세스 실행력 실증) vs (b) <strong>재무 규모 가이던스 심한 낙관 편향</strong>: FY25 매출 실현율 90%($69M→$62.2M)·<strong>Adj EBITDA 실현율 20%</strong>($17M→$3.4M), 게다가 1H'25 +$9.8M → 2H'25 -$6.4M 반전. → <strong>FY26 $110M 매출은 근접 가능·$32M EBITDA는 대폭 미달 리스크로 읽어야</strong>(K.3 가이던스 track record의 History-Dive 정량 확증). B8 1차자료 우선 = 8월 Q2 실적이 판별.</li>
+</ul>
+<hr />
+<h2>Section L. 동적 발견 (Dynamic Rabbit Holes)</h2>
+<h4>L.1 신규 공시 공백 자체가 신호 🟡</h4>
+<ul>
+<li>트리거: EDGAR 7/9 이후 0건 (Form 4 매도·ATM·신규 13D 전무).</li>
+<li>why: 합병 직후 통상 나오는 (a) 내부자 매도(락업 없는 PIPE·환매 잔여 외), (b) ATM 설정, (c) Hanwha 13D가 <strong>모두 부재</strong> = 단기 공급 압력의 공시 근거 없음 → 첫 주 -36%는 순수 float 얇음·가격 발견. 8월 첫 10-Q까지 정보 진공.</li>
+<li>결론: §I 보강 (가격 정보값 낮음 재확인).</li>
+</ul>
+<h4>L.2 Hanwha 13D 미제출 지속 🟡</h4>
+<ul>
+<li>트리거: 9.6% 보유인데 7/23까지 13D/G 미제출. 13G(passive) 시한은 통상 취득 후 45일(≈8월 중순) → 아직 정상. 13D(active) 아님 = 경영 관여 의도 없음 시사(잠정).</li>
+<li>deferred 유지: 취득 경로(PIPE? Series?)·DART 한화 측 공시·락업 대상 여부.</li>
+</ul>
+<h4>L.deferred (7/13 계승 + 갱신)</h4>
+<ul>
+<li>Hanwha 취득 경로·13G 제출 여부(8월 중순 watch) / 첫 10-Q 확정 현금·유기 토큰화(8월) / 공매도·옵션(fintel 대체 소스) / rwa.xyz AUM 재접속 경로(secz-weekly) / Phase 창 공창 시나리오</li>
+</ul>
+<hr />
+<h2>🔴 종합 (Steelman 내부 반영 — 결론에 이미 반영)</h2>
+<p><strong>7축 종합: ⭐4.0 유지</strong> — 🌦️4.5 ⛰️4.0 🌲4.5 🌳3.5 🌲🌳4.0 👤4.0 🔢2.5 (가중 42.25/10.5 = 4.02) · <strong>사업·thesis 매력도(밸류 멀티플 미반영)</strong> · overlay 3종(§H.5 분면·§H.6 0to1·§H.7 밸류) 점수 밖.</p>
+<ul>
+<li><strong>데이터 차원</strong>: 강세 근거(AUM $5.09B·순유입 $902M, 7/13 라이브)와 약세 근거(유기 -1.1%·GM 하락, 3/31 분기)는 <strong>다른 시점 데이터</strong> — 갭은 8월에 닫힌다. 10일 델타는 이 갭을 좁히지 못했다(신규 공시 0). 지금 어느 쪽을 믿는 것도 데이터가 아니라 성향.</li>
+<li><strong>구조 차원</strong>: thesis 인과 사슬 = 정책(A3) → 산업(RWA) → 레인(Distributed) → 기업(SECZ) → <strong>매출 전환(미완성)</strong>. 앞 4개가 맞아도 마지막 고리(AUM→매출 비연동 자인)가 끊기면 "산업은 컸는데 주주는 못 벌었다". 역방향: 과금 자동화·take rate가 잠기면 앞 4개 복리가 한꺼번에 터짐 = Bull의 실체.</li>
+<li><strong>시간 지평 차원</strong>: 단기(0-6M) 락업 오버행·Q2 관문·컨센 부재·🆕 매크로 risk-off 🔴 / 중기(6M-3Y) GENIUS·NYSE·IST 실체화 🟢 / 장기(3-10Y) 토큰화 공리 + 표준 전쟁 미확정 🟡. <strong>충돌: 단기 하방이 중기 매수 창과 동일 구간</strong> — 이번 매크로 델타(risk-off 첨예화)가 단기 하방을 심화하면 그 창을 더 낮은 가격으로 연다(양날).</li>
+<li><strong>종합 판정</strong>: <strong>유지</strong> (7/13 대비 확신·구성 동일). 10일 델타 = 펀더 동결 + 매크로 역풍 첨예화 + 가격 6% 하락. <strong>8월 Q2 = 나무·숫자축 ±0.5 스윙 예약</strong>(변함없는 결론). 이번 실행의 신규 가치 = History-Dive·chart-dive 축 최초 확보 + 매크로 양면 첨예화의 명시화.</li>
+</ul>
+<hr />
+<h2>수집 상태 (실패·불완전 항목만)</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th style="text-align: center;">상태</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10-K 3년/10-Q 4분기</td>
+<td style="text-align: center;">⚠️</td>
+<td>합병 전 S-4/424B3 재무 대체 (첫 10-Q 8월)</td>
+</tr>
+<tr>
+<td>Short / 옵션 (I.3/I.4)</td>
+<td style="text-align: center;">❌</td>
+<td>fintel 봇 차단 — secz-weekly 대체 소스</td>
+</tr>
+<tr>
+<td>rwa.xyz AUM 재갱신</td>
+<td style="text-align: center;">⚠️</td>
+<td>issuer 경로 404 (SPA 구조 변경) — 7/13 $5.09B carry·secz-weekly owner</td>
+</tr>
+<tr>
+<td>X 임원 계정</td>
+<td style="text-align: center;">❌</td>
+<td>미수집 (secz-daily/weekly가 owner)</td>
+</tr>
+<tr>
+<td>사람축 비전 ⭐</td>
+<td style="text-align: center;">⚠️</td>
+<td><strong>사용자 수기 대기 flag</strong> — Claude 💬 의견만 병기</td>
+</tr>
+</tbody>
+</table>
+<p><strong>다음 실행 시 보완</strong>: §L.deferred + 첫 10-Q 후 §H.7 재실행 + material weakness 해소(첫 10-K) + Hanwha 13G(8월 중순).</p>
+<p><em>방법론 stamp: DD-v1.7 · SKILL v1.24 · 작성 2026-07-23 · Axiom + Claude</em></p>
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p>
+</div>
+<script>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+const VIZ = {"score7": {"label": "확신도 7축 레이더 (DD-v1.7 · 사업·thesis 매력도 — 밸류 멀티플 미반영 · 7/13 대비 변동 없음)", "max": 5, "axes": ["🌦️ 날씨", "⛰️ 산", "🌲 숲", "🌳 나무", "🌲🌳 옆나무", "👤 사람", "🔢 숫자"], "series": [{"name": "SECZ 2026-07-23 (종합 ⭐4.0)", "color": "#2980b9", "scores": [4.5, 4, 4.5, 3.5, 4, 4, 2.5]}]}, "narrative": {"label": "내러티브 다중성 5축 (§B.3 — 산업 서사 깊이·확신도 레이더와 별개)", "max": 5, "axes": ["🔧 기술", "👥 사회", "🏛️ 정책", "🌐 지정학", "💰 자본"], "series": [{"name": "RWA 토큰화 내러티브 깊이 (🔴 4축 수렴)", "color": "#8e44ad", "scores": [4, 3, 5, 4, 4]}]}, "trajectory": {"periods": ["FY24", "FY25", "Q1'26 연환산", "FY26E 가이던스"], "forecastFrom": 3, "inflection": {"index": 1}, "series": [{"label": "매출 ($M)", "axis": "left", "color": "#2980b9", "values": [18.6, 62.2, 77.9, 110]}, {"label": "GM (%)", "axis": "right", "color": "#f39c12", "values": [90.1, 78.3, 77.1, 77.1]}]}, "peers": {"metrics": [{"key": "mcap", "label": "시총", "unit": "$B", "better": "neutral"}, {"key": "ps", "label": "P/S(TTM)", "unit": "x", "better": "neutral"}, {"key": "growth", "label": "매출 YoY", "unit": "%", "better": "high"}, {"key": "gm", "label": "GM", "unit": "%", "better": "high"}, {"key": "lic", "label": "BD/ATS/TA", "unit": "/5", "better": "high"}], "rows": [{"name": "SECZ", "subject": true, "note": "L2 발행·컴플라이언스 (7/23)", "vals": {"mcap": 1.21, "ps": 18.0, "growth": 38.8, "gm": 77.1, "lic": 3}}, {"name": "CRCL", "note": "스테이블코인 (GM=yfinance 정의 ⚠️)", "vals": {"mcap": 17.0, "ps": 5.7, "growth": 20, "gm": 8.1, "lic": 0}}, {"name": "FIGR", "note": "Represented 1위·+119%·흑자 (아픈 비교)", "vals": {"mcap": 6.4, "ps": 12.6, "growth": 119, "gm": null, "lic": 1}}, {"name": "COIN", "note": "거래소·커스터디", "vals": {"mcap": 42.8, "ps": 6.8, "growth": -30.8, "gm": 85.5, "lic": 1}}, {"name": "BR", "note": "성숙 플럼빙 anchor", "vals": {"mcap": 16.7, "ps": 2.3, "growth": 7.8, "gm": 31.3, "lic": 1}}]}, "scenario": {"horizonLabel": "5년", "threshold": 1.5, "cases": [{"label": "Bull", "prob": 0.25, "mult": 3.4, "tone": "bull"}, {"label": "Base", "prob": 0.5, "mult": 1.4, "tone": "base"}, {"label": "Bear", "prob": 0.25, "mult": 0.35, "tone": "bear"}]}, "landmark": {"current": {"label": "SECZ", "mcap": 1.21}, "target": {"label": "SECZ ×10", "mcap": 12.1}, "refs": [{"name": "FIGR", "mcap": 6.4}, {"name": "BR", "mcap": 16.7}, {"name": "CRCL", "mcap": 17.0}, {"name": "COIN", "mcap": 42.8}, {"name": "ICE", "mcap": 81.0}], "sentence": "💡 지금은 소형 핀테크급($1.21B) → 텐배거면 Broadridge($16.7B)·Circle($17.0B) 조금 아래 체급($12.1B). (규모 비교일 뿐 — 사업 유사성 아님)"}, "bars": {"title": "FY25 매출 구성 — Tokenization 60% / Services 40% (424B3 Note 18)", "mode": "share", "items": [{"label": "Tokenization $37.4M", "value": 60, "color": "#2980b9"}, {"label": "Services $24.7M", "value": 40, "color": "#f39c12"}]}};
+try{
+DDViz.renderRadar('fig-score7','fig-score7-leg',VIZ.score7);
+DDViz.renderRadar('fig-c3','fig-c3-leg',VIZ.narrative);
+DDViz.renderTrajectory('fig-g5','fig-g5-leg',VIZ.trajectory);
+DDViz.renderHeatmap('fig-e1',VIZ.peers);
+DDViz.renderScenario('fig-h1',null,VIZ.scenario);
+DDViz.renderMcapLadder('fig-g15','fig-g15-cap',VIZ.landmark);
+DDViz.renderBars('fig-d0',VIZ.bars);
+var c7=document.getElementById('fig-score7-cap'); if(c7)c7.textContent='7축 가중평균 4.02 → 종합 ⭐4.0 (사업·thesis 매력도·밸류 미반영) · 7/13 대비 변동 없음';
+var ch=document.getElementById('fig-h1-cap'); if(ch)ch.textContent='§H.1 5년 시나리오 (기준 $7.44) — 기댓값 ~1.6x · 2년 EV ~1.0x = bull-tail 의존 ⚠️ (게이트 ❌·보유 매도신호 ❌)';
+}catch(e){console.error('viz',e);}
+</script>
