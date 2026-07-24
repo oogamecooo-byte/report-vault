@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>실리콘 포토닉스(SiPho) 쉬운 입문 — 고등학생도 읽는 쉬운 풀이 — 2026-07-24</title>
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="광학">
+<meta name="vault-date" content="2026-07-24">
+<meta name="vault-series" content="광학 원문 쉬운 풀이">
+<meta name="description" content="Jason's Chips의 SiPho 입문 글을 고등학생 눈높이로 풀이. 실리콘이 빛을 못 내는 이유, InP의 등장, 도파로·굴절률·SOI, PDK, 그리고 왜 최첨단 팹이 필요 없는가.">
+<style>
+  :root{ --sand:#EBE4D3; --cream:#FDF6E3; --ink:#1f2328; --sub:#5b6b62; --line:#e0d8c4;
+         --accent:#0d6f8a; --accent2:#1E5F45; --quote:#6a5a2a; --hl:#5c4a00; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--sand);color:var(--ink);
+       font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;line-height:1.72;font-size:16.5px}
+  .wrap{max-width:860px;margin:0 auto;padding:38px 20px 90px}
+  header.rep{margin-bottom:26px;border-bottom:2px solid var(--line);padding-bottom:22px}
+  .kicker{color:var(--accent);font-weight:800;letter-spacing:.13em;font-size:12.5px}
+  header.rep h1{margin:8px 0 4px;font-size:33px;letter-spacing:-.01em;color:#14231c;line-height:1.25}
+  .orig{font-size:15px;color:var(--sub);font-style:italic;margin-bottom:10px}
+  .byline{font-size:13.5px;color:var(--sub);background:var(--cream);border:1px solid var(--line);
+          border-radius:10px;padding:9px 13px;display:inline-block}
+  .byline a{color:var(--accent);text-decoration:none;border-bottom:1px solid #bcd6df}
+  section.card{background:var(--cream);border:1px solid var(--line);border-radius:14px;
+       padding:22px 26px;margin:18px 0;box-shadow:0 1px 2px rgba(60,50,20,.03)}
+  h2{font-size:21px;margin:6px 0 12px;color:#14231c;border-left:5px solid var(--accent);padding-left:11px;line-height:1.3}
+  h3{font-size:17.5px;margin:22px 0 6px;color:var(--accent2)}
+  .tldr{background:#f2ecda}
+  .tldr ol{margin:6px 0 0;padding-left:22px} .tldr li{margin:7px 0}
+  p{margin:10px 0}
+  b,strong{color:#111}
+  .eng{color:var(--sub);font-weight:600;font-size:.93em}
+  .step{margin:20px 0 8px;padding:2px 0 2px 0;font-weight:800;color:#14231c;font-size:16px}
+  .num{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;
+       background:var(--accent);color:#fff;border-radius:7px;font-size:13px;font-weight:800;margin-right:8px}
+  .analogy{background:#fbf3d6;border:1px solid #ecd9a6;border-left:4px solid #d9b64e;
+       border-radius:9px;padding:11px 15px;margin:12px 0;font-size:15.5px}
+  .analogy b{color:var(--hl)}
+  .gist{font-size:14px;color:var(--quote);background:#f6f0dc;border:1px dashed #d8c99b;
+        border-radius:8px;padding:8px 12px;margin:8px 0}
+  .gist .lab{font-weight:800;color:#8a6d2f;font-size:12px;letter-spacing:.04em}
+  dl.gloss{margin:6px 0} dl.gloss dt{font-weight:800;color:var(--accent2);margin-top:13px}
+  dl.gloss dd{margin:2px 0 0;color:#33403a}
+  ul.refs{list-style:none;padding:0;margin:6px 0}
+  ul.refs li{padding:10px 0;border-bottom:1px dashed var(--line)}
+  ul.refs li:last-child{border-bottom:none}
+  ul.refs a{color:var(--accent);text-decoration:none;font-weight:700;word-break:break-all}
+  ul.refs .desc{display:block;font-size:13.5px;color:var(--sub);margin-top:2px}
+  .tag{display:inline-block;background:#e6eff2;color:#0d6f8a;font-size:11.5px;font-weight:800;
+       border-radius:6px;padding:2px 8px;margin-right:6px;vertical-align:middle}
+  footer{margin-top:34px;font-size:12.5px;color:var(--sub);text-align:center;line-height:1.7;
+         border-top:1px solid var(--line);padding-top:18px}
+  @media print{ body{background:#fff} section.card{box-shadow:none} }
+  @media (max-width:640px){ .wrap{padding:24px 14px 70px} header.rep h1{font-size:26px} section.card{padding:18px} }
+</style></head>
+<body><div class="wrap">
+
+<header class="rep">
+  <div class="kicker">광학 · 원문 쉬운 풀이 시리즈</div>
+  <h1>실리콘 포토닉스(SiPho) 쉬운 입문 — 고등학생도 읽는 쉬운 풀이</h1>
+  <div class="orig">원제: “Short n' Casual Intro to SiPho” · 글쓴이 Jason's Chips (@jasonschips)</div>
+  <div class="byline">원문 게시 2026-03-22 · 조회 3,858 · <a href="https://x.com/jasonschips/status/2035550207731990622" target="_blank" rel="noopener">X 원문 보기 ↗</a> &nbsp;|&nbsp; 본 문서는 원문을 학습용으로 풀어 쓴 해설이며 번역본이 아닙니다.</div>
+</header>
+
+<section class="card tldr">
+  <h2>📌 세 줄 요약</h2>
+  <ol>
+    <li><b>실리콘은 값싸고 만들기 좋지만, 물리적으로 “빛을 못 낸다”.</b> 그래서 빛을 만드는 일(레이저)만 특별한 재료 <b>InP(인듐 인화물)</b>에 맡기고, <b>빛을 나르고·자르고·데이터를 새기는 나머지 일은 전부 실리콘</b>으로 되돌린다. 이 “역할 분담”이 바로 <b>실리콘 포토닉스(SiPho)</b>다.</li>
+    <li>실리콘 위에서 빛이 새지 않게 가두는 비법은 <b>굴절률 차이</b>. 실리콘과 절연체를 샌드위치처럼 쌓은 <b>SOI 웨이퍼</b> 덕분에 빛을 아주 좁은 길(도파로)에 꽉 가둬, <b>손톱보다 작은 칩</b> 안에 광통신 회로를 다 넣을 수 있다.</li>
+    <li>놀랍게도 이 칩은 <b>최첨단 팹이 필요 없다.</b> 통신용 빛의 파장이 최신 트랜지스터보다 훨씬 “커서”, 오래된 <b>65nm 공정·감가상각 끝난 장비</b>로도 세계 최고 광학 칩을 만들 수 있다.</li>
+  </ol>
+</section>
+
+<section class="card">
+  <h2>🧭 먼저, 이 글을 읽기 전에</h2>
+  <p><b>실리콘 포토닉스</b><span class="eng"> (Silicon Photonics, SiPho = 실리콘으로 빛을 다루는 기술)</span>는 요즘 AI 데이터센터의 “빛으로 칩 연결하기”의 핵심 재료다. 앞선 <b>CPO 공급망</b> 편에서 광학엔진 안의 <b>PIC(광 칩)</b>가 바로 이 SiPho 칩이었다. 이 글은 한 걸음 더 들어가 <b>“왜 하필 실리콘인가, 실리콘은 빛도 못 내는데?”</b>라는 근본 질문을 아주 쉽게 풀어 준다.</p>
+  <p>저자는 이 글을 <b>1980년대의 엔지니어가 된 “당신”의 이야기</b> 형식으로 시작한다. 무겁게 읽지 말고, 하나의 발명 스토리를 따라간다고 생각하면 된다.</p>
+</section>
+
+<section class="card">
+  <h2>1. SiPho의 탄생 이야기 — “실리콘은 왜 빛을 못 낼까”</h2>
+  <p>당신은 1980년대의 뛰어난 엔지니어다. 아이디어가 하나 떠오른다 — <b>데이터를 전자(전기) 대신 광자(빛)로 보내면</b>, 전기가 가진 여러 물리적 한계를 건너뛸 수 있다.</p>
+  <p>기초 화학은 알고 있다. <b>들뜬 전자가 다시 낮은 에너지 상태로 “떨어질 때” 광자(빛 알갱이)를 내놓는다.</b> 그러니 이렇게 이어 생각한다 — “반도체 안에서 전자가 마음대로 이 짓을 하게 만들면, 나는 <b>빛의 원천(광원)</b>을 갖는 것이고, 광원이 있으면 <b>칩 위에 광통신 시스템</b>을 지을 수 있다.”</p>
+
+  <h3>제일 먼저 실리콘을 집어 든다 — 그런데 안 된다</h3>
+  <p>당신은 이미 <b>실리콘</b>을 쓰고 있다. 세상 모든 팹(반도체 공장)이 실리콘으로 돌아간다. 값싸고, 흔하고, 그 주변 제조 생태계는 <b>인류가 만든 가장 정교한 산업 장치</b>다. 그러니 자연스럽게 실리콘부터 잡는다. <b>그런데 작동하지 않는다.</b></p>
+  <p>이유는 이렇다. 반도체 안 전자가 떨어져 광자를 만들 때는 <b>두 가지를 동시에 지켜야</b> 한다 — <b>에너지</b>와 <b>운동량</b>. 에너지 보존은 광자를 만들어 주니 좋은데, <b>운동량 보존이 말썽</b>이다.</p>
+  <div class="analogy"><b>직접 밴드갭 vs 간접 밴드갭 (쉬운 버전)</b><br>
+  <b>직접 밴드갭</b><span class="eng"> (direct bandgap)</span> 재료(예: 갈륨비소 GaAs)는 전자가 앉은 자리(전도띠 맨 아래)와 내려앉을 자리(원자가띠 맨 위)가 <b>운동량으로 봤을 때 정확히 위아래로 나란히</b> 있다. 그래서 전자가 <b>“그냥 아래로 뚝 떨어지며” 빛을 내고 끝</b>. <br>반면 <b>실리콘은 간접 밴드갭</b><span class="eng"> (indirect bandgap)</span>이라 두 자리가 <b>어긋나 있다</b>. 떨어지려면 에너지뿐 아니라 <b>운동량까지 동시에 바꿔야</b> 하는데, 이게 까다로워서 <b>빛 대신 열로 에너지를 흘려버린다.</b> 그래서 실리콘은 빛을 못 낸다.</div>
+
+  <h3>주기율표를 열고 → InP를 만나다</h3>
+  <p>그래서 주기율표를 펼친다. <b>III-V족 화합물 반도체</b><span class="eng"> (3족·5족 원소를 섞은 반도체)</span>가 필요한 <b>직접 밴드갭</b>을 가졌다는 걸 발견한다. 그런데 아무 III-V나 되는 게 아니다. 빛을 <b>광섬유</b>로 보내려면, 유리가 거의 투명해서 신호가 멀리 가는 <b>특정 “창문” 파장</b>에 맞춰야 한다 — <b>1310nm와 1550nm</b>(이른바 <b>O-밴드</b>).</p>
+  <p>그 창문에 딱 맞는 재료가 바로 <b>InP</b><span class="eng"> (Indium Phosphide, 인듐 인화물)</span>다. 저자의 표현을 빌리면, <b>필요한 바로 그 파장에서 효율적으로 빛을 낸다</b> — 마치 우주가 이 일을 위해 InP를 설계해 둔 것처럼.</p>
+
+  <h3>그런데 InP는 “양산”이 안 된다</h3>
+  <p>누군가 묻는다 — “그거 대량으로 만들면 값이 얼마나 드는데?” 여기서 InP의 약점이 드러난다. <b>InP 웨이퍼는 2인치·4인치</b>짜리 작은 판인데, <b>실리콘 웨이퍼는 이미 12인치</b>(면적으로 약 50배)로 가고 있다. 게다가 InP는 <b>잘 깨지고(brittle)</b>, 그걸 다루는 팹은 너무 작고 특수해서 <b>“장인들이 손으로 빚는다”</b>고 할 지경이다.</p>
+
+  <h3>두 번째 아이디어 — “레이저만 InP에 맡기고 나머진 실리콘으로”</h3>
+  <p>여기서 두 번째 아이디어가 온다. <b>InP는 실리콘이 못 하는 “딱 한 가지(빛 내기)”만 하게 하면 어떨까?</b> 레이저는 InP에 남겨 두고, <b>나머지는 전부 실리콘으로 되돌리는 것.</b></p>
+  <p>“나머지”가 실제로 뭔지 보자 — 빛이 생기면 그걸 <b>길로 나르고, 여러 갈래로 쪼개고, 깜빡여서(변조해) 데이터를 새기고, 특정 파장만 걸러내고, 반대편에서 받아 다시 전기 신호로 바꿔야</b> 한다. <b>이 일들은 하나도 직접 밴드갭 재료가 필요 없다.</b> 필요한 건 <b>빛을 정밀하게, 대량으로, 제조 규율을 갖춰 가두고 다루는 능력</b>뿐. 그 “능력”이 바로 <b>실리콘 포토닉스(SiPho)</b>다.</p>
+  <div class="gist"><span class="lab">한 줄 정리 · </span> 실리콘은 빛을 “못 만드는” 게 흠일 뿐, 빛을 “다루는” 데는 최고다. 그래서 빛 만들기(InP)와 빛 다루기(실리콘)를 분업한다.</div>
+</section>
+
+<section class="card">
+  <h2>2. SiPho의 물리 — “빛이 지나가는 물 미끄럼틀”</h2>
+  <p>저자는 <b>SiPho 칩을 물 미끄럼틀에 비유</b>한다. 빛은 실리콘 위의 <b>도파로</b><span class="eng"> (waveguide, 빛이 지나가는 길)</span>를 따라 흐르는데, 이 길은 <b>빛을 잃지 않고 가둬서 날라야</b> 한다. 문제는 <b>빛은 평평한 실리콘 위에 가만히 있지 않는다</b>는 것. 빛을 붙잡아 두려면 <b>굴절률</b>이라는 성질을 이용해야 한다.</p>
+
+  <h3>굴절률과 “전반사” — 빛이 벽에서 튕겨 나오는 원리</h3>
+  <p><b>굴절률</b><span class="eng"> (refractive index, 빛이 진공보다 얼마나 느려지는가)</span>가 <b>높으면 빛이 느리게</b>, <b>낮으면 빛이 쌩쌩</b> 지나간다. 굴절률이 높은 재료와 낮은 재료의 <b>경계면</b>에서, 빛이 정면으로 부딪히면 방향을 꺾어 통과(굴절)한다. 하지만 <b>충분히 얕은 각도</b>로 스치듯 부딪히면, 빛은 경계를 넘지 못하고 <b>그대로 튕겨 나온다</b> — 이것이 <b>전반사</b><span class="eng"> (total internal reflection, 빛이 벽을 넘지 못하고 100% 되튐)</span>다. 이 튕김을 이용해 빛을 길 안에 가둔다.</p>
+
+  <h3>SOI 웨이퍼 — 빛을 가두는 “실리콘 샌드위치”</h3>
+  <p>여기서 <b>SOI 웨이퍼</b><span class="eng"> (Silicon On Insulator, 절연체 위 실리콘)</span>가 등장한다. 세 층으로 된 샌드위치다.</p>
+  <div class="step"><span class="num">1</span>손잡이층 (handle layer)</div>
+  <p>맨 아래, <b>약 700µm</b> 두께의 두꺼운 실리콘. <b>구조를 단단하게 잡아 주는</b> 역할일 뿐, 빛·전기적으로는 거의 무관.</p>
+  <div class="step"><span class="num">2</span>매몰 산화막 (BOX)</div>
+  <p>가운데 층. <b>이산화규소(SiO₂)</b>로 된 절연체이며 포토닉스용은 보통 <b>1~3µm</b> 두께. <b>이 층이 빛을 아래로 새지 않게 막는 바닥</b> 역할을 한다.</p>
+  <div class="step"><span class="num">3</span>소자층 (device layer)</div>
+  <p>맨 위, O-밴드용은 <b>약 220nm</b>로 가장 얇은 결정질 실리콘. <b>모든 도파로·변조기·커플러·분배기·공진기가 새겨지는</b> 진짜 무대다.</p>
+
+  <div class="analogy"><b>왜 이 조합이 마법인가? — 굴절률 “대비”가 엄청나다</b><br>
+  실리콘 소자층의 굴절률은 <b>약 3.45</b>, 아래 산화막(BOX)은 <b>약 1.44</b>, 공기는 <b>1.0</b>. 실리콘과 산화막의 차이(3.45 대 1.44)가 <b>어마어마하게 크다</b>. 참고로 일반 광섬유는 심과 껍질의 굴절률 차이가 1.45 대 1.44로 <b>1%도 안 된다</b>. <b>SOI의 대비는 그보다 100배 이상 크다.</b> 대비가 클수록 빛을 더 세게 가둘 수 있다.</div>
+
+  <h3>“모드”와 초강력 가둠 — 화물열차 vs 롤러코스터</h3>
+  <p><b>모드</b><span class="eng"> (mode, 빛의 전자기장이 퍼지는 폭)</span>는 쉽게 말해 <b>빛이 얼마나 넓게 퍼져 있는가</b>다. 광섬유에서는 가둠이 약해(대비가 작아) 빛이 <b>지름 8~10µm</b>로 넓게 퍼지고, 섬유를 너무 급하게 꺾으면 빛이 새어 나간다(그래서 mm~cm 단위로만 굽힐 수 있음).</p>
+  <p>반면 SOI는 빛을 <b>가로 약 450nm × 세로 220nm</b>의 아주 작은 도파로에 <b>꽉 짜 넣는다</b>. 가둠이 워낙 단단해서 <b>고작 몇 µm 반지름으로 급하게 꺾어도</b> 의미 있는 손실이 없다.</p>
+  <div class="analogy"><b>화물열차 vs 롤러코스터 (저자의 비유)</b><br>
+  광섬유에서 빛을 꺾는 건 <b>거대한 화물열차를 돌리는 것</b>과 같아 아주 넓은 커브가 필요하다. SOI 도파로에서 빛을 꺾는 건 <b>작은 롤러코스터 차량을 돌리는 것</b>과 같아 급커브가 가능하다. 이 <b>“단단한 가둠”이 SiPho 칩을 조밀하게</b> 만든다 — 빛을 수많은 굽이로 돌리고, 파장을 쪼개고 합치고, 변조기·검출기를 <b>좁은 면적에 다 넣을</b> 수 있다.</div>
+  <p>저자의 표현대로, SOI의 높은 굴절률 대비가 없었다면 <b>“접시만 한 칩”</b>이 필요했을 일을, <b>몇 mm²</b> 안에 담을 수 있게 된 것이다.</p>
+</section>
+
+<section class="card">
+  <h2>3. SiPho 설계 — “정말 어렵다, 그래서 PDK가 구원자”</h2>
+  <p>SiPho 설계는 지독하게 어렵다. <b>도파로 폭이 조금만 달라져도</b> 유효 굴절률이 바뀌고, 그러면 빛의 움직임과 <b>칩 밖으로 나오는 빛의 양이 달라진다</b>. 옛날(암흑기)엔 팹리스 회사들이 <b>물리학 박사 팀을 고용</b>해 부품 하나 설계하려고 박사급 수학을 풀었다.</p>
+  <p>그 터널 끝의 빛이 바로 <b>PDK</b><span class="eng"> (Process Design Kit, 공정 설계 키트)</span>다. PDK는 <b>팹이 미리 만들어 검증해 둔 “부품 블록”들의 라이브러리</b>다. 설계자는 이 검증된 블록(직선 도파로, 굽힘 반지름, 방향성 커플러, 격자 커플러, 링 공진기, 마흐-젠더 변조기 팔 등)을 <b>카탈로그에서 뽑아 조립</b>하기만 하면 된다.</p>
+  <div class="analogy"><b>비유 — 어셈블리 vs 파이썬 Pandas</b><br>
+  PDK 없이 설계하는 건 <b>기계어(어셈블리)로 프로그래밍</b>하는 것과 같다. PDK로 설계하는 건 <b>파이썬에서 Pandas 라이브러리로 코딩</b>하는 것과 같다 — 복잡한 계산은 이미 다 되어 있고, 나는 <b>가져다 쓰기만</b> 하면 된다. 설계자는 더 이상 <b>맥스웰 방정식을 풀지 않는다.</b></p></div>
+  <p>그리고 여기서 중요한 사업적 함의가 나온다 — <b>PDK는 팹을 “끈끈하게(sticky)” 만든다.</b> 내 엔지니어들이 <b>특정 팹의 PDK로 설계에 익숙해지면</b>, 다른 팹으로 갈아타기 어려워 <b>사실상 그 팹에 묶인다(lock-in).</b></p>
+</section>
+
+<section class="card">
+  <h2>4. 왜 “최첨단 팹”이 필요 없나 — 파장이 크기 때문</h2>
+  <p>복잡한 물리라니, 당연히 <b>초미세 공정과 아주 작은 트랜지스터</b>가 필요하겠지? <b>사실은 아니다.</b> 이유는 <b>파장</b>이다.</p>
+  <p>통신용 빛(1310nm·1550nm)은 <b>사람 기준으론 작지만, 최신 로직 반도체의 미세 구조에 비하면 오히려 크다.</b> 도파로라는 “물 미끄럼틀”은 <b>적어도 빛이 들어갈 만큼은 넓어야</b> 한다. 그러니 굳이 초미세로 갈 이유가 없다.</p>
+  <div class="gist"><span class="lab">핵심 · </span> 그래서 이 칩은 <b>65nm 공정</b>에서 돌린다. <b>EUV(극자외선 노광) 같은 최첨단 장비가 필요 없고</b>, 이미 <b>감가상각이 끝난(값이 다 빠진) 오래된 장비</b>로도 세계 최고 광학 칩을 만들 수 있다.</div>
+</section>
+
+<section class="card">
+  <h2>5. SiPho 관련 기업 — 원문이 짚은 두 회사</h2>
+  <p>저자가 이 입문 글 끝에서 짧게 언급한 회사는 둘이다. (숫자·순위는 원문에 있는 것만 옮긴다.)</p>
+  <h3>Tower Semiconductor (타워 세미컨덕터)</h3>
+  <p>저자는 <b>“타워가 경쟁자들 위에 우뚝 서 있다”</b>고 표현한다. <b>트랜시버 안 SiPho 콘텐츠의 다수 점유율</b>을 쥐고 있고, 공정이 <b>GlobalFoundries보다 훨씬 낫다</b>고 본다 — 마치 <b>TSMC가 삼성에게 그러하듯</b>이. (더 자세한 논리는 참고자료의 별도 글로 예고.)</p>
+  <h3>Soitec (소이텍)</h3>
+  <p>앞서 나온 <b>SOI 웨이퍼</b>를 만드는 회사. SOI는 모바일·산업용에도 쓰이므로 <b>순수 포토닉스 회사(pure play)는 아니다</b>. 핵심 특허 <b>Smart Cut</b>을 보유해 <b>전 세계 SOI 웨이퍼의 80%</b>를 만든다. 포토닉스용 SOI는 <b>더 어려워서</b>, 저자가 보기엔 <b>대량으로 만드는 곳이 사실상 소이텍뿐</b>이다.</p>
+  <p style="font-size:13.5px;color:#6a5a2a">※ 이 글은 저자가 <b>“꽤 멋지다(pretty cool)”</b>라고 말하는 가벼운 입문 글이며, 기업 순위·목표가·매수/매도 의견은 담겨 있지 않다. 위 두 회사는 원문이 이름만 짚은 수준으로만 옮겼다.</p>
+</section>
+
+<section class="card">
+  <h2>🔑 핵심 용어 사전</h2>
+  <dl class="gloss">
+    <dt>SiPho (Silicon Photonics, 실리콘 포토닉스)</dt><dd>실리콘 위에서 빛을 가두고·나르고·조작하는 기술. 빛 “만들기”는 못 하지만 빛 “다루기”는 최고.</dd>
+    <dt>광자(photon) vs 전자(electron)</dt><dd>광자 = 빛 알갱이. 데이터를 전자(전기) 대신 광자로 보내면 전기의 물리적 한계를 여럿 건너뛴다.</dd>
+    <dt>직접 밴드갭 vs 간접 밴드갭</dt><dd>직접 = 전자가 그냥 아래로 떨어지며 빛을 냄(GaAs·InP). 간접 = 운동량까지 바꿔야 해서 빛 대신 열이 됨(실리콘). 실리콘이 빛을 못 내는 이유.</dd>
+    <dt>III-V족 화합물</dt><dd>주기율표 3족·5족 원소를 섞은 반도체. 직접 밴드갭이라 빛을 낼 수 있다.</dd>
+    <dt>InP (인듐 인화물)</dt><dd>1310·1550nm(O-밴드)에서 효율적으로 빛을 내는 III-V 재료. 레이저의 순수 원재료지만 잘 깨지고 웨이퍼가 작아 양산이 어렵다.</dd>
+    <dt>O-밴드 (1310nm·1550nm)</dt><dd>광섬유 유리가 거의 투명해 신호가 멀리 가는 “창문” 파장대.</dd>
+    <dt>도파로(waveguide)</dt><dd>빛이 지나가는 길. 물 미끄럼틀에 비유. 빛을 잃지 않고 가둬 날라야 한다.</dd>
+    <dt>굴절률(refractive index)</dt><dd>빛이 진공보다 얼마나 느려지는가. 높으면 느리게, 낮으면 빠르게. 이 “차이”로 빛을 가둔다.</dd>
+    <dt>전반사(total internal reflection)</dt><dd>빛이 얕은 각도로 경계에 부딪히면 넘지 못하고 100% 되튀는 현상. 도파로가 빛을 가두는 원리.</dd>
+    <dt>SOI (Silicon On Insulator)</dt><dd>손잡이층 + 매몰 산화막(BOX) + 소자층의 실리콘 샌드위치. 굴절률 대비가 커서 빛을 아주 좁은 길에 꽉 가둔다.</dd>
+    <dt>모드(mode) / 가둠(confinement)</dt><dd>빛이 퍼지는 폭. SOI는 빛을 450nm급으로 짜 넣어 급커브(몇 µm 반지름)도 손실 없이 돈다.</dd>
+    <dt>PDK (Process Design Kit)</dt><dd>팹이 검증해 둔 부품 블록 라이브러리. 설계자는 조립만 하면 됨. 익숙해지면 그 팹에 묶여(lock-in) 팹이 끈끈해진다.</dd>
+    <dt>65nm 공정 · EUV 불필요</dt><dd>통신용 빛 파장이 커서 초미세가 필요 없음. 감가상각 끝난 오래된 장비로도 세계 최고 광학 칩 제조 가능.</dd>
+  </dl>
+</section>
+
+<section class="card">
+  <h2>🔗 참고자료 (원문에 실린 자료 그대로)</h2>
+  <ul class="refs">
+    <li><a href="https://x.com/jasonschips/status/2035550207731990622" target="_blank" rel="noopener">원문 · Short n' Casual Intro to SiPho — Jason's Chips (@jasonschips), 2026-03-22</a><span class="desc">본 해설의 원본 글(X 장문 아티클). 조회 3,858.</span></li>
+    <li><a href="https://jasonschips.substack.com/p/tower-ing-over-the-competition" target="_blank" rel="noopener">인용 ① · Tower-ing Over the Competition</a><span class="desc">SiPho 파운드리 Tower Semi가 경쟁사보다 앞선 이유(공정·점유율).</span></li>
+    <li><a href="https://jasonschips.substack.com/p/the-soitec-series-part-17-introduction" target="_blank" rel="noopener">인용 ② · The Soitec Series | Part (1/7): Introduction to the French Photonics Substrate Monopoly</a><span class="desc">SOI 웨이퍼와 Soitec의 Smart Cut 독점 소개(프랑스 포토닉스 기판 독점 시리즈 1부).</span></li>
+    <li><a href="https://jasonschips.substack.com/p/terms-and-conditions" target="_blank" rel="noopener">이용약관 / 고지 · Terms and Conditions</a><span class="desc">원문에 첨부된 약관·면책.</span></li>
+    <li><a href="https://jasonschips.substack.com/" target="_blank" rel="noopener">Jason's Chips Substack</a><span class="desc">저자의 뉴스레터(구독 안내).</span></li>
+  </ul>
+</section>
+
+<footer>
+  본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다. · 원문 저작권은 Jason's Chips(@jasonschips)에 있으며, 본 문서는 고등학생 눈높이 학습용 요약·해설(비영리)입니다.<br>
+  광학 원문 쉬운 풀이 시리즈 · 정리일 2026-07-24
+</footer>
+
+</div></body></html>
