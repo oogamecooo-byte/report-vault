@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRAM(메모리 섹터) 일일 퀵 체크 — 2026-07-25</title>
+<style>
+  :root{
+    --bg:#FDF6E3; --layer:#FBF0D8; --card:#FFFDF6; --ink:#3B3228; --muted:#7A6E5A;
+    --line:#E6DCC3; --accent:#B58900; --red:#C0392B; --amber:#B9770E; --green:#5E8C2E;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;line-height:1.62;font-size:15px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:30px 20px 70px}
+  header{background:var(--layer);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:22px}
+  h1{margin:0 0 6px;font-size:25px;letter-spacing:-.5px}
+  .sub{color:var(--muted);font-size:13px;line-height:1.7}
+  .sub b{color:var(--ink)}
+  .status{display:inline-block;margin:14px 0 2px;padding:9px 18px;border-radius:30px;font-weight:700;font-size:17px}
+  .st-red{background:#F7D9D4;color:var(--red);border:1px solid #E0A99F}
+  .st-amb{background:#FBEBC7;color:var(--amber);border:1px solid #E4C879}
+  .st-grn{background:#E0EFCB;color:var(--green);border:1px solid #B9D68E}
+  section{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:18px 22px;margin:16px 0;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+  h2{font-size:19px;margin:2px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  h3{font-size:15.5px;margin:16px 0 7px;color:#4a3f30}
+  h4{font-size:14px;margin:12px 0 5px;color:#5a4d38}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.3px;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  th,td{padding:8px 10px;border:1px solid var(--line);text-align:left;vertical-align:top}
+  th{background:var(--layer);font-weight:700;color:#5a4d38}
+  .c{text-align:center;white-space:nowrap}
+  ul{margin:8px 0;padding-left:20px}
+  li{margin:4px 0}
+  p{margin:8px 0}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px dotted #C9A94E}
+  a:hover{border-bottom-style:solid}
+  code{background:var(--layer);padding:1px 5px;border-radius:4px;font-size:12.5px}
+  .wl{color:var(--muted);font-size:12.5px}
+  .pill{display:inline-block;padding:1px 8px;border-radius:20px;font-size:12px;font-weight:700}
+  .p-red{background:#F7D9D4;color:var(--red)} .p-amb{background:#FBEBC7;color:var(--amber)} .p-grn{background:#E0EFCB;color:var(--green)}
+  blockquote.bq{background:var(--layer);border-left:4px solid var(--accent);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:13.6px;color:#4a3f30}
+  blockquote.steel{background:var(--layer);border:1px dashed #D8C68C;border-radius:9px;padding:12px 15px;margin:12px 0;font-size:13.6px}
+  blockquote.steel b{color:var(--accent)}
+  hr{border:none;border-top:1px solid var(--line);margin:18px 0}
+  .foot{margin-top:26px;font-size:12px;color:var(--muted);background:var(--layer);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .toolbar{text-align:right;margin:0 0 10px}
+  .toolbar button{background:var(--layer);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:12.5px;color:var(--ink);cursor:pointer}
+  @media print{body{background:#fff}.wrap{max-width:100%}.toolbar{display:none}section,header,.foot{box-shadow:none}}
+</style>
+<meta name="vault-stage" content="Monitoring">
+<meta name="vault-topic" content="메모리">
+<meta name="vault-date" content="2026-07-25">
+<meta name="description" content="DRAM(메모리 섹터) 일일 퀵 체크 — 2026-07-25">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="wrap">
+<div class="toolbar"><button onclick="window.print()">🖨 인쇄/PDF</button></div>
+<header>
+  <h1>💾 DRAM(메모리 섹터) 일일 퀵 체크</h1>
+  <div class="sub"><b>2026-07-25</b> · Roundhill Memory ETF 앵커 · Chrome MCP 전용 수집</div>
+  <div class="status st-amb">종합 상태 : ⚠️ 주의</div>
+</header>
+<p><strong>📎 배경·범위</strong></p>
+<ul>
+<li><strong>분석 앵커 = DRAM ETF</strong>(Roundhill Memory ETF, NASDAQ: DRAM). <strong>무게중심 = 메모리 섹터</strong>(ETF NAV를 움직이는 swap 결합비중 <strong>한국 2강 48.82% + MU 26.58%</strong>)이지 MU 단일주 검증이 아니다. <strong>MU = 추적 단일 종목</strong>(밸류·HBM 점유 관찰). MU 사실·시나리오는 MU-Memory.md가 owner(재정의 ❌).</li>
+<li><strong>감시 대상 thesis</strong>: *&quot;Physical AI 시대에도 메모리 반도체가 핵심 곡괭이. agentic AI를 넘어 Physical AI 발전이 미국 생산성 향상에 필요하고, Physical AI 관심·투자가 늘 것. 메모리 주가가 중간에 주춤해도 장기 보유할 만하다.&quot;* 톤 = thesis 무결성 감시.</li>
+<li><strong>defer</strong>: 빅테크 capex·매크로 지수·유동성 → macro-weekly / 메모리 밸류체인 산업 구조 → Chain-Dive.</li>
+<li><strong>수집</strong>: Chrome MCP 전용(WebFetch·WebSearch 0회) + yfinance + news-headlines MCP. 결정론적 수집 게이트 <code>finalize PASS</code>(브라우저 필수 17피드 중 16 OK).</li>
+</ul>
+<hr>
+
+<section><h2>한 장 요약</h2>
+<ul>
+<li><strong>종합 판정</strong>: 🟡 <strong>주의(방향은 개선)</strong> — 주중 V자 반등(7/21 ETF +10.9%) 뒤 금요일 되돌림(7/24 −8.75%). 순 WoW는 <strong>+0.91%</strong>로 사실상 제자리. 급락 원인은 <strong>중국 메모리(CXMT) + 한국 증시 약세</strong>이지 스팟 가격 붕괴가 아니다.</li>
+<li>🔴 <strong>이번 주 최대 사건 = CXMT STAR 시장 상장 확정(7/27)</strong> — 조달 <strong>RMB 57.9B</strong>(STAR 사상 최대·SMIC 경신), H1&#x27;26 매출 가이드 RMB 110~120B(+612~677% YoY). 3과점에 <strong>자금을 쥔 4번째 플레이어</strong>가 붙었다 → <strong>섹터④ 근접도 상승</strong>.</li>
+<li>🔴 **SK하이닉스 청주 P&amp;T7 ₩7.09조 신규시설투자 *증액* 결의**(7/22 이사회·자기자본 대비 5.88%) — 3사 동시 증설 러시가 공시로 확정.</li>
+<li>🟠 <strong>TrendForce: NAND 공급 증가율이 2027 수요를 추월, 2H27 공급 제약 완화</strong> — 사이클에 <strong>처음으로 날짜가 붙었다</strong>(단 DRAM은 2028 흡수 전망).</li>
+<li>🔴 <strong>MU CEO Mehrotra 본인 매도 확인(Form 144, 7/24)</strong> — 40,000주 $37.3M. 5/1·5/29·6/26·7/24 <strong>월 4만주 정례</strong>(10b5-1, 1/30 채택) = 4개월 16만주·gross ~$143.5M.</li>
+<li>🟢 <strong>Physical AI 수요축 강화</strong> — 로보틱스 주간 펀딩 ~$1.98B, AMD 로봇용 통합메모리 플랫폼, SK하이닉스 온디바이스 3D DRAM-on-Logic 채용. <strong>섹터③ 미발동(가장 견고)</strong>.</li>
+<li><strong>다음 주 = 실적 3연발</strong>: SK하이닉스 2Q 컨콜 <strong>7/29 09:00 KST</strong> → 삼성 2Q 컨콜 <strong>7/30 10:00 KST</strong> → 키옥시아 Q1 FY26 <strong>7/31 15:30 JST</strong>.</li>
+</ul>
+<hr>
+</section>
+<section><h2>§A. 시세·peer 매트릭스 (DRAM ETF 앵커 + 3강 + 인접 + 장비/지수)</h2>
+<p>기준일 <strong>2026-07-24 종가</strong>(WoW = 7/17 대비, 한국 2강은 7/16 대비).</p>
+<table><thead><tr><th>종목</th><th>종가</th><th>1d</th><th><strong>WoW</strong></th><th>시총</th><th>밸류/HBM</th><th>비고</th></tr></thead><tbody>
+<tr><td><strong>DRAM ETF</strong></td><td><strong>$53.20</strong></td><td><strong>−8.75%</strong></td><td><strong>+0.91%</strong></td><td>AUM <strong>$26.92B</strong></td><td>NAV(7/23) $58.92</td><td>시간외 $52.85 · 설정후 밴드 49% 지점</td></tr>
+<tr><td><strong>MU</strong></td><td>$920.95</td><td>−6.99%</td><td><strong>+8.48%</strong></td><td>$1.040조</td><td>P/S 11.52 · fwd P/E <strong>5.99</strong> · HBM <strong>#3</strong></td><td>ETF <strong>26.58%(#1)</strong> · 목표중앙 $1,550</td></tr>
+<tr><td><strong>SK하이닉스</strong></td><td>₩1,759,000</td><td>−8.34%</td><td>−4.51%</td><td>₩1,249조</td><td>P/S 9.45 · HBM <strong>#1</strong></td><td>ETF 22.57%(#3) · 2Q 컨콜 7/29</td></tr>
+<tr><td><strong>SKHY</strong>(ADR·$)</td><td>$154.57</td><td>−8.81%</td><td>+0.35%</td><td>—</td><td>#1</td><td>52주 밴드 <strong>8.0%</strong>(신저 부근) · ⚠️ ETF 비중 이중계산 금지</td></tr>
+<tr><td><strong>삼성전자</strong></td><td>₩249,500</td><td>−7.59%</td><td>−2.16%</td><td>₩1,638조</td><td>P/S 4.22 · HBM #2</td><td>ETF 26.25%(#2) · 2Q 컨콜 7/30</td></tr>
+<tr><td><strong>키옥시아</strong> 285A.T</td><td>¥56,010</td><td>−9.49%</td><td><strong>+7.48%</strong></td><td>¥30.7조</td><td>P/S 13.11 · NAND</td><td>ETF 3.66% · Q1 FY26 7/31</td></tr>
+<tr><td>SNDK / STX / WDC</td><td>$1,436.56 / $851.69 / $519.80</td><td>−10.79 / −6.75 / −6.90%</td><td><strong>+6.03 / +8.13 / +8.92%</strong></td><td></td><td>NAND·스토리지</td><td>ETF 4.50 / 4.86 / 4.60%</td></tr>
+<tr><td>ASML / AMAT / LRCX / SMH / ^SOX</td><td>$1,757.09 / $536.25 / $305.21 / $561.19 / 11,818.89</td><td>−2.55 / −4.72 / −4.56 / −3.27 / −4.25%</td><td>+0.54 / +1.24 / <strong>−2.58</strong> / +0.84 / <strong>+1.24%</strong></td><td></td><td>장비/지수</td><td>^SOX 전주 베어마켓 진입서 소폭 회복</td></tr>
+</tbody></table>
+<ul>
+<li>🏛️ *각주*: <strong>Roundhill Memory ETF(DRAM)</strong> = 메모리 반도체 종목만 담은 ETF(본 스킬의 분석 앵커). 비중은 <strong>swap(총수익스왑) 결합비중</strong> — Roundhill이 RIC 분산 규정을 지키려 일부를 스왑으로 보유하므로, 경제적 노출 기준으로 읽어야 한다.</li>
+<li>🔴 <strong>핵심 관찰 1 — 주중 V자 후 금요일 라운드트립</strong>: ETF 경로 7/17 $52.72 → 7/20 $53.06 → <strong>7/21 $58.85(+10.9%)</strong> → 7/23 $58.30 → <strong>7/24 $53.20(−8.75%)</strong>. MU도 7/21 +12.2%(→$970.82)·7/23 $990.21 뒤 −6.99%. <strong>1주일에 반등과 급락을 모두 소화하고 제자리</strong>로 끝난 주간.</li>
+<li>🔴 <strong>핵심 관찰 2 — ETF 자금은 계속 들어왔다</strong>: AUM <strong>$23.44B(7/16) → $26.92B(7/23·+14.8%)</strong>, 발행주 <strong>433.35M → 456.92M(+23.6M 순유입)</strong>, 보유 종목 17 → 21개. 가격이 오른 효과와 신규 설정이 겹쳤다. etf.com도 <a href="http://www.etf.com/sections/features/investors-pour-25b-semiconductor-etfs-dram-plunges-40" target="_blank">반도체 ETF에 $25B 유입</a>(7/17)으로 딥 매수를 확인.</li>
+<li>⚠️ <strong>프리미엄/디스카운트 주의</strong>: Roundhill 공식 NAV는 <strong>7/23 기준 $58.92</strong>(종가 $58.30 → <strong>−1.05% 디스카운트</strong>)이고, <strong>7/24 NAV는 아직 미공표</strong>다. 7/24 종가 $53.20을 7/23 NAV와 나눠 &quot;−9.7% 디스카운트&quot;로 읽으면 <strong>날짜 불일치 오독</strong>이다(전주 −2.53% 대비 디스카운트 폭은 오히려 축소).</li>
+<li><strong>결합비중 순위 재역전</strong>: MU <strong>24.95%(#2) → 26.58%(#1)</strong>, 삼성 26.76%(#1) → 26.25%(#2), SK하이닉스 23.36% → 22.57%. MU가 주간 +8.5%로 한국 2강(−2~−4.5%)을 아웃퍼폼한 결과. <strong>Top3 75.40% · 한국 2강 48.82%.</strong></li>
+<li><strong>SKHY holdings watch</strong>: 7/23 기준 holdings에 <strong>SKHY 라인 없음</strong> — ETF는 SK하이닉스를 여전히 <code>000660 KS</code>로 노출. ADR 직접보유 전환 <strong>미발생</strong>(비중 이중계산 금지 유지).</li>
+</ul>
+<hr>
+</section>
+<section><h2>§B. 공시 심층 (MU SEC + 🇰🇷 한국 2강 DART + 키옥시아)</h2>
+<h3>🔴 MU — <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0000723125&amp;type=&amp;dateb=&amp;owner=include&amp;count=40" target="_blank">SEC EDGAR CIK 0000723125</a>: 신규 8-K/10-Q 0 · <strong>Form 144 2건</strong></h3>
+<p><strong>① <a href="https://www.sec.gov/Archives/edgar/data/723125/000196922326000797/0001969223-26-000797-index.htm" target="_blank">Form 144 — Sanjay Mehrotra(CEO·이사) 40,000주 $37,290,024</a> (2026-07-24 접수·예정 매도일 7/24)</strong></p>
+<ul>
+<li>매도 주체 = <strong>The Mehrotra Family Trust dtd 4/29/1997</strong>, 중개 UBS. 원천 = 2024-10-13 / 2025-10-25 RSU/PSU 릴리스분. <strong>10b5-1 플랜 2026-01-30 채택.</strong></li>
+<li><strong>직전 3개월 동일 규모 반복</strong>: 5/01 40,000주 gross $21.45M · 5/29 40,000주 $38.45M · 6/26 40,000주 $46.34M → <strong>7/24 40,000주 $37.29M</strong>.</li>
+<li>📑 *각주(5줄)*: <strong>Form 144</strong> = 내부자(임원·이사·대주주)가 제한부 주식을 팔기 *전에* SEC에 내는 <strong>매도 예고</strong> 신고서다(실제 체결 보고는 Form 4). <strong>10b5-1 플랜</strong> = 미리 날짜·수량을 정해둔 자동 매매 계획으로, 내부정보 이용 방어 장치라 &quot;오늘 약세를 봤다&quot;는 재량적 신호가 <strong>아니다</strong>. 🎯 <strong>의미</strong>: 직전 weekly는 Form 4만 보고 &quot;Mehrotra CEO 본인 매도 = 없음&quot;으로 기록했으나, <strong>Form 144를 열자 CEO가 4개월 연속 월 4만주(누적 16만주·gross ~$143.5M)를 트러스트로 팔아온 사실</strong>이 드러난다. 사전 계획이라 방향성 콜은 아니지만, <strong>회사 최고경영자의 현금화 속도</strong>는 사실로 남는다.</li>
+<li>💬 <strong>Claude 해석</strong>: 환금 단가를 보면 5/1 ~$536 → 5/29 ~$961 → 6/26 ~$1,158 → <strong>7/24 ~$932</strong>. 정례 플랜이므로 &quot;고점 캐치&quot;가 아니라 <strong>정액이 아니라 정량(40,000주 고정)</strong> 플랜이라는 뜻이고, 그래서 단가는 주가를 그대로 따라간다. 신호로 과대해석 금지, 다만 <strong>누적 규모는 기록</strong>한다.</li>
+</ul>
+<p><strong>② <a href="https://www.sec.gov/Archives/edgar/data/723125/000195004726007269/0001950047-26-007269-index.htm" target="_blank">Form 144 — Scott Allen(CAO) 879주 $879,000</a> (7/23)</strong> — 7/15 취득 제한부 주식·routine·규모 극미.</p>
+<ul>
+<li>신규 <strong>8-K / 10-Q = 0건</strong>. SCA RPO <strong>~$100B</strong>(Q3 FY26 GAAP) 불변. 다음 정기 catalyst = <strong>Q4 FY26(~2026-09말)</strong>.</li>
+</ul>
+<h3>🔴 🇰🇷 SK하이닉스 DART — **청주 P&amp;T7 ₩7.09조 투자 *증액*<strong> + </strong>인텔 오하이오 인수설 부인**</h3>
+<p><strong>① <a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260722800829" target="_blank">신규시설투자등 (rcpNo 20260722800829)</a> — 2026-07-22</strong></p>
+<table><thead><tr><th>항목</th><th>내용</th></tr></thead><tbody>
+<tr><td>투자 대상</td><td><strong>청주 P&amp;T7 건설</strong></td></tr>
+<tr><td>투자금액</td><td><strong>₩7,093,100,000,000 (7.09조원)</strong></td></tr>
+<tr><td>자기자본</td><td>₩120,666,750,890,698 → <strong>자기자본 대비 5.88%</strong></td></tr>
+<tr><td>투자 목적</td><td><strong>&quot;글로벌 AI 메모리 수요 대응을 위한 청주 생산거점 확보&quot;</strong></td></tr>
+<tr><td>기간</td><td>2025-11-26 ~ 2032-12-31</td></tr>
+<tr><td>결의</td><td><strong>2026년 제8차 이사회(2026-07-22)</strong> — *&quot;생산 증가 대응 및 Clean Room open 일정 단축에 따른 건설 투자 금액을 <strong>증액</strong> 결의&quot;* (사외이사 6명 전원 참석)</td></tr>
+</tbody></table>
+<ul>
+<li>📑 *각주(6줄)*: <strong>DART</strong> = 금융감독원 전자공시(dart.fss.or.kr). 한국 상장사는 미국 SEC가 아니라 DART가 1차 출처다. <strong>신규시설투자등 공시</strong> = 자기자본 대비 일정 비율 이상의 설비투자를 결정하면 즉시 알려야 하는 의무 공시. <strong>P&amp;T</strong> = 통상 반도체 후공정(Package &amp; Test) 라인을 가리키는 사내 표기이고, <strong>Clean Room open 일정 단축</strong>이 명시된 점이 핵심이다. 🎯 <strong>의미</strong>: 신규 투자 발표가 아니라 <strong>이미 진행 중인 투자의 금액을 늘리고 일정을 앞당긴</strong> 것 = 수요가 계획을 초과했다는 회사 자신의 신호. 동시에 §G의 공급 사이드(2028 산출 도래)를 <strong>가속</strong>시키는 양날이다.</li>
+</ul>
+<p><strong>② <a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260722800178" target="_blank">풍문또는보도에대한해명 (rcpNo 20260722800178)</a> — 2026-07-22</strong></p>
+<blockquote class="bq">중앙일보 보도 *&quot;SK하이닉스의 승부수…인텔 美오하이오 공장 산다&quot;*(7/22)에 대해 — *&quot;당사는 사업상 다양한 투자 및 인수 기회를 지속적으로 검토하고 있습니다. 그러나 기사에서 보도된 것과 같이 <strong>인텔의 오하이오 부지와 Fab 인수를 추진하거나 결정한 사실은 없습니다.</strong>&quot;* (공시책임자 김우현 재무부문장)</blockquote>
+<ul>
+<li>🟡 *각주*: <strong>풍문·보도 해명공시</strong> = 거래소가 요구하거나 회사가 자발적으로 언론 보도의 사실 여부를 확정해 주는 공시. 부인의 문구가 <strong>&quot;인수&quot;에 한정</strong>된 점에 유의 — 다음 날 TrendForce는 <a href="https://www.trendforce.com/news/2026/07/23/news-sk-hynix-reportedly-eyed-as-potential-partner-to-operate-intels-ohio-fab-after-denying-acquisition-plans/" target="_blank">SK하이닉스가 인수 대신 *운영 파트너*로 거론된다</a>고 보도(7/23). 🎯 <strong>의미</strong>: 한국 2강이 미국 내 캐파를 인수·운영으로 확보하려는 흐름은 살아 있고, 이는 섹터④(한국 2강 구조 충격)의 <strong>완화 방향</strong> 재료다.</li>
+</ul>
+<p><strong>③ <a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260715800456" target="_blank">기업설명회(IR)개최 (rcpNo 20260715800456)</a></strong> — <strong>2026년 2분기 실적 컨퍼런스콜 2026-07-29 09:00 KST</strong>.</p>
+<p><strong>④ ADR 조달 정량</strong>(<a href="https://www.eetimes.com/sk-hynix-nasdaq-debut-shows-global-memory-expansion-race/" target="_blank">EE Times 7/21</a>): 나스닥 ADR <strong>$26.5B 조달 = 외국 기업의 미국 주식 발행 사상 최대</strong>, 첫날 <strong>+13%</strong>, 기업가치 <strong>$1.2조</strong>. 조달금은 <strong>₩1,100조(~$733B) 중장기 투자 로드맵</strong>에 직접 투입.</p>
+<h3>🇰🇷 삼성전자 DART — 자사주 90조 보도 <strong>&quot;미확정&quot; 재공시</strong> (7/23)</h3>
+<p><strong><a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260723800875" target="_blank">풍문또는보도에대한해명(미확정) (rcpNo 20260723800875)</a></strong> — 문화일보 6/24 보도 *&quot;삼전, 내달부터 자사주 90조 매입·이사회 거쳐 3년 분할매입 추진&quot;*에 대해: *&quot;&#x27;26년 경영성과에 따른 주식보상 목적의 자사주 매입을 검토하고 있으나, 현재 구체적인 일정이나 규모 등 확정된 사항은 없습니다.&quot;* (IR팀장 다니엘 오) — <strong>재공시 예정일 2026-10-22</strong>.</p>
+<ul>
+<li>🟡 *각주*: <strong>미확정 해명공시</strong>는 &quot;검토 중&quot;으로 답하고 3개월 내 재공시할 의무를 지는 형식이다. 6/24 1차 공시의 만기가 도래해 <strong>같은 답으로 3개월 더 연장</strong>된 것 = 신규 정보 0. 🎯 <strong>의미</strong>: ₩90조 자사주는 메모리 펀더멘털이 아니라 <strong>주주환원 재료</strong>이므로 ETF NAV 관점에서는 삼성 주가 변동성 요인으로만 취급한다.</li>
+<li>기타 7/18~7/25: 삼성물산 <a href="https://dart.fss.or.kr/dsab007/main.do" target="_blank">주식등의대량보유상황보고서</a>(7/24), 최대주주등소유주식변동신고서(7/21), 임원·주요주주 소유상황보고서 다수(7/21~23·주식보상 릴리스 추정). <strong>7/18~7/20은 공시 0건(주말).</strong></li>
+<li><strong><a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260707800015" target="_blank">2Q26 실적 컨퍼런스콜 = 2026-07-30 10:00 KST</a></strong> — 잠정실적은 7/7 기공시, <strong>DS부문(반도체) 분해는 7/30 확정실적</strong>에서 나온다.</li>
+</ul>
+<h3>🇯🇵 키옥시아 — 신규 공시 0</h3>
+<p><a href="https://www.kioxia-holdings.com/en-jp/ir.html" target="_blank">키옥시아 IR</a> 기준 7/18~7/25 신규 적시공시 <strong>0건</strong>(최신 = 7/17 Viasat $229M 배심 평결). <strong>Q1 FY2026 실적 2026-07-31 15:30 JST.</strong> 주가는 평결 낙폭에서 WoW <strong>+7.48%</strong> 회복.</p>
+<hr>
+</section>
+<section><h2>§C. 뉴스·X 심층 + 애널 (7-Day Cover)</h2>
+<h3>🔴 <a href="https://www.trendforce.com/news/2026/07/24/news-chinas-dram-maker-cxmt-to-debut-jul-27-ipo-to-raise-rmb-57-9b-largest-on-star-market-since-launch/" target="_blank">China&#x27;s DRAM Maker CXMT to Debut Jul. 27; IPO to Raise RMB 57.9B, Largest on STAR Market Since Launch</a> — TrendForce / 2026-07-24</h3>
+<table><thead><tr><th>항목</th><th>수치</th></tr></thead><tbody>
+<tr><td>상장</td><td>상하이 STAR 마켓 <strong>2026-07-27</strong></td></tr>
+<tr><td>공모가 / 시총</td><td>RMB 8.66 / <strong>RMB 579.19B</strong></td></tr>
+<tr><td>조달</td><td><strong>RMB 57.919B</strong>(그린슈 전액 행사 시 RMB 66.6B) — SMIC RMB 53.2B 경신·<strong>STAR 사상 최대</strong></td></tr>
+<tr><td>자금 용처</td><td>메모리 웨이퍼 라인 업그레이드 <strong>75억</strong> + DRAM 기술 업그레이드 <strong>130억</strong>(총 계획 180억) + 선행기술 R&amp;D <strong>90억</strong></td></tr>
+<tr><td>Q1 2026</td><td>매출 RMB <strong>50.8B(+719% YoY)</strong> · 순이익 33.0B(+1,268%) · 지배주주 24.8B(+1,688%)</td></tr>
+<tr><td>H1 2026 가이드</td><td>매출 RMB <strong>110~120B(+612~677%)</strong> · 지배주주 순이익 50~57B</td></tr>
+</tbody></table>
+<ul>
+<li>🔴 *각주(6줄)*: <strong>CXMT(창신메모리)</strong> = 중국 최대 DRAM 제조사. <strong>STAR 마켓</strong> = 상하이거래소의 기술기업 전용 시장(나스닥 대응). 🎯 <strong>왜 중요한가</strong>: 그동안 &quot;중국 추격&quot;은 <strong>기술 수준</strong> 논쟁이었는데, 이번 IPO로 <strong>자금이 실탄화</strong>됐고 조달금의 절반 이상이 <strong>DRAM 기술 업그레이드·라인 증설에 직접 배정</strong>됐다. H1&#x27;26 매출 RMB 110~120B(≈$15~17B)는 이미 <strong>주요 메모리 업체 규모</strong>다. 3과점(삼성·SK하이닉스·MU)이 지켜온 &quot;공급 규율&quot;에 <strong>규율을 공유할 이유가 없는 4번째 대형 플레이어</strong>가 자본시장 접근권을 갖고 진입한 것 — thesis 리스크 신호 <strong>섹터④의 핵심 재료</strong>다.</li>
+<li>⚠️ X에서 유통된 &quot;CXMT 글로벌 DRAM 점유 8~11%&quot; 주장은 <strong>1차 검증 안 됨</strong>(🟡 X 신호로만 분류).</li>
+</ul>
+<h3>🔴 <a href="https://www.eetimes.com/sk-hynix-nasdaq-debut-shows-global-memory-expansion-race/" target="_blank">SK Hynix Nasdaq Debut Shows Global Memory Expansion Race</a> — EE Times / 2026-07-21</h3>
+<ul>
+<li><strong>3사 증설 스코어보드</strong>: SK하이닉스 ADR $26.5B → ₩1,100조 로드맵 / <strong>MU 미국 &gt;$250B(2035까지)</strong> + 히로시마 $9.3B(2028 차세대 DRAM·HBM) / <strong>삼성 P4 평택 2026년 말 풀 램프 · P5 2030까지 단계 확장</strong>.</li>
+<li><strong>공급 도래 시점</strong>: 팹은 착공→수율 안정까지 <strong>최소 3년</strong> → 현 투자 물결은 <strong>2028년 산출</strong>로 나온다. TrendForce Tom Hsu: *&quot;AI 수요가 견조해 <strong>2028년 공급 증가분 대부분은 시장이 흡수</strong>할 것&quot;*, LTA 재협상은 <strong>심각한 침체 시에만</strong>(base case 아님).</li>
+<li><strong>BIS(국제결제은행) 경고</strong>: AI 도구의 재무 수익이 자본 지출을 못 따라가면 기술기업의 급격한 지출 축소가 금융 시스템을 교란할 수 있다.</li>
+<li><strong>지정학</strong>: SK하이닉스·삼성이 <strong>중국산 장비(Mattson 등) 의존을 제거</strong>하는 공급망 재편 중 — 미 상무부 Entity List 추가 리스크 선제 대응.</li>
+<li>🔴 <strong>§F 직결 인용 — 최태원 SK그룹 회장</strong>: *&quot;우리는 5년 안에 캐파를 두 배로 늘릴 것이고, 고객들은 모두 &#x27;그걸로는 부족하다, 더 필요하다&#x27;고 말한다.&quot;* 그리고 사이클 우려에 대해 — *&quot;<strong>AI 에이전트, 피지컬 AI 로봇이 실제로 메모리 칩을 아주 많이 필요로 한다</strong>&quot;*.</li>
+<li>🎯 *각주*: 이 문장은 사용자 thesis의 <strong>Physical AI → 메모리 수요 leg를, 그 병목을 소유한 당사자가 직접 진술</strong>한 것이다. 단 <strong>이해당사자 진술</strong>(팔 사람이 수요를 말함)이라 검증이 아니라 <strong>정황</strong>으로 취급한다.</li>
+</ul>
+<h3>🟠 <a href="https://www.trendforce.com/presscenter/news/20260721-13148.html" target="_blank">NAND Flash Supply Growth to Outpace Demand in 2027, Easing Supply Constraints in 2H27</a> — TrendForce / 2026-07-21</h3>
+<ul>
+<li><strong>2026 = 공급 부족 4~5%</strong>(AI 수요 급증 + 캐파 제약). <strong>2027 = 하반기에 수급 균형이 플러스로 전환</strong> → 공급 제약 점진 완화.</li>
+<li>공급 측: 2026년은 캐파가 아니라 <strong>공정 미세화(process migration)</strong>로 대응(팹 공간 제약 + DRAM 캐파 우선). <strong>중국 업체는 신규 장비 가동으로 글로벌 NAND bit 점유 ~19%까지 상승.</strong></li>
+<li>수요 측: 서버 출하 <strong>+17% YoY(2026)</strong>, 2027은 <strong>Agentic AI 상용화가 범용 서버 수요 지속</strong> + CPU 공급 제약 완화 + LTA 하 안정적 메모리 공급으로 <strong>가속</strong>. 반면 <strong>스마트폰 생산 −15~20% YoY(2026)·2027도 감소</strong>, <strong>노트북 −10%(2026)·2027 소폭 감소</strong>.</li>
+<li>재고: 제조사는 lean 유지, <strong>모듈 업체만 소비자 약세로 재고 누적</strong>.</li>
+<li>🎯 *각주*: 서버가 NAND bit 수요의 40% 이상이지만 <strong>스마트폰+노트북이 여전히 ~40%</strong>라 소비자 시장이 여전히 사이클을 좌우한다는 것이 TrendForce의 결론이다. 지금까지 &quot;공급 부족은 언제 끝나는가&quot;에 답이 없었는데, <strong>처음으로 &#x27;2H27&#x27;이라는 날짜가 붙었다</strong>.</li>
+</ul>
+<h3>🔴 <a href="https://www.marketwatch.com/story/why-micron-and-other-major-chip-stocks-are-falling-even-as-the-rest-of-tech-holds-up-506851dc" target="_blank">Why Intel, Micron and other major chip stocks are falling — even as the rest of tech holds up</a> — MarketWatch / 2026-07-24</h3>
+<blockquote class="bq">단일 &quot;스모킹건&quot; 촉매는 없고, 투자자들이 <strong>① 중국 메모리 관련 전개(CXMT) ② 한국 증시 약세 ③ 인텔의 실적 후 상승 유지 실패</strong>에 반응했을 수 있다. Mizuho MD Daniel O&#x27;Regan: *&quot;오늘 가장 많이 받은 질문은 왜 반도체 섹터가 이렇게 심하게 뒤처지느냐는 것&quot;* — 나머지 테크 섹터는 <strong>견조</strong>했다.</blockquote>
+<ul>
+<li>🟡 *각주*: 금요일 낙폭이 <strong>반도체에 국한</strong>되고 빅테크는 버틴 점이 중요하다. 전주(7/16~17)의 &quot;AI 밸류 전반 재평가&quot;와 달리 이번은 <strong>메모리·반도체 고유 서사</strong>(중국 공급 + 한국 flow)라는 뜻이다. <a href="https://247wallst.com/investing/2026/07/24/sk-hynix-and-micron-sink-6-sandisk-drops-9-as-korea-chip-selloff-hits-u-s-memory-stocks/" target="_blank">24/7 Wall St.</a>도 진원을 <strong>한국 증시 메모리 매도</strong>로 지목.</li>
+</ul>
+<h3>🟠 <a href="https://stocktwits.com/news-articles/markets/equity/mu-skhy-stx-sndk-wdc-memory-stocks-tumble-evercore-analyst-demand-supply-2027/cZZpTcwR7zT" target="_blank">메모리주 급락 — Evercore Daryanani &quot;2027년 수급 불균형은 더 커진다&quot;</a> — Stocktwits(CNBC 인터뷰 인용) / 2026-07-24</h3>
+<ul>
+<li>Evercore Amit Daryanani: <strong>AI가 학습(training)에서 추론(inference)으로 넘어가며 메모리 병목이 더 부각</strong>된다. 수급 불균형 확대는 섹터의 <strong>내구성 + 지속적 멀티플 확장</strong>을 지지하고, 하드웨어 스택의 <strong>decommoditization(탈상품화)</strong> 이 진행 중이다.</li>
+<li>당일 메모리주 −3~7%, <strong>DRAM ETF −7%(연초 이후 2배 이상 상승 구간)</strong>, SOXX −2%(같은 기간 +74%).</li>
+<li>🎯 *각주*: <strong>탈상품화(decommoditization)</strong> = 메모리가 &quot;누가 만들어도 같은 부품&quot;에서 벗어나 고객·규격별로 차별화된다는 주장이다. 사실이라면 곡괭이 질이 (A)에서 위로 올라가지만, 이는 <strong>아직 애널리스트 명제이지 실적으로 입증된 사실이 아니다</strong>(§D의 &quot;+74% 매출이 거의 전부 ASP&quot;라는 경영진 자인과 정면으로 부딪힌다).</li>
+</ul>
+<h3>🟡 매크로 배경 (news-headlines MCP · RSS date 검증 완료)</h3>
+<ul>
+<li><a href="https://www.bloomberg.com/news/articles/2026-07-24/s-p-500-futures-steady-as-big-tech-rebounds-oil-dips-below-100" target="_blank">Nasdaq 100 Tumbles as Oil Spike, AI Jitters Hit Tech Stocks</a> — Bloomberg 7/24. <strong>3월 말 이후 첫 2주 연속 주간 하락.</strong> Brent $100 돌파(4개 전선 공급 차질), 글로벌 채권 급락.</li>
+<li>🔴 <a href="https://www.bloomberg.com/news/articles/2026-07-24/blackrock-kicks-off-12-3-billion-bond-sale-for-meta-data-center" target="_blank">BlackRock Gets Soft Demand for Bond Sale After AI Debt Selloff</a> — Bloomberg 7/24. <strong>Meta 텍사스 데이터센터 관련 $12.3B 회사채 수요가 통상보다 약함.</strong> 🎯 *각주*: AI 인프라의 <strong>조달 채널에 마찰</strong>이 생겼다는 신호다. 메모리 수요의 상류(데이터센터 capex)가 자본시장 조건에 물려 있음을 보여주므로 §F/§J의 IREN 동방향 논의와 직결된다.</li>
+</ul>
+<h3>📱 X (7일 · 🟡 X 신호 = 미검증)</h3>
+<ul>
+<li><strong>UBS 삼성 노트 인용(7/24)</strong>: *&quot;Agentic AI가 계속 가격을 밀어 올린다&quot;* — 메모리 업사이클이 <strong>HBM을 넘어 DDR5/LPDDR5 서버 메모리와 KV 캐시·스토리지용 NAND로 수요가 넓어지며</strong> 강해지고 있고, <strong>범용(conventional) 메모리가 2028년까지 공급 부족</strong>일 수 있다는 주장.</li>
+<li><strong>강세 측</strong>: John Tinsman &quot;메모리가 여전히 최선호 — MU 매출 +345% YoY에 PE 9&quot;. Tom Lee(7/21 인용) &quot;이번 조정은 시장에 필요했던 것&quot;.</li>
+<li>🔴 <strong>약세 측(내부 반박 재료)</strong>: *&quot;마이크론은 엔비디아보다도 높은 마진을 가지고 있으면서 <strong>덜 차별화된 제품</strong>을 판다. 품질 관점에서 아마 최악의 메모리 제조사이고 HBM은 항상 가장 낮은 품질이었다. 진짜 성장 동력은 HBM이 아니라 <strong>상품 DRAM</strong>이다.&quot;*</li>
+<li><strong><a href="https://x.com/MicronTech" target="_blank">@MicronTech</a></strong>: 7/23 <strong>AMD와 공동으로 실제 에이전틱 AI 워크플로를 반영한 벤치마크 개발 — 전세대 플랫폼 대비 AOPS 최대 3.8배·CPU 전력효율 2.9배</strong>. 7/24 보이시 ID1 클린룸 &quot;블로우다운&quot; 건설 이정표. 7/21 245TB 6600 ION SSD + WEKApod Prime Max(2U에 15.8PB).</li>
+<li><strong><a href="https://x.com/Dylan522p" target="_blank">@Dylan522p</a>(SemiAnalysis)</strong>: 이번 주 메모리·HBM 전용 신호 <strong>0</strong>. <strong><a href="https://x.com/TrendForce" target="_blank">@TrendForce</a></strong>: CXMT·DRAM-on-Logic·KV Cache 병목을 자체 기사로 재확인.</li>
+</ul>
+<h3>📑 애널리스트 컨센서스 (yfinance <code>.info</code>)</h3>
+<p>MU 목표 <strong>중앙값 $1,550 · 평균 $1,507.38 · 42명 · strong_buy</strong> = 현재가 대비 <strong>+68.3%</strong>. 주가가 WoW +8.5% 올랐는데도 목표가는 그대로 → <strong>주가–목표가 괴리는 여전히 미해소</strong>(전주 +82.6% → 이번 주 +68.3%로 축소된 것은 주가 상승분일 뿐).</p>
+<hr>
+</section>
+<section><h2>§D. 재무 trajectory (DRAM/NAND/HBM 분해 · GM 사이클 · SCA backlog 품질)</h2>
+<blockquote class="bq">실적 이벤트 없는 주간 — MU 분기 수치는 <strong>변동 없음</strong>(다음 = Q4 FY26 ~9월 말). 아래는 이번 주 제3자 데이터로 <strong>보강된 부분만</strong>.</blockquote>
+<ul>
+<li><strong>분해(MU Q3 FY26 · MU-Memory owner)</strong>: 매출 <strong>$41.46B</strong>(YoY +346%·QoQ +74%) — DRAM $31.3B(76%) · NAND $9.9B(24%). 🔴 <strong>&quot;+74%는 거의 전부 ASP&quot;</strong>(경영진 자인 — DRAM 가격 +low-60%대 / 물량 +low-single%).</li>
+<li>🔴 <strong>GM 사이클</strong>: FY23 <strong>−9%</strong> ↔ Q3 FY26 <strong>84.6%</strong> = <strong>peak ASP</strong>. TTM 기준(yfinance) 매출총이익률 72.57%·순이익률 55.9%.</li>
+<li>📜 *각주*: 메모리 사이클은 호황(ASP 급등·GM 80%대)과 불황(ASP 폭락·GM 음수)이 2~3년 주기로 반복한다. MU는 FY22 GM 45% → FY23 −9%(순손실 −$5.8B) → 현재 84.6%. <strong>지금이 어느 국면인가</strong>가 ETF·MU 판단의 축이다.</li>
+<li><strong>SCA backlog 품질</strong>: RPO <strong>~$100B</strong> · floor 커버 매출 ~25%(<strong>런레이트의 ~10%</strong>) · 가격밴드 계약 ~40%. <strong>이번 주 보강</strong>: TrendForce가 2027 병목 해소 요인으로 *&quot;LTA 하의 더 안정적인 메모리 공급&quot;*을 명시 — <strong>floor(하방 보호)와 ceiling(상방 cap)이 같은 계약의 양면</strong>임을 제3자가 재확인.</li>
+<li><strong>3축 매트릭스(사이클 보정)</strong>: ① Earnings Growth 🟢(YoY +346%) ② Margin 🟢(GM 84.6%) ③ Cash 🟢(FCF +$18.3B) = <strong>3/3</strong>. 🔴 단 이는 <strong>peak ASP 스냅샷</strong>이며 fwd P/E 5.99x 함정과 동형이다. 사이클 국면 = <strong>정점 부근·가격 상승률 감속 시작</strong>.</li>
+</ul>
+<hr>
+</section>
+<section><h2>§E. 경쟁 매트릭스 — 3과점 → <strong>4자 구도 전환의 주</strong></h2>
+<table><thead><tr><th>항목</th><th><strong>MU</strong></th><th><strong>SK하이닉스</strong></th><th><strong>삼성(DS)</strong></th><th><strong>키옥시아</strong></th><th>🆕 <strong>CXMT</strong></th></tr></thead><tbody>
+<tr><td>시총</td><td>$1,040B</td><td>₩1,249조</td><td>₩1,638조</td><td>¥30.7조</td><td>RMB 579B(공모가 기준)</td></tr>
+<tr><td>P/S</td><td>11.52</td><td>9.45</td><td>4.22</td><td>13.11</td><td>—</td></tr>
+<tr><td><strong>HBM 점유</strong></td><td><strong>#3 추격자</strong>(의도적 ~DRAM 점유 ~20% 할당)</td><td><strong>#1</strong>(엔비디아 주력)</td><td>#2</td><td>NAND only</td><td>미진입</td></tr>
+<tr><td>capex</td><td>FY27 &gt;$40B · 美 &gt;$250B/2035 · 히로시마 $9.3B</td><td><strong>₩1,100조 로드맵 · 청주 P&amp;T7 ₩7.09조 증액 · ADR $26.5B 조달</strong></td><td>P4 평택 2026말 풀램프 · P5 2030</td><td>—</td><td><strong>IPO RMB 57.9B 중 대부분 DRAM 라인·기술</strong></td></tr>
+<tr><td>지정학</td><td>美 IDM·CHIPS</td><td>🇰🇷 · 중국산 장비 의존 탈피 중</td><td>🇰🇷 · 복합(DS+파운드리+가전)</td><td>🇯🇵 · Viasat $229M 평결</td><td>🇨🇳 · 국가 지원</td></tr>
+<tr><td>다음 이벤트</td><td>Q4 FY26 ~9월말</td><td><strong>2Q 컨콜 7/29</strong></td><td><strong>2Q 컨콜 7/30</strong></td><td><strong>Q1 FY26 7/31</strong></td><td><strong>STAR 상장 7/27</strong></td></tr>
+</tbody></table>
+<ul>
+<li>🎯 *각주*: 이 표에서 이번 주에 <strong>새로 생긴 열이 CXMT</strong>다. 지금까지 메모리 곡괭이 논리의 토대는 &quot;<strong>신규 진입이 물리적으로 어렵다</strong>(팹·EUV·TSV·3년 리드타임)&quot;였는데, 국가 지원 + 자본시장 조달을 동시에 가진 플레이어에게는 <strong>자본 장벽만 낮아진다</strong>(기술 장벽은 유지). 3과점의 &quot;공급 규율&quot;이 4자 구도에서도 유지되는지가 향후 1~2년 최대 관전 포인트다.</li>
+</ul>
+<hr>
+</section>
+<section><h2>§F. 🔴 Physical AI 수요축 — 이번 주 <strong>강화</strong></h2>
+<h3>chain 재확인</h3>
+<p>메모리 = Physical AI 밸류체인의 <strong>수혜 계층</strong>이라는 사슬은 세 축의 메모리 파일에 근거한다 — 토큰 이코노믹스(GPU당 DRAM 2~3배·GPU 수명 5→7~8년·<strong>로봇 = 2차 수요 파동</strong>), 생산성 다리 사슬(역량 ≠ 생산성 · 전력·로봇 같은 <strong>hard link</strong> 필요 = agentic을 넘는 Physical AI leg), Physical AI 병목 지도(메모리 = seg#4 수혜·단 IREN과 동일 AI-capex 베타).</p>
+<h3>이번 주 실물 시그널</h3>
+<p><strong>① <a href="https://www.therobotreport.com/amd-unveils-kria-module-real-time-control-unified-memory-robots/" target="_blank">AMD unveils Kria module for real-time control, unified memory for robots</a> — The Robot Report / 2026-07-23</strong></p>
+<ul>
+<li><strong>Ryzen AI Embedded X100 + Kria AI SoM</strong>: <strong>CPU–GPU–NPU 통합 메모리 아키텍처</strong>로 데이터 복사를 줄여 인지·센서퓨전·플래닝 지연을 낮춘다. NVIDIA <strong>Thor T5000 대비 실시간 성능 3.4배</strong>, 여유 연산 1.6배, 에이전틱 AI 용량 2.3배 주장. 초기 고객 = Castec(반도체 팹 AMR), <strong>Foundation Robotics(휴머노이드 — Intel·NVIDIA에서 AMD로 이전)</strong>.</li>
+<li>🎯 *각주*: <strong>통합 메모리(unified memory)</strong> = CPU·GPU·NPU가 각자 메모리를 따로 갖는 대신 <strong>하나의 메모리 풀을 공유</strong>하는 구조. 로봇은 지연과 전력이 곧 안전이라 이 구조가 유리하고, <strong>로봇 한 대당 탑재 DRAM 용량이 커진다</strong>. 곧 &quot;로봇 = 메모리 수요&quot;가 마케팅 서사가 아니라 <strong>칩 아키텍처 수준의 요구</strong>로 굳어지는 중이라는 뜻이다.</li>
+</ul>
+<p><strong>② <a href="https://www.trendforce.com/news/2026/07/24/news-sk-hynix-reportedly-hires-for-3d-stacked-dram-on-logic-with-a-u-s-customer-targets-on-device-ai/" target="_blank">SK hynix Reportedly Hires for 3D-Stacked DRAM-on-Logic With a U.S. Customer; Targets On-Device AI</a> — TrendForce / 2026-07-24</strong></p>
+<ul>
+<li>SK하이닉스가 <strong>산호세 미국 법인에서 3D-Stacked DRAM-on-Logic 설계 엔지니어를 처음 채용</strong>하고, <strong>특정 미국 고객과 로직 다이를 공동 설계</strong>한다. PoP(패키지 적층) 대비 인터커넥트가 짧고 I/O 채널이 많아 <strong>지연↓·전력효율↑</strong> — 겨냥은 <strong>온디바이스 AI</strong>, 유력 응용은 <strong>모바일 AP</strong>(애플·퀄컴).</li>
+<li>CDO 안현(TSMC Technology Symposium 2026): *AI 발전이 메모리 병목에 점점 갇히고 있어 점진적 개선이 아닌 새 메모리 아키텍처가 필요하다* — TSMC 첨단 로직 공정을 <strong>HBM4 base die</strong>에 적용하고, 이를 <strong>HBF(High Bandwidth Flash)와 3D-Stacked DRAM-on-Logic으로 확장</strong>할 계획. 삼성도 imec·KU Leuven·Lam Research와 <strong>monolithic 3D DRAM</strong> 공동 논문(단 <strong>시뮬레이션 단계·상용화 계획 미공개</strong>).</li>
+<li>🎯 *각주*: <strong>온디바이스 AI</strong> = 클라우드가 아니라 기기 안에서 추론을 돌리는 것. 로봇·휴대폰·차량이 전부 여기에 속한다. HBM이 데이터센터의 메모리라면, DRAM-on-Logic은 <strong>엣지의 HBM</strong>에 해당한다. thesis의 &quot;Physical AI leg&quot;가 <strong>연구 로드맵을 넘어 채용 공고와 고객 공동설계</strong>로 내려온 것이 이번 주의 질적 변화다.</li>
+</ul>
+<p><strong>③ 로보틱스 자본 유입 (7/21~7/24, The Robot Report)</strong> — 한 주 합계 <strong>~$1.98B</strong></p>
+<table><thead><tr><th>건</th><th>금액</th><th>비고</th></tr></thead><tbody>
+<tr><td>ATOMS(Uber 공동창업자 신설)</td><td><strong>$1.7B</strong></td><td>단일 라운드로 이번 주 최대</td></tr>
+<tr><td>Humanoid (U.K.)</td><td>$152M</td><td>Series A</td></tr>
+<tr><td>Holiday Robotics</td><td>$105M</td><td>FRIDAY 휠형 휴머노이드</td></tr>
+<tr><td>Ropedia</td><td>$22M</td><td>로봇 학습용 데이터 수집</td></tr>
+</tbody></table>
+<p>그 외 NEURA Robotics의 RWTH Aachen &quot;NEURA Gym&quot; 설립(피지컬 AI 학습), Generalist GEN-1 파운데이션 모델의 엔드이펙터 확장, Generative Bionics 전신 촉각 휴머노이드.</p>
+<p><strong>④ 곡괭이 소유자의 진술</strong> — 최태원 SK그룹 회장: *&quot;AI 에이전트, 피지컬 AI 로봇이 실제로 메모리 칩을 아주 많이 필요로 한다&quot;* (§C 인용).</p>
+<h3>🔴 chain 무결성 판정 + 반대 증거</h3>
+<ul>
+<li><strong>THESIS-VALID 유지 — 이번 주 강화.</strong> 근거 = 아키텍처(AMD 통합메모리·SK DRAM-on-Logic) + 자본(로보틱스 ~$1.98B/주) + 당사자 진술이 <strong>동시에</strong> 나왔다.</li>
+<li>🔴 <strong>반대 증거(기재 의무)</strong>: TrendForce는 <strong>스마트폰 생산 −15~20%(2026)·2027도 감소</strong>, <strong>노트북 −10%(2026)</strong>로 본다. 온디바이스 AI는 <strong>아직 소비자 bit 수요를 살려내지 못했다</strong> — 즉 Physical AI 수요는 현재 <strong>서사와 아키텍처 단계</strong>이지 <strong>출하 물량</strong>은 아니다. 이 간극이 좁혀지는지가 섹터③의 실질 관측점이다.</li>
+<li>🔴 <strong>AI-capex 상관 경고</strong>: <strong>DRAM ETF와 IREN은 같은 AI-capex 사이클 베타 → 동방향</strong>(분산 아님). 이번 주 공통 동인이 실제로 관측됐다 — Meta 데이터센터 $12.3B 회사채 수요 부진(7/24)은 <strong>메모리 수요의 상류인 DC 조달</strong>에 마찰이 생겼다는 뜻이고, 두 자산에 동시에 작용한다.</li>
+</ul>
+<hr>
+</section>
+<section><h2>§G. 공급·사이클 국면</h2>
+<h3>ASP 방향 — 🟢 스팟 상승 지속</h3>
+<p><a href="https://www.dramexchange.com/" target="_blank">DRAMeXchange</a> 2026-07-24 18:10 (GMT+8):</p>
+<table><thead><tr><th>품목</th><th>Session Average</th><th>Change</th></tr></thead><tbody>
+<tr><td>DDR5 16Gb (2Gx8) 4800/5600</td><td>50.833</td><td><strong>+0.66%</strong></td></tr>
+<tr><td>DDR4 16Gb (2Gx8) 3200</td><td>83.250</td><td><strong>+1.37%</strong></td></tr>
+<tr><td>DDR4 8Gb (1Gx8) 3200</td><td>42.143</td><td><strong>+1.31%</strong></td></tr>
+<tr><td>DDR3 4Gb 1600/1866</td><td>13.429</td><td>+0.89%</td></tr>
+<tr><td>DDR5 / DDR4 eTT</td><td>23.620 / 11.525</td><td>0.00%</td></tr>
+</tbody></table>
+<ul>
+<li><strong>계약가</strong>: 서버 DRAM 3Q26 <strong>+13~18% QoQ</strong>(LTA가 상단 cap · TrendForce 7/9) · SLC NAND 2H26 <strong>+120~170%</strong>(7/13).</li>
+<li>🎯 *각주*: <strong>스팟(현물)</strong> 은 소량 즉시 거래, <strong>계약가</strong>는 대형 고객과의 분기 협상가다. 주가는 −8.75% 빠졌는데 스팟 4개 품목이 전부 올랐다 = <strong>이번 주 급락은 가격 붕괴가 아니다</strong>. 단 스팟 시장은 얇고 <strong>후행</strong>한다는 한계를 함께 기억해야 한다.</li>
+</ul>
+<h3>재고 · capex</h3>
+<ul>
+<li><strong>재고</strong>: NAND 제조사는 lean 유지, <strong>모듈 업체만 소비자 수요 약세로 누적</strong>(TrendForce 7/21).</li>
+<li>🔴 <strong>capex = 증액 러시가 공시로 확정된 주</strong>: SK하이닉스 청주 P&amp;T7 <strong>₩7.09조 증액</strong>(7/22 이사회) + ₩1,100조 로드맵 / MU 미국 &gt;$250B(2035) + 히로시마 $9.3B / 삼성 P4 2026말·P5 2030 / <strong>CXMT IPO 자금 대부분이 DRAM 라인·기술</strong>. 팹 리드타임 3년 → <strong>산출 도래 = 2028</strong>.</li>
+<li><strong>데이터센터 건설투자 프록시</strong>: macro-weekly §11(<code>PROFCONS</code>)이 owner — 본 실행에서는 재수집하지 않았고 인용 가능한 당주 결과가 없어 <strong>미기재</strong>.</li>
+</ul>
+<h3>🔴 사이클 위치 판정</h3>
+<p><strong>피크 부근 · 상승 지속 — 단 이번 주에 사이클에 처음으로 &quot;만기일&quot;이 붙었다.</strong></p>
+<ul>
+<li>rollover 신호는 <strong>없다</strong>(스팟 4/4 상승·계약가 3Q26 두 자릿수 인상·제조사 재고 lean).</li>
+<li>그러나 (a) TrendForce <strong>NAND 2H27 수급 플러스 전환</strong> (b) 중국 NAND bit 점유 <strong>~19%</strong> (c) <strong>CXMT 상장 자금 실탄화</strong> (d) <strong>3사 동시 증설 증액 → 2028 산출</strong>이 한 주에 겹쳤다. 각각은 약한 신호지만 <strong>완화 시점의 좌표를 처음으로 구체화</strong>했다.</li>
+<li>반대 축: TrendForce Tom Hsu는 <strong>2028 공급 증가분 대부분을 시장이 흡수</strong>한다고 보고, Evercore는 <strong>추론 전환으로 병목이 오히려 심화</strong>한다고 본다. <strong>DRAM과 NAND는 시계가 다르다</strong>(NAND 2H27 완화 / DRAM 2028 흡수 전망)는 점이 이번 주 데이터의 핵심 뉘앙스다.</li>
+</ul>
+<hr>
+</section>
+<section><h2>§H. 밸류 (사이클 위치)</h2>
+<ul>
+<li><strong>MU</strong>: P/S(TTM) <strong>11.52x</strong> · trailing P/E 20.81x · <strong>forward P/E 5.99x</strong> · beta 2.14 · 공매도 2.81% · 52주 [$103.38, $1,255.0].</li>
+<li>🔴 <strong>fwd P/E 5.99x = 피크이익 함정</strong>의 전형이다. 사이클 정점의 이익을 분모에 넣으면 멀티플이 착시로 낮아진다. <strong>정상화(normalized) 이익 기준</strong>으로 봐야 하며, peak 스냅샷을 적정가 산출에 쓰지 않는다.</li>
+<li><strong>사이클 정상화 관찰 지표</strong>: P/S가 7/17 <strong>10.62x</strong>로 &lt;10x 사정권에 처음 접근했으나, 이번 주 주가 +8.5%로 <strong>11.52x로 재후퇴</strong>(&lt;10x까지 −13.2% ≈ $799). <strong>관찰 지표 0.5/2</strong>(사이클 정상화 ❌ 미충족 · HBM 점유 🟡 PARTIAL — MU-Memory §7 cross-ref, 재정의 ❌).</li>
+<li><strong>DRAM ETF</strong>: 설정(2026-04-02) 이후 시장가 <strong>+161.51%</strong> · NAV <strong>+156.30%</strong>(6/30 기준) · 보수 0.65% · 30일 SEC 수익률 0.56%. 설정후 밴드[$26.14, $81.34]의 <strong>49% 지점</strong>.</li>
+<li>🎯 *각주*: ETF는 개별 종목 시나리오를 그대로 대입할 수 없다. NAV는 <strong>한국 2강 48.82% + MU 26.58% + NAND/스토리지 ~13% + 소액 분산</strong>의 합성이며, 아래 시나리오는 <strong>MU 단일주</strong> 기준이지 ETF 기준이 아니다.</li>
+</ul>
+<p><strong>MU 5년 시나리오(MU-Memory §5 owner)</strong>: 🟢 Bull 2.2x(25%) / 🟡 Base 1.15x(40%) / 🔴 Bear 0.45x(35%·FY23형 ASP 붕괴) → <strong>기댓값 1.17x</strong>.</p>
+<hr>
+</section>
+<section><h2>§I. ⚠️ Thesis 리스크 신호 매트릭스</h2>
+<table><thead><tr><th>신호</th><th>판정</th><th>근거(이번 주)</th></tr></thead><tbody>
+<tr><td><strong>섹터① 메모리 ASP 사이클 rollover</strong></td><td>⚪ <strong>미발동</strong> (🟡 시계 등장)</td><td>스팟 4/4 상승·계약가 3Q26 +13~18%·제조사 재고 lean. <strong>단 TrendForce NAND 2H27 완화 시점 최초 명시</strong></td></tr>
+<tr><td><strong>섹터② HBM 공급과잉·수요 파탄</strong></td><td>⚪ <strong>미발동</strong></td><td>HBM ASP 하락·빅테크 capex 둔화 증거 0. 반대 방향 증거가 더 많음(Evercore=추론 전환으로 병목 심화·3사 증설은 후공정/HBM 방향)</td></tr>
+<tr><td><strong>섹터③ 🔴 Physical AI 투자 모멘텀 reversal</strong></td><td>🟢 <strong>미발동 · 이번 주 강화</strong></td><td>로보틱스 펀딩 ~$1.98B/주 · AMD 로봇 통합메모리 플랫폼 · SK 온디바이스 3D DRAM-on-Logic 채용 · 최태원 직접 진술. <strong>⚠️ 반대 증거 = 스마트폰 −15~20%·노트북 −10%(2026)로 소비자 bit 수요는 아직 미회복</strong></td></tr>
+<tr><td><strong>섹터④ 한국 2강 구조 충격</strong></td><td>🟡 <strong>근접도 상승</strong></td><td><strong>CXMT STAR 상장(7/27·RMB 57.9B 조달·H1&#x27;26 매출 +612~677%)이 중국 추격을 자금화.</strong> 단 수출통제 강화·재해·점유 실측 악화는 무증거. 한국 2강은 중국산 장비 의존 탈피 중(완화 요인)</td></tr>
+</tbody></table>
+<p><strong>MU 밸류·HBM 관찰 지표</strong>(MU-Memory §7 owner · 분석 관점): ① 사이클 정상화 = ❌ 미충족(P/S 11.52x·재후퇴) ② HBM 점유 입증 = 🟡 PARTIAL(HBM4 $1B 공시·design win은 입증, 의도적 ~20% 할당이라 격차축소 잣대는 무효·HBM 단독 마진 미공시) → <strong>0.5/2</strong>. 🔺 보조 = SCA 구조신호는 🟢 부분 입증 유지(단 이번 주 데이터는 floor보다 <strong>ceiling(상방 cap)</strong> 쪽을 재확인).</p>
+<hr>
+</section>
+<section><h2>§J. 종합 + thesis 재평가</h2>
+<h3>thesis 상태</h3>
+<ul>
+<li><strong>chain = THESIS-VALID (이번 주 강화)</strong>. Physical AI → 메모리 수요 사슬이 아키텍처·자본·당사자 진술 세 층위에서 동시에 보강됐다. 다만 <strong>아직 출하 물량이 아니다</strong>(소비자 시장 역성장)는 유보가 붙는다.</li>
+<li><strong>MU 밸류·타이밍 = UNFAVORABLE (재악화)</strong>. 주가 +8.5% WoW로 P/S가 10.62x → 11.52x로 되밀렸다.</li>
+</ul>
+<h3>이번 주가 바꾼 것</h3>
+<p>1. <strong>경쟁 구조</strong>: 3과점 → <strong>자본을 쥔 4자 구도</strong>(CXMT 7/27). 곡괭이 논리의 토대였던 &quot;신규 진입 난이도&quot; 중 <strong>자본 장벽 축이 약해졌다</strong>.</p>
+<p>2. <strong>사이클 시계</strong>: &quot;언제까지 부족한가&quot;에 <strong>2H27(NAND) / 2028(DRAM 흡수 전망)</strong> 이라는 좌표가 처음 붙었다.</p>
+<p>3. <strong>공급 의사결정</strong>: SK하이닉스가 진행 중 투자를 <strong>증액하고 일정을 당겼다</strong>(청주 P&amp;T7). 지금의 수요 강도를 증명하는 동시에 2028 공급을 키운다.</p>
+<p>4. <strong>Physical AI leg</strong>: 로드맵에서 <strong>채용 공고·고객 공동설계·제품 출시</strong>로 내려왔다.</p>
+<h3>🔴 자기 반박으로 판정이 수정된 지점</h3>
+<p><strong>§G 사이클 판정</strong> — &quot;스팟 상승 = rollover 아님&quot;은 유지하되, TrendForce 2H27 + CXMT 실탄화 + 3사 동시 증액을 합치면 <strong>&quot;사이클에 만기일이 생겼다&quot;</strong>로 강도를 조정한다. 스팟은 얇고 후행하는 시장이라 &quot;펀더 건재&quot;의 증거로 쓰기엔 약하다.</p>
+<h3>🔴 AI-capex 상관 (상시)</h3>
+<p><strong>DRAM ETF와 IREN은 동일 AI-capex 사이클 베타 → 동방향</strong>이며 서로 헤지가 되지 않는다. 이번 주에는 그 공통 동인이 눈에 보이는 형태로 나타났다 — <strong>Meta 데이터센터 $12.3B 회사채의 수요 부진</strong>(BlackRock 주관, 7/24)은 AI 인프라 <strong>조달 채널의 마찰</strong>이고, 상류가 막히면 메모리 수요와 neocloud가 <strong>함께</strong> 압박받는다.</p>
+<hr>
+</section>
+<section><h2>⏭️ 다음 주 watch</h2>
+<table><thead><tr><th>일정</th><th>이벤트</th><th>볼 것</th></tr></thead><tbody>
+<tr><td><strong>7/27(월)</strong></td><td><strong>CXMT STAR 상장 데뷔</strong></td><td>첫날 주가·조달 확정액(그린슈)·중국 증설 코멘트</td></tr>
+<tr><td><strong>7/29(화) 09:00 KST</strong></td><td><strong>SK하이닉스 2Q26 컨콜</strong></td><td>HBM 점유·HBM4 램프·청주 P&amp;T7 상세·2027 공급 가이던스·LTA 구조</td></tr>
+<tr><td><strong>7/30(목) 10:00 KST</strong></td><td><strong>삼성전자 2Q26 확정실적 컨콜</strong></td><td><strong>DS부문 메모리 매출·영업이익 분해</strong>·HBM 진척·P4/P5 capex</td></tr>
+<tr><td><strong>7/31(금) 15:30 JST</strong></td><td><strong>키옥시아 Q1 FY26</strong></td><td>NAND 사이클 cross-check·Viasat 평결 회계 처리</td></tr>
+<tr><td>상시</td><td>DRAMeXchange 스팟 · TrendForce 계약가</td><td>섹터① 방향</td></tr>
+<tr><td>~9월말</td><td>MU Q4 FY26</td><td>SCA 매출 비중·HBM 단독 숫자·ASP 둔화폭</td></tr>
+</tbody></table>
+<hr>
+</section>
+<section><h2>📚 출처</h2>
+<p><strong>1차 공시</strong> — <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0000723125&amp;type=&amp;dateb=&amp;owner=include&amp;count=40" target="_blank">MU SEC EDGAR CIK 0000723125</a> · <a href="https://www.sec.gov/Archives/edgar/data/723125/000196922326000797/0001969223-26-000797-index.htm" target="_blank">Form 144 Mehrotra</a> · <a href="https://www.sec.gov/Archives/edgar/data/723125/000195004726007269/0001950047-26-007269-index.htm" target="_blank">Form 144 Allen</a> · <a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260722800829" target="_blank">DART SK하이닉스 신규시설투자 rcpNo 20260722800829</a> · <a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260722800178" target="_blank">DART SK하이닉스 풍문해명 rcpNo 20260722800178</a> · <a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260715800456" target="_blank">DART SK하이닉스 IR rcpNo 20260715800456</a> · <a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260723800875" target="_blank">DART 삼성 풍문해명 rcpNo 20260723800875</a> · <a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260707800015" target="_blank">DART 삼성 IR rcpNo 20260707800015</a> · <a href="https://www.kioxia-holdings.com/en-jp/ir.html" target="_blank">키옥시아 IR</a> · <a href="https://www.roundhillinvestments.com/etf/dram/" target="_blank">Roundhill DRAM ETF</a> · <a href="https://investors.micron.com/" target="_blank">Micron IR</a></p>
+<p><strong>전용 매체·리서치</strong> — <a href="https://www.dramexchange.com/" target="_blank">DRAMeXchange</a> · <a href="https://www.trendforce.com/presscenter/news/20260721-13148.html" target="_blank">TrendForce NAND 2027</a> · <a href="https://www.trendforce.com/news/2026/07/24/news-chinas-dram-maker-cxmt-to-debut-jul-27-ipo-to-raise-rmb-57-9b-largest-on-star-market-since-launch/" target="_blank">TrendForce CXMT IPO</a> · <a href="https://www.trendforce.com/news/2026/07/24/news-sk-hynix-reportedly-hires-for-3d-stacked-dram-on-logic-with-a-u-s-customer-targets-on-device-ai/" target="_blank">TrendForce SK하이닉스 DRAM-on-Logic</a> · <a href="https://www.trendforce.com/news/2026/07/23/news-sk-hynix-reportedly-eyed-as-potential-partner-to-operate-intels-ohio-fab-after-denying-acquisition-plans/" target="_blank">TrendForce 인텔 오하이오 운영 파트너설</a> · <a href="https://www.eetimes.com/sk-hynix-nasdaq-debut-shows-global-memory-expansion-race/" target="_blank">EE Times SK하이닉스 나스닥 데뷔</a> · <a href="https://semiengineering.com/new-nonvolatile-memory-winners-emerge/" target="_blank">SemiEngineering 신형 비휘발성 메모리</a> · <a href="https://semianalysis.com/?sort=new" target="_blank">SemiAnalysis</a></p>
+<p><strong>Physical AI(§F)</strong> — <a href="https://www.therobotreport.com/" target="_blank">The Robot Report</a> · <a href="https://www.therobotreport.com/amd-unveils-kria-module-real-time-control-unified-memory-robots/" target="_blank">AMD Kria 통합메모리</a></p>
+<p><strong>시장·매체</strong> — <a href="https://www.marketwatch.com/story/why-micron-and-other-major-chip-stocks-are-falling-even-as-the-rest-of-tech-holds-up-506851dc" target="_blank">MarketWatch 반도체 급락 원인</a> · <a href="https://stocktwits.com/news-articles/markets/equity/mu-skhy-stx-sndk-wdc-memory-stocks-tumble-evercore-analyst-demand-supply-2027/cZZpTcwR7zT" target="_blank">Stocktwits/Evercore</a> · <a href="https://www.bloomberg.com/news/articles/2026-07-24/s-p-500-futures-steady-as-big-tech-rebounds-oil-dips-below-100" target="_blank">Bloomberg 나스닥 급락</a> · <a href="https://www.bloomberg.com/news/articles/2026-07-24/blackrock-kicks-off-12-3-billion-bond-sale-for-meta-data-center" target="_blank">Bloomberg BlackRock/Meta DC 회사채</a> · <a href="https://247wallst.com/investing/2026/07/24/sk-hynix-and-micron-sink-6-sandisk-drops-9-as-korea-chip-selloff-hits-u-s-memory-stocks/" target="_blank">24/7 Wall St. 한국발 매도</a> · <a href="http://www.etf.com/sections/features/investors-pour-25b-semiconductor-etfs-dram-plunges-40" target="_blank">etf.com 반도체 ETF 유입</a></p>
+<p><strong>X</strong> — <a href="https://x.com/MicronTech" target="_blank">@MicronTech</a> · <a href="https://x.com/TrendForce" target="_blank">@TrendForce</a> · <a href="https://x.com/Dylan522p" target="_blank">@Dylan522p</a> · $MU / $DRAM 캐시태그</p>
+<p><strong>시세</strong> — yfinance(2026-07-24 종가 기준·14티커)</p>
+<h3>⚠️ 수집 상태</h3>
+<ul>
+<li><strong>AnandTech = 수집 실패</strong> — 편집 사이트가 종료되어 forums.anandtech.com으로 리다이렉트(뉴스 커버 불가·3회 확인). 반도체 매체 커버는 SemiEngineering·EE Times·TrendForce로 대체.</li>
+<li><strong>X 7일 전수 cover 미달성</strong> — X 타임라인 가상화로 스크롤 누적이 반복 실패(18~25회 시도), $MU live 5건·top 6건만 확보. 정직 표기하며, X는 방화벽 규칙상 &quot;🟡 X 신호&quot;로만 사용했다.</li>
+<li><strong>Micron IR 상세 페이지 = Akamai 봇 검증 차단</strong>(3회 재시도) — IR 홈 목록으로 &quot;7/18~25 신규 press 0건&quot;은 확인.</li>
+<li><strong>news-headlines RSS 신선도</strong>: Bloomberg ✅ 2026-07-24 / <strong>WSJ 🔴 stale(2025-01-24~27 캐시 반환 → 미사용)</strong> / Reuters 🔴 deprecated(전 UA 401) / MarketWatch·AP ⚠️ date 필드 공백이나 본문으로 당주 검증.</li>
+</ul>
+<hr>
+<p>*본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.*</p></section>
+</div>
+</body>
+</html>
