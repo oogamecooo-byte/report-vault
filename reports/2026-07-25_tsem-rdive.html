@@ -1,0 +1,728 @@
+<title>TSEM R-Dive — 제품·서비스 이해 + 수익모델 정밀 해부 — 2026-07-25</title>
+<meta name="robots" content="noindex, nofollow">
+
+<meta name="vault-stage" content="Dive">
+<meta name="vault-skill" content="R-Dive">
+<meta name="vault-topic" content="TSEM">
+<meta name="vault-date" content="2026-07-25">
+<meta name="description" content="Tower Semiconductor 수익모델 R-Dive — 웨이퍼 one-time 주력 + 200mm legacy→300mm 실리콘 포토닉스 믹스 시프트. 2026년 SiPho 선수금이 capacity reservation이라는 신생 축을 열었다.">
+<style>
+  :root{ --bg:#EBE4D3; --card:#FDF6E3; --ink:#1f2328; --muted:#6b6456; --line:#e0d8c4;
+         --red:#c0392b; --yel:#8a6d00; --grn:#1f8a4c; --blu:#2563a8; }
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);margin:0;
+       font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+       line-height:1.62;font-size:15px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:28px 20px 64px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+        padding:26px 30px;margin:18px 0;box-shadow:0 1px 3px rgba(60,50,20,.05);page-break-inside:avoid}
+  h1{font-size:25px;margin:.1em 0 .15em;letter-spacing:-.01em}
+  h2{font-size:20px;margin:1.5em 0 .5em;padding-bottom:.28em;border-bottom:2px solid var(--line)}
+  h3{font-size:16.5px;margin:1.3em 0 .4em;color:#3a3428}
+  h4{font-size:15px;margin:1.1em 0 .3em;color:#4a4432}
+  .sub{color:var(--muted);font-size:13.5px;margin:.2em 0 0}
+  .summary{background:#f6efd8;border-left:5px solid var(--red)}
+  .summary li{margin:.45em 0}
+  table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:13.4px;
+        background:#fffdf6;border:1px solid var(--line);border-radius:8px}
+  th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  th{background:#efe7d0;font-weight:700}
+  td.c,th.c{text-align:center} td.r,th.r{text-align:right}
+  .tbl-scroll{overflow-x:auto}
+  .red{color:var(--red);font-weight:700} .yel{color:var(--yel);font-weight:700} .grn{color:var(--grn);font-weight:700}
+  blockquote{margin:.7em 0;padding:.55em 1em;background:#f3ecd6;border-left:4px solid var(--line);
+             border-radius:0 6px 6px 0;color:#4a4432;font-size:13.6px}
+  .gloss{background:#f1ead4;border:1px dashed #d3c9ae;border-radius:8px;padding:10px 14px;margin:.7em 0;font-size:13px}
+  .gloss b{color:#3a3428}
+  .dd-fig,.fig{background:#ffffff;border:1px solid #e8e1cf;border-radius:10px;padding:14px 12px 8px;margin:1em 0}
+  .dd-fig .cap,.fig .cap{font-size:12.5px;color:var(--muted);margin:0 0 6px;text-align:center}
+  .foot{color:var(--muted);font-size:12.5px;text-align:center;margin-top:26px;font-style:italic}
+  code{background:#efe7d0;padding:1px 5px;border-radius:4px;font-size:12.5px}
+  a{color:var(--blu)}
+  ul{padding-left:1.2em} li{margin:.3em 0}
+  ol{padding-left:1.3em}
+  @media print{ body{background:#ffffff} .card{background:#ffffff;box-shadow:none} }
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+</style>
+
+<div class="wrap">
+
+<div class="card">
+  <h1>TSEM R-Dive — 제품·서비스 이해 + 수익모델 정밀 해부</h1>
+  <p class="sub"><b>Tower Semiconductor Ltd.</b> (NASDAQ / TASE: TSEM) · 이스라엘 Migdal Haemek · 2026-07-25 · 단독 모드(선행)</p>
+  <p class="sub">1차 자료: <a href="https://www.sec.gov/Archives/edgar/data/928876/000117891326002318/zk2635149.htm">20-F FY2025 (2026-04-30)</a> · <a href="https://www.sec.gov/Archives/edgar/data/928876/000117891326003477/zk2635682.htm">6-K 2026-07-14 Japan 확장</a> · <a href="https://www.sec.gov/Archives/edgar/data/928876/000117891326002607/exhibit_99-1.htm">6-K 2026-05-13 Q1'26 실적</a></p>
+  <blockquote>Tower는 미국 SEC에 10-K/10-Q가 아니라 <b>20-F(연차) + 6-K(수시)</b>를 내는 이스라엘 FPI(외국 민간발행인)다. 내부자 Form 4 의무가 없어 인사이더 거래 신호는 구조적으로 빠진다. 공식 X(트위터) 계정은 <b>존재하지 않는다</b>(2026-07-25 자사 홈페이지 푸터 재확인 — LinkedIn·Facebook·YouTube·Weixin만).</blockquote>
+</div>
+
+<div class="card summary">
+  <h2 style="border:none;margin-top:0">📄 한 장 요약</h2>
+  <ul>
+    <li><b>아키타입 = ⑥ 하드웨어 one-time(웨이퍼 ASP × 출하량, 선적 시점 인식)이 과금 메커니즘 100%.</b> 그 위에 <b>① 믹스 시프트</b>(200mm legacy 아날로그 → 300mm 실리콘 포토닉스)가 thesis 엔진으로 얹혀 있고, 2026년부터 <b>④ capacity reservation(선수금)</b>이 신생 축으로 붙었다.</li>
+    <li><span class="red">🔴 수익모델이 실제로 바뀌고 있다.</span> 2026년 1분기에 실리콘 포토닉스 고객들로부터 <b>선수금 $290M을 현금으로 받았다.</b> 대차대조표 고객선수금이 3개월 만에 $27.5M → <b>$342.7M</b>(TTM 매출의 21.1%). 웨이퍼를 만들어 파는 회사에서 <i>capa를 팔고 돈을 먼저 받는</i> 회사로 한 칸 이동했다.</li>
+    <li><span class="red">🔴 운영 레버리지가 강하게 발현 중.</span> 분기 증분 매출총이익률이 2025년 내내 <b>49~55%</b>, Q1'26은 전년 대비 <b>68%</b> — 정상 GM(23~27%)의 2.5배. GM은 20.4%(Q1'25) → <b>26.8%(Q1'26)</b>로 5분기 연속 상승. 매출↑ + 단가지표↑ = 가격 압박 신호 없음.</li>
+    <li><span class="red">🔴 가장 치명적 함정 = 백로그 품질(C.4).</span> 20-F에 backlog·RPO 공시가 <b>하나도 없고</b>, 회사 스스로 6-K 위험요인에서 <i>"limited order backlog"</i>라고 쓴다. 2027년 SiPho 계약 매출 <b>$1.3B</b>은 CEO 발언·보도자료 수치일 뿐 공시된 계약잔고가 아니다. 유일한 실물 담보가 위의 선수금이다.</li>
+    <li><span class="red">🔴 두 번째 치명 함정 = 현금 전환(C.10).</span> FY2025 순이익 $220.5M인데 <b>FCF는 −$48.9M.</b> capex/매출이 3년 연속 28~31%. TTM FCF $128.9M도 고객 선수금 $285M을 빼면 <b>≈ −$156M.</b> 여기에 일본 <b>$3B</b>(보조금 $1B 차감 후) 투자가 얹힌다 — 곡괭이 질은 <b>(B) 자본갈증형</b> 성향.</li>
+    <li><span class="yel">🟠 고객 집중 + 단일 상대방 얽힘(C.6).</span> 상위 8개사 = 매출 50%. 최대 고객 NTCJ(뉴보톤 재팬)는 동시에 ①매출 11% 고객 ②일본 합작사 TPSCo 49% 파트너 ③일본 팹 건물 임대인 ④2027년 4월 Fab5↔Fab7 교환 상대다.</li>
+    <li><span class="yel">🟠 capa의 상당 부분이 남의 팹 안에 있다.</span> 이탈리아 Fab 10은 ST 소유 시설의 클린룸 1/3 사용권이고 <b>운영도 ST가 한다.</b> 인텔 뉴멕시코 corridor는 Tower가 최대 $300M 장비를 넣기로 했는데 <b>인텔이 이행 거부 의사를 밝혀 조정 절차 중</b>이다.</li>
+    <li><span class="red">🔴 밸류에이션 맥락 — P/S 16.3x는 TTM에 매겨진 게 아니다.</span> 7월 14일 회사가 2028년 목표를 매출 $2.8B/순이익 $750M → <b>$3.6B / $1.2B</b>(순이익률 33%)로 62일 만에 상향했다. 현 시총 $26.4B는 그 2028 목표 기준 <b>P/S 7.3x · P/E 22.0x</b>. 시장가는 "성숙노드 파운드리"가 아니라 <b>"2028년까지 매출 2.3배·순이익 5.4배 실행"</b>을 이미 전제한다.</li>
+    <li><b>thesis 함의:</b> 오늘의 실체는 마진 23~27%·FCF 마이너스·계약잔고 미공시의 자본집약 웨이퍼 위탁생산이다. 강세 논리는 SiPho라는 <i>단일 플랫폼</i>의 희소성이 (a) 선수금 → (b) 가동률·믹스 → (c) 운영 레버리지로 전환되는 사슬에 걸려 있고, 그 사슬은 지금 실제로 작동하고 있으나 <b>공시 backlog로 검증되지 않는다.</b></li>
+  </ul>
+</div>
+
+<div class="card">
+  <blockquote><b>배경.</b> Tower는 자기 브랜드 칩을 팔지 않는 <b>순수 위탁생산 전문(pure-play) 파운드리</b>다. 다만 TSMC·삼성처럼 선단 노드(2nm급)를 좇지 않고, 0.35~0.13µm(200mm)와 65nm(300mm)라는 <b>성숙 노드에서 아날로그·고주파·전력·센서·광(光) 특수공정</b>만 판다. 광 소자(도파로·변조기)는 물리적으로 미세화가 필요 없어 0.18µm·65nm가 오히려 최적이라는 것이 이 전략의 근거다. 팹은 이스라엘 1(Fab 2), 미국 2(Fab 3 뉴포트비치·Fab 9 샌안토니오), 일본 2(Fab 5 도나미·Fab 7 우오즈, 합작사 TPSCo 51%), 이탈리아 1(Fab 10 아그라테, ST 시설 공유) = 6개.</blockquote>
+  <div class="gloss">
+    <b>🔤 파운드리(foundry)</b> — 남의 칩 설계를 받아 대신 웨이퍼를 만들어 주는 사업.&nbsp;
+    <b>🔤 pure-play</b> — 자기 제품이 없어 고객과 경쟁하지 않는 파운드리.&nbsp;
+    <b>🔤 웨이퍼</b> — 회로를 새기는 원형 실리콘 판. 200mm(8인치)·300mm(12인치)로 부르며 300mm가 한 장당 칩 수가 2.25배 많다.&nbsp;
+    <b>🔤 노드(µm/nm)</b> — 회로 선폭 세대. 작을수록 최신이지만, 아날로그·광 소자는 작다고 좋은 게 아니다.
+  </div>
+</div>
+
+<div class="card">
+  <h2>Part A — 아키타입 분류</h2>
+  <p>Tower는 단일 아키타입에 깔끔히 들어가지 않는 <b>3중 복합형</b>이다. Part B.0의 제품 실체로 검증한 확정:</p>
+  <div class="tbl-scroll"><table>
+    <tr><th style="width:17%">구분</th><th style="width:20%">아키타입</th><th>근거</th><th class="c" style="width:14%">자동 점검 함정</th></tr>
+    <tr><td><b>주</b><br>(과금 메커니즘 100%)</td><td><b>⑥ 하드웨어 one-time형</b></td><td>웨이퍼를 <b>장당 가격 × 출하량</b>으로 판매. ASC 606상 단일 이행의무, <b>선적 시점 인식</b>(20-F Note 2N). 구독·이연 아님</td><td class="c">C.2 · C.9</td></tr>
+    <tr><td><b>강한 부</b><br>(thesis 엔진)</td><td><b>① 믹스 시프트형</b></td><td>저마진 150mm legacy 폐지(2025 Q1 Fab 1 중단) → 300mm SiPho/SiGe. GM 20.4%→26.8% 5분기 연속 상승</td><td class="c">C.3 · C.11 · C.12</td></tr>
+    <tr><td><b>신생 부</b><br>(2026~)</td><td><b>④ 백로그·capacity reservation형</b></td><td>2028년까지 capa 예약 대가로 <b>선수금 수령</b>(20-F Item 4A·5D), Q1'26 $290M. 2027 SiPho 계약 $1.3B(CEO 발언)</td><td class="c">C.4 · C.5 · C.10</td></tr>
+  </table></div>
+  <blockquote>8 과금유형의 정의·라벨은 Deep-Dive §D.0.3이 owner이며, 위 6 아키타입은 그것을 실전 패턴으로 묶은 R-Dive 고유 분류다.<br><b>시간지평 유의</b>: ⑥은 <i>현재</i> 실체, ①은 <i>진행 중</i> 전환, ④는 <i>막 시작된</i> 구조 변화다. 밸류에이션(P/S 16.3x)은 ①과 ④가 완주한 <b>미래 아키타입</b>에 매겨져 있다.</blockquote>
+</div>
+
+<div class="card">
+  <h2>Part B.0 — 제품·서비스·기술 이해</h2>
+
+  <h3>① 실리콘 포토닉스 (SiPho) — 성장 엔진</h3>
+  <p><b>무엇(What)</b> 빛으로 데이터를 나르는 광 부품을 실리콘 칩 한 장에 통째로 집어넣는 파운드리 공정 플랫폼. 형태는 "고객 설계 → Tower가 가공한 웨이퍼"이며, 제품군 내 위치는 명백한 <b>성장 축</b>이다.</p>
+  <p><b>작동·구성(How)</b> 예전에는 광 트랜시버 안에 도파로·변조기·광검출기를 각각 별개 부품으로 조립했다. SiPho는 이것들을 CMOS 장비로 실리콘 한 칩 위에 만들어 붙인다. Tower 플랫폼의 구성요소는 저손실 실리콘·실리콘질화물 도파로, 게르마늄 PIN·애벌런치 광검출기, PIN 기반 위상변조기·MZM(마흐젠더 변조기), 온칩 히터, 레이저를 얹기 위한 범프 금속층이다. InP(인화인듐) 레이저를 칩에 임베드하는 옵션과 3D-IC 하이브리드 웨이퍼 본딩 옵션도 제공한다.</p>
+  <div class="gloss"><b>🔤 트랜시버</b> — 전기 신호를 빛으로, 빛을 전기로 바꿔 광케이블에 태우는 장치.&nbsp; <b>🔤 도파로(waveguide)</b> — 칩 위에 낸 "빛이 다니는 길".&nbsp; <b>🔤 변조기(modulator)</b> — 빛의 세기·위상을 흔들어 0과 1을 싣는 소자.&nbsp; <b>🔤 CPO(co-packaged optics)</b> — 광 부품을 스위치 칩 바로 옆에 같이 패키징해 전기 배선 거리를 없애는 차세대 방식.</div>
+  <p><b>고객·용도(Who·Why)</b> 광 트랜시버·데이터센터 인터커넥트(DCI) 업체. AI 클러스터가 GPU 수만 장을 묶으면서 대역폭과 전력효율이 병목이 되었고, 개별 부품 조립으로는 비용·크기·소비전력을 감당 못 한다. 실제 확인된 고객·협력사: <b>Marvell</b>(코히런트 PIC 누적 <b>500만 개 이상</b> 출하 — <a href="https://ir.towersemi.com/news-releases/news-release-details/tower-semiconductor-and-marvell-ship-over-five-million-coherent">2026-06-18 공동 보도자료</a>), <b>Coherent</b>(양산 공정에서 400Gbps/lane 실리콘 변조기 실증), <b>IQE</b>(InP 에피웨이퍼 다년 공급 계약), <b>Oriole</b>(나노초급 광 회로 스위칭).</p>
+  <p><b>차별점(Edge)</b> 200mm(PH18)와 300mm(PH45) 두 플랫폼을 <b>동시에 양산 중</b>이며 400Gb/s~1.6Tb/s 구간의 선도 플랫폼이라고 20-F가 명시한다. 1.6Tb/s 플랫폼을 양산 램프 중이고 3.2Tb/s와 CPO를 개발·시제품 단계로 두고 있다. 회사가 강조하는 구조적 차별점은 <b>"open" 플랫폼</b> — 경쟁사가 특정 고객에게만 열거나 저물량 시제품으로 묶는 "closed" 공정인 데 반해 전 고객에게 개방한다는 주장이다(<span class="red">회사 주장 — 경쟁사 정책의 1차 확인 불가</span>).</p>
+  <p><b>매출 위치(Where)</b> ❌ <b>미공시.</b> Tower는 단일 보고 세그먼트라 플랫폼별 매출을 공시하지 않는다. 다만 정황은 강하다 — $920M capex 계획의 주 대상, 2026년 선수금 $315M의 귀속처, 2027년 계약 $1.3B의 전액, 일본 $3B 확장의 명시적 목적이 모두 SiPho다.</p>
+
+  <h3>② SiGe BiCMOS — SiPho의 전기 짝</h3>
+  <p><b>무엇</b> CMOS 공정 안에 실리콘게르마늄 바이폴라 트랜지스터를 심어 고속·저잡음·고전압을 동시에 얻는 특수 공정. <b>작동</b> SiGe 박막을 얇게 증착하면 두 세대 앞선 노드에 맞먹는 속도가 나온다 — 20-F 예시: <b>0.18µm SiGe BiCMOS ≈ 90nm RF CMOS 속도</b>. 즉 큰 선폭의 싼 공정으로 작은 선폭의 성능을 낸다. 게다가 최선단 CMOS가 못 다루는 고전압을 지원한다. 0.35/0.18/0.13µm 양산 중이고 최근 <b>65nm SiGe BiCMOS</b>를 추가했다. <b>고객·용도</b> 광 트랜시버의 <b>전기 IC(EIC)</b> — SiPho가 광을, SiGe가 전기를 맡아 한 모듈 안에서 짝을 이룬다. 그 밖에 자동차 레이더, 하드디스크 프리앰프, 전력증폭기·저잡음증폭기. <b>차별점</b> 장비사와 공동으로 고수율 SiGe 툴 역량을 만들었고, 20-F는 이를 근거로 <i>"입증된 SiGe BiCMOS 양산 능력을 갖춘 소수 기업 중 하나"</i>라고 자평한다. <b>매출 위치</b> ❌ 미공시 — 단 $920M capex와 일본 확장 두 트랙 모두에서 SiPho와 <b>나란히 병기</b>되는 유일한 기술이다.</p>
+
+  <h3>③ RF CMOS / RF-SOI — 스마트폰 캐시카우</h3>
+  <p><b>무엇</b> 스마트폰 안테나 스위치와 프론트엔드 모듈을 만드는 고주파 CMOS 공정. 절연막 위에 실리콘을 올린 SOI 기판을 쓴다. <b>작동</b> SOI 기판이 기생 성분을 끊어 벌크 실리콘 대비 손실·격리 특성을 개선한다. 0.18µm·0.13µm·65nm 노드. <b>고객·용도</b> 모바일 RF 프론트엔드 팹리스·IDM. 스마트폰 지원 밴드가 늘수록 스위치 개수가 늘어 물량이 따라온다. <b>차별점</b> "record FOM(성능지수) 안테나 스위치" 주장. 구조적으로 더 중요한 것은 <b>이탈리아 Fab 10(300mm 65nm RF SOI)으로 300mm에 진입</b>했다는 점. <b>매출 위치</b> ❌ 플랫폼별 미공시 — 단 20-F Item 5A가 <b>FY2025 매출 증가 $130M의 주 동인을 Fab 10(아그라테) 양산 개시</b>로 명시한다. 즉 지난해 성장의 상당 부분은 SiPho가 아니라 300mm RF SOI였다.</p>
+
+  <h3>④ 전력·전력관리 IC (Power / PMIC)</h3>
+  <p><b>무엇</b> 전압 조절·배터리 충전·소자 구동용 공정. 저전압 BCD와 고전압(140V Resurf·200V SOI·700V 초고압) 두 갈래. <b>작동</b> 아날로그 CMOS 안에 고전압 LDMOS(항복전압 5·8·12·40·60V)를 통합. 300mm 65nm에서는 5V·3.3V 게이트 BCD 두 플랫폼(항복전압 28V까지). 자체 개발 <b>Y-Flash NVM</b>(최대 16kbit)을 전력관리 칩 안에 심어 판다. <b>고객·용도</b> 아날로그 IC 공급사 — 핸드셋 RF 프론트엔드 전력 제어, 오디오 앰프, 자동차·산업·AC 어댑터·조명. <b>차별점</b> 전력 전용 자체 비휘발성메모리를 가진 몇 안 되는 특수 파운드리. <b>매출 위치</b> ❌ 미공시 — $920M capex 문구의 "차세대 power 및 기타 capa" 부분.</p>
+
+  <h3>⑤ CMOS 이미지센서 + 비이미징센서·MEMS·디스플레이</h3>
+  <p><b>무엇</b> 빛을 전기신호로 바꾸는 센서 공정, MEMS 스위치·가속도계, AR/VR용 <b>OLEDoS</b>(실리콘 위 OLED) 백플레인. <b>작동</b> 1.25~150µm 픽셀 IP 라이브러리(롤링·글로벌 셔터·ToF)를 고객에게 <b>IP로 제공</b>해 초회 성공률을 높인다. 대형 센서용 stitching, 후면조사(BSI)·적층·깊은트렌치격리(DTI) 지원. OLEDoS는 8V native LDMOS 초저누설 트랜지스터 + 고밀도 커패시터의 5V 플랫폼. <b>고객·용도</b> 의료 X-ray·치과, 산업·검사 카메라, 자동차 카메라·LiDAR, 보안, AR/VR 헤드셋. <b>차별점</b> 200mm·300mm 웨이퍼 전면을 한 장의 이미저로 덮는 초대형 센서 지원, 픽셀 자체를 IP로 파는 구조. <b>매출 위치</b> ❌ 미공시 — 일본 Fab 7(65nm)의 주력 중 하나.</p>
+
+  <h3>보조 — 설계 인에이블먼트 · MPW · 팹 설립 지원 서비스</h3>
+  <p>ⓐ <b>설계 인에이블먼트</b>(PDK·디바이스 모델·ESD/IO IP, Cadence·Synopsys·Siemens EDA·Keysight 연동) ⓑ <b>MPW 셔틀</b> — 여러 고객 설계를 한 마스크셋에 모아 시제품 비용을 나눔 ⓒ <b>제3자 팹 설립·램프업 지원 서비스</b> — Tower의 기술·운영·통합 역량을 팔고 <b>마일스톤 달성 기준으로 대금을 받으며, 해당 팹의 capacity 할당권 등 권리를 취득할 수도 있다</b>(20-F Item 4B·5). 셋 다 20-F가 "규모·금액이 덜 중요한 기타 서비스"로 묶어 <b>기간 인식(over time)</b> 처리한다.</p>
+  <p>주력 외(이름만): 혼성신호 CMOS · 비휘발성메모리(NVM) · 항공우주·방산(Fab 3의 JSTF 인증 사업) · 자동차 전용 플랫폼.</p>
+  <div class="gloss"><b>🔤 PDK(Process Design Kit)</b> — 그 팹의 공정에서 소자가 어떻게 동작하는지 담은 설계자용 규칙·모델 꾸러미. 이게 다르면 설계를 다른 팹으로 못 옮긴다.&nbsp; <b>🔤 MPW</b> — 시제품 웨이퍼를 여러 회사가 나눠 쓰는 공동구매.</div>
+
+  <h3>B.0.2 핵심 기술·IP·기술 해자</h3>
+  <ul>
+    <li><b>기반 기술 스택</b>: 특수공정 CMOS 플랫폼(SiPho·SiGe·RF SOI·BCD·CIS·MEMS) + 200mm/300mm 다중 팹 <b>cross-qualification</b>(같은 노드를 지리적으로 분리된 여러 팹에서 동시 인증 → 공급 보장) + PDK·픽셀 IP 라이브러리.</li>
+    <li><b>IP</b>: 2025-12-31 기준 <b>유효 특허 281건.</b> Synopsys·ARM·Cadence·Siemens 등과 라이선스 계약. NPE(특허괴물) 방어용 <b>LOT(License on Transfer) 협정</b>을 업계 선도 3사와 체결.</li>
+    <li><span class="red">🔴 2026년 3월, GlobalFoundries가 Tower를 상대로 미국 ITC와 텍사스 서부지법에 특허 침해 소송 3건을 제기했다.</span> Tower는 주장을 부인 중. GF는 20-F가 "RF 영역의 직접 경쟁자"로 지목한 바로 그 회사다.</li>
+    <li><b>재현 난이도</b>: 20-F의 논리는 특허가 아니라 <b>인력·설계 인프라 희소성</b>이다 — <i>"특수공정 전문성을 가진 엔지니어 커뮤니티가 상대적으로 작고, 특수공정을 개발·이전·유지하는 데 드는 투자가 커서 특수공정을 제공할 수 있는 파운드리 수가 제한된다."</i></li>
+    <li><b>R&amp;D 방향</b>: FY2025 R&amp;D <b>$86.5M = 매출의 5.5%</b>(FY24 $79.4M·5.5%). 연구인력 <b>430명(박사 59명)</b>. 거점 = 미그달하에메크·뉴포트비치·샌안토니오·호쿠리쿠 + 네타냐 설계센터. R&amp;D 상당 부분이 <b>고객과 공동 수행</b>이며 일부는 고객이 전액·부분 자금 지원 — 즉 R&amp;D비가 낮은 게 아니라 고객이 나눠 낸다.</li>
+    <li><span class="red">🔴 마케팅 표현 vs 실증 구분</span>: "1.6Tb/s 시장 선도 플랫폼"·"200mm/300mm 동시 양산"은 20-F 기재 + Marvell 500만 개 출하·Coherent 400Gbps/lane 실증으로 <b>뒷받침됨</b>. 반면 <b>"open 플랫폼 vs 경쟁사 closed"</b>, "record FOM 안테나 스위치"는 자사 마케팅 표현이며 1차 근거 미확인 → <b>"주장(claim)" 라벨</b>.</li>
+  </ul>
+
+  <h3>B.0.3 제품 → 수익모델 연결 <span style="font-size:13px;color:var(--muted)">(R-Dive 고유)</span></h3>
+  <div class="tbl-scroll"><table>
+    <tr><th>주력 제품</th><th class="c">과금 8유형</th><th class="c">아키타입</th><th class="c">가격 결정력</th><th class="c">전환비용·lock-in</th><th class="c">운영레버리지 기여</th></tr>
+    <tr><td>① SiPho</td><td class="c">하드웨어(웨이퍼)<br>+ <b>capacity 선수금</b></td><td class="c">⑥ + ④</td><td class="c grn">높음<br><span style="font-weight:400;font-size:12px">현금 선납으로 capa 예약</span></td><td class="c grn">매우 높음<br><span style="font-weight:400;font-size:12px">PDK·광 설계 종속 + 다년 계약</span></td><td class="c grn">최상<br><span style="font-weight:400;font-size:12px">300mm 신규 capa·고ASP</span></td></tr>
+    <tr><td>② SiGe BiCMOS</td><td class="c">하드웨어(웨이퍼)</td><td class="c">⑥</td><td class="c">중상</td><td class="c">높음</td><td class="c">높음</td></tr>
+    <tr><td>③ RF CMOS/SOI</td><td class="c">하드웨어(웨이퍼)</td><td class="c">⑥</td><td class="c yel">중하<br><span style="font-weight:400;font-size:12px">GF·UMC·Vanguard 경쟁</span></td><td class="c">중</td><td class="c">중상<br><span style="font-weight:400;font-size:12px">Fab 10 램프가 FY25 성장 주도</span></td></tr>
+    <tr><td>④ Power/PMIC</td><td class="c">하드웨어(웨이퍼)</td><td class="c">⑥</td><td class="c yel">중하</td><td class="c">중</td><td class="c">중</td></tr>
+    <tr><td>⑤ CIS·MEMS·디스플레이</td><td class="c">하드웨어 + 픽셀 IP</td><td class="c">⑥</td><td class="c">중</td><td class="c">중상</td><td class="c">중</td></tr>
+    <tr><td>보조 서비스·MPW·팹 지원</td><td class="c">서비스(기간)<br>+ 마일스톤</td><td class="c">부수</td><td class="c">중</td><td class="c grn">높음<br><span style="font-weight:400;font-size:12px">진입 게이트</span></td><td class="c">낮음</td></tr>
+  </table></div>
+  <blockquote><span class="red">🔴 해자 → 수익 전환 한 줄</span>: 이 회사의 기술 해자는 <i>특허</i>가 아니라 <b>PDK·디바이스 모델 종속성</b>이다. 20-F가 직접 쓴다 — <i>"특수공정을 쓰는 고객은 설계를 다른 파운드리로 쉽게 옮길 수 없다. 아날로그 특성이 그 특정 공정 기술에 의존하기 때문이다."</i> 이 종속성이 돈으로 바뀌는 칸은 위 표의 <b>전환비용</b> 열이고, 2026년에 처음으로 <b>가격 결정력</b> 열까지 넘어갔다 — 고객이 capa를 잡으려고 현금을 먼저 냈기 때문이다. 반대로 성숙 RF·Power는 종속성이 있어도 대체 팹이 있어 가격 결정력으로 전환되지 못한다.</blockquote>
+</div>
+
+<div class="card">
+  <h2>Part B.1 — 사업분야 + 매출 스트림 분해</h2>
+  <p><span class="red">🔴 Tower는 단일 보고 세그먼트다</span>(20-F Note 14E — CODM은 CEO, 자원 배분과 성과 평가를 <b>연결 기준으로만</b> 수행). 따라서 <b>기술 플랫폼별·제품별 매출 분해는 공시 자체가 존재하지 않는다.</b> 공시되는 분해는 지역과 고객 두 축뿐이다.</p>
+  <h3>지역별 매출 (20-F Note 14A)</h3>
+  <div class="tbl-scroll"><table>
+    <tr><th>지역</th><th class="c">FY2025</th><th class="c">FY2024</th><th class="c">FY2023</th><th class="c">3년 방향</th></tr>
+    <tr><td>미국</td><td class="c">42%</td><td class="c">42%</td><td class="c">46%</td><td class="c">→</td></tr>
+    <tr><td><b>아시아(일본 제외)</b></td><td class="c"><b>39%</b></td><td class="c">33%</td><td class="c">27%</td><td class="c grn">↑↑ (+12%p)</td></tr>
+    <tr><td>일본</td><td class="c">13%</td><td class="c">16%</td><td class="c">17%</td><td class="c">↓</td></tr>
+    <tr><td>유럽</td><td class="c">6%</td><td class="c">9%</td><td class="c">10%</td><td class="c">↓</td></tr>
+    <tr><td>합계</td><td class="c">100%</td><td class="c">100%</td><td class="c">100%</td><td class="c">—</td></tr>
+  </table></div>
+  <blockquote>귀속 기준은 <b>발주한 고객의 본사 소재지</b>다(생산지가 아님). 아시아(일본 제외)가 27% → 39%로 3년 만에 12%p 뛴 것이 유일하게 큰 구조 변화다.</blockquote>
+
+  <h3>연간 손익 (20-F 감사 재무제표)</h3>
+  <div class="tbl-scroll"><table>
+    <tr><th>항목</th><th class="r">FY2023</th><th class="r">FY2024</th><th class="r">FY2025</th><th class="r">Q1'26</th></tr>
+    <tr><td>매출 ($M)</td><td class="r">1,422.7</td><td class="r">1,436.1</td><td class="r"><b>1,566.1</b></td><td class="r">413.6</td></tr>
+    <tr><td>매출총이익 ($M)</td><td class="r">353.5</td><td class="r">339.4</td><td class="r">363.9</td><td class="r">111.0</td></tr>
+    <tr><td><b>매출총이익률</b></td><td class="r">24.8%</td><td class="r">23.6%</td><td class="r"><b>23.2%</b></td><td class="r"><b class="grn">26.8%</b></td></tr>
+    <tr><td>영업이익(정상) ($M)</td><td class="r">201.3</td><td class="r">185.0</td><td class="r">194.2</td><td class="r">64.6</td></tr>
+    <tr><td>순이익(지배) ($M)</td><td class="r">518.5*</td><td class="r">207.9</td><td class="r">220.5</td><td class="r">65.0</td></tr>
+    <tr><td>R&amp;D ($M, 매출비)</td><td class="r">79.8 (5.6%)</td><td class="r">79.4 (5.5%)</td><td class="r">86.5 (5.5%)</td><td class="r">23.5 (5.7%)</td></tr>
+    <tr><td>주식보상비 ($M)</td><td class="r">27.9</td><td class="r">33.8</td><td class="r">37.8</td><td class="r">—</td></tr>
+  </table></div>
+  <p style="font-size:13px;color:var(--muted)">* FY2023 순이익에는 <b>인텔 인수 무산 위약금 순 +$313.5M</b>과 구조조정 설비매각이익 $52.2M이 포함된 일회성 팽창. 정상 이익 기준선은 FY2024 $207.9M로 봐야 한다.</p>
+  <p><span class="red">🔴 매출 mix shift 방향</span>: 저품질 → 고품질로 명확히 이동 중. 150mm legacy 폐지(Fab 1, 2025 Q1) + 300mm 진입(Fab 10 아그라테 2024 Q4, Fab 7 우오즈) + SiPho 선수금 계약. → <b>C.12 트리거 발동 상태.</b></p>
+</div>
+
+<div class="card">
+  <h2>Part B.2 — 과금·가격 모델 + 🔴 정량 강제</h2>
+  <p><b>주력 모델 = 하드웨어 one-time(⑤유형)</b> — 웨이퍼 장당 가격 × 출하량. <b>2차 = 서비스(기간 인식) + 마일스톤 결제 + capacity reservation 선수금.</b></p>
+  <p><b>수익 인식</b>(20-F Note 2N): ASC 606. 웨이퍼 판매는 <b>단일 이행의무</b>이며 계약상 인도조건에 따라 <b>선적 시점에 일시 인식</b>(point in time). 수율·품질 보증 반품충당금은 immaterial. 기타 서비스는 고객이 서비스를 받는 기간에 걸쳐 인식.</p>
+  <p><b>가격 결정 요인</b>(20-F Item 4B): ①기술의 고유 가치 ②고객 제품 차별화 기여도 ③기술 복잡도 ④당시 시장 상황 ⑤물량 전망 ⑥고객 관계의 강도·이력 ⑦<b>현재 가동률</b>. 발주는 대부분 <b>출하 2~6개월 전.</b> 신규 고객 sales cycle 9~24개월+, 기존 6~12개월.</p>
+
+  <div class="tbl-scroll"><table>
+    <tr><th style="width:22%">정량 메트릭</th><th style="width:24%">산식</th><th style="width:26%">본 종목 값</th><th>해석</th></tr>
+    <tr><td>Take rate</td><td>수수료 ÷ GMV</td><td><b>해당 없음</b></td><td>거래 중개형 아님</td></tr>
+    <tr><td>Implied fee rate</td><td>매출 ÷ AUM</td><td><b>해당 없음</b></td><td>AUM형 아님</td></tr>
+    <tr><td>Float yield</td><td>reserve income ÷ 예치자산</td><td><b>해당 없음</b></td><td>float형 아님</td></tr>
+    <tr><td><b>웨이퍼 ASP</b></td><td>매출 ÷ 출하 웨이퍼 수</td><td class="red">❌ 미공시</td><td>출하량·단가 어느 쪽도 20-F·6-K에 없음</td></tr>
+    <tr><td><b>가동률(utilization)</b></td><td>실제 투입 ÷ 설비 능력</td><td class="red">❌ 미공시</td><td>20-F가 <i>가격 결정 요인</i>으로만 언급</td></tr>
+    <tr><td><b>주당 매출</b></td><td>매출 ÷ 디루티드 주식</td><td><b>$13.79</b> (FY25) · <span class="grn">+7.8% YoY</span></td><td>⑥형 대체 지표. FY24 $12.78</td></tr>
+    <tr><td><b>capex 강도</b></td><td>capex ÷ 매출</td><td><b>28.4%</b> (FY25) / 30.4% (FY24) / 31.2% (FY23)</td><td>자본집약. C.10 직결</td></tr>
+    <tr><td><b>감가상각 부담</b></td><td>D&amp;A ÷ 매출 · ÷ COGS</td><td><b>19.4%</b> · <b>25.2%</b> (FY25)</td><td>고정비 구조 = 가동률 레버리지의 원천</td></tr>
+    <tr><td><b>현금 매출총이익률</b></td><td>(매출총이익 + COGS 내 D&amp;A) ÷ 매출</td><td><b>≈ 40.7%</b> (FY25) · <b>≈ 45%</b> (Q1'26)</td><td>회계 GM의 약 1.8배. C.1</td></tr>
+    <tr><td><b>분기 증분 GM</b></td><td>Δ매출총이익 ÷ Δ매출</td><td class="grn"><b>49% → 55% → 55%</b> (25년 QoQ)<br><b>68%</b> (Q1'26 YoY)</td><td>🔴 운영 레버리지 강하게 발현</td></tr>
+    <tr><td><b>고객 선수금 비중</b></td><td>선수금 ÷ TTM 매출</td><td><b>21.1%</b> ($342.7M / $1,621.6M)</td><td>🔴 신생 ④ 아키타입의 크기</td></tr>
+    <tr><td><b>고정자산 회전율</b></td><td>매출 ÷ 순유형자산</td><td><b>1.07x</b></td><td>자본집약형의 전형</td></tr>
+  </table></div>
+  <div class="gloss"><b>📐 incremental margin(증분 마진)</b> — 매출이 1달러 늘 때 이익이 몇 센트 느는가. 고정비가 큰 사업은 이 값이 평균 마진보다 훨씬 높게 나오고, 그게 곧 "운영 레버리지"다.&nbsp; <b>📐 현금 GM</b> — 회계 매출총이익에 감가상각(현금이 나가지 않는 비용)을 되더한 값. 팹 사업의 실제 현금 창출력에 가깝다.&nbsp; <b>🔤 SBC(주식보상비)</b> — 임직원에게 준 주식의 비용. 현금이 아니라 지분으로 나간다.</div>
+
+  <div class="dd-fig">
+    <p class="cap"><b>그림.</b> 매출 + 매출총이익률 trajectory (분기, 1차 자료 = 6-K 실적표). 좌축 매출 $M, 우축 GM%. <b>매출↑ + 단가지표↑</b> = 가격 압박의 정반대 패턴. ▼ = SiPho 선수금 $290M 수령 분기. Q2'26 가이드 $455M(±5%)는 GM 미가이드라 미표기.</p>
+    <div id="fig-rate"></div><div class="dd-legend" id="leg-rate"></div>
+  </div>
+
+  <div class="tbl-scroll"><table>
+    <tr><th>분기</th><th class="r">매출($M)</th><th class="r">매출총이익률</th><th class="r">영업이익률</th><th class="r">QoQ Δ매출</th><th class="r">증분 GM</th></tr>
+    <tr><td>Q1'25</td><td class="r">358.2</td><td class="r">20.4%</td><td class="r">9.2%</td><td class="r">—</td><td class="r">—</td></tr>
+    <tr><td>Q2'25</td><td class="r">372.1</td><td class="r">21.5%</td><td class="r">10.7%</td><td class="r">+13.9</td><td class="r grn">+49%</td></tr>
+    <tr><td>Q3'25</td><td class="r">395.7</td><td class="r">23.5%</td><td class="r">12.8%</td><td class="r">+23.6</td><td class="r grn">+55%</td></tr>
+    <tr><td>Q4'25</td><td class="r">440.2</td><td class="r">26.7%</td><td class="r">16.1%</td><td class="r">+44.5</td><td class="r grn">+55%</td></tr>
+    <tr><td><b>Q1'26</b></td><td class="r"><b>413.6</b></td><td class="r"><b>26.8%</b></td><td class="r"><b>15.6%</b></td><td class="r">−26.6 (계절)</td><td class="r grn">(YoY +68%)</td></tr>
+    <tr><td>Q2'26 가이드</td><td class="r"><b>455.0</b> (±5%)</td><td class="r">❌ 미가이드</td><td class="r">—</td><td class="r">+41.4</td><td class="r">—</td></tr>
+  </table></div>
+  <blockquote><span class="red">🔴</span> 매출이 오르는 동안 매출총이익률이 함께 6.4%p 올랐다. 다만 이 상승분이 (a) SiPho 믹스 때문인지 (b) Fab 1 저마진 flow 제거 + 아그라테 가동률 상승 때문인지는 <b>플랫폼별 매출이 미공시라 분리 불가</b>하다.</blockquote>
+</div>
+
+<div class="card">
+  <h2>Part B.3 — 단위 경제학</h2>
+  <div class="tbl-scroll"><table>
+    <tr><th style="width:28%">지표</th><th>값</th><th style="width:22%">출처/한계</th></tr>
+    <tr><td>ARPU / 고객당 매출</td><td class="red">❌ 미공시</td><td>고객 수·웨이퍼 수 비공시</td></tr>
+    <tr><td>웨이퍼 단위 매출총이익</td><td class="red">❌ 미공시</td><td>ASP·출하량 둘 다 없음</td></tr>
+    <tr><td>LTV / CAC · CAC payback</td><td class="red">❌ 산출 불가</td><td>B2B 파운드리 모델상 회사가 산출·공시하지 않음</td></tr>
+    <tr><td><b>대체 — 팹 자산 생산성</b></td><td>매출 ÷ 순유형자산 = <b>1.07x</b>. 지역별 순유형자산: <b>유럽 $462.8M</b> · 미국 $399.2M · 이스라엘 $348.6M · 일본 $252.5M</td><td>20-F Note 14B</td></tr>
+    <tr><td>인당 매출</td><td class="red">❌ 총 직원 수 미공시(R&amp;D 인력 430명만 공시)</td><td>—</td></tr>
+  </table></div>
+  <p>🚨 미공시 항목에 동종 산업 추정치를 대입하지 않았다. 성숙노드 특수공정 파운드리의 웨이퍼 ASP는 공정·마스크 층수에 따라 배수로 갈리므로 업계 평균 대입은 오도한다.</p>
+  <blockquote>눈에 띄는 것은 <b>유럽(아그라테) 순유형자산이 $462.8M으로 지역 중 최대</b>라는 점이다. Tower는 아그라테 팹을 소유하지 않고 클린룸 1/3 사용권만 갖는데도 자기 장비 투자액이 이스라엘 본진(Fab 2)을 넘어섰다 — 자산은 남의 건물 안에 있고 운영권도 ST에게 있다.</blockquote>
+</div>
+
+<div class="card">
+  <h2>Part B.4 — 매출 품질 + 고객 집중도</h2>
+  <p><b>반복성</b>: 계약상 반복매출 <b>0%</b>. 웨이퍼 = 일회 판매·선적 인식. 발주는 출하 2~6개월 전. 실질적 반복은 <b>설계 종속(design-in lock-in)</b>에서 나오지 계약에서 나오지 않는다.</p>
+  <p><b>계약 잔고(예약 잔고)</b> <span class="red">🔴 20-F에 backlog·RPO 공시가 존재하지 않는다.</span> 6-K 위험요인은 회사 스스로 <i>"limited order backlog and lengthy sales cycles"</i> 때문에 실적 예측이 어렵다고 쓴다. 확인 가능한 잔고 성격의 수치는 셋뿐이며 품질이 서로 다르다:</p>
+  <div class="tbl-scroll"><table>
+    <tr><th>항목</th><th class="r">금액</th><th>품질 판정</th></tr>
+    <tr><td><b>고객 선수금·이연수익</b> (감사받은 대차대조표)</td><td class="r"><b>$342.7M</b> (2026-03-31)<br>← $27.5M (2025-12-31)</td><td class="grn">🟢 확정 — 현금 실제 수령. 감사받은 부채 계정. 향후 구매액에서 차감 크레딧</td></tr>
+    <tr><td>2027년 SiPho 계약 매출 (CEO 발언)</td><td class="r">$1.3B</td><td class="yel">🟡 미공시·미검증 — 2026-05-13 실적 보도자료 CEO 인용문. FY2025 총매출의 83% 규모</td></tr>
+    <tr><td>2028년 재무 모델 (회사 목표)</td><td class="r">매출 <b>$3.6B</b> / 순이익 <b>$1.2B</b></td><td class="red">🔴 목표(target) — 계약이 아니라 경영 가이던스</td></tr>
+  </table></div>
+  <blockquote>6-K 위험요인이 <i>"SiPho 고객 선수금(certain minimum capacity commitments 대가)"</i>을 이행 못 할 경우 <i>"보상·위약금·선수금 반환"</i> 위험을 명시한다 — 즉 이 선수금은 <b>최소 물량 약정(take-or-pay 성격)</b>과 짝지어져 있다. 순수 MOU·의향서보다는 질이 높고, 공시된 확정 백로그보다는 질이 낮은 <b>중간 지대</b>다.</blockquote>
+
+  <h3>고객 집중도 (20-F Note 14D)</h3>
+  <div class="tbl-scroll"><table>
+    <tr><th></th><th class="r">FY2025</th><th class="r">FY2024</th><th class="r">FY2023</th></tr>
+    <tr><td>Customer A (= NTCJ)</td><td class="r"><b>11%</b></td><td class="r">13%</td><td class="r">14%</td></tr>
+    <tr><td>Customer B</td><td class="r">7%</td><td class="r">11%</td><td class="r">9%</td></tr>
+    <tr><td>기타 상위 고객군</td><td class="r">32% (6사, 각 4~7%)</td><td class="r">16% (3사)</td><td class="r">21% (3사)</td></tr>
+    <tr><td><b>상위 합계</b></td><td class="r"><b>50% (8사)</b></td><td class="r">40% (5사)</td><td class="r">44% (5사)</td></tr>
+    <tr><td>순매출채권 10% 초과 고객 수</td><td class="r">1사</td><td class="r">2사</td><td class="r">—</td></tr>
+  </table></div>
+  <p><span class="red">🔴 집중의 성격이 바뀌었다.</span> 최상위 1~2사 의존(FY23 23%)은 낮아졌지만, <b>4~7%대 중견 고객이 6사로 늘면서 상위 8사 합계는 44% → 50%로 오히려 높아졌다.</b> 즉 "한 고객 잃으면 끝"에서 "AI 광통신이라는 한 테마를 공유하는 8사"로 위험이 이동했다 — 개별 리스크는 줄고 <b>상관 리스크(correlated risk)</b>는 늘었다.</p>
+  <p><span class="red">🔴 NTCJ(Nuvoton Technology Corporation Japan) 4중 얽힘</span> — 매출의 11%를 차지하는 최대 고객이 동시에 ①<b>합작사 TPSCo의 49% 주주</b>(Tower 51%) ②<b>일본 팹 건물·토지의 임대인</b>(TPSCo가 2032년 3월까지 캐피털 리스) ③<b>2027년 4월 1일 목표 구조조정의 상대방</b>(Tower가 300mm Fab 7 전량 소유, NTCJ가 200mm Fab 5 전량 소유로 교환 + 상호 장기 공급계약) ④그 결과 <b>현재 NTCJ 매출 11%의 성격이 2027년 이후 "고객 매출"에서 "상호 공급계약"으로 재정의</b>된다.</p>
+  <p><b>유통·비용 통제권 집중</b> — 매출이 아닌 <i>비용·운영 통제권</i> 쪽 쏠림이 이 회사의 숨은 집중이다:</p>
+  <ul>
+    <li><b>Fab 10(아그라테)</b>: 시설은 ST 소유, <b>운영도 ST가 관리.</b> Tower는 클린룸 1/3 사용권과 자기 장비만 보유(순유형자산 $462.8M).</li>
+    <li><b>Fab 5·7(일본)</b>: 건물·토지는 NTCJ에서 캐피털 리스.</li>
+    <li><b>Fab 3(뉴포트비치)</b>: 운영리스(2030년까지). <span class="red">🔴 임대인이 소음저감 미이행을 이유로 "중대·치유불가 위반" 사법 확인을 청구</span>했고, 별개로 제3자가 부지 권리를 주장 중. 2025년 리스 연장 대가로 <b>$105M을 선급</b>했다.</li>
+    <li><b>인텔 뉴멕시코 corridor</b>: Tower가 최대 <b>$300M</b> 장비를 인텔 팹에 넣기로 약정, 2025년 말 기준 초기 조달·설치 단계에서 <b>양산 미인증</b>. <span class="red">🔴🔴 인텔이 계약을 이행하지 않겠다는 의사를 표명해 조정(mediation) 절차 중.</span></li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Part B.5 — 가치사슬 내 수익 포착 지점</h2>
+  <p><b>돈의 흐름</b>: 하이퍼스케일러·통신사(AI 데이터센터 capex) → 스위치·시스템 업체 → 광 트랜시버·모듈 업체 → <b>광 칩 설계사(Marvell·Broadcom 등 팹리스)</b> → <b>🎯 Tower(웨이퍼 위탁생산)</b> → 장비·소재사(ASML·AMAT·IQE 등)</p>
+  <p>Tower가 마진을 떼는 길목은 <b>"설계는 있는데 특수공정 팹이 없는 팹리스"와 "특수공정 웨이퍼" 사이</b>다. 이 길목의 가격 결정력은 두 갈래로 갈린다:</p>
+  <ul>
+    <li><b>SiPho 길목</b>: 400G~1.6T 광 PIC를 200mm·300mm 양쪽에서 양산할 수 있는 파운드리가 사실상 소수다. 고객이 현금을 먼저 내고 2028년까지의 capa를 예약했다는 사실 자체가 <b>이 길목이 지금 병목</b>이라는 실측 증거다. → 가격 결정력 <span class="grn">높음</span>.</li>
+    <li><b>성숙 RF·Power·CIS 길목</b>: GlobalFoundries·UMC·Vanguard·X-FAB·Hua Hong과 정면 경쟁. 20-F가 <i>"성숙 제품의 평균판매단가는 하락할 것"</i>이라고 명시 전제. → 가격 결정력 <span class="yel">중하</span>.</li>
+  </ul>
+  <blockquote><span class="red">🔴</span> Tower의 수익모델 문제는 이 두 길목이 하나의 손익계산서 안에 섞여 있는데, 공시가 그걸 분리해 주지 않는다는 점이다. GM 26.8%라는 숫자만으로는 "SiPho가 40%대 마진을 내고 성숙 사업이 10%대로 희석 중"인지 "전체가 고르게 27%"인지 알 수 없다.</blockquote>
+</div>
+
+<div class="card">
+  <h2>Part C — 12 함정 강제 체크리스트</h2>
+
+  <h3>C.1 마진 분모 forensics — <span class="yel">⚠️ 주의</span></h3>
+  <p>외부 데이터(yfinance TTM GM 24.77%)와 1차 자료(20-F FY2025 23.2%, Q1'26 26.8%)의 괴리가 없어 <b>헤드라인 왜곡은 없다.</b> 다만 분모 해석에 세 겹의 주의가 필요하다.</p>
+  <ul>
+    <li><b>D&amp;A가 COGS의 25.2%.</b> 회계 GM 23.2%에 감가상각을 되더한 <b>현금 GM은 ≈40.7%</b>(Q1'26 ≈45%) — 실제 현금 창출력은 회계 마진의 약 1.8배. 반대로 말하면 <b>마진의 4분의 1이 과거 capex의 그림자</b>이며, 일본 $3B가 얹히면 이 그림자가 커진다.</li>
+    <li><b>Fab 3 리스 선급 $105M</b>이 2030년까지 <b>분기 약 $6M씩 매출원가로 유입</b>된다(20-F Note 12D) — 현금은 2025년에 다 나갔는데 손익은 5년에 걸쳐 인식된다.</li>
+    <li><b>아그라테 구조</b> — Tower는 ST 시설의 인프라 비용을 부담하면서 웨이퍼는 클린룸 1/3분만 취득한다. FY2025 COGS 증가 $105.6M의 주 원인으로 20-F가 <b>아그라테 감가상각·제조원가</b>를 명시했다. 즉 FY2025 GM 하락(23.6%→23.2%)은 사업 악화가 아니라 <b>신규 팹 램프의 마진 희석</b>이었다.</li>
+  </ul>
+  <p><b>🚩 여부</b>: 아니오 — 다만 "GM 23%"를 commodity 신호로 읽으면 오독이다.</p>
+
+  <h3>C.2 반복매출 프리미엄 — <span class="red">🚩</span></h3>
+  <p>계약상 반복매출 <b>0%</b>. 구독·ARR·정기 갱신 구조가 없다. 웨이퍼는 발주 → 2~6개월 후 선적 → 그 시점 인식으로 끝난다. 반복성은 오직 <b>설계 종속</b>에서 나온다 — 고객이 Tower PDK로 설계를 확정하면 그 제품의 수명주기(아날로그·RF는 통상 5~10년+) 동안 재발주가 이어진다.</p>
+  <p><b>🚩 적신호: 예.</b> "반복처럼 보이지만 계약이 아니라 설계 관성에 의존"하는 전형. 고객의 다음 세대 설계가 다른 파운드리로 가면 그 순간 흐름이 끊긴다. 밸류에이션에 반복매출 프리미엄을 얹을 계약상 근거는 존재하지 않는다.</p>
+
+  <h3>C.3 ARR ↔ 장부매출 격차 — <span class="red">🚩</span></h3>
+  <p>발표: 2028년 매출 <b>$3.6B</b>/순이익 <b>$1.2B</b>, 2027년 SiPho 계약 <b>$1.3B</b>. 장부: Q1'26 인식 매출 <b>$413.6M</b>(연율 ≈$1.66B), FY2025 <b>$1,566.1M</b>. 격차 축소 일정 = track 1 양산 준비 <b>Q4 2027</b>, track 2 accretive <b>2029</b>.</p>
+  <p><span class="red">🔴</span> 그리고 <b>선수금 $342.7M은 매출이 아니다.</b> 이것은 부채이며, 인식되는 순간 미래 웨이퍼 대금에서 차감되는 크레딧이다 — 현금은 지금 들어왔지만 그만큼 <b>미래 매출의 현금 회수는 이미 끝난 상태</b>가 된다.</p>
+  <p><b>🚩 적신호: 예.</b></p>
+
+  <h3>C.4 백로그 품질 — 확정 vs 천장 — <span class="red">🚩🚩 (최우선)</span></h3>
+  <p>20-F에 backlog·RPO 공시가 <b>전무</b>하고, 6-K가 <i>"limited order backlog"</i>를 자인한다. 층위별 확정도는 위 B.4 표 참조.</p>
+  <p><b>🚩 적신호: 예, 이중.</b> 헤드라인 숫자의 대부분이 감사받은 계약잔고가 아니다. <b>부분 완화 요인</b>: (a) 선수금 $315M은 실제 현금이며 (b) 6-K가 이를 <i>"minimum capacity commitments"</i>의 대가로 규정하고 (c) 미이행 시 <b>위약금·선수금 반환</b> 위험을 스스로 명시했다 — 양방향 구속이 있는 계약이라는 뜻이다. IDIQ 천장형(체결액만 크고 인식 $0)보다는 훨씬 질이 좋지만, 공시된 확정 백로그보다는 못하다.</p>
+
+  <h3>C.5 가격 결정력 — commodity vs 차별화 — <span class="yel">⚠️ 이중 구조</span></h3>
+  <ul>
+    <li><b>차별화 측</b>: 20-F가 <i>"우리 특수공정 고객은 설계를 다른 파운드리로 쉽게 옮길 수 없다"</i>고 명시. SiPho는 고객이 현금 선납으로 capa를 잡을 만큼의 희소성. 20-F Item 5D: <i>"차별화된 특수 아날로그, 특히 SiPho에 집중하는 전략이 웨이퍼 일부를 commoditized 표준 CMOS 대비 높은 가격에 팔 수 있게 한다."</i></li>
+    <li><b>commodity 측</b>: 같은 20-F가 <i>"성숙 제품의 평균판매단가는 하락할 것으로 예상한다"</i>고 전제하고, 가격 산정 요인에 <b>"현재 가동률"</b>을 넣는다 — 팹이 비면 가격을 깎는다는 자백이다.</li>
+  </ul>
+  <p><b>🚩 여부</b>: 단일 🚩는 아니나 <b>이중 구조 자체가 함정</b>이다. 매출 중 commodity 노출 비중이 <span class="red">❌ 미공시</span>여서 "가격 결정력 있는 매출 X% vs 없는 매출 Y%"를 산출할 수 없다.</p>
+
+  <h3>C.6 고객·유통 집중도 — <span class="red">🚩</span></h3>
+  <p>상위 8사 = 매출 50%, 단일 최대 11%, 순매출채권 10% 초과 고객 1사. <b>NTCJ 4중 얽힘.</b> SiPho는 <i>"최대 SiPho 고객들"</i> 소수에 계약 집중. 비용·운영 통제권 쪽은 더 심하다 — 아그라테 운영권은 ST, 일본 팹 건물은 NTCJ 소유, Fab 3는 소송 중인 임대인 소유, 인텔 corridor는 인텔이 이행 거부.</p>
+  <p><b>🚩 적신호: 예.</b> 단일 고객 &gt;10% 기준 충족 + 이익·운영 통제권이 여러 단일 파트너에 분산 종속.</p>
+  <blockquote>⚠️ <b>Thesis 리스크 신호</b>로 삼을 조건: (a) 상위 8사 합계가 60%를 넘거나 (b) SiPho 선수금이 반환·감액되거나 (c) NTCJ 구조조정이 2027-04-01에서 지연·무산되는 경우.</blockquote>
+
+  <h3>C.7 매크로 민감도 — <span class="red">🚩 (forward 기준)</span></h3>
+  <p>단일 최대 변수 = <b>AI 데이터센터 광 인터커넥트 capex</b>. 2028 모델의 증분 전부가 SiPho·SiGe이므로 forward 노출은 사실상 100%다. 현재 매출 기반은 아직 RF 모바일·Power·CIS로 분산되어 있으나, 그것이 곧 "성장은 없고 사이클만 있는" 부분이라는 뜻이기도 하다.</p>
+  <p>2차 변수: ①<b>이스라엘 안보</b> — Fab 2가 SiPho·SiGe 본거지이자 $920M 증설 대상. 20-F가 인력 군복무 소집·공급망 차단·거래 제한 리스크를 명시 ②<b>환율</b> — FY2025 USD가 NIS 대비 <b>12.5% 절하</b>되어 이스라엘 원가가 달러 기준으로 상승(JPY는 실린더 헤지로 부분 방어) ③<b>Pillar Two 최저세</b> — 이스라엘 우대세율 7.5%가 2026년부터 15% 최저세에 걸린다. FY2025 유효세율 8.8% → 2026년 이후 "상당한 추가 법인세"를 회사가 명시 예고(단순 환산 시 세율 8.8%→15%는 순이익 약 7% 잠식).</p>
+
+  <h3>C.8 금리 비대칭 — 해당 제한적</h3>
+  <p>float 모델이 아니므로 아키타입⑤ 함정은 해당 없음. 다만 무시할 수 없는 노출이 하나 — <b>순금융수익 $56.7M이 세전이익 $240.4M의 23.6%</b>다(이자수익 $53.8M 중심). 단기예치금이 2026-03-31 기준 <b>$1,255M.</b> <b>100bp 인하 시뮬레이션</b>: 예치금 × 100bp ≈ 이자수익 −$13M → 세전이익 −5.4%. 인상 시 대칭적 +. <b>비대칭 취약과는 차원이 다르다.</b> <b>🚩</b>: 아니오.</p>
+
+  <h3>C.9 운영 레버리지 — <span class="grn">🟢 강함</span> (단, base 리셋 유의)</h3>
+  <p>고정비 기반이 크다 — D&amp;A가 매출의 19.4%, COGS의 25.2%. 그 결과 증분 마진이 평균 마진을 크게 웃돈다(Q2'25 +49% → Q3'25 +55% → Q4'25 +55%, Q1'26 YoY <b>+68%</b>).</p>
+  <p><b>매출 2배 시 이익 추정</b>: 증분 마진 55%를 유지하면 매출 $1.57B → $3.14B 시 매출총이익 $364M → $1,227M(GM 39%), 영업이익 $194M → <b>$900M+</b>. 회사의 2028 모델($3.6B 매출·$1.2B 순이익 = 순이익률 33%)은 <b>바로 이 증분 마진 지속을 전제</b>한다 — 즉 회사 목표는 새로운 가정이 아니라 이미 관측된 레버리지의 외삽이다.</p>
+  <p><span class="red">🔴 리셋 위험</span>: FY2025 GM이 23.6%→23.2%로 <i>하락</i>한 이유가 아그라테 신규 팹의 감가상각이었다. 일본 $3B(Arai 재활용 + 신축)가 2027~2029년에 감가상각으로 손익에 들어오면 <b>같은 방식으로 마진이 한 번 눌린다.</b> 레버리지는 "새 capa가 채워진 뒤"에만 발현한다.</p>
+
+  <h3>C.10 현금 전환 — NI vs FCF — <span class="red">🚩🚩</span></h3>
+  <div class="tbl-scroll"><table>
+    <tr><th></th><th class="r">FY2023</th><th class="r">FY2024</th><th class="r">FY2025</th><th class="r">TTM(Q1'26 포함)</th></tr>
+    <tr><td>순이익 ($M)</td><td class="r">519.5*</td><td class="r">207.2</td><td class="r">218.8</td><td class="r">~245</td></tr>
+    <tr><td>영업현금흐름 ($M)</td><td class="r">676.6</td><td class="r">448.7</td><td class="r"><b>395.5</b></td><td class="r"><b>811.5</b></td></tr>
+    <tr><td>— 일회성 제거 후(clean)</td><td class="r">~363*</td><td class="r">448.7</td><td class="r"><b>~500.5</b>†</td><td class="r"><b>~526</b>‡</td></tr>
+    <tr><td>capex ($M)</td><td class="r">444.5</td><td class="r">436.2</td><td class="r">444.4</td><td class="r">~603</td></tr>
+    <tr><td><b>FCF ($M)</b></td><td class="r">+232.1</td><td class="r">+12.5</td><td class="r red">−48.9</td><td class="r">+128.9</td></tr>
+    <tr><td><b>FCF (선수금 제외)</b></td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r red"><b>≈ −156</b>‡</td></tr>
+    <tr><td>capex ÷ 매출</td><td class="r">31.2%</td><td class="r">30.4%</td><td class="r">28.4%</td><td class="r">~37%</td></tr>
+  </table></div>
+  <p style="font-size:13px;color:var(--muted)">* FY2023 OCF에는 인텔 위약금 현금 유입 포함 · † FY2025 OCF에서 Fab 3 리스 선급 <b>$105M</b> 일회성 유출을 되더함 · ‡ Q1'26 고객 선수금 <b>$285.1M</b> 제외</p>
+  <p><span class="red">🔴 핵심</span>: 순이익은 3년 연속 흑자인데 <b>FY2025 FCF는 마이너스</b>이고, TTM FCF의 플러스는 <b>전액 고객 선수금 덕분</b>이다. 선수금은 미래 매출의 선취일 뿐 창출된 현금이 아니다. <span class="grn">🟢 다만 clean 궤적은 개선 중</span>: FY23 $363M → FY24 $449M → FY25 $500M.</p>
+  <h4>AI 밸류체인 운전자본 전가 검증</h4>
+  <div class="tbl-scroll"><table>
+    <tr><th style="width:26%">검증 항목</th><th>값</th><th class="c" style="width:12%">판정</th></tr>
+    <tr><td>DSO(매출채권 회수일)</td><td>FY24 53.9일 → FY25 51.9일 → Q1'26 47.0일</td><td class="c grn">🟢 개선</td></tr>
+    <tr><td>재고 증감 vs 매출 증감</td><td>재고 −4.3% vs 매출 +9.0%</td><td class="c grn">🟢 회전 개선</td></tr>
+    <tr><td>운전자본 팽창</td><td>FY25 운전자본 변동 −$137M의 주 원인은 Fab 3 선급 $105M(일회성)이지 매출채권·재고가 아님</td><td class="c grn">🟢</td></tr>
+    <tr><td>차입 증가</td><td>총부채 $272M(FY22) → $156M(Q1'26), 3년간 순감소</td><td class="c grn">🟢</td></tr>
+    <tr><td><b>1달러당 현금흐름</b></td><td>FY23~25 capex 누계 <b>$1,325M</b> 투입 → clean OCF <b>+$137M</b> 증가(363→500)</td><td class="c red">🔴 미성숙</td></tr>
+  </table></div>
+  <p>→ <b>"매출↑인데 OCF 정체·DSO 확대·운전자본 팽창" = 라벨만 AI인 패턴은 아니다.</b> 운전자본 관리는 오히려 개선 중이다. 문제는 <b>자본 강도</b> 그 자체다 — capex $1.3B를 태워 현금흐름 증분이 $137M이면 아직 ROI가 자본비용을 넘지 못한다(아그라테·SiPho 램프 초기라는 항변은 성립하나, 검증은 2027~2029년 몫).</p>
+  <p><b>곡괭이 질 판정</b>: <b>(B) 자본갈증형</b> 성향. 다만 세 겹의 완충이 순수 (B)형과 구별한다 — ①<b>순현금 $1,342.7M</b> ②일본 METI <b>보조금 $1B</b> ③<b>고객 선수금 $342.7M.</b> 즉 Tower는 capex 자금의 상당 부분을 <b>정부와 고객에게 외부화</b>하고 있고, 이는 지분 희석 없이 자본을 조달하는 드문 구조다.</p>
+  <p><b>🚩 적신호: 예, 이중.</b></p>
+
+  <h3>C.11 주당 희석 조정 — <span class="grn">🟢 현재</span> / <span class="yel">⚠️ forward</span></h3>
+  <div class="tbl-scroll"><table>
+    <tr><th></th><th class="r">FY2023</th><th class="r">FY2024</th><th class="r">FY2025</th></tr>
+    <tr><td>디루티드 가중평균 주식 (M)</td><td class="r">111.2</td><td class="r">112.3</td><td class="r">113.6</td></tr>
+    <tr><td>발행주식 증가율</td><td class="r">+0.42%</td><td class="r">+1.01%</td><td class="r">+1.12%</td></tr>
+    <tr><td>주당 매출</td><td class="r">$12.79</td><td class="r">$12.78</td><td class="r"><b>$13.79</b></td></tr>
+    <tr><td>주당 매출 증가율</td><td class="r">—</td><td class="r">−0.1%</td><td class="r grn"><b>+7.8%</b></td></tr>
+  </table></div>
+  <p>3년간 <b>증자·전환사채 발행 0건.</b> 주식 증가는 전부 RSU 베스팅(연 78만~158만 주). FY2025는 주당 매출 성장(+7.8%)이 희석(+1.12%)을 7배 웃돌았다.</p>
+  <p><b>🚩</b>: 현재 <b>아니오.</b> 다만 6-K가 일본 build-out 자금원으로 <i>"equity investments and/or debt vehicles"</i>를 명시했고 20-F도 <i>"희석 등 불리한 조건의 자금 조달"</i> 위험을 반복 경고한다 → <b>forward ⚠️.</b> $3B 중 $1B은 정부 보조금, $342.7M은 고객 선수금, 나머지 약 $1.7B을 순현금 $1.34B + 영업현금으로 충당하는 시나리오가 성립하는지가 희석 여부를 가른다.</p>
+
+  <h3>C.12 모델 전환 신호 = 재평가 트리거 — <span class="red">🔴 진행 중(긍정)</span>, 단 선반영</h3>
+  <div class="tbl-scroll"><table>
+    <tr><th>축</th><th>전환 전</th><th>전환 후</th><th>상태</th></tr>
+    <tr><td>팹</td><td>150mm legacy (Fab 1)</td><td>300mm (Fab 7·10 + Arai 신규)</td><td>Fab 1 폐지 완료(2025 Q1)</td></tr>
+    <tr><td>기술</td><td>성숙 아날로그·RF</td><td>SiPho 400G→1.6T→3.2T·CPO</td><td>1.6T 양산 램프 중</td></tr>
+    <tr><td>마진</td><td>GM 20.4% (Q1'25)</td><td>GM <b>26.8%</b> (Q1'26)</td><td>5분기 연속 상승</td></tr>
+    <tr><td>과금</td><td>웨이퍼 후불</td><td><b>capa 예약 + 선수금</b></td><td>$342.7M 수령</td></tr>
+    <tr><td>지역 믹스</td><td>일본 17%·유럽 10%</td><td>아시아(일본 제외) <b>39%</b></td><td>3년간 +12%p</td></tr>
+  </table></div>
+  <p><b>변곡 예상 시점</b>: track 1(Arai 300mm SiPho + 첨단 광 패키징) 양산 준비 <b>2027년 4분기</b> → 2028년 실적 반영. track 2(Fab 7 인접 신축) <b>2029년부터 강한 accretive.</b></p>
+  <p><span class="red">🔴 회사가 62일 만에 목표를 상향했다</span> — 2026-05-13 $2.8B/$750M → 2026-07-14 <b>$3.6B/$1.2B</b>(track 1만 반영, track 2 미포함). 매출 목표 +29%, 순이익 목표 +60%.</p>
+  <p><b>🚩(긍정) 여부</b>: 전환 자체는 실재하고 정량 증거(마진·선수금·계약)가 뒷받침한다. <b>다만 "시장 미반영"은 아니다</b> — 아래 밸류에이션 맥락 참조.</p>
+</div>
+
+<div class="card">
+  <h2>🔎 밸류에이션 맥락 — 이 멀티플이 전제하는 것</h2>
+  <blockquote>⚠️ 아래는 <b>수익모델 관점의 맥락 제시</b>이며 목표주가·가격 판정이 아니다(밸류 정밀 판정은 Deep-Dive §H.7 소관).</blockquote>
+  <p><b>현재 배수</b> (2026-07-24 종가 $233.37 · 시총 $26.38B): P/S(TTM) <b>16.27x</b> · EV/EBITDA <b>46.4x</b> · forward P/E <b>40.0x</b> · P/B 8.83x · GM 24.77%.</p>
+  <h3>성숙노드 파운드리 peer 비교</h3>
+  <p style="font-size:13px;color:var(--muted)">통화 정규화 적용 — Hua Hong(1347.HK)은 HKD 시총 ÷ USD 매출로 P/S 103x가 나와 <b>통화 오염</b>이므로 제외.</p>
+  <div class="tbl-scroll"><table>
+    <tr><th>기업</th><th class="c">통화</th><th class="r">P/S</th><th class="r">매출총이익률</th><th class="r">EV/EBITDA</th><th class="r">매출성장</th></tr>
+    <tr style="background:#f6efd8"><td><b>TSEM</b></td><td class="c">USD</td><td class="r"><b>16.27x</b></td><td class="r">24.8%</td><td class="r">46.4x</td><td class="r">+15.5%</td></tr>
+    <tr><td>GlobalFoundries</td><td class="c">USD</td><td class="r">4.29x</td><td class="r">26.1%</td><td class="r">13.8x</td><td class="r">+3.1%</td></tr>
+    <tr><td>X-FAB</td><td class="c">USD</td><td class="r">1.05x</td><td class="r">19.8%</td><td class="r">6.8x</td><td class="r">−4.2%</td></tr>
+    <tr><td>UMC (2303.TW)</td><td class="c">TWD(내부정합)</td><td class="r">6.67x</td><td class="r">29.6%</td><td class="r">—</td><td class="r">—</td></tr>
+    <tr><td>Vanguard (5347.TWO)</td><td class="c">TWD(내부정합)</td><td class="r">6.00x</td><td class="r">27.9%</td><td class="r">20.1x</td><td class="r">—</td></tr>
+    <tr><td>TSMC (2330.TW)</td><td class="c">TWD(내부정합)</td><td class="r">13.72x</td><td class="r"><b>64.2%</b></td><td class="r">18.4x</td><td class="r">+36.0%</td></tr>
+  </table></div>
+  <p><span class="red">🔴 TSEM은 TSMC보다 높은 P/S에 거래되면서 매출총이익률은 TSMC의 39% 수준이다.</span> 성숙노드 직접 경쟁자(GF·Vanguard·UMC·X-FAB) 대비로는 <b>2.4~15배.</b> TTM 실적으로는 어떤 방식으로도 정당화되지 않는 배수다.</p>
+  <h3>멀티플이 전제하는 것 = 2028 모델의 완주</h3>
+  <div class="tbl-scroll"><table>
+    <tr><th>기준</th><th class="r">매출</th><th class="r">순이익</th><th>현 시총 기준 배수</th></tr>
+    <tr><td>TTM 실적</td><td class="r">$1,621.6M</td><td class="r">~$245M</td><td>P/S <b>16.3x</b> · P/E ~108x</td></tr>
+    <tr><td>2028 모델 v1 (5/13)</td><td class="r">$2,800M</td><td class="r">$750M</td><td>P/S 9.4x · P/E 35.2x</td></tr>
+    <tr style="background:#f6efd8"><td><b>2028 모델 v2 (7/14)</b></td><td class="r"><b>$3,600M</b></td><td class="r"><b>$1,200M</b></td><td><b>P/S 7.3x · P/E 22.0x</b></td></tr>
+  </table></div>
+  <p>즉 <b>현재가는 "2028년까지 매출 2.30배·순이익 5.44배(매출 CAGR 32.0%, 순이익률 14%→33%)"를 이미 가격에 넣은 상태</b>다. 달성 시 P/E 22x는 성숙노드 파운드리로서 과하지 않고, 미달 시 하방은 매우 크다.</p>
+  <h3>수익모델 관점의 정량 단서 3가지</h3>
+  <div class="tbl-scroll"><table>
+    <tr><th style="width:18%">단서</th><th>지지</th><th>부정</th></tr>
+    <tr><td><b>① 가격 결정력</b></td><td class="grn">고객이 2028년까지 capa를 잡으려고 <b>현금 $315M을 선납</b> — 병목이 실재한다는 시장 증거</td><td class="yel">성숙 사업 ASP 하락을 20-F가 명시 전제. commodity 노출 비중 ❌ 미공시</td></tr>
+    <tr><td><b>② 믹스 전환</b></td><td class="grn">GM 20.4% → 26.8%(5분기). 순이익률 33% 목표는 GM 40%대를 함의</td><td class="yel">상승분이 SiPho 믹스인지 단순 가동률·legacy 제거인지 <b>분리 불가</b>(플랫폼별 매출 미공시)</td></tr>
+    <tr><td><b>③ 운영 레버리지</b></td><td class="grn">증분 GM 49~68% 실측. 매출 2배 시 영업이익 $900M+가 산술적으로 성립</td><td class="yel">일본 $3B 감가상각이 2027~29년에 마진을 한 번 누른다(아그라테 전례). Pillar Two가 세율 8.8%→15%로 순이익 약 7% 잠식</td></tr>
+  </table></div>
+  <blockquote><b>함의</b>: 이 멀티플은 "성숙노드 파운드리에 매긴 값"이 아니라 <b>"광 인터커넥트 병목 자산에 매긴 값"</b>이다. 그 재분류가 옳은지는 회사가 플랫폼별 매출을 공시하지 않는 한 <b>외부에서 검증할 수 없고</b>, 유일한 대리 검증 지표가 (a) 분기 매출총이익률 (b) 선수금 잔액 (c) Q2'26 이후 실제 매출이 가이드($455M)를 지키는가다.</blockquote>
+</div>
+
+<div class="card">
+  <h2>Part D — 종합 판정</h2>
+  <h3>D.1 자가점검</h3>
+  <div class="tbl-scroll"><table>
+    <tr><th class="c" style="width:5%">#</th><th style="width:32%">질문</th><th>답</th></tr>
+    <tr><td class="c">0</td><td>주력 제품 3~5개 서술·기술/IP/해자·제품→수익모델 매핑</td><td>✅ 5개 + 보조 서비스. 특허 281건·PDK 종속이 실질 해자</td></tr>
+    <tr><td class="c">1</td><td>무엇을 누구에게 왜 파나</td><td>✅ 특수공정 웨이퍼를 팹리스·IDM·AI 모듈 통합사에(B2B). 이유 = 특수공정 팹을 자체 보유할 수 없어서</td></tr>
+    <tr><td class="c">2</td><td>매출이 몇 주머니, 비중·추세</td><td class="red">🔴 단일 보고 세그먼트 — 플랫폼별 분해 불가. 지역만: 미 42%·아시아(일본 제외) 39%(↑12%p/3년)·일본 13%·유럽 6%</td></tr>
+    <tr><td class="c">3</td><td>주력 과금모델</td><td>✅ ⑤ 하드웨어 one-time(웨이퍼 ASP×출하량, 선적 인식) + 신생 capacity 선수금</td></tr>
+    <tr><td class="c">4</td><td>반복매출 비중</td><td class="red">🔴 계약상 0%. 실질 반복은 설계 종속</td></tr>
+    <tr><td class="c">5</td><td>고객/유통 집중도</td><td class="red">🔴 상위 8사 50%·최대 11%(NTCJ 4중 얽힘). 운영 통제권은 ST·NTCJ·Fab3 임대인·인텔에 분산 종속</td></tr>
+    <tr><td class="c">6</td><td>이 마진의 분모는</td><td>✅ 회계 GM 23~27% / <b>현금 GM ~41~45%</b>(D&amp;A가 COGS의 25.2%)</td></tr>
+    <tr><td class="c">7</td><td>매출 흔들 외부 변수 하나</td><td>✅ AI 데이터센터 광 인터커넥트 capex(forward 노출 사실상 100%)</td></tr>
+    <tr><td class="c">8</td><td>발표 숫자 vs 장부 매출</td><td class="red">🔴 $3.6B/$1.2B(2028 목표)·$1.3B(2027 계약, CEO 발언) vs 장부 연율 $1.66B. 공시 backlog 0</td></tr>
+    <tr><td class="c">9</td><td>매출 믹스 방향</td><td>✅ 저→고품질 명확. 150mm 폐지 → 300mm SiPho. 변곡 = 2027 Q4 / 2029</td></tr>
+  </table></div>
+
+  <h3>D.2 수익모델 등급 (4차원)</h3>
+  <div class="tbl-scroll"><table>
+    <tr><th style="width:24%">차원</th><th class="c" style="width:8%">등급</th><th>근거</th></tr>
+    <tr><td>예측가능성(반복성)</td><td class="c red">🔴</td><td>계약 반복매출 0 · 공시 backlog 0 · 회사 자인 "limited order backlog" · 발주 리드타임 2~6개월. 완화 = 선수금 $342.7M·설계 종속</td></tr>
+    <tr><td>수익성(마진 구조)</td><td class="c yel">🟡</td><td>GM 23.2%(FY25) → 26.8%(Q1'26) 회복. 현금 GM ~45%. D&amp;A 19.4% of 매출의 고정비 구조. 성숙노드 파운드리 중상위</td></tr>
+    <tr><td>과금 강도(가격결정력·lock-in)</td><td class="c yel">🟡</td><td>per-wafer ASP. SiPho는 선수금 받을 만큼 강하고 성숙 RF·Power는 ASP 하락 자인 — <b>이중 구조이며 비중 미공시</b></td></tr>
+    <tr><td>고객 stickiness(전환비용)</td><td class="c grn">🟢</td><td>20-F 명시: 아날로그 설계는 타 파운드리 이전 불가(PDK·디바이스 모델 종속). sales cycle 9~24개월. multi-fab cross-qualification. 상쇄 = 상위 8사 50% 집중</td></tr>
+  </table></div>
+
+  <h3>D.3 종합 판정</h3>
+  <ul>
+    <li><b>아키타입 확정</b> = <b>⑥ 하드웨어 one-time(웨이퍼 ASP×출하량)</b> 주력 + <b>① 믹스 시프트</b>(200mm legacy 아날로그 → 300mm SiPho, thesis 엔진) + <b>④ capacity reservation</b>(2026 신생, 선수금 $342.7M).</li>
+    <li><b>핵심 edge 1개</b>: <b>PDK·아날로그 설계 종속성이 만든 전환비용</b>이 2026년에 처음으로 <b>가격 결정력으로 전환</b>되었다. 고객이 2028년까지의 SiPho capa를 잡으려 현금 $315M을 선납했다는 사실 하나가, "특수공정 파운드리는 결국 성숙노드 가격 경쟁"이라는 기본 가정을 이 회사에 한해 무력화한다.</li>
+    <li><b>치명 함정 2개</b>:
+      <ol>
+        <li><span class="red">🔴 C.4 백로그 품질</span> — 시장가를 떠받치는 숫자($3.6B·$1.2B·$1.3B) 중 감사받은 계약잔고는 <b>하나도 없다.</b> 유일한 실물 담보가 선수금 $342.7M이고, 회사 스스로 <i>"limited order backlog"</i>라고 쓴다.</li>
+        <li><span class="red">🔴 C.10 현금 전환</span> — 순이익 흑자·<b>FY2025 FCF −$48.9M</b>, TTM FCF도 선수금을 빼면 <b>≈ −$156M.</b> capex/매출 30% 고착에 일본 $3B이 얹힌다. 곡괭이 질 <b>(B) 자본갈증형</b> — 다만 순현금 $1.34B·METI 보조금 $1B·고객 선수금이라는 <b>3중 외부화 완충</b>이 순수 (B)형과 구별한다.</li>
+      </ol>
+    </li>
+    <li><b>thesis 함의</b>: 수익모델의 오늘 실체는 <i>마진 23~27%·FCF 마이너스·계약잔고 미공시의 자본집약 웨이퍼 위탁생산</i>이다. 강세 논리 전체가 <b>SiPho라는 단일 플랫폼의 희소성 → 선수금 → 가동률·믹스 → 운영 레버리지</b>라는 사슬 하나에 걸려 있고, 그 사슬은 지금 실제로 작동 중이다(증분 GM 49~68%가 실측). 그러나 <b>회사가 플랫폼별 매출을 공시하지 않으므로 그 사슬의 굵기를 외부에서 잴 수 없다.</b> P/S 16.3x는 사슬이 2028년까지 버틴다는 데 걸린 값이며, 검증 가능한 대리 지표는 <b>분기 매출총이익률 · 선수금 잔액 · Q2'26 이후 가이드 준수</b> 셋뿐이다.</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>12 함정 🚩 요약</h2>
+  <div class="tbl-scroll"><table>
+    <tr><th style="width:6%">#</th><th style="width:15%">함정</th><th class="c" style="width:11%">결과</th><th>한 줄</th></tr>
+    <tr><td>C.1</td><td>마진 분모 forensics</td><td class="c yel">⚠️</td><td>헤드라인 왜곡 없음. 단 D&amp;A가 COGS의 25.2% → <b>현금 GM ~41~45%</b>(회계 GM의 1.8배). Fab3 선급 $105M이 2030까지 분기 $6M씩 COGS 유입</td></tr>
+    <tr><td>C.2</td><td>반복매출 프리미엄</td><td class="c red">🚩</td><td>계약 반복매출 <b>0%</b>. 웨이퍼 일회 판매·선적 인식. 반복성은 설계 종속 관성에만 의존</td></tr>
+    <tr><td>C.3</td><td>ARR ↔ 장부매출</td><td class="c red">🚩</td><td>발표 $3.6B/$1.2B(2028)·$1.3B(2027) vs 장부 연율 $1.66B. 선수금은 매출이 아니라 부채(미래 차감 크레딧)</td></tr>
+    <tr><td>C.4</td><td><b>백로그 품질</b></td><td class="c red"><b>🚩🚩</b></td><td>20-F backlog·RPO 공시 <b>전무</b>, 6-K가 "limited order backlog" 자인. 감사받은 잔고 = 선수금 $342.7M뿐. 단 "minimum capacity commitments" 양방향 구속이 IDIQ 천장보다는 질 좋음</td></tr>
+    <tr><td>C.5</td><td>가격 결정력</td><td class="c yel">⚠️</td><td>이중 구조 — SiPho 차별화(현금 선납) vs 성숙 RF·Power ASP 하락 자인. <b>commodity 노출 비중 ❌ 미공시</b></td></tr>
+    <tr><td>C.6</td><td>고객·유통 집중도</td><td class="c red">🚩</td><td>상위 8사 <b>50%</b>·최대 11%. NTCJ 4중 얽힘(고객·JV 49%·임대인·구조조정 상대). 운영 통제권은 ST(아그라테)·Fab3 임대인(소송 중)·인텔(이행 거부)에 종속</td></tr>
+    <tr><td>C.7</td><td>매크로 민감도</td><td class="c red">🚩</td><td>AI 광 인터커넥트 capex에 forward 노출 사실상 100%. 2차 = 이스라엘 안보·NIS 12.5% 절상·Pillar Two(세율 8.8%→15%)</td></tr>
+    <tr><td>C.8</td><td>금리 비대칭</td><td class="c">해당 제한적</td><td>float 모델 아님. 순금융수익이 세전이익의 23.6%지만 100bp 인하 = 세전이익 −5.4%로 대칭·소폭</td></tr>
+    <tr><td>C.9</td><td>운영 레버리지</td><td class="c grn"><b>🟢 강함</b></td><td>증분 GM <b>49→55→55%</b>(2025 QoQ), Q1'26 YoY <b>68%</b>. 2028 모델은 이 레버리지의 외삽. 🔴 일본 $3B 감가상각이 base를 한 번 리셋</td></tr>
+    <tr><td>C.10</td><td><b>현금 전환</b></td><td class="c red"><b>🚩🚩</b></td><td>NI +$220.5M vs <b>FCF −$48.9M</b>(FY25). TTM FCF 선수금 제외 시 <b>≈ −$156M</b>. capex/매출 30% 고착 + $3B 추가. <b>단 운전자본 전가 없음</b>(DSO 53.9→47.0일 개선·재고 −4.3%) → 곡괭이 (B)형이나 3중 완충</td></tr>
+    <tr><td>C.11</td><td>주당 희석</td><td class="c">🟢 현재 / ⚠️ fwd</td><td>3년간 증자 0, RSU만 +1.0~1.1%/yr. 주당 매출 +7.8%(FY25). forward = 6-K가 일본 자금원으로 equity 명시</td></tr>
+    <tr><td>C.12</td><td>모델 전환 신호</td><td class="c red">🔴 진행(긍정)</td><td>팹·기술·마진·과금·지역 5축 동시 전환. 62일 만에 2028 목표 상향($2.8B/$750M→$3.6B/$1.2B). <b>단 시장 선반영</b>(2028 기준 P/S 7.3x·P/E 22.0x)</td></tr>
+  </table></div>
+</div>
+
+<div class="card">
+  <h2>⚠️ 수집 불완전 항목</h2>
+  <ul>
+    <li><b>웨이퍼 ASP·출하량</b> ❌ 미공시(20-F·6-K 전무) → 단위경제학 ARPU·기여마진·LTV/CAC 산출 불가. 동종 추정 대입은 하지 않았다.</li>
+    <li><b>가동률(utilization) 수치</b> ❌ 미공시 — 20-F가 <i>가격 결정 요인</i>으로 언급만.</li>
+    <li><b>기술 플랫폼별(SiPho/SiGe/RF/Power/CIS) 매출·비중</b> ❌ 미공시 — 단일 보고 세그먼트(20-F Note 14E). SiPho 기여도는 capex 배분·선수금·계약 정황으로만 추정 가능.</li>
+    <li><b>SiPho 선수금의 계약 상대·건수·상각 스케줄</b> ❌ 미공시 — 6-K 위험요인에 존재만 기재.</li>
+    <li><b>Q1 2026 실적 발표 슬라이드(IR static-file)</b> — PDF 전용으로 브라우저 텍스트 추출 실패. 동일 내용은 6-K 원문으로 대체 수집.</li>
+    <li><b>공식 X(트위터) 계정</b> — <b>부재</b>(수집 실패 아님). towersemi.com 푸터 2026-07-25 재확인: LinkedIn·Facebook·YouTube·Weixin만.</li>
+    <li><b>내부자 매매 신호</b> — FPI라 <b>Form 4 의무 면제</b> → 구조적 공백.</li>
+  </ul>
+</div>
+
+<p class="foot">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p>
+
+</div>
+
+<script>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+const VIZ = {
+  "trajectory": {
+    "periods": ["Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"],
+    "forecastFrom": 5,
+    "inflection": {"index": 4, "label": "SiPho 선수금 $290M"},
+    "series": [
+      {"key":"rev","label":"매출 ($M)","axis":"left","color":"#2980b9","values":[358,372,396,440,414]},
+      {"key":"gm","label":"매출총이익률 (%)","axis":"right","color":"#c0392b","values":[20.4,21.5,23.5,26.7,26.8]}
+    ]
+  }
+};
+try{ DDViz.renderTrajectory('fig-rate','leg-rate',VIZ.trajectory); }catch(e){ console.error('traj',e); }
+</script>
