@@ -1,0 +1,1457 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GFS(GlobalFoundries) 주간 종합 분석 — 2026-07-25</title>
+<style>
+:root{ --bg:#EBE4D3; --card:#FDF6E3; --ink:#1f2328; --line:#e8e1cf; --muted:#5b6470; }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);margin:0;padding:28px 16px 64px;
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",Segoe UI,sans-serif;
+  line-height:1.72;font-size:15.5px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;background:var(--card);border:1px solid var(--line);
+  border-radius:14px;padding:38px 42px 52px;box-shadow:0 2px 14px rgba(80,64,32,.07)}
+h1{font-size:1.85rem;line-height:1.35;margin:0 0 22px;padding-bottom:16px;border-bottom:3px solid #1f2328;letter-spacing:-.01em}
+h2{font-size:1.30rem;margin:44px 0 14px;padding:10px 0 8px;border-bottom:2px solid var(--line);letter-spacing:-.01em}
+h3{font-size:1.08rem;margin:30px 0 10px;color:#2c3038}
+h4{font-size:.99rem;margin:22px 0 8px;color:#3a3f47}
+p{margin:11px 0}
+a{color:#1a5490;text-decoration:none;border-bottom:1px solid rgba(26,84,144,.28)}
+a:hover{border-bottom-color:#1a5490}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:13.6px;background:#fffdf6;
+  display:block;overflow-x:auto;white-space:nowrap}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f2ead6;font-weight:700}
+tr:nth-child(even) td{background:#fdfaf1}
+ul,ol{margin:11px 0;padding-left:24px}
+li{margin:6px 0}
+blockquote{margin:16px 0;padding:13px 18px;background:#f7f1e0;border-left:4px solid #b9ad8d;border-radius:0 8px 8px 0;color:#3a3f47}
+blockquote p{margin:7px 0}
+code{background:#f2ead6;padding:1px 5px;border-radius:4px;font-size:.9em}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+strong{font-weight:700}
+.dd-fig{margin:26px 0;padding:16px 18px;background:#ffffff;border:1px solid var(--line);border-radius:10px}
+.dd-fig .cap{font-size:13px;font-weight:700;margin:0 0 10px;color:#2c3038}
+.ev-badge{display:inline-block;margin-left:8px;padding:2px 9px;border-radius:999px;background:#1a1a1a;color:#fff;font-size:11.5px;font-weight:700}
+@media print{ body{background:#fff;padding:0} .wrap{background:#fff;border:0;box-shadow:none;padding:0}
+  table{display:table;white-space:normal} .dd-fig{break-inside:avoid} }
+@media (max-width:720px){ .wrap{padding:22px 16px 36px} body{font-size:14.6px} h1{font-size:1.45rem} }
+
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+</style><meta name="vault-stage" content="Monitoring">
+<meta name="vault-topic" content="GFS">
+<meta name="vault-date" content="2026-07-25">
+<meta name="description" content="GFS(GlobalFoundries) 주간 종합 분석 — 2026-07-25">
+<meta name="robots" content="noindex, nofollow">
+</head><body><div class="wrap">
+<h1>🏭 GFS(GlobalFoundries) 주간 종합 분석 — 2026-07-25</h1>
+<h2>📌 한 장 요약 (7/24 금 종가 기준)</h2>
+<ul>
+<li><strong>종합 상태: 🔴 위험(🟡 주의 → 격상)</strong> — ⚠️ Thesis 리스크 신호 <strong>3개 동시 발현</strong>(#5 TRIGGERED escalating · #3 carryover · #7 재점화). 판정 격상은 주가 하락이 아니라 <strong>① 주가의 섹터 디커플링 ② CSO 직접보유 완전 소진</strong>이 같은 주에 겹친 결과.</li>
+<li>🔴 <strong>주가 $53.53(-5.94% 금)· 주간 -6.87% — 그런데 반도체 섹터는 같은 주 +1.0%(SOXX).</strong> 베타 보정 초과 하락 <strong>-8.6%p = GFS 고유</strong>. "섹터 rout이라 어쩔 수 없다"는 지난 3주의 설명이 이번 주엔 <strong>성립하지 않는다</strong>.</li>
+<li>🔴 <strong>CSO Michael Hogan 직접 지분 807주 → 0.496주 = 사실상 전량 소진</strong>(<a href="https://www.sec.gov/Archives/edgar/data/1709048/000162828026049554/wk-form4_1784918046.xml">7/24 Form 4</a>). ⚠️ #5 누적 <strong>$2,267,362(~227%)</strong>. 클러스터 = CCO 사임형 전량매도 → CSO 완주 → CLO 주간 → <strong>이사(Dorchak)</strong>. <strong>CEO Tim Breen 본인 매도는 여전히 0</strong>(#3 핵심 미발동).</li>
+<li>🔴 <strong>밸류 사상 첫 이탈</strong>: $53.53 = 본업 floor 밴드 <strong>$55~64 하단을 -2.7% 아래로 이탈</strong>(최초). P/S 5.53→<strong>4.29</strong>, EV/EBITDA 18.2→<strong>13.8</strong>. 애널 컨센 median $80은 물론 <strong>최저 목표가 $60조차 +12% 위</strong> = 컨센이 시장을 전혀 못 따라오고 있음.</li>
+<li>🟠 <strong>D-Agreement window(6/22~7/22) +3일 만료·무공시</strong> — 공식 발표·협상 leak·경영진 언급 전부 0. 실패 판정은 아니고 '기한 미상 pending'(90일 deadline ~8/19).</li>
+<li>🟠 <strong>🇺🇸 축 상대적 후퇴</strong>: <a href="https://www.commerce.gov/news/press-releases/2026/07/trump-administration-secures-additional-100-billion-us-semiconductor">DOC 7/16 — TSMC 증액 $100B, 미국 누적 <strong>$265B·12개 fab</strong></a>에 <strong>GFS는 한 줄도 언급되지 않음</strong>. 정부의 자본 배분 서열이 재확인됨.</li>
+<li>🟢 <strong>🇺🇸 축 유일 실물 진척</strong>: <a href="https://capitalregionchamber.com/news/globalfoundries-names-grant-mcewan-general-manager-of-its-manufacturing-facility-in-new-york/">7/21 Fab 8(Malta NY) 신임 GM <strong>Grant McEwan</strong> 임명</a> — 전 NXP 글로벌운영전략, 싱가포르 300mm JV fab 건설 총괄. 2,500명 사이트.</li>
+<li><strong>🎯 4대 축 신규</strong>: 🇺🇸 2건 · 💡 1건 · 🤖 1건 · ⚛️ <strong>0건</strong>(acknowledged-zero). <strong>모든 것이 8/5 Q2 콜(D-11)로 수렴.</strong></li>
+</ul>
+<p><strong>📖 배경 (GFS thesis·4대 축·핵심 용어 — 처음 보는 독자용)</strong></p>
+<ul>
+<li><strong>GFS 개요</strong>: GlobalFoundries(NASDAQ:GFS) = <strong>mature node</strong>(성숙 공정) 파운드리 + <strong>silicon photonics</strong> pure-play + 5 모달리티 양자 foundry 곡괭이. Cayman 법인 = <strong>Foreign private issuer</strong>(외국 사기업) → 분기 10-Q·연간 10-K 대신 <strong>6-K(수시)·20-F(연간)</strong> 제출. CIK 0001709048.</li>
+<li><strong>4대 투자 축</strong>: 🇺🇸 미국 국내 파운드리(CHIPS·DoE Genesis·non-Taiwan capacity) · 💡 광인터커넥트(SCALE CPO·OCI MSA·silicon photonics) · ⚛️ 양자(Quantum Technology Solutions·PsiQuantum Fab 8/Omega·5 모달리티) · 🤖 Physical/Edge AI(ARC/MIPS RISC-V·automotive MCU·ADAS).</li>
+<li><strong>핵심 용어</strong>: <strong>silicon photonics</strong>(실리콘 포토닉스) = 전기 대신 빛(광자)으로 신호를 주고받는 반도체 / <strong>CPO</strong>(Co-Packaged Optics·광공동패키징) = 연산 칩 바로 옆에 광부품을 같은 패키지로 붙여 데이터 병목을 푸는 차세대 패키징 / <strong>mature node</strong> = 최첨단(3·5nm)이 아닌 12nm+ 공정, 자동차·IoT용 칩을 싸고 안정적으로 대량 생산(GFS 본업) / <strong>OCI</strong> = Optical Compute Interconnect(개방형 광 인터커넥트 표준).</li>
+<li><strong>경영진</strong>: CEO <strong>Tim Breen</strong> / CFO <strong>Sam Franklin</strong> / CTO <strong>Gregg Bartlett</strong>(양자 대변인) / VP Quantum Technology Solutions <strong>Nicholas Sergeant</strong> / CSO <strong>Michael Hogan</strong> / CLO <strong>Samak Azar</strong>.</li>
+</ul>
+<blockquote>
+<p><strong>데이터 수집 환경</strong>: Chrome MCP 전용(WebFetch/WebSearch 0회·29 URL 실측). SEC EDGAR(CIK 0001709048, Foreign private issuer <strong>6-K + 20-F + Form 4</strong>·Form 4 XML 본문 정독) + yfinance(GFS + foundry peers TSM/TSEM/INTC/UMC + 양자 peers INFQ/IONQ/QTUM + 참고 MRVL/MU/SOXX) + GFS 공식 IR/newsroom + Yahoo + X 6계정 + TQI + 반도체 매체 4종 + 정부(commerce.gov·energy.gov·oci-msa.org·psiquantum) + careers.gf.com + news-headlines MCP(RSS date 검증). <strong>baseline = 2026-07-11 weekly + 2026-07-23 daily + GFS-Memory.</strong> 매크로 지수·유가·금리는 macro-daily/weekly가 owner(본 보고서는 배경 1줄).</p>
+<p><strong>분량 가이드 60-25-10-5</strong> (⚛️양자+💡광 60% / 🇺🇸파운드리 25% / 🤖Physical AI 10% / 인사이더·매크로 5%) — 분량 배분 가이드이며 thesis는 <strong>4대 축 균등 추적</strong>. Devil's Advocate 5문 + Steelman 3축(데이터·구조·시간 지평)은 작성 전 내부 수행(결론에만 반영).</p>
+<p>🔴 <strong>정정 상수(재발 금지)</strong>: OCI = <strong>Optical Compute Interconnect</strong>("Optical Scale-Up Initiative"는 오기) · $25B = <strong>2030 pluggable optics TAM</strong>(Coherent 추정, GFS 목표 아님) · <strong>GFS는 OCI MSA 회원 아님</strong>(표준 "충족" 자기주장만) · 광 테마 직접 수혜주 = <strong>Marvell</strong>(광 DSP), GFS는 노출된 제조 옵션.</p>
+<p>⚠️ <strong>수집 실패 6건</strong>: @timbreen(비공개 계정) · @howtoswingtrade(계정 소멸 3회차) · AnandTech(편집국 폐쇄→포럼 리다이렉트) · The Information(페이월) · WSJ RSS(<strong>2025-01 날짜 stale — 사용 금지</strong>) · Reuters(401 deprecated). 상세는 §C 말미.</p>
+</blockquote>
+<hr />
+<h3>핵심 변화 요약 (전주 7/11 weekly 대비 — 🎯 4대 투자 축별)</h3>
+<ul>
+<li><strong>주가</strong>: 7/10 $68.97 → <strong>7/24 $53.53 = 2주 -22.4%</strong>. 주간(7/17→7/24) <strong>-6.87%</strong> vs <strong>SOXX +1.00%</strong>. 시총 $37.84B → <strong>$29.37B</strong>. 52주 고점 대비 <strong>-42.2%</strong>.</li>
+<li><strong>SEC 신규 3건</strong>: Hogan(CSO) <strong>7/22 전량 소진</strong> · Dorchak(이사) 7/20 $232,880 · Form 144. 신규 <strong>6-K 0</strong> · 신규 <strong>13G/A 0</strong>(Mubadala Amendment 3 여전히 미제출).</li>
+<li><strong>⚛️ 양자</strong>: <strong>신규 0건</strong>(acknowledged-zero). D-Agreement window 만료·무공시. PsiQuantum $125M DARPA(7/22)는 고객사 건 = 간접.</li>
+<li><strong>🇺🇸 미국 국내 파운드리</strong>: <strong>2건</strong> — Fab 8 GM 임명(7/21·실물 ✅) / DOC TSMC $265B(7/16·<strong>GFS 미언급</strong> = 상대 후퇴 🔴).</li>
+<li><strong>💡 광인터커넥트</strong>: <strong>1건</strong> — Semiconductor Engineering 7/23 전기광학칩 설계 기사에 GF 공정노드 + Keysight 등장(생태계 datapoint·<strong>design-win 아님</strong>). SCALE design-win 여전히 <strong>0</strong>.</li>
+<li><strong>🤖 Physical·Edge AI</strong>: <strong>1건</strong> — EE Times 7/13 GF FD-SOI VP <strong>Sudipto Bose</strong> 인터뷰(MIPS Taipei).</li>
+<li><strong>채용</strong>: 555 → <strong>494</strong>(-61, <strong>-11.0%</strong>). photonics 54→<strong>47</strong> · quantum 27→<strong>32(+5)</strong> · RISC-V <strong>20</strong>.</li>
+<li><strong>X</strong>: 공식 계정 7/15 이후 <strong>10일 dormant</strong>. cashtag에서 인사이더 매도가 리테일 담론으로 진입.</li>
+</ul>
+<hr />
+<h2>§A. 주가/기술적 (frame 분량 5%) 🔴</h2>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>값 (7/24 금 종가)</th>
+<th>전주(7/11 weekly) 대비</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>종가</td>
+<td><strong>$53.53 (-5.94% 당일)</strong></td>
+<td>$68.97 → <strong>-22.4%</strong> (2주)</td>
+</tr>
+<tr>
+<td>시간외</td>
+<td>$53.99 (+0.86%)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>주간 흐름</td>
+<td>$57.48(7/17)→$56.81(7/20)→$59.39(7/21)→$56.91(7/23)→<strong>$53.53</strong></td>
+<td><strong>WoW -6.87%</strong></td>
+</tr>
+<tr>
+<td>시총</td>
+<td><strong>$29.37B</strong></td>
+<td>$37.84B → -22.4% · vs TSM $2.09T = <strong>1.4%</strong></td>
+</tr>
+<tr>
+<td>52W 범위</td>
+<td>$31.51 ~ $92.55 · 위치 <strong>36.1%</strong></td>
+<td>고점 대비 <strong>-42.2%</strong> (7/11 -25.5%)</td>
+</tr>
+<tr>
+<td>베타</td>
+<td><strong>1.759</strong></td>
+<td>flat</td>
+</tr>
+<tr>
+<td>공매도 % float</td>
+<td><strong>16.93%</strong> (7.25M주)</td>
+<td>14.89% → <strong>재상승</strong> · 전월 7.75M주 대비 주수는 감소</td>
+</tr>
+<tr>
+<td>P/S (TTM)</td>
+<td><strong>4.29</strong></td>
+<td>5.53 → -22%</td>
+</tr>
+<tr>
+<td>EV/EBITDA</td>
+<td><strong>13.84</strong></td>
+<td>18.20 → -24% · foundry peer 중 최저</td>
+</tr>
+<tr>
+<td>Forward P/E</td>
+<td><strong>21.27</strong></td>
+<td>27.31</td>
+</tr>
+<tr>
+<td>P/B</td>
+<td><strong>2.51</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>목표가</td>
+<td>중앙값 <strong>$80</strong> / 평균 $81 / 범위 <strong>$60~$125</strong> / 21명 / <strong>buy</strong></td>
+<td><strong>현재가 대비 +49.4%</strong> · <strong>최저 목표가 $60조차 +12.1% 위</strong></td>
+</tr>
+<tr>
+<td>배당</td>
+<td>$0.48 (yield <strong>0.84%</strong>)</td>
+<td>주가 하락으로 yield 상승</td>
+</tr>
+</tbody>
+</table>
+<h3>foundry + 양자 peer 매트릭스 (7/24 종가 · WoW = 7/17→7/24)</h3>
+<table>
+<thead>
+<tr>
+<th>종목</th>
+<th>종가</th>
+<th><strong>WoW</strong></th>
+<th>7/24 당일</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GFS</strong> ★</td>
+<td><strong>$53.53</strong></td>
+<td><strong>-6.87%</strong></td>
+<td>-5.94%</td>
+<td>🔴 주간 유일한 대형 낙폭</td>
+</tr>
+<tr>
+<td><strong>TSM</strong> (TSMC)</td>
+<td>$403.41</td>
+<td><strong>+1.26%</strong></td>
+<td>-2.93%</td>
+<td>7/16 DOC $265B 증액 발표</td>
+</tr>
+<tr>
+<td><strong>TSEM</strong> (Tower)</td>
+<td>$233.37</td>
+<td>-0.31%</td>
+<td>-10.39%</td>
+<td>silicon photonics peer</td>
+</tr>
+<tr>
+<td><strong>INTC</strong> (Intel)</td>
+<td>$92.32</td>
+<td>-2.86%</td>
+<td>-7.89%</td>
+<td>실적 후 상승분 반납</td>
+</tr>
+<tr>
+<td><strong>UMC</strong></td>
+<td>$19.48</td>
+<td>-8.33%</td>
+<td>-6.66%</td>
+<td>일반 foundry</td>
+</tr>
+<tr>
+<td><strong>INFQ</strong></td>
+<td>$8.97</td>
+<td>-1.32%</td>
+<td>-7.43%</td>
+<td>양자 중성원자</td>
+</tr>
+<tr>
+<td><strong>IONQ</strong></td>
+<td>$32.84</td>
+<td>-5.58%</td>
+<td>-3.61%</td>
+<td>양자 트랩이온</td>
+</tr>
+<tr>
+<td><strong>QTUM</strong> (ETF)</td>
+<td>$139.56</td>
+<td>-1.50%</td>
+<td>-2.73%</td>
+<td>양자 섹터 sentiment</td>
+</tr>
+<tr>
+<td><strong>MRVL</strong> (참고)</td>
+<td>$194.23</td>
+<td><strong>+2.94%</strong></td>
+<td>-7.21%</td>
+<td>💡 광 직접수혜(§D-2)</td>
+</tr>
+<tr>
+<td><strong>MU</strong> (참고)</td>
+<td>$920.95</td>
+<td><strong>+8.48%</strong></td>
+<td>-6.99%</td>
+<td>메모리</td>
+</tr>
+<tr>
+<td><strong>SOXX</strong> (반도체 ETF)</td>
+<td>$527.01</td>
+<td><strong>+1.00%</strong></td>
+<td>-4.39%</td>
+<td>섹터 벤치마크</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>판정: 🔴 GFS 고유 약세 — "섹터 rout" 설명이 이번 주엔 무효.</strong>
+두 층을 분리해야 한다. <strong>① 7/24 당일</strong>은 광범위 rout이 맞다(SOXX -4.39%, TSEM -10.4%, MRVL -7.2%, MU -7.0%). GFS -5.94%는 그 안에서 오히려 중간이다. <strong>② 그러나 주(週) 단위로 보면 SOXX +1.00%·TSM +1.26%·MRVL +2.94%·MU +8.48%인데 GFS만 -6.87%다.</strong> 베타 1.759를 적용한 기대치(+1.76%) 대비 <strong>잔차 -8.6%p</strong>가 GFS 고유분이다. 특히 7/21 섹터 반등일(SOXX +5.45%)에 GFS는 +4.54%로 <strong>상승장에서도 뒤졌다</strong>. 3주 연속 관찰된 "저볼륨 상대 약세"가 이번 주 <strong>명확한 디커플링</strong>으로 굳어졌다.
+대응하는 GFS 고유 악재 뉴스는 <strong>없다</strong>. 남는 설명 후보는 ⓐ 인사이더 매도의 리테일 인지 확산(§B·§C) ⓑ D-Agreement window 만료 ⓒ 8/5 실적 전 포지션 정리 ⓓ 지난 3개월 하락 추세의 관성. <strong>어느 쪽이든 "싸졌으니 반등한다"는 근거가 되지 못한다</strong> — 컨센 목표가와 시장가의 괴리(+49%)는 애널리스트 리비전이 아직 안 왔다는 뜻일 수도 있다.
+매크로 배경(1줄): 7/23~24 하락 = <strong>Brent $100 돌파</strong>(미-이란 휴전 결렬·호르무즈 봉쇄) + AI capex 자금조달 우려 + <strong>아시아 메모리 급락</strong>(SK하이닉스 -11%·KOSPI -5.72%) — <a href="https://www.marketwatch.com/story/why-micron-and-other-major-chip-stocks-are-falling-even-as-the-rest-of-tech-holds-up-506851dc">MarketWatch 7/24</a>. 상세는 macro-daily 소관.</p>
+</blockquote>
+<hr />
+<h2>§B. SEC 속보 (frame 분량 5% · Foreign private issuer 6-K + 20-F) 🔴</h2>
+<h3>이번 주 신규 filings (<a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0001709048&amp;type=&amp;dateb=&amp;owner=include&amp;count=40">EDGAR CIK 0001709048</a> 직접)</h3>
+<table>
+<thead>
+<tr>
+<th>제출일</th>
+<th>Form</th>
+<th>인물/내용</th>
+<th>Acc-no</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2026-07-24</strong></td>
+<td><strong>4</strong></td>
+<td>🔴 <strong>Hogan(CSO) 7/22 707주 @ $57.81 = $40,872 매도 + 100주 증여 → 잔여 0.496주</strong></td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1709048/000162828026049554/wk-form4_1784918046.xml">0001628280-26-049554</a></td>
+</tr>
+<tr>
+<td>2026-07-22</td>
+<td>4</td>
+<td>Glenda Dorchak(<strong>이사</strong>) 7/20 4,000주 @ $58.22 = $232,880 → 잔여 14,867</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1709048/000162828026049171/wk-form4_1784749057.xml">0001628280-26-049171</a></td>
+</tr>
+<tr>
+<td>2026-07-20</td>
+<td>144</td>
+<td>Dorchak 매도 사전신고</td>
+<td>0001959173-26-005276</td>
+</tr>
+<tr>
+<td>2026-07-20</td>
+<td>4</td>
+<td>Azar(CLO) 7/16 335주 @ $59.18 = $19,825 → 잔여 12,479</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1709048/000162828026048834/wk-form4_1784581401.xml">0001628280-26-048834</a></td>
+</tr>
+<tr>
+<td>2026-07-20</td>
+<td>4</td>
+<td>Hogan(CSO) 7/15 <strong>+12.496주 @ $61.41 = $767 배당재투자(DRIP·매수)</strong></td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1709048/000162828026048836/wk-form4_1784581782.xml">0001628280-26-048836</a></td>
+</tr>
+<tr>
+<td>2026-07-13</td>
+<td>4</td>
+<td>Azar(CLO) 7/9 335주 @ $70.90 = $23,752</td>
+<td>0001628280-26-047972</td>
+</tr>
+</tbody>
+</table>
+<p>📖 <strong>각주 (입문자용)</strong>
+- 📑 <strong>Form 4</strong>: 임원·이사·10% 이상 주주가 자기 회사 주식을 사고팔면 이틀 안에 SEC에 내는 신고서. <strong>code S</strong> = 시장 매도, <strong>code P</strong> = 매수, <strong>code G</strong> = 무상 증여(가격 0, 매도 아님).
+- 📑 <strong>10b5-1 plan</strong>: 미리 정해둔 일정·수량대로 자동 매도되는 사전약정. "지금 회사 상태를 보고 판다"는 <strong>정보 우위 매도가 아니라는</strong> 법적 방패. 다만 plan을 <strong>언제 등록했는지</strong>는 별개 문제다.
+- 📑 <strong>Foreign private issuer</strong>: 미국 상장이지만 본사가 해외(GFS는 케이맨)인 기업. 10-Q/10-K 대신 6-K·20-F를 내고, 주총 위임장(DEF 14A) 의무가 없어 지분·보수 추적이 더 어렵다.</p>
+<h3>🔴🔴 Form 4 (인사이더) — 이번 주 핵심</h3>
+<table>
+<thead>
+<tr>
+<th>인물</th>
+<th>직책</th>
+<th>이번 주</th>
+<th>6개월 누적</th>
+<th>잔여 직접보유</th>
+<th>⚠️ 신호</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Michael James Hogan</strong></td>
+<td><strong>CSO</strong></td>
+<td>🔴 <strong>7/22 $40,872 매도 + 100주 증여</strong></td>
+<td>$715,812+</td>
+<td><strong>0.496주 (사실상 0)</strong></td>
+<td><strong>#5 — plan 완주·직접보유 소멸</strong></td>
+</tr>
+<tr>
+<td><strong>Glenda Dorchak</strong></td>
+<td><strong>이사(Director)</strong></td>
+<td>7/20 $232,880 (기포착)</td>
+<td>$232,880</td>
+<td>14,867</td>
+<td>#5 — 클러스터가 이사회로</td>
+</tr>
+<tr>
+<td><strong>Samak L. Azar</strong></td>
+<td>CLO</td>
+<td>7/16 $19,825 (기포착)</td>
+<td>$217,210+</td>
+<td>12,479</td>
+<td>#5 — 주간 tranche 지속</td>
+</tr>
+<tr>
+<td><strong>Samuel Vicari</strong></td>
+<td>CCO</td>
+<td>—</td>
+<td>$657,289 (5/11 <strong>전량·open market</strong>)</td>
+<td>0</td>
+<td>단일 최고위험(사임 신호)</td>
+</tr>
+<tr>
+<td><strong>Tim Breen</strong></td>
+<td><strong>CEO</strong></td>
+<td><strong>없음</strong></td>
+<td><strong>$0</strong></td>
+<td>—</td>
+<td><strong>#3 핵심 미발동 ✅</strong></td>
+</tr>
+<tr>
+<td>Mubadala</td>
+<td>UAE 국부펀드</td>
+<td>13G/A 변동 0</td>
+<td>—</td>
+<td>~72.78% 추정</td>
+<td><strong>#3 Amendment 3 미제출 carryover</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>🔴 <strong>⚠️ #5(인사이더 클러스터 6개월 $1M+) = TRIGGERED escalating · 누적 $2,267,362 = 임계의 ~227%.</strong> (7/23 daily $2,226,490 + Hogan $40,872. 증여 100주[code G·$0]와 DRIP $767[code P]은 매도가 아니므로 제외.)</li>
+<li>🔴 <strong>이번 주 질적 변화 = 금액이 아니라 "완주"다.</strong> Hogan은 5/13부터 격주 tranche로 매도해 왔고, 7/11 <a href="https://finance.yahoo.com/markets/stocks/articles/globalfoundries-insider-sold-78-company-011301577.html">Motley Fool이 "78% 매도"로 보도</a>한 바로 그 인물이다. 7/15에는 배당재투자로 12주를 <strong>사기도</strong> 했다. 그리고 7/22에 남은 807주를 전부 처분·증여해 <strong>직접보유가 0.496주</strong>가 됐다. 즉 78% → <strong>~100%</strong>. GF의 <strong>SCALE CPO 플랫폼 대변인이기도 한 CBO/CSO</strong>(§D-2)가 자기 회사 지분을 다 비운 셈이다.</li>
+<li>⚖️ <strong>다만 과대해석 차단 3가지</strong>: ① 신규분 <strong>전량 10b5-1 자동매도</strong> — 등록 시점이 Q1 실적·양자 launch <strong>이전</strong>으로 추정되어 정보 우위 매도로 보기 어렵다. ② 임원 보상의 상당 부분이 주식이라 <strong>정기 현금화는 구조적</strong>이다. ③ <strong>CEO 본인 매도는 0</strong>이며, 이것이 #3의 진짜 방아쇠다. 그럼에도 CCO(사임형 전량) → CSO(완주) → CLO(주간) → <strong>이사</strong>로 4개 층이 순차 확대된 패턴 자체는, 개별 건의 완화 사유들로 상쇄되지 않는다.</li>
+<li><strong>신규 6-K = 0</strong>(최신 = 6/15 AGM proxy, Acc 0001709048-26-000141). 다음 = <strong>8/5 Q2</strong>. <strong>신규 13G/A = 0</strong> — Mubadala 5/26 Form 144(22M주 $1.98B) 이후 post-sale Amendment 3가 두 달 넘게 미제출 상태로, ⚠️ #3 carryover의 핵심 미해소 항목이다.</li>
+<li><strong>DEF 14A(주총 위임장)</strong>: GFS는 Foreign private issuer라 제출 의무가 없다. 정부 ~1% equity의 정확한 지분율은 <strong>어떤 13G/13D에도 반영되지 않았고</strong>(LOI 단계), 8/5 콜 또는 D-Agreement 공시가 첫 검증점이다.</li>
+</ul>
+<hr />
+<h2>§C. 뉴스 + X + 애널리스트 (frame 분량 5%) 🟠</h2>
+<h3>📰 GFS 공식 IR (<a href="https://investors.gf.com/investor-relations/news-events/press-releases">investors.gf.com</a>) · newsroom (<a href="https://gf.com/news-and-events/news/">gf.com</a>)</h3>
+<h4>🟢 <a href="https://capitalregionchamber.com/news/globalfoundries-names-grant-mcewan-general-manager-of-its-manufacturing-facility-in-new-york/">GlobalFoundries Names Grant McEwan General Manager of Its Manufacturing Facility in New York</a> — 2026-07-21</h4>
+<ul>
+<li>Fab 8(Malta NY) <strong>일상 운영 총괄 GM</strong> 신규 임명. 사이트 규모 <strong>약 2,500명</strong>, <strong>미 국토안보부(DHS) 지정 사이트 + Trusted Foundry</strong>. 담당 end-market = 자동차·항공우주/방산·데이터센터·스마트모바일.</li>
+<li><strong>McEwan 이력</strong>: 반도체 30년+. 직전 <strong>NXP Semiconductors</strong> 글로벌 운영전략·지속가능성 총괄로 <strong>싱가포르 300mm JV fab 건설을 감독</strong>. 이전 NXP·Freescale에서 대형 제조조직 운영.</li>
+<li>📖 <strong>각주</strong>: 🏛️ <strong>NXP</strong> = 유럽 최대급 자동차·산업용 칩 회사이자 GFS의 <strong>자동차 top 3 MCU 고객 중 하나</strong>. 즉 <strong>고객사에서 파운드리로</strong> 온 인사다. 🔤 <strong>Trusted Foundry</strong> = 미 국방부가 인증한 보안 등급 제조시설.</li>
+<li>
+<p><strong>🎯 4대 축</strong>: 🇺🇸 미국 국내 파운드리. <strong>🧠 Claude 의견</strong>: 이번 주 GFS 관련 소식 중 유일하게 "말"이 아니라 <strong>사람과 공장에서 일어난 실물 변화</strong>다. 신규 fab 건설 경험자를 flagship 사이트에 앉힌 것은 Fab 8 3대 프로젝트(기존 확장·신규 fab·첨단 패키징 센터)의 <strong>실행 단계 인선</strong>으로 읽는 편이 자연스럽다. 다만 GM 인선은 <strong>분기 매출에 영향을 주지 않으며</strong>, 회사가 공식 IR 채널이 아니라 지역 상공회의소·지역지 위주로 배포했다는 점은 회사 스스로 이를 material 이벤트로 보지 않는다는 뜻이다.</p>
+</li>
+<li>
+<p><strong>그 외 IR 신규 press = 0</strong>. 최상단은 여전히 <a href="https://investors.gf.com/news-releases/news-release-details/globalfoundries-announces-conference-call-review-second-3">Q2 2026 콜 안내(7/1)</a> — <strong>8월 5일(수) 8:30am ET</strong>. newsroom 자체 press 최신은 6/23 SLATE 9SW qualify.</p>
+</li>
+</ul>
+<h3>🌐 Yahoo Finance GFS</h3>
+<table>
+<thead>
+<tr>
+<th><a href="https://finance.yahoo.com/quote/GFS/news">헤드라인</a></th>
+<th>출처·날짜</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://finance.yahoo.com/markets/stocks/articles/globalfoundries-gfs-beat-estimates-again-161002661.html">Will GlobalFoundries (GFS) Beat Estimates Again in Its Next Earnings Report?</a></td>
+<td>Zacks · 7/23</td>
+<td>8/5 프리뷰. GFS-direct 최신</td>
+</tr>
+<tr>
+<td><a href="https://finance.yahoo.com/markets/stocks/articles/globalfoundries-insider-sold-78-company-011301577.html">A GlobalFoundries Insider Sold 78% of His Company Shares</a></td>
+<td>Motley Fool · 7/11</td>
+<td>Hogan 7/8-7/9 $187,124 건. <strong>이번 주 100%로 완결</strong>(§B)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>그 외는 Micron·TSMC·SLATE 등 <strong>10일 이상 노후</strong>. <strong>GFS-direct 신규 catalyst 0.</strong></li>
+</ul>
+<h3>📑 TQI(The Quantum Insider) · 📊 반도체 매체</h3>
+<ul>
+<li><strong><a href="https://thequantuminsider.com/?s=GlobalFoundries">TQI GFS 검색</a></strong>: 최신 = <a href="https://thequantuminsider.com/2026/07/08/sealsq-globalfoundries-post-quantum-cryptography-partnership/">7/8 SEALSQ+GFS PQC 파트너십</a>. <strong>이후 신규 0</strong> — ⚛️ 양자 축 acknowledged-zero의 직접 근거.</li>
+<li><strong><a href="https://semiengineering.com/?s=GlobalFoundries">Semiconductor Engineering</a></strong> 🟡: <a href="https://semiengineering.com/designing-electro-optical-chips/"><strong>Designing Electro-Optical Chips</strong>(7/23)</a> — 전기·광 혼합 칩 설계 흐름 기사에서 <strong>"GlobalFoundries 공정 노드에서 IC를 설계"</strong>하는 시나리오와 <strong>Keysight</strong>(GFS PDK 파트너)가 나란히 등장. <strong>💡 광 축 생태계 datapoint</strong>(design-win 아님). + <a href="https://semiengineering.com/chip-industry-week-in-review-146/">Chip Industry Week In Review</a>에 SEALSQ+GFS 재수록.</li>
+<li><strong><a href="https://www.eetimes.com/?s=GlobalFoundries">EE Times</a></strong> 🟡: <a href="https://www.eetimes.com/interview-with-globalfoundries-vp-at-mips-physical-ai-is-agentic-ai-at-the-edge-taipei-event/">Interview with GlobalFoundries VP at MIPS 'Physical AI is Agentic AI at the Edge' Taipei Event(7/13)</a> — §F 상세.</li>
+<li><strong>AnandTech</strong> ⚠️ 수집 실패: anandtech.com이 forums.anandtech.com으로 리다이렉트(편집국 폐쇄). <strong>뉴스 소스로 기능하지 않음 — 소스 목록 정리 권고.</strong></li>
+<li><strong>The Information</strong> ⚠️ 수집 실패: 검색 구독자 전용 페이월.</li>
+</ul>
+<h3>📱 X 6계정 (Chrome MCP · 7일 cover)</h3>
+<ul>
+<li><strong>$GFS cashtag</strong> (live 6 + top 7 → 중복 제거 11건 · 양자 키워드 필터 통과 <strong>0</strong>):</li>
+<li>🔴 <a href="https://x.com/Stock_Alarm/status/2080731636396593550">@Stock_Alarm 7/24</a>: <em>"3 insiders sold $GFS on the open market this week. 1 bought. One seller is noise. 3 in a week is a pattern."</em> → <strong>X→뉴스 방화벽: 🟡 신호</strong>(사실 정정 필요 — 실제로는 전부 10b5-1이며 "1 bought"은 Hogan DRIP). 다만 <strong>인사이더 매도가 리테일 담론에 진입했다는 사실 자체</strong>는 §A 디커플링의 설명 후보다.</li>
+<li>🟢 <a href="https://x.com/WTEN/status/2080091501640491215">@WTEN 7/23</a>: Fab 8 GM 임명 지역방송 보도 → 상기 1차 소스로 승격 검증 완료.</li>
+<li>🟡 <a href="https://x.com/lifeeconomy_th/status/2080831472358101337">@lifeeconomy_th 7/25</a>: Qualcomm이 <strong>2026-09-01 출하분부터 10%+ 가격 인상</strong>을 고객에 통보(Bloomberg→Reuters). 퀄컴이 TSMC·삼성과 함께 <strong>GlobalFoundries에 위탁</strong>한다는 구조 설명 포함. 🧠 <strong>팹리스가 "공급업체 원가 상승을 더는 흡수 못 한다"고 밝힌 것은 파운드리 ASP 방향에 우호적</strong>이나, GFS 몫인지 선단 노드 몫인지는 이 소스로 알 수 없다(8/5 콜 ASP·가동률 확인 필요).</li>
+<li><strong><a href="https://x.com/GlobalFoundries">@GlobalFoundries</a></strong> (공식): 최신 <a href="https://x.com/GlobalFoundries/status/2077477138513444983">7/15 Sustainability governance</a> + <a href="https://x.com/GlobalFoundries/status/2077396536728657923">7/15 InformationWeek 양자 산업화 피처</a>. <strong>이후 10일 무활동</strong> — 8/5 실적 전 정숙기와 정합.</li>
+<li><strong><a href="https://x.com/timbreen">@timbreen</a></strong> (CEO) ⚠️ 수집 실패: 계정은 실재하나 <strong>비공개(protected)</strong> — 승인된 팔로워만 열람 가능. 게시물 436·팔로워 60으로, <strong>GFS CEO 본인 계정인지 자체가 미검증</strong>. 3회 시도. → <strong>핸들 교체 또는 소스 제거 권고</strong>(대체 = LinkedIn·실적 콜 transcript).</li>
+<li><strong><a href="https://x.com/insidermonkey">@insidermonkey</a></strong>: 8건 전수 스캔 · GFS/quantum/chip 히트 <strong>0</strong> (acknowledged-zero).</li>
+<li><strong><a href="https://x.com/MarioNawfal">@MarioNawfal</a></strong>: 5건 스캔 · GFS/Trump $2B/quantum 히트 <strong>0</strong>(전량 이란 지정학). 5/22 12만 view viral의 후속 없음 = <strong>양자 내러티브 확산 동력 소진</strong>.</li>
+<li><strong><a href="https://x.com/howtoswingtrade">@howtoswingtrade</a></strong> ⚠️ 수집 실패: <strong>계정 존재하지 않음</strong> — 2026-06-13·07-15·07-25 <strong>3회 라이브 확인</strong>. 대체 sell-signal 커버는 $GFS cashtag가 수행 중. → <strong>config·SKILL 소스 목록에서 제거 권고</strong>(3회 확인으로 충분).</li>
+</ul>
+<h3>애널리스트 동향</h3>
+<ul>
+<li><strong>컨센서스 buy</strong> · 21명 · <strong>중앙값 $80</strong> / 평균 $81 / 범위 <strong>$60~$125</strong>. 이번 주 신규 raise/lower <strong>확인된 건 0</strong>.</li>
+<li>🔴 <strong>현재가 $53.53는 최저 목표가 $60보다도 12.1% 아래</strong>다. 중앙값 기준 갭은 <strong>+49.4%</strong>. 이 정도 괴리는 둘 중 하나다 — ⓐ 시장이 과매도이거나 ⓑ <strong>애널리스트 리비전이 3개월 하락을 아직 반영하지 않았거나</strong>. 7/17 밸류 재판정 때도 "급락 3거래일차라 컨센이 stale일 수 있다"고 flag했는데, 그로부터 다시 -8% 내려온 지금은 stale 쪽 가능성이 더 커졌다. <strong>컨센 갭을 상승 여력으로 읽는 것은 이 국면에서 위험하다.</strong></li>
+</ul>
+<hr />
+<h2>§D. 🔴🔴 ⚛️ 양자 축 + 💡 광인터커넥트 축 (frame 분량 60% — 본 스킬 핵심) 🟠</h2>
+<h3>§D-1. ⚛️ 양자 축 — Quantum Technology Solutions + PsiQuantum</h3>
+<h4>Quantum Technology Solutions 사업부 · D-Agreement</h4>
+<ul>
+<li>🔴🔴 <strong>D-Agreement window(6/22~7/22) 만료 +3일 경과 · 여전히 무공시.</strong> <a href="https://investors.gf.com/news-releases/news-release-details/globalfoundries-launches-quantum-technology-solutions-scale-us">Quantum Technology Solutions 5/21 launch</a> 당시의 <strong>$375M LOI → Definitive Agreement(확정계약)</strong> 전환이 공식 발표·정부 발표·협상 leak·Tim Breen/Gregg Bartlett 인터뷰 <strong>어느 채널에서도 나오지 않았다</strong>. commerce.gov·GFS IR·SEC 6-K 전부 0.</li>
+<li>📖 <strong>각주</strong>: 📑 <strong>LOI(Letter of Intent, 의향서) ≠ Definitive Agreement(확정계약)</strong> — LOI는 "하겠다는 의사 표시"로 <strong>법적 구속력이 없고 금액도 확정이 아니다</strong>. 돈이 실제로 움직이려면 확정계약이 필요하다. 📜 <strong>배경</strong>: 5/21 트럼프 행정부 $2B 양자 패키지에서 GFS는 $375M(9사 중 2위·18.6%) + 정부 ~1% 지분을 배정받았고, 통상 30~60일 내 확정계약이 관례여서 6/22~7/22를 추정 window로 잡아 왔다.</li>
+<li>🎯 <strong>왜 중요?</strong>: ⚠️ #1의 직접 조건이며, 🇺🇸+⚛️ 두 축이 동시에 걸린 유일한 계약 이벤트.</li>
+<li>⚖️ <strong>판정 = '실패'가 아니라 '기한 미상 pending'.</strong> 추정 window는 우리가 세운 가설이지 GFS가 약속한 기한이 아니다. 계약상 90일 기준으로는 <strong>~8/19</strong>가 실질 deadline이고, <strong>8/5 Q2 콜이 가장 유력한 확인점</strong>이다. 다만 window 전체가 조용히 지나간 것은 <strong>"조기 체결 시나리오"가 소거됐다</strong>는 정보값을 갖는다.</li>
+<li><strong>Q2 콜 양자 segment 분리 공시</strong>: 8/5 첫 가능성 유지. 현재 양자 매출은 <strong>분리 공시가 없어 전체의 1~3%로 추정</strong>될 뿐이다.</li>
+</ul>
+<h4>PsiQuantum Fab 8 + Omega chipset</h4>
+<ul>
+<li><a href="https://www.psiquantum.com/news">PsiQuantum 7/22 <strong>$125M DARPA QBI 계약</strong></a> + 같은 날 South Chicago 교육·훈련 투자 발표. <strong>GFS·Fab 8·Omega 직접 언급은 0.</strong></li>
+<li>🎯 <strong>간접 tailwind로만 분류</strong>: PsiQuantum은 GFS의 <strong>광자(photonic) 모달리티 대표 고객</strong>이고 Omega 칩셋을 Fab 8(Malta NY)에서 위탁생산한다. 그 고객이 미 정부의 가장 엄격한 상용화 평가 프로그램(QBI)에서 자금을 확보한 것은 <strong>2027년 utility-scale 궤도의 신뢰도를 높인다</strong>. 다만 <strong>GFS 매출도, D-Agreement도, Omega 양산 milestone도 아니다.</strong></li>
+<li><strong>Fab 8 Omega 양산 직접 milestone = 여전히 무공시</strong>(6월 이후 변동 없음).</li>
+<li>⚠️ #6 관련: Lip-Bu Tan(Intel CEO)의 PsiQuantum 이사회 건은 이번 발표와 무관. <strong>🟢 reverse 유지.</strong></li>
+</ul>
+<h4>5 모달리티 customer 매트릭스 — 이번 주 진척</h4>
+<table>
+<thead>
+<tr>
+<th>모달리티</th>
+<th>대표 customer</th>
+<th>이번 주</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Superconducting</td>
+<td>Google + IBM</td>
+<td>변동 없음</td>
+</tr>
+<tr>
+<td>Trapped ion</td>
+<td>Quantinuum</td>
+<td>변동 없음</td>
+</tr>
+<tr>
+<td><strong>Photonic</strong></td>
+<td><strong>PsiQuantum</strong></td>
+<td>🟡 $125M DARPA QBI(간접)</td>
+</tr>
+<tr>
+<td>Topological</td>
+<td>Microsoft</td>
+<td>변동 없음</td>
+</tr>
+<tr>
+<td>Spin</td>
+<td>Diraq + Equal1 + Quantum Motion</td>
+<td>변동 없음</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Cryogenic CMOS</strong>: FDX 플랫폼 기반 5 모달리티 공통 병목(양자 제어·read-out, T+6~24M). 7/8 SEALSQ MoU의 CryoCMOS 협력 외 신규 0.</li>
+</ul>
+<h4>⚛️ 양자 축 3항</h4>
+<ul>
+<li><strong>이번 주 진척</strong>: <strong>신규 0건 — acknowledged-zero.</strong> (D-Agreement 무공시 · PsiQuantum $125M는 고객사 건으로 간접 · TQI GFS 최신은 7/8에서 정지 · 공식 X 양자 포스트 7/15 이후 없음)</li>
+<li><strong>1차 소스</strong>: <a href="https://www.psiquantum.com/news">psiquantum.com/news</a> · <a href="https://thequantuminsider.com/?s=GlobalFoundries">thequantuminsider.com/?s=GlobalFoundries</a> · <a href="https://investors.gf.com/investor-relations/news-events/press-releases">investors.gf.com IR</a> · SEC EDGAR · <a href="https://x.com/GlobalFoundries">@GlobalFoundries</a></li>
+<li><strong>4대 축</strong>: ⚛️ 양자</li>
+</ul>
+<h3>§D-2. 💡 광인터커넥트 축 — SCALE CPO + OCI MSA + value chain</h3>
+<h4>SCALE CPO 플랫폼</h4>
+<ul>
+<li><strong>SCALE</strong> = <strong>S</strong>ilicon photonics <strong>C</strong>o-packaged <strong>A</strong>dvanced <strong>L</strong>ight <strong>E</strong>ngine(2026-05-04 발표). 8λ·16λ 양방향 DWDM, 50/100Gbps 마이크로링 변조기, TSV 피치 sub-45μm, 2.5D/3D 적층. GF 자기규정 = <strong>"manufacturer"</strong>(설계 ❌).</li>
+<li><strong>이번 주 design-win = 0건.</strong> 5월 발표 이후 12주째 고객 채택 발표가 없다. <strong>narrative → 실물 전환의 핵심 검증 신호가 계속 비어 있다.</strong></li>
+<li>🔻 <strong>주목</strong>: SCALE 대변인 CBO <strong>Mike Hogan</strong> = §B의 CSO Michael James Hogan <strong>동일 인물</strong>이며, 그의 직접보유가 이번 주 0이 됐다. (10b5-1 자동매도이므로 인과로 읽지 않는다 — 다만 기록해 둔다.)</li>
+</ul>
+<h4>OCI MSA (Optical Compute Interconnect) — 🔴 명칭 정정 상수</h4>
+<ul>
+<li><strong><a href="https://oci-msa.org/">oci-msa.org 라이브 재확인</a></strong>: 창립멤버 = <strong>AMD·Broadcom·Meta·Microsoft·NVIDIA·OpenAI</strong>(+ Lightmatter·TeraHop·Eoptolink). <strong>GFS는 여전히 회원이 아니다.</strong> SCALE = "업계 첫 OCI MSA 충족 플랫폼"은 <strong>GF 자기 주장</strong>이며 고객 design-win 입증이 아니다.</li>
+<li>📖 <strong>각주</strong>: 🔤 <strong>MSA(Multi-Source Agreement, 다중공급자 협약)</strong> = 여러 회사가 같은 규격으로 부품을 만들자고 맺는 업계 표준 협약. 2026-03 OFC에서 발족(SCALE보다 2개월 선행), 구리 대체 개방형 광 인터커넥트가 목표. 🎯 <strong>왜 중요?</strong>: 표준을 <strong>정하는 자리에 GFS가 없다</strong>는 것 — 규격을 "충족"할 수는 있어도 규격의 방향을 좌우하지 못한다.</li>
+<li>🔴 <strong>$25B = 2030 pluggable optics 시장 TAM</strong>(Coherent 추정, 2023 ~$6B→2030 $25B). <strong>"GFS 2030 $25B 목표"는 오귀속.</strong></li>
+</ul>
+<h4>value chain + 이번 주 datapoint</h4>
+<ul>
+<li><a href="https://semiengineering.com/designing-electro-optical-chips/"><strong>Designing Electro-Optical Chips</strong>(Semiconductor Engineering 7/23)</a> — 전기·광 혼합 칩 설계 방법론 기사에서 설계자가 <strong>"GlobalFoundries 기술 노드에서 IC를 설계"</strong>하고 <strong>Keysight</strong>(GFS PDK 파트너, 6/3 제휴) 툴로 시스템 검증하는 흐름이 서술됨. 🎯 <strong>의미</strong>: PDK 생태계가 <strong>업계 표준 설명에 자연스럽게 등장할 만큼 자리 잡았다</strong>는 신호(공정 lock-in 검증 신호 ④). 단 <strong>특정 고객의 채택 발표가 아니다.</strong></li>
+<li><strong>Sivers·Keysight·Ayar Labs 신규 진척 0.</strong></li>
+<li><strong>직접 수혜주 대조</strong>: <strong>Marvell(MRVL) 주간 +2.94%</strong> vs GFS -6.87%. 광 테마 자체는 이번 주 상승했고 GFS만 하락했다 — §5.5 판정("직접 수혜 = Marvell, GFS = 노출된 제조 옵션")이 가격으로 다시 확인된 셈이다.</li>
+<li>🔴 <strong>구조 risk 3 불변</strong>: ① GFS OCI MSA 비회원 ② <strong>Broadcom·NVIDIA(OCI 회원)가 광엔진을 자체 제조</strong> = 최대 잠재 고객이 곧 최대 잠재 경쟁자 ③ 제조 경쟁 = TSMC(COUPE+CoWoS 풀스택)·Tower(GFS가 제기한 특허소송 대상)·Intel.</li>
+</ul>
+<h4>💡 광인터커넥트 축 3항</h4>
+<ul>
+<li><strong>이번 주 진척</strong>: <strong>1건</strong> — Semiconductor Engineering 7/23 설계 기사에 GF 노드 + Keysight 생태계 등장(검증 신호 ④ 소폭 진전). <strong>SCALE design-win은 여전히 0</strong>(검증 신호 ② 미발생).</li>
+<li><strong>1차 소스</strong>: <a href="https://oci-msa.org/">oci-msa.org</a> · <a href="https://semiengineering.com/?s=GlobalFoundries">semiengineering.com</a> · <a href="https://www.eetimes.com/?s=GlobalFoundries">eetimes.com</a> · GFS newsroom(photonics 필터) · Marvell 상대 성과 대조</li>
+<li><strong>4대 축</strong>: 💡 광인터커넥트</li>
+</ul>
+<hr />
+<h2>§E. 🔴 🇺🇸 미국 국내 파운드리 축 (frame 분량 25%) 🟠</h2>
+<h3>§E-0. thesis 현황 (capacity + non-Taiwan + vs TSMC Arizona)</h3>
+<ul>
+<li><strong>non-Taiwan 4 hub 불변</strong>: Fab 8(Malta <strong>NY</strong>, 300mm flagship — FDX·RF·cryo-CMOS·PsiQuantum Omega) + Fab 9(Burlington/Essex <strong>VT</strong>, photonics·RF SOI·eMRAM) + Fab 1(<strong>Dresden</strong>) + Fab 7·AMF(<strong>Singapore</strong>, silicon photonics 1위). 중국은 영업/설계 법인만 = <strong>중국 제조 노출 ≈ 0</strong>.</li>
+<li>🟢 <strong>이번 주 실물</strong>: <a href="https://capitalregionchamber.com/news/globalfoundries-names-grant-mcewan-general-manager-of-its-manufacturing-facility-in-new-york/">Fab 8 신임 GM Grant McEwan(7/21)</a> — §C 참조. 신규 fab 건설 경험자의 flagship 배치.</li>
+<li><strong>capacity/capex</strong>: Q1'26 CapEx $312M(+88% YoY), wafer shipments 579K(300mm). 신규 6-K가 없어 <strong>업데이트 없음</strong>(8/5 갱신).</li>
+</ul>
+<h3>🔴 vs TSMC Arizona — 이번 주 최대 상대적 변화</h3>
+<h4>🔴 <a href="https://www.commerce.gov/news/press-releases/2026/07/trump-administration-secures-additional-100-billion-us-semiconductor">Trump Administration Secures an Additional $100 Billion U.S. Semiconductor Manufacturing Investment for a Total of $265 Billion from TSMC</a> — 美 상무부(DOC) · 2026-07-16</h4>
+<ul>
+<li>TSMC가 <strong>추가 $1,000억</strong> 투자 발표 → 미국 누적 <strong>$2,650억</strong>, 애리조나에 <strong>선단 노드 + 패키징 시설 총 12개</strong>. 2026-01 미-대만 무역·투자 합의의 후속.</li>
+<li>📖 <strong>각주</strong>: 🏛️ <strong>DOC(Department of Commerce, 미 상무부)</strong> = CHIPS 법 집행과 반도체 투자 유치를 총괄하는 부처. Secretary는 Howard <strong>Lutnick</strong>. 🔤 <strong>leading-edge(선단 노드)</strong> = 3·2nm급 최첨단 공정으로, GFS가 <strong>하지 않는</strong> 영역이다.</li>
+<li>🎯 <strong>왜 중요?</strong>: <strong>GFS는 이 발표문에 한 번도 등장하지 않는다.</strong> 같은 행정부가 같은 달에 TSMC에는 $2,650억 규모의 미국 투자 서사를 만들어 주고, GFS의 $375M 확정계약은 window가 지나도록 발표하지 않았다. 🧠 <strong>Claude 의견</strong>: 이것이 GFS 제품을 잠식하는 사건은 <strong>아니다</strong>(선단 로직 vs specialty·mature node — 직접 제품 경쟁 아님). 그러나 "美 국내 파운드리 = GFS 수혜"라는 축의 논리에는 두 갈래 압박이 온다. ⓐ <strong>정책 자본·서사의 서열</strong>이 TSMC·Intel(정부 지분 ~11%) &gt; GFS(~1%)로 다시 확인됐고, ⓑ "대만 밖 capacity가 필요하다"는 요구를 <strong>TSMC 자신이 미국 땅에서 채우는 중</strong>이라 GFS의 지리적 차별성 프리미엄이 희석된다. 반박 논리도 있다 — TSMC Arizona는 여전히 대만 본사 의존이고 GFS는 자동차·방산·RF 같은 <strong>선단이 필요 없는 필수 칩</strong>을 담당하므로 대체재가 아니다. 그래도 <strong>자본이 어디로 가는지</strong>는 thesis의 시간표에 영향을 준다.</li>
+</ul>
+<h3>정부 자금·지분 진척</h3>
+<ul>
+<li><strong>연방 CHIPS Direct Funding $1.5B(2024-11) + $75M(2025-01 첨단 패키징) + 25% ITC + NY State $570M</strong> = 기존 stack 무변동.</li>
+<li><strong>정부 ~1% equity</strong>: D-Agreement pending으로 <strong>어떤 13G/13D에도 미반영</strong>. INTC ~11% · MP ~15% 대비 <strong>1/10 수준</strong>이라는 우선순위 격차 불변.</li>
+<li><strong>DoE Genesis Mission</strong>: <a href="https://www.energy.gov/genesis-mission">energy.gov 라이브 확인</a> — 6/3 GF 산업 파트너 참여 이후 <strong>신규 funding 공시 0</strong>. Executive Chairman <strong>Tom Caulfield</strong>가 대외 인용 담당.</li>
+</ul>
+<h3>Trump $2B 양자 9사 progress</h3>
+<table>
+<thead>
+<tr>
+<th>회사</th>
+<th>금액</th>
+<th>단계</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IBM</td>
+<td>$1B (1위)</td>
+<td>LOI 5/21 · D-Agreement 무공시</td>
+</tr>
+<tr>
+<td><strong>GFS</strong></td>
+<td><strong>$375M (2위·18.6%)</strong></td>
+<td><strong>LOI 5/21 · D-Agreement 무공시(window 만료)</strong></td>
+</tr>
+<tr>
+<td>Infleqtion(INFQ)</td>
+<td>$100M</td>
+<td>LOI 5/21</td>
+</tr>
+<tr>
+<td>PsiQuantum</td>
+<td>$100M</td>
+<td>LOI 5/21 · 별도 7/22 DARPA $125M 확보</td>
+</tr>
+<tr>
+<td>Atom Computing</td>
+<td>$100M</td>
+<td>LOI 5/21</td>
+</tr>
+<tr>
+<td>Quantinuum</td>
+<td>$100M</td>
+<td>LOI 5/21</td>
+</tr>
+<tr>
+<td>D-Wave</td>
+<td>$100M</td>
+<td>LOI 5/21</td>
+</tr>
+<tr>
+<td>Rigetti</td>
+<td>$100M</td>
+<td>LOI 5/21</td>
+</tr>
+<tr>
+<td>Diraq</td>
+<td>$38M (9위)</td>
+<td>LOI 5/21</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>9사 중 어느 곳도 D-Agreement 전환 공시가 확인되지 않았다.</strong> GFS만의 지연이 아니라 <strong>패키지 전체가 정체</strong>라는 점은 ⚠️ #1의 강도를 다소 낮추는 정보다(GFS 고유 실패 신호가 아님).</li>
+<li><strong>Lutnick / DOC 공식</strong>: <a href="https://www.commerce.gov/news/press-releases">commerce.gov 보도자료</a> 전수 확인 — 5/21 이후 양자 패키지 후속·GFS 언급 <strong>0</strong>.</li>
+</ul>
+<h3>🇺🇸 미국 국내 파운드리 축 3항</h3>
+<ul>
+<li><strong>이번 주 진척</strong>: <strong>2건</strong> — ⓐ Fab 8 GM 임명(7/21, 실물 🟢) ⓑ DOC TSMC $265B(7/16, GFS 미언급 = <strong>상대적 후퇴</strong> 🔴). D-Agreement·Genesis 신규 0.</li>
+<li><strong>1차 소스</strong>: <a href="https://www.commerce.gov/news/press-releases">commerce.gov</a> · <a href="https://www.energy.gov/genesis-mission">energy.gov/genesis-mission</a> · <a href="https://capitalregionchamber.com/news/globalfoundries-names-grant-mcewan-general-manager-of-its-manufacturing-facility-in-new-york/">capitalregionchamber.com(GF 발표문)</a> · SEC EDGAR(6-K capacity/capex) · GFS IR</li>
+<li><strong>4대 축</strong>: 🇺🇸 미국 국내 파운드리</li>
+</ul>
+<hr />
+<h2>§F. 🤖 Physical/Edge AI 칩 축 (frame 분량 10%) 🟡</h2>
+<h3>§F-1. ARC/MIPS RISC-V — software-to-silicon 플랫폼</h3>
+<h4>🟡 <a href="https://www.eetimes.com/interview-with-globalfoundries-vp-at-mips-physical-ai-is-agentic-ai-at-the-edge-taipei-event/">Interview with GlobalFoundries VP at MIPS 'Physical AI is Agentic AI at the Edge' Taipei Event</a> — EE Times · 2026-07-13</h4>
+<ul>
+<li><strong>Sudipto Bose, VP FD-SOI 제품라인, GlobalFoundries</strong> 인터뷰. GFS 포트폴리오를 <strong>silicon photonics + RF-GaN + power GaN + 아날로그/혼성신호 통합</strong>의 "physical AI 종합 솔루션"으로 제시하고, <strong>MIPS·ARC 인수로 고객에게 software-to-silicon을 제공</strong>한다는 논지.</li>
+<li>📖 <strong>각주</strong>: 🔤 <strong>ARC/MIPS</strong> = 프로세서 설계도(IP). GFS가 칩 <strong>제조</strong>만 하던 데서 "설계도까지" 파는 가치사슬 상향. 🔤 <strong>RISC-V</strong> = 개방형 명령어 집합(오픈소스 CPU 설계 표준). 🔤 <strong>Physical AI</strong> = 로봇·자동차·공장 등 물리세계에서 동작하는 AI(센서+제어 칩 수요). 🔤 <strong>FD-SOI(FDX)</strong> = 절연층 위에 얇은 실리콘을 얹는 GFS 차별화 공정으로 저전력·RF·자동차에 강하다.</li>
+<li>🎯 <strong>4대 축</strong>: 🤖 Physical/Edge AI. <strong>🧠 Claude 의견</strong>: 6/2 ARC 인수 이후 GFS가 이 축을 <strong>VP급 대외 화법으로 정례화</strong>하고 있다는 증거다. 다만 이 인터뷰에도 <strong>design-win 이름·로열티 금액·매출 기여 숫자는 하나도 없다</strong>. GFS-Memory가 반복 지적한 "화법은 확장, 숫자는 0" 패턴이 이번에도 유지된다. 실체 검증은 8/5 콜에서 ARC 통합 영향이 숫자로 나오는지에 달렸다.</li>
+<li><strong><a href="https://mips.com/news/">mips.com 뉴스</a></strong>: 최신 프레스가 여전히 <strong>6/2 ARC 인수 완료</strong> — 이후 신규 0. <strong>design-win·로열티 공시 없음.</strong></li>
+</ul>
+<h3>§F-2. automotive radar/ADAS + MCU + eMRAM/FDX</h3>
+<ul>
+<li><strong>자동차 top 3 MCU</strong>(Renesas·NXP·Infineon) 모두 GFS 고객 관계 불변. <strong>Renesas multi-billion 파트너십(2026-02)</strong> 후속 진척 공시 없음. 🧩 참고: 이번 주 Fab 8 신임 GM이 <strong>NXP 출신</strong>이라는 점은 자동차 고객 접점 강화로 읽을 여지가 있다(회사 공식 해석 아님).</li>
+<li><strong>Auto Grade 1 ready eMRAM on FDX</strong>(2026-03) 및 <strong>SLATE™ 3DI 패키징 9SW qualify</strong>(6/23) — 신규 진척 0.</li>
+<li><strong>OFC 2026(3월) silicon photonics 협력 4건</strong>(SENKO·Corning/EXFO·Siluxtek) 이후 신규 발표 없음.</li>
+<li>본업 비중: Smart Mobile + Auto + Comm/Infra + IoT + Home &amp; Industrial = <strong>매출 90%+ 단일 foundry segment</strong>(end-market별 % 미공시). 양자·포토닉스 합계는 5~10% 추정.</li>
+</ul>
+<h3>§F-3. 채용 동향 (careers.gf.com · Eightfold)</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>2026-07-25</th>
+<th>7/11</th>
+<th>Δ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>총 공고</strong></td>
+<td><strong>494</strong></td>
+<td>555</td>
+<td><strong>-61 (-11.0%)</strong></td>
+</tr>
+<tr>
+<td>photonics</td>
+<td>47</td>
+<td>54</td>
+<td>-7</td>
+</tr>
+<tr>
+<td><strong>quantum</strong></td>
+<td><strong>32</strong></td>
+<td>27</td>
+<td><strong>+5</strong></td>
+</tr>
+<tr>
+<td>RISC-V</td>
+<td>20</td>
+<td>(신규 지표)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>추세</strong>: 623(6/19) → 592(6/28) → 574(7/3) → 555(7/11) → <strong>494(7/25)</strong> = <strong>5주 -20.7%</strong>.</li>
+<li>🧠 <strong>해석</strong>: 총량 -11%는 이번 5주 중 가장 가파른 감소로, 8/5 실적 전 <strong>전사적 채용 속도 조절</strong>로 보인다. 그 안에서 <strong>quantum만 +5로 역행</strong>한 것은 상대 우선순위가 올라갔다는 신호일 수 있으나, <strong>32건은 494건 중 6.5%에 불과</strong>해 본업 mature node 인력이 여전히 dominant signal이다. photonics(47) &gt; quantum(32) 구도도 유지된다. ⚠️ 반도체 fab 채용은 리드타임이 수개월~수년이라 <strong>당분기 사업 강도의 지표로 쓰기엔 약하다</strong> — 방향성 참고용.</li>
+</ul>
+<h3>🤖 Physical/Edge AI 칩 축 3항</h3>
+<ul>
+<li><strong>이번 주 진척</strong>: <strong>1건</strong> — EE Times 7/13 GF FD-SOI VP 인터뷰(대외 화법 정례화). mips.com·Renesas·ADAS 신규 0. 채용 RISC-V 20건 신규 계측.</li>
+<li><strong>1차 소스</strong>: <a href="https://mips.com/news/">mips.com/news</a> · <a href="https://www.eetimes.com/?s=GlobalFoundries">eetimes.com</a> · GFS automotive PR · careers.gf.com</li>
+<li><strong>4대 축</strong>: 🤖 Physical/Edge AI</li>
+</ul>
+<hr />
+<h2>§G. 경쟁사 매트릭스 (7/24 종가)</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th><strong>GFS</strong></th>
+<th>TSMC (TSM)</th>
+<th>Tower (TSEM)</th>
+<th>Intel Foundry (INTC)</th>
+<th>UMC</th>
+<th>IMEC (학술)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>시총</td>
+<td><strong>$29.4B</strong></td>
+<td>$2.09T</td>
+<td>$26.4B</td>
+<td>$466B</td>
+<td>$48.9B</td>
+<td>비상장</td>
+</tr>
+<tr>
+<td>주간 등락</td>
+<td><strong>-6.87%</strong></td>
+<td>+1.26%</td>
+<td>-0.31%</td>
+<td>-2.86%</td>
+<td>-8.33%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Gross Margin</td>
+<td>Non-IFRS 29.0%</td>
+<td>~50%</td>
+<td>~25%</td>
+<td>~38%</td>
+<td>~30%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>양자 노출</strong></td>
+<td>🔴🔴🔴 5 모달리티</td>
+<td>🟢 광자 일부</td>
+<td>🟡 silicon photonic</td>
+<td>🟢 + PsiQuantum 이사회</td>
+<td>❌</td>
+<td>🟡 Diraq 협력</td>
+</tr>
+<tr>
+<td><strong>💡 CPO/포토닉스</strong></td>
+<td>🔴 SCALE(<strong>OCI MSA 비회원</strong>·"충족" 주장·design-win 0)</td>
+<td>🟡 COUPE + CoWoS 풀스택</td>
+<td>🟡 LiDAR(GFS 특허소송 대상)</td>
+<td>🟡 자체</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>정부</strong></td>
+<td>🔴 CHIPS $1.5B + $375M LOI + <strong>~1% equity</strong></td>
+<td>⚪ <strong>7/16 美 누적 $265B·12 fab</strong></td>
+<td>⚪ Israel</td>
+<td>🔴 CHIPS + <strong>~11% equity</strong></td>
+<td>⚪</td>
+<td>EU</td>
+</tr>
+<tr>
+<td><strong>지정학</strong></td>
+<td>🟡 SG + Dresden(중국 제조 ~0)</td>
+<td>🔴🔴 대만 집중(美 확장 중)</td>
+<td>🟡 Israel</td>
+<td>🟢 US-only</td>
+<td>🔴 대만</td>
+<td>EU</td>
+</tr>
+<tr>
+<td><strong>Physical AI IP</strong></td>
+<td>🔴 ARC/MIPS RISC-V</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>구조적 gap 불변</strong>: GFS Non-IFRS GM 29.0% vs TSM ~50% = <strong>-21%p</strong>. 정부 지분 강도 GFS ~1% vs INTC ~11% = <strong>1/10</strong>.</li>
+<li><strong>🔴 최대 위협 = Intel Foundry</strong>(정부 ~11% + Apple-Intel 국내 칩 deal + Seok-Hee Lee 패키징 수장 영입). 단 선단 로직 영역이라 GFS specialty 노드와 <strong>직접 제품 경쟁은 아니다</strong> — 위협의 성격은 <strong>정책 우선순위·서사 점유</strong>다. 이번 주 TSMC $265B가 여기에 한 겹 더 얹혔다.</li>
+<li><strong>⚠️ #6(Lip-Bu Tan PsiQuantum 이사회 → Intel Foundry 양자 협업)</strong>: 이번 주 신규 시그널 0. PsiQuantum 7/22 발표도 Intel 무관. <strong>🟢 reverse 유지.</strong></li>
+<li><strong>IMEC(벨기에)</strong>: 비상업 R&amp;D + Diraq 협력 + EU funding. GFS 양산 곡괭이와 <strong>보완 관계</strong>(경쟁자 아님).</li>
+</ul>
+<hr />
+<h2>§H. 재무 trajectory + 미래 전망 (분기 갱신 — 다음 = 8/5 Q2 6-K)</h2>
+<blockquote>
+<p><strong>🔴 재무 원본은 Q1 6-K(2026-05-05) 이후 무변동.</strong> 신규 6-K 0건 = 본 섹션 수치는 전주와 동일하며, <strong>8/5 Q2 콜이 전 항목의 갱신점</strong>이다.</p>
+</blockquote>
+<h3>Income Statement (SEC EDGAR 20-F + 6-K 직접)</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>Q1'26</th>
+<th>trajectory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Revenue</td>
+<td>$7,390M</td>
+<td>$6,750M</td>
+<td>$6,790M</td>
+<td><strong>$1,634M</strong>(+3% YoY)</td>
+<td>3년 -7.6% → 정체 → 회복</td>
+</tr>
+<tr>
+<td>IFRS Gross Margin</td>
+<td>28.4%</td>
+<td>24.5%</td>
+<td>24.9%</td>
+<td><strong>27.6%</strong></td>
+<td>Q1'25 22.4% → +520bps</td>
+</tr>
+<tr>
+<td>Op Margin (IFRS)</td>
+<td>16.2%</td>
+<td>10.8%</td>
+<td>11.7%</td>
+<td>11.0%</td>
+<td>정체 → 회복 시작</td>
+</tr>
+<tr>
+<td>Net Income (IFRS)</td>
+<td>$1,020M</td>
+<td>-$265M</td>
+<td>$885M</td>
+<td>$104M(-51% YoY)</td>
+<td>🔴 -51%는 $38M 독일 이연법인세 FX <strong>일회성</strong>(비현금)</td>
+</tr>
+</tbody>
+</table>
+<h3>Cash Flow + Balance Sheet (Q1'26)</h3>
+<ul>
+<li><strong>Non-IFRS Gross Margin 29.0%</strong>(+510bps YoY) / Non-IFRS Op Margin 16.6% / Non-IFRS Net Income $227M(+20%) / Adj EBITDA ~$561M</li>
+<li><strong>OCF $542M(+64% YoY)</strong> / FCF $233M / <strong>CapEx $312M(+88% YoY</strong>, 양자·SCALE CPO capa 투자형)</li>
+<li><strong>Cash+AFS $3.77B / Net Cash +$2.6B</strong>(Net Debt/EBITDA -1.17x) / 자사주 <strong>$400M/분기</strong> + 첫 배당 $0.48</li>
+<li>📖 <strong>각주</strong>: 📑 <strong>IFRS vs Non-IFRS</strong> — GFS는 정식 회계기준 매출총이익률(Q1 27.6%)과 일회성 비용을 제외한 조정치(29.0%)를 함께 발표한다. 회사가 강조하는 건 Non-IFRS지만, 실제 현금 창출력은 IFRS 쪽에 가깝다.</li>
+</ul>
+<h3>3축 매트릭스 (Operational Improvement)</h3>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>지표</th>
+<th>판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① Earnings Growth</td>
+<td>Non-IFRS EPS YoY Q1'26 <strong>+18%</strong></td>
+<td>🟢 가속</td>
+</tr>
+<tr>
+<td>② Margin Expansion</td>
+<td>Non-IFRS GM +510bps YoY (23.9%→29.0%) · <strong>단 Q2 가이던스 28.5% = -50bps</strong></td>
+<td>🟢🟢 (역방향 첫 신호 동반)</td>
+</tr>
+<tr>
+<td>③ Cash Generation</td>
+<td>OCF +64% · Cash+AFS $3.77B · 자사주 $400M/Q</td>
+<td>🟢🟢</td>
+</tr>
+</tbody>
+</table>
+<p>→ <strong>합산 🟢🟢🟢 3/3 = Operational Improvement 결정적</strong>(Q1'26 baseline). <strong>단 ②는 8/5에 첫 시험대에 오른다.</strong></p>
+<h3>2028 40% Gross Margin target trajectory</h3>
+<ul>
+<li>현재 Non-IFRS 29.0% → <strong>2028 목표 40%</strong> = <strong>+11%p</strong>, 분기당 ~1%p 확장이 필요하다.</li>
+<li><strong>Q2 가이던스 28.5%(-50bps QoQ) = 목표와 반대 방향 첫 신호.</strong> 🧠 target은 achievement가 아니다 — Intel의 Pat Gelsinger "5N4Y" 실패가 같은 구조였다. <strong>8/5에 28.5%를 지키는지(⚠️ #2는 28% 미만이 조건)와, 회사가 40% 목표를 재확인하는지</strong>가 관전 포인트다.</li>
+</ul>
+<h3>7카테고리 매핑 (실물 병목 frame)</h3>
+<ul>
+<li>② <strong>AI 생산성</strong> ✅✅ (💡 SCALE CPO + Sivers/Keysight/Ayar Labs — 단 직접 수혜는 Marvell, GFS는 제조 옵션)</li>
+<li>④ <strong>에너지</strong> ✅ (Renesas 데이터센터 전력)</li>
+<li>⑤ <strong>산업재</strong> ✅ (자동차 top 3 MCU + ADAS + Physical AI)</li>
+<li>⑥ <strong>공급망 재편</strong> ✅✅✅ (US re-shoring 인프라 — 단 이번 주 TSMC $265B로 상대 서열 재확인)</li>
+<li>⑦ <strong>국방·안보</strong> ✅✅✅ (Fab 8 = DHS 지정 + Trusted Foundry · "domestic quantum manufacturing 국가안보")</li>
+<li>→ 7개 중 <strong>5개 ✅</strong>(3개 ✅✅✅ 포함) = 실물 병목 frame 정합은 여전히 강하다.</li>
+</ul>
+<h3>미래 전망 (5년 시나리오)</h3>
+<table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: center;">확률</th>
+<th>5년 시총 / 주가</th>
+<th><strong>현재가 $53.53 기준 배수</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🟢🟢 Bull++</td>
+<td style="text-align: center;">15%</td>
+<td>$200B / $364</td>
+<td><strong>6.8x</strong></td>
+</tr>
+<tr>
+<td>🟢 Bull</td>
+<td style="text-align: center;">30%</td>
+<td>$130B / $237</td>
+<td><strong>4.4x</strong></td>
+</tr>
+<tr>
+<td>🟡 Base</td>
+<td style="text-align: center;">35%</td>
+<td>$80B / $146</td>
+<td><strong>2.7x</strong></td>
+</tr>
+<tr>
+<td>🔴 Bear</td>
+<td style="text-align: center;">15%</td>
+<td>$50B / $91</td>
+<td><strong>1.7x</strong></td>
+</tr>
+<tr>
+<td>🔴🔴 Bear--</td>
+<td style="text-align: center;">5%</td>
+<td>$30B / $55</td>
+<td><strong>1.0x</strong></td>
+</tr>
+<tr>
+<td><strong>기댓값</strong></td>
+<td style="text-align: center;">—</td>
+<td>—</td>
+<td><strong>3.58x (CAGR ~29%)</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>🔴 <strong>주의 — 이 숫자는 사업이 좋아져서가 아니라 주가가 내려서 커졌다.</strong> 가격 무관 legacy 앵커는 <strong>2.12x</strong>로 불변이며, 3.58x는 순전히 <strong>진입가가 낮아진 효과</strong>다(7/13 DD 2.81x @ $68.97 → 7/17 3.32x @ $58.24 → 3.58x @ $53.53). 시나리오의 분자(사업 가정)는 한 글자도 개선되지 않았다.</li>
+<li>Base 시나리오의 exit 멀티플이 P/S 7.3~9.2x로 <strong>역사 최고치(6.72x)를 여전히 상회</strong> = <strong>재평가 의존도가 높다</strong>는 구조적 약점 불변.</li>
+</ul>
+<h3>회계·목표 달성 리스크</h3>
+<ul>
+<li>Non-IFRS 의존도가 크다(IFRS Net Income Q1'26 -51%는 일회성이나, 회사 강조 지표와 회계 지표의 격차 자체는 상시 점검 대상).</li>
+<li><strong>운영 레버리지 양날</strong>: fab 고정비 구조상 <strong>가동률 × ASP × mix</strong>가 마진을 결정한다. 매출 +3%에 GM +510bps가 나온 상방 증폭이 그대로 하방에서도 작동한다(FY24 GM 24.5% 급락이 그 사례).</li>
+</ul>
+<hr />
+<h2>§H-2. 📊 정량 적정가 (5-metric · 분기 갱신) — 🔴 밴드 최초 이탈</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>지표</th>
+<th style="text-align: center;">가중</th>
+<th>산출 (7/24 $53.53 기준)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>EV/Revenue</strong> (mature node foundry) 5x</td>
+<td style="text-align: center;">25%</td>
+<td>~$65</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>EV/EBITDA</strong> 15x (현재 <strong>13.84x</strong> = peer 최저)</td>
+<td style="text-align: center;">25%</td>
+<td>~$58</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Forward P/E</strong> 28x (현재 21.3x·컨센 EPS ~$2.52)</td>
+<td style="text-align: center;">20%</td>
+<td>~$71 ⚠️ <strong>컨센 리비전 의존</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td>EV/Capacity ($/wafer)</td>
+<td style="text-align: center;">15%</td>
+<td>미산출(자료 부족)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>PEG ~1.5</td>
+<td style="text-align: center;">15%</td>
+<td>~$58</td>
+</tr>
+<tr>
+<td><strong>본업 기준 밴드</strong></td>
+<td></td>
+<td style="text-align: center;"></td>
+<td><strong>$55 ~ $64 (midpoint ~$60)</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>🔴 <strong>현재가 $53.53 = 밴드 하단 $55를 -2.7% 아래로 이탈 — 상장 후 본 프레임 적용 이래 최초.</strong> 7/17 재판정에서 "밴드 최초 진입"이었던 것이 8일 만에 <strong>밴드 아래</strong>로 내려갔다.</li>
+<li><strong>P/S 5.53 → 4.29</strong> · <strong>EV/EBITDA 18.2 → 13.8</strong>(TSM clean ~21x·TSEM·INTC 대비 <strong>peer 최저 유지</strong>) · Forward P/E 27.3 → 21.3.</li>
+<li>⚖️ <strong>"밴드 이탈 = 저평가"로 바로 읽지 않는 이유 3가지</strong>: ① 밴드는 <strong>Q1 실적 기준</strong>이고 8/5에 갱신된다 — 분자(마진·매출)가 내려오면 밴드 자체가 내려간다. ② P/S 4.29는 절대값으로 낮아 보여도 <strong>역사 백분위로는 여전히 중상단</strong>이다(과거 2.8~5.4x 구간). ③ 지표 3(Forward P/E)이 밴드를 위로 끌어올리는데, 이는 <strong>아직 하향되지 않은 컨센 EPS</strong>에 기대고 있다 — §C의 목표가 괴리와 같은 취약점이다.</li>
+<li><strong>양자·포토닉스 optionality는 이 5-metric에 들어가지 않는다</strong>(멀티플 정량화 곤란) — §D의 catalyst로 별도 판단.</li>
+<li>📉 <strong>참고</strong>: §9의 기존 3분할 관측선 $80/$73/$66은 <strong>전부 하회</strong>되어 stale 상태다(7/17 기 flag). 재설계는 8/5 이후가 적절하다.</li>
+</ul>
+<hr />
+<h2>§I. ⚠️ Thesis 리스크 신호 7개 자동 점검 (구 Kill Switch)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>조건</th>
+<th>임계</th>
+<th>이번 주 상태</th>
+<th>판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Quantum Technology Solutions LOI → <strong>D-Agreement 90일 내 미공시</strong></td>
+<td>~8/19</td>
+<td>window(6/22~7/22) <strong>+3d 만료·무공시</strong>. 단 <strong>9사 전체 정체</strong> = GFS 고유 실패 아님</td>
+<td>🟠 pending</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Q2 Non-IFRS Gross Margin 28% 이하</strong></td>
+<td>&lt;28% (가이던스 28.5%)</td>
+<td>대기 — <strong>8/5 D-11</strong></td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Tim Breen 이탈 / Mubadala 지분 추가 매각</strong></td>
+<td>사임 / 13G/A 변동</td>
+<td><strong>부분발현 carryover</strong> — Mubadala Amendment 3 두 달째 미제출. <strong>CEO 매도 0</strong></td>
+<td>🔴 carryover</td>
+</tr>
+<tr>
+<td>4</td>
+<td>China 양자 breakthrough → 정부 funding 분산</td>
+<td>발표 + 재분배</td>
+<td>신규 0</td>
+<td>⚪ dormant</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>인사이더 매도 클러스터 6개월 $1M+</strong></td>
+<td>$1M+</td>
+<td>🔴 <strong>$2,267,362 (~227%)</strong> · <strong>Hogan(CSO) 직접 지분 0.496주 = 소진 완료</strong> · 4개 층(CCO→CSO→CLO→<strong>이사</strong>)</td>
+<td>🔴 <strong>TRIGGERED escalating</strong></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Lip-Bu Tan PsiQuantum → <strong>Intel Foundry 양자 협업 공식 발표</strong></td>
+<td>공식 announcement</td>
+<td>신규 0</td>
+<td>🟢 reverse 유지</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>-10%+ swing 2주 내 재발</strong></td>
+<td>-10%+</td>
+<td>7/24 -5.94%(당일) · <strong>주간 -6.87% vs SOXX +1.0%</strong> = 임계 미달이나 <strong>고유 약세로 성격 변화</strong></td>
+<td>🟡 <strong>재점화</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>신규 발현 0 · 그러나 성격이 나빠졌다.</strong> #5는 금액이 아니라 <strong>"CSO 완주 + 이사회 확대"</strong>로 질적 escalation했고, #7은 임계(-10%)에 못 미치지만 <strong>"섹터 동조"에서 "고유 약세"로 성격이 바뀌어</strong> 완화 사유(sector beta)를 잃었다. #3은 두 달째 미해소다. <strong>3개 동시 발현 + 완화 사유 약화</strong> → 종합 <strong>🔴 위험</strong>으로 격상.</p>
+<p>🔒 완화 요인(균형): 신규분 <strong>전량 10b5-1 자동매도</strong>, <strong>CEO 본인 매도 0</strong>, #6 reverse, D-Agreement 정체는 <strong>9사 공통</strong>. 이들이 없었다면 판정은 더 나빴을 것이다.</p>
+</blockquote>
+<hr />
+<h2>§J. 해석·시사점 (thesis 관전 포인트)</h2>
+<h3>카테고리</h3>
+<ul>
+<li>양자 PIC foundry 곡괭이 + 실리콘 포토닉스 pure-play. <strong>양자 종목이 아니라 "일반 반도체 foundry + 양자/포토닉스 옵션"</strong>이며, 매출 90%+는 mature node다.</li>
+</ul>
+<h3>thesis 검증 관전 포인트 — 이번 주 상태</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>마일스톤</th>
+<th>baseline</th>
+<th>이번 주</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>D-Agreement 공식 발표</strong></td>
+<td>LOI 5/21 → 30~60일</td>
+<td>🟠 window 만료·무공시 · deadline ~8/19 · <strong>9사 전체 정체</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>8/5 Q2 콜 Quantum segment 분리 disclosure 첫 등장</strong></td>
+<td>Q1 미공개</td>
+<td>🟡 <strong>D-11 대기</strong> — 양자 1~3% 추정의 유일한 검증점</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Q2 Non-IFRS Gross Margin ≥ 29.0%</strong></td>
+<td>가이던스 28.5%</td>
+<td>🟡 <strong>D-11 대기</strong> — 2028 40% 궤도의 첫 시험</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>SCALE CPO design-win 발표</strong>(💡 검증 신호 ②)</td>
+<td>5/4 발표 후 0건</td>
+<td>🔴 12주째 0</td>
+</tr>
+</tbody>
+</table>
+<p>→ <strong>4개 중 3개가 8/5 하루에 걸려 있다.</strong> 이번 주 보고서가 말할 수 있는 최선은 "8/5까지 새로 알게 된 것이 거의 없다"는 것이다.</p>
+<h3>thesis 훼손 관전 포인트</h3>
+<ol>
+<li>🔴 <strong>가격이 thesis보다 먼저 움직이고 있다.</strong> 주간 -6.87% vs SOXX +1.0%는 섹터로 설명되지 않는다. 시장이 GFS에만 요구하는 무언가가 있고, 후보는 인사이더·catalyst 공백·실적 불안이다. <strong>본 보고서는 그 원인을 특정하지 못했다</strong> — 이 미해결 자체가 리스크다.</li>
+<li>🔴 <strong>"곡괭이 = 자동 승리" 명제는 이미 철회된 상태다.</strong> 💡 광 축에서 직접 수혜는 Marvell(주간 +2.94%)이고 GFS는 노출된 제조 옵션이다. 🤖 Physical AI에서도 설계사(Synopsys IP)·MCU 3사가 앞단이다. 4대 축은 <strong>4개의 독립 성장엔진이 아니라 하나의 foundry capacity 위에 얹힌 end-market 레이블</strong>일 수 있고, 그렇다면 mature node 사이클 하나가 4축을 동시에 좌우한다.</li>
+<li>🟠 <strong>정책 축의 상대 서열이 이번 주 다시 확인됐다.</strong> TSMC $265B·Intel ~11% vs GFS ~1%·$375M LOI 미체결. GFS가 미국 재산업화의 수혜자인 것은 맞지만 <strong>1순위는 아니다.</strong></li>
+<li>🟡 <strong>밸류가 밴드 아래로 내려온 것은 사실이나</strong>, 밴드 자체가 8/5에 재산정된다는 점과 컨센 EPS가 아직 하향되지 않았다는 점 때문에 <strong>"싸다"는 결론을 지금 확정하기 어렵다.</strong></li>
+<li>🟢 <strong>반대편에 남아 있는 것</strong>: 3축 Operational Improvement 🟢🟢🟢, Net Cash $2.6B(금리 상승기 구조적 면역), EV/EBITDA peer 최저, non-Taiwan 4 hub + 중국 제조 노출 ~0, 5 모달리티 양자 foundry 유일성, 실물 인선(Fab 8 GM). <strong>사업이 무너지고 있다는 증거는 없다</strong> — 무너지고 있는 것은 내러티브 모멘텀과 가격이다.</li>
+</ol>
+<blockquote>
+<p>매수·매도 판단은 본 보고서 범위 밖 — 사용자가 개별 세션에서 직접 수행.</p>
+</blockquote>
+<hr />
+
+<div class="dd-fig">
+  <p class="cap">📊 5년 시나리오 — 확률 가중 손익비 <span class="ev-badge" id="ev-scn"></span></p>
+  <div id="fig-scn"></div>
+  <p class="cap" style="font-weight:400;opacity:.8">진입가 $53.53(7/24 종가) 기준. Bull = Bull++15%+Bull30% 통합, Bear = Bear15%+Bear--5% 통합.
+  🔴 배수 상승은 사업 가정 개선이 아니라 <b>주가 하락에 따른 진입가 효과</b>다(가격무관 legacy 앵커 = 2.12x).</p>
+</div>
+<h2>가드레일 자동 점검</h2>
+<table>
+<thead>
+<tr>
+<th>가드레일</th>
+<th>적용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Steelman 자기 반박</td>
+<td>✅ 작성 전 내부 수행(과정 미기재·결론 반영). 판정 격상(🟡→🔴)은 내부 반박 후에도 유지</td>
+</tr>
+<tr>
+<td>Devil's Advocate 5문</td>
+<td>✅ 내부 수행(공매도 시각·확증편향·리스크 신호 근접·4축 균등·Analytical rigor 4단계)</td>
+</tr>
+<tr>
+<td>Chrome MCP 전용 수집</td>
+<td>✅ 29 URL 실측 · WebFetch/WebSearch 0회</td>
+</tr>
+<tr>
+<td>출처 URL 정책(specific only)</td>
+<td>✅ SEC Acc-no XML · GFS/정부 press specific · X status · 매체 기사 specific</td>
+</tr>
+<tr>
+<td>RSS date 검증</td>
+<td>✅ <strong>WSJ 2025-01 stale 적발 → 사용 금지</strong> · Reuters 401 deprecated</td>
+</tr>
+<tr>
+<td>종목 Memory Read 의무 5단계</td>
+<td>✅ 종목 설정 인덱스 + GFS 종목 메모리 본문 + 변경 이력 + 직전 weekly/daily 정독</td>
+</tr>
+<tr>
+<td>7-Day Cover</td>
+<td>✅ X 6계정 · 공식 IR/newsroom · TQI · 반도체 매체 · SEC 14일</td>
+</tr>
+<tr>
+<td>🎯 4대 축 균등 추적</td>
+<td>✅ 🇺🇸2 · 💡1 · ⚛️0(acknowledged-zero) · 🤖1 — 축별 3항 표기</td>
+</tr>
+<tr>
+<td>🔴 OCI/$25B 정정 상수</td>
+<td>✅ Optical Compute Interconnect · $25B=2030 pluggable TAM · GFS 비회원 · 직접수혜 Marvell</td>
+</tr>
+<tr>
+<td>분량 비중 60-25-10-5</td>
+<td>✅ §D 양자+광 / §E 파운드리 / §F Physical AI / §A·B·C</td>
+</tr>
+<tr>
+<td>결정론적 수집 게이트</td>
+<td>✅ auto → fill(19 feeds) → <strong>finalize PASS</strong>(feed_tops 15 · FAIL 4 명시)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>⏭️ 다음 watch</h2>
+<ol>
+<li>🔴🔴 <strong>8/5(수) Q2 2026 6-K + Earnings Call 8:30am ET</strong> — Non-IFRS GM(≥28.5%?) · <strong>양자/포토닉스 segment 분리 공시 여부</strong> · ARC 통합 영향 · 2028 40% 목표 재확인 여부. <strong>관전 포인트 4개 중 3개가 여기서 결정된다.</strong></li>
+<li>🔴🔴 <strong>D-Agreement 공시</strong> (deadline ~8/19 · 8/5 콜이 유력 확인점)</li>
+<li>🔴 <strong>Azar(CLO) 다음 주간 tranche Form 4</strong>(7/23 거래분 ~7/27 제출 예상) · <strong>CEO Tim Breen 본인 매도 발생 여부</strong>(발생 시 ⚠️ #3 자동 발현)</li>
+<li>🔴 <strong>Mubadala 13G/A Amendment 3</strong> — 두 달째 미제출, 제출 시 지분 확정 + ⚠️ #3 방향 결정</li>
+<li>🟠 <strong>주가 디커플링 지속 여부</strong> — 8/5 전까지 SOXX 대비 상대 강도. 반등 없이 실적을 맞으면 기대치 자체가 낮아진 상태</li>
+<li>🟡 <strong>SCALE CPO 첫 design-win</strong> (💡 검증 신호 ②) · Sivers/Keysight PDK 생태계 확장</li>
+<li>🟡 <strong>PsiQuantum Fab 8 / Omega 양산 milestone</strong> · Intel Foundry 양자 시그널(⚠️ #6)</li>
+</ol>
+<hr />
+<h2>📚 출처</h2>
+<h3>1차 소스 (Chrome MCP 직접 · 29 URL)</h3>
+<ul>
+<li><strong>SEC EDGAR</strong> CIK 0001709048 — <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0001709048&amp;type=&amp;dateb=&amp;owner=include&amp;count=40">filing 목록</a> · <a href="https://www.sec.gov/Archives/edgar/data/1709048/000162828026049554/wk-form4_1784918046.xml">Form 4 Acc-049554(Hogan 7/22)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1709048/000162828026049171/wk-form4_1784749057.xml">Acc-049171(Dorchak)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1709048/000162828026048834/wk-form4_1784581401.xml">Acc-048834(Azar)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1709048/000162828026048836/wk-form4_1784581782.xml">Acc-048836(Hogan DRIP)</a></li>
+<li><strong>GFS 공식</strong> — <a href="https://investors.gf.com/investor-relations/news-events/press-releases">IR press releases</a> · <a href="https://gf.com/news-and-events/news/">newsroom</a> · <a href="https://investors.gf.com/news-releases/news-release-details/globalfoundries-announces-conference-call-review-second-3">Q2 콜 안내 8/5</a> · <a href="https://capitalregionchamber.com/news/globalfoundries-names-grant-mcewan-general-manager-of-its-manufacturing-facility-in-new-york/">Fab 8 GM 임명 발표문</a> · <a href="https://careers.gf.com/careers">careers.gf.com</a></li>
+<li><strong>정부</strong> — <a href="https://www.commerce.gov/news/press-releases/2026/07/trump-administration-secures-additional-100-billion-us-semiconductor">DOC TSMC $265B(7/16)</a> · <a href="https://www.commerce.gov/news/press-releases">commerce.gov 보도자료</a> · <a href="https://www.energy.gov/genesis-mission">DoE Genesis Mission</a></li>
+<li><strong>양자·광</strong> — <a href="https://www.psiquantum.com/news">psiquantum.com/news</a> · <a href="https://thequantuminsider.com/?s=GlobalFoundries">TQI GFS</a> · <a href="https://oci-msa.org/">oci-msa.org</a> · <a href="https://mips.com/news/">mips.com/news</a></li>
+<li><strong>매체</strong> — <a href="https://semiengineering.com/designing-electro-optical-chips/">Semiconductor Engineering: Designing Electro-Optical Chips(7/23)</a> · <a href="https://www.eetimes.com/interview-with-globalfoundries-vp-at-mips-physical-ai-is-agentic-ai-at-the-edge-taipei-event/">EE Times: GF VP MIPS Taipei(7/13)</a> · <a href="https://finance.yahoo.com/quote/GFS/news">Yahoo Finance GFS</a> · <a href="https://www.marketwatch.com/story/why-micron-and-other-major-chip-stocks-are-falling-even-as-the-rest-of-tech-holds-up-506851dc">MarketWatch 반도체 하락 분석(7/24)</a></li>
+<li><strong>X</strong> — <a href="https://x.com/search?q=%24GFS&amp;f=live">$GFS cashtag</a> · <a href="https://x.com/GlobalFoundries">@GlobalFoundries</a> · <a href="https://x.com/timbreen">@timbreen</a>(비공개) · <a href="https://x.com/insidermonkey">@insidermonkey</a> · <a href="https://x.com/MarioNawfal">@MarioNawfal</a> · <a href="https://x.com/howtoswingtrade">@howtoswingtrade</a>(소멸)</li>
+</ul>
+<h3>2차 소스 (news-headlines MCP RSS · date verified)</h3>
+<ul>
+<li>Bloomberg ✅ fresh(7/23~7/25·GFS-direct 0) · AP ✅ fresh(7/24) · MarketWatch ✅ · <strong>WSJ 🔴 stale(2025-01 — 사용 금지)</strong> · <strong>Reuters 🔴 401 deprecated</strong></li>
+</ul>
+<h3>면제 (URL 미병기)</h3>
+<ul>
+<li>yfinance 가격·밸류 데이터 · 내부 baseline 메모리 cross-ref · Claude 자체 분석/Steelman</li>
+</ul>
+<hr />
+<p><strong>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</strong> 2026-07-25 기준(7/24 미국 종가). ⚠️ GFS는 양자/실리콘 포토닉스 매출을 분리 공시하지 않으므로 관련 정량은 전부 <strong>추정</strong>이다(양자 1~3%, 실리콘 포토닉스 3~7%). Quantum Technology Solutions <strong>LOI ≠ Definitive Agreement</strong>이며 추정 window(6/22~7/22)는 만료되었으나 실질 deadline은 ~8/19다. <strong>8/5 Q2 콜 + segment 분리 공시로 정확 검증 권고.</strong></p>
+</div>
+<script>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+const VIZ = {"scenario": {"horizonLabel": "5년", "threshold": 1.5, "cases": [{"label": "🟢 Bull", "tone": "bull", "prob": 0.45, "mult": 5.17, "note": "양자 utility-scale + AI CPO 표준 + 35~40% margin"}, {"label": "🟡 Base", "tone": "base", "prob": 0.35, "mult": 2.71, "note": "AI CPO 메인 + 양자 옵션 + 30% margin"}, {"label": "🔴 Bear", "tone": "bear", "prob": 0.2, "mult": 1.52, "note": "양자 1-3% 정체 + cyclic + 매크로"}]}};
+try { DDViz.renderScenario('fig-scn','ev-scn',VIZ.scenario); } catch(e) { console.error(e); }
+</script>
+</body></html>
