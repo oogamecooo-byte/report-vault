@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSMC · GlobalFoundries · Tower Semiconductor 심층 비교 — 같은 이름, 세 개의 다른 사업 (2026-07-25)</title>
+<meta name="vault-stage" content="Analysis">
+<meta name="vault-topic" content="광학">
+<meta name="vault-date" content="2026-07-25">
+<meta name="description" content="파운드리 3사(TSMC·GlobalFoundries·Tower Semiconductor) 정량·구조 비교. 실리콘 포토닉스/CPO를 축으로 셋을 겹쳐 보면 규모·마진·자본배분·공시가 전부 다른 세 개의 사업이 드러난다. 핵심 발견 = TSMC는 SEC 공시에서 'photonic'을 단 한 번도 쓴 적이 없다(EDGAR 전문검색 실측).">
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --page-bg:#EBE4D3; --card-bg:#FDF6E3; --ink:#1f2328; --ink-2:#57534a; --ink-3:#8a8578;
+    --accent:#0068b5; --accent-dark:#00477e; --line:#e8e1cf; --line-2:#d9d0b8;
+    --up:#137333; --down:#b3261e; --amber:#5c4a00; --quote-bg:#f7efd8;
+    --tsmc:#c0392b; --gfs:#2980b9; --tsem:#8e6f1f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--page-bg);color:var(--ink);font-family:"Apple SD Gothic Neo","Noto Sans KR","Pretendard",-apple-system,"Helvetica Neue",sans-serif;line-height:1.75;padding:26px 14px 60px;font-size:15.5px;}
+  .card{max-width:1010px;margin:0 auto;background:var(--card-bg);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 14px rgba(90,75,40,.10);padding:44px 50px 56px;}
+  @media(max-width:720px){.card{padding:26px 18px 40px;}body{padding:10px 5px 30px;}}
+  .kicker{color:var(--accent-dark);font-weight:700;font-size:.82rem;letter-spacing:.08em;margin-bottom:8px;}
+  h1{font-size:1.72rem;line-height:1.34;font-weight:800;margin-bottom:8px;}
+  .sub{color:var(--ink-2);font-size:.94rem;margin-bottom:16px;}
+  .meta{font-size:.83rem;color:var(--ink-3);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px 2px;margin-bottom:26px;}
+  .meta a{color:var(--accent);text-decoration:none;}
+  h2.sec{font-size:1.26rem;font-weight:800;border-left:5px solid var(--accent);padding-left:12px;margin:48px 0 14px;}
+  h3{font-size:1.04rem;font-weight:800;margin:26px 0 9px;color:var(--accent-dark);}
+  p{margin-bottom:12px;}
+  ul,ol{margin:0 0 14px 22px;} li{margin-bottom:7px;}
+  .fn{font-size:.8rem;color:var(--ink-3);}
+  .summary{background:var(--quote-bg);border:1px solid var(--line-2);border-radius:11px;padding:20px 26px;margin-bottom:20px;}
+  .summary ul{margin:8px 0 0 20px;} .summary li{margin-bottom:9px;}
+  .tbl{overflow-x:auto;margin:12px 0 18px;}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;background:#fff;border:1px solid var(--line);}
+  th{background:#f3ecd4;text-align:left;padding:8px 11px;border-bottom:2px solid var(--line-2);font-size:.82rem;white-space:nowrap;}
+  td{padding:7px 11px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .fig{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px;margin:18px 0;text-align:center;}
+  .fig figcaption{font-size:.8rem;color:var(--ink-3);margin-top:10px;text-align:left;}
+  .box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 19px;margin:14px 0;font-size:.9rem;}
+  .warn{background:#fdf1d8;border:1px solid #e6d3a3;border-radius:10px;padding:13px 18px;margin:14px 0;font-size:.89rem;color:var(--amber);}
+  .steel{background:#f6f0e0;border-left:4px solid var(--ink-3);border-radius:0 8px 8px 0;padding:12px 17px;margin:13px 0;font-size:.88rem;color:var(--ink-2);}
+  .steel b{color:var(--ink);}
+  .glossary{background:#fbf6e6;border:1px dashed var(--line-2);border-radius:8px;padding:11px 16px;margin:14px 0;font-size:.82rem;color:var(--ink-2);}
+  .glossary b{color:var(--ink);}
+  .footer{margin-top:44px;padding-top:15px;border-top:1px solid var(--line);font-size:.81rem;color:var(--ink-3);}
+  .footer a{color:var(--accent);}
+  .toc{background:var(--quote-bg);border:1px solid var(--line-2);border-radius:10px;padding:14px 22px;margin-bottom:28px;font-size:.9rem;}
+  .toc a{color:var(--accent-dark);text-decoration:none;}
+  .chip{display:inline-block;padding:1px 8px;border-radius:20px;font-size:.76rem;font-weight:700;color:#fff;}
+  .c-tsmc{background:var(--tsmc);} .c-gfs{background:var(--gfs);} .c-tsem{background:var(--tsem);}
+  @media print{body{background:#fff;padding:0;}.card{box-shadow:none;border:none;background:#fff;max-width:100%;padding:10mm;}table,.box,.fig{background:#fff;}.summary,.warn{background:#f8f5ec;}}
+</style>
+</head>
+<body>
+<div class="card">
+
+<div class="kicker">비교 분석 · 파운드리 3사 · 실리콘 포토닉스 축</div>
+<h1>TSMC · GlobalFoundries · Tower Semiconductor<br>— 같은 "파운드리"라는 이름, 완전히 다른 세 개의 사업</h1>
+<div class="sub">2026-07-24 종가 기준 · 전 수치 USD 정규화(TWD 환산 0.03092) · 관찰·학습 목적</div>
+<div class="meta">
+1차 출처 — SEC EDGAR <a href="https://www.sec.gov/Archives/edgar/data/1046179/000104617926000451/a2q26e_withguidancexfinal.htm">TSMC Q2 2026 실적 6-K(2026-07-16)</a> · <a href="https://www.sec.gov/Archives/edgar/data/928876/000117891326002318/zk2635149.htm">TSEM FY2025 20-F</a> · <a href="https://www.sec.gov/Archives/edgar/data/928876/000117891326003477/zk2635682.htm">TSEM 6-K(2026-07-14)</a> · GFS FY2025 20-F(CIK 0001709048) · <a href="https://efts.sec.gov/LATEST/search-index?q=%22silicon%20photonics%22&amp;ciks=0001046179">EDGAR 전문검색 API</a> · yfinance 런타임(2026-07-24)
+</div>
+
+<div class="toc">
+<a href="#s1">한 장 요약</a> · <a href="#s2">1. 규모의 비대칭</a> · <a href="#s3">2. 세 개의 다른 사업</a> · <a href="#s4">3. 🔴 공시 비대칭</a> · <a href="#s5">4. 마진 구조</a> · <a href="#s6">5. 자본 배분 3인 3색</a> · <a href="#s7">6. 지정학</a> · <a href="#s8">7. 밸류에이션 역설</a> · <a href="#s9">8. 서로를 향한 소송</a> · <a href="#s10">9. 종합</a> · <a href="#s11">Steelman</a> · <a href="#s12">한계</a>
+</div>
+
+<h2 class="sec" id="s1">한 장 요약</h2>
+<div class="summary">
+셋 다 "파운드리"로 분류되지만, <b>사업의 물리·경제·공시가 서로 겹치지 않는다.</b> 겹치는 곳은 딱 하나 — 앞으로 열릴 <b>실리콘 포토닉스/CPO 시장</b>이고, 바로 그 지점에서 셋의 성격 차이가 가장 선명하게 드러난다.
+<ul>
+<li>🔴 <b>이번 조사의 핵심 발견 — 공시 비대칭.</b> TSMC는 SEC에 제출한 모든 서류에서 <b>"photonic"을 단 한 번도 쓴 적이 없다</b>(0건). "co-packaged"도 0건이다. 같은 검색으로 TSMC의 "CoWoS"는 19건, "advanced packaging"은 124건이 나오므로 <b>검색 자체는 정상 작동한다</b>. 반면 TSEM은 "silicon photonics" 58건, GFS는 30건이다. 즉 <b>시장이 "TSMC가 CPO 풀스택으로 둘을 깔아뭉갤 것"이라고 말할 때, 그 근거는 TSMC의 증권 공시가 아니라 학회·업계 보도에 있다.</b></li>
+<li>🔴 <b>규모는 비교가 무의미한 수준이다.</b> TSMC는 <b>2분기 한 분기에 $40.2B</b>를 벌었다(GM 67.7%). TSEM의 <b>1년치 매출을 약 3.7일</b>에 번다. TSMC의 <b>연간 설비투자 $39.7B는 TSEM 시가총액 전체의 1.5배</b>이고, <b>연간 연구개발비 $7.6B는 TSEM 연매출의 4.9배</b>다.</li>
+<li>🔴 <b>"성숙 노드"라는 말도 오해를 부른다.</b> TSMC 웨이퍼 매출의 23%가 7nm보다 큰 노드인데, 그 23%만 해도 연 <b>~$37B</b> — <b>GFS와 TSEM을 합친 것의 약 4.4배</b>다. 다만 이건 *노드 크기* 비교일 뿐 *특수공정* 경쟁과는 다르다(§3 참조).</li>
+<li>🟠 <b>같은 처지의 두 회사가 정반대 전략을 택했다.</b> GFS는 설비투자를 2022년 $3.06B → 2025년 $0.72B로 <b>76% 줄이고</b> 첫 배당과 잉여현금 50% 환원으로 돌아섰다(FCF −$435M → +$1,009M). TSEM은 설비투자를 매출의 28~30%로 <b>고정한 채</b> 일본에 순투자 $3B을 걸었다(FCF +$163M → −$49M). <b>수확이냐 재베팅이냐 — 파운드리 중위권의 두 갈래 길이 실물 숫자로 갈렸다.</b></li>
+<li>🔴 <b>밸류에이션 역설</b>: TSEM의 P/S 16.27x가 <b>TSMC의 13.72x보다 높다.</b> TSEM의 매출은 TSMC의 1/72이고, 매출총이익률은 TSMC의 0.39배이며, 잉여현금흐름은 음(−)이다. 직원 1인당 매출총이익은 TSMC $983K · GFS $127K · TSEM $73K로 <b>13.5배 격차</b>다.</li>
+<li>🟠 <b>그리고 이 셋 중 둘은 지금 서로 소송 중이다.</b> GlobalFoundries가 2026-03-26 Tower Semiconductor를 상대로 ITC와 텍사스 서부지법에 <b>특허 11건</b> 침해 소송을 냈다. 같은 CPO 시장을 보면서 서로를 걸고 넘어지는 동안, 그 시장의 최대 잠재 포식자는 공시에 그 단어조차 쓰지 않고 있다.</li>
+</ul>
+</div>
+
+<h2 class="sec" id="s2">1. 규모의 비대칭 — 먼저 자릿수를 맞춰야 대화가 된다</h2>
+
+<div class="tbl"><table>
+<thead><tr><th>FY2025 · USD</th><th class="num"><span class="chip c-tsmc">TSMC</span></th><th class="num"><span class="chip c-gfs">GFS</span></th><th class="num"><span class="chip c-tsem">TSEM</span></th></tr></thead>
+<tbody>
+<tr><td>매출</td><td class="num"><b>$117.8B</b></td><td class="num">$6.79B</td><td class="num">$1.57B</td></tr>
+<tr><td>매출총이익</td><td class="num"><b>$70.5B</b></td><td class="num">$1.69B</td><td class="num">$0.36B</td></tr>
+<tr><td>영업이익</td><td class="num"><b>$59.9B</b></td><td class="num">$0.80B</td><td class="num">$0.19B</td></tr>
+<tr><td>순이익</td><td class="num"><b>$52.5B</b></td><td class="num">$0.89B</td><td class="num">$0.22B</td></tr>
+<tr><td>EBITDA</td><td class="num">$84.8B</td><td class="num">$2.28B</td><td class="num">$0.55B</td></tr>
+<tr><td>영업현금흐름</td><td class="num">$70.3B</td><td class="num">$1.73B</td><td class="num">$0.40B</td></tr>
+<tr><td>설비투자</td><td class="num">$39.7B</td><td class="num">$0.72B</td><td class="num">$0.44B</td></tr>
+<tr><td><b>잉여현금흐름</b></td><td class="num"><b>$30.7B</b></td><td class="num"><b>$1.01B</b></td><td class="num"><b>−$0.05B</b></td></tr>
+<tr><td>연구개발비</td><td class="num">$7.62B</td><td class="num">$0.52B</td><td class="num">$0.09B</td></tr>
+<tr><td>직원 수</td><td class="num">76,907</td><td class="num">14,000</td><td class="num">5,316</td></tr>
+<tr><td>시가총액</td><td class="num"><b>$1,884B</b></td><td class="num">$29.4B</td><td class="num">$26.4B</td></tr>
+</tbody></table></div>
+
+<div class="fig">
+<svg viewBox="0 0 660 240" width="100%" style="max-width:660px" role="img" aria-label="직원 1인당 매출·매출총이익 비교">
+<text x="10" y="18" font-size="13" font-weight="700" fill="#1f2328">직원 1인당 매출 / 매출총이익 (FY2025, 천 달러)</text>
+<g font-size="11.5" fill="#57534a">
+<text x="10" y="58">TSMC</text><text x="10" y="115">GFS</text><text x="10" y="172">TSEM</text>
+</g>
+<rect x="70" y="42" width="460" height="17" fill="#c0392b" opacity="0.35"/><text x="538" y="55" font-size="11.5" fill="#57534a">매출 $1,531K</text>
+<rect x="70" y="62" width="295" height="17" fill="#c0392b"/><text x="373" y="75" font-size="11.5" font-weight="700" fill="#c0392b">매출총이익 $983K</text>
+<rect x="70" y="99" width="146" height="17" fill="#2980b9" opacity="0.35"/><text x="224" y="112" font-size="11.5" fill="#57534a">$485K</text>
+<rect x="70" y="119" width="38" height="17" fill="#2980b9"/><text x="116" y="132" font-size="11.5" font-weight="700" fill="#2980b9">$127K</text>
+<rect x="70" y="156" width="89" height="17" fill="#8e6f1f" opacity="0.35"/><text x="167" y="169" font-size="11.5" fill="#57534a">$295K</text>
+<rect x="70" y="176" width="22" height="17" fill="#8e6f1f"/><text x="100" y="189" font-size="11.5" font-weight="700" fill="#8e6f1f">$73K</text>
+<line x1="70" y1="205" x2="640" y2="205" stroke="#e8e1cf"/>
+<text x="70" y="224" font-size="11" fill="#8a8578">연한 막대 = 1인당 매출 · 진한 막대 = 1인당 매출총이익 (실제 부가가치)</text>
+</svg>
+<figcaption>1인당 <b>매출</b> 격차는 5.2배지만 1인당 <b>매출총이익</b> 격차는 <b>13.5배</b>로 벌어진다. 파운드리에서 규모는 매출이 아니라 마진에서 복리로 작동한다는 뜻이다.</figcaption>
+</div>
+
+<div class="box">
+<b>자릿수를 몸으로 느끼는 세 문장</b>
+<ul>
+<li>TSMC는 <b>2026년 2분기 한 분기에 $40.20B</b>를 벌었다(전년비 +33.7%). 하루 약 $442M이므로 <b>TSEM의 1년 매출을 3.7일에</b>, <b>GFS의 1년 매출을 15.4일에</b> 번다.</li>
+<li>TSMC의 <b>연간 설비투자 $39.7B</b>는 TSEM 시가총액($26.4B)의 <b>1.5배</b>, GFS 시가총액($29.4B)의 <b>1.35배</b>다. 즉 TSMC는 매년 이 두 회사를 통째로 살 만한 돈을 공장에 넣는다.</li>
+<li>TSMC의 <b>연간 연구개발비 $7.62B</b>는 TSEM 연매출의 <b>4.9배</b>, GFS 연매출의 <b>1.1배</b>다.</li>
+</ul>
+</div>
+
+<h2 class="sec" id="s3">2. 세 개의 다른 사업 — 이름만 같다</h2>
+
+<div class="tbl"><table>
+<thead><tr><th></th><th><span class="chip c-tsmc">TSMC</span></th><th><span class="chip c-gfs">GlobalFoundries</span></th><th><span class="chip c-tsem">Tower Semiconductor</span></th></tr></thead>
+<tbody>
+<tr><td><b>파는 것</b></td><td>세계 최선단 공정 노드 그 자체</td><td>차별화된 성숙 노드 + IP</td><td>특수 아날로그 공정 플랫폼</td></tr>
+<tr><td><b>경쟁 축</b></td><td>트랜지스터 미세화(2nm·3nm)</td><td>공정 특화 + 미국 본토 생산</td><td>플랫폼 다양성(SiPho·SiGe·RF·전력·센서)</td></tr>
+<tr><td><b>매출 구성</b></td><td>7nm 이하 선단 <b>77%</b><br><span class="fn">2nm 3% / 3nm 30% / 5nm 33% / 7nm 11%</span></td><td>성숙 노드 90%+<br><span class="fn">단일 파운드리 세그먼트</span></td><td>단일 보고 세그먼트<br><span class="fn">플랫폼별 분해 공시 없음</span></td></tr>
+<tr><td><b>고객 수 (2025)</b></td><td><b>534개사 · 12,682개 제품 · 305개 공정</b></td><td>미공시</td><td>상위 8사가 50%</td></tr>
+<tr><td><b>생산 거점</b></td><td>대만 중심 + 미국·일본·독일 확장</td><td>미국(Malta NY·Vermont)·독일(Dresden)·싱가포르 — <b>대만 밖</b></td><td>이스라엘·미국 2·일본 2·이탈리아 공유 — <b>대만 밖 4개국</b></td></tr>
+<tr><td><b>SEC 제출 형태</b></td><td colspan="3" style="text-align:center">셋 다 <b>외국 사기업(FPI)</b> — 10-K/10-Q가 아니라 <b>20-F(연차) + 6-K(수시)</b></td></tr>
+</tbody></table></div>
+
+<div class="warn">
+⚠️ <b>"성숙 노드" 통계의 함정 — 균형 있게 읽을 것.</b> TSMC 웨이퍼 매출의 23%(≈연 $37B)가 7nm보다 큰 노드이고 이는 GFS+TSEM 합계의 약 4.4배다. 그러나 <b>이것은 노드 *크기* 비교이지 *특수공정* 경쟁이 아니다.</b> GFS와 TSEM이 파는 것은 "큰 노드"가 아니라 RF-SOI·BCD 고전압·실리콘 포토닉스·이미지 센서 같은 <b>공정 플랫폼</b>이고, 여기엔 TSMC가 굳이 들어오지 않는 영역이 실제로 존재한다. 숫자만 보면 두 회사가 무의미해 보이지만, 그건 잘못된 비교다.
+</div>
+
+<h2 class="sec" id="s4">3. 🔴 핵심 발견 — 실리콘 포토닉스의 공시 비대칭</h2>
+
+<p>세 회사가 같은 시장(AI 데이터센터 광 연결)을 본다는 것이 지금의 컨센서스다. 그런데 <b>그 시장을 자기 증권 공시에 실제로 써 놓은 회사는 둘뿐이다.</b></p>
+
+<p>EDGAR 전문검색 API로 각 사 CIK를 지정해 실측한 결과:</p>
+
+<div class="tbl"><table>
+<thead><tr><th>검색어</th><th class="num">TSMC<br><span class="fn">CIK 1046179</span></th><th class="num">GFS<br><span class="fn">CIK 1709048</span></th><th class="num">TSEM<br><span class="fn">CIK 928876</span></th></tr></thead>
+<tbody>
+<tr><td>"silicon photonics"</td><td class="num"><b>0</b></td><td class="num">30</td><td class="num"><b>58</b></td></tr>
+<tr><td>"photonic"</td><td class="num"><b>0</b></td><td class="num">—</td><td class="num">—</td></tr>
+<tr><td>"co-packaged"</td><td class="num"><b>0</b></td><td class="num">1</td><td class="num">10</td></tr>
+<tr><td colspan="4" style="background:#f7efd8"><b>▼ 검색이 정상 작동하는지 확인한 대조군</b></td></tr>
+<tr><td>"advanced packaging"</td><td class="num"><b>124</b></td><td class="num">—</td><td class="num">—</td></tr>
+<tr><td>"CoWoS"</td><td class="num"><b>19</b> <span class="fn">(2012년부터)</span></td><td class="num">—</td><td class="num">—</td></tr>
+</tbody></table></div>
+
+<p><b>대조군이 결정적이다.</b> 같은 API·같은 CIK로 TSMC의 "CoWoS"는 2012년 문서까지 19건, "advanced packaging"은 124건이 잡힌다. 즉 <b>검색 범위도 색인도 정상이며, 0건은 아티팩트가 아니라 실제 부재다.</b></p>
+
+<div class="box">
+<b>이 사실이 뜻하는 것 — 그리고 뜻하지 않는 것</b><br><br>
+✅ <b>뜻하는 것</b>: TSMC의 광 인터커넥트 로드맵은 <b>증권 공시가 아니라 기술 심포지엄·업계 보도로만 유통</b>된다. 반면 TSEM은 20-F의 사업 서술 자체가 실리콘 포토닉스로 짜여 있고, GFS는 2026-05-04 CPO 플랫폼 발표를 분기 6-K에 실었다. <b>세 회사가 이 시장에 건 "공적 약속"의 무게가 다르다</b> — 공시는 법적 책임이 따르고 컨퍼런스 발표는 그렇지 않다.<br><br>
+❌ <b>뜻하지 않는 것</b>: "TSMC가 실리콘 포토닉스를 안 한다"가 <b>아니다.</b> TSMC는 대만 상장사로서 현지 공시·기술 심포지엄이라는 별도 채널이 있고, 광 관련 활동을 SEC 문서에 서술할 의무도 없다. 이 표는 <b>"TSMC가 무엇을 하는가"의 증거가 아니라 "무엇을 공적으로 약속했는가"의 지도</b>다.
+</div>
+
+<p>그래서 투자자 관점에서 남는 질문은 이렇게 바뀐다 — <b>"TSMC가 들어오면 끝인가?"가 아니라, "TSMC가 들어온다는 정보를 나는 어디서 얻고 있으며 그 소스는 얼마나 구속력이 있는가?"</b>이다. 지금 그 소스는 세 회사 중 유일하게 <b>공시 밖</b>에 있다.</p>
+
+<h2 class="sec" id="s5">4. 마진 구조 — 왜 64% / 26% / 25%인가</h2>
+
+<div class="fig">
+<svg viewBox="0 0 660 210" width="100%" style="max-width:660px" role="img" aria-label="매출총이익률·영업이익률 비교">
+<text x="10" y="18" font-size="13" font-weight="700" fill="#1f2328">FY2025 매출총이익률 / 영업이익률 (%)</text>
+<line x1="70" y1="175" x2="640" y2="175" stroke="#b3bcc2"/>
+<g font-size="11" fill="#8a8578">
+<line x1="70" y1="175" x2="640" y2="175" stroke="#e8e1cf"/>
+<line x1="70" y1="128" x2="640" y2="128" stroke="#f0ebdc"/><text x="46" y="132">25</text>
+<line x1="70" y1="81" x2="640" y2="81" stroke="#f0ebdc"/><text x="46" y="85">50</text>
+<line x1="70" y1="34" x2="640" y2="34" stroke="#f0ebdc"/><text x="46" y="38">75</text>
+</g>
+<rect x="120" y="54" width="58" height="121" fill="#c0392b"/><text x="149" y="47" font-size="12" font-weight="800" fill="#c0392b" text-anchor="middle">64.2</text>
+<rect x="186" y="61" width="58" height="114" fill="#c0392b" opacity="0.45"/><text x="215" y="54" font-size="11.5" fill="#c0392b" text-anchor="middle">60.3</text>
+<rect x="310" y="126" width="58" height="49" fill="#2980b9"/><text x="339" y="119" font-size="12" font-weight="800" fill="#2980b9" text-anchor="middle">26.1</text>
+<rect x="376" y="154" width="58" height="21" fill="#2980b9" opacity="0.45"/><text x="405" y="147" font-size="11.5" fill="#2980b9" text-anchor="middle">11.0</text>
+<rect x="500" y="131" width="58" height="44" fill="#8e6f1f"/><text x="529" y="124" font-size="12" font-weight="800" fill="#8e6f1f" text-anchor="middle">23.2</text>
+<rect x="566" y="152" width="58" height="23" fill="#8e6f1f" opacity="0.45"/><text x="595" y="145" font-size="11.5" fill="#8e6f1f" text-anchor="middle">12.4</text>
+<g font-size="12" font-weight="700" text-anchor="middle" fill="#57534a">
+<text x="182" y="194">TSMC</text><text x="372" y="194">GlobalFoundries</text><text x="562" y="194">Tower Semi</text>
+</g>
+<text x="10" y="206" font-size="11" fill="#8a8578">진한 막대 = 매출총이익률 · 연한 막대 = 영업이익률</text>
+</svg>
+<figcaption>TSMC의 영업이익률(60.3%)이 GFS·TSEM의 <b>매출총이익률보다도 두 배 이상 높다</b>. 이 격차는 협상력이 아니라 구조에서 나온다.</figcaption>
+</div>
+
+<p>마진 격차의 원인은 세 겹이다.</p>
+<ol>
+<li><b>대체 불가능성.</b> 최선단 노드는 세상에 사실상 한 곳뿐이라 가격을 TSMC가 정한다. 반면 TSEM의 20-F는 웨이퍼 가격 결정 요인에 <b>"현재 가동률"</b>을 스스로 적어 넣었다 — 자기 공장이 얼마나 차 있는지가 가격을 정한다는 것은 <b>가격 수용자에 가깝다</b>는 자백이다.</li>
+<li><b>고정비 흡수.</b> 파운드리 원가의 큰 덩어리는 감가상각이다. TSMC는 그 고정비를 $117.8B 매출 위에 펴 바르고, TSEM은 $1.57B 위에 편다.</li>
+<li><b>믹스.</b> TSMC 매출의 77%가 7nm 이하다. 여기엔 애초에 경쟁자가 없다.</li>
+</ol>
+
+<div class="steel">
+<b>다만 반대 방향의 사실도 같이 봐야 한다.</b> TSEM의 <b>분기</b> 매출총이익률은 2025년 1분기 20.4%에서 2026년 1분기 <b>26.8%</b>로 5개 분기 연속 올랐고, 그 상승이 재고 평가차익 같은 회계 착시가 아니라는 점은 재고를 <b>이동평균법</b>으로 평가한다는 사실로 뒷받침된다. GFS도 가동률·믹스 개선으로 매출총이익률을 끌어올렸다. <b>구조적 열위가 "개선 불가"를 뜻하지는 않는다.</b>
+</div>
+
+<h2 class="sec" id="s6">5. 자본 배분 — 같은 처지, 정반대 선택</h2>
+
+<p>이 보고서에서 가장 실천적인 대비는 여기 있다. <b>GFS와 TSEM은 규모·마진·처지가 비슷한데 지난 3년간 정반대 방향으로 갈라졌다.</b></p>
+
+<div class="tbl"><table>
+<thead><tr><th>설비투자 ($M)</th><th class="num">FY2022</th><th class="num">FY2023</th><th class="num">FY2024</th><th class="num">FY2025</th><th>방향</th></tr></thead>
+<tbody>
+<tr><td><span class="chip c-tsmc">TSMC</span></td><td class="num">33,690</td><td class="num">29,541</td><td class="num">29,837</td><td class="num">39,658</td><td>재가속 ↗</td></tr>
+<tr><td><span class="chip c-gfs">GFS</span></td><td class="num">3,059</td><td class="num">1,804</td><td class="num">625</td><td class="num">722</td><td><b>−76% 급감 ↘</b></td></tr>
+<tr><td><span class="chip c-tsem">TSEM</span></td><td class="num">366</td><td class="num">445</td><td class="num">436</td><td class="num">444</td><td>고정 유지 →</td></tr>
+</tbody></table></div>
+
+<div class="tbl"><table>
+<thead><tr><th>잉여현금흐름 ($M)</th><th class="num">FY2022</th><th class="num">FY2023</th><th class="num">FY2024</th><th class="num">FY2025</th></tr></thead>
+<tbody>
+<tr><td><span class="chip c-tsmc">TSMC</span></td><td class="num">16,109</td><td class="num">8,861</td><td class="num">26,628</td><td class="num"><b>30,684</b></td></tr>
+<tr><td><span class="chip c-gfs">GFS</span></td><td class="num">−435</td><td class="num">321</td><td class="num">1,097</td><td class="num"><b>1,009</b></td></tr>
+<tr><td><span class="chip c-tsem">TSEM</span></td><td class="num">163</td><td class="num">232</td><td class="num">13</td><td class="num"><b>−49</b></td></tr>
+</tbody></table></div>
+
+<div class="box">
+<b><span class="chip c-gfs">GFS</span> = 수확 모드</b> — 설비투자를 4년 만에 4분의 1로 줄여 잉여현금흐름을 적자에서 연 $1B로 뒤집었다. 2026-05-07 <b>창사 첫 배당</b>과 <b>잉여현금 50% 환원</b> 정책을 발표했다. 성장을 사는 대신 현금을 돌려주기 시작한 회사다.<br><br>
+<b><span class="chip c-tsem">TSEM</span> = 재베팅 모드</b> — 설비투자를 매출의 28~30%로 유지한 채, 2026-07-14 일본에 <b>순투자 $3B</b>(일본 정부 보조금 $1B 차감 후)의 이중 트랙 증설을 발표했다. 배당·자사주 이력은 <b>0</b>이다. 잉여현금흐름은 그 대가로 음(−)으로 내려갔다.<br><br>
+<b><span class="chip c-tsmc">TSMC</span> = 둘 다</b> — 연 $39.7B를 쓰면서도 $30.7B의 잉여현금흐름을 남긴다. 이것이 마진 64%가 만드는 자유도다.
+</div>
+
+<p class="fn">🔴 다만 TSEM의 FY2025 잉여현금흐름 −$49M에는 미국 공장 리스 연장 선불 $105M이라는 일회성이 들어 있어, 그것을 빼면 약 +$56M이다. 반대로 최근 12개월 수치에는 고객 선수금 유입이 크게 섞여 있어 그것을 빼면 다시 음(−)이 된다. <b>어느 쪽으로 보정하든 결론은 "주주 몫 현금이 0 부근"이다.</b></p>
+
+<h2 class="sec" id="s7">6. 지정학 — 하나는 위험의 정의, 둘은 그 위험의 헤지</h2>
+
+<p>"첨단 반도체의 대만 집중"이 지정학 리스크의 표준 정의라면, <b>TSMC는 그 리스크 자체이고 GFS·TSEM은 그 리스크의 헤지 상품</b>이다. 다만 헤지의 질은 다르다.</p>
+
+<div class="tbl"><table>
+<thead><tr><th></th><th>거점</th><th>정부 자본</th><th>고유 tail 리스크</th></tr></thead>
+<tbody>
+<tr><td><span class="chip c-tsmc">TSMC</span></td><td>대만 중심 + 미·일·독 확장</td><td>미국·일본·독일 보조금 다중 수혜</td><td><b>대만해협</b> — 그러나 세계 경제 전체의 리스크이기도 함</td></tr>
+<tr><td><span class="chip c-gfs">GFS</span></td><td>미국 2·독일·싱가포르 — <b>중국 노출 ≈ 0</b></td><td>미 CHIPS 보조금 + 투자세액공제</td><td>정부 정책 최대 수혜자가 <b>경쟁사(Intel)</b>일 수 있음</td></tr>
+<tr><td><span class="chip c-tsem">TSEM</span></td><td>이스라엘·미국 2·일본 2·이탈리아 공유</td><td>일본 METI $1B <b>확정</b></td><td>🔴 <b>이스라엘 본토</b> — 20-F가 2026년 2월 충돌로 장비 벤더의 입국이 막혀 설비투자 일정에 영향 가능하다고 명시</td></tr>
+</tbody></table></div>
+
+<p>TSEM의 지정학은 <b>양방향</b>이라는 점이 특이하다. 대만 밖 생산이라는 순풍과 이스라엘 본토라는 역풍이 동시에 분다. 그리고 그 역풍은 이미 추상이 아니다 — 회사 스스로 공시에 적었다.</p>
+
+<h2 class="sec" id="s8">7. 밸류에이션 역설</h2>
+
+<div class="tbl"><table>
+<thead><tr><th></th><th class="num">P/S (TTM)</th><th class="num">EV/EBITDA</th><th class="num">선행 P/E</th><th class="num">P/B</th><th class="num">FCF 마진</th></tr></thead>
+<tbody>
+<tr><td><span class="chip c-tsmc">TSMC</span></td><td class="num">13.72x</td><td class="num">18.41x</td><td class="num"><b>17.2x</b></td><td class="num">9.47x</td><td class="num"><b>+26.1%</b></td></tr>
+<tr><td><span class="chip c-gfs">GFS</span></td><td class="num"><b>4.29x</b></td><td class="num"><b>13.84x</b></td><td class="num">21.3x</td><td class="num"><b>2.51x</b></td><td class="num">+14.9%</td></tr>
+<tr><td><span class="chip c-tsem">TSEM</span></td><td class="num"><b>16.27x</b></td><td class="num"><b>46.36x</b></td><td class="num"><b>40.0x</b></td><td class="num">8.83x</td><td class="num"><b>−3.1%</b></td></tr>
+</tbody></table></div>
+
+<div class="warn">
+🔴 <b>표를 한 줄로 요약하면</b>: 시장은 <b>가장 마진이 낮고 가장 작으며 잉여현금흐름이 음(−)인 회사에 가장 비싼 매출 배수를 주고 있다.</b> TSEM P/S 16.27x > TSMC 13.72x — 매출은 1/72, 매출총이익률은 0.39배다.
+</div>
+
+<p>이 역설의 해석은 둘 중 하나다.</p>
+<ol>
+<li><b>시장이 TSEM을 파운드리로 보지 않는다.</b> AI 광통신 부품주 무리(Lumentum 23.9x · Marvell 20.0x · MACOM 19.0x)에 넣고 값을 매기고 있다. 실제로 TSEM의 배수는 그 무리의 중앙값(15.9x)과 거의 같다. 다만 <b>그 무리 안에서 TSEM은 성장률 꼴찌(+15.5% vs 중앙값 +39.3%)이고 매출총이익률은 뒤에서 두 번째</b>다.</li>
+<li><b>또는 시장이 앞서 있다.</b> TSEM은 2027년 실리콘 포토닉스 <b>계약 매출 $1.3B</b>을 이미 확보했다고 공시했고, 회사 모델은 2028년 매출 $3.6B를 가리킨다. 그 궤도가 실현되면 오늘의 배수는 2027년 기준 10.3x로 내려간다.</li>
+</ol>
+<p>둘의 차이는 <b>"이미 계약된 것"과 "아직 계약되지 않은 것"의 경계</b>에 있다. $1.3B은 계약이고, 2028년 목표를 떠받치는 두 번째 트랙은 회사 공시에 따르면 <b>아직 계약 서명 전</b>이다.</p>
+
+<p class="fn">반대편에서 GFS는 P/S 4.29x·P/B 2.51x·EV/EBITDA 13.84x로 <b>세 지표 모두 3사 중 가장 싸다.</b> 잉여현금흐름은 양(+)이고 배당도 시작했다. 시장은 GFS의 성장률(+3.1%)에 그만큼의 값만 매기고 있다.</p>
+
+<h2 class="sec" id="s9">8. 서로를 향한 소송 — 그리고 그 위의 침묵</h2>
+
+<p>2026-03-26, <b>GlobalFoundries가 Tower Semiconductor를 상대로 미국 국제무역위원회(ITC)와 텍사스 서부지방법원에 특허 11건 침해 소송</b>을 제기했다. 영업비밀 유용이나 인력 스카우트 주장은 포함되지 않았고, 양측 1차 자료 모두 <b>특허 침해로만</b> 규정한다.</p>
+
+<p>ITC 절차는 손해배상이 아니라 <b>수입 금지 명령</b>을 다루기 때문에, 미국에 칩을 들여오는 쪽에게는 금전 소송보다 실질적 위협이다.</p>
+
+<div class="box">
+<b>구도를 한 발 물러나서 보면</b><br>
+같은 시장(AI 데이터센터 광 연결)을 놓고 <b>2위권 두 회사가 서로의 특허를 걸고 넘어지는 동안</b>, 그 시장의 최대 잠재 경쟁자는 자기 증권 공시에 그 단어조차 쓰지 않고 있다(§3). 이 비대칭이 이 산업의 현재 구도를 압축한다 — <b>싸움은 아래에서 벌어지고, 위는 아직 말이 없다.</b>
+</div>
+
+<h2 class="sec" id="s10">9. 종합 — 각각을 산다는 것은 무엇을 사는 것인가</h2>
+
+<div class="tbl"><table>
+<thead><tr><th></th><th>사는 것</th><th>가장 강한 점</th><th>가장 약한 고리</th><th>검증 시점</th></tr></thead>
+<tbody>
+<tr><td><span class="chip c-tsmc">TSMC</span></td><td><b>AI 연산 수요 그 자체에 대한 인덱스</b> — 대만해협 리스크를 얹은</td><td>대체 불가 + 마진 64% + 연 $30.7B 잉여현금흐름. 선행 P/E 17.2x로 3사 중 가장 낮다</td><td>단일 지리 집중. 그리고 성장의 상당분이 이미 컨센서스</td><td>분기 실적 + 2nm 램프 속도</td></tr>
+<tr><td><span class="chip c-gfs">GFS</span></td><td><b>미국 본토 특수공정 생산능력 + 현금 환원</b></td><td>3사 중 가장 싼 배수 · 잉여현금 양(+) · 첫 배당 · 중국 노출 ≈ 0</td><td>성장률 +3.1%. 광·양자 서사는 크지만 <b>매출 기여는 아직 한 자릿수 %</b>로 추정</td><td>분기 실적에서 광·양자 세그먼트 분리 공시 여부</td></tr>
+<tr><td><span class="chip c-tsem">TSEM</span></td><td><b>실리콘 포토닉스 위탁생산에 대한 집중 베팅</b></td><td>플랫폼 다양성 · 순현금 · 9년 무증자 · 2027년 계약 매출 $1.3B 확보</td><td>가격 결정력이 가동률에 종속 · 잉여현금 0 부근 · <b>배수가 이미 광통신 무리 수준</b></td><td>일본 증설의 양산 시점(2027년 4분기 목표)과 두 번째 트랙 계약 체결</td></tr>
+</tbody></table></div>
+
+<p><b>세 회사를 관통하는 한 문장</b>: 파운드리에서 마진은 협상력이 아니라 <b>대체 불가능성</b>에서 나오고, 대체 불가능성은 <b>노드 미세화</b>(TSMC) 또는 <b>공정 특화</b>(GFS·TSEM) 두 경로로만 얻어진다. 지금 시장은 두 번째 경로 중에서도 <b>실리콘 포토닉스</b> 한 갈래에 큰 프리미엄을 얹고 있으며, 그 프리미엄이 정당한지는 <b>그 갈래가 실제 매출과 마진으로 나타나는 순간</b>에만 판별된다. 세 회사 모두 그 순간을 아직 통과하지 않았다.</p>
+
+<h2 class="sec" id="s11">Steelman — 이 보고서의 결론을 무너뜨리는 가장 강한 반박</h2>
+<div class="steel">
+<b>구조 축.</b> 이 보고서는 <b>마진과 규모를 우열의 기준</b>으로 깔았다. 그런데 투자 수익률은 규모가 아니라 <b>변화율</b>에서 나온다. TSMC가 아무리 압도적이어도 이미 시가총액 $1.88조라 5년에 2배가 되려면 $3.8조가 필요하고, 반면 TSEM은 $26B에서 출발한다. "1인당 매출총이익 13.5배 격차"는 <b>TSMC가 좋은 회사라는 증거이지 좋은 투자라는 증거가 아니다.</b> 실제로 지난 1년 수익률은 TSEM이 압도적이었다.<br><br>
+<b>데이터 축.</b> §3의 공시 비대칭은 <b>미국 증권 공시라는 한 채널만</b> 본 것이다. TSMC는 대만 상장사이고 기술 심포지엄이라는 확립된 소통 채널이 있으며, 광 관련 활동을 SEC 문서에 쓸 의무가 없다. <b>"공시에 없다"에서 "구속력 있는 약속이 없다"까지는 성립하지만, "전략이 없다"로 밀면 과잉 해석</b>이다. 또 EDGAR 전문검색은 2001년 이후만 색인한다.<br><br>
+<b>시간 축.</b> GFS의 설비투자 급감을 "수확 모드"로 읽었지만, 같은 사실을 <b>"투자할 곳을 못 찾은 것"</b>으로도 읽을 수 있다. 반대로 TSEM의 재베팅을 "공격적"이라 했지만 <b>"선택지가 그것뿐"</b>일 수도 있다. 자본 배분의 방향은 관측 가능하나 <b>그 동기는 관측 불가능</b>하며, 어느 쪽 해석이 맞았는지는 2028~2029년에야 드러난다.<br><br>
+<b>→ 유지하되 범위 한정.</b> 본 보고서가 실제로 보인 것은 <b>"세 회사의 현재 구조와 공적 약속이 어떻게 다른가"</b>이지 <b>"어느 것이 더 오를까"</b>가 아니다. 후자는 이 자료로 답할 수 없다.
+</div>
+
+<h2 class="sec" id="s12">⚠️ 한계 · 미수집</h2>
+<ul>
+<li>⚠️ <b>실리콘 포토닉스/CPO 산업 TAM의 1차 수치 미수집</b> — 전문 리서치 도메인 접근이 차단되어 확보하지 못했다. <b>추정치를 지어내지 않았고</b>, 대신 회사가 공시한 계약 금액(TSEM 2027년 $1.3B)을 앵커로 썼다.</li>
+<li>⚠️ <b>세 회사 모두 세그먼트 분해가 부족하다</b> — TSEM은 단일 보고 세그먼트라 플랫폼별 매출·마진 공시가 아예 없고, GFS도 단일 파운드리 세그먼트다. 따라서 <b>"광·양자가 실제로 얼마를 버는가"는 세 회사 어디에서도 외부 검증이 불가능</b>하다. 이 보고서의 가장 큰 구조적 공백이다.</li>
+<li>⚠️ <b>TSMC 재무는 대만달러 기준을 환율 0.03092로 단순 환산</b>했다(2026-07-25). 회사 자체 공시 환율 가정(1 USD = 32 NT$)과 미세한 차이가 있다.</li>
+<li>⚠️ <b>비교 시점 불일치</b> — TSMC는 Q2 2026 실적을 이미 발표했으나(7/16), GFS·TSEM의 Q2 발표는 8월 초다. 따라서 본문의 3사 비교는 <b>FY2025 확정치</b>를 기준으로 맞췄고, TSMC의 Q2 수치는 규모 감각용으로만 병기했다.</li>
+<li>⚠️ <b>EDGAR 전문검색에서 TSEM의 "quantum" 54건 vs GFS 10건</b>이 관측됐으나, TSEM 쪽 상당수는 양자컴퓨팅이 아니라 이미지 센서의 양자효율 등 다른 맥락일 가능성이 있어 <b>본문 결론에 쓰지 않았다.</b> 별도 검증이 필요한 항목으로 남긴다.</li>
+</ul>
+
+<div class="glossary">
+📖 <b>용어 풀이</b> — <b>파운드리</b>(설계는 고객이 하고 제조만 위탁받는 반도체 공장) · <b>노드</b>(트랜지스터 공정 세대. 숫자가 작을수록 최신) · <b>성숙 노드</b>(최선단이 아닌 검증된 세대 — 아날로그·전력·센서에 주로 쓰임) · <b>특수공정</b>(노드 크기가 아니라 용도별로 특화된 공정 — RF·고전압·이미지센서·광학 등) · <b>실리콘 포토닉스(SiPho)</b>(빛으로 데이터를 나르는 광 부품을 실리콘 칩에 집적하는 기술) · <b>CPO(동시패키징 광학)</b>(광 부품을 연산 칩 옆에 바로 붙여 패키징하는 방식) · <b>CoWoS</b>(TSMC의 첨단 패키징 기술 — 칩들을 한 기판에 얹어 붙임) · <b>P/S</b>(시가총액 ÷ 매출) · <b>EV/EBITDA</b>(기업가치 ÷ 감가상각 전 영업이익) · <b>FPI(외국 사기업)</b>(미국 증시 상장 외국 기업. 10-K 대신 20-F를 냄) · <b>ITC</b>(미국 국제무역위원회 — 특허 침해 시 수입 금지 명령 권한) · <b>잉여현금흐름</b>(영업으로 번 현금에서 설비투자를 뺀 것)
+</div>
+
+<div class="footer">
+1차 출처 — <a href="https://www.sec.gov/Archives/edgar/data/1046179/000104617926000451/a2q26e_withguidancexfinal.htm">TSMC 2026 Q2 실적 발표 6-K</a>(2026-07-16) · <a href="https://www.sec.gov/Archives/edgar/data/928876/000117891326002318/zk2635149.htm">Tower Semiconductor FY2025 20-F</a> · <a href="https://www.sec.gov/Archives/edgar/data/928876/000117891326003477/zk2635682.htm">Tower Semiconductor 6-K</a>(2026-07-14, 일본 증설) · GlobalFoundries FY2025 20-F(SEC CIK 0001709048) · SEC EDGAR 전문검색 API(efts.sec.gov, CIK 지정 실측 2026-07-25) · yfinance 런타임(2026-07-24 종가)<br>
+환율 — TWD/USD 0.03092(2026-07-25) · 작성 Claude(Opus)<br><br>
+본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.
+</div>
+
+</div>
+</body>
+</html>
