@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SECZ 일일 퀵 체크 — 2026-07-28</title>
+<style>
+:root{--bg:#EBE4D3;--card:#FDF6E3;--ink:#1f2328;--muted:#5b6472;--line:#e8e1cf;--accent:#1a56db;--accent2:#1a56db;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Noto Sans KR',sans-serif;line-height:1.66;font-size:15px}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 22px 80px}
+h1{font-size:25px;line-height:1.35;border-bottom:3px solid var(--accent);padding-bottom:12px;margin:8px 0 18px;color:#111827}
+h2{font-size:19.5px;margin:34px 0 12px;padding:8px 12px;background:linear-gradient(90deg,#F3ECD9,transparent);border-left:4px solid var(--accent);border-radius:4px;color:#1f2937}
+h3{font-size:16.5px;margin:22px 0 8px;color:#2b3242;padding-left:8px;border-left:4px solid #6366f1}
+h4{font-size:14.5px;margin:16px 0 6px;color:var(--muted)}
+p{margin:8px 0}
+a{color:var(--accent2);text-decoration:none;border-bottom:1px solid #c7d3f0}
+a:hover{border-bottom-color:var(--accent2)}
+code{background:#F3ECD9;padding:1px 6px;border-radius:4px;font-size:13px;font-family:'SF Mono',Menlo,monospace}
+del{color:#9aa3b2}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0}
+blockquote{margin:10px 0;padding:10px 16px;background:var(--card);border-left:4px solid #2bb3a3;border-radius:6px;color:#33404e;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.3px;background:var(--card);border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+th{background:#243042;color:#fff;text-align:left;padding:9px 11px;font-weight:600}
+td{padding:8px 11px;border-top:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:#F7F1DF}
+ul{margin:8px 0;padding-left:24px}
+li{margin:4px 0}
+strong{color:#11151d}
+.dd-fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:12px 14px;margin:16px 0}
+@media print{:root{--bg:#fff;--card:#fff;--line:#ddd}body{background:#fff}h2{background:none}tr:nth-child(even) td{background:#fff}}
+.foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+</style><meta name="vault-stage" content="Monitoring">
+<meta name="vault-topic" content="SECZ">
+<meta name="vault-date" content="2026-07-28">
+<meta name="description" content="SECZ 일일 퀵 체크 — 2026-07-28">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body><div class="wrap"><h1>SECZ 일일 퀵 체크 — 2026-07-28</h1>
+<p>*기준: 2026-07-27 미국장 종가 · 수집 범위 2026-07-25 ~ 2026-07-28 · 직전 실행 = secz-weekly 2026-07-25*</p>
+<h2>한 장 요약</h2>
+<ul>
+<li><strong>종합 상태: ⚠️ 주의 (Thesis 리스크 신호 0/9)</strong> — 규제 라이선스·애널리스트 커버리지·산업 규모 3중 호재가 같은 날 나왔는데 주가는 <strong>-7.90%</strong>로 반대로 갔다.</li>
+<li>*(판정 수정)* 초안의 &quot;호재 무반응&quot; 해석은 철회한다 — Citi 커버리지는 호재인 동시에 <strong>목표가 $10으로 컨센 $15를 -33% 끌어내린 앵커 하향</strong>이었고, 같은 날 크립토 섹터가 광범위하게 무너졌다(Uphold 감원·Storj 파산). 즉 &quot;시장이 규제 승리를 무시했다&quot;보다 <strong>&quot;밸류 앵커 하향 + 섹터 리스크오프&quot;</strong>가 -7.9%의 더 나은 설명이다.</li>
+<li>🔴 <strong>SECZ $6.88 (-7.90%)</strong> — 시총 $1.123B, 52주 위치 <strong>4.6%</strong>, 상장 첫거래 $12.30 대비 <strong>-44.1%</strong>. 7/20 최저 $6.62에 재접근.</li>
+<li>🔴 <strong><a href="https://securitize.io/learn/press/securitize-becomes-registered-investment-adviser" target="_blank">Securitize Capital = SEC 등록 투자자문(RIA)</a></strong> (7/27) — 구 면제보고자문(ERA)에서 정식 등록으로. BD·ATS·TA·펀드행정에 이어 <strong>4번째 규제 라이선스 축적</strong>.</li>
+<li>🔴 <strong>Citigroup, SECZ를 Buy로 커버리지 개시 · 목표가 $10.00</strong> (7/27) — 7월 들어 4번째 커버리지이자 <strong>가장 낮은 목표가</strong>. 기존 컨센 평균 $15 대비 -33%.</li>
+<li>🟠 <strong>대차료 6.90%(7/24) → 8.65%(7/27)</strong> 추가 급등. 단 <strong>FINRA 숏볼륨 비율은 64.69% → 48.54%로 하락</strong> — 이날 하락은 신규 공매도가 아니라 <strong>롱 매도 주도</strong>.</li>
+<li>🟠 <strong><a href="https://www.coindesk.com/policy/2026/07/26/2-weeks-left-for-clarity-state-of-crypto" target="_blank">CLARITY 잔여 시한 2주</a></strong> (7/27 CoinDesk) — 상원 여름휴회 전 창이 2주로 좁혀졌다. 7/25 &quot;window miss 전망&quot;에서 시한이 수치로 확정됨.</li>
+<li>🟠 유명 공매도 투자자 <strong>Marc Cohodes</strong>가 7/27 CEO를 지목해 <strong>FY26 매출 $110M 가이던스의 근거를 공개 질의</strong>. 본인 타임라인 SECZ 게시물은 0건 = 캠페인 아닌 단발 답글.</li>
+</ul>
+<p><strong>배경</strong> — Securitize(NYSE: SECZ, 구 CEPT[Cantor Equity Partners II SPAC 셸]·합병 클로징 2026-07-01)는 실물자산(RWA) 토큰화 인프라 기업이다. 본 일일 체크는 SPAC 후속·규제·Thesis 리스크 신호·타임라인·X 센티먼트 등 고빈도 항목만 추적한다.</p>
+<hr>
+<h2>시장 데이터</h2>
+<table><thead><tr><th>항목</th><th>값</th><th>직전(7/24) 대비</th></tr></thead><tbody>
+<tr><td>종가 (7/27)</td><td><strong>$6.88</strong></td><td><strong>-7.90%</strong> ($7.47 → $6.88)</td></tr>
+<tr><td>시간외</td><td>$6.98 (+1.45%)</td><td>—</td></tr>
+<tr><td>장중 저가 관측</td><td>~$6.70 (-10.3%)</td><td>종가로 낙폭 일부 회복</td></tr>
+<tr><td>거래량</td><td>1,996,129</td><td>827,025 대비 <strong>2.4배</strong></td></tr>
+<tr><td>시총 (8-K 163,218,683주)</td><td><strong>$1.123B</strong></td><td>$1.219B → -7.9%</td></tr>
+<tr><td>52주 범위 / 위치</td><td>$6.62 ~ $12.30 / <strong>4.6%</strong></td><td>15.0% → 4.6%</td></tr>
+<tr><td>첫거래 $12.30 대비</td><td><strong>-44.1%</strong></td><td>-39.3% → -44.1%</td></tr>
+</tbody></table>
+<blockquote>⚠️ yfinance 발행주식수 148,062,745주(시총 $1.019B)는 <strong>stale</strong> — 8-K 확정치 163,218,683주 기준으로 환산했다.</blockquote>
+<hr>
+<h2>고빈도 카테고리 점검</h2>
+<h3>1. SPAC 합병 후속 — <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0002094496" target="_blank">SEC EDGAR 신규 공시 0건</a></h3>
+<p>최신 공시는 <strong>2026-07-09 SCHEDULE 13D</strong>(Acc-no 0000950103-26-010462)로 7/10 이후 신규 0건. <strong>RIA 등록은 8-K 미공시</strong> — 회사가 routine 사안으로 취급했다는 뜻이며, tZERO 특허 소송을 8-K로 올리지 않은 것과 같은 판단 패턴이다. EDGAR 법인명은 <code>Securitize Corp.</code>(구 Securitize Holdings, Inc., 2026-07-01자 개명)로 확정 표기.</p>
+<h3>7. 규제 (일반) — SEC 뉴스룸</h3>
+<p>최신 <a href="https://www.sec.gov/newsroom/press-releases" target="_blank">보도자료 2026-70</a>(7/27, 소기업 포럼 의회 보고서)까지 <strong>크립토·토큰·스테이블코인 키워드 0건</strong>. 직전 <a href="https://www.sec.gov/newsroom/press-releases" target="_blank">2026-69 &quot;24시간 거래 준비 라운드테이블&quot;</a>(7/23)은 24/7 결제 인프라 논의라는 점에서 BNY·DTCC 흐름과 같은 방향이나 SECZ 직접 언급은 없다.</p>
+<p>한편 RIA 보도자료가 인용한 <strong>SEC Peirce 위원 7/22 성명</strong>(특정 크립토 볼트·대출 전략이 투자자문 의무에 해당할 수 있다)은 이번 등록의 규제 타이밍 근거로, 회사가 규칙 제정을 앞질러 자격을 선점하는 패턴을 보여준다.</p>
+<h3>7-A. 🔴 OCC 20% tokenized reserve cap — 미발표 유지</h3>
+<p><a href="https://www.occ.gov/news-events/newsroom/?nr=NewsRelease" target="_blank">OCC 뉴스룸</a> 최신 <strong>NR 2026-61</strong>(7/27, 금융 리터러시)까지 <code>GENIUS</code>·<code>stablecoin</code>·<code>tokenized</code>·<code>reserve</code> <strong>키워드 0건</strong>. 7/25 시점(NR 2026-60)과 <strong>변동 없음</strong>. GENIUS Act 13조 규칙제정 법정시한(2026-07-18)이 만료된 상태에서 최종 룰 0건이 유지되고 있으며, 잔여 코멘트 기한은 8/21이다.</p>
+<h3>7-B. 🟠 CLARITY Act — 잔여 창 &quot;2주&quot;로 수치 확정</h3>
+<ul>
+<li><a href="https://www.banking.senate.gov/markups" target="_blank">Senate Banking 마크업</a>: 최신 <strong>7/23 Executive Session</strong>(인준 표결 — CLARITY 마크업 아님 원문 확정), 신규 편성 <strong>0건</strong>.</li>
+<li><a href="https://www.banking.senate.gov/hearings" target="_blank">Senate Banking 청문회</a>: 최신 <strong>7/23 Nomination Hearing</strong>, 신규 <strong>0건</strong>.</li>
+<li><a href="https://www.coindesk.com/policy/2026/07/26/2-weeks-left-for-clarity-state-of-crypto" target="_blank">CoinDesk 7/27 &quot;2 weeks left for Clarity&quot;</a>: *&quot;상원은 2주 후 휴회한다. 그 전에 Clarity가 전진하려면 무엇이 필요한가.&quot;* → 7/25 weekly의 &quot;window miss <strong>전망</strong>&quot;이 <strong>잔여 입법일 2주</strong>라는 구체 시한으로 좁혀졌다.</li>
+</ul>
+<p><strong>해석</strong>: §401(IST/DRS 법적 근거)·§505(SEC primary) 호재의 시점 지연 리스크가 한 단계 더 굳어졌다. 다만 이는 <strong>지연</strong>이지 법안 내용의 악화가 아니므로 Thesis 리스크 신호 #7(규제 환경 근본 악화)에는 해당하지 않는다.</p>
+<h3>9. 지정학 — macro-daily 2026-07-28 인용</h3>
+<p><a href="../../Macro_Reports/macro-daily/Macro_Daily_2026-07-28.md">macro-daily 7/28</a>은 종합 <strong>🔴 경고</strong>. 핵심은 7/30 FOMC가 인하가 아니라 <strong>인상 리스크</strong>로 가격되는 국면이라는 점, 그리고 <strong>유가 -8~9% 급락</strong>(WTI $81.91)이 미·이란 상호 공격 일시 중단을 반영했으나 OSINT·호르무즈 통항 데이터는 <strong>에스컬레이션 지속</strong>을 가리켜 가격과 현장이 어긋난다는 점이다. <strong>SECZ 함의</strong>: 금리 인상 리스크 국면은 무수익·성장 프리미엄 자산에 직접 역풍이며, 이날 -7.9%의 상당 부분을 SECZ 고유 악재가 아닌 리스크오프로 설명할 수 있다.</p>
+<h3>13. ⚠️ Thesis 리스크 신호 — <strong>0/9</strong> (하단 전용 섹션 참조)</h3>
+<h3>14. 타임라인</h3>
+<table><thead><tr><th>이벤트</th><th>시점</th><th>상태</th></tr></thead><tbody>
+<tr><td>합병 클로징</td><td>2026-07-01</td><td>완료 (<strong>D+27</strong>)</td></tr>
+<tr><td>CLARITY 상원 휴회 데드라인</td><td>~2026-08-10</td><td><strong>잔여 2주</strong></td></tr>
+<tr><td>OCC GENIUS 잔여 코멘트 마감</td><td>2026-08-21</td><td>대기</td></tr>
+<tr><td><strong>Q2&#x27;26 실적 + 첫 10-Q</strong></td><td>2026-08</td><td>🔴 <strong>최대 검증 관문</strong> (토큰화 라인 반등·EBITDA·확정 현금)</td></tr>
+<tr><td>VWAP earn-out 활성화 (D+90)</td><td>2026-09-29</td><td>전부 inactive</td></tr>
+<tr><td>Sponsor $12 트리거 (D+150)</td><td>2026-11-28</td><td>대기</td></tr>
+<tr><td>SECZ 최초 13F 공시</td><td>2026-11</td><td>대기 (클로징 7/1 &gt; Q2 기준일 6/30)</td></tr>
+</tbody></table>
+<h3>17. X/Twitter (수집 범위: 2026-07-26 ~ 2026-07-28)</h3>
+<ul>
+<li><strong><a href="https://x.com/Securitize" target="_blank">@Securitize</a> (7/27 4건, 7/28 0건, RT/QT 0)</strong>: RIA 등록 스레드 3건 + <strong><a href="https://x.com/Securitize/status/2081794243874508811" target="_blank">토큰화 RWA 시장 $350억 돌파</a></strong>. 스레드 3/4는 *&quot;규제 당국이 투자자문 의무가 신흥 온체인 포트폴리오 관리 도구에 어떻게 적용될지 검토 중인 시기&quot;*로 Peirce 성명과 연결.</li>
+<li><strong><a href="https://x.com/carlosdomingo" target="_blank">@carlosdomingo</a> (7/27 원본 0건, RT 1건)</strong>: <strong><a href="https://x.com/TopTickResearch/status/2081718763762630766" target="_blank">Top Tick &quot;$SECZ Citigroup에서 Buy로 개시&quot;를 RT</a></strong> — CEO가 직접 발언 대신 RT로만 반응. -7.9% 국면에서 원본 발언 0건은 7/20~7/21 -46% 국면과 같은 패턴.</li>
+<li><strong>$SECZ 캐시태그 (8건) — 센티먼트 🔴 약세 우위</strong>: *&quot;Securitize Capital이 SEC 자문 자격을 땄는데 SECZ는 그래도 10% 빠졌다. 시장이 규제 승리에 &#x27;쿨스토리&#x27;라고 답하는 중&quot;* · *&quot;하락 채널이 형성되기 시작&quot;* · 3자 확인 *&quot;Citi가 오늘 $10에 Buy 개시 — 7월에만 3개 매수등급(Rosenblatt $14, Benchmark $16). 그런데 기관 보유는 8.62%뿐&quot;*. 🟠 <strong><a href="https://x.com/AlderLaneEggs" target="_blank">Marc Cohodes</a></strong>(유명 공매도 투자자)가 CEO를 지목해 *&quot;$SECZ가 올해 투명한 매출 $1.1억을 정확히 어떻게 벌 계획인지 사람들이 더 노골적으로 묻고 있다&quot;*고 답글. 단 <strong>본인 타임라인 SECZ 게시물 0건</strong>(대마초 종목 위주) = 조직적 숏 캠페인이 아닌 <strong>단발 답글</strong>로 한정 해석.</li>
+<li><strong><a href="https://x.com/RWAwatchlist_" target="_blank">@RWAwatchlist_</a> (7/27 2건)</strong>: <strong><a href="https://x.com/RWAwatchlist_/status/2081725709954031940" target="_blank">BNY(수탁 $55조)의 토큰화 미국채 24/7 결제 추진</a></strong>. SECZ 직접 언급 0.</li>
+<li><strong><a href="https://x.com/The_DTCC" target="_blank">@The_DTCC</a> (7/27 1건)</strong>: <strong><a href="https://x.com/The_DTCC/status/2081722852860940688" target="_blank">FICC GSD 네팅 멤버 설문</a></strong>(2026-12 국채 청산 시한·중앙청산 $1.2조+·79% 계좌설정 완료) — <strong>토큰화가 아닌 청산 인프라 주제</strong>. <strong>BUIDL 이전 언급 0건 = Thesis 리스크 신호 #6 급성 미발동</strong>.</li>
+<li><strong>종합 X 센티먼트: 🔴 약세</strong> — 근거: 규제 호재 당일 리테일 반응이 &quot;무반응/실망&quot;으로 수렴, 기술적 하락 채널 언급, 공매도 저명인사 진입.</li>
+</ul>
+<hr>
+<h2>SECZ 뉴스 (중요도별)</h2>
+<h3>🔴 Critical</h3>
+<p><strong><a href="https://securitize.io/learn/press/securitize-becomes-registered-investment-adviser" target="_blank">Securitize, SEC 등록 투자자문(RIA) 취득</a></strong> (7/27, 1차 보도자료 전문 확인)</p>
+<p>자회사 <strong>Securitize Capital LLC</strong>가 구 *면제보고자문(exempt reporting adviser)*에서 <strong>SEC 정식 등록 투자자문</strong>으로 전환. 이로써 미국 계열 전체가 <strong>RIA + 등록 브로커딜러/ATS + 등록 이전대리인(TA) + 펀드행정</strong>을 동시에 보유한다. Carlos Domingo: *&quot;자산운용사와 기관투자자는 토큰화의 기회와 규제 시장 운영의 의무를 함께 이해하는 파트너와 일하고 싶어한다.&quot;* 1940년 투자자문업법에 따라 추가 공시·컴플라이언스·기록보존·검사 의무가 발생한다. 2차 확인: <a href="https://www.coindesk.com/business/2026/07/27/securitize-builds-wall-street-credentials-with-sec-adviser-license-as-tokenization-expands" target="_blank">CoinDesk 7/27</a> — *&quot;BlackRock 토큰화 파트너 Securitize, 기관 공략 속 SEC 투자자문 라이선스 추가.&quot;*</p>
+<blockquote><strong>해석·시사점</strong>: 규제 라이선스 스택이 SECZ 해자의 1차 축이라는 thesis를 <strong>직접 강화</strong>한다. 특히 RIA는 &quot;발행·기록·거래&quot; 뒤에 <strong>&quot;운용·자문&quot;</strong> 레이어를 붙인 것으로, AUM 연동 매출이 약하다는 §V36 회사 자인(매출이 AUM에 실질 직결되지 않음)의 구조적 약점을 메울 수 있는 경로다. 다만 <strong>등록 = 자격</strong>이지 <strong>매출 = 실적</strong>이 아니다. 자문 수수료가 언제 얼마나 인식되는지는 8월 Q2 실적 전까지 알 수 없고, 이번 발표에도 수익 관련 수치는 0건이다.</blockquote>
+<p><strong>Citigroup, SECZ를 Buy로 커버리지 개시 · 목표가 $10.00</strong> (7/27, yfinance 애널리스트 등급 데이터로 1차 확인)</p>
+<p>7월 커버리지 순서: Rosenblatt Buy $14(7/15) → Benchmark Buy $16 → Four Pillars Outperform(7/22) → <strong>Citigroup Buy $10(7/27)</strong>. Citi 목표가는 <strong>현재가 대비 +45.3%</strong>이나 <strong>기존 컨센 평균 $15 대비 -33%</strong>로 4개 중 최저다.</p>
+<blockquote><strong>해석·시사점</strong>: 대형 IB의 첫 커버리지 진입은 기관 접근성 측면의 호재지만, <strong>목표가가 밸류 앵커를 아래로 재설정</strong>했다. 리테일 3자 관찰의 &quot;기관 보유 8.62%&quot;와 합치면, 커버리지는 늘었으나 실제 기관 수급은 아직 따라오지 않은 구간이다. 별도로 <strong>Citi는 비상장 지분 토큰화 예탁증서(DR) 벤처를 직접 운영하는 주체</strong>(Open Verification #91 §401 은행 직접 진입 위협의 첫 실물)이기도 하다 — 경쟁 인접 은행이 Buy를 낸 사실 자체는 산업 정당성 측면에서 긍정이나, 이해관계 중립 커버리지로 보기는 어렵다.</blockquote>
+<h3>🟠 High</h3>
+<ul>
+<li><strong><a href="https://www.coindesk.com/business/2026/07/27/circle-buys-nearly-1-000-blockchain-patents-from-ibm" target="_blank">Circle, IBM으로부터 블록체인 특허 약 1,000건 인수</a></strong> (7/27) — 블록체인·뱅킹·보험·클라우드 보안 포트폴리오, 금액 미공개. <strong>해석</strong>: 토큰화 산업의 <strong>IP 축적 경쟁</strong>이 본격화됐다는 신호로, 진행 중인 tZERO 특허 소송(Open Verification #124)과 같은 줄기다. Circle은 SECZ의 dual growth 파트너인 동시에 인접 경쟁자이므로, 이번 인수는 (a) 산업 전반 IP 방어 자산 확보 (b) 향후 SECZ 대비 협상력 상승 양면을 갖는다. 현 시점 SECZ 직접 침해 주장은 없다.</li>
+<li><strong><a href="https://x.com/RWAwatchlist_/status/2081725709954031940" target="_blank">BNY, 토큰화 미국채 24/7 결제 추진</a></strong> (7/27) — §401 은행 직접 진입의 두 번째 실물이 미디어 사이클로 확산. 7/23 CoinDesk 보도의 후속.</li>
+<li><strong><a href="https://www.coindesk.com/business/2026/07/25/robinhood-chain-s-real-world-assets-jump-fivefold-as-tokenized-stocks-start-trading-in-bigger-size" target="_blank">Robinhood Chain의 RWA 5배 급증, 토큰화 주식 거래 규모 확대</a></strong> (7/25) — 토큰화 주식 부문에서 SECZ(자사 토큰 $183.5M)와 직접 경쟁하는 채널의 가속.</li>
+<li><strong>크립토 섹터 리스크오프 배경</strong> — <a href="https://www.coindesk.com/business/2026/07/27/digital-asset-trading-platform-uphold-cuts-17-of-global-headcount-as-crypto-winter-bites" target="_blank">Uphold 글로벌 인력 17% 감축</a>(7/27) · <a href="https://www.coindesk.com/business/2026/07/27/cloud-data-firm-storj-files-for-chapter-11-extending-a-week-of-crypto-failures-token-slides-16" target="_blank">Storj 챕터11 파산 신청</a>(7/27, &quot;한 주간의 크립토 실패 연장&quot;). BTC $64,580 수준. <strong>SECZ -7.9%를 고유 악재로 단정하기 어려운 이유</strong>다.</li>
+</ul>
+<h3>🟡 Medium</h3>
+<ul>
+<li><strong><a href="https://www.coindesk.com/business/2026/07/26/south-korea-trading-giant-puts-receivables-onchain-in-tokenization-test-with-lg-cns" target="_blank">한국 대형 상사, LG CNS와 매출채권 온체인 실증</a></strong> (7/26) — 아시아 기업 토큰화 저변 확대.</li>
+<li><strong><a href="https://www.sec.gov/newsroom/press-releases" target="_blank">SEC, 24시간 거래 준비 라운드테이블 발표</a></strong> (7/23, 2026-69) — 24/7 결제 규제 논의 착수.</li>
+</ul>
+<hr>
+<h2>추가 지표</h2>
+<h3>공매도 — <a href="https://fintel.io/ss/us/secz" target="_blank">fintel.io/ss/us/secz</a></h3>
+<table><thead><tr><th>항목</th><th>값</th><th>직전 대비</th></tr></thead><tbody>
+<tr><td>공매도 잔량 (NYSE 공식)</td><td>2,796,871주 (settlement <strong>2026-07-15</strong>)</td><td><strong>미갱신</strong> (다음 정산분 8월 초)</td></tr>
+<tr><td>Days to Cover</td><td>2.24</td><td>변동 없음</td></tr>
+<tr><td><strong>대차료 (7/27 최종)</strong></td><td><strong>8.65%</strong></td><td>7/24 6.90% → <strong>+25%</strong> (7/13 3.81% 대비 <strong>2.3배</strong>)</td></tr>
+<tr><td>FINRA 숏볼륨 비율 (7/27)</td><td><strong>48.54%</strong></td><td>7/24 64.69% → <strong>-16.2%p</strong></td></tr>
+<tr><td>대차 가능 주식 (7/27 일중)</td><td>250,000 ~ 350,000주</td><td>좁은 범위에서 반복 변동</td></tr>
+</tbody></table>
+<blockquote><strong>해석</strong>: 두 지표가 <strong>반대 방향</strong>이다. 대차료 급등은 대여 수요 초과(숏 수요 강함 또는 물량 희소)를 뜻하지만, 정작 -7.9%가 난 7/27의 숏볼륨 비율은 오히려 크게 <strong>떨어졌다</strong>. 즉 이날 매도 압력의 주체는 <strong>신규 공매도가 아니라 기존 보유자의 매도</strong>로 읽는 것이 자연스럽다. 공매도 잔량 본체는 결제일이 7/15에 묶여 있어 7/21~27 구간의 실제 숏 증감은 8월 초 정산분에서만 확인 가능하다.</blockquote>
+<h3>RWA 산업 — <a href="https://app.rwa.xyz/platforms/securitize" target="_blank">app.rwa.xyz</a> (as of 07/27/2026)</h3>
+<table><thead><tr><th>항목</th><th>값</th><th>7/25 weekly 대비</th></tr></thead><tbody>
+<tr><td>Securitize 배포자산가치(DAV)</td><td><strong>$4.83B (+16.60% 30d)</strong></td><td>$4.838B(+12.22%) → 절대값 flat, <strong>30일 성장률 가속</strong></td></tr>
+<tr><td>월 전송량</td><td>$1.04B (+49.59% 30d)</td><td>$1.05B(+82.44%) → <strong>성장률 둔화</strong></td></tr>
+<tr><td>보유자 / RWA 종목</td><td>1,857 (+2.65%) / 24종</td><td>1,860 / 24 → 사실상 flat</td></tr>
+<tr><td><strong>BUIDL</strong></td><td><strong>$2.6078B = DAV의 54.0%</strong></td><td>53.8% → <strong>단일고객 농도 유지</strong></td></tr>
+<tr><td>자사주 토큰(SECZ 온체인)</td><td><strong>$183.49M (+12.84%)</strong>, 보유자 44</td><td>$179.3M → 증가 지속</td></tr>
+<tr><td>토큰화 주식 부문 합계</td><td>$245.2M</td><td>$243.3M → flat</td></tr>
+<tr><td>배포형 산업 전체</td><td>$36.95B (+4.12% 30d) · 204 플랫폼</td><td>$36.79B(+3.61%)</td></tr>
+</tbody></table>
+<blockquote>⚠️ <strong><a href="https://app.rwa.xyz/news" target="_blank">app.rwa.xyz/news</a> 뉴스 애그리게이터 폐지 재확인</strong> — 대시보드 루트로 리다이렉트된다(7/25 관측과 동일). Cat 15 산업 뉴스는 CoinDesk로 대체 수집.</blockquote>
+<blockquote></blockquote>
+<blockquote><strong>해석</strong>: DAV 절대값이 3거래일간 사실상 정체됐고 월 전송량 성장률은 82% → 50%로 꺾였다. 다만 §V36 회사 자인대로 <strong>AUM·전송량은 매출에 직결되지 않는 지표</strong>이므로 호재·악재 모두 강도를 낮춰 읽어야 한다. BUIDL 54% 농도는 밸류 지표(EV/AUM) 분모의 품질 할인 사유로 유지된다.</blockquote>
+<hr>
+<h2>Top Tick Research 요약 (SECZ 전문 Substack)</h2>
+<p><strong>최근 3일(7/25~7/28) 내 신규 게시글 0건</strong> — 직전 최신글 1건을 요약한다.</p>
+<ul>
+<li><strong><a href="https://toptickresearch.substack.com/p/ark-invest-is-buying-securitize-secz" target="_blank">ARK Invest Is Buying Securitize ($SECZ): From Private Venture Bet to Public Market Conviction</a></strong> (7/22 게시, 7/23 업데이트 · 🔓 이번 실행에서는 전문 열람 가능 — 7/24 실행 시점의 유료 미리보기 상태에서 해제됨)</li>
+<li>ARKF의 SECZ 누적 매수: 7/13 340,000주+ → 7/14 113,000주 → 7/20 83,000주 → 7/21 16,000주 → 7/22 66,000주 → <strong>7/23 48,000주, 누적 660,000주 초과</strong>.</li>
+<li>저자 논지: ARK는 상장 전 <strong>Venture Fund로 이미 Securitize에 투자</strong>했고, 상장 후 ETF로 이어 담았다 = &quot;사모 벤처 베팅 → 공개시장 확신&quot;의 연속. 신규 상장주 추격이 아니라 <strong>기존 실사 대상에 대한 노출 확대</strong>라는 점이 핵심이라고 주장.</li>
+<li>인용 근거: ARK *Big Ideas 2026: The Great Acceleration* — <strong>2030년 토큰화 자산 $11조</strong> 전망.</li>
+<li><strong>SECZ 해석·시사점</strong>: 7/25 weekly가 기록한 &quot;550K+주(7/23 +48,377주)&quot;와 본 글의 &quot;660K+주&quot;가 <strong>불일치</strong>한다. 저자 집계는 일자별 자기 갱신 방식이라 확정 수치로 인용하기 부적절하며, ARKF 보유량은 <strong>ARK 일별 거래 공시가 1차 소스</strong>다. 방향(지속 매집)만 채택하고 절대 수량은 미확정으로 둔다. 아울러 본 소스는 1인 SECZ 전문 강세 리서처로, 정량·법률 주장은 SEC 1차 교차검증 대상이다.</li>
+</ul>
+<hr>
+<h2>§7 밸류에이션·물량</h2>
+<h3>§7-1 밸류 판정 — 🔴 <strong>PEG = N/A · 매수신호 아님</strong></h3>
+<ul>
+<li>현재가 $6.88 · 참고 기계값 forward PER 55.5x · PEG 1.11 — ⚠️ <strong>GAAP EPS $(0.88) 음수로 산식 부적용(N/A)</strong>. zone·색 라벨 금지.</li>
+<li><strong>주 anchor</strong>: <strong>EV/Rev(2026E 가이던스 $110M) = 10.2x</strong> vs 인프라 comp <strong>11.3x</strong>, SECZ Base <strong>7.5x</strong>.</li>
+<li><strong>EV/Rev(TTM 추정 $67.6M) = 16.6x</strong> — TTM 매출 롤 미확정(7/25 weekly 기록 유지).</li>
+</ul>
+<blockquote>🔴 <strong>주목할 전환</strong>: 2026E 기준 EV/Rev가 <strong>인프라 comp 11.3x를 하향 이탈</strong>했다(10.2x). 산술만 보면 &quot;인프라 평균보다 싸졌다&quot;이지만, <strong>분모인 $110M 가이던스 자체가 지금 공개적으로 의심받는 항목</strong>이다(Cohodes 질의 + FY25 Adj EBITDA 가이던스 80% 미달 전력 + material weakness). 가이던스를 신뢰하면 저평가, 신뢰하지 않으면 여전히 TTM 16.6x다. <strong>8월 Q2 실적 전까지 무판정(N/A)</strong> 유지.</blockquote>
+<h3>§7-1b EV/AUM (보조 지표)</h3>
+<ul>
+<li>시총 $1.123B ÷ DAV $4.83B = <strong>23.2%</strong> (7/25 25.2% → 하락).</li>
+<li>Benchmark: BLK 1.7% / COIN 12% / ⚠️ <strong>CRCL 37%는 float 모델이라 직접 comp 불가</strong>.</li>
+<li>분모 품질 할인: <strong>BUIDL 단일고객 54.0%</strong>.</li>
+</ul>
+<h3>§7-2 VWAP earn-out 트리거 — 전부 inactive</h3>
+<p>D+90(2026-09-29) 이전이라 Tier 1 $15 / Tier 2 $17.50 / Tier 3 $20 모두 미활성. Sponsor $12는 D+150(2026-11-28)부터. 현재가 $6.88은 최저 트리거 $15의 <strong>45.9%</strong> — 조기 해제 경로는 사실상 닫혀 있다.</p>
+<h3>§7-3 D+N 카운트다운</h3>
+<p><strong>D+27</strong> (클로징 2026-07-01). 다음 milestone = <strong>D+90 (2026-09-29)</strong> VWAP 추적 개시, 62일 후.</p>
+<h3>§7-5 리스크 신호 #8 / #9 자동 점검</h3>
+<ul>
+<li><strong>#8 (PEG ≥ 3.0 과열)</strong>: 참고 기계값 1.11 → <strong>미발동</strong>.</li>
+<li><strong>#9 (Recurring/AUM ≤ 62bps)</strong>: <strong>측정 불가</strong> — 첫 10-Q(8월) 전까지 recurring 매출 분해 불가.</li>
+</ul>
+<hr>
+<h2>⚠️ Thesis 리스크 신호: <strong>0/9</strong></h2>
+<table><thead><tr><th>#</th><th>신호</th><th>상태</th><th>근거</th></tr></thead><tbody>
+<tr><td>1</td><td>BlackRock 파트너십 해지/축소</td><td>✅ 미발동</td><td>BUIDL $2.6078B 유지, 이전 언급 0</td></tr>
+<tr><td>2</td><td>SEC 집행조치/소송</td><td>✅ 미발동</td><td>SEC 뉴스룸 SECZ 매칭 0. tZERO는 민간 특허 소송이며 Securitize가 원고</td></tr>
+<tr><td>3</td><td>CEO 이탈/경영 공백</td><td>✅ 미발동</td><td>Carlos Domingo 7/27 RIA 인용 발언</td></tr>
+<tr><td>4</td><td>AUM 2분기 연속 감소</td><td>✅ 미발동</td><td>DAV +16.60% 30d (회복 방향)</td></tr>
+<tr><td>5</td><td>SPAC 합병 무산</td><td>✅ 해당 없음</td><td>2026-07-01 클로징 완료</td></tr>
+<tr><td>6</td><td>경쟁사가 BlackRock 빼앗김</td><td>✅ 미발동</td><td>@The_DTCC 7/27 게시물은 국채 청산 주제, BUIDL 이전 언급 0</td></tr>
+<tr><td>7</td><td>규제 환경 근본 악화</td><td>✅ 미발동</td><td>CLARITY는 <strong>시점 지연</strong>이지 내용 악화 아님. OCC cap 미발표</td></tr>
+<tr><td>8</td><td>PEG ≥ 3.0 (과열)</td><td>✅ 미발동</td><td>참고 1.11 (단 산식 N/A)</td></tr>
+<tr><td>9</td><td>Recurring fee ≤ 62bps</td><td>⚠️ <strong>측정 불가</strong></td><td>첫 10-Q(8월) 전 산출 불가</td></tr>
+</tbody></table>
+<blockquote><strong>&quot;0/9&quot;는 안전 판정이 아니라 판정 유보를 포함한다</strong> — #9는 구조적으로 8월에야 측정 가능하고, #4의 회복 근거인 AUM은 회사가 매출 비연동을 자인한 지표다.</blockquote>
+<hr>
+<h2>액션 아이템 (모니터링 관점)</h2>
+<p>1. 🔴 <strong>Citi 리포트 원문의 $10 산출 근거</strong> 확인 — 어떤 매출·멀티플 가정을 썼는지가 컨센 $15 대비 -33% 격차의 실체다.</p>
+<p>2. 🔴 <strong>8월 Q2 실적 + 첫 10-Q</strong> — 토큰화 라인 $13M+ 반등 여부(Open Verification #123), Adj EBITDA(신호 #8), recurring/AUM(신호 #9), 확정 순현금이 한 번에 결정된다.</p>
+<p>3. 🟠 <strong>Securitize Capital의 자문 매출 인식 시점·규모</strong> — RIA 등록이 자격에서 매출로 전환되는지 첫 확인 기회는 Q2 컨콜.</p>
+<p>4. 🟠 <strong>8월 초 공매도 정산분(7/31 settlement)</strong> — 대차료 8.65%가 실제 숏 잔량 증가를 동반했는지 판정.</p>
+<p>5. 🟠 <strong>CLARITY 잔여 2주</strong> 상원 액션 — 마크업/본회의 편성 여부.</p>
+<p>6. 🟡 <strong>Circle IBM 특허 1,000건</strong>의 청구항 범위가 DS Protocol·Vault Registrar와 겹치는지.</p>
+<h2>다음 점검 예정</h2>
+<ul>
+<li><strong>다음 daily</strong>: 2026-07-29 (7/28 미국장 종가 기준)</li>
+<li><strong>다음 weekly</strong>: 2026-08-01</li>
+<li><strong>최대 관문</strong>: 2026-08 Q2 실적 + 첫 10-Q</li>
+</ul>
+<hr>
+<h2>🔍 Open Verification 항목 점검 결과</h2>
+<ul>
+<li><strong>점검 대상 (점검일 도래 4건)</strong>: #80 OCC 20% cap(매 daily) · #81 CLARITY markup(매 daily) · #118 DTCC×Stellar(매 weekly, daily 감시 유지) · #124 tZERO 특허 소송(매 daily)</li>
+<li><strong>진행</strong>:</li>
+<li><strong>#80 OCC</strong>: 신규 데이터 0건 — NR 2026-61(7/27)까지 키워드 0. <strong>검증 미완 유지</strong>.</li>
+<li><strong>#81 CLARITY</strong>: 신규 데이터 1건 — 잔여 창이 &quot;2주&quot;로 수치 확정(CoinDesk 7/27). 위원회 액션은 0건. <strong>진행 중</strong>.</li>
+<li><strong>#118 DTCC</strong>: 신규 데이터 1건 — 7/27 게시물이 <strong>토큰화가 아닌 FICC 국채 청산</strong> 주제. BUIDL 이전 신호 0. <strong>감시 유지</strong>.</li>
+<li><strong>#124 tZERO</strong>: 직접 신규 0건. 단 <strong>Circle의 IBM 특허 1,000건 인수(7/27)</strong>가 토큰화 산업 IP 축적 경쟁의 정황 증거로 추가. <strong>진행 중</strong>.</li>
+<li><strong>#91 Citi 토큰화 DR 벤처</strong>: 점검일 미도래이나 <strong>Citi가 SECZ 커버리지를 개시</strong>해 이해관계 구조가 변했으므로 관련 사실만 기록.</li>
+<li><strong>신규 등록 2건</strong>:</li>
+</ul>
+<p>  1. <strong>Citigroup $10 목표가의 산출 근거 및 컨센 $15와의 -33% 괴리</strong> — 밸류 앵커 재설정 여부 판정용. 🟠 중요 · 다음 점검 2026-08-01 weekly.</p>
+<p>  2. <strong>ARKF SECZ 보유량 1차 확정</strong> — Top Tick 저자 집계(660K+)와 7/25 weekly 기록(550K+)이 불일치. ARK 일별 거래 공시로 교차검증 필요. 🟡 추적 · 다음 점검 2026-08-01 weekly.</p>
+<hr>
+<h2>⚠️ 수집 불완전 항목</h2>
+<ul>
+<li>⚠️ <strong>DL News 규제 피드 🔴 휴간</strong> — <code>dlnews.com/articles/regulation</code>이 &quot;DL News will be relaunching&quot; 배너 상태로 최신 규제 기사가 <strong>2026-05-05(83일 stale)</strong>. config가 허용한 대안 <code>coindesk.com/policy</code>로 대체 수집 완료. <strong>다음 실행 전 config에서 소스 교체 권장</strong>.</li>
+<li>⚠️ <strong>공매도 잔량 본체 미갱신</strong> — NYSE 공식 settlement가 7/15에 고정. 원인 = 발표 주기(월 2회), 재시도 불가. 다음 정산분 8월 초.</li>
+<li>⚠️ <strong>Marc Cohodes 트윗 개별 status URL 미확보</strong> — X 쿼리스트링 마스킹으로 답글 URL 추출 실패. 계정 URL + 검색 범위로 대체 인용.</li>
+</ul>
+<hr>
+<p>*본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.*</p>
+<div class="dd-fig"><p class="cap">5년 확률 가중 시나리오 손익비 — (SECZ-Memory 시나리오 + §9-3 적정가 calibration) <span class="ev-badge" id="ev-scn"></span></p><div id="fig-scn"></div></div>
+<div class="foot">secz-weekly ·  정기 시행 · Chrome MCP 전용(WebFetch/WebSearch 0건) · validate_report.py PASS · 7-Day Cover PASS · 크림 테마 자동 생성</div>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const VIZ={"scenario": {"horizonLabel": "5년", "threshold": 1.5, "cases": [{"label": "🟢 Bull", "tone": "bull", "prob": 0.25, "mult": 3.2, "note": "CLARITY 통과 + IST 발행 + AUM $25B"}, {"label": "🟡 Base", "tone": "base", "prob": 0.5, "mult": 1.3, "note": "GENIUS 시행 지연 + AUM 완만 성장"}, {"label": "🔴 Bear", "tone": "bear", "prob": 0.25, "mult": 0.27, "note": "규제 표류 + fee 압축 + 락업 매물"}]}};
+try{{ DDViz.renderScenario('fig-scn','ev-scn',VIZ.scenario); }}catch(e){{ console.error('viz render error', e); }}
+</script>
+</body></html>
