@@ -1,0 +1,1516 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Applied Intuition — Deep-Dive (비상장 적응판) — 2026-07-27</title>
+<meta name="vault-stage" content="Dive">
+<meta name="vault-topic" content="AppliedIntuition">
+<meta name="vault-date" content="2026-07-27">
+<meta name="vault-skill" content="Deep-Dive">
+<meta name="description" content="비상장 physical AI 소프트웨어사 Applied Intuition 풀 심층 — 7축 ⭐3.43, 밸류 🔴 고평가, 데이터 플라이휠 1차 반증">
+<style>
+:root{--bg:#EBE4D3;--card:#FDF6E3;--ink:#1f2328;--line:#e8e1cf;--red:#c0392b;--muted:#6b6455;}
+*{box-sizing:border-box}
+body{margin:0;padding:28px 16px;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.72;font-size:15px;-webkit-font-smoothing:antialiased}
+.container{max-width:1100px;margin:0 auto;background:var(--card);padding:44px 52px;border:1px solid var(--line);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+h1{font-size:1.85em;margin:0 0 .5em;padding-bottom:.38em;border-bottom:3px solid var(--red);letter-spacing:-.02em}
+h2{font-size:1.3em;margin:2.1em 0 .7em;padding:.34em .6em;background:#f5eeda;border-left:5px solid var(--red);border-radius:0 5px 5px 0}
+h3{font-size:1.1em;margin:1.7em 0 .55em;color:#8b2f22;border-bottom:1px solid var(--line);padding-bottom:.22em}
+h4{font-size:1em;margin:1.35em 0 .45em;color:#5c4a00}
+p{margin:.65em 0}
+table{border-collapse:collapse;width:100%;margin:1.05em 0;font-size:.88em;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#f3ebd6;font-weight:640}
+tr:nth-child(even) td{background:#fbf4e2}
+blockquote{margin:1.05em 0;padding:.85em 1.15em;background:#f7f0dd;border-left:4px solid #b9a97e;border-radius:0 6px 6px 0;color:#3a3630}
+blockquote h3,blockquote h4{margin-top:.35em;border:0}
+code{background:#f0e8d2;padding:.12em .38em;border-radius:3px;font-size:.88em}
+pre{background:#f0e8d2;padding:12px 14px;border-radius:6px;overflow-x:auto;border:1px solid var(--line)}
+hr{border:0;border-top:2px solid var(--line);margin:2.4em 0}
+a{color:#1f5f8b;text-decoration:none;border-bottom:1px dotted #7fa8c4}
+a:hover{border-bottom-style:solid}
+ul,ol{padding-left:1.35em;margin:.6em 0}li{margin:.28em 0}
+strong{font-weight:660}
+figure.dd-fig{margin:1.3em 0;padding:14px;background:#fff;border:1px solid var(--line);border-radius:8px;overflow-x:auto}
+figure.dd-fig figcaption{margin-top:9px;font-size:.83em;color:var(--muted);text-align:center;line-height:1.5}
+.footer{margin-top:2.6em;padding-top:1.1em;border-top:2px solid var(--line);font-size:.85em;color:var(--muted);text-align:center}
+@media print{body{background:#fff;padding:0}.container{background:#fff;border:0;box-shadow:none;padding:12px}h2{background:#f2f2f2}table{font-size:8pt;display:table}figure.dd-fig,table,blockquote{page-break-inside:avoid}}
+@media (max-width:760px){.container{padding:22px 16px}body{padding:12px 6px;font-size:14px}}
+</style>
+<style>/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+</style>
+<meta name="robots" content="noindex, nofollow">
+</head><body><div class="container">
+<h1>🚗 Applied Intuition — Deep-Dive (비상장 적응판)</h1>
+<blockquote>
+<p><strong>--full</strong> · 작성 2026-07-27 · 방법론 stamp <code>DD-v1.24-P</code>(비상장 적응) · 대상 = 비상장 미국 physical AI 소프트웨어 회사
+<strong>최종 공식 밸류에이션 $15.0B</strong>(2025-06 Series F, 2026-07-21 Dana 출시 보도자료에서 재확인) · <strong>감사 재무제표 없음 · SEC 등록 없음</strong>
+15-에이전트 병렬 조사(수집 10 + 적대검증 2 + 밸류에이션 1 + 종합 렌즈 1 + 판사 1) · 웹 1차 확인 1,500여 회.
+<strong>첫 실행</strong> — 직전 보고서 없음(델타 비교 대상 없음).</p>
+</blockquote>
+<p><strong>🔴 근거 등급 표기</strong> — 비상장 분석의 최대 실패 모드는 CEO 인터뷰 발언을 사실로 승격시키는 것이다. 본 보고서는 모든 사실에 등급을 붙인다.
+<strong>[1차]</strong> SEC EDGAR·미국 정부 계약 DB(USASpending·FPDS)·상원 로비공개(LDA)·연방법원 기록·회사 공식 발표 · <strong>[2차]</strong> 언론·3자 데이터업체 추정 · <strong>[3차]</strong> 경영진 자기 진술(인터뷰·팟캐스트·마케팅)</p>
+<hr />
+<h2>🧑‍⚖️ 종합 판단 (Fable 판사)</h2>
+<blockquote>
+<p>신선한 컨텍스트의 Fable 5 서브에이전트가 7축 전체를 통합해 낸 종합 verdict. 원문 그대로이며 의역·재구성하지 않았다. 낮은 신뢰도 판단이고 강제가 아니다.</p>
+</blockquote>
+<p><strong>verdict: 🔴 — "지금 접근 가능한 모든 경로(SPV·세컨더리)로의 자본 투입은 하지 않는다."</strong></p>
+<p>처우는 4택 중 <strong>"관찰 대상 + 상장 시 재평가 후보"</strong>. 대리주 우회는 무가치(깨끗한 상장 대리주 0, 전수 확인), 무시도 아니다(physical AI 소프트웨어층의 유일한 규모 있는 독립계라 관측 가치는 높고 관측 비용은 0). 이유: 사업 자체는 중상(⭐3.43)이나 ①검증 가능한 재무가 0(Form D조차 없음) ②thesis 핵심 전제(데이터 플라이휠)가 1차 계약 문서로 반증됨 ③개인 실효 진입가($17~22B)가 공정가치 밴드($10~14B) 상단의 1.4~1.6배 ④환금성 사실상 0 — 이 넷이 동시에 성립하는 조합에서 안전마진이 존재하지 않는다.</p>
+<p><strong>근거</strong></p>
+<ol>
+<li><strong>밸류에이션</strong> 🔴 고평가(완만·조건부). 역-DCF가 판정 불능인 것 자체가 결론 — 시장 exit 배수로는 통과, 현금흐름 원리로는 불통과 = $15B는 base 시나리오를 완전 반영하고 bull에 손댄 가격, 안전마진 0. 성장조정 0.18~0.21은 Synopsys·PTC와 동일 — 감사받은 흑자 프랜차이즈와 같은 값을 내며 감사·유동성·통제권을 전부 포기하는 거래.</li>
+<li><strong>시나리오 기댓값 + 회수 경로.</strong> $15B 기준 5년 1.92x는 표면상 통과이나, 개인이 실제 접근 가능한 SPV 실효가($19B 중심) 재계산 시 <strong>1.52x·연 8.7%</strong> — 5년 환금 불가·회사 우선매수권·한국은행 증권취득 신고·정보 열위를 전부 감수한 대가로 미달. 회수 경로는 사실상 IPO 하나뿐이고, ETF 선등록은 적대검증 2건이 공동 기각(다른 비상장사에도 동일하게 걸린 티커 선점 관행, 유의미 신호는 485BXT가 아니라 8-A12B/CERT — 현재 부재).</li>
+<li><strong>크럭스.</strong> 데이터 플라이휠이 공개 검증 가능한 유일한 고객 계약(Kodiak MSA, SEC 공시 원문)에서 부정된다 — 고객 데이터 학습권 조항 0건, 컴퓨트·스토리지 계약상 고객 부담, 제품 스스로 white-box 공표. 데이터는 고객이 무상 공급하는 복리 자산이 아니라 회사가 자본지출로 사오는 것. physical AI 프리미엄의 핵심 전제가 1차 자료로 무너진 상태.</li>
+<li><strong>정량 진술 신뢰도.</strong> 밸류 전체를 지탱하는 "비자동차 70%"는 CEO 구두 진술[3차] 단일 출처이고, 회사 최신 보일러플레이트 "18 of top 20 <strong>global</strong> automakers"는 산술적으로 불가능(중국계 5~6곳+Tesla 제외 시 상한 13~14). 오피스 수가 두 달 안에 13→18→~24로 세 값 — 회사 정량 진술 체계 전반에 동일 폭의 오차를 가정해야 하며, 어떤 [3차] 수치도 정량 앵커로 쓸 수 없다.</li>
+<li><strong>방산 서사와 실체의 괴리.</strong> FPDS 프라임 누적 ~$28.1M, CDAO OTA는 기간 61% 경과에 자금 31% 투입(증분 연 $11~15M), SHIELD $151B는 다수공급 천장(실주문 $500 1건), 2022년 "선정"된 육군 RCV는 2025년 프로그램째 취소. 연방 매출 상당분이 소기업 유보 SBIR 경로라 규모 이의제기 리스크까지 있다. 단 SHIELD 수주자 지위는 유일한 반전 옵션으로 봉인.</li>
+<li><strong>접근 경로.</strong> 상장 대리주 전수 확인 결과 0 — DXYZ 36사·ARKVX 80종·XOVR·ARKQ 42종 전부 미보유, Fidelity 뮤추얼펀드 최대 비중 0.094%(한국 매수 불가), Porsche AG는 금액 미공시+매각 검토 보도. 순수도 높은 상장주(MBLY·AUR)는 구조적으로 방향이 반대(경쟁 진영) — 대리주 우회는 노출이 아니라 오분류다. LG이노텍은 현금흐름 방향이 LG이노텍→Applied일 개연성이 높아 국내 고리도 아니다.</li>
+<li><strong>physical AI 곡괭이 지형과의 접속.</strong> 이 종목은 <strong>"곡괭이 격리"의 표본 그 자체</strong>다 — physical AI 소프트웨어층 1등 후보조차 개미가 살 깨끗한 상장 경로가 전무함이 재확인됐다. 더 중요한 것은 반전이다: "진짜 가치 포획은 모델·데이터층(전부 비상장)에 집중될 수 있다"는 가설의 대표 후보로 지목될 만한 회사인데, 실사 결과 이 회사는 그 층 안에서도 <strong>운영데이터 해자를 쥔 수직통합(Waymo·Tesla)이 아니라 데이터가 고객에 귀속되는 툴·미들웨어</strong>였다. 즉 "비상장 모델·데이터층 = 가치 집중"을 종목 단위로 자동 입증하지 않으며, 그 층 구분을 한 단계 더 쪼개야 함("데이터 소유하는 자" vs "데이터 다루는 도구를 파는 자")을 이 케이스가 보여준다.</li>
+<li><strong>0to1 3/7</strong> — 진입·유통 능력(적기·니치·OEM 뒤에 서기)은 탁월하나 머무는 능력(존속성 NO)은 회사·최대주주가 스스로 부정("autonomy layer → negligible marginal price", "L2++ $500이면 무상 번들"). 이 조합의 상장 종착 실증 표본이 Mobileye(P/S 3.4x·3년 정체·창업자 CEO 교체)이고, 아래층 NVIDIA는 동일 기능을 Apache 2.0 무료로 배포 중인 frenemy — 밸류체인 위치는 곡괭이가 아니라 곡괭이 자루다.</li>
+<li><strong>기회비용.</strong> 지금 사지 않는 선택의 기회비용이 구조적으로 낮다 — 관측 지표 3개(EDGAR·NPORT-P·FPDS)가 전부 무료이고, 상장되면 감사 재무와 함께 일반 해외주식으로 접근 가능해진다. 정보 비대칭이 해소되는 유일한 이벤트(S-1)가 곧 접근성이 열리는 이벤트와 동일하다.</li>
+</ol>
+<p><strong>Steelman</strong></p>
+<ul>
+<li><strong>본 분석</strong>: 현재 경로 매수 🔴, 관찰+상장 시 재평가.</li>
+<li><strong>자기 반박(데이터+시간 지평 축)</strong>: "관찰만 하다가는 항상 늦는다"가 가장 강한 반박이다. 2026년 실제 수치는 공개 세계에 존재하지 않으며, 2025년 +100% 성장이 지속됐다면 2026 exit ARR ~$1.6B → $15B는 9.4x forward로 <strong>명백한 저평가</strong>다. TRATON·Stellantis·CDAO·일본 SDS·Dana가 전부 2026년에 얹힌 신규 축이라는 점이 이를 지지한다. 그 경우 S-1 공개 순간 정보 대칭화와 함께 리레이팅이 끝나고, 개인의 초과수익 구간은 정확히 지금 — 정보 비대칭 프리미엄을 지불하는 SPV 구간 — 뿐이다. 관찰은 곧 그 엣지의 포기다.</li>
+<li><strong>유지 / 수정 / 철회 → 유지.</strong> 반박을 무너뜨리는 실측이 둘 있다. (1) 반박이 참이라면 세컨더리가 제자리일 수 없다 — 프라이싱 후 13~16개월 지난 세컨더리 지시가 중앙값이 +7.8%(Nasdaq Private Market은 −2.6%)로, 정보를 실제 보유한 집단(임직원·초기투자자·마켓메이커)이 상방을 사고 있지 않다. Forge는 매도호가 0건으로 가격 발견 자체가 없다. (2) "ARR $1.6B" 가설은 근거가 0인 반면, 검증 불가한 분모에 대해 하방으로 편향을 잡는 것이 규율이다 — 조달액조차 소스마다 $825M~$1.5B로 갈리는 회사다. 또한 반박의 엣지 논리는 비대칭이다: 개인은 그 정보 비대칭에서 유리한 쪽이 아니라 불리한 쪽(수탁자 마크보다 35~70% 비싼 호가만 접근 가능)에 서 있다. 단 반박을 일부 흡수해, 이 판정을 "영구 배제"가 아니라 <strong>falsifier가 명시된 조건부 관찰</strong>로 봉인한다.</li>
+</ul>
+<p><strong>한계</strong></p>
+<ul>
+<li><strong>낮은 신뢰도 판단임을 명시한다.</strong> 감사 재무제표 0, SEC 등록 자체 부재(Form D 0건), 총 발행·희석 주식수 미공시(모든 주당→시총 환산이 주식수 불변 가정), ARR의 정의 불명(bookings/ARR/GAAP 혼재), 2026년 실제 매출·ARR 수치 부존재.</li>
+<li>Series F 우선주 조건(청산우선권·래칫·IPO 거부권) 일체 미공시 — $15B의 보통주 함의를 계산할 입력값이 없다.</li>
+<li>방산은 OTA·기밀·하도급 사각으로 상하 양방향 오차(USASpending 단독 시 17배 과소 실증 전례). 동맹국(영·일·한) 방산 매출은 어느 DB에도 없다.</li>
+<li>Fidelity 마크는 단일 평가주체·보수 편향(한 번도 라운드가 위로 마킹한 적 없음)이라 −28%의 정보량이 제한적.</li>
+<li>한국 법인 감사보고서(DART) 미조회 — 한국 매출 실체를 정량 확인할 유일한 1차 경로가 미수행 상태.</li>
+</ul>
+<p><strong>관찰 신호 (판정을 뒤집거나 재평가를 트리거)</strong></p>
+<ol>
+<li><strong>EDGAR에 S-1/DRS 공개 또는 단일종목 ETF의 8-A12B/CERT 제출</strong> — 상장 실체화. 즉시 재실행. S-1의 산업별 매출 분해에서 "비자동차 70%"가 확인되고 총이익률 80%+·영업이익률 양(+)이면 판정 ⚪→🟢 방향.</li>
+<li><strong>감사 기준 2026 매출 $1.4B 이상 확인</strong>(S-1 또는 신규 라운드 공시) — forward 배수가 한 자릿수로 내려가며 "고평가" 판정 철회.</li>
+<li><strong>Fidelity 차기 NPORT-P 마크</strong>(기준일 2026-06/08, 9~10월 접수, 무료): $110 이상 = comp 연동 회복(완화), $90 이하 = 4번째 하향(강화).</li>
+<li><strong>CDAO OTA 차기 mod 자금 투입 가속 또는 MDA SHIELD에서 연 $100M+ task order</strong> — "방산은 $28M짜리"라는 판정 즉시 무효, 방산 축 재평가.</li>
+<li><strong>TRATON 측 공시(자본시장의 날·중기계획)에서 ONE OS 2028 SOP 물량·대당 구조 확인</strong> — 툴 구독 회사 vs 차량 OS 플랫폼의 분기점. 반대로 SOP 연기·화이트박스 내재화 신호면 2027~28 에어포켓 리스크 확정.</li>
+</ol>
+<hr />
+<h2>한 장 요약</h2>
+<ul>
+<li>🔴 <strong>회사가 파는 것과 시장이 사는 것이 다르다.</strong> 실체는 "자율주행 개발·검증 툴체인의 신생 계층 1등"인데, $15B는 "physical AI 10억 대의 기계"라는 서사에 매겨진 값이다. 작고 검증 가능한 독점 위에 크고 검증 불가능한 서사를 덧씌운 구조.</li>
+<li>🔴 <strong>데이터 플라이휠 반증 — 이 실사의 최대 발견.</strong> SEC에 공시된 유일한 고객 계약(Kodiak MSA) 전문에 고객 데이터 학습권 조항이 <strong>0건</strong>이고, 컴퓨트·스토리지는 계약상 고객 부담이라 데이터가 회사로 이동할 물리적 경로가 기본값으로 없다. "수백 페타바이트 독점 데이터가 복리로 돈다"는 전제가 최소한 툴 사업부에서는 성립하지 않는다.</li>
+<li>🔴 <strong>존속성(⑥)이 외부 추론이 아니라 자기 진술로 부정된다.</strong> CEO: "2030년대 초에는 매우 싸거나 무료." 최대주주 a16z 공개 문서: "자율성 계층은 한계가격이 무시할 수준으로 수렴." 여기에 계약상 소스코드 에스크로·화이트박스 모듈러·SLA 미달 무위약 해지권이 붙는다.</li>
+<li>🔴 <strong>회사 정량 진술 체계가 두 달 안에 세 값을 갖는다.</strong> 오피스 13(5월 공식 PR)→18(7월 팟캐스트)→"약 24"(7월 PR). "글로벌 상위 20 완성차 중 18곳"은 중국계 5~6곳+Tesla를 빼면 산술적으로 불가능. 어떤 [3차] 수치도 정량 앵커로 쓸 수 없다.</li>
+<li>🔴 <strong>SEC에 법인 등록 자체가 없다 — Form D조차 0건.</strong> 대조군 'Anduril'은 forms=D 114건 정상 반환되어 검색 실패가 아님을 확인. 증권 조건·주식수·조달액을 검증할 공적 원장이 원천 부재.</li>
+<li>🟠 <strong>방산은 서사보다 작다.</strong> 정부 계약 DB 실측 프라임 누적 ~$28.1M + 하도급 $38.3M(89%가 단일 원청 경유) + 인수한 EpiSci 누적 $77.0M. CDAO "선정"은 수의계약 OTA($171.1M 천장 중 $52.6M 확정, 기간 61% 경과에 자금 31%). MDA SHIELD "$151B"는 다수공급 천장이고 실주문은 $500 1건.</li>
+<li>🟠 <strong>NVIDIA가 파트너이자 상위 포식자.</strong> CES 2026(1/5)에서 Alpamayo VLA·AlpaSim 폐루프 시뮬·Cosmos 월드모델·Physical AI 데이터셋을 오픈소스로 배포, Isaac Sim/Lab은 Apache 2.0. Applied 제품 카탈로그와 기능 단위로 거의 일치한다. 동시에 NVIDIA는 직접 경쟁자 Wayve($8.6B)의 투자자다.</li>
+<li>🟠 <strong>밸류 판정 🔴 고평가(완만·조건부)</strong> — 공정가치 밴드 $10~14B, 헤드라인 $15B는 그 상단 밖. 개인 접근가 $17~22B는 +40~85%. 신뢰도 낮음(±40%).</li>
+<li>🟠 <strong>한국 개인은 이 회사를 살 수 없다.</strong> 깨끗한 상장 대리주 전수 확인 결과 0. 세컨더리는 회사 우선매수권·외국환 신고·환금성 0. 국내 유일 고리 LG이노텍(011070)도 현금흐름 방향이 반대일 개연성이 높다.</li>
+<li>🟢 <strong>그럼에도 사업은 중상이다</strong> — 7축 종합 <strong>⭐3.43</strong>. 실행 트랙레코드가 진짜고(Series F에서 열거한 6개 산업 전부에서 12개월 내 실물 공시), 소각률이 거의 0이며, 도메인 정합성이 이례적으로 높은 창업팀이다. <strong>점수는 사업 매력도이며 밸류에이션 미반영.</strong></li>
+</ul>
+<hr />
+<h2>📐 비상장 적응 규약 (DD-v1.24-P)</h2>
+<p>표준 Deep-Dive는 상장주를 전제로 서 있다. 사라지는 것과 그 자리를 무엇으로 메웠는지가 이 보고서의 방법론이다.</p>
+<table>
+<thead>
+<tr>
+<th>표준 Deep-Dive</th>
+<th>비상장에서의 상태</th>
+<th>본 보고서의 대체</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SEC 10-K/10-Q/8-K 직접 fetch</td>
+<td>존재하지 않음</td>
+<td><strong>SEC Form D 조회</strong>(결과: 0건 — 그 자체가 발견) + <strong>미국 정부 계약 DB</strong>(USASpending·FPDS) + <strong>상원 로비공개(LDA)</strong> + <strong>고객사 SEC 공시에 첨부된 계약 원문</strong></td>
+</tr>
+<tr>
+<td>시총·52주·Beta·차트</td>
+<td>없음</td>
+<td>최종 사모 라운드 가격 + <strong>세컨더리 시장 지시가 5개 venue</strong> + <strong>Fidelity NPORT-P Level 3 마크</strong>(분기별 1차 가격 신호)</td>
+</tr>
+<tr>
+<td>13F 기관 추이</td>
+<td>없음</td>
+<td>라운드별 투자자 명부 + 뮤추얼펀드 NPORT 보유 추적</td>
+</tr>
+<tr>
+<td>Form 4 인사이더</td>
+<td>없음</td>
+<td>임직원 구주매출(tender offer) 3회 이력 + 창업자 현금화 규모(❌ 미공시로 확인)</td>
+</tr>
+<tr>
+<td>공매도·옵션</td>
+<td>없음</td>
+<td>삭제</td>
+</tr>
+<tr>
+<td>chart-dive(타이밍)</td>
+<td>불가(가격 시계열 부재)</td>
+<td>삭제 — 4-Dive → <strong>3-Dive</strong>(R·History·People 축만)</td>
+</tr>
+<tr>
+<td>§H.7 밸류에이션</td>
+<td>시장가 없음</td>
+<td>사모 라운드가 역-DCF + 상장 유사기업 배수 + 🔴 <strong>우선주 청산우선권 구조 할인</strong> 명시</td>
+</tr>
+<tr>
+<td>§H.1 시나리오 배수</td>
+<td>주가 배수 불가</td>
+<td><strong>기업가치 배수</strong> + 별도 <strong>회수 경로</strong>(IPO/인수/세컨더리) 평가</td>
+</tr>
+<tr>
+<td>재무건전성 점수</td>
+<td>감사 재무 없음</td>
+<td>확인 가능한 것만 채점 + <strong>"검증 불가로 인한 신뢰도 하향"을 점수 근거에 명시</strong>(미공시를 좋은 점수로 대접 금지)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>추가된 것 3가지</strong> — ①근거 등급 체계(1차/2차/3차) ②개인 접근 가능성 판정 ③상장 대리주 지도. 판사의 질문도 "지금 사라/사지 마라"가 아니라 <strong>"이 회사를 어떻게 대해야 하는가"</strong>(관찰 / 상장 시 진입 후보 / 대리주 우회 / 무시)로 재정의했다.</p>
+<hr />
+<h1>Part 1 — Top-Down 7계층</h1>
+<h2>Section A. 🌦️ 날씨 — 지정학 + 거시경제 ⭐4.0</h2>
+<p>순풍 3개가 전부 다중 10년짜리 구조다.</p>
+<ul>
+<li><strong>국방 예산의 계단식 점프</strong>: 미 FY2027 드론·대드론 $74B+(3배, 사상 최대) [1차]. 육군이 자체 소프트웨어(RTK)를 포기하고 상용 벤더로 선회한 것이 실증 [2차].</li>
+<li><strong>노동력 붕괴의 비가역성</strong>: 일본 국토교통성 — 2030년 수송능력 <strong>19.5% 부족</strong>, 2024년 노동시간 규제 영향 합산 시 <strong>34.1% 부족</strong> [1차]. 노무라종합연구소 — 2030년도 트럭 운전자 <strong>36% 부족</strong>(수요 대비 부족률) [1차]. 미국 농부 평균 58세, 광업은 노동력의 1%인데 산업재해 사망의 8% [3차·회사 인용].</li>
+<li><strong>소버린 AI 파편화</strong>: "현지 브랜드 뒤에 서는 수평 공급자"를 구조적으로 유리하게 만든다. 중국 사무소 0은 방산 조달·수출통제상 명백한 자산이다 [1차 오피스 목록으로 교차확인].</li>
+</ul>
+<p>역풍 3개 때문에 ⭐5를 주지 못한다.</p>
+<ul>
+<li><strong>중국 배제 = TAM 구조적 절단</strong>이면서, 중국발 L2++ 가격 붕괴는 비중국 OEM 고객을 통해 그대로 전이된다. CEO 본인이 인정: "중국 EV 생태계는 이익을 신경 쓰지 않는다. 이익을 신경 쓰지 않는 사업이 끼면 산업 전체의 계산이 바뀐다" [3차].</li>
+<li>🔴 <strong>미국 민간 규제는 순풍이 아니라 역풍으로 돌았다.</strong> AV STEP(검증 데이터 제출 강제) 관련 규칙제정이 2026-06-26 <strong>철회</strong>됐고(91 FR 38619), NHTSA는 6/3 규제완화 14건을 최종규칙으로 확정했다 [1차]. 검증 아웃소싱을 강제하던 규제 압력이 약해진다.</li>
+<li>FY27 국방 자율성 예산 상당분이 base budget이 아니라 $350B reconciliation 경유라 상·하원 군사위 지도부가 절차 우회를 공개 문제 삼는 중 [2차].</li>
+</ul>
+<p><strong>▶ Flip 트리거</strong> 🟢 UNECE L4 국제규정(2026-06-24 채택) 국내 이행이 검증 데이터 제출을 실제로 강제 / 🔴 미국 규제완화가 유럽·일본으로 파급되어 검증 부담이 전반적으로 축소</p>
+<h2>Section B. ⛰️ 산 — 산업 ⭐3.5</h2>
+<p><strong>산업 정의</strong>: 자칭 "physical AI"가 아니라 <strong>"이동기계 소프트웨어 인프라"</strong>가 정확하다.</p>
+<p>성장은 실재한다 — ADAS/AD 소프트웨어 2025~35 CAGR 약 20%(McKinsey), 자동차 소프트웨어 전체 2030년 약 $80B.</p>
+<p>🔴 <strong>그러나 널리 인용되는 "자동차 시뮬레이션 SW 시장 $7.7~7.9B"는 Applied의 시장이 아니다.</strong> 적대검증관이 원문을 열어 확인한 결과, 그 리포트 본문의 리더는 Ansys·Siemens·Dassault·Autodesk·PTC이고 최대 application은 vehicle dynamics 31.6%인 <strong>CAE 시장</strong>이다. AV 시나리오·검증은 그 안의 한 조각이다. 즉 진짜 본업 시장은 인용되는 수치보다 훨씬 작다.</p>
+<p><strong>내러티브 5축</strong></p>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">판정</th>
+<th style="text-align: center;">깊이</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔧 기술</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⭐4</td>
+<td>E2E 강화학습 전환·월드모델·온보드 실시간 제약</td>
+</tr>
+<tr>
+<td>👥 사회</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⭐5</td>
+<td>트럭기사·농부·광부 고갈이 이미 구속력 발생</td>
+</tr>
+<tr>
+<td>🏛️ 정책</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">⭐3</td>
+<td>미국은 완화, UNECE는 신설 — 방향이 갈림</td>
+</tr>
+<tr>
+<td>🌐 지정학</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⭐4</td>
+<td>소버린 AI·중국 배제·ITAR 이중용도</td>
+</tr>
+<tr>
+<td>💰 자본</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⭐4</td>
+<td>국방예산 계단 점프 + 사모 자본 유입</td>
+</tr>
+</tbody>
+</table>
+<p><strong>등급 4~5축 = 🔴 다중 수렴.</strong> 가장 강한 축(사회)은 ⭐5로 진입 기준을 충족한다.</p>
+<p>🔴 <strong>다만 산업의 종착 경제성을 회사 자신이 부정한다.</strong> CEO: "2030년대 초에는 매우 싸거나 무료." a16z: "자율성 계층은 한계가격이 무시할 수준으로 수렴." L4는 2035년에도 판매의 1%(McKinsey)이고 돈은 L2/L2+에 있다.</p>
+<h2>Section C. 🌲 숲 — 섹터·병목 ⭐3.0</h2>
+<p><strong>병목 시점 매트릭스</strong> — 3구간 중 하나만 쥐었다.</p>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>병목</th>
+<th>본 종목 위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🕐 T0 (0~6M)</td>
+<td>원가 envelope(칩·센서 BOM)</td>
+<td><strong>❌ 미보유</strong> — 결정하는 것은 NVIDIA DRIVE Orin/Thor와 센서 원가이고, Applied는 NVIDIA의 "권장 L2+ 소프트웨어 공급사"(2026-03-17) 즉 추천받는 독립 소프트웨어 벤더</td>
+</tr>
+<tr>
+<td>🕑 T+6~24M</td>
+<td>조달 표준·디자인윈 선점</td>
+<td><strong>△ 부분 보유이자 유일한 진짜 승부처</strong> — CDAO Autonomy Factory(전 군종 공용 파이프라인을 Axion 위에)와 TRATON ONE OS(4개 브랜드 전 신차, 2028 SOP)는 칩 디자인윈급 리드타임</td>
+</tr>
+<tr>
+<td>🕒 T+2~5Y</td>
+<td>데이터 소유·온디바이스 결정성</td>
+<td><strong>미정</strong> — 하드 병목(정밀감속기·볼스크류·중복화 조향/제동)은 완전히 회사 밖. CTO 본인이 "무인화의 진짜 long pole은 소프트웨어가 아니라 하드웨어 중복화와 그 검증"이라 인정 [3차]</td>
+</tr>
+</tbody>
+</table>
+<p><strong>4중 필터</strong></p>
+<table>
+<thead>
+<tr>
+<th>필터</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">🟡</td>
+<td>수요는 실재하나 무료 대체재가 공급 측에 진입</td>
+</tr>
+<tr>
+<td>② 상장 경쟁사 수</td>
+<td style="text-align: center;">⚪</td>
+<td>상장 순수 경쟁사 사실상 부재(비상장·대기업 사업부에 분산)</td>
+</tr>
+<tr>
+<td>③ 섹터 1~2등</td>
+<td style="text-align: center;">⭐⭐⭐⭐</td>
+<td>신생 계층(클라우드 SIL·시나리오) 1등은 실재</td>
+</tr>
+<tr>
+<td>④ 마진 구조</td>
+<td style="text-align: center;">🟡</td>
+<td>총이익률 80~85% 추정이나 [2차]이고 영업이익률 전 기간 ❌</td>
+</tr>
+</tbody>
+</table>
+<p>🔴 <strong>실질 해자는 기술이 아니라 규제 추적성 + 조달 관계 + 도메인 인력이다.</strong> 이 유형은 넓지만 얕다 — 침투에 오래 걸리지만 <strong>가격결정력으로 전환되지 않는다.</strong> NVIDIA Halos가 안전·인증 계층을 직접 제품화하기 시작한 것이 이 축의 단일 최대 변수다.</p>
+<h2>Section D. 🌳 나무 — 기업 자체 ⭐3.5</h2>
+<h3>D.0.1 제품·서비스 카탈로그</h3>
+<h4>① Tools for Vehicle Intelligence (개발 툴체인) — 매출의 원천</h4>
+<p><strong>무엇</strong>: 자율주행·ADAS 개발용 시뮬레이션·데이터·검증 툴체인. SEC 공시 계약서에서 실제 SKU가 확인된다 — Object Sim, Sensor Sim, Log Sim, Cloud Engine, Validation Toolset, Orbis(결과·HD맵), Scenario editor/manager [1차].</p>
+<p><strong>작동</strong>: 고객 차량 로그를 수집·색인해 검색 가능하게 만들고(데이터 엔진), 특정 장면(예: 10m 이내 끼어들기)을 테스트 이벤트로 표시한 뒤, 속도·날씨·마찰계수를 바꿔 합성 변형 시나리오를 대량 생성한다. 이를 시뮬레이터에서 병렬로 수백만 회 돌려 회귀 테스트를 하고 실패를 코드 커밋에 연결한다. 2026-03 NVIDIA Cosmos 월드 파운데이션 모델을 데이터 증강 워크플로에 통합했다.</p>
+<p><strong>고객·용도</strong>: OEM·부품사·자율주행 스타트업·방산 프로그램의 시뮬레이션 엔지니어와 검증팀. 실도로로는 만날 수 없는 엣지 케이스를 안전하게 반복 재현해 기능안전 표준(ISO 26262)·SOTIF 안전케이스와 규제 인증 근거를 만들기 위해서다.</p>
+<p><strong>차별점</strong>: 결정론적(재현 가능) 시뮬레이션 + 기능안전 표준 정합 + 시나리오 라이브러리 축적. 2018~19년 GM 개발툴 입찰에서 NVIDIA·Ansys 포함 28~29개사와 경쟁해 스펙 성능으로 낙찰된 것이 원점 레퍼런스 [3차].</p>
+<p><strong>매출 위치</strong>: 최대 단일 축. 시뮬·테스트 코어 제품이 전체 매출의 약 33%라는 3자 추정 [2차]. 컴퓨트·스토리지가 계약상 고객 부담이라 이 라인의 원가가 낮다 [1차].</p>
+<h4>② Vehicle OS — 디자인윈은 크고, 로열티는 아직 없다</h4>
+<p><strong>무엇</strong>: 차량·기계용 온보드 운영체제 계층. 스케줄링·미들웨어·통신·기능안전 아키텍처·인포테인먼트·무선 업데이트 인프라를 하나로 묶는다.</p>
+<p><strong>차별점과 함정</strong>: Stellantis STLA Brain(2026-05-21 확장), TRATON ONE OS(Scania·MAN·International·VW Truck &amp; Bus 4개 브랜드 전 신차, 2026-03-31) 두 개의 대형 디자인윈. 🔴 다만 TRATON 건은 <strong>"화이트박스 모듈러 아키텍처 — TRATON이 컴퓨트 유닛을 교체·통합해도 스택이 파편화되지 않는다"</strong>고 회사 스스로 광고한다. 락인을 계약·아키텍처 차원에서 의도적으로 낮춘 구조다.</p>
+<p><strong>매출 위치</strong>: 현재는 다년 공동개발(비반복성 개발비) 성격. 양산 로열티 발생은 TRATON 기준 <strong>2028년 롤아웃 목표</strong>. 금액·대당 단가 전부 ❌ 미공시.</p>
+<h4>③ Self-Driving System (SDS) — 가격결정력이 가장 약한 곳</h4>
+<p><strong>무엇</strong>: 차량에 실제 탑재되는 자율주행 지능(인지·예측·계획·제어). L2+ 고속도로 주행·자동주차부터 광산·전장의 완전 무인까지.</p>
+<p><strong>작동</strong>: 엔드투엔드 단일 신경망 + 화이트박스 투명성 + 데이터 엔진. 기술 방향이 모방학습에서 <strong>폐루프 엔드투엔드 강화학습</strong>으로 이동했다고 창업자들이 직접 설명한다 [3차]. 🔴 <strong>라이다와 HD맵 대신 양산급 카메라+레이더</strong>를 쓴다고 회사 블로그가 명시 [1차] — 이것이 한국 정밀지도 규제 문제를 제품 설계로 무력화하는 지점이다.</p>
+<p><strong>차별점과 함정</strong>: NVIDIA로부터 "L2+ 고속도로 주행 권장 소프트웨어 공급사"로 지정(2026-03-17). 반대로 이 영역의 가격결정력은 가장 약하다 — CEO 본인이 "L2++ 패키지 전체(칩+센서+SW)가 $1,000 미만이고 $500까지 내려가면 OEM이 무상 제공할 것"이라 말했다 [3차].</p>
+<h4>④ Dana (2026-07-21 출시) — 에이전틱 플랫폼</h4>
+<p>9년간 쌓은 툴·인프라 위에 에이전트 인터페이스를 얹은 것. 요구사항 → 관련 코드 연결 → 시뮬레이션·평가 실행 → 테스트 벤치/HIL 이관 → 실기계 스테이징까지 에이전트가 경로를 조율하고 <strong>변경 이력·근거(추적성)를 남긴다</strong>. 3개 에디션(Physical AI / SDV Development / Fleet Operations), MCP 지원 인터페이스, 클라우드·온프레미스·폐쇄망 모두 지원. 얼리액세스 고객으로 Komatsu·Isuzu 실명 인용.</p>
+<p>🔴 <strong>가격·과금 단위·매출 기여 전부 ❌ 미공시.</strong> 좌석 기반 과금을 유지하면 "수일→수분" 생산성 향상이 좌석 수를 자기 잠식한다. 상위 번들로 단가를 올리면 반대. 에이전틱 전환 딜레마의 답이 아직 없다.</p>
+<h4>⑤ 방산 제품군 — Axion / Acuity / Applied Edge / EpiSci</h4>
+<p>Axion = 전 도메인 데이터 엔진 + 시뮬레이션 툴킷. Acuity = 지상·공중·해상 엔드투엔드 자율 스택. Applied Edge = 러기드 컴퓨트·위성/무전 통신을 담은 야전 배치형 이동 운영 노드(2026-03-31 출시, 기밀시설 구성 지원). EpiSci = AI 조종 전투기·드론 군집·해상 추적 계열 전술 AI. 해군 DECK(함정 센서 실시간 자동 탐지·분류, 제한 대역폭 지능 관리)는 해군장관이 공개 기조연설에서 직접 언급.</p>
+<h3>D.0.3 과금 모델 — SEC 공시 계약 원문으로 확정</h3>
+<p>라이선스가 아니라 <strong>구독 라이선스</strong>이며, 마스터 계약 + Order Form + 별도 작업기술서 3단 구조다. 계약서에 열거된 실제 라이선스 유형 [1차]:</p>
+<table>
+<thead>
+<tr>
+<th>유형</th>
+<th>과금 축</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Floating License</td>
+<td>동시 사용자(좌석) — "임의의 [***]시간 구간 내 총 사용자 수가 라이선스 수 초과 불가"</td>
+</tr>
+<tr>
+<td>Cloud Engine License</td>
+<td>머신 1대당</td>
+</tr>
+<tr>
+<td>Cloud Engine Parallel Instance</td>
+<td>동시 실행 시뮬레이션 인스턴스 1개당 → <strong>사용량 과금</strong></td>
+</tr>
+<tr>
+<td>Enterprise Server License</td>
+<td>머신 1대당</td>
+</tr>
+<tr>
+<td>Rate-Limited API</td>
+<td>API 호출 횟수 한도 → <strong>사용량 과금</strong></td>
+</tr>
+<tr>
+<td>Additional Scenario Packs</td>
+<td>시나리오 콘텐츠 별도 SKU</td>
+</tr>
+</tbody>
+</table>
+<p>청구는 <strong>월 정액 인보이스</strong>. 🔴 <strong>"이 Order Form은 어떤 컴퓨트 런타임 비용이나 데이터 스토리지 비용도 포함하지 않으며, 이는 고객의 책임이다"</strong> — 소프트웨어가 고객 클라우드 계정에서 돌고 컴퓨트가 회사 원가가 아니다.</p>
+<p><strong>"칩 회사처럼 디자인윈, 한 번 들어가면 빼기 어렵다"는 CEO 주장 검증 → 부분적으로만 참.</strong></p>
+<p>지지: 고객의 경쟁제품 개발에 소프트웨어 사용 금지 조항(§1.2(f)), 차량 아키텍처 전체 침투 시 교체가 프로그램 리스크, 시나리오 라이브러리 축적.
+반대(더 강함): ①같은 계약 §1.6에 <strong>제3자 소스코드 에스크로</strong>를 Applied 비용으로 체결하는 조항 — 대형 고객이 애초에 탈출구를 계약으로 요구했다 ②TRATON 화이트박스 모듈러 ③방산 마케팅의 핵심 소구점이 "벤더 락인 깨기" — 자기 락인을 팔면서 남의 락인을 깨겠다는 포지셔닝은 장기적으로 모순 ④Isuzu가 공식 케이스 스터디에서 "사내 역량도 함께 구축 중"이라 명시 ⑤§1.2(f)에도 <strong>"고객이 독립적으로 개발하는 것은 제한하지 않는다"</strong>는 단서 ⑥SLA 미달 시 잔여 기간 요금 없이 해지 가능.</p>
+<p><strong>결론: 반도체 디자인윈보다 명백히 약한 락인이다.</strong></p>
+<h3>D.0.x 🔴 데이터 플라이휠 검증 — 이 실사의 크럭스</h3>
+<p>"수백 페타바이트의 독점 데이터"와 "세계 최대급 데이터 수집 선단"은 <strong>두 개의 서로 다른 주장이 하나로 뭉쳐진 것</strong>이며, 분리하면 절반은 참, 절반은 미입증이다.</p>
+<p><strong>① 자사 수집 선단의 실재: 참 [1차].</strong> 회사의 「Bystander Privacy Notice」(2025-06-27 갱신)는 유럽·영국 공공도로에서 <strong>직접</strong> 데이터 수집 차량을 운행한다고 법적 문서로 선언한다 — 센서 데이터를 차량 내 디스크에 수집→회사 시스템 업로드→익명화→"<strong>우리의</strong> ADAS·AD 시스템 개발·학습·시험·개선에 사용". 마케팅 카피가 아니라 GDPR 대응 법적 고지라 증거력이 높다. 규모는 ❌ 미공시이고 CEO 본인이 "그런 역량을 가진 회사가 다섯 곳은 넘고 그렇게 난해한 기술도 아니다"라며 희소성을 부인했다 [3차].</p>
+<p><strong>② "수백 페타바이트를 보유": 라벨 격차.</strong> CEO 구두는 "we already have hundreds of petabytes" [3차]. 회사 자신의 공식 연간 리뷰는 "hundreds of petabytes of training data를 <strong>처리하도록</strong> 플랫폼을 확장했다" [1차]. 제품 페이지도 "petabyte-scale ingestion / curation"처럼 <strong>처리·큐레이션 동사</strong>를 쓴다. 회사가 문서에서 쓰지 않는 소유 주장을 CEO가 구두로 하고 있다.</p>
+<p><strong>③ 고객 데이터의 귀속: 회사가 아니라 고객 [1차 계약 원문].</strong> SEC에 공시된 유일한 실제 고객 계약(Kodiak MSA 2018 + 2024-09-19 갱신)을 전문 검토한 결과:</p>
+<ul>
+<li>고객 데이터 사용권·학습권 조항이 <strong>아예 존재하지 않는다.</strong> 유일한 데이터성 권리는 §1.5 Feedback인데, 이는 개선 제안에 한하며 명시적으로 "그 데이터는 고객 소프트웨어 코드의 어떤 부분도 구성하지 않는다"이고 §5는 "고객이 자신의 Feedback에 대한 모든 소유권을 보유한다"고 규정.</li>
+<li>배포 구조 자체가 데이터 이동을 막는다 — 소프트웨어가 <strong>고객의 환경 안에서</strong> 돌고, 스토리지가 고객 인프라에 남는다.</li>
+<li>방산도 마찬가지다. 해군 DECK에서 Applied는 <strong>해군의</strong> 함정 센서 데이터를 수집하는 인프라를 인도했다. 데이터 자산은 정부 것이고 Applied는 데이터 엔진을 판다.</li>
+</ul>
+<p><strong>④ 그럼에도 마케팅은 반대로 읽히게 쓰여 있다.</strong> SDS 제품 페이지는 "차량·트럭·광산기계로 이뤄진 <strong>글로벌 함대</strong>가 페타바이트 센서 데이터를 수집해 복리 데이터 플라이휠에 연료를 공급한다"고 쓰고, 뒤에서는 "<strong>이 함대들</strong>(=고객이 배포한 함대)"의 실주행 활동이 플라이휠을 돌린다고 서술한다. 자사 수집 선단과 고객 배포 함대를 문장 안에서 합쳐 놓았다. 후자에 대한 권리 근거는 어디에도 공개돼 있지 않다.</p>
+<p><strong>판정: "플라이휠은 존재하나, 그 연료는 회사가 스스로 돈을 들여 모은 것이지 고객이 무상으로 공급해 주는 것이 아니다."</strong> 전자라면 데이터는 <strong>자본지출</strong> 항목이고 규모의 경제가 자동으로 붙지 않는다. 진짜 복리 자산은 데이터가 아니라 <strong>축적된 노하우</strong>이며, 베타 사용 중 고객 피드백에서 파생된 발명·개선이 전부 Applied 소유라는 조항이 그 경로다.</p>
+<p><strong>유보</strong>: Kodiak 계약은 2018년 소형 스타트업용 템플릿이고, OEM·정부용 대형 계약에는 데이터 조항이 다를 수 있다(전량 비공개). SDS를 턴키로 공급하는 관계(Isuzu·Komatsu)에서는 데이터 접근권이 포함될 개연성이 있으나 어떤 공개 문서도 확인해 주지 않는다.</p>
+<h3>D.5~D.8 곡괭이 판정·해자·확장성</h3>
+<p><strong>곡괭이 판정</strong>: 자칭 "무기상(arms dealer)"이고 구조는 맞다 — 누가 이기든 툴을 판다. <strong>곡괭이 질은 (A) 자가조달형에 가깝다</strong> — 소각률 거의 0[1차 투자자 문서], 원가가 계약으로 얇음, 인수 6건을 후속 라운드 없이 소화. 다만 마진·현금흐름 3축이 미공시라 등급 확정 불가.</p>
+<p><strong>해자</strong>: 진짜 장벽은 ①규제 추적성(규제기관에 제출 가능한 검증 증거) ②결정론적 재현 시뮬레이션 ③도메인별 조달·안전케이스 인력 ④온보드 실시간·기능안전 제약. 침식 요인은 ①NVIDIA 무료화 ②투자자 본인의 가격 붕괴 예고 ③회사 스스로 락인을 낮추는 계약·아키텍처 ④고객 내재화 ⑤오픈소스(CARLA) ⑥에이전틱 코딩 일반화.</p>
+<p><strong>확장성 ⭐⭐⭐⭐</strong>: 6개 산업(자동차·방산·트럭·건설·광산·농업) × 3개 제품계층 × 4개 지역블록. Series F에서 열거한 6개 산업 전부에서 12개월 내 실물 공시가 나왔다 — TRATON·Stellantis·일본 SDS·Komatsu·Heidelberg·HII.</p>
+<p>🆕 <strong>다섯 수집 보고서가 통째로 놓친 자산</strong>: 2022-03-14 <strong>Mechanical Simulation Corporation(CarSim·TruckSim·BikeSim, 1996년 설립, 200+ OEM·부품사 고객)</strong> 인수. 시장조사 리포트 본문이 "Applied Intuition의 플랫폼은 <strong>25년간의 차량동역학 모델링 위에 지어졌다</strong>"고 서술하는데, 2017년 설립 회사가 25년을 주장할 수 있는 유일한 근거가 이것이다. <strong>이 회사는 "신생 계층 1등"이 아니라 30년 된 설치기반을 사서 신규 계층에 붙인 이중 구조다.</strong></p>
+<p><strong>🔴 감점 4가지</strong>: ①회사 정량 진술 체계 자체가 흔들린다 ②락인을 회사가 스스로 계약·아키텍처로 낮춘다 ③데이터 플라이휠 부재 ④나쁜 소식에는 침묵한다(육군 RCV 프로그램 취소·Luminar 파산 채권자 5순위·Fidelity 마크다운 전부 무공시).</p>
+<h2>Section E. 🌲🌳 옆의 나무 — 경쟁 ⭐3.0</h2>
+<p><strong>"AV 툴체인 스타트업 1등"은 실재하나, 계층을 내려가면 전부 2~5등이다.</strong></p>
+<table>
+<thead>
+<tr>
+<th>회사</th>
+<th>상장</th>
+<th>규모</th>
+<th>Applied 대비 위협</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>NVIDIA</strong></td>
+<td>NASDAQ</td>
+<td>시총 $5.01조·매출 TTM $253.5B(+85%)</td>
+<td><strong>최상.</strong> CES 2026(1/5)에서 Alpamayo VLA·AlpaSim 폐루프 시뮬·Cosmos 월드모델·Physical AI 데이터셋 오픈소스 공개, Isaac Sim/Lab은 Apache 2.0 상용 R&amp;D 무료·시트 무제한. Applied 제품 카탈로그와 기능 단위로 거의 일치</td>
+</tr>
+<tr>
+<td><strong>dSPACE</strong></td>
+<td>비상장(독일·VC 무조달)</td>
+<td>2024 매출 <strong>€460M+(+14%)</strong>·직원 ~2,900명</td>
+<td><strong>높음 — Applied이 명백히 지는 자리.</strong> 매출이 Applied 2024 추정 ARR($415M)보다 크고 흑자 자기자금 성장. HIL(실물 ECU 자극) 계층은 소프트웨어로 대체 불가. 🆕 <strong>부분적으로 Applied의 공급자이기도 하다</strong>(채용요건 'HIL rig 운용', 파트너 로고에 National Instruments)</td>
+</tr>
+<tr>
+<td><strong>Mobileye</strong></td>
+<td>NASDAQ</td>
+<td>실제 시총 <strong>$6.58B</strong>(818M주×$8.05)·매출 TTM $2.016B·P/S 3.4x·영업이익률 −5.9%</td>
+<td><strong>중간(직접)/최상(밸류 반증).</strong> 동일 사업 명제를 20년 먼저 실행. 도달점 = 3년째 매출 정체·2026 Q1 영업권 $3.788B 감액·창업자 CEO 교체·최고점 대비 −83%</td>
+</tr>
+<tr>
+<td><strong>Anduril</strong></td>
+<td>비상장</td>
+<td>매출 $2.2B(2배 성장)·$61B 확정 → 약 $100B 협상 보도</td>
+<td><strong>높음.</strong> 방산 매출이 Applied 전사 추정 ARR의 2.6배</td>
+</tr>
+<tr>
+<td><strong>Waymo</strong></td>
+<td>비상장(밸류 $126B)</td>
+<td>주 50만 유상 무인 운행·누적 1.7억 무인 마일</td>
+<td><strong>포지션 반증.</strong> Applied 자사 브랜드 무인 배치 실적 <strong>0</strong></td>
+</tr>
+<tr>
+<td><strong>Wayve</strong></td>
+<td>비상장(밸류 $8.6B)</td>
+<td>Series D $1.2B</td>
+<td><strong>높음.</strong> 사업모델이 거의 동일한데 밸류는 57%. 🔴 <strong>NVIDIA가 이 경쟁자의 투자자다</strong></td>
+</tr>
+<tr>
+<td><strong>Foretellix</strong></td>
+<td>비상장</td>
+<td>총 조달 $135M</td>
+<td>낮음(현재)/중간(구조). 표준(OpenSCENARIO 2.0) 기반이라 락인 회피 대안</td>
+</tr>
+<tr>
+<td><strong>Synopsys(Ansys 인수)</strong></td>
+<td>NASDAQ</td>
+<td>시총 $71.5B·P/S 8.2x. Ansys를 $35B(≈14x 매출)에 인수</td>
+<td>밸류에이션 중력. 성숙 시뮬레이션 SW의 종착 배수 기준선</td>
+</tr>
+</tbody>
+</table>
+<p>🔴 <strong>Applied이 명백히 열위인 축 5개</strong>(선택 편향 차단): ①dSPACE 대비 매출·설치기반·HIL·자본효율 전면 열위 ②Waymo 대비 무인 배치 실적 0 ③Mobileye 대비 양산 출하 실적(툴 공급과 양산 탑재는 완전히 다른 사업이며, 자사 온보드 스택이 몇 대에 양산 탑재됐는지 단 한 건도 공시하지 않았다) ④Anduril 대비 방산 규모 2.6배 ⑤NVIDIA 대비 기술 차별화의 얇음 — <strong>그리고 CEO 본인이 진입장벽이 낮다고 인정했다.</strong></p>
+<p><strong>최대 위협 = NVIDIA. 경로는 인수나 가격 경쟁이 아니라 무료·오픈소스 배포에 의한 계층 상품화이며, 시점은 2026-01-05로 특정된다.</strong></p>
+<p>가장 강한 반론은 EDA/CAE 역사다 — Ansys·Cadence·Synopsys는 OpenFOAM·ngspice 같은 무료 대안이 수십 년 존재했음에도 8~16x P/S를 유지했다. 엔지니어링 툴의 해자는 코드가 아니라 인증·워크플로 락인·지원이다. <strong>그러나 이 반론에는 결정적 결함이 있다 — OpenFOAM에는 자금과 상업적 동기가 없었다. NVIDIA에는 둘 다 있다.</strong> 무료 대체재를 만드는 주체가 "자원 없는 커뮤니티"에서 "세계 최대 시가총액 기업"으로 바뀐 것은 유비를 무효화할 만큼 큰 변화다. 따라서 EDA 유비는 위협을 완화하되 제거하지 못한다.</p>
+<p><strong>침식이 나타나는 방식</strong>: 해지가 아니라 <strong>조용한 순매출유지율 침식</strong>이다. 좌석·병렬 인스턴스 기반 과금 구조에서 고객은 계약을 끊지 않고도 수량만 줄여 지출을 깎을 수 있고, 이는 외부에서 관측되지 않는다.</p>
+<h2>Section F. 👤 사람 — 경영진 ⭐3.5</h2>
+<p><strong>도메인 정합성이 이례적으로 높다.</strong></p>
+<ul>
+<li><strong>Qasar Younis (공동창업자·CEO)</strong> — 1982년 파키스탄 출생, 1988년 미국 이민, 디트로이트 교외 성장(부친=자동차 노동자). Kettering University(구 General Motors Institute) 공학 학사 — 재학 중 GM 테크센터·공장 co-op. GM 안전시스템 엔지니어 → Bosch(일본 근무) → 하버드 MBA → Cameesa(실패) → TalkBin(2010 창업, 5개월 만에 구글 매각) → 구글 3.5년(Google Maps 비즈니스 제품 총괄) → <strong>Y Combinator 최초 COO(2015.8~2017)</strong> → 2017년 창업. 창업 3전 2승. 개인 순자산 <strong>$1.5B</strong> [2차 Forbes]. 소송·제재 이력 <strong>0</strong>.</li>
+<li><strong>Peter Ludwig (공동창업자·CTO)</strong> — 디트로이트 성장, <strong>부친·조부 모두 GM 근무(3대째 자동차 가문)</strong>, 미시간대 전산학, 구글 5년(Maps + Android Automotive). 개인 순자산 <strong>$1.5B로 Younis와 동일</strong> — 공동창업자 지분이 6라운드 희석 후에도 대등하게 유지됐음을 시사.</li>
+<li><strong>Jason Brown (방산 부문장)</strong> — 미 공군 26년+, 480th ISR Wing 사령관, 구글 국방 사업 총괄 출신.</li>
+<li><strong>Dan "Animal" Javorsek (EpiSci 사장)</strong> — <strong>DARPA ACE(AI 공중전) 프로그램 책임자</strong> 출신. 공군 시험조종사.</li>
+<li><strong>Brian Dong (CFO, 2025-05 추정)</strong> — Coinbase·Tesla·Twitter 상장 실무. ⚠️ 회사 1차 자료에 CFO 명단 자체가 없어 [2차]에만 존재.</li>
+</ul>
+<p><strong>문화는 위장이 아니라 설계다.</strong> CEO가 저연봉·고지분·주 7일 노동을 공개 신조로 내세우고, 재직자 평가가 정확히 그 프로파일로 나온다 — Glassdoor 종합 3.5/5(165건)인데 <strong>워라밸 2.4/5</strong>, 추천 의향 55%, 채용 공고 전량 온사이트(원격 0%). 투자 함의는 양날이다: 서사가 조직에 관철되는 실행력의 증거이면서, <strong>보상 계약이 밸류에이션 우상향을 전제로만 성립</strong>하므로 정체 시 저연봉이 그대로 노출된다.</p>
+<h3>🔴 언행일치 검증 — 감점의 본체</h3>
+<table>
+<thead>
+<tr>
+<th>진술</th>
+<th>검증</th>
+<th>판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"세일즈 주도 회사가 아니다. 회사의 83%가 엔지니어링"</td>
+<td>3자 헤드카운트 추정과 산술적으로 모순 없음. <strong>그러나 연방 로비 조직이 세일즈 조직 그 자체</strong> — 사내 등록 로비스트 3인 전원이 의회 보좌관 출신(하원 세출위 국방소위 최고위 의원실·상원의원 국가안보정책 국장·하원 입법국장), 외부 로비펌 7곳 동시 고용, 사내 로비 지출 2022 $470K→2025 $910K로 4년 2배 [1차 상원 LDA]</td>
+<td>🟡 <strong>상업 사업엔 성립, 방산엔 불성립</strong></td>
+</tr>
+<tr>
+<td>"10억 달러 넘게 조달했고 전부 은행에 있다"</td>
+<td>🔴 조달 총액에 회사 금고로 안 들어가는 세컨더리가 섞여 있다 — 2024-07 <strong>$300M+ 세컨더리</strong>(기존 주주 지분 매각), 2025-06 Series F도 회사 스스로 "$600M fundraise <strong>and tender offer</strong>"로 표기. 여기에 인수 6건 대금 지출. 본인이 "별표를 붙인다"고 단서를 달았다</td>
+<td>🔴 <strong>불일치(과장), 고의성은 보류</strong></td>
+</tr>
+<tr>
+<td>"수직 통합하지 않는다. 우리는 칩메이커 같은 수평 공급자"</td>
+<td>🔴 같은 팟캐스트 내 자기모순: "<strong>우리가 자율주행 트럭을 배치한다</strong>. 그리고 많은 자율주행 트럭 회사가 우리 툴을 쓴다." 행동 증거: Embark(트럭 <em>운영사</em>) 인수, SDS 직접 판매, Applied Edge 완제품 하드웨어, 방산 완제 스택, 정부와 직접 계약하는 별도 법인</td>
+<td>🟠 <strong>본인이 이미 인정한 종류의 불일치 — 핵심은 채널 충돌 리스크</strong></td>
+</tr>
+<tr>
+<td>"40명 이상이 전직 CTO, 30명 이상이 전직 창업자"</td>
+<td>유입 경로는 실재(인수 6건 + 경쟁사 붕괴 흡수). 명단·정의·검증 방법 미공개</td>
+<td>⚪ <strong>검증 불가 — 투자 판단에 가중 금지</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>🔴 감점의 본체</strong>: 이 회사의 정량 사실은 전부 한 사람의 입에서 나오는데 <strong>그중 최소 3건이 검증에서 어긋났다</strong> — 오피스 13/18/24, "18 of top 20 <strong>global</strong>"의 산술적 불가능, "$10억 조달·전액 은행"의 세컨더리 혼입.</p>
+<p><strong>부수 감점</strong>: CTO 개인 귀속 기술 산출물 0(Google Patents 발명자 0건 — 회사 명의 특허는 다수이나 발명자는 인수한 포트폴리오의 원 발명자들), 2021년 이후 이사회 구성 ❌ 미공시, <strong>2회 tender에서 창업자 본인 현금화 규모 ❌</strong> (스킨인더게임 판단의 최대 공백).</p>
+<p><strong>소송</strong>: 고용차별 1건(2025-02 제소 → 2025-08 합의 각하, 조건 비공개), Embark 인수 승계 증권소송 1건(2023 종결, 변호사비 $114,000 지급), Luminar 파산 무담보채권자 5순위 등재(금액 미확인). 전 고용주(구글·GM)와의 분쟁 <strong>0건</strong>.</p>
+<h2>Section G. 🔢 숫자 — 재무건전성 ⭐2.5</h2>
+<blockquote>
+<p>🔴 <strong>비상장 적응</strong>: 감사 재무제표가 존재하지 않는다. <strong>미공시를 좋은 점수로 대접하지 않고, 검증 불가에 따른 신뢰도 하향을 점수에 반영해 ⭐2.5로 채점했다.</strong></p>
+</blockquote>
+<h3>G.1 🔴 SEC 등록 자체가 없다 — Form D 0건</h3>
+<p>EDGAR 회사검색·전문검색 양쪽에서 'Applied Intuition' 명의 제출인 레코드가 존재하지 않는다. <strong>Form D조차 없다.</strong> 대조군 'Anduril'은 forms=D로 114건이 정상 반환되어 검색 실패가 아니라 실제 부재임을 확인했다. Reg D 세이프하버가 아닌 Section 4(a)(2) 사모로만 조달했거나 주 단위 신고만 했다는 뜻이며, 위법은 아니지만 <strong>증권 조건·발행주식수·조달금액의 공적 1차 원장이 전무</strong>하다.</p>
+<p>역설적으로 <strong>외부 펀드의 공시가 이 회사에 대한 사실상 유일한 SEC 1차 창구</strong>다 — Fidelity 계열 펀드의 NPORT-P 보고서.</p>
+<h3>G.2 확인 가능한 것 (+)</h3>
+<ul>
+<li><strong>소각률 거의 0</strong> — a16z 공개 문서: "투자자로부터 조달한 primary 자본(10억 달러 근접)을 대부분 보존하면서 규모 있는 상태로 수년 연속 매출을 거의 2배씩 늘렸다" [1차 확인]. Ⓒ 유형 중에서도 breakeven 근접을 시사.</li>
+<li><strong>원가가 계약으로 얇다</strong> — "컴퓨트 런타임·스토리지 비용은 고객 부담" [1차 계약 원문].</li>
+<li><strong>지불능력 실증</strong> — 인수 6건, Embark $71M 전액 현금, 후속 라운드 없이 15개월 경과.</li>
+<li><strong>정부 현금흐름 실측</strong> — FPDS 원청 obligated 약 <strong>$28.1M</strong>(육군 OTA $20.7M 포함) + 하도급 $38.3M + 인수한 EpiSci 누적 $77.0M.</li>
+</ul>
+<h3>G.3 확인 불가한 것 (−)</h3>
+<ul>
+<li><strong>매출은 금액뿐 아니라 종류가 미확인.</strong> Forbes 원문은 "booked around $800 million"(수주)이고, Sacra $830M은 자체 추정 exit ARR이며, <strong>GAAP 매출은 전 기간 ❌</strong>.</li>
+<li>총이익률·영업이익률·영업현금흐름·잉여현금흐름·순매출유지율·해지율·발행주식수 <strong>전부 ❌</strong>.</li>
+<li><strong>유일한 1차 수탁자 마크가 라운드가 대비 −28%</strong>: Fidelity NPORT-P Level 3, 2026-05-31 기준 <strong>주당 $101.59</strong>(38,409주 = $3,901,970에서 직접 검산). Series F $141.56 대비 −28.2%. 🔴 다만 <strong>Fidelity는 이 포지션을 단 한 번도 라운드 가격 위로 마킹한 적이 없다</strong>(최고 $136.39 = −3.7%) — 마크가 공정가치 추정이 아니라 처음부터 보수적 하한선이라는 뜻이라 정보량이 제한된다.</li>
+<li><strong>구조적 마진 압박</strong>: 인력의 83%가 엔지니어, 2025년 인원 거의 2배, 신규 산업 진입마다 그 업계 출신 팀을 새로 채용해 제품을 재구축하는 방식, 하드웨어 혼입(Applied Edge·SDS 센서).</li>
+</ul>
+<h3>G.4 매출 추정치 전수 — 서로 다른 4개 소스</h3>
+<table>
+<thead>
+<tr>
+<th>수치</th>
+<th>출처</th>
+<th style="text-align: center;">등급</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ARR "$400M 초과"(2024년 말)</td>
+<td>The Information 2025-03-11</td>
+<td style="text-align: center;">2차</td>
+<td><strong>원출처로 보임.</strong> 방법론 ❌</td>
+</tr>
+<tr>
+<td>ARR $415M(2024) / $830M(2025)</td>
+<td>Sacra</td>
+<td style="text-align: center;">2차 추정</td>
+<td>산출식 비공개</td>
+</tr>
+<tr>
+<td>ARR ~$622M</td>
+<td>동일 Sacra 리포트 내 병기</td>
+<td style="text-align: center;">2차</td>
+<td>↓ 아래 규명</td>
+</tr>
+<tr>
+<td>매출 $800M(2025), +100%</td>
+<td>PM Insights</td>
+<td style="text-align: center;">2차</td>
+<td>독립 추정</td>
+</tr>
+<tr>
+<td>매출 $850M</td>
+<td>Forbes AI 50 2026</td>
+<td style="text-align: center;">2차</td>
+<td>시점 정의 불명</td>
+</tr>
+<tr>
+<td>GAAP 매출</td>
+<td>—</td>
+<td style="text-align: center;">—</td>
+<td><strong>❌ 존재하지 않음</strong></td>
+</tr>
+</tbody>
+</table>
+<p>🆕 <strong>Sacra 내부 모순($830M vs $622M)의 규명</strong> — 본 조사의 실질적 기여 하나. 같은 글에 "$15B ... 18x forward"와 "~24x forward on its ~$622M ARR"가 병존한다. $15,000M ÷ $830M = 18.1x, ÷ $622M = 24.1x. 그리고 결정적으로 <strong>$622M ≈ ($415M + $830M) / 2</strong>다. 100% 성장 궤적에서 역년 인식매출 ≈ 기초 ARR과 기말 ARR의 평균이므로, <strong>$622M = "2025년 역년 매출 프록시", $830M = "2025년 12월 exit ARR"</strong>로 정확히 대응한다. 모순이 아니라 시점 차이였다.</p>
+<p><strong>조달 총액도 소스마다 갈린다</strong>: $850M(CNBC) / $824.89M(Forge primary 라운드별 합산 검산) / $1.2B(Sacra·Tracxn) / "약 $1.5B"(구주매출 포함). 원인은 총 라운드 규모 vs primary만 vs 세컨더리 포함 여부.</p>
+<hr />
+<h1>Part 2 — 추가 심층</h1>
+<h2>H.7 💰 밸류에이션 정밀 판정 (비상장 적응) — 🔴 고평가(완만·조건부)</h2>
+<blockquote>
+<p>별도 렌즈이며 7축 점수에 합산하지 않는다. 매수·매도 신호가 아니다. <strong>신뢰도 낮음(구조적) — 밴드 폭 ±40%.</strong></p>
+</blockquote>
+<p><strong>아키타입: Ⓒ 고성장 pre-profit — 단 Ⓒ 안에서도 우량한 쪽(소각률 거의 0).</strong> 경계면: Ⓑ 구조적 컴파운더 "후보"이나 미실증 + 사업부 일부는 Ⓔ pre-revenue.</p>
+<p>Ⓑ가 아닌 이유가 핵심이다 — Ⓑ 승격은 "가격결정력 + 락인 + 마진 확장"의 동시 실증을 요구하는데, <strong>회사와 투자자 본인이 이를 공개적으로 부정한다.</strong> 즉 <strong>전사는 Ⓒ인데 밸류에이션 프리미엄을 지탱하는 부분은 Ⓔ</strong>라는 비대칭이 존재한다.</p>
+<p><strong>매출 앵커</strong>: 주 앵커 = 2026년 역년 매출 <strong>$1.0~1.2B(중심 $1.1B, 필자 구성 — 3자 추정 아님)</strong>. 삼각검증: PM Insights의 함의 시총 $20.54B ÷ 19.34x = <strong>$1,062M</strong>으로 독립 구성치와 일치.</p>
+<h3>암묵 배수</h3>
+<table>
+<thead>
+<tr>
+<th>분모</th>
+<th>시점</th>
+<th>$15B 기준</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>역년 매출 프록시 $622M</td>
+<td>2025 실적</td>
+<td><strong>24.1x</strong></td>
+</tr>
+<tr>
+<td>exit ARR $830M</td>
+<td>2025-12</td>
+<td><strong>18.1x</strong></td>
+</tr>
+<tr>
+<td>역년 매출 $1.1B</td>
+<td>2026E</td>
+<td><strong>13.6x</strong> (밴드 12.5~15.0x)</td>
+</tr>
+<tr>
+<td>exit ARR $1.33~1.66B</td>
+<td>2026-12E</td>
+<td><strong>9.0~11.3x</strong></td>
+</tr>
+</tbody>
+</table>
+<p>🔴 <strong>함정 3가지</strong>: ①18.1x는 trailing exit ARR이지 GAAP 매출이 아니다 — 상장사 P/S와 같은 선상에서 비교할 숫자는 24.1x다 ②13.6x forward는 필자가 만든 분모 위에 있다(2026 성장이 +27%에 그치면 16.0x) ③PM Insights의 19.34x와 필자의 13.6x는 같은 세계다 — 배수가 아니라 <strong>분자(가격)</strong>의 차이가 논쟁의 전부다.</p>
+<h3>역-DCF — 판정 불능이 곧 결론</h3>
+<table>
+<thead>
+<tr>
+<th>변수</th>
+<th>가격이 요구하는 값</th>
+<th>현실 envelope</th>
+<th>거리</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 10년 매출 CAGR</td>
+<td>산정 방식에 따라 <strong>15.1~34.8%</strong>(Gordon 34.8% / 시장 exit 배수 20.5~22.6%)</td>
+<td>TAM 상향식 구성 bear 12.3% / base <strong>21.9%</strong> / bull 27.0%</td>
+<td>⚠️ <strong>방식 의존성이 판정을 지배.</strong> Gordon은 상단 밖(+7.8%p), 시장정합은 base와 정확히 겹침</td>
+</tr>
+<tr>
+<td>② 터미널 영업이익률</td>
+<td>기준 25%(15%면 요구 CAGR 45.6%로 급등)</td>
+<td>18~28%, 중심 22%. 상장 실측: Cadence 29.7%·Autodesk 29.5%·PTC 41.6%·Synopsys 10.4%·<strong>Mobileye −5.9%</strong></td>
+<td>약 65백분위. 소폭 스트레치. <strong>판관비·R&amp;D 전면 미공시라 검증 자체가 불가</strong></td>
+</tr>
+<tr>
+<td>③ 초과성장 지속기간</td>
+<td>약 5년의 30%+ 성장 후 5년 페이드</td>
+<td>4~7년</td>
+<td>envelope 중앙. 단 "끊김 없이"가 조건이고, NRR·해지율 미공시라 조기 경보 수단이 없다</td>
+</tr>
+<tr>
+<td>④ 2036 매출 절대액</td>
+<td>Gordon $21.8B / exit 5~6x $7.1~8.4B</td>
+<td>$3.5B / $8B / $12B</td>
+<td>exit 배수 방식은 통과. Gordon은 envelope bull의 1.8배이며 <strong>2036년에 자동차 시뮬레이션 SW 시장 전체보다 큰 매출을 요구</strong></td>
+</tr>
+<tr>
+<td>⑤ 필요 터미널 배수</td>
+<td>약 5.2x EV/S</td>
+<td>성숙 산업 SW 실측 4.5~6x</td>
+<td><strong>내부.</strong> 터미널 배수 가정 자체는 무리하지 않다</td>
+</tr>
+<tr>
+<td>⑥ 할인율 감응도</td>
+<td>WACC 10.5~14.5%</td>
+<td>비상장 후기 SW 합리 밴드 12~14%</td>
+<td>WACC를 10.5%까지 낮춰도 Gordon 요구 CAGR 29.5%로 envelope bull 상회 — <strong>관대하게 잡아도 Gordon에서는 통과 못 한다</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>결론: 시장이 실제로 지불하는 배수를 빌려오면 통과, 현금흐름 원리로 계산하면 불통과.</strong> 어떤 방식으로도 $15B는 base 시나리오를 완전히 반영하고 bull에 손을 댄 가격이며, <strong>안전마진은 0이다.</strong></p>
+<h3>상대가치</h3>
+<p>성장조정(배수÷성장%)으로 <strong>0.18~0.21</strong>은 Cloudflare 1.19·Datadog 0.74·Snowflake 0.55·Palantir 0.67보다 명백히 싸다. 🔴 <strong>그러나 0.18~0.21은 Synopsys 0.20·PTC 0.21과 정확히 같은 값이다.</strong> 즉 감사받은 흑자 성숙 프랜차이즈와 <strong>동일한 성장조정 가격을 내면서 감사 재무·유동성·통제권을 전부 포기하는 거래</strong>다. 정보 열위는 프리미엄 사유가 아니라 할인 사유다.</p>
+<p>Ansys $34.9B(≈14x)·Altair $10B(≈15x)라는 전략적 M&amp;A 실거래가는 <strong>감사받은 GAAP 흑자 상장사에 매겨진 값</strong>이고, Applied의 18.1x·24.1x는 <strong>검증 불가한 추정치에 매겨진 값</strong>이다. 같은 배수라도 정보 품질이 다르면 같은 가격이 아니다.</p>
+<h3>세컨더리 시장 — 프리미엄이 아니라 제자리</h3>
+<table>
+<thead>
+<tr>
+<th>Venue</th>
+<th>주당 지시가</th>
+<th>기준일</th>
+<th>함의 지분가치</th>
+<th>vs Series F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Fidelity NPORT-P Level 3 (1차)</strong></td>
+<td><strong>$101.59</strong></td>
+<td>2026-05-31</td>
+<td><strong>$10.76B</strong></td>
+<td><strong>−28.2%</strong></td>
+</tr>
+<tr>
+<td>Nasdaq Private Market</td>
+<td>$137.85</td>
+<td>2026-07-10</td>
+<td>$14.61B</td>
+<td>−2.6%</td>
+</tr>
+<tr>
+<td>Notice.co</td>
+<td>$145.43</td>
+<td>2026-07-15</td>
+<td>$15.41B</td>
+<td>+2.7%</td>
+</tr>
+<tr>
+<td>Hiive(모델 산출)</td>
+<td>$159.85</td>
+<td>2026-07-27</td>
+<td>$16.94B</td>
+<td>+12.9%</td>
+</tr>
+<tr>
+<td>Caplight(90일 지연)</td>
+<td>$173.13</td>
+<td>2026-03</td>
+<td>$18.35B</td>
+<td>+22.3%</td>
+</tr>
+<tr>
+<td><strong>4개 중앙값</strong></td>
+<td><strong>$152.64</strong></td>
+<td>—</td>
+<td><strong>$16.17B</strong></td>
+<td><strong>+7.8%</strong></td>
+</tr>
+<tr>
+<td><strong>Forge Global</strong></td>
+<td><strong>가격 산출 불가</strong></td>
+<td>2026-07-12</td>
+<td>—</td>
+<td>매도호가 <strong>0건</strong></td>
+</tr>
+</tbody>
+</table>
+<p>🔴 <strong>널리 인용되는 +36.9%는 이상치다. 실제 중앙값 프리미엄은 +7.8%이고 Nasdaq Private Market은 −2.6% 할인이다.</strong> 매출을 2배로 늘린 회사가 프라이싱 후 13~16개월간 세컨더리에서 +7.8%에 머물러 있다는 것은 <strong>정보를 실제로 가진 집단이 상방을 사고 있지 않다</strong>는 뜻이다. 가장 깊은 venue(Forge)는 매도호가 0건·매수호가 1건·"Forge Price 산출 불가"·시장활동 "Limited"로 <strong>가격 발견 자체가 성립하지 않는다.</strong></p>
+<h3>사모 라운드 밸류에이션의 구조적 왜곡 — 이 건은 이례적으로 작다</h3>
+<p>일반적으로 헤드라인 post-money는 최선순위 증권 주당가를 후순위 보통주 전부에 곱한 관행 표기라 보통주 가치를 과대표시한다(학술 기준선: 유니콘 보고 밸류가 공정가치 대비 평균 48%, 보통주는 평균 56% 과대). <strong>그러나 이 건은 왜곡이 작다는 반대 증거가 둘 있다.</strong></p>
+<ol>
+<li>우선주 스택이 $825M~$1.2B로 <strong>$15B의 5.5~8%에 불과</strong>하다(밸류의 30~50%인 사례들과 질적으로 다름).</li>
+<li>🔴 <strong>Fidelity가 Class A 보통주와 Series A-2·B-2 우선주를 전부 동일가($101.59)로 마킹한다.</strong> 회계 실무상 계층 간 권리 차이가 유의미하면 가격을 달리 매긴다.</li>
+</ol>
+<p>따라서 "헤드라인이 보통주를 20~40% 과대표시한다"는 일반 법칙을 기계적으로 적용하면 과도한 할인이 된다. 다만 <strong>조건 자체는 전면 미공시</strong>다 — 참가권·시니어리티·희석방지 래칫·IPO 가격 하방 보호 어느 것도 확인 불가이고, Form D가 없어 정관을 볼 공적 경로가 원천 부재다.</p>
+<p>🆕 <strong>$600M "라운드"의 실체</strong>: Forge가 잡은 Series F primary는 <strong>$220.56M</strong>이고 차액 약 $379M이 구주 매출이다(Sacra 독립 추정과 일치). 양면 해석 — (+) 텐더는 실제 현금이 오간 거래라 가격 신호로서 더 진짜다 (−) 동시에 <strong>임직원·초기 투자자가 $141.56에 약 3.8억 달러를 현금화</strong>했고, 13개월 뒤 Fidelity가 같은 주식을 $101.59로 마킹하고 있다.</p>
+<h3>🎯 밸류 판정</h3>
+<p><strong>🔴 고평가 — 단 "완만·조건부"(거품 아님).</strong> 중심 공정가치 밴드 <strong>$10~14B(중심 ~$12B)</strong>, 헤드라인 $15B는 그 상단 밖 +7~25%, <strong>개인 접근가격 $17~22B는 +40~85%</strong>.</p>
+<p><strong>신뢰도: 낮음(구조적)</strong> — 감사 재무 0, SEC 등록 부재, 총 주식수 미공시(모든 주당→시총 환산이 주식수 불변 가정), 2026년 실제 수치 부존재. 판정의 <strong>방향</strong>은 중간 신뢰, <strong>크기</strong>는 낮은 신뢰. "$15B는 확실히 비싸다"가 아니라 <strong>"$15B를 지불하면 안전마진 없이 base~bull 시나리오를 산다"</strong>로만 사용해야 한다.</p>
+<p><strong>판정을 뒤집는 falsifier 3개</strong>: ①감사 매출 또는 S-1로 2026 매출 $1.4B 이상 확인 ②총이익률 80% 초과 + 영업이익률 양(+) 확인 ③IPO가 $18B 이상에 실제 가격 결정. 하나면 ⚪, 둘 이상이면 🟢 방향으로 즉시 수정.</p>
+<h2>H.1 시나리오 (5년, 비상장 적응)</h2>
+<p>배수는 주가가 아니라 <strong>기업가치 배수</strong>이며, 개인이 그 수익을 실현할 경로는 별도 문제다.</p>
+<table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: center;">확률</th>
+<th>2031년 기업가치</th>
+<th style="text-align: center;">$15B 대비</th>
+<th>핵심 가정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🟢 <strong>Bull — 툴 회사가 OS 플랫폼으로 승격</strong></td>
+<td style="text-align: center;">25%</td>
+<td>$55~70B (중심 $60B)</td>
+<td style="text-align: center;"><strong>4.0x</strong></td>
+<td>①2026~28 ARR 연 60%+ 유지, 2031 매출 $4~5B ②<strong>2028 TRATON SOP가 실제 대당 로열티로 인식</strong>되고 Stellantis·일본 SDS·Komatsu가 뒤따라 Vehicle OS가 프로그램에서 반복매출로 전환(Ⓒ→Ⓑ 승격의 유일 조건) ③CDAO Autonomy Factory가 전군 사실상 표준, MDA SHIELD에서 연 $100M+ task order, 방산 전사 25%+ ④IPO로 정보 대칭화 + 감사 총이익률 80%·영업이익률 20%+ 확인 → 성숙 SW 프리미엄 배수(8~12x) ⑤NVIDIA 무료화에도 인증·추적성·조달관계가 실제 전환장벽으로 작동해 NRR 110%+</td>
+</tr>
+<tr>
+<td>🟡 <strong>Base — 좋은 회사, 그러나 렌트는 안 걷힌다</strong></td>
+<td style="text-align: center;">50%</td>
+<td>$20~26B (중심 $23B)</td>
+<td style="text-align: center;"><strong>1.53x</strong></td>
+<td>①성장 감속(2026 +60% → 2029 +25%), 2031 매출 $2.5~3B ②Vehicle OS는 다년 공동개발 성격 유지, 대당 로열티는 CEO 본인 예고대로 눌림 ③방산은 연 $150~250M로 성장하되 전사의 10%대 ④2027~28 에어포켓(툴 구독 둔화 ↔ 양산 로열티 미개시) 발생하되 통과 ⑤IPO가 $14~18B에서 이뤄지고 이후 성숙 산업SW 중력(P/S 5~8x)으로 수렴</td>
+</tr>
+<tr>
+<td>🔴 <strong>Bear — 미들웨어 상품화 + 방산 SPOF 절단</strong></td>
+<td style="text-align: center;">25%</td>
+<td>$7~11B (중심 $9B)</td>
+<td style="text-align: center;"><strong>0.60x</strong></td>
+<td>①NVIDIA 무료 스택 + Halos가 인증·추적성 해자를 잠식, 고객이 해지 대신 좌석·인스턴스만 줄여 NRR 100% 아래로(외부 관측 불가한 조용한 침식) ②2027~28 에어포켓에서 성장률 20% 아래 붕괴 ③방산 두 단일고장점 중 하나 절단 — CDAO OTA(2027-09-30 만료) 미갱신 또는 지상전투차량 원청 프로그램 축소(연방 하도급의 89% 경유), 여기에 소기업 자격 규모 이의제기가 인용되면 매출과 과거실적 자산이 동시 훼손 ④상장 시 Mobileye 중력 작동 또는 다운라운드</td>
+</tr>
+</tbody>
+</table>
+<p><strong>기댓값 = 0.25×4.0 + 0.50×1.53 + 0.25×0.60 = 1.92x (5년, 연평균 약 13.9%)</strong></p>
+<p>🔴 <strong>개인 실효가 보정</strong>: 한국 거주 개인이 접근 가능한 유일한 문서 확인 경로(SPV)의 실효 진입가는 세컨더리 지시가($16~20.5B) 위에 운용보수·캐리·중개 스프레드가 얹힌 <strong>$17~22B(중심 $19B)</strong>다. 같은 시나리오를 $19B 기준으로 재계산하면 배수가 0.79배로 눌려 <strong>기댓값 1.52x (연평균 8.7%)</strong>가 된다. 5년간 환금 불가·정보 열위·회사 우선매수권·외국환 신고를 전부 감수하고 받는 대가가 연 8.7% 기대수익이다.</p>
+<p>장기 보유 규율("3년간 안 팔 자신이 있는가")은 형식상 통과하지만, <strong>애초에 팔 수단이 없어서 통과하는 것이므로 자격 미달</strong>이다.</p>
+<pre><code>시나리오 비대칭 (기업가치 배수, $15B 기준)
+Bear 0.60x ████                          │
+Base 1.53x ██████████                    │
+Bull 4.00x ██████████████████████████    │
+           └────┴────┴────┴────┴────┴────┘
+           0   1.0x  2    3    4    5
+           본전선 1.0x  ·  기댓값 1.92x (개인 실효가 기준 1.52x)
+</code></pre>
+<h2>H.1b 회수 경로 — 사실상 IPO 하나</h2>
+<p><strong>▸ IPO (유일한 깨끗한 경로)</strong> — 2026-07-27 현재 S-1·DRS 공개본 <strong>0건</strong>. 🔴 널리 인용되는 "레버리지 ETF 5종 선등록 = IPO 임박"은 적대검증 2건이 함께 기각했다: 동일 스폰서가 <strong>다른 비상장사(Anduril·Anthropic 등)에도 똑같이 걸어놓고 485BXT로 반복 연기 중</strong>이며, 한 건은 200종+ 일괄 shelf의 202번/205번 항목에 불과하다. 실제 상장 사례가 기준을 알려준다 — <strong>의미 있는 전환점은 485BXT가 아니라 8-A12B / CERT 제출</strong>이고 Applied 건에는 그것이 없다. 다만 CFO를 Series F 프라이싱 직후 앉힌 것은 준비 정황.</p>
+<p><strong>▸ 인수(M&amp;A)</strong> — 확률 낮음. $15B급 인수 가능자는 NVIDIA(반독점·경쟁 관계), Qualcomm, Synopsys/Siemens, 방산 대형사 정도인데 창업자 지배력이 강하고 정례 tender로 상장 압력을 스스로 낮추고 있어 매각 유인이 약하다.</p>
+<p><strong>▸ 세컨더리(개인 직접)</strong> — 유동성 사실상 0. <strong>Forge 매도호가 0건 / 매수호가 1건 / 가격 산출 불가 / 시장활동 Limited</strong>. 게다가 회사 우선매수권과 양도 승인이 걸려 매수자·매도자가 합의해도 회사가 가로채거나 거부할 수 있다 — 방산 프로그램 보유사라 주주 심사가 보수적일 개연성.</p>
+<p><strong>▸ Tender(회사 주관)</strong> — 2024-07 $300M+ 세컨더리, 2025-06 Series F 동반 tender(회사 스스로 2024년 시점에 "우리의 세 번째 tender"라 밝힘). <strong>외부 개인이 매수자로 참여할 방법은 없다</strong> — 대상은 임직원·기존 주주, 매수 측은 회사가 초대한 기관.</p>
+<h2>H.2 Catalyst 캘린더 (24개월)</h2>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>이벤트</th>
+<th>영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-08-18 / 08-22</td>
+<td>단일종목 레버리지 ETF 5종 효력일</td>
+<td>🔴 발효 자체는 신호가 아니다. 진짜 판별 지표 = EDGAR에 <strong>8-A12B 또는 CERT</strong>가 뜨는가</td>
+</tr>
+<tr>
+<td>2026-08~10</td>
+<td><strong>Fidelity 차기 NPORT-P Level 3 마크</strong></td>
+<td>현재 $101.59(고점 −25%, 4월 저점에서 +7.2% 반등). $110↑ = 완화, $90↓ = 4차 하향으로 강화. <strong>무료·1차·분기 반복 관측 가능한 유일한 가격 신호</strong></td>
+</tr>
+<tr>
+<td>2026-Q3~Q4</td>
+<td>Dana 과금 모델·초기 유상 고객 공개</td>
+<td>좌석 과금 유지 시 생산성 향상이 좌석 수를 자기 잠식. 에이전틱 전환 딜레마의 답</td>
+</tr>
+<tr>
+<td>2026-Q4</td>
+<td>미 FY2027 세출법 확정</td>
+<td>🔴 자율성 예산 상당분이 base budget이 아니라 reconciliation 경유. 삭감·지연 시 방산 서사의 거시 근거 축소</td>
+</tr>
+<tr>
+<td>2026-Q4~2027-Q1</td>
+<td><strong>CDAO OTA 차기 자금 투입</strong></td>
+<td>천장 $171.1M 중 확정 $52.6M, <strong>기간 61% 경과에 자금 31%</strong>. 증분 속도가 연 $11~15M을 넘어서는지가 "전군 표준 선점"의 실체 검증</td>
+</tr>
+<tr>
+<td>상시 (2026-2028)</td>
+<td><strong>SEC EDGAR에 S-1 또는 DRS 공개</strong></td>
+<td>이 회사의 <strong>모든 미해결 항목이 한 번에 해소되는 단일 문서</strong>. 산업별 매출 분해·총이익률·영업이익률·NRR·주식수·우선주 조건·ARR 정의. 본 판정의 절반이 여기에 달려 있다</td>
+</tr>
+<tr>
+<td>2027년 중</td>
+<td><strong>Isuzu Step 2 — 자율주행차 총 30대 투입</strong></td>
+<td>회사 최초의 <strong>날짜가 박힌 검증 가능 약속.</strong> 현재 Step 1은 대형 트럭 <strong>단 1대</strong>·안전운전자 탑승·고속도로 일부 구간</td>
+</tr>
+<tr>
+<td>2027-09-30</td>
+<td><strong>CDAO OTA 이행기간 만료 — 갱신 여부</strong></td>
+<td>🔴 방산 단일고장점 #1. 수의계약이라 경쟁 검증을 거친 적이 없다</td>
+</tr>
+<tr>
+<td>상시</td>
+<td><strong>MDA SHIELD IDIQ의 유의미한 task order</strong></td>
+<td>현재 Applied 앞 주문은 <strong>$500 1건</strong>. 여기서 연 $100M급이 나오면 "방산=$28M짜리"라는 현 판정이 <strong>즉시 무효</strong> — Bear를 뒤집는 단일 최대 변수</td>
+</tr>
+<tr>
+<td><strong>2028년(SOP)</strong></td>
+<td><strong>TRATON ONE OS 4개 브랜드 신차 롤아웃</strong></td>
+<td>🔴 <strong>Ⓒ→Ⓑ 승격이 결정되는 단일 시점.</strong> 대당 로열티가 실제 인식되면 Vehicle OS가 반복매출로 전환, 눌리면 "다년 공동개발 청구서"로 확정</td>
+</tr>
+<tr>
+<td>2028-03</td>
+<td>Isuzu L4 자율주행 트럭·버스 사업 개시 목표</td>
+<td>안전운전자 제거 달성 여부. 창업자가 날짜를 특정해 발언하는 습관의 첫 만기</td>
+</tr>
+<tr>
+<td>상시</td>
+<td><strong>NVIDIA Halos의 기능안전 인증 워크플로·감사 추적 확대</strong></td>
+<td>Applied 해자의 실체는 렌더링 품질이 아니라 "규제기관에 제출 가능한 검증 증거"다. NVIDIA가 이 격차를 메우는 순간 해자가 사라진다 — <strong>존속성 판정을 악화시키는 단일 최대 변수</strong></td>
+</tr>
+</tbody>
+</table>
+<h2>H.3 ⚠️ Thesis 리스크 신호 (조기경보 체크리스트)</h2>
+<p>관측 가능한 신호만 나열한다.</p>
+<table>
+<thead>
+<tr>
+<th>신호</th>
+<th>관측 trigger</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CDAO Autonomy Factory가 발표에 그치고 계약 금액으로 전환되지 않음</td>
+<td>2027-05까지 USASpending·FPDS에 관련 신규 award 또는 기존 OTA 증액이 등재되지 않음</td>
+</tr>
+<tr>
+<td>상장 고객 공시에서 Applied 의존 표현이 약화</td>
+<td>상장 고객 차기 10-K/10-Q의 'Applied Intuition' 언급이 삭제되거나 "third-party simulation providers"류 일반명사로 치환</td>
+</tr>
+<tr>
+<td>주요 고객의 자체 툴체인 내재화 공표</td>
+<td>확인된 파트너 중 한 곳이 IR·기술 컨퍼런스에서 자체 검증 플랫폼 내재화 또는 경쟁사 전환 발표 (계약 §1.2(f)가 독립 개발을 명시 허용하므로 계약상 방어 수단이 없다)</td>
+</tr>
+<tr>
+<td>SDS 탑재 차량의 첫 중대 사고에서 소프트웨어 공급자가 특정됨</td>
+<td>NHTSA 사고보고·예비평가, 일본 국토교통성·EU 형식승인 당국 조사에서 Applied SDS가 명시적으로 지목. 또는 SDS 탑재 차종 리콜</td>
+</tr>
+<tr>
+<td>방산 자격 리스크 표면화</td>
+<td>정부 전용 법인의 시설보안인가 상태 변경, 외국 소유·통제 완화협약 체결 보도, 또는 소기업 유보 SBIR의 규모 이의제기 인용</td>
+</tr>
+<tr>
+<td>완성차 고객의 소프트웨어 예산 삭감 명시</td>
+<td>Stellantis·TRATON·VW의 분기 실적·자본시장의 날에서 소프트웨어·ADAS R&amp;D 예산 축소, 외부 벤더 재협상, 자율주행 프로그램 연기</td>
+</tr>
+<tr>
+<td>형식승인 실적 부재 지속</td>
+<td>일본 국토교통성·독일 KBA·영국 DVSA의 ADS 승인 리스트에 Applied 스택 탑재 차량이 2027년까지 미등재. 또는 경쟁사가 먼저 취득</td>
+</tr>
+<tr>
+<td>Fidelity 마크 4차 하향</td>
+<td>차기 NPORT-P에서 주당 $90 이하</td>
+</tr>
+</tbody>
+</table>
+<h2>H.5 🧭 CAE · Edge Grid 좌표</h2>
+<p>〔legend — CAE: C=제약(물리·자원·인구·지정학이 가능한 것을 한정) / A=조정(제도·표준·조달·규제가 누가 얼마를 갖는지 배분) / E=표현(정보·인터페이스·모델이 세계를 재현). Edge Grid — 중요도: L 다층성·R 비가역성·H 병목경도 / 엣지: G 선반영격차·P 연료잔량·D 컨센서스반증, 각 0~3 또는 5점 척도〕</p>
+<p><strong>걸치는 레이어</strong></p>
+<ul>
+<li><strong>C(제약)</strong>: 인구 제약(트럭기사·농부·광부 고갈 — 자율화 수요의 진짜 pull), 온보드 실시간·기능안전·전력·열 제약, 하드 부품 제약(정밀감속기·볼스크류·중복화 조향/제동 — 창업자 본인이 "무인화의 long pole은 소프트웨어가 아니라 하드웨어 중복화와 그 검증"이라 인정), 지정학 제약(중국 배제·ITAR/EAR).</li>
+<li><strong>A(조정)</strong>: 조달·표준·인증 — CDAO Autonomy Factory 전군 공용 파이프라인, MDA SHIELD, UNECE L4 국제규정(2026-06-24)·UN R171, ISO 26262/SOTIF 추적성, 회전문 인사·로비 채널.</li>
+<li><strong>E(표현)</strong>: 시뮬레이션·월드모델·데이터 엔진·에이전틱 인터페이스(Dana) = 물리세계를 재현·검증하는 층.</li>
+</ul>
+<p>🔴 <strong>가장 약한 고리: 매출은 E층에 걸려 있는데 E층이 가장 빨리 상품화된다.</strong> NVIDIA가 E층을 원가 0으로 배포하고 Halos로 안전·인증까지 올라온다. 진짜 방어 가능한 층은 A층(조정)인데 회사는 그 층에서 <strong>발표만 하고 금액은 공시하지 않는다</strong>. C층(하드 제약)은 완전히 회사 영역 밖.</p>
+<p><strong>Edge Grid 프로파일</strong></p>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>L 다층성</strong></td>
+<td style="text-align: center;">강(4/5)</td>
+<td>6개 산업 × 3개 제품계층 × 4개 지역블록. 어느 한 산업 사이클로 전멸하지 않는다</td>
+</tr>
+<tr>
+<td><strong>R 비가역성</strong></td>
+<td style="text-align: center;">중(3/5)</td>
+<td>2028 SOP 디자인윈과 정부 표준 선점은 되돌리기 어렵지만 <strong>회사가 비가역성을 스스로 낮춰뒀다</strong>(에스크로·화이트박스·모듈러·독립개발 허용). 정부 디자인윈도 취소된다는 실증이 있다(2022년 선정된 육군 RCV → 2025년 프로그램 통째 취소)</td>
+</tr>
+<tr>
+<td><strong>H 병목경도</strong></td>
+<td style="text-align: center;">약(2/5)</td>
+<td>쥔 것은 소프트~준하드(추적성·조달관계·도메인 인력)이고 하드 병목은 전부 밖. <strong>장벽은 있으나 장벽 안에 여러 명이 들어와 있어 렌트가 안 걷힌다</strong></td>
+</tr>
+<tr>
+<td><strong>G 선반영격차</strong></td>
+<td style="text-align: center;">음(−)</td>
+<td>$15B는 base를 완전 반영하고 bull에 손댄 가격. 공정가치 밴드 $10~14B. 개인 실효가는 $17~22B라 격차가 더 벌어진다</td>
+</tr>
+<tr>
+<td><strong>P 연료잔량</strong></td>
+<td style="text-align: center;">중상(3.5/5)</td>
+<td>방산 예산·SDV 전환·노동인구 소멸은 연료가 많이 남았다. 다만 자율성 계층 가격은 이미 하강 시작</td>
+</tr>
+<tr>
+<td><strong>D 컨센서스반증</strong></td>
+<td style="text-align: center;">낮음(2/5)</td>
+<td>반증할 컨센서스가 아직 형성되지 않았다. 한국 언론은 전량 우호적 소개형(비판 기사 0건). <strong>개인이 접근하는 세컨더리는 프리미엄을 부르고 1차 수탁자 마크는 −28%를 부른다 — 정보 비대칭에서 개인이 명백한 열위이므로 D는 엣지가 아니라 역엣지다</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>분면 판정: 「강한데 비싼」 — 다만 '강함'이 L 다층성 단일 축에 편중되고 R·H가 받쳐주지 않아 경계선에 걸쳐 있다.</strong></p>
+<p>상장주였다면 「강한데 비싼」이지만, 비상장·개인 접근 조건까지 얹으면 실질은 <strong>「중강(中强)한데 훨씬 비싼」</strong> 칸으로 한 단계 더 나쁘다. 3중 페널티: ①감사 재무 0 ②환금성 0(Forge 매도호가 0건) ③개인 접근 경로에서만 프리미엄이 붙는다(1차 수탁자 마크 $101.59 vs 개인 접근 세컨더리 $137~174 = 35~70% 위).</p>
+<h2>H.6 💎 0to1 독점 판정 (틸 7문)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>문항</th>
+<th style="text-align: center;">판정</th>
+<th style="text-align: center;">⭐</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td>기술 — 대체재 대비 10배인가</td>
+<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">3</td>
+<td>결정론적 재현 시뮬레이션 + 기능안전 추적성 + 온보드 실시간 제약은 진짜 차별화이나 10배는 아니다. NVIDIA가 동급 기능을 무료·오픈소스로 배포 중이고, <strong>CEO 본인이 "그런 역량을 가진 회사가 다섯 곳은 넘고 그렇게 난해한 기술도 아니다"라고 인정</strong></td>
+</tr>
+<tr>
+<td>②</td>
+<td>시기 — 지금이 적기인가</td>
+<td style="text-align: center;"><strong>YES</strong></td>
+<td style="text-align: center;">5</td>
+<td>OEM 자체 개발 실패가 실증으로 확정된 시점. GM-Cruise 종료, 육군 자체 SW 폐기 후 상용 벤더 선회, VW/TRATON·Isuzu·Nissan·Stellantis의 실제 구매 전환. "만들겠다↔사겠다" 스펙트럼이 사겠다 쪽으로 이동</td>
+</tr>
+<tr>
+<td>③</td>
+<td>독점 — 작은 시장에서 큰 점유율로 시작</td>
+<td style="text-align: center;"><strong>YES</strong></td>
+<td style="text-align: center;">5</td>
+<td>2017~19년 "AV 개발자용 시뮬레이션 툴체인"이라는 명확히 작고 좁은 니치에서 시작해 GM의 28사 경쟁 입찰(NVIDIA·Ansys 포함)을 이기고 레퍼런스를 복리시킨 전형적 패턴. CarSim 인수로 인접 니치의 설치기반까지 사들였다</td>
+</tr>
+<tr>
+<td>④</td>
+<td>사람 — 올바른 팀인가</td>
+<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">3</td>
+<td>문제-팀 적합도는 최상급(GM 안전공학+구글 배포+YC 네트워크, EpiSci 창업자 2인, 前 DARPA 프로그램 책임자, 前 공군 ISR 윙 사령관). 그러나 비상장 투자에서 팀 평가는 "그들이 말하는 것을 믿을 수 있는가"를 포함하는데, <strong>CEO 정량 진술이 최소 3건 검증에서 어긋났고 창업자 본인의 tender 현금화 규모가 미공시</strong></td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>유통 — 전달 경로가 있는가</td>
+<td style="text-align: center;"><strong>YES</strong></td>
+<td style="text-align: center;">5</td>
+<td><strong>이 회사의 가장 강한 칸. 전략 자체가 유통이다</strong> — 자기 브랜드를 만들지 않고 Isuzu·TRATON·Stellantis·Komatsu·Caterpillar 뒤에 선다("일본에서 우리 트럭이 상용 화물을 나르지만 브랜드가 Isuzu라 아무도 모른다"). 방산은 별도 법인 + 사내 등록 로비스트 3인 + 외부 로비펌 7곳 + 회전문 인사로 채널을 공학적으로 구축</td>
+</tr>
+<tr>
+<td>⑥</td>
+<td>존속성 — 10·20년 방어 가능한가</td>
+<td style="text-align: center;"><strong>NO</strong></td>
+<td style="text-align: center;">1</td>
+<td>🔴 <strong>결정적 실패 지점.</strong> ⓐ회사가 스스로 화이트박스·모듈러를 광고 ⓑ계약에 제3자 소스코드 에스크로·독립개발 허용 단서·SLA 미달 무위약 해지권 ⓒ최대 주주가 문서로 "자율성 계층은 한계가격 무시 수준으로 수렴" ⓓCEO가 날짜까지 못박음("2030년대 초에는 매우 싸거나 무료") ⓔ복리를 만들 유일한 기제인 데이터 플라이휠이 공개 검증 가능한 계약에 부재</td>
+</tr>
+<tr>
+<td>⑦</td>
+<td>숨겨진 비밀</td>
+<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">3</td>
+<td>진짜 비밀 후보 하나는 실재한다 — "피지컬 AI는 필연적으로 주권 이슈가 되므로, 브랜드를 앞세운 수직 통합자는 제3국에서 막히고 현지 제조사 뒤에 서는 수평 공급자가 이긴다." 여전히 비컨센서스이고 검증 가능하다. 다만 창업자와 최대주주가 12개월째 공개 문서로 반복 진술 중이라 이미 비밀이 아니라 thesis이며, 두 번째 후보(수백 페타바이트 독점 데이터의 복리)는 계약 검증에서 기각됐다</td>
+</tr>
+</tbody>
+</table>
+<p><strong>종합: YES 3/7 → 0~4 구간 = 불운 위험(luck-dependent) ‖ Track B ⭐3.6(7문 평균) ‖ 별도 렌즈(7축 미합산)</strong></p>
+<p><strong>분포가 진단적이다</strong> — YES 3개는 전부 <strong>"들어가는 능력"</strong>(적기 포착·니치 진입·유통 장악)이고, NO·⚠️ 4개는 전부 <strong>"머무는 능력"</strong>(기술 10배 부재·존속성 NO·팀 신뢰성·비밀 소진)이다. 즉 Applied Intuition은 <strong>탁월한 진입·유통 기계이되 지속 가능한 독점은 아직 아니다.</strong> 특히 ⑥ 존속성 NO는 외부 관찰자의 추론이 아니라 <strong>회사와 최대 주주가 계약 문언·공개 문서로 스스로 진술한 것</strong>이라 반박 여지가 거의 없다. 이 조합의 표준 결말은 "큰 회사는 되지만 독점 렌트는 걷지 못한다"이며, 그 상태의 상장 종착 배수 실증 표본이 Mobileye(P/S 3.4x)다.</p>
+<h3>시장정의 tell: <strong>혼재 — 다만 과장 쪽으로 명백히 기운다 (🔴 경사)</strong></h3>
+<p>과장 판정 근거 3가지.</p>
+<ol>
+<li><strong>측정 가능한 본업이 밸류를 못 받친다</strong> — 널리 인용되는 "자동차 시뮬레이션 SW $7.7~7.9B"는 원문 확인 결과 <strong>Applied의 시장조차 아니다</strong>(리더가 Ansys·Siemens·Dassault·Autodesk·PTC인 CAE 시장). 진짜 본업 시장은 그보다 훨씬 작다.</li>
+<li><strong>"physical AI"에는 기관급 근시일 TAM이 존재하지 않는다</strong> — 신뢰 가능한 수치가 좁고 작거나(휴머노이드 2025 $2.9B) 크고 멀다(2050년 $5T). <strong>24년 갭 자체가 시장이 아니라 서사라는 증거다.</strong></li>
+<li>🔴 <strong>가장 결정적인 tell — 회사가 자기 분모를 스스로 넓힌다.</strong> 공식 boilerplate는 "Eighteen of the top 20 <strong>global</strong> automakers"인데 투자자는 같은 사실을 "top 20 leading <strong>non-Chinese</strong>"로 쓴다. 2025년 글로벌 상위 20에 중국계가 5~6곳이고 Tesla는 자체 개발이므로 'global' 버전은 표현 불일치가 아니라 <strong>산술적으로 불가능</strong>하다. 자기 PR에서 더 넓게 읽히는 쪽을 고르는 회사는 시장 정의가 어느 방향으로 휘는지를 스스로 알려준 것이다.</li>
+</ol>
+<p>진짜 독점이 섞여 있는 근거도 있다 — 기술 원시요소가 실제로 도메인을 넘고, 수직 확장이 슬라이드가 아니라 계약으로 존재한다(Komatsu·TRATON 4개 브랜드·미 해군·CDAO·Heidelberg·Callen-Lenz). 합집합 화법이 "없는 시장을 지어낸 것"은 아니고, <strong>작고 검증 가능한 독점 위에 크고 검증 불가능한 서사를 덧씌운 것</strong>이다. 문제는 $15B가 후자를 사는 가격이라는 점이다.</p>
+<h2>I′ 자본구조 · 투자자 · 접근 가능성 〔13F·Form 4·공매도의 비상장 대체〕</h2>
+<p><strong>라운드 이력</strong></p>
+<table>
+<thead>
+<tr>
+<th>라운드</th>
+<th>시점</th>
+<th>금액</th>
+<th>밸류에이션</th>
+<th>주도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Series A</td>
+<td>2018-09</td>
+<td>$11.5M</td>
+<td>—</td>
+<td>a16z</td>
+</tr>
+<tr>
+<td>Series B</td>
+<td>2019-09-12</td>
+<td>$40M</td>
+<td>—</td>
+<td>General Catalyst</td>
+</tr>
+<tr>
+<td>Series C</td>
+<td>2020-10-22</td>
+<td>$125M</td>
+<td>—</td>
+<td>기존 투자자 3사 균등</td>
+</tr>
+<tr>
+<td>Series D</td>
+<td>2021-11-11</td>
+<td>$175M</td>
+<td>$3.6B</td>
+<td>Elad Gil·Addition·Coatue</td>
+</tr>
+<tr>
+<td>Series E</td>
+<td>2024-03-12</td>
+<td>$250M</td>
+<td><strong>$6B</strong></td>
+<td>Lux·Elad Gil·Porsche Investments</td>
+</tr>
+<tr>
+<td>세컨더리</td>
+<td>2024-07-25</td>
+<td>$300M+ (구주)</td>
+<td>—</td>
+<td>Fidelity 신규 진입</td>
+</tr>
+<tr>
+<td><strong>Series F</strong></td>
+<td><strong>2025-06-17</strong></td>
+<td><strong>$600M</strong> (primary ~$220M + tender ~$379M)</td>
+<td><strong>$15B</strong></td>
+<td>BlackRock·Kleiner Perkins</td>
+</tr>
+</tbody>
+</table>
+<p>주요 주주: a16z, General Catalyst, Lux Capital, Kleiner Perkins, BlackRock, Elad Gil, Addition, Coatue, Fidelity, Franklin Templeton, Premji Invest, Greycroft, <strong>Porsche Investments Management</strong>, <strong>Qatar Investment Authority</strong>, <strong>Abu Dhabi Investment Council</strong>.</p>
+<p>🔴 <strong>걸프 국부펀드 지분 + 방산 계약 조합은 외국 소유·통제·영향(FOCI) 심사 대상</strong>이며, 실제 완화협약 체결 여부·시설보안인가 상태는 ❌ 미공시다.</p>
+<p><strong>이사회</strong>: 2020-10 시점 투자자 측 3인(Marc Andreessen·Hemant Taneja·Bilal Zuberi)이 마지막 1차 공개. <strong>이후 4개 라운드 어디에도 이사 선임 언급이 없다.</strong> 의결권 구조·창업자 지분율 전부 ❌ 미공시. 정황상 창업자 지배력은 매우 강함 — 두 창업자 순자산이 정확히 동일하고, 회사 공식 커뮤니케이션이 창업자 2인만으로 구성되며, <strong>두 차례 세컨더리/텐더로 IPO 없이 유동성을 자체 공급해 상장 압력을 구조적으로 낮췄다.</strong></p>
+<p><strong>법인 구조</strong>: <code>Applied Intuition, Inc.</code>(서니베일) + <strong><code>Applied Intuition Government Inc</code>(알링턴 VA, 별도 UEI·CAGE)</strong> + <code>EpiSys Science, Inc.</code>(100% 자회사, 자체 브랜드·자체 계약 유지). 방산 거버넌스의 표준 분리 구조.</p>
+<h3>🇰🇷 한국 거주 개인의 실제 접근 가능성 — 관문 6개</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>관문</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td>미국 공인투자자 요건(연소득 단독 $200K/부부 $300K 2년, 또는 순자산 $1M 초과)</td>
+<td>△ 통과 가능</td>
+</tr>
+<tr>
+<td>②</td>
+<td>플랫폼 수용</td>
+<td>EquityZen만 문서 확인(제한국 목록에 한국 없음), UpMarket 최소 $50,000. Hiive는 미·캐 등록 한정으로 부정적, <strong>Forge는 물량 0</strong></td>
+</tr>
+<tr>
+<td>③</td>
+<td><strong>회사 우선매수권(ROFR)·양도 승인</strong></td>
+<td>🔴 <strong>통제 불가</strong></td>
+</tr>
+<tr>
+<td>④</td>
+<td><strong>외국환거래법상 증권취득 신고</strong></td>
+<td>🔴 국내 인가 투자중개업자 경유가 아니므로 신고예외 근거 없음 — 외국환은행·한국은행 외환심사 직접 확인 필요</td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>환금성</td>
+<td>🔴 <strong>사실상 0</strong> (5년+ 고정)</td>
+</tr>
+<tr>
+<td>⑥</td>
+<td>정보 비대칭</td>
+<td>🔴 1차 수탁자 마크 $101.59 vs 개인 접근 세컨더리 $137~174 — <strong>개인이 35~70% 비싼 쪽에만 접근 가능</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>상장 대리주 — <strong>전수 확인 결과 0</strong></h3>
+<p>운용사 공식 명세를 직접 열람한 결과: <strong>Destiny Tech100(DXYZ) 전체 36사 · ARK Venture Fund(ARKVX) 전체 80종 · XOVR · ARKQ 42종 전부 미보유.</strong> 상장사 직접 지분은 <strong>Porsche AG(P911.DE)</strong> 1곳뿐이나 금액 미공시·시총 대비 무시 가능·2025-07 모회사의 지분 매각 검토 보도까지 있다. Fidelity 뮤추얼펀드 6종이 실제 보유하나 최대 비중이 총자산의 <strong>0.094%</strong>이고 한국에서 매수 불가(ETF 신탁은 보유 0건 → ETF 우회로도 없음).</p>
+<p>🔴 <strong>순수도가 높은 상장주(Mobileye·Aurora)는 구조적으로 방향이 반대(경쟁 진영)다 — 대리주 우회는 노출이 아니라 오분류다.</strong></p>
+<p>thesis 조각별로 부분 노출되는 종목은 존재하지만(NVDA·QCOM·PLTR·산업 SW·광산 자율화 장비사), 어느 것도 "Applied Intuition에 대한 노출"이라 부를 수 없다. <strong>깨끗한 상장 대리주는 존재하지 않는다.</strong></p>
+<h2>J. 규제 · 리스크</h2>
+<p><strong>규제 지형 (as-of 2026-07-27)</strong></p>
+<ul>
+<li>🟢 <strong>UNECE WP.29가 2026-06-24 완전 무인(L4) 자율주행시스템에 대한 세계 최초 국제규정을 채택.</strong> 60여 체약국에 공통 승인 경로가 생기면 "승인 서류를 만드는 인프라"를 파는 이 회사에는 규제 강제 수요다. 동시에 SDS 자체가 각국 형식승인을 통과해야 하는 입증 부담이 신설되는데, <strong>Applied SDS의 형식승인 취득 실적은 ❌ 미공시</strong>다.</li>
+<li>🔴 <strong>미국은 반대 방향으로 갔다.</strong> AV STEP(지속적 데이터 제출·평가 의무) 관련 규칙제정이 2026-06-26 철회됐고, NHTSA는 예외 절차를 대폭 간소화했다. 검증 아웃소싱을 강제하던 압력이 약해지는 방향이다.</li>
+<li>상용 무인트럭의 미 연방 규칙 미완성, 드론 BVLOS 최종규칙(Part 108) 미발효 — 트럭·드론 버티컬의 수익화 시점을 계속 뒤로 미는 구조적 지연 요인.</li>
+<li><strong>ITAR·EAR 직접 노출을 회사가 자인</strong>한다("우리는 상용 고객과 미군·동맹국에 판매하는 이중용도 기술기업으로서 ITAR·EAR 적용 대상 제품·서비스를 제공한다" — 공식 채용공고). 🔴 다만 국제무역컴플라이언스 매니저를 <strong>2026년에 신규 채용 중</strong>이라는 사실은 통제체계가 방산 매출 확대에 <strong>후행</strong>해 구축되고 있다는 신호다.</li>
+<li>기능안전 표준(ISO 26262 ASIL 등급 대응·ISO 21448 SOTIF·UL 4600) 준수·인증 현황 <strong>❌ 전면 미공시</strong> — Deep-Dive에서 가장 큰 미확인 리스크 중 하나.</li>
+</ul>
+<p><strong>책임 구조 — 툴체인은 계약으로 강력하게 방어되어 있으나, 사업이 옮겨가는 방향이 그 방어를 무력화한다.</strong></p>
+<p>Kodiak MSA에서 확인되는 방어층: §7.2 <strong>"소프트웨어·서비스는 시뮬레이션 목적으로만 제공되며 특정 결과를 보증하지 않는다"</strong> / §8.1 Applied의 배상 범위 = <strong>IP 침해 한정</strong>(제조물책임·안전사고 배상 조항 자체가 없음) / §8.2 고객의 중과실·고의는 <strong>고객이 Applied를 면책</strong> / §9.1 간접·결과적 손해 전면 배제 / §9.2 <strong>책임 한도 = 직전 [</strong><em>]개월 지급 수수료</em>*.</p>
+<p>🔴 그러나 이 계약은 (a) 툴 사업의 표준 계약이다. 회사는 (b) SDS → (c) Vehicle OS로 이동 중이고, <strong>그 공급계약 조건(리콜비용 분담·품질보증·안전 배상·ASIL 책임 배분)은 전면 미공시</strong>다. 완성차 부품 공급계약은 통상 리콜 비용 분담을 포함하므로 툴 계약의 보호를 SDS에 그대로 적용하면 안 된다. <strong>L3 이상으로 올라가는 순간 법적 책임이 시스템 제공자로 이전되며, 회사 스스로 L3/L4를 로드맵으로 공언하고 있다.</strong></p>
+<p>🔴 <strong>남는 구조적 취약점 — 공통원인고장.</strong> 상위 20 OEM 중 18곳에 동일 툴체인과 검증 방법론을 공급한다면, 산업 전체의 안전 검증이 단일 벤더 방법론에 수렴한다는 뜻이다. 특정 사고의 근본원인이 "Applied의 시뮬레이션이 그 시나리오를 커버하지 못했다"로 특정되는 순간, 개별 OEM 사고가 아니라 <strong>다수 OEM에 동시 전파되는 체계 리스크</strong>가 된다. 계약상 책임은 캡되지만 <strong>평판과 갱신율은 캡되지 않는다.</strong></p>
+<p><strong>공급망 신용 리스크 실현 사례</strong>: 라이다 업체 Luminar의 2025-12 파산 신청서 상위 20 무담보채권자 명단에 <strong>Applied Intuition이 5순위로 등재</strong>(금액 ❌ 미확인).</p>
+<h2>K′. 회사 진술 신뢰도 감사 〔공시·컨콜의 비상장 대체〕</h2>
+<p>상장사라면 10-Q·컨콜·가이던스를 추적할 자리다. 비상장사에는 그것이 없으므로, <strong>회사 진술 자체의 정확도를 감사</strong>하는 것으로 대체한다.</p>
+<table>
+<thead>
+<tr>
+<th>진술</th>
+<th>교차검증 결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>오피스 수</td>
+<td>2026-05-14 공식 PR <strong>13곳 명시 목록</strong> → 2026-07 팟캐스트 <strong>"18 offices"</strong> → 2026-07-21 Dana PR <strong>"nearly two dozen"(≈22~24)</strong>. <strong>두 달 안에 세 값</strong></td>
+</tr>
+<tr>
+<td>"글로벌 상위 20 완성차 중 18곳"</td>
+<td>2025년 상위 20에 중국계 5~6곳이 있고 Tesla는 자체 개발이므로 <strong>산술적으로 불가능</strong>(상한 13~14곳). 투자자는 같은 사실을 "비중국 상위 20"으로 쓴다</td>
+</tr>
+<tr>
+<td>"$10억 넘게 조달, 전액 은행에"</td>
+<td>primary $825~850M(Forge·CNBC·Forbes 수렴)와 인수 6건 지출에 배치. <strong>본인이 "별표"를 부기</strong></td>
+</tr>
+<tr>
+<td>"자동차는 매출의 30%"</td>
+<td>❌ 1·2차 검증 불가. 유일한 3자 분해(시뮬·테스트 ≈ 33%)는 <strong>제품축</strong>이지 산업축이 아니다 — 두 숫자가 우연히 비슷한 것이 오히려 혼동을 유발</td>
+</tr>
+<tr>
+<td>"엔지니어 1,000명·83%가 엔지니어링·전직 CTO 40+"</td>
+<td>3자 헤드카운트 추정(1,100~1,300명)과 산술적으로 모순 없음. 명단·정의·검증 방법 미공개</td>
+</tr>
+<tr>
+<td>"수백 페타바이트 보유"</td>
+<td>회사 공식 문서는 "처리하도록 확장"이라 쓴다 — <strong>회사가 문서에서 쓰지 않는 소유 주장을 CEO가 구두로 하고 있다</strong></td>
+</tr>
+<tr>
+<td>일본 트럭기사 통계 인용</td>
+<td>회사 블로그가 "2030년까지 트럭 운전자 <strong>36% 감소</strong>"라 썼으나 원 자료는 <strong>수요 대비 36% 부족률</strong>이다. 방향은 맞으나 지표를 잘못 옮겼다</td>
+</tr>
+<tr>
+<td>Isuzu 노선 거리</td>
+<td>회사 400km vs 450km 두 값</td>
+</tr>
+</tbody>
+</table>
+<p>🔴 <strong>함의: 이 회사의 모든 [3차] 수치에 동일한 폭의 오차를 가정해야 한다.</strong> 감사 재무가 없고 Form D조차 없는 회사에서 정량 진술의 유일한 소스가 CEO인데 그 소스가 반복적으로 어긋나면, <strong>투자 판단의 사실 기반 자체가 흔들린다.</strong> 특히 'global' 문구는 국내 상장사 공식 보도자료에 그대로 재인용돼 한국에서 [1차]처럼 유통되고 있다.</p>
+<p><strong>나쁜 소식에는 침묵한다</strong>: 육군 RCV 프로그램 취소(2022년 "선정" → 2025년 프로그램째 취소), Luminar 파산 채권자 5순위, Fidelity 3분기 연속 마크다운 — 전부 회사 발표 없음.</p>
+<hr />
+<h2>🇰🇷 한국 연결 — 관계와 의향은 실재하나 밸류 상승 트리거는 0</h2>
+<p><strong>서울 오피스</strong>: 2020년 시장 진입 → 2021-12 유한회사 법인 설립(강남). 회사 공고문 기준 <strong>"10명 이상"</strong>이며 구성원은 LG·Ansys·Unity 출신 — 즉 시뮬레이션·엔지니어링 툴 판매 배경.</p>
+<p>🔴 <strong>도쿄와의 비대칭이 핵심 발견이다.</strong> 회사 채용 API 전수 조회(2026-07-27, 전사 268건):</p>
+<table>
+<thead>
+<tr>
+<th>직군</th>
+<th style="text-align: center;">서울 (2건)</th>
+<th style="text-align: center;">도쿄 (15건)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>자율주행 스택 엔지니어링(SDS)</td>
+<td style="text-align: center;"><strong>0</strong></td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>Vehicle OS 엔지니어링</td>
+<td style="text-align: center;"><strong>0</strong></td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td><strong>차량 운영(Fleet Ops·AV 드라이버 트레이너)</strong></td>
+<td style="text-align: center;"><strong>0</strong></td>
+<td style="text-align: center;"><strong>3</strong></td>
+</tr>
+<tr>
+<td>고객 대응</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td>방산 툴링</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>서울 = 영업·고객대응 + 방산 교두보. 연구개발도 차량 운영도 없다. 아시아 R&amp;D 허브는 도쿄다.</strong></p>
+<p><strong>팟캐스트 한국 발언의 정확한 독해</strong> — CEO는 "한국은 북한 때문에 지도 기업조차 허용하지 않는다"고 말한 뒤, 허가 취득 성공 사례로 <strong>중동·중남미</strong>를 들었다. <strong>"한국에서 허가를 받아냈다"고 말한 적이 없다.</strong> 국내 투자자가 이를 "한국에서도 독점 데이터 수집권을 땄다"로 읽으면 오독이다.</p>
+<p>실제로 한국 내 테스트 차량 운행 주체는 <strong>LG이노텍 본인</strong>이다 — 양사 보도자료 원문: "LG이노텍은 Applied Intuition의 소프트웨어 플랫폼과 시험 운영 노하우를 활용해 <strong>한국에서 자사의 자율주행 테스트 차량을 운행할 계획</strong>." 즉 임시운행허가·데이터 취급 주체가 국내 법인이고, Applied는 플랫폼과 노하우만 댄다. <strong>규제 우회가 아니라 규제 회피 설계다.</strong></p>
+<p>🔴 <strong>더 구조적인 사실</strong>: SDS는 <strong>라이다와 HD맵을 아예 쓰지 않는다</strong>(양산급 카메라+레이더). 한국의 정밀지도 반출 규제라는 병목 자체를 제품 설계로 무력화하고 있어, "한국 규제 때문에 못 들어온다"는 서사는 SDS 세대에서 약해진다.</p>
+<p><strong>한국 파트너십 실사</strong></p>
+<table>
+<thead>
+<tr>
+<th>상대</th>
+<th>티커</th>
+<th>실체</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LG이노텍</strong></td>
+<td>011070</td>
+<td>2026-03-30 <strong>전략적 파트너십 — 구속력 있는 공급계약 아님(원문 확인).</strong> 계약금액·기간·물량 일절 미공시, 성과를 "글로벌 완성차 양산 수주로 <strong>이어질 것으로 기대</strong>"로 서술. ⚠️ 국내 통신사가 이를 "센싱 모듈을 <strong>공급받기로 했다</strong>"고 쓴 것은 원문(테스트 차량 장착)보다 과장</td>
+</tr>
+<tr>
+<td>현대차그룹·포티투닷</td>
+<td>005380·000270</td>
+<td>🔴 <strong>경영진 구두 진술만 존재 — 계약·공시 근거 0.</strong> "오랜 협력 역사가 있다", "포티투닷과 긴밀히 일해왔다"[3차]. 예고된 "아시아 완성차 파트너십"은 2026-07-27 현재 미발표</td>
+</tr>
+<tr>
+<td>LG전자</td>
+<td>066570</td>
+<td>시뮬레이션 플랫폼 <strong>고객</strong>으로 실명 언급(2023년 보도). 규모·현행 여부 미확인</td>
+</tr>
+<tr>
+<td>라이드플럭스</td>
+<td>비상장</td>
+<td><strong>국내에서 확인 가능한 가장 구체적인 실사용 사례</strong> — 자체 시뮬레이션 개발을 포기하고 Applied 플랫폼으로 전환</td>
+</tr>
+<tr>
+<td>경찰청 치안정책연구소</td>
+<td>—</td>
+<td>플랫폼 사용 기관으로 실명 언급. 한국 정부기관 접점의 근거</td>
+</tr>
+<tr>
+<td>대한항공</td>
+<td>003490</td>
+<td>⚠️ 2025-11 "수출용 무인기 공동개발 <strong>단계적 검토 중</strong>"에서 멈춤. 이후 후속 0건이고, 대한항공이 공개 진행 중인 AI 무인기 파트너는 <strong>Anduril</strong>이다 → 실현 확률 하향</td>
+</tr>
+<tr>
+<td>국내 방산기업</td>
+<td>❌ 미공개</td>
+<td>2025-10 ADEX 계기 "업무협약 체결한 것으로 알려졌다"는 보도만 존재. <strong>2026-07-27 현재 실명 공개 0건</strong></td>
+</tr>
+<tr>
+<td>충남대</td>
+<td>—</td>
+<td>2026-03-05 항공우주·국방·로봇 AI 협력 MOU(금전 계약 아님)</td>
+</tr>
+<tr>
+<td>현대모비스·HL만도·삼성·한화·LIG넥스원·KAI</td>
+<td>—</td>
+<td>🔴 <strong>접점 근거 0.</strong> 회사 공식 파트너 로고에 한국 기업 <strong>0곳</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>한국 시장의 층위별 의미</strong></p>
+<table>
+<thead>
+<tr>
+<th>층위</th>
+<th style="text-align: center;">강도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>개발 툴·시뮬레이션 (LG전자·라이드플럭스·치안정책연구소·포티투닷) — <strong>가장 실체 있는 수익 접점</strong></td>
+<td style="text-align: center;">🟢 높음</td>
+</tr>
+<tr>
+<td>부품사 파트너십 (LG이노텍) — 한국을 <em>고객</em>이 아니라 <em>공급망</em>으로 씀</td>
+<td style="text-align: center;">🟠 중간</td>
+</tr>
+<tr>
+<td>방산 — 명시적 최우선 타깃이나 실명 계약 0건</td>
+<td style="text-align: center;">🟠 잠재</td>
+</tr>
+<tr>
+<td>완성차 SDS 판매 — 현대차그룹이 <strong>내재화(포티투닷·AVP본부·모셔널 3각축)</strong> 노선</td>
+<td style="text-align: center;">🔴 낮음</td>
+</tr>
+<tr>
+<td>데이터 수집 거점 — 차량 운영 조직 자체가 없음</td>
+<td style="text-align: center;">🔴 없음</td>
+</tr>
+</tbody>
+</table>
+<p>⚠️ <strong>당초 "현대차 내재화 = 역풍"으로 판정했으나 부분 철회했다</strong> — 내재화를 가속할수록 시뮬레이션·검증 툴 수요는 오히려 늘어난다(만드는 쪽일수록 공구가 더 필요하다). 정확히는 <strong>층위별로 갈린다: SDS 완제품은 닫히고, 툴·검증은 열린다.</strong> 다만 그 순풍이 귀속되는 곳은 Applied Intuition이지 국내 상장사가 아니다.</p>
+<p><strong>한국 언론</strong>: 2026년 보도 급증했고 톤은 압도적으로 우호적·소개형이며 <strong>비판적 검증 기사는 0건</strong>이다. 국내 상장사 관련 기사는 대부분 보도자료 리라이트 + 표현 과장이라, <strong>한국 기사만으로 판단하면 관계 강도를 과대평가하게 된다.</strong> 국내 기사는 사실 확인 소스가 아니라 이벤트 탐지 소스로만 써야 한다. (표기 혼용 주의 — 어플라이드 인튜이션 / 어플라이드 인투이션 / 어플라이드인튜이션.)</p>
+<p><strong>일본과의 대비</strong>: 일본은 "제품·조직·매출이 실재하는 시장", 한국은 "관계와 의향이 실재하는 시장". Isuzu는 FY2028 L4 사업 개시를 중기계획의 신규 핵심 사업으로 못박았고, 도쿄에는 완결형 현지 R&amp;D + 차량 운영 조직이 있다. 🔴 다만 실측 보정이 필요하다 — CEO의 "일본에서 상용 화물을 나르는 자율주행 트럭"은 <strong>참이지만 Step 1 기준 대형 트럭 단 1대, 안전운전자 탑승, 고속도로 일부 구간</strong>이다. 운전자 제거 목표는 2028년 3월.</p>
+<hr />
+<h2>📊 7축 ⭐ 점수</h2>
+<figure class="dd-fig">
+<svg viewBox="0 0 400 400" width="100%" style="max-width:430px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<polygon points="200,60 301.6,108.9 326.7,218.9 256.4,307.1 143.6,307.1 73.3,218.9 98.4,108.9" fill="none" stroke="#d9d0b8" stroke-width="1"/>
+<polygon points="200,86 281.3,125.1 301.4,213.1 245.1,283.7 154.9,283.7 98.6,213.1 118.7,125.1" fill="none" stroke="#e3dac4" stroke-width="1"/>
+<polygon points="200,112 261.0,141.4 276.0,207.4 233.8,260.3 166.2,260.3 124.0,207.4 139.0,141.4" fill="none" stroke="#e3dac4" stroke-width="1"/>
+<polygon points="200,138 240.7,157.6 250.7,201.6 222.6,236.8 177.4,236.8 149.3,201.6 159.3,157.6" fill="none" stroke="#e3dac4" stroke-width="1"/>
+<polygon points="200,164 220.3,173.8 225.3,195.8 211.3,213.4 188.7,213.4 174.7,195.8 179.7,173.8" fill="none" stroke="#e3dac4" stroke-width="1"/>
+<line x1="200" y1="190" x2="200" y2="60" stroke="#e3dac4"/><line x1="200" y1="190" x2="301.6" y2="108.9" stroke="#e3dac4"/><line x1="200" y1="190" x2="326.7" y2="218.9" stroke="#e3dac4"/><line x1="200" y1="190" x2="256.4" y2="307.1" stroke="#e3dac4"/><line x1="200" y1="190" x2="143.6" y2="307.1" stroke="#e3dac4"/><line x1="200" y1="190" x2="73.3" y2="218.9" stroke="#e3dac4"/><line x1="200" y1="190" x2="98.4" y2="108.9" stroke="#e3dac4"/>
+<polygon points="200,86 271.1,133.3 276.0,207.4 239.5,272.0 166.2,260.3 111.3,210.2 149.2,149.5" fill="rgba(192,57,43,0.16)" stroke="#c0392b" stroke-width="2.2"/>
+<circle cx="200" cy="86" r="3.4" fill="#c0392b"/><circle cx="271.1" cy="133.3" r="3.4" fill="#c0392b"/><circle cx="276.0" cy="207.4" r="3.4" fill="#c0392b"/><circle cx="239.5" cy="272.0" r="3.4" fill="#c0392b"/><circle cx="166.2" cy="260.3" r="3.4" fill="#c0392b"/><circle cx="111.3" cy="210.2" r="3.4" fill="#c0392b"/><circle cx="149.2" cy="149.5" r="3.4" fill="#c0392b"/>
+<text x="200" y="46" text-anchor="middle" font-size="12" fill="#1f2328">🌦️ 날씨 4.0</text>
+<text x="322" y="102" text-anchor="middle" font-size="12" fill="#1f2328">⛰️ 산 3.5</text>
+<text x="352" y="228" text-anchor="middle" font-size="12" fill="#1f2328">🌲 숲 3.0</text>
+<text x="268" y="329" text-anchor="middle" font-size="12" fill="#1f2328">🌳 나무 3.5</text>
+<text x="128" y="329" text-anchor="middle" font-size="12" fill="#1f2328">🌲🌳 옆 3.0</text>
+<text x="46" y="228" text-anchor="middle" font-size="12" fill="#1f2328">👤 사람 3.5</text>
+<text x="72" y="102" text-anchor="middle" font-size="12" fill="#1f2328">🔢 숫자 2.5</text>
+</svg>
+<figcaption>7축 확신도 레이더 (⭐1~5) · 방법론 stamp DD-v1.24-P · 점수 = 사업·thesis 매력도이며 밸류에이션 미반영</figcaption>
+</figure>
+
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">⭐</th>
+<th style="text-align: center;">가중</th>
+<th>산출 근거 요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🌦️ 날씨</td>
+<td style="text-align: center;"><strong>4.0</strong></td>
+<td style="text-align: center;">3.0</td>
+<td>순풍 3개(국방예산 계단·노동력 붕괴 비가역·소버린 AI 파편화)가 전부 10년짜리 구조. 역풍 3개(중국 배제 TAM 절단·미국 규제완화로 검증 강제 소멸·국방예산 절차 논란)로 5점 미달</td>
+</tr>
+<tr>
+<td>⛰️ 산</td>
+<td style="text-align: center;"><strong>3.5</strong></td>
+<td style="text-align: center;">1.5</td>
+<td>성장 실재(ADAS/AD SW CAGR ~20%)하나 널리 인용되는 시뮬 시장 수치가 회사 시장이 아니고, 종착 경제성을 회사 자신이 부정</td>
+</tr>
+<tr>
+<td>🌲 숲</td>
+<td style="text-align: center;"><strong>3.0</strong></td>
+<td style="text-align: center;">1.5</td>
+<td>병목 3구간 중 하나만 부분 보유. 해자가 가격결정력으로 전환되지 않는 유형</td>
+</tr>
+<tr>
+<td>🌳 나무</td>
+<td style="text-align: center;"><strong>3.5</strong></td>
+<td style="text-align: center;">1.0</td>
+<td>실행 트랙레코드 진짜·자본효율 이례적 · 감점 4(정량 진술 흔들림·락인 자기하향·데이터 플라이휠 부재·나쁜 소식 침묵)</td>
+</tr>
+<tr>
+<td>🌲🌳 옆의 나무</td>
+<td style="text-align: center;"><strong>3.0</strong></td>
+<td style="text-align: center;">1.0</td>
+<td>신생 계층 1등은 실재하나 계층 내려가면 전부 2~5등. NVIDIA는 frenemy이자 경쟁자 투자자</td>
+</tr>
+<tr>
+<td>👤 사람</td>
+<td style="text-align: center;"><strong>3.5</strong></td>
+<td style="text-align: center;">1.5</td>
+<td>도메인 정합성 최상급·소송 0·문화가 설계 · 감점 = 정량 진술 3건 어긋남 + tender 현금화 미공시</td>
+</tr>
+<tr>
+<td>🔢 숫자</td>
+<td style="text-align: center;"><strong>2.5</strong></td>
+<td style="text-align: center;">1.0</td>
+<td>소각률 0·원가 얇음·지불능력 실증 (+) ↔ 감사 재무 0·Form D 0·마진 전부 미공시·수탁자 마크 −28% (−). <strong>미공시를 좋은 점수로 대접하지 않음</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>가중평균 = (4.0×3.0 + 3.5×1.5 + 3.0×1.5 + 3.5×1.0 + 3.0×1.0 + 3.5×1.5 + 2.5×1.0) ÷ 10.5 = 36.00 ÷ 10.5 = ⭐3.43</strong></p>
+<p>🔴 <strong>종합 ⭐ = 사업·thesis 매력도(가중평균) · 밸류 멀티플 미반영.</strong> 숫자 축이 감사 재무 부재로 신뢰도가 구조적으로 낮으므로, <strong>종합점수 자체를 상장주 대비 한 등급 낮게 취급해야 한다.</strong></p>
+<p><strong>overlay 렌즈 3종(7축 미합산)</strong>: CAE 분면 「강한데 비싼」(경계선) ‖ 0to1 Track A <strong>3/7 → 불운 위험</strong>, tell = 과장 경사 🔴 ‖ 밸류 <strong>🔴 고평가(완만·조건부)</strong>, 신뢰도 낮음</p>
+<hr />
+<h2>Section L. 동적 발견</h2>
+<p><strong>L.1 — CarSim 인수가 13개 조사 보고서 전체에서 누락됐다. 이 회사는 "신생 계층 1등"이 아니라 이중 구조다.</strong>
+2022-03-14 Mechanical Simulation Corporation(1996년 설립, 미시간 앤아버, CarSim·TruckSim·BikeSim, 200+ OEM·부품사 고객)을 인수했다. 교차 확인: 시장조사 리포트 본문이 "Applied Intuition의 플랫폼은 <strong>25년간의 차량동역학 모델링 위에 지어졌다</strong>"고 서술 — 2017년 설립 회사가 25년을 주장할 수 있는 유일한 근거다. 그리고 vehicle dynamics는 그 시장의 <strong>최대 application(31.6%)</strong>이다.
+<strong>왜 중요한가</strong>: 경쟁 지형과 마진 mix가 다시 그려진다. "Applied이 1등인 곳은 새로 생긴 클라우드 SIL·시나리오 계층뿐"이라는 판정이 절반만 맞다 — 실제로는 30년 된 설치기반을 <strong>사서</strong> 붙였다. IPG CarMaker와의 정면 경쟁, 저성장·고마진 레거시 라이선스의 매출 비중·갱신율·가격결정력이 전부 미분석 상태다. Ⓑ 승격 판정의 숨은 변수.</p>
+<p><strong>L.2 — 데이터 플라이휠 부재(§D.0.x 본문 참조).</strong> 이 회사 thesis의 가장 무거운 1차 반증.</p>
+<p><strong>L.3 — 창업자와 최대 주주가 자사 제품의 가격 소멸 시점을 스스로 날짜로 못박았다.</strong>
+CEO 원문: "'28 SOP, 29, 30, 그리고 <strong>2030년대 초에는 매우 싸거나 무료</strong>." 같은 시점 a16z 공개 블로그: "자율성 계층 자체는 풍요로 향하고, 많은 환경에서 <strong>한계가격이 무시할 수준</strong>으로 수렴할 것이다."
+<strong>왜 중요한가</strong>: $15B를 정당화하는 강세 서사("physical AI, 10억 대의 기계")의 수익화 경로를 <strong>창업자와 최대 주주가 함께 공개 문서로 부정한 것</strong>이다. 진입장벽이 있다는 것과 렌트를 걷을 수 있다는 것은 다른 명제다.</p>
+<p><strong>L.4 — 회사 정량 진술 체계 자체가 두 달 안에 세 값을 갖는다</strong>(§K′ 참조). 개별 오류가 아니라 데이터 신뢰도의 문제다.</p>
+<p><strong>L.5 — MDA SHIELD IDIQ(상한 $151B·발주기한 2035-12-28): 방산 옵션의 최대 조각이자 최대 착시.</strong>
+정부 계약 DB 1차: Applied Intuition Government Inc가 다수공급 IDIQ 수주자로 등재, baseAndAllOptionsValue = <strong>$151,000,000,000</strong>. 현재 이 회사 앞 실제 주문은 <strong>$500 1건</strong>, 총 의무액 $0.
+<strong>왜 중요한가</strong>: 양방향 비대칭이 여기 있다. 하방으로는 "천장≠매출"의 극단 사례($249M BPA에 4년 반 발주 0인 사례도 함께)이고, 상방으로는 10년짜리 조달 통로를 이미 확보했다는 뜻이다. 여기서 연 $100M급 task order가 한 번 나오면 <strong>Bear 시나리오를 뒤집는 단일 최대 변수</strong>가 된다.</p>
+<p><strong>L.6 — $15B의 우선주 왜곡이 이례적으로 작다는 반대 증거.</strong>
+일반 법칙(유니콘 보고 밸류가 공정가치 대비 평균 48% 과대)을 기계적으로 적용하면 과도한 할인이 된다 — 우선주 스택이 $15B의 5.5~8%에 불과하고, <strong>Fidelity가 보통주와 우선주를 전부 동일가로 마킹</strong>한다. 대신 판정을 좌우하는 것은 조건이 아니라 <strong>분모(매출)의 종류와 크기</strong>다. Forbes 원문이 "booked around $800 million"(수주)이라 ARR도 GAAP 매출도 아니고, Sacra의 $830M/$622M 병존은 "exit ARR vs 역년 매출 평균"으로 해소된다. <strong>P/S 18x라는 숫자 자체가 성격 미상의 분모 위에 서 있다.</strong></p>
+<hr />
+<h2>🔴 크럭스 한 문장</h2>
+<blockquote>
+<p><strong>이 회사의 반복 매출이 "고객이 쓸수록 회사가 좋아지는 복리 구조(플라이휠)"인가, 아니면 "2028년 양산 개시까지 버텨야 하는 다년 공동개발 청구서"인가.</strong></p>
+</blockquote>
+<p>SEC에 공시된 유일한 실제 고객 계약에는 고객 데이터 학습권 조항이 0건이고 컴퓨트·스토리지가 계약상 고객 부담이라 데이터가 회사로 이동할 물리적 경로 자체가 기본값으로 없으며, 최대 주주는 자율성 계층의 한계가격이 무시할 수준으로 수렴한다고 문서로 썼고 CEO는 그 시점을 "2030년대 초"로 못박았다. 이 셋이 사실이면 남는 것은 조달 관계와 규제 추적성뿐인데, 그것만으로 $15B(개인 실효가 $17~22B)를 정당화할 수 있는가 — 그리고 <strong>이 질문의 답은 S-1의 산업별 매출 분해와 감사 마진이 공개되는 순간에만 나온다.</strong></p>
+<hr />
+<h2>종합 판단</h2>
+<p><strong>시간 지평별로 결론이 갈리며, 그 갈림 자체가 결론이다.</strong></p>
+<ul>
+<li><strong>단기(0~12개월)</strong>: 나빠질 여지가 더 크다. 2027~28은 툴 구독 성장 둔화와 양산 로열티 미개시가 겹치는 <strong>에어포켓</strong> 구간이 될 구조이고, 미국 규제완화가 검증 강제 수요를 깎으며, NVIDIA 무료화가 조용한 순매출유지율 침식으로 먼저 나타난다.</li>
+<li><strong>중기(1~3년)</strong>: S-1 하나가 판정의 절반을 결정한다. 산업별 매출 분해에서 "비자동차 70%"가 확인되고 총이익률 80%+·영업이익률 양(+)이 나오면 판정이 뒤집힌다.</li>
+<li><strong>장기(3~10년)</strong>: 회사가 크게 될 가능성은 실재한다. 다만 <strong>"큰 회사가 되는 것"과 "독점 렌트를 걷는 것"은 다른 명제</strong>이고, 이 회사의 계약·아키텍처·최대주주 진술이 전부 후자를 부정한다.</li>
+</ul>
+<p><strong>"지금 비싸다"와 "2030년에 이 회사가 크다"는 동시에 참일 수 있으며, 본 보고서는 전자를 말한다.</strong></p>
+<p><strong>종합 판정: 부분 수정 — 관찰 대상으로 편입하되, 접근 경로가 열리는 이벤트(S-1)와 정보 비대칭이 해소되는 이벤트가 동일하다는 점에서 기다림의 기회비용이 구조적으로 낮다.</strong> 관측 지표 3개(EDGAR S-1/8-A12B · Fidelity 분기 NPORT-P 마크 · 정부 계약 DB의 CDAO OTA 증분)가 전부 무료이므로, 이 회사는 <strong>비용 0으로 추적 가능한 유일한 physical AI 소프트웨어층 대형 비상장사</strong>다.</p>
+<hr />
+<h2>⚠️ 수집 실패·불완전 항목</h2>
+<ul>
+<li>❌ <strong>한국 법인 감사보고서(DART) 미조회</strong> — 「어플라이드인튜이션코리아(유)」가 외부감사 대상이라면 DART에 감사보고서가 있을 수 있다. <strong>한국 매출 실체를 정량 확인할 유일한 1차 경로</strong>이며 최우선 후속 과제.</li>
+<li>❌ <strong>LG이노텍(011070)의 관련 공시 확인 실패</strong> — DART 검색 폼이 자바스크립트 제출로 동작하지 않아 양성 대조군조차 0건. "공시 없음"을 근거로 쓸 수 없다.</li>
+<li>❌ <strong>한국 자율주행 임시운행허가 대장 미조회</strong> — LG이노텍이 실제로 한국 내 테스트 차량을 굴리기 시작했는지가 3월 파트너십 이행 여부를 재는 가장 객관적 지표.</li>
+<li>❌ Series F 우선주 조건(청산우선권·참가권·래칫·IPO 가격 보호) 전면 미공시 — Form D가 없어 확인 경로 원천 부재.</li>
+<li>❌ 총 발행·완전희석 주식수 미공시 — 모든 "주당 → 시가총액" 환산이 주식수 불변 가정 위에 있다.</li>
+<li>❌ SDS·Vehicle OS 공급계약 조건(리콜비용 분담·품질보증·ASIL 책임 배분) 전면 미공시.</li>
+<li>❌ 기능안전 인증(ISO 26262 ASIL·ISO 21448·UL 4600) 및 각국 형식승인 실적 전면 미공시.</li>
+<li>❌ 2021년 이후 이사회 구성 · 의결권 구조 · 창업자 지분율 · 두 차례 tender에서 창업자 본인 현금화 규모 전부 미공시.</li>
+<li>❌ 특허 포트폴리오 규모·분쟁 이력 미조사(USPTO 직접 조회 미수행).</li>
+<li>⚠️ 정부 계약 DB는 OTA·기밀·하도급 임계 이하가 잡히지 않아 <strong>상하 양방향 오차</strong>를 갖는다. 동맹국(영·일·한) 방산 매출은 어느 DB에도 없다.</li>
+<li>⚠️ Glassdoor·Reddit은 봇 차단으로 원문 미열람(검색 스니펫·제목만). 익명 표본이라 근거등급이 낮다.</li>
+<li>⚠️ 수집 환경 — 브라우저 탭 경합으로 일부 에이전트에서 약 40% 재시도율 발생, 일부 검색은 우회 검색어로 대체.</li>
+</ul>
+<h2>다음 실행 시 보완</h2>
+<ol>
+<li><strong>DART에서 「어플라이드인튜이션코리아(유)」 감사보고서 조회</strong> — 한국 매출 실체의 유일한 정량 경로.</li>
+<li><strong>CarSim(Mechanical Simulation) 레거시 라이선스 사업 분석</strong> — 매출 비중·갱신율·가격결정력. Ⓑ 승격 판정의 숨은 변수(§L.1).</li>
+<li><strong>Fidelity 차기 NPORT-P 마크 추적</strong>(2026-09~10월 접수 예상) — 무료·1차·분기 반복 관측 가능한 유일한 가격 신호.</li>
+<li><strong>EDGAR 8-A12B / CERT 감시</strong> — IPO 실체화의 진짜 판별 지표(485BXT 아님).</li>
+<li><strong>CDAO OTA 차기 자금 투입 속도</strong> 및 <strong>MDA SHIELD task order</strong> 추적.</li>
+<li>USPTO 특허 포트폴리오 정량 + IPG CarMaker와의 경쟁 실사.</li>
+</ol>
+<hr />
+<p><strong>용어 풀이</strong></p>
+<p>💡 <strong>곡괭이</strong> — 골드러시에서 금을 캐는 사람이 아니라 삽·곡괭이를 파는 사업. 누가 이기든 수혜를 본다.
+💡 <strong>디자인윈</strong> — 부품·소프트웨어가 특정 제품 모델의 설계 단계에서 채택되는 것. 채택되면 그 모델 수명 내내 매출이 따라온다.
+💡 <strong>비반복성 개발비(NRE)</strong> — 양산 전 개발 단계에 일회성으로 청구하는 비용. 반복 매출이 아니다.
+💡 <strong>양산 개시(SOP, Start of Production)</strong> — 시험이 끝나고 실제 생산라인에서 차가 나오기 시작하는 시점.
+💡 <strong>순매출유지율(NRR)</strong> — 기존 고객이 작년 대비 올해 얼마를 더(또는 덜) 쓰는지. 100% 미만이면 고객이 조용히 줄이고 있다는 뜻.
+💡 <strong>역-DCF</strong> — 현금흐름을 예측해 가치를 구하는 대신, 현재 가격이 성립하려면 미래가 어때야 하는지를 거꾸로 계산하는 방법.
+💡 <strong>성장조정 배수</strong> — 매출 배수를 성장률로 나눈 값. 높은 배수 자체가 비싼 게 아니라 성장 대비 배수가 비싼지를 본다.
+💡 <strong>HIL(하드웨어 인 더 루프)</strong> — 실물 전자제어장치를 시뮬레이터에 물리적으로 연결해 자극하는 검증 방식. 소프트웨어만으로 대체 불가.
+💡 <strong>IDIQ / OTA / BPA</strong> — 미 정부 조달 계약 형태. <strong>천장 금액은 "여기까지 발주할 수 있다"는 한도이지 확정 매출이 아니다.</strong>
+💡 <strong>Form D</strong> — 사모 발행 시 SEC에 내는 신고서. 비상장사도 통상 제출한다.
+💡 <strong>NPORT-P</strong> — 등록 펀드가 보유 자산을 분기별로 SEC에 보고하는 서식. 비상장 주식은 Level 3 공정가치로 마킹된다.
+💡 <strong>우선매수권(ROFR)</strong> — 주주가 제3자에게 팔려 할 때 회사·기존 주주가 같은 조건으로 먼저 살 수 있는 권리.</p>
+<hr />
+<p><em>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</em></p>
+</div></body></html>
