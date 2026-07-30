@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>레고처럼 짓는 데이터센터 — 모듈러 건설의 무법지대 | 2026-07-30</title>
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="데이터센터">
+<meta name="vault-date" content="2026-07-30">
+<meta name="description" content="SemiAnalysis 'The Wild Wild West Of LEGO Datacenters'(2026-07-30) 전문 정리·분석. 전기기사 부족이라는 하드 병목, 모듈러 5단 사다리, 공기 36%·원가 8% 검증, 커미셔닝이라는 남은 병목, 그리고 MW당 콘텐츠가 2배로 늘어나는 장비사 지도. Comfort Systems·Vertiv 핵심 수치는 SEC 1차 출처 교차검증.">
+<style>
+  :root{ --sand:#EBE4D3; --cream:#FDF6E3; --ink:#1f2328; --sub:#5b6b62; --line:#e0d8c4;
+         --accent:#0d6f8a; --accent2:#1E5F45; --quote:#6a5a2a; --hl:#5c4a00; --red:#a4342b; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--sand);color:var(--ink);
+       font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;line-height:1.75;font-size:16.5px}
+  .wrap{max-width:880px;margin:0 auto;padding:38px 20px 90px}
+  header.rep{margin-bottom:26px;border-bottom:2px solid var(--line);padding-bottom:22px}
+  .kicker{color:var(--accent);font-weight:800;letter-spacing:.13em;font-size:12.5px}
+  header.rep h1{margin:8px 0 4px;font-size:33px;letter-spacing:-.01em;color:#14231c;line-height:1.25}
+  .orig{font-size:15px;color:var(--sub);font-style:italic;margin-bottom:10px}
+  .byline{font-size:13.5px;color:var(--sub);background:var(--cream);border:1px solid var(--line);
+          border-radius:10px;padding:9px 13px;display:inline-block}
+  .byline a{color:var(--accent);text-decoration:none;border-bottom:1px solid #bcd6df}
+  section.card{background:var(--cream);border:1px solid var(--line);border-radius:14px;
+       padding:22px 26px;margin:18px 0;box-shadow:0 1px 2px rgba(60,50,20,.03)}
+  h2{font-size:21px;margin:6px 0 14px;color:#14231c;border-left:5px solid var(--accent);padding-left:11px;line-height:1.35}
+  h3{font-size:17.5px;margin:24px 0 6px;color:var(--accent2)}
+  h4{font-size:15.5px;margin:16px 0 4px;color:var(--hl)}
+  .tldr{background:#f2ecda}
+  .tldr ol{margin:6px 0 0;padding-left:22px} .tldr li{margin:9px 0}
+  p{margin:10px 0}
+  b,strong{color:#111}
+  .eng{color:var(--sub);font-weight:600;font-size:.93em}
+  .analogy{background:#fbf3d6;border:1px solid #ecd9a6;border-left:4px solid #d9b64e;
+       border-radius:9px;padding:11px 15px;margin:13px 0;font-size:15.5px}
+  .analogy b{color:var(--hl)}
+  .warn{background:#f9ece9;border:1px solid #e8c6bf;border-left:4px solid #c0574a;
+       border-radius:9px;padding:11px 15px;margin:13px 0;font-size:15.5px}
+  .warn b{color:var(--red)}
+  .gist{font-size:14.5px;color:var(--quote);background:#f6f0dc;border:1px dashed #d8c99b;
+        border-radius:8px;padding:9px 13px;margin:10px 0}
+  .gist .lab{font-weight:800;color:#8a6d2f;font-size:12px;letter-spacing:.04em}
+  figure{margin:18px 0;background:#fff;border:1px solid #e8e1cf;border-radius:10px;padding:14px 12px 8px;overflow-x:auto}
+  figure svg{display:block;max-width:100%;height:auto;margin:0 auto}
+  figcaption{font-size:13px;color:var(--sub);text-align:center;margin-top:8px;line-height:1.6}
+  table{border-collapse:collapse;width:100%;font-size:14.3px;margin:14px 0}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f0e9d6;font-weight:800;color:#14231c}
+  td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .tblwrap{overflow-x:auto}
+  dl.gloss{margin:6px 0} dl.gloss dt{font-weight:800;color:var(--accent2);margin-top:14px}
+  dl.gloss dd{margin:2px 0 0;color:#33403a}
+  ul.refs{list-style:none;padding:0;margin:6px 0}
+  ul.refs li{padding:10px 0;border-bottom:1px dashed var(--line)}
+  ul.refs li:last-child{border-bottom:none}
+  ul.refs a{color:var(--accent);text-decoration:none;font-weight:700;word-break:break-all}
+  ul.refs .desc{display:block;font-size:13.5px;color:var(--sub);margin-top:2px}
+  .tag{display:inline-block;background:#e6eff2;color:#0d6f8a;font-size:11.5px;font-weight:800;
+       border-radius:6px;padding:2px 8px;margin-right:6px;vertical-align:middle}
+  .stack{margin:16px 0}
+  .layer{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:7px 0;background:#fff}
+  .layer .lt{font-weight:800;color:#14231c}
+  .layer .ld{font-size:14.5px;color:#33403a}
+  .layer.no{background:#f6f0e2}
+  .badge-y{display:inline-block;background:#e3efe7;color:#1E5F45;font-size:11.5px;font-weight:800;border-radius:5px;padding:1px 7px;margin-left:6px}
+  .badge-n{display:inline-block;background:#efe6e4;color:#a4342b;font-size:11.5px;font-weight:800;border-radius:5px;padding:1px 7px;margin-left:6px}
+  footer{margin-top:34px;font-size:12.5px;color:var(--sub);text-align:center;line-height:1.7;
+         border-top:1px solid var(--line);padding-top:18px}
+  @media print{ body{background:#fff} section.card{box-shadow:none} }
+  @media (max-width:640px){ .wrap{padding:24px 14px 70px} header.rep h1{font-size:25px} section.card{padding:18px} body{font-size:16px} }
+</style></head>
+<body><div class="wrap">
+
+<header class="rep">
+  <div class="kicker">데이터센터 · 원문 쉬운 풀이 + 분석</div>
+  <h1>레고처럼 짓는 데이터센터 — 모듈러 건설의 무법지대</h1>
+  <div class="orig">원제: "The Wild Wild West Of LEGO Datacenters" · SemiAnalysis (2026-07-30 · 유료)</div>
+  <div class="byline">
+    <a href="https://newsletter.semianalysis.com/p/the-wild-wild-west-of-lego-datacenters" target="_blank" rel="noopener">원문 보기 ↗</a>
+    &nbsp;|&nbsp; 본 문서는 원문을 고등학생 눈높이로 풀어 쓴 <b>해설 + 자체 분석</b>이며 번역본이 아닙니다. 핵심 정량은 SEC 1차 출처로 교차검증(§10).
+  </div>
+</header>
+
+<section class="card tldr">
+  <h2>📌 한 장 요약</h2>
+  <ol>
+    <li>🔴 <b>데이터센터를 짓는 방식이 근본적으로 바뀌었다.</b> 콘크리트 벽은 공장에서 완성돼 오고, 전기실·냉각실은 배선까지 끝난 채 트럭으로 도착하며, 심지어 데이터홀 전체가 실려 온다. SemiAnalysis 추적치로 <b>61GW 이상 · 1,000개 이상 사이트</b>가 이미 어떤 형태로든 모듈러/프리팹을 쓴다. 2028년 말 <b>전체 가동 용량의 30% 이상</b>이 모듈러가 될 것으로 추정한다.</li>
+    <li>🔴 <b>이유는 돈으로 살 수 없는 병목, 사람.</b> 전기기사가 데이터센터 총 공사 시간의 <b>30~40%</b>를 차지하는데 <b>2027년부터 구조적 부족</b>이 발생한다(텍사스·오하이오 최악). 전력은 돈과 시간으로 풀리지만 면허 전기기사는 단기간에 만들어지지 않는다.</li>
+    <li>🟠 <b>벤더의 마케팅 숫자는 크게 부풀어 보인다.</b> Vertiv는 "최대 85% 빠름", Schneider는 "60% 빠름·13% 저렴"을 말하지만, SemiAnalysis가 50MW 액체냉각 홀을 바닥부터 다시 계산하니 <b>공기 ~36%(7~9개월) 단축, MW당 원가 ~8% 절감</b>($14.6M → $13.5M/MW)이었다. 벤더 숫자는 <b>측정 범위가 좁다</b>(버스웨이만, 모듈 배치만).</li>
+    <li>🔴 <b>진짜 가치는 원가가 아니라 시간이다.</b> IT 1MW가 연 $12~15M 매출을 내고, GPU 감가만 월 $500k/MW다. 8개월 먼저 켜면 50MW 홀에서 <b>약 $200M(≈$4M/MW)</b>. 단 <b>조건부</b> — 가동일은 건물·전력·GPU 중 <b>가장 늦은 것</b>으로 정해지므로 건물이 병목이 아니면 이 이득은 0이다.</li>
+    <li>🟠 <b>모듈러가 못 없앤 병목 = 커미셔닝(시운전).</b> 전체 3~8개월이 걸리고 오퍼레이터들이 이구동성으로 "가장 큰 구멍"이라 부른다. 전력망·발전기·배터리는 현장에만 있으므로 통합 시험은 공장으로 옮길 수 없다. 시장의 "6~9개월 완공" 주장 중 일부는 <b>커미셔닝을 압축해 만든 숫자</b>이며, 이는 리스크를 건설에서 운영으로 옮긴 것이다.</li>
+    <li>🟠 <b>장비사에게는 MW당 매출이 통째로 커지는 사건.</b> Vertiv는 개별 장비 $3.5M/MW → 풀스택 OneCore <b>~$7M/MW</b>로 2배, Eaton은 $2.9M → $3.4M/MW, nVent ~$1M/MW. 반대로 이 확장은 <b>TAM(시장 크기) 확대이지 마진 확대가 아닐 수 있다</b> — 절감액 대부분은 오퍼레이터의 조기 가동 이익으로 귀속되고, 모듈러에는 '이중 마진' 압축 압력이 있다.</li>
+  </ol>
+</section>
+
+<section class="card">
+  <h2>① 왜 갑자기 '레고'인가 — 돈으로 못 사는 병목, 사람</h2>
+
+  <p>지금까지 데이터센터는 다른 건물처럼 지었다. 땅을 파고, 거푸집을 세우고, 현장에서 콘크리트를 붓고, 굳기를 기다리고, 그 위에 또 붓는다. 그 다음 수백 명의 전기·배관 기술자가 건물 안으로 들어가 몇 달간 배선과 배관을 한다.</p>
+
+  <p>이 방식의 한계는 <b>사람</b>이다. SemiAnalysis는 자기들의 최근 글 흐름이 이 병목을 향한 여정이었다고 말한다 — 우주 데이터센터 이야기로 <b>지구상 용량의 천장</b>을 보였고, 그 다음 글에서 "2026년 미국 데이터센터 용량 절반이 취소됐다"는 서사를 반박하며 <b>대부분의 병목은 오해되고 있으며 풀 수 있다</b>고 주장했다. 그런데 <b>숙련 기능인력(trade labor)은 예외</b>다. 전기기사와 배관공의 부족은 빨리 풀 수 없다.</p>
+
+  <div class="analogy">
+    <b>비유 —</b> 전력은 "돈을 더 내면 앞 순번을 받을 수 있는 대기표"에 가깝다. 반면 면허 전기기사는 <b>학교와 도제 과정을 몇 년 거쳐야 나오는 사람</b>이다. 아무리 급해도 내년에 두 배로 늘릴 수 없다. 그래서 이건 "비싸진 병목"이 아니라 <b>물량 자체가 막힌 병목</b>이다.
+  </div>
+
+  <ul>
+    <li><b>전기기사 = 데이터센터 공사 총 인시(man-hour)의 30~40%.</b> 단일 직종으로 압도적 1위다.</li>
+    <li>SemiAnalysis의 <b>Labor Model</b>은 주(州)별 건설 계획을 직종별 노동 수요 시간으로 환산하고, 그것을 "실제로 데려올 수 있는" 공급량과 맞붙인다. 결론은 <b>2027년 전기기사 부족 발생</b>, 그리고 건설이 집중된 <b>텍사스·오하이오에서 가장 심각</b>.</li>
+    <li>이미 현실이 됐던 사례: Crusoe는 애빌린(Abilene) 스타게이트 현장에 인력을 끌어오려고 <b>임금을 30% 올렸고</b>, 피크에 <b>9,000명 이상</b>이 투입됐다.</li>
+  </ul>
+
+  <p>그래서 업계 전체가 같은 답으로 달려간다: <b>반복되는 작업을 현장에서 떼어내 공장으로 보낸다.</b> 벽 패널부터 전기실, 냉각 스키드까지 공장에서 현장과 <b>동시에</b> 만들고, 완성품으로 배달한다. 노동 병목을 완화하는 것에 그치지 않고 <b>속도</b>가 붙는다. 그리고 오늘의 AI 데이터센터에서는 <b>속도 = 매출</b>이다.</p>
+
+  <div class="gist"><span class="lab">이 장의 핵심</span> 모듈러는 "원가 절감 아이디어"로 시작한 게 아니다. <b>사람이 부족해서 어쩔 수 없이 선택된 구조 전환</b>이고, 그 부산물로 속도를 얻었다. 그리고 속도가 돈이 되는 순간 되돌릴 수 없는 표준이 됐다.</div>
+</section>
+
+<section class="card">
+  <h2>② 용어 정리 — 프리팹과 모듈러는 다른 말이다</h2>
+
+  <p>기사의 부제가 "무법지대(Wild Wild West)"인 이유가 여기 있다. 지금 <b>모두가 "우리도 모듈러입니다"라고 말하는데, 각자 완전히 다른 것을 가리킨다.</b> 그래서 먼저 두 단어를 갈라야 한다.</p>
+
+  <table>
+    <tr><th style="width:30%">용어</th><th>정의</th></tr>
+    <tr><td><b>프리팹</b> <span class="eng">prefabrication</span></td><td>더 넓은 개념. <b>공장에서 만들어 설치만 하면 되게 배달되는 모든 것.</b> "어디서 작업했나"에 대한 진술이며, 모양에 대한 진술이 아니다.</td></tr>
+    <tr><td><b>모듈러</b> <span class="eng">modular</span></td><td>더 좁은 개념. <b>완결된 단위(방·박스·블록)</b>가 완성된 채 도착해 현장에서 볼트로 붙는 것. <b>모든 모듈러는 프리팹이지만, 모든 프리팹이 모듈러는 아니다.</b></td></tr>
+  </table>
+
+  <h3>모듈화의 5단 사다리</h3>
+  <p>공장이 얼마나 많은 일을 미리 해주는지에 따라 5단계로 올라간다. 위로 갈수록 공장 통합도와 범위가 커진다.</p>
+
+  <figure>
+    <svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="모듈화 5단 사다리">
+      <g font-family="'Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+        <text x="360" y="20" text-anchor="middle" font-size="13" font-weight="700" fill="#14231c">공장 통합도·범위 →</text>
+        <!-- steps -->
+        <g>
+          <rect x="20" y="232" width="130" height="46" rx="7" fill="#eaf1f4" stroke="#b9d3dc"/>
+          <text x="85" y="252" text-anchor="middle" font-size="13" font-weight="800" fill="#0d6f8a">1 부품</text>
+          <text x="85" y="269" text-anchor="middle" font-size="11" fill="#5b6b62">Component</text>
+        </g>
+        <g>
+          <rect x="160" y="188" width="130" height="46" rx="7" fill="#e2edf1" stroke="#b9d3dc"/>
+          <text x="225" y="208" text-anchor="middle" font-size="13" font-weight="800" fill="#0d6f8a">2 스키드</text>
+          <text x="225" y="225" text-anchor="middle" font-size="11" fill="#5b6b62">Skid · 뚜껑 없음</text>
+        </g>
+        <g>
+          <rect x="300" y="144" width="130" height="46" rx="7" fill="#dae9ee" stroke="#b9d3dc"/>
+          <text x="365" y="164" text-anchor="middle" font-size="13" font-weight="800" fill="#0d6f8a">3 모듈</text>
+          <text x="365" y="181" text-anchor="middle" font-size="11" fill="#5b6b62">Module · 벽+천장</text>
+        </g>
+        <g>
+          <rect x="440" y="100" width="130" height="46" rx="7" fill="#d1e5eb" stroke="#b9d3dc"/>
+          <text x="505" y="120" text-anchor="middle" font-size="13" font-weight="800" fill="#0d6f8a">4 컨테이너</text>
+          <text x="505" y="137" text-anchor="middle" font-size="11" fill="#5b6b62">ISO 규격 박스</text>
+        </g>
+        <g>
+          <rect x="580" y="56" width="130" height="46" rx="7" fill="#c6dee6" stroke="#8fbecb"/>
+          <text x="645" y="76" text-anchor="middle" font-size="13" font-weight="800" fill="#0a5568">5 프리팹 블록</text>
+          <text x="645" y="93" text-anchor="middle" font-size="11" fill="#5b6b62">시설 규모 통째</text>
+        </g>
+        <!-- divider -->
+        <line x1="20" y1="288" x2="710" y2="288" stroke="#e0d8c4" stroke-width="1"/>
+        <text x="215" y="300" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1E5F45">← 1~4단: 서브시스템 모듈화 (시장의 대부분)</text>
+        <text x="590" y="300" text-anchor="middle" font-size="11.5" font-weight="700" fill="#a4342b">4~5단: 시설 전체 모듈화 →</text>
+      </g>
+    </svg>
+    <figcaption>모듈화 5단 사다리 — 1~4단은 "데이터센터의 한 부분"을 공장 완성품으로 받는 것(현재 시장의 대부분), 4~5단은 "데이터센터 자체"를 제품으로 받는 것. 출처: SemiAnalysis 분류를 재구성.</figcaption>
+  </figure>
+
+  <table>
+    <tr><th style="width:22%">단계</th><th>무엇인가</th></tr>
+    <tr><td><b>1 부품</b></td><td>공장에서 만든 장비 한 개. 가장 낮은 형태.</td></tr>
+    <tr><td><b>2 스키드</b></td><td>여러 부품을 <b>열린 철제 받침대(프레임)에 미리 배치·배선</b>해 한 덩어리로 보내는 것. 각각 따로 보내지 않는다.</td></tr>
+    <tr><td><b>3 모듈</b></td><td>스키드에 <b>벽과 천장을 씌운 것</b>. 단순 전기실부터 프리팹 기계·전기실까지. "방을 통째로 배달"에 해당.</td></tr>
+    <tr><td><b>4 컨테이너</b></td><td>ISO 표준 컨테이너 규격에 담은 모듈. <b>규격 안에 있으니 일반 트럭으로 어디든 갈 수 있다</b>는 게 존재 이유.</td></tr>
+    <tr><td><b>5 프리팹 DC 블록</b></td><td>공장 제작 모듈 여러 개를 엮어 <b>시설 규모 블록</b>으로 만든 것. 목표는 "켜면 되는 데이터센터".</td></tr>
+  </table>
+
+  <div class="analogy">
+    <b>비유 —</b> ① 부품 = 공유기 하나. ② 스키드 = 공유기·스위치·멀티탭을 한 판에 올려 선까지 다 꽂아 놓은 것. ③ 모듈 = 그 판을 <b>작은 방에 넣고 문을 달아</b> 배달. ④ 컨테이너 = 그 방을 <b>이삿짐 표준 규격 상자</b>에 맞춰 만들어 아무 트럭에나 실을 수 있게 한 것. ⑤ 프리팹 블록 = 방 여러 개를 이어 <b>집 한 채</b>를 배달.
+  </div>
+</section>
+
+<section class="card">
+  <h2>③ 데이터센터를 3층으로 쪼개보기</h2>
+
+  <p>데이터센터는 크게 세 층이다. 이 중 <b>어디를 공장으로 옮길 수 있는가</b>가 모든 논의의 뼈대다.</p>
+
+  <div class="stack">
+    <div class="layer">
+      <div class="lt">🧊 시스템 <span class="eng">Systems</span><span class="badge-y">모듈화 핵심</span></div>
+      <div class="ld">껍데기 안에 들어가는 전기·기계 설비 전부(변압기·스위치기어·UPS·배터리·냉각·배관·랙). <b>실제 모듈화의 대부분이 여기서 일어난다.</b></div>
+    </div>
+    <div class="layer">
+      <div class="lt">🏠 껍데기 <span class="eng">Shell</span><span class="badge-y">모듈화 가능</span></div>
+      <div class="ld">구조·외피·지붕. 건물을 지탱하고 비바람을 막는다. 프리캐스트 콘크리트 → 표준 철골 → 목적특화 구조로 3단 진화 중.</div>
+    </div>
+    <div class="layer no">
+      <div class="lt">⛏️ 부지 <span class="eng">Site</span><span class="badge-n">모듈화 불가</span></div>
+      <div class="ld">토목·정지작업·매설 배선·기초. <b>땅은 옮길 수 없다.</b> 반드시 그 땅에서 파고 붓는다.</div>
+    </div>
+  </div>
+
+  <h3>껍데기의 3단 진화</h3>
+
+  <h4>1단계 — 프리캐스트: 기존 건물을 '공업화'</h4>
+  <p>현장에서 콘크리트를 붓는 대신, 공장에서 통제된 환경에서 벽 패널을 만들어 트럭으로 가져와 크레인으로 얹는다. 새로운 기술이 아니다 — 북부 버지니아는 노동력이 이미 부족해서 오래전부터 프리캐스트를 써왔다. CloudHQ의 애쉬번 LC-2(2층)가 대표 사례로, 하중을 견디는 껍데기가 기둥 없는 긴 스팬과 옥상 기계장비 하중을 받쳐준다.</p>
+
+  <div class="analogy">
+    <b>왜 빨라지나 —</b> 현장 타설에서는 한 층을 부으면 <b>설계 강도의 약 75%에 도달할 때까지 기다린 뒤</b>에야 위층을 올릴 수 있다. 케이크를 층층이 굽되 아래 층이 굳기를 매번 기다리는 것과 같다. 프리캐스트는 이 기다림을 건너뛴다.
+  </div>
+
+  <p>다만 <b>한계도 명확하다</b> — LC-2는 여전히 인도까지 <b>약 18~20개월</b>이 걸렸다. 프리캐스트는 현장 작업을 줄였지만 <b>건물 자체는 여전히 크고 복잡한 다층 구조</b>였다. (틸트업 공법은 같은 논리인데 패널을 원거리 공장 대신 <b>건물 슬래브 위에서</b> 타설한다 — 장거리 운송을 피하는 대신 품질·일정이 현장 날씨에 더 노출된다.)</p>
+
+  <h4>2단계 — 건물 자체를 단순하게</h4>
+  <p>더 큰 이득은 "같은 건물을 공장에서 만들기"가 아니라 <b>건물을 단순하게 바꾸기</b>에서 나왔다. 복잡한 다층 시설 → 반복 가능한 단층 홀 → 더 좁고 목적특화된 구조로 이동한다. 철골이 선호되는 이유는 공장에서 가공해 효율적으로 실어와 빠르게 볼트로 조립할 수 있기 때문이다.</p>
+  <ul>
+    <li><b>PEMB</b>(사전 설계 금속 건물)는 가장 가벼운 쪽. ① 주골조(뼈대) ② 부골조(주골조를 잇는 가벼운 부재, 지붕 퍼린 등) ③ 외피(구조가 아니라 <b>날씨만 막는 얇은 금속 패널</b>) 3부분. 전부 절단·타공·라벨링돼 도착하므로 현장은 볼트만 조인다.</li>
+    <li>더 까다로운 홀은 <b>구조용 철골</b>(더 무거운 열간압연 부재)을 쓴다. PEMB보다 비싸지만 더 넓은 스팬, 더 무거운 하중, 더 복잡한 배치를 지원한다.</li>
+  </ul>
+  <p><b>실측 사례</b> — QTS 시더래피즈 캠퍼스의 현 420MW 단계는 약 <b>280만 제곱피트</b>에 구조용 철골 <b>약 28,000톤</b>을 쓴다. 착공에서 상량(topping out)까지 <b>약 5개월</b>, 건물 인도까지 <b>약 11개월</b>. Crusoe의 애빌린 스타게이트는 각 건물에 공장 제작 단열 금속 패널 <b>약 672장</b>을 썼고, 패널은 <b>40일 미만</b>에 제작돼 <b>하루 15~20장</b> 속도로 설치, <b>8주 미만</b>에 방수 마감 상태(dried-in)에 도달했다.</p>
+  <p>즉 속도는 "철골이라서"가 아니라 <b>철골이 가능하게 하는 것</b>(단순 단층 홀, 반복 구조 베이, 현장 접합부 감소, 여러 시장에서 복제 가능한 공급망)에서 나온다. 대가는 <b>땅</b>이다 — 단층 캠퍼스는 더 넓은 부지가 필요하지만, 땅이 싸고 속도가 더 중요한 신규 AI 시장에서는 받아들일 만한 거래다.</p>
+
+  <h4>3단계 — 목적특화 초고속 배치 껍데기</h4>
+  <ul>
+    <li><b>Meta의 '텐트'</b>(뉴올버니 프로메테우스 캠퍼스)가 가장 극단적이다. 알루미늄 골조 + 직물 외피로, <b>전통적 영구 껍데기를 짓지 않고</b> 비바람만 막는다. 각 구조물 약 <b>125,000 제곱피트</b>이며, 2025년 7월 발표 이후 <b>2026년 4월 위성 추적으로 8동</b>이 서 있는 것이 확인됐다. 같은 캠퍼스의 <b>첫 영구 건물 5개는 2~3년</b>이 걸렸다.</li>
+    <li><b>AWS</b>는 최신 모듈러 빌드에서 껍데기를 "큰 범용 창고"로 보지 않고, <b>안에 들어갈 시스템을 중심으로 더 좁고 반복 가능한 구조</b>로 짠다. 결과는 MW당 건물이 줄고, 구조 스팬이 짧아지고, 현장 인력이 조립할 접합부가 줄어드는 것.</li>
+  </ul>
+
+  <div class="warn">
+    <b>과대해석 금지 —</b> Meta가 9개월에 데이터센터를 완성한 게 아니다. <b>텐트는 껍데기를 앞당길 뿐</b>, 전력 계통 연계·전력·냉각·커미셔닝을 앞당기지 않는다. 또 직물 구조는 콘크리트·철골의 <b>내구성과 장기 유연성을 포기</b>한 것이며 수십 년 보호를 의도한 구조가 아니다.
+  </div>
+</section>
+
+<section class="card">
+  <h2>④ 진짜 돈이 걸린 곳 — 장비·시스템 모듈화</h2>
+
+  <h3>(1) 모듈러 전력 블록 — 일정 이득이 집중되는 곳</h3>
+  <p>전력 모듈은 주요 전기 장비를 하나의 컨테이너형 박스에 담은 공장 제작 전기실이다. 전력이 모듈화에 가장 잘 맞는 이유는 <b>장비 구성이 잘 정의돼 있고, 조립할 조각이 많기</b> 때문이다. 50MW 전력 홀에서 전기 설비 설치와 시운전은 평균 <b>5.5~16.7개월</b>이 걸린다.</p>
+  <p>예시로 Flex는 Anord Mardix 사업부를 통해 <b>전력 스키드</b>와 그것을 보안 인클로저로 감싼 <b>전력 모듈 포드</b> 두 형태로 판다. 모듈 안에는 주요 전기 부품이 '파워트레인'처럼 배열되고, 건물 위로 지나 데이터홀까지 전기를 잇는 <b>버스웨이(IBAR)</b>, 내부 온도를 관리하는 <b>CRAH</b>(전산실 공조기), 소화 설비까지 들어간다.</p>
+
+  <div class="gist"><span class="lab">SemiAnalysis 자체 추정</span> 전력 스코프만 공장으로 옮겨도 — 공사 내용의 <b>약 26%</b>에 해당 — IT-ready까지 <b>약 22% 빨라진다</b>(약 13개월 vs 스틱빌드 16.7개월). MW당 <b>약 5% 저렴</b>. 주로 기계·전기 설치 기간을 <b>약 5.5개월 → 약 2.5개월</b>로 압축해서 얻는다.</div>
+
+  <p>이 안에서 새 하위 범주가 태동 중이다 — <b>"소프트웨어 정의" 전력 라우팅 블록</b>. 변압기+스위치기어+UPS+배터리 체인을 박스에 담는 대신, <b>DG Matrix</b> 같은 회사는 그 체인의 일부를 <b>전력전자 기반 다중 포트 라우팅</b>으로 대체한다. 전력망·발전·저장·DC 부하를 공통 제어 플랫폼으로 연결한다.</p>
+
+  <h3>(2) 모듈러 냉각 블록</h3>
+  <p>첫눈에는 냉각 모듈화의 명분이 전력보다 약하다 — 미리 조립할 조각 수가 적다. 그런데 1차·2차 냉각 루프가 복잡해지면서 <b>반복 가능한 증분 단위로 냉각 용량을 더할 수 있다</b>는 점이 오퍼레이터에게 훨씬 매력적이 됐다.</p>
+  <ul>
+    <li><b>CDU 스키드</b>가 노력의 중심. Airedale by Modine의 스키드형 CDU는 <b>2MW급</b>으로, 냉각 루프·버퍼 탱크·누수 감지까지 다 올려 도착한다. 현장은 <b>루프 2개와 전원 1개만 연결</b>하면 끝난다.</li>
+    <li>가치가 더 큰 쪽은 <b>2차 루프와 실외 기계 야드</b>다. 배관과 실외 냉각 인프라를 프리팹하면 현장 토목·배관·제어 작업이 크게 줄어든다. QTS는 이미 <b>배관 인프라 대부분을 프리팹</b>한다 — 액체냉각의 배관 요구가 늘어난 지금 더욱 값지다.</li>
+    <li>중요한 맥락: 냉각 장비 상당수는 원래 <b>병원·캠퍼스·산업 공정용</b>으로 설계된 것이다. GW 규모에서 수백 대를 붙이면 <b>뜨거운 공기 재순환·열섬</b> 같은 문제가 생긴다.</li>
+    <li>신규 진입자 <b>Karman Industries</b>는 야드 전체를 공략한다. CO₂ 기반 HPU는 <b>전기차에서 SiC 전력전자와 영구자석 모터</b>, <b>항공우주에서 소형 터보기계와 고성능 열교환기</b>를 빌려왔다. 실외용 NEMA 스키드로 출하되며 <b>기존 대비 전력밀도 4~5배</b>, <b>야드 면적 60~80% 감소</b>를 주장한다.</li>
+  </ul>
+
+  <h3>(3) 공장 제작 화이트스페이스 — 컴퓨트를 위한 '준비된 봉투'</h3>
+  <p>화이트스페이스 모듈은 <b>손으로 만든 데이터홀과 현장 배선을 공장 제품으로 대체</b>하는 것이다. 랙 프레임과 랙이 필요한 모든 마지막 연결점까지 준비돼 온다.</p>
+  <p>Schneider의 <b>EcoStruxure Pod</b>가 예시다. 검은 캐비닛이 IT 랙 열을 이루고(한 시스템에 <b>최대 40랙</b>), 랙 위 회색 인프라가 배전층으로 각 랙에 전기를 주는 버스웨이, 뜨거운 공기를 잡는 컨테인먼트, 액체냉각용 기술 용수 루프, 서버 연결 케이블을 나른다.</p>
+  <p>여기서 제품 설계의 핵심 — 공장 화이트스페이스는 서로 다른 맞춤 요구를 다 소화해야 하므로, Schneider 같은 공급사는 <b>NVIDIA와 함께 30개 이상의 레퍼런스 설계</b>를 지원한다. 구매자는 원하는 칩에 맞는 스펙을 고르면 <b>거기에 맞는 전력·냉각 모듈이 이미 사전 조율된 홀</b>을 받는다.</p>
+
+  <h3>(4) 시설 전체 모듈화 — '박스에 담긴 데이터센터'</h3>
+  <ul>
+    <li><b>컨테이너형</b>: ISO 규격 또는 목적 제작 방수 인클로저에 데이터센터를 담는다. IT 랙·전력 장비·배터리·냉각까지 다 안에 있다. 엣지 컴퓨팅·산업 환경·원격지에 주로 쓰이고, <b>작은 데이터센터가 빨리 필요할 때</b> 가장 유용하다. AI 워크로드에서 구매자는 보통 규모를 쫓는 컴퓨트 스타트업이 아니라 <b>고정된 위치에서 저지연 추론이 필요한 자산 소유자</b>다. <b>한계는 밀도</b> — 운반을 쉽게 하는 그 규격이 배치를 고정시킨다.</li>
+    <li><b>올인원 프리팹 블록</b>: Vertiv <b>MegaMod</b>가 대표. 블록 중앙에 IT 랙, 그 위·주변에 광케이블과 케이블 경로, 외곽에 냉각·전력 지원 설비. 1MW 레퍼런스 설계가 <b>길이 약 26.5m × 폭 24m × 높이 4m</b>까지 늘어나고 MegaMod plus는 폭 31m까지 간다. 이렇게 큰 걸 어떻게 옮기나? <b>운반 가능한 프리팹 섹션으로 쪼개</b> 중량물 트럭으로 보내고 현장에서 하나로 연결·시운전한다.</li>
+  </ul>
+
+  <h3>(5) 플랫폼 모듈화 — NVIDIA DSX</h3>
+  <p>마지막 단계는 특정 벤더의 블록을 넘어 <b>시설 자체의 표준 레퍼런스 설계</b>로 간다. 랙 시스템과 CDU에 레퍼런스 설계가 있듯, NVIDIA는 이제 <b>AI 팩토리 전체</b>에 대해 하나를 낸다 — <b>DSX</b>. 2025년 10월 GTC 워싱턴에서 Omniverse 디지털 트윈 청사진으로 첫 공개, 2026년 3월 <b>Vera Rubin DSX 레퍼런스 설계</b>로 공식화, 최근 전체 DSX 플랫폼으로 확장됐다.</p>
+  <p>DSX는 컴퓨트·네트워킹·스토리지·클러스터 설계는 물론 <b>전력·냉각·제어, 심지어 토목·구조·건축 설계까지</b> 포함한 검증된 AI 팩토리 아키텍처다. <b>DSX Max-Q</b>는 정해진 전력 예산 안에서 와트당 토큰을 최대화하고, <b>DSX Flex</b>는 시설을 전력망 서비스에 연결해 전력 사용을 동적으로 조절하며 온사이트 발전과 수요를 조율한다.</p>
+  <p>운영자는 Omniverse DSX 청사진으로 <b>먼저 디지털 트윈</b>을 만들어 배치·전력 토폴로지·열 거동·운영 정책을 실시간 시뮬레이션하고, <b>착공 전에</b> 설계를 최적화한 뒤 같은 검증 아키텍처를 여러 사이트에 재사용한다. CoreWeave가 이미 DSX Air로 AI 팩토리 디지털 트윈을 만들고 시험하고 있다. 생태계에는 Cadence·Dassault·Eaton·Jacobs·Nscale·Phaidra·Procore·PTC·Schneider·Siemens·Switch·Trane·Vertiv가 사실상 다 들어와 있다. Vertiv <b>OneCore</b>는 전력과 냉각을 표준 <b>12.5MW 포드</b>로 묶어 더 큰 AI 팩토리로 결합한다.</p>
+  <p>EdgeConneX는 <b>공통 설계 하나로 사이트별 현지화 전에 이미 인허가 도면의 30~60%</b>까지 진행할 수 있다고 추정한다 — 오프사이트 작업을 훨씬 일찍 시작할 수 있다는 뜻이다.</p>
+</section>
+
+<section class="card">
+  <h2>⑤ 누가 '조립'을 소유하나 — 마진이 갈리는 분기점</h2>
+
+  <p>어떤 회사가 각 조각을 만드는지는 지도로 그릴 수 있다(원문은 <b>80개 이상</b> 플레이어를 매핑했다). 그런데 투자 관점에서 더 중요한 질문은 <b>"그 조각들을 누가 모듈로 만들고, 문제가 생기면 누가 책임지나"</b>다. 답은 세 가지다.</p>
+
+  <div class="tblwrap">
+  <table>
+    <tr><th style="width:18%">모델</th><th>구조</th><th>누가 하나 / 한계</th></tr>
+    <tr>
+      <td><b>오퍼레이터 주도</b></td>
+      <td>운영사가 스펙을 직접 설계하고 장비를 직접 구매(owner-furnished)한 뒤, 인테그레이터에게 <b>조립만</b> 맡긴다.</td>
+      <td>사내 엔지니어링·조달 조직이 두텁고 <b>원가·재고·리드타임 리스크를 전부 감당</b>할 의지가 있어야 한다. 공급 부족 시장에서 벤더의 물량 배분 레버리지 없이 희소한 변압기·스위치기어를 경쟁 입찰해야 하므로 <b>사실상 초대형 하이퍼스케일러만</b> 가능. AWS의 <b>Project Houdini</b>(설계 파트너 Cupertino Electric), 그리고 Aligned(외부 제조 파트너를 쓰되 설계·커미셔닝·품질은 자사 통제).</td>
+    </tr>
+    <tr>
+      <td><b>EPC·시스템 인테그레이터 주도</b></td>
+      <td>제3자 장비를 받아 스키드/모듈로 변환. 조립·설치·공장시험·인클로저를 하고 <b>완성품 인도 책임</b>을 진다.</td>
+      <td><b>벤더 중립적</b>이라 고객이 설계 통제권을 더 갖는다. Comfort Systems·Sterling·Quanta(Cupertino Electric) 같은 건설사와 PCX·Nautilus·DXN·Infra Partners·Bladeroom 같은 전문 인테그레이터. <b>하이퍼스케일러가 특히 선호</b> — 이미 원하는 장비·설계가 정해져 있으니 남의 고정 시스템을 살 이유가 없고, "내 설계·내 장비를 <b>현장 대신 공장에서</b> 지어달라"가 딱 맞는다.</td>
+    </tr>
+    <tr>
+      <td><b>OEM 주도</b></td>
+      <td>장비 제조사가 자기 인프라 스택을 <b>반복 가능한 모듈·플랫폼 제품</b>으로 판다. 출발점이 자사 아키텍처의 기성품 모듈.</td>
+      <td>Vertiv <b>OneCore</b>가 전형 — 고객은 Vertiv 강판 껍데기 안에 Vertiv 전력·열·냉각·IT 인프라가 통합된 스택을 <b>통째로</b> 산다. 덕분에 Vertiv는 콘텐츠를 <b>MW당 ~$7M</b>까지 끌어올린다. <b>대가는 캐파와 실행 리스크</b> — OEM 공장 용량·공급망·통합 인력만큼만 확장되고, Vertiv 모듈러 리드타임은 현재 <b>12개월 이상</b>. Schneider·Siemens도 마찬가지로 캐파 슬롯을 선별 배분하고 <b>최소 물량 요구·대형 프로젝트 우대</b>를 한다. 그래서 <b>소규모 개발사는 점점 시스템 인테그레이터로 몰린다.</b></td>
+    </tr>
+  </table>
+  </div>
+
+  <div class="gist"><span class="lab">투자 관점 해석</span> 이 세 모델의 점유율 싸움이 곧 <b>"모듈러 절감액이 누구 주머니로 가나"</b>다. OEM 주도가 커지면 장비사(VRT·SU·ETN)가 통합 마진까지 먹고, EPC 주도가 커지면 인테그레이터(FIX·PWR·STRL)가 먹는다. 오퍼레이터 주도가 커지면 <b>양쪽 다 조립 수수료만</b> 받는다. 지금은 <b>OEM 캐파가 매진돼 있어서</b> 세 모델이 동시에 커지고 있다.</div>
+</section>
+
+<section class="card">
+  <h2>⑥ 벤더 주장 팩트체크 — 마케팅 숫자 vs 바닥부터 재계산</h2>
+
+  <p>모듈러 세일즈는 세 가지 주장에 기댄다: ① 시장 출시 속도 ② 시공 품질·안전 ③ 총소유비용. 그리고 마케팅 숫자는 거대하다.</p>
+
+  <table>
+    <tr><th style="width:30%">주체</th><th>주장</th><th style="width:34%">실제 측정 범위</th></tr>
+    <tr><td>Vertiv MegaMod</td><td>최대 <b>50% 빠름</b></td><td>현장 시공 대비 <b>모듈 배치</b>만</td></tr>
+    <tr><td>Vertiv SmartRun</td><td>최대 <b>85% 빠름</b></td><td><b>천장 버스웨이·컨테인먼트</b>만</td></tr>
+    <tr><td>Schneider</td><td><b>60% 빠름 · 초기비용 13% 저렴</b></td><td><b>전력·냉각 모듈</b>만</td></tr>
+    <tr><td>Flex</td><td>전체 프로젝트 <b>30%+</b></td><td>프로젝트 전체(가장 보수적)</td></tr>
+    <tr style="background:#f2ecda"><td><b>SemiAnalysis 재계산</b></td><td><b>공기 ~36%(7~9개월) 단축 · MW당 원가 ~8% 절감</b></td><td>50MW 액체냉각 홀 <b>착공→IT-ready 전 구간</b></td></tr>
+  </table>
+
+  <p>SemiAnalysis의 ~36%는 Flex가 공표한 "30%+ 하한" 바로 위에 떨어진다. 즉 <b>벤더 숫자가 거짓이라는 게 아니라, 좁은 범위 또는 합성 정의에서 나온 것</b>이라는 게 요지다.</p>
+
+  <h3>공사 기간은 4개 블록으로 쪼갠다</h3>
+  <table>
+    <tr><th>블록</th><th class="n">기간</th><th>모듈화 효과</th></tr>
+    <tr><td>토목·기초</td><td class="n">4~6개월 (평균 ~5)</td><td>거의 없음(패드·기초 단순화 정도)</td></tr>
+    <tr><td>구조·껍데기</td><td class="n">2.5~4.5개월 (중간 ~3.5)</td><td>프리캐스트·철골로 단축</td></tr>
+    <tr><td>기계·전기 설치</td><td class="n">7~11개월</td><td><b>가장 큰 단축 구간</b></td></tr>
+    <tr><td>커미셔닝→IT-ready</td><td class="n">3~8개월 (단일홀 중간 ~4.5)</td><td><b>거의 못 줄인다</b>(§8)</td></tr>
+  </table>
+
+  <figure>
+    <svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="건설 공기 비교">
+      <g font-family="'Apple SD Gothic Neo','Noto Sans KR',sans-serif" font-size="12.5">
+        <!-- axis -->
+        <line x1="180" y1="40" x2="180" y2="250" stroke="#ccc"/>
+        <line x1="180" y1="250" x2="700" y2="250" stroke="#ccc"/>
+        <text x="180" y="268" text-anchor="middle" font-size="11" fill="#5b6b62">0</text>
+        <text x="353" y="268" text-anchor="middle" font-size="11" fill="#5b6b62">8</text>
+        <text x="527" y="268" text-anchor="middle" font-size="11" fill="#5b6b62">16</text>
+        <text x="700" y="268" text-anchor="middle" font-size="11" fill="#5b6b62">24 (개월)</text>
+
+        <!-- bars: scale 21.7px per month -->
+        <text x="172" y="65" text-anchor="end" font-weight="800" fill="#a4342b">순수 스틱빌드</text>
+        <rect x="180" y="52" width="456" height="20" rx="4" fill="#d9a49c"/>
+        <text x="646" y="66" font-size="11.5" font-weight="700" fill="#a4342b">18~24개월</text>
+
+        <text x="172" y="108" text-anchor="end" font-weight="700" fill="#7a6a3a">오늘의 기준선</text>
+        <text x="172" y="122" text-anchor="end" font-size="10.5" fill="#8a7c52">(일부 모듈러 포함)</text>
+        <rect x="180" y="95" width="391" height="20" rx="4" fill="#e0cf9a"/>
+        <text x="581" y="109" font-size="11.5" font-weight="700" fill="#7a6a3a">~18개월</text>
+
+        <text x="172" y="151" text-anchor="end" font-weight="700" fill="#0d6f8a">MEP 스키드만</text>
+        <rect x="180" y="138" width="369" height="20" rx="4" fill="#a9cdd9"/>
+        <text x="559" y="152" font-size="11.5" font-weight="700" fill="#0d6f8a">~17개월</text>
+
+        <text x="172" y="194" text-anchor="end" font-weight="800" fill="#0a5568">풀 모듈러</text>
+        <rect x="180" y="181" width="260" height="20" rx="4" fill="#79b3c4"/>
+        <rect x="440" y="181" width="130" height="20" rx="4" fill="#cfe4ea"/>
+        <text x="580" y="195" font-size="11.5" font-weight="700" fill="#0a5568">12~18개월</text>
+
+        <text x="172" y="237" text-anchor="end" font-weight="800" fill="#1E5F45">올인원·컨테이너</text>
+        <rect x="180" y="224" width="260" height="20" rx="4" fill="#8dbfa2"/>
+        <text x="450" y="238" font-size="11.5" font-weight="700" fill="#1E5F45">~12개월</text>
+      </g>
+    </svg>
+    <figcaption>50MW 액체냉각 홀 기준 착공→IT-ready 공기 비교(인허가 제외). 여기에 <b>인허가 12~13개월</b>이 겹치지 않고 더해지므로 전체는 스틱빌드 ~30~35개월+ vs 모듈러 ~24~30개월. 출처: SemiAnalysis Industrials Model 추정.</figcaption>
+  </figure>
+
+  <div class="warn">
+    <b>숫자를 읽을 때 조심할 것 —</b> 시장의 짧은 공기 주장 중 일부는 <b>시계를 어디서 켜느냐</b>의 문제다. 토목이 아니라 <b>전기 설치나 수직 공사 시점부터</b> 세면 같은 프로젝트도 훨씬 짧아 보인다. 그리고 <b>인허가 12~13개월은 공사와 겹칠 수 없다.</b>
+  </div>
+
+  <h3>노동은 얼마나 줄어드나</h3>
+  <ul>
+    <li>MEP 설치 구간에서 AI 데이터홀은 <b>MW당 약 12,000 현장 인시</b>를 흡수한다. 50MW 홀이면 <b>60만 시간</b>이 한 건물에 집중되고 피크에 <b>약 300명</b>의 기능인력이 쌓인다.</li>
+    <li>그 MEP 스코프를 공장으로 옮기면 현장 시간은 <b>약 63% 줄어 MW당 4,500시간</b>, <b>면허 전기기사 시간은 약 85% 감소</b>.</li>
+    <li>단, <b>기간은 시간만큼 줄지 않는다</b> — 옮긴 작업이 공장에서 현장 작업과 <b>병렬로</b> 돌기 때문이다. 덤으로 날씨·지리 제약 의존도도 낮아진다.</li>
+  </ul>
+
+  <h3>원가(TCO)는 왜 8%밖에 안 줄어드나</h3>
+  <p>같은 50MW 풀 모듈러 홀은 <b>$13.5M/MW vs 스틱빌드 $14.6M/MW</b> — MW당 약 $1.1M(≈8%) 절감이다. 이유는 <b>하드웨어 값은 거의 안 변하기</b> 때문이다. 스위치기어·UPS·변압기는 현장 조립실에 들어가든 공장 스키드에 통합되든 값이 같다.</p>
+  <table>
+    <tr><th>절감 요인</th><th class="n">MW당</th><th>메커니즘</th></tr>
+    <tr><td>건설 서비스</td><td class="n">-$0.6M</td><td rowspan="2">임금 격차는 작다(BLS: 현장 $34/h vs 공장 $33/h). 다만 <b>초과근무·현장 프리미엄이 붙은 실효 현장 전기기사는 ~$63/h</b>. 진짜 레버는 <b>공장의 높은 처리량</b> — 현장 작업 한 시간을 통째로 없앤다.</td></tr>
+    <tr><td>설치</td><td class="n">-$0.5M</td></tr>
+    <tr><td>기간 단축 효과</td><td class="n">(포함)</td><td>공장 원가를 일찍 확정하고 현장 기간을 압축하면 물가상승·예비비·설계변경·현장 일반관리비가 줄어든다.</td></tr>
+  </table>
+  <p><b>반대편 페널티 — '이중 마진'이 가장 크다.</b> 스틱빌드는 설치 콘텐츠에 종합건설사와 하도급이 <b>한 번</b> 마크업한다. 모듈러는 그 위에 <b>모듈 벤더 마진이 하나 더</b> 붙는다. OEM이 현장 통합까지 직접 하면(Vertiv·Schneider의 턴키 프로그램) 그 층이 압축된다. Schneider의 백서 WP163가 이 역학을 보여준다 — <b>모듈 하드웨어는 전통 방식보다 약 40% 비싸지만</b>, 설계·설치 인건비 절감을 다 계산하면 <b>초기비용 13% 저렴</b>으로 순전환된다. 그 외 모듈 프리미엄(섀시·보강·추가 접속·운송·크레인)과 벤더 쪽 공장 부담이 작은 페널티로 붙는다.</p>
+
+  <h3>품질 — 여기서 이야기가 갈린다</h3>
+  <p>공장 <b>1차 합격률</b>(재작업 없이 통과한 시험·검사 비율)은 모듈러에서 <b>95% 초과</b>, 현장 기준선은 <b>60~70%</b>로 알려져 있다. 고정된 작업 지시서 덕분이다. 얻는 것은 <b>시스템 예측 가능성</b>이다.</p>
+  <div class="warn">
+    <b>🔴 그런데 반대 증언이 기사 안에 있다 —</b> 최근 대화에서 오퍼레이터와 MEP 하도급사들은 <b>"모듈러 솔루션에서 실제로 신뢰성 문제가 있었고 주장만큼 안 됐다"</b>고 말한다. 이 경우 초기에 벌었던 시간 이득이 전부 사라지고(현장 인력이 다시 들어가야 한다) <b>더 중요하게는 값비싼 하드웨어가 위험에 놓인다.</b>
+  </div>
+</section>
+
+<section class="card">
+  <h2>⑦ 속도 = 돈, 단 조건이 붙는다</h2>
+
+  <p>속도의 진짜 가치는 <b>늦어짐의 기회비용</b>이다. 기사의 단위 경제는 이렇다.</p>
+
+  <table>
+    <tr><th style="width:34%">항목</th><th>수치</th></tr>
+    <tr><td>CSP의 IT 1MW 연매출(경험치)</td><td><b>$12~15M/년</b> ≈ 월 <b>$1~1.25M/IT MW</b></td></tr>
+    <tr><td>용량 부족 시장의 신규 계약</td><td>훨씬 높은 공개 단가 — Meta 관련 취재에서 <b>IT MW당 $50M</b> 수준 매출, Anthropic·OpenAI는 API에서 <b>MW당 $50M 초과</b></td></tr>
+    <tr><td>비용 측 기준(GPU 감가)</td><td>NVIDIA 클러스터 평균 <b>$30M/MW를 5년 상각</b> = 월 <b>약 $500,000/MW</b></td></tr>
+    <tr><td>소유·운영자에게 '한 달 빨리'의 값</td><td><b>≈ $500k/MW</b> (보수적 — 가동 컴퓨트의 공헌이익은 더 높다)</td></tr>
+    <tr><td>GPU를 소유하지 않는 도매 콜로에게</td><td><b>≈ $190k/MW/월</b> (≈ $190/kW/월 임대료)</td></tr>
+    <tr style="background:#f2ecda"><td><b>8개월 리드 → 50MW 홀 가치</b></td><td><b>약 $200M(미할인) ≈ $4M/MW</b></td></tr>
+  </table>
+
+  <div class="analogy">
+    <b>왜 감가상각이 기준인가 —</b> GPU는 <b>도착한 순간부터 시계가 돌아간다.</b> 건물이 준비됐든 아니든 매달 가치가 깎인다. 그러니 홀이 한 달 늦으면 <b>그 달의 감가는 그냥 버려지는 돈</b>이다. 유통기한이 도는 재고를 창고 문이 안 열려서 못 파는 것과 같다.
+  </div>
+
+  <div class="warn">
+    <b>🔴 결정적 조건 —</b> 이 모든 계산은 <b>건물이 실제 병목일 때만</b> 성립한다. 가동일은 <b>① 건물 준비 ② 전력 확보 ③ GPU 인도</b> 세 날짜 중 <b>가장 늦은 것</b>으로 정해진다. 건물을 앞당겨도 그게 결정 날짜가 아니었다면 <b>아무것도 벌지 못한다.</b> 3인 이어달리기에서 두 번째 주자만 빨라진 것과 같다.
+  </div>
+</section>
+
+<section class="card">
+  <h2>⑧ 모듈러가 못 없앤 병목 — 커미셔닝과 운송</h2>
+
+  <h3>커미셔닝: "가장 큰 구멍"</h3>
+  <p>공장 시험은 <b>부품 하나가 제대로 작동함</b>을 증명한다. 커미셔닝은 <b>시스템 전체가 실제 조건에서 함께 작동함</b>을 증명한다. 오퍼레이터들은 이것을 모듈러 사이클의 <b>단일 최대 격차</b>라고 일관되게 부르며, 전체 현장 커미셔닝은 <b>3~8개월</b>이 걸린다. 일부 벤더는 오프사이트로 옮길 수 있다고 주장하지만, <b>정작 중요한 부분은 옮길 수 없다</b> — 주요 에너지원(전력망 인입·발전기·BESS)이 <b>현장에서만 만나기</b> 때문이다.</p>
+
+  <table>
+    <tr><th style="width:16%">단계</th><th>내용</th><th style="width:22%">장소</th></tr>
+    <tr><td><b>L1</b> 🔴빨간 태그</td><td>공장 입회 시험 — 스키드·모듈이 제조사에서 <b>단독 단위로</b> 검증</td><td><b>공장</b> (모듈러가 앞당기는 유일한 단계)</td></tr>
+    <tr><td><b>L2</b></td><td>인도·설치 검증 — 수령·설치·정착·검사</td><td rowspan="4"><b>반드시 현장</b></td></tr>
+    <tr><td><b>L3</b> 🟢초록 태그</td><td>기능 전 시운전 — 각 시스템 개별 통전·기동</td></tr>
+    <tr><td><b>L4</b> 🔵파란 태그</td><td>기능 성능 시험 — 스위치기어·냉각 루프까지 계통 운전</td></tr>
+    <tr><td><b>L5</b> ⚪흰 태그</td><td>통합 시스템 시험(IST) — 전 시스템 동시 가동 + <b>모의 고장</b>(A계통 정전, UPS/STS 전환, 펌프 페일오버, 무전원 기동)</td></tr>
+  </table>
+
+  <div class="analogy">
+    <b>비유 —</b> L1은 <b>각 연주자가 집에서 자기 파트 연습</b>. L5는 <b>무대에서 전원 합주 + 조명이 나가는 상황까지 리허설</b>. 연습은 집에서 할 수 있지만 <b>합주는 그 무대에서만</b> 할 수 있다.
+  </div>
+
+  <p><b>실제 병목은 L3의 point-to-point 작업</b>이다. 모든 PDU·제어반·현장 기기가 배선되고 주소가 부여되고 이름이 붙고 <b>BMS(건물관리시스템)까지 역검증</b>돼야 한다. PDU가 수백 개이고 각각 수십~수백 개 포인트를 노출하니 여기가 진짜 막히는 곳이다.</p>
+  <p>시간을 되찾는 두 가지 레버:</p>
+  <ol>
+    <li><b>병렬 커미셔닝</b> — 전체 현장을 기다리지 않고 <b>모듈이 도착하는 대로</b> 커미셔닝한다. 먼저 온 모듈의 L2~L4가 나중 모듈의 배송과 겹치고, <b>L5만</b> 전체 세트를 기다린다.</li>
+    <li><b>플랜트를 자기 부하시험기로 재사용</b> — 임대 발전기와 저항 부하를 트럭으로 실어와 시험 끝나면 돌려보내는 대신, <b>플랜트를 증명한 그 장비(전력 설비와 배터리)를 그대로 플랜트의 일부로 남긴다.</b></li>
+  </ol>
+  <p>또 일부 대형 오퍼레이터는 <b>병렬 공장 커미셔닝</b> 트랙을 돌린다 — 출하 전에 장비 검증·제어 점검을 끝내고(운송 후 일부 재시험), 현장 팀은 인도 검사·실계통 연계·통합 시험만 담당한다.</p>
+
+  <div class="warn">
+    <b>🔴 6~9개월 공기 주장을 읽는 법 —</b> 그런 일정 중 일부는 <b>커미셔닝을 압축·최소화</b>해서 달성된다. 초기 가동은 빨라질 수 있지만 <b>리스크가 운영 단계로 상당히 이전된다.</b>
+  </div>
+
+  <h3>운송: 모듈러의 숨은 세금</h3>
+  <p>데이터센터 개발사들과의 대화에서 <b>물류가 장비 모듈화의 주요 난제</b>로 꼽힌다. 그래서 인테그레이터들은 고객 현장 근처로 <b>공장 위치를 옮긴다</b>.</p>
+  <ul>
+    <li><b>무허가 한계</b>: 연방법상 폭 <b>102인치</b>, 총중량 <b>80,000파운드</b> — 표준 트레일러에 모듈 몫으로 <b>약 24톤</b>이 남는다. Microsoft Azure Modular Datacenter와 Schneider Easy Modular는 <b>40피트 ISO 컨테이너(폭 96인치)</b> 안에 들어가므로 어느 주 경계든 허가 없이 넘고 C-17에 실린다.</li>
+    <li><b>허가 비용은 문제가 아니다 — 일정이 문제다.</b> 특수운송 허가는 주당 <b>$15~100</b>, 간선 운송은 적재 마일당 <b>$12~14</b>라 500마일 이동이 트레일러당 <b>6~7천 달러</b>다. 그런데 <b>약 16피트를 넘으면 '슈퍼로드'</b>가 되어 <b>주당 7~21일의 교량 구조검토</b>가 붙고, 경로 전체로 누적되면 <b>몇 달</b>이 된다. 게다가 기준이 주마다 다르다 — <b>버지니아(18피트/250,000파운드)를 통과하도록 설계한 모듈이 오하이오(14피트/120,000파운드)에서 걸린다.</b></li>
+    <li><b>운송이 신뢰성 프로그램의 일부가 된다</b>: 모듈은 정상 운전보다 도로에서 더 큰 기계적 스트레스(진동·제동·상하차)를 받는다. Aligned는 검증 차원에서 <b>3MW 모듈을 유타 → 오마하 → 복귀</b>로 실어보내며 힘 기록계로 실제 조건을 측정했다.</li>
+    <li><b>보험이 제약</b>: 고가 AI 랙은 <b>한 번에 1~2개만</b> 실어야 할 수 있다 — 한 트레일러에 너무 많이 몰면 어떤 보험사도 감당하지 않을 손해 집중이 생긴다. 실제로 대형 UPS 모듈을 실은 트럭이 웨스트버지니아 도로에서 <b>전복</b>돼 큰 배상이 발생한 사례가 있다.</li>
+    <li><b>그래서 운송을 전제로 설계한다</b>: AWS는 Houdini 스키드를 <b>낮은 더블드롭 트레일러</b>에 맞춰 교량 아래를 통과하게 설계했고, Nautilus는 데이터센터를 <b>바지선으로 50마일</b> 스톡턴 항까지 띄웠고, Compass는 <b>Schneider 모듈 공장을 레드오크 캠퍼스 옆에</b>에 두었다.</li>
+    <li><b>크레인도 설계 변수</b>: 크롤러 크레인의 인양 능력은 하중이 붐에서 멀어질수록 급락한다 — Manitowoc 18000은 <b>7.3m에서 약 600톤</b>이지만 <b>104m에서는 약 10톤</b>이다. 인양 비용은 하루 <b>$5,000~25,000</b>. Schneider 500kW 전력 모듈 하나가 <b>50,000파운드, 인양점 6개</b>이며 <b>하중 분포는 다 만들어봐야 안다.</b></li>
+  </ul>
+  <p>그리고 마지막 megawatt까지의 시간이 중요해지면서 질문이 바뀐다 — <b>"완성 모듈이 현장에 몇 개나 도착할 수 있나, 몇 개를 동시에 내려 앉힐 수 있나, 제한된 리깅·설치 인력이 얼마나 빨리 다음 블록으로 이동하나."</b></p>
+</section>
+
+<section class="card">
+  <h2>⑨ 수혜 지도 — MW당 콘텐츠가 커지는 회사들</h2>
+
+  <p>모듈러의 투자 논리는 한 문장으로 압축된다: <b>"수요(MW)가 늘 뿐 아니라, 같은 1MW에서 우리가 파는 금액이 커진다."</b> 이것이 이중 성장이다.</p>
+
+  <figure>
+    <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MW당 콘텐츠 비교">
+      <g font-family="'Apple SD Gothic Neo','Noto Sans KR',sans-serif" font-size="12.5">
+        <line x1="150" y1="30" x2="150" y2="272" stroke="#ccc"/>
+        <line x1="150" y1="272" x2="700" y2="272" stroke="#ccc"/>
+        <text x="150" y="290" text-anchor="middle" font-size="11" fill="#5b6b62">0</text>
+        <text x="288" y="290" text-anchor="middle" font-size="11" fill="#5b6b62">$4M</text>
+        <text x="425" y="290" text-anchor="middle" font-size="11" fill="#5b6b62">$8M</text>
+        <text x="563" y="290" text-anchor="middle" font-size="11" fill="#5b6b62">$12M</text>
+        <text x="690" y="290" text-anchor="middle" font-size="11" fill="#5b6b62">$16M/MW</text>
+
+        <!-- scale: 34.4px per $1M -->
+        <!-- Total build reference -->
+        <text x="142" y="48" text-anchor="end" font-weight="700" fill="#7a6a3a">데이터센터 전체</text>
+        <rect x="150" y="35" width="464" height="18" rx="4" fill="#efe6cd" stroke="#ddceA8"/>
+        <text x="622" y="48" font-size="11" font-weight="700" fill="#7a6a3a">$13.5~14.6M</text>
+
+        <text x="142" y="82" text-anchor="end" font-weight="800" fill="#0a5568">Vertiv</text>
+        <rect x="150" y="69" width="120" height="18" rx="4" fill="#79b3c4"/>
+        <rect x="270" y="69" width="120" height="18" rx="4" fill="#cfe4ea" stroke="#9ec9d5"/>
+        <text x="398" y="82" font-size="11" font-weight="700" fill="#0a5568">$3.5M → ~$7M (2배)</text>
+
+        <text x="142" y="112" text-anchor="end" font-weight="800" fill="#0a5568">Eaton</text>
+        <rect x="150" y="99" width="100" height="18" rx="4" fill="#79b3c4"/>
+        <rect x="250" y="99" width="17" height="18" rx="4" fill="#cfe4ea" stroke="#9ec9d5"/>
+        <text x="275" y="112" font-size="11" font-weight="700" fill="#0a5568">$2.9M → $3.4M (액랭 포함)</text>
+
+        <text x="142" y="142" text-anchor="end" font-weight="800" fill="#0a5568">Schneider</text>
+        <rect x="150" y="129" width="41" height="18" rx="4" fill="#79b3c4"/>
+        <rect x="191" y="129" width="72" height="18" rx="4" fill="#cfe4ea" stroke="#9ec9d5"/>
+        <text x="271" y="142" font-size="11" font-weight="700" fill="#0a5568">$1.2M ~ $3.3M (경영진 추정)</text>
+
+        <text x="142" y="172" text-anchor="end" font-weight="800" fill="#0a5568">nVent</text>
+        <rect x="150" y="159" width="34" height="18" rx="4" fill="#79b3c4"/>
+        <text x="192" y="172" font-size="11" font-weight="700" fill="#0a5568">~$1M (회사 추정)</text>
+
+        <text x="142" y="202" text-anchor="end" font-weight="800" fill="#0a5568">Modine (냉각)</text>
+        <rect x="150" y="189" width="21" height="18" rx="4" fill="#79b3c4"/>
+        <rect x="171" y="189" width="3" height="18" fill="#cfe4ea"/>
+        <text x="182" y="202" font-size="11" font-weight="700" fill="#0a5568">$0.6M → $0.7M</text>
+
+        <!-- legend -->
+        <rect x="150" y="232" width="14" height="12" rx="3" fill="#79b3c4"/>
+        <text x="170" y="242" font-size="11.5" fill="#33403a">기존(개별 장비) 콘텐츠</text>
+        <rect x="330" y="232" width="14" height="12" rx="3" fill="#cfe4ea" stroke="#9ec9d5"/>
+        <text x="350" y="242" font-size="11.5" fill="#33403a">모듈러·풀스택으로 추가되는 몫</text>
+        <text x="150" y="262" font-size="11" fill="#8a7c52">※ 개별 회사 몫의 합이 전체 건설비와 일치하지는 않는다(범위·정의가 회사마다 다름).</text>
+      </g>
+    </svg>
+    <figcaption>MW당 확보 가능 콘텐츠. 출처: SemiAnalysis 추정 및 각사 경영진 언급(원문 인용). 전체 건설비 $13.5~14.6M/MW는 SemiAnalysis 50MW 액체냉각 홀 기준.</figcaption>
+  </figure>
+
+  <h3>공개기업 포지션 정리</h3>
+  <div class="tblwrap">
+  <table>
+    <tr><th style="width:15%">회사</th><th style="width:15%">역할</th><th>모듈러 포지션과 근거</th></tr>
+    <tr>
+      <td><b>Vertiv</b><br><span class="eng">VRT</span></td>
+      <td>통합 장비 플랫폼</td>
+      <td>공개 장비사 중 <b>가장 강한 모듈러 포지션</b>. 서브시스템 SmartMod부터 '박스에 담긴 데이터센터' OneCore까지 전 범위. <b>OneCore가 2026년 3월 NVIDIA Vera Rubin DSX 레퍼런스 설계의 빌딩블록이 됐다.</b> 콘텐츠 $3.5M → ~$7M/MW. <b>일부 모듈러 유닛은 12개월 이상 매진</b>. 2025년 말 백로그 $15.0B, Q4 book-to-bill 2.9x. <b>2026년 4월 BMarko 인수</b>로 지역 모듈러 제조 캐파 확대. Hut 8 관계가 현장 사례 — 디지털 트윈 + 공장 통합 OneCore로 반복 가능한 AI 캠퍼스 배치.</td>
+    </tr>
+    <tr>
+      <td><b>Schneider</b><br><span class="eng">SU FP</span></td>
+      <td>통합 장비 플랫폼</td>
+      <td>Vertiv에 이어 <b>두 번째로 넓은</b> 포트폴리오, 거의 전 분류를 커버. Secure Power Systems(3상 UPS + 프리팹 DC 제품)가 Data Center & Networks 포트폴리오의 <b>약 32%</b>. EcoStruxure가 공통 제어·관리, AVEVA가 설계·시뮬레이션·수명주기까지 확장. <b>Vertiv와 모델이 다르다</b> — OneCore는 조율된 기초 위 일괄 인도 시스템, EcoStruxure는 <b>구성 가능한 빌딩블록 패밀리</b>(고객이 부분만 골라 자기 설계에 결합). Compass와 <b>$3B 다년 계약</b> + 레드오크 옆 105,000제곱피트 통합 시설. 그룹 백로그 <b>€25B 초과</b>, DC 프로젝트 가시성 18~24개월. <b>약점은 의존성</b> — 시설 전체 조립을 위해 오퍼레이터·인테그레이터 파트너십이 필요.</td>
+    </tr>
+    <tr>
+      <td><b>Comfort Systems</b><br><span class="eng">FIX</span></td>
+      <td>시스템 인테그레이터(MEP)</td>
+      <td>전문 하도급 중 <b>가장 큰 모듈러 플랫폼</b>. 휴스턴 TAS + 그린즈버로 EAS를 통해 모듈러 냉각 플랜트·MEP 스키드·화이트스페이스 조립체·대형 볼류메트릭 유닛 제조. 경영진은 <b>일반 프리팹과 모듈러를 명확히 구분</b>한다(전 자회사가 오프사이트 가공을 하지만 TAS·EAS의 볼류메트릭만 모듈러로 분류). <b>모듈러가 2026 상반기 매출의 17%</b>(연환산 ~$2B). SemiAnalysis는 <b>CY26 모듈러 capex 하나가 앞선 12년 누적을 초과</b>하며 <b>2027년 늦여름까지 모듈러 생산 공간 500만 제곱피트</b>가 될 것으로 본다. Q2 2026 콜에서 <b>프런티어 AI 랩·콜로와의 파일럿 모듈러 계약</b>을 공개 — 하이퍼스케일러 밖으로 고객 기반 확장. <b>핵심 강점</b>: 고객에게 TAS·EAS의 고정 설계를 채택하라고 요구하지 않는다 — 하이퍼스케일러는 자기 장비 선택을 유지하고, Comfort는 반복 가능한 냉각·MEP 스코프를 공장에서 만든다. 공장 작업과 최종 통합을 <b>둘 다</b> 잡아 MW당 가치가 올라간다.</td>
+    </tr>
+    <tr>
+      <td><b>Quanta</b><br><span class="eng">PWR</span></td>
+      <td>시스템 인테그레이터(전기)</td>
+      <td>Cupertino Electric(CEI) 중심. <b>CEI가 AWS Project Houdini의 전기 인테그레이터</b>이며 첫 설계는 2026년 5월 완료 목표, <b>첫 스키드는 9월 인도</b> 예정. 모듈러 매출 비중은 미공개지만 <b>테크 엔드마켓 백로그가 1년 전 5% 미만 → 3월 약 10%</b>, 성장률 100% 초과. <b>약 700만 제곱피트</b>(변압기 제조 포함) 보유, 공장 확장·MEP 가공에 <b>약 $700M</b> 투입. CEI 데이터센터 백로그 약 <b>$1.5B</b>, 인수 후 50% 이상 성장. 경영진은 전체 DC 건설 기회를 <b>MW당 약 $13M</b>로 본다. <b>설계·오프사이트 제작·인도·현장 연결·커미셔닝에 모두 참여</b>해, 노동을 공장으로 옮기면서도 현장 인수인계를 남에게 넘기지 않는다.</td>
+    </tr>
+    <tr>
+      <td><b>Sterling</b><br><span class="eng">STRL</span></td>
+      <td>부지 개발 + 미션크리티컬</td>
+      <td>장비 플랫폼은 없지만 <b>물리적 캠퍼스 빌드아웃의 큰 몫을 통제</b>한다 — 부지 개발 기존 사업자이면서 CEC 인수로 미션크리티컬에 진입. 현재 프리팹 노력은 대부분 <b>사내 효율</b> 목적(독립 모듈 사업 아님)이며 IMS(통합 모듈러 솔루션)로 마케팅. 특징은 <b>외부 전기 덕트뱅크를 부지 패키지 안으로</b> 끌어온 것 — 토목을 끝낸 뒤 완성된 부지를 피해가며 전기를 넣는 대신, <b>굴착·정지·콘크리트와 나란히 덕트뱅크를 배열</b>한다. 텍사스 임차로 모듈러 캐파 <b>약 3배</b>, 처리량은 약 2배. Meta 샤이엔·엘패소 캠퍼스에서 CEC 통합 침투를 입증했고, 텍사스·태평양 북서부·중서부로 끌려가면서 <b>대응 가능 DC 용량이 약 3.8GW → 14GW</b>로 확장(SemiAnalysis 추정).</td>
+    </tr>
+    <tr>
+      <td><b>Eaton</b><br><span class="eng">ETN</span></td>
+      <td>모듈러 전력</td>
+      <td>모듈러 전력에서 가장 넓은 포트폴리오 중 하나. 경영진 추정 DC 콘텐츠 <b>약 $2.9M/MW → 액체냉각 추가 시 $3.4M/MW</b>. <b>NordicEPOD</b>(MV 스위치기어·변압기·UPS·배터리·LV 배전·냉각을 <b>1.7~2.0MW</b> 운반형 모듈로, 구성에 따라 <b>3.1MW</b>까지) → <b>Fibrebond</b>(북미 대형 사전통합 전기 건물) → <b>Flexnode</b>(<b>약 3.5~35MW</b> 턴키 모듈러 데이터홀). Flexnode에는 백업전원·랙·케이블관리·<b>800VDC 대응</b> 인프라를 공급하며 양사는 <b>공기 약 35% 단축</b>을 주장. <b>Eaton Beam Rubin DSX</b>가 이 자산들(Fibrebond + NordicEPOD + Flexnode + 800VDC + Boyd 액체냉각)을 NVIDIA Vera Rubin 아키텍처 중심으로 묶는 시도.</td>
+    </tr>
+    <tr>
+      <td><b>Flex</b><br><span class="eng">FLEX</span></td>
+      <td>전자제조 → 전력 통합</td>
+      <td>계약제조 기반으로 <b>여러 공급사·하도급에 흩어져 있던 작업을 흡수</b>. Anord Mardix의 전략 가치는 <b>실질적으로 완성된 전력 시스템</b> 인도 — 개별 부품의 제조 마진에서 <b>전기 패키지 자체의 통합 마진</b>으로 이동한다. Anord Mardix는 <b>현장 시험을 최대 70% 줄일 수 있다</b>고 주장. M&A 전략이 같은 모델을 스택 전체로 복제한다 — Crown(유틸리티급 배전) · JetCool(액체냉각) · EP²(모듈러 제어 건물·보호 시스템). <b>800VDC와 액랭 랙 설계가 전력·열·컴퓨트를 함께 엔지니어링하도록 강제</b>하는 지금 특히 값지다. Cloud & Power Infrastructure 부문 FY2026 매출 <b>$6.6B</b>, Power는 <b>+61%</b> 성장. <b>핵심 물음은 네 자산의 통합 성공 여부.</b></td>
+    </tr>
+    <tr>
+      <td><b>nVent</b><br><span class="eng">NVT</span></td>
+      <td>인클로저 → 전기 블록</td>
+      <td>가장 독특한 축 — <b>전기 장비를 감싸는 인클로저 판매자에서 엔지니어링된 건물 자체의 몫을 갖는 쪽으로</b> 인수를 통해 이동. Trachte <b>약 $6.88억</b> + Avail EPG <b>약 $9.80억</b>로 공장·설비가 아니라 <b>고객 관계·백로그·엔지니어링 역량</b>을 샀다. Trachte가 공장 제작 구조를, Avail이 스위치기어·버스 시스템·내부 전기 통합을 준다. 회사는 DC 포트폴리오에서 <b>MW당 약 $1M</b> 기회를 본다. <b>미해결 물음: Trachte와 Avail을 표준 모듈러 플랫폼으로 합칠 수 있는가, 아니면 인접 사업 두 개로 남는가.</b></td>
+    </tr>
+    <tr>
+      <td><b>Siemens</b><br><span class="eng">SIE GR</span></td>
+      <td>MV 스위치기어</td>
+      <td>MV 스위치기어 중심이며 NVIDIA Rubin DSX 아키텍처에 <b>IEC와 UL 양 변형을 모두 갖춘 최초 공급사 중 하나</b>. 어느 콜로 개발사(SemiAnalysis는 <b>Compass로 추정</b>)와 <b>5년간 최대 1,500개 모듈러 스위치기어 스키드</b> 프로그램 확보 — 일회성 주문의 연속이 아니라 <b>반복 생산 역할</b>. Delta 등 파트너를 통해 MV·LV 장비에 제3자 UPS·배터리·냉각·모듈 조립을 결합. Smart Infrastructure의 DC 매출 FY2025 <b>약 €2.9B(+40%)</b>, DC 수주 Q1 FY2026 €1.8B · Q2 €1.9B. <b>다만 인클로저·냉각·최종 통합 마진은 파트너에게 남아</b> 모듈화 사이클 전체를 포착하지는 못한다.</td>
+    </tr>
+    <tr>
+      <td><b>ABB</b><br><span class="eng">ABB SS</span></td>
+      <td>MV 전력 블록</td>
+      <td>Siemens·Flex와 유사한 의도 — <b>전기 블록 자체를 소유</b>. 최강점은 MV 전력의 <b>HiPerGuard</b>로, UPS·스위치기어·제어·보호를 현장 도착 전에 반복 가능한 전력 블록으로 패키징. 유닛당 <b>2.5MVA</b>이며 <b>25MW 블록</b>으로 결합 가능. 신형 <b>34.5kV 버전</b>은 캠퍼스 배전 전압에 직결해 변환 단계를 줄이고 전기 설비 면적을 <b>약 20~25% 축소</b>. <b>Applied Digital의 노스다코타 400MW 캠퍼스에 이미 적용</b>. VoltaGrid 파트너십으로 프리팹 e-House + MV/LV 배전 + 자동화 + <b>동기 조상기</b>(고밀도 AI 부하의 비하인드-더-미터 발전을 안정화)를 결합 — 1·2단계에 조상기 62기. 전기화 수주 Q2 2026 <b>+60% $7.2B</b>, 백로그 $13.7B. 유럽에 MV 제조 캐파 <b>약 $2억</b> 증설.</td>
+    </tr>
+    <tr>
+      <td><b>Modine</b><br><span class="eng">MOD</span></td>
+      <td>액체냉각</td>
+      <td>Airedale을 통한 액체냉각 집중, 스키드형 CDU가 <b>약 400kW ~ 2MW 초과</b>. 경영진 추정 완전 포착 냉각 패키지 <b>약 $0.6M/MW → $0.7M/MW</b>(액랭·제어·서비스·통합 모듈 추가 시). 더 확실한 수요 신호는 <b>2027~2029년 냉각 캐파 $40억 초과 예약 계약 + 선급금 $1.65억</b>(SemiAnalysis는 <b>Google로 추정</b>). 업사이드는 <b>모듈이 확정되기 전에 열 아키텍처에 편입되는 것</b>. <b>물음: 고객 맞춤 설계가 여러 프로그램에 반복 적용될 수 있는가, 아니면 복제 어려운 개별 계약으로 남는가.</b></td>
+    </tr>
+    <tr>
+      <td><b>Foxconn</b><br><span class="eng">2317 TT</span></td>
+      <td>AI 서버 ODM → 인프라</td>
+      <td>최대 AI 서버 ODM 지위의 연장. 이미 랙 설계·핵심 부품·액체냉각·최종 조립을 통제하며 <b>랙 주변 인프라로 하류 확장 중</b>. 2025년 TECO와의 주식 스왑이 명시적으로 <b>컴퓨트·제조 역량 + TECO 전기기계 엔지니어링 = 표준화 DC 모듈과 더 넓은 건설 패키지</b>를 겨냥. GTC 2026에서 모듈러 DC 컨셉 공개, Schneider와 협업(Foxconn=컴퓨트·랙 통합·제조 규모 / Schneider=전력·에너지관리·냉각). <b>주당 약 1,000 AI 랙</b> 생산이 기반. <b>1GW 초과 모듈러 DC 인프라 배치</b>를 주장하며, 휴스턴 242,000제곱피트 시설이 <b>주당 약 2,000랙</b>으로 확장 중, 위스콘신에 추가 <b>$5.69억</b> 증설.</td>
+    </tr>
+    <tr>
+      <td><b>Jacobs</b><br><span class="eng">J</span></td>
+      <td>엔지니어링·EPCM</td>
+      <td>모듈을 만들지 않지만 <b>표준 설계를 실제 작동하는 캠퍼스로 번역하는 지점</b>에 앉아 있다. NVIDIA DSX 레퍼런스 아키텍처와 작업하는 소수 엔지니어링 기업 중 하나(다른 하나는 Bechtel)이며 Hut 8의 River Bend·Beacon Point 캠퍼스 EPCM. 모듈은 표준화돼도 <b>현장 커미셔닝·접속 수준은 캠퍼스마다 달라</b> 여기서 역할이 커진다. 장비·제조 콘텐츠는 못 갖지만 <b>프로젝트당 대응 콘텐츠가 크게 확장</b> — 전통 설계 스코프는 50MW급 시설에서 <b>약 $2~5M</b>이었으나 경영진은 현재 일부 풀프로그램 참여가 <b>두 자릿수 배(원문 표현: two orders of magnitude)</b> 크다고 말한다.</td>
+    </tr>
+    <tr>
+      <td><b>EMCOR</b><br><span class="eng">EME</span></td>
+      <td>기계·전기 노동 풀</td>
+      <td>미국 최대 전문 기계·전기 인력 풀 중 하나(<b>약 35,000명</b> 기능인력). 모듈러 스토리는 주로 <b>사내용 공장형 가공 캐파 확장</b>이다 — 제3자에 팔지도, 시장에서 사지도 않고 <b>이미 수주한 현장에 설치할 부분을 자기 공장에서 미리 만든다</b>(경영진: 가공의 <b>약 95%</b>가 자사 프로젝트 지원). 18개월간 가공 공간 <b>약 40~45만 제곱피트</b> 증설, 가시적 수요를 근거로 3년 회수 기준 적용. <b>대형 하이퍼스케일러 4곳이 2031년까지 건설 계획을 공유</b>했고 이행 의무 <b>$45억</b>(2025년 매출 $41억 대비). AI 데이터센터는 스코프가 더 크다 — 경영진 추정으로 전통 클라우드 시설 대비 <b>전기 콘텐츠 약 1.2배, 기계 콘텐츠 1.4~1.8배</b>. 프리팹이 그 늘어난 작업량을 흡수하는 수단.</td>
+    </tr>
+    <tr>
+      <td><b>MYR Group</b></td>
+      <td>전기 하도급</td>
+      <td>현장 전기 시공 + 그리드 인프라. EMCOR와 유사하게 프리팹을 <b>사내 시공 도구</b>로 쓴다(Sturgeon Electric·Huen Electric이 정션박스·제어반, 때로 전기실 완성품까지 사내용으로 선제작). <b>C&I 마진이 4.7% → 8.1%로 개선</b>됐고 경영진은 이를 프리팹 확장과 직접 연결. Valley Electric·Comet 인수(<b>약 $3.28억</b>)로 BIM·프리팹·설계지원·미션크리티컬 전기 역량 추가. <b>다만 EMCOR 대비 규모와 다직종 폭이 부족</b>하고 활동이 전기 조립체에 집중돼, 완전한 모듈러 시스템 통합으로 이동하기보다 전기 하도급 포지션을 강화하는 성격.</td>
+    </tr>
+    <tr>
+      <td><b>IES Holdings</b><br><span class="eng">IESC</span></td>
+      <td>전기·통신 시공</td>
+      <td>순수 모듈러 업체가 아니다. Communications 부문이 데이터홀 내부 네트워크 인프라를 설계·설치, C&I가 전기·기계 시공, Infrastructure Solutions가 발전기 인클로저 같은 맞춤 장비를 제조. 이미 DC 프로젝트에 자재 창고·프리팹을 제공하며 Infrastructure Solutions 캐파를 늘리고 있다. <b>더 좁은 수혜자</b> — 모듈러 노출이 별도 제품 라인이 아니라 시공·가공 사업의 연장. 다만 스코프가 통제된 시설로 옮겨갈 때 더 많은 작업을 붙잡을 노동 기반·고객 관계·부문 간 역량은 갖췄다.</td>
+    </tr>
+  </table>
+  </div>
+
+  <h3>비상장이 시장의 큰 몫이다</h3>
+  <p>건설은 비상장 기업이 거대한 몫을 차지하는 영역이고 모듈러도 같다. 하이퍼스케일러·최상위 개발사와의 대화에서 가장 자주 나오는 이름은 상장사(Comfort Systems·Sterling)만이 아니라 <b>InfraPartners·BladeRoom·Faith Technologies(FTI)·Cadolto·Flexnode</b> 같은 비상장 인테그레이터다. 게다가 <b>대형 OEM이 매진되고 상위 EPC·인테그레이터 캐파가 하이퍼스케일러에 잠기면서 신규 진입자가 계속 들어온다.</b></p>
+  <ul>
+    <li><b>InfraPartners</b> — 가장 자주 언급되는 이름. 영국 인테그레이터로 노르웨이에서 <b>Nscale의 Glomfjord 시설</b>(AI 워크로드 전용 최초의 완전 모듈러 데이터센터로 홍보)을 인도했고 연간 배치 캐파 <b>약 1.2GW</b>를 공개. 휴스턴 150,000제곱피트 공장에서 출하하며 루마니아 공장은 면적을 두 배로 늘리는 중. <b>Vertiv와 유사한 종합 포트폴리오 전략</b> — 2026년 3월 자사 표준 레퍼런스 설계 기반 제품군(RapidNode·RapidHub·RapidFrame) 출시, DG Matrix·NVIDIA·EPRI·Prologis와의 파트너십으로 전력 체인에 스스로를 끼워 넣고 있다.</li>
+    <li><b>BladeRoom</b> — 영국 BRG Technologies 소속. 수십 년의 공장 제작 미션크리티컬 이력으로 유럽·아시아·아프리카에 <b>30개 이상</b>을 <b>최단 20주</b>에 인도했고 이제 <b>30MW+ 블록</b> 하이퍼스케일 설계를 제공. Rosendin의 Modular Power Solutions와 JV로 미국 진입, 미시간에서 제조.</li>
+    <li><b>Faith Technologies</b> — <b>전기 노동 병목에 대한 순수 플레이</b>. Excellerate 브랜드로 완성·시험된 모듈러 전기 건물을 전국 하이퍼스케일 DC에 출하. 애플턴과 438,000제곱피트 올레이시 주력 공장 외에 <b>$7,900만 앨라배마 공장</b>, 인디애나 500,000제곱피트 시설, 엘패소 추가 캐파로 <b>면적을 약 3배</b> 늘리는 중.</li>
+  </ul>
+
+  <h3>오퍼레이터 쪽 — 전략이 하나로 수렴하지 않는다</h3>
+  <div class="tblwrap">
+  <table>
+    <tr><th style="width:14%">주체</th><th>모듈러 전략</th></tr>
+    <tr><td><b>AWS</b></td><td>현재 <b>가장 빠른 확장</b>(2025년 말까지 약 <b>3.9GW</b> 추가). <b>Project Houdini</b>가 최대 내부 시도 — 모듈러 건물을 새로 설계한 게 아니라 <b>표준 데이터홀 도면을 공장 제작 스키드로 다시 잘랐다</b>(길이 약 45피트, 더블드롭 트레일러 운송 가능). 분류상 <b>공장 제작 화이트스페이스</b>. 배치 기간 <b>최대 15주 → 약 2~3주</b>, 모듈당 <b>현장 전기기사 5만 시간 이상 제거</b>. 스키드는 휴스턴·솔트레이크시티·토피카에서 제작, 초기 배치는 텍사스와 사우스벤드, <b>착공에서 첫 서버룸까지 ~25주</b> 목표. 승인 모델도 주목할 점 — 현장 엔지니어링 승인만이 아니라 <b>설계와 실물 제작을 별도로 검증</b>하며 후자를 Cupertino Electric이 맡는다.</td></tr>
+    <tr><td><b>Meta</b></td><td>최근 초점은 <b>건물을 어떻게 덮을까</b>. '텐트'(급속 배치 구조)가 껍데기 레벨 모듈화의 가장 명확한 사례. 프로메테우스에서 껍데기 공사를 앞당기는 데 사용.</td></tr>
+    <tr><td><b>Crusoe</b></td><td>껍데기 + 시설 전체 모듈화를 <b>둘 다</b>. 애빌린에서 구조용 철골 + Digital Building Components의 단열 금속 패널로 껍데기 가속. 더해서 <b>제조를 수직 통합</b> — 2022년 Easter-Owens 인수로 모듈러 DC·전기 시스템 제조를 사내화하고, 콜로라도 브라이턴의 전용 <b>Spark 공장</b>으로 확장 중. Spark 유닛은 <b>약 1MW 규모로 거의 완성된 상태로 도착</b>(시설 전체 모듈화 범주). 네바다 Redwood Materials 배치가 확장 모델을 보여준다 — 처음 Spark 4기 + 12MW 마이크로그리드 → 이후 <b>24기로 확대</b> 발표.</td></tr>
+    <tr><td><b>Hut 8</b></td><td><b>인프라 스택을 통째로 산다.</b> 전력·토지 포지션을 가진 전 비트코인 채굴사로서 그것을 임대 가능한 AI 용량으로 바꾸는 가장 빠른 길이 <b>완성된 모듈러 스택 구매</b>. 코퍼스크리스티 Beacon Point 캠퍼스에서 <b>Vertiv OneCore</b>로 <b>704MW IT 임대</b>를 상업화. NVIDIA DSX 아키텍처 기반 설계 + 확립된 상대방들(AEP=유틸리티, Jacobs=EPCM, Vertiv=전력·냉각)로 인도.</td></tr>
+    <tr><td><b>Nebius</b></td><td>더 가벼운 접근 — 자사 컴퓨트 아키텍처 중심으로 시설을 정의하고 <b>전력·냉각 등 선택된 부분만</b> 모듈화. 뉴저지 캠퍼스는 DataOne 파트너십으로 자사 설계대로 건설, <b>300MW까지 단계 확장</b> 계획. 껍데기 가속에 <b>프리캐스트</b> 사용, 전력 해법은 <b>Bloom Energy 비하인드-더-미터 연료전지</b>. 프랑스 베튄에서는 같은 운영 논리를 다른 공법으로 — <b>옛 브리지스톤 타이어 공장을 재사용</b>해 신규 껍데기·인허가 일부를 회피. Azur Datacenter가 토지·전력 인입·건설·물리 플랜트를, Nebius는 GPU·랙·네트워킹·소프트웨어를 담당.</td></tr>
+    <tr><td><b>Compass</b></td><td><b>모듈러 플레이북을 가장 오래 돌린 콜로.</b> 하나의 서브시스템이 아니라 시설 전체를 <b>반복 가능한 부품 키트</b>로 공업화한다. SemiAnalysis 추정 <b>각 건물의 약 70~85%가 오프사이트 제작</b>이며 골조와 지붕을 <b>18~21일</b>에 세운다. 키트 구성: 껍데기(철근 없는 섬유보강 프리캐스트를 <b>현장 배치 플랜트에서 자체 타설</b>) · 화이트스페이스(Schneider EcoStruxure Pod 등 표준 프리팹 랙·컨테인먼트) · 전력 블록(반복 가능한 <b>~1.25MW Schneider 파워센터</b> — Galaxy VX UPS·리튬이온·QED-2 스위치기어) · MV 스위치기어(<b>Siemens와 5년 최대 1,500기</b> 모듈러 스키드 계약). 같은 키트를 <b>레드오크(텍사스) 최대 360MW</b>, <b>굿이어(애리조나) 8개 건물 180만 제곱피트</b>에 반복 적용.</td></tr>
+    <tr><td><b>QTS</b></td><td><b>설계를 일찍 고정하고, 벤더 간 인터페이스를 표준화하고, 특정 건물이 필요해지기 전에 장기 리드타임 장비를 미리 산다.</b> 캔자스에 <b>약 700만 제곱피트</b> 창고를 유지해 UPS·스위치기어·냉각 장비 등 owner-furnished 부품을 <b>고객 계약 후 주문이 아니라 재고로</b> 보유. <b>Freedom Design</b>은 껍데기는 유연하게 두고 전력 아키텍처를 반복 — 각 공장 제작 포드가 <b>1.5MW UPS+스위치기어 + 2.25MW 발전기</b>를 묶고 시스템은 <b>1.5MW 단위로 확장</b>. Freedom LC+가 같은 개념을 냉각으로 확장(전면 공랭 또는 전면 액랭 모두 지원). 신형 급속 배치 설계는 <b>반복 가능한 60MW 데이터홀 블록</b>으로 건물 자체를 조직. 경영진은 <b>노동 압력이 MW당 DC 건설 원가를 약 20~30% 올렸다</b>고 추정. 이후 개발한 <b>"Rapids" 설계는 두 개의 주요 AI 기업이 대규모로 채택</b>했다.</td></tr>
+    <tr><td><b>Aligned</b></td><td>전략의 중심은 <b>적응성</b> — 핵심 전력·냉각 아키텍처는 표준화하되 랙 밀도 변화에 따라 홀 구성을 바꾼다. 코어 MEP(배전 스위치기어 통합 <b>2MW UPS 컨테이너</b>)에서 시작해 프리팹 냉수 조립체 같은 부지 이송으로 확장, 조기 협조가 가능한 고객에겐 2차 유체 배관까지 화이트스페이스로 들어간다. <b>Adaptive Modular Infrastructure</b> 플랫폼이 냉수 루프와 시설 인터페이스를 일정하게 유지한 채 공랭·하이브리드·액랭 사이를 오가게 한다 — <b>Delta³</b>(공랭, 랙당 <b>최대 약 50kW</b>) + <b>DeltaFlow</b>(액랭, 랙당 <b>350kW 초과</b>). 텍사스 Project Caprock이 사례(6개 건물 <b>540MW</b>, 165만 제곱피트).</td></tr>
+  </table>
+  </div>
+</section>
+
+<section class="card">
+  <h2>⑩ 1차 출처 교차검증 — 어디까지가 확인된 사실인가</h2>
+
+  <p>원문의 정량 상당 부분은 <b>SemiAnalysis 자체 모델(Industrials Model)</b> 추정이다. 아래는 검증 가능한 기업 수치를 <b>SEC 공시 원문으로 직접 확인</b>한 결과다.</p>
+
+  <div class="tblwrap">
+  <table>
+    <tr><th style="width:26%">원문 주장</th><th style="width:14%">판정</th><th>1차 출처 확인 내용</th></tr>
+    <tr>
+      <td>Comfort Systems 백로그 <b>$14.1B, YoY +73%</b></td>
+      <td>✅ <b>확인</b></td>
+      <td>2026-06-30 백로그 <b>$14.06B</b> (2026-03-31 $12.45B · 2025-06-30 <b>$8.12B</b>) → <b>+73.2%</b>. 동일 기준(same-store) $13.70B. <a href="https://www.sec.gov/Archives/edgar/data/1035983/000110465926086255/fix-20260723xex99d1.htm" target="_blank" rel="noopener">8-K EX-99.1 (2026-07-23)</a></td>
+    </tr>
+    <tr>
+      <td>Comfort Systems 분기 영업현금흐름 <b>$1.14B</b></td>
+      <td>✅ <b>확인</b></td>
+      <td>Q2 2026 영업현금흐름 <b>$1.14B</b>(전년 $252.5M) · 매출 <b>$3.27B</b>(전년 $2.17B, +50%) · 순이익 $441.6M · 희석EPS <b>$12.53</b>(전년 $6.53, +92%). <span class="eng">동일 출처</span></td>
+    </tr>
+    <tr>
+      <td>Vertiv 2025년 말 백로그 <b>$15.0B</b>, Q4 book-to-bill <b>2.9x</b></td>
+      <td>✅ <b>확인</b></td>
+      <td>Q4 2025 book-to-bill <b>~2.9x</b>, 백로그 <b>$15.0B</b>(전년 동기 대비 <b>+109%</b>), TTM 유기적 수주 <b>+81%</b>. <a href="https://www.sec.gov/Archives/edgar/data/1674101/000167410126000006/exhibit991vrt02112026.htm" target="_blank" rel="noopener">8-K EX-99.1 (2026-02-11)</a></td>
+    </tr>
+    <tr>
+      <td>Vertiv 2026년 4월 <b>BMarko 인수</b></td>
+      <td>✅ <b>확인</b> / ⚪ 배수는 추정</td>
+      <td>BMarko Structures LLC 인수 <b>2026-04-13 종결</b>. 보도자료는 "엔지니어링·제조 캐파의 급속 확대"라고만 서술하며 <b>"약 7배"라는 배수는 회사 자료에 없다</b> — SemiAnalysis 추정으로 취급해야 한다. <a href="https://www.sec.gov/Archives/edgar/data/1674101/000162828026024824/vrt-20260413.htm" target="_blank" rel="noopener">8-K (2026-04-13)</a></td>
+    </tr>
+    <tr style="background:#f2ecda">
+      <td><b>🆕 원문에 없는 최신 정보</b><br>Vertiv Q2 2026 (기사 <b>하루 전</b> 공시)</td>
+      <td>🟠 <b>델타</b></td>
+      <td>매출 <b>$3,274M(+24%)</b> · 조정 영업이익률 <b>22.6%(+410bp)</b> · 희석EPS <b>$1.27(+53%)</b>/조정 $1.52(+60%) · 영업현금흐름 <b>$1,100M</b>, 조정 FCF $925M(<b>+234%</b>) · <b>순현금 포지션 전환</b> · FY26 가이던스 상향(매출 <b>$14,000M</b>, 유기적 성장 <b>+31%</b>, 조정EPS $6.65~6.75). 🔴 <b>이번 릴리스에는 백로그·book-to-bill 수치가 없다</b> — 즉 원문이 인용한 $15.0B는 <b>2025년 말 값이며 현재값이 아니다</b>. 또 회사는 "일시적 공급망 혼잡과 다단계 프로젝트 실행으로 인한 소폭 인식 시점 이동"을 언급했다. <a href="https://www.sec.gov/Archives/edgar/data/1674101/000162828026050323/q22026exhibit991vrt07292026.htm" target="_blank" rel="noopener">8-K EX-99.1 (2026-07-29)</a></td>
+    </tr>
+    <tr>
+      <td>모듈러 침투율 <b>2028년 말 30%+</b> · 추적 <b>61GW·1,000+ 사이트</b> · 공기 <b>~36%</b> · 원가 <b>~8%</b> · MW당 콘텐츠 수치</td>
+      <td>⚪ <b>추정</b></td>
+      <td>모두 <b>SemiAnalysis Industrials Model 자체 추정 또는 각사 경영진 발언 인용</b>이다. 독립 검증된 수치가 아니며 모델 가정에 의존한다. 특히 침투율 30%는 선형 외삽 위험이 있고, 원문 스스로 <b>신뢰성 반대 증언</b>을 함께 싣고 있다.</td>
+    </tr>
+  </table>
+  </div>
+
+  <div class="gist"><span class="lab">읽는 요령</span> <b>검증 가능한 것(백로그·현금흐름·인수 종결)은 전부 원문 주장과 일치했다.</b> 이는 원문의 사실 규율이 높다는 신호다. 반면 <b>MW당 콘텐츠·침투율·공기 단축률은 구조적으로 검증 불가능한 모델값</b>이므로, 결론의 방향은 받아들이되 소수점은 신뢰하지 않는 것이 맞다.</div>
+</section>
+
+<section class="card">
+  <h2>⑪ 이 논리가 뒤집히는 조건</h2>
+
+  <p>모듈러 수혜 서사는 다음 중 하나만 성립해도 크게 약해진다. <b>매주 확인 가능한 형태</b>로 정리한다.</p>
+
+  <div class="tblwrap">
+  <table>
+    <tr><th style="width:26%">신호</th><th>무엇을 뜻하나</th><th style="width:24%">어디서 보나</th></tr>
+    <tr><td>🔴 <b>건물이 병목이 아니게 된다</b></td><td>전력 계통 연계나 GPU 인도가 더 늦어지면 조기 가동 이익($4M/MW)이 <b>0으로 수렴</b>한다. 모듈러의 프리미엄 논거 자체가 사라진다.</td><td>인터커넥션 큐 대기연수, 하이퍼스케일러 콜의 "power-constrained" 언급 빈도, GPU 인도 일정</td></tr>
+    <tr><td>🔴 <b>신뢰성 실패가 누적된다</b></td><td>원문에 이미 반대 증언이 있다 — 오퍼레이터·MEP 하도급사가 "모듈러가 주장만큼 안 됐다"고 말한다. 재작업이 발생하면 시간 이득 소멸 + 하드웨어 위험.</td><td>모듈 재작업·리콜 사례, 오퍼레이터의 벤더 전환, 공장 1차 합격률 하락</td></tr>
+    <tr><td>🟠 <b>이중 마진이 압축된다</b></td><td>모듈 벤더 마진이 인테그레이터 마진 위에 얹히는 구조는 고객이 협상력을 얻는 순간 깎인다. 캐파 부족이 풀리면 <b>렌트가 사라진다</b>.</td><td>OEM 리드타임(현재 12개월+), book-to-bill 하락, 최소물량 요구 완화</td></tr>
+    <tr><td>🟠 <b>800VDC 전환이 표준을 흔든다</b></td><td>415/480VAC는 템플릿화가 잘 돼 있지만 <b>800VDC는 아니다</b>. 레퍼런스 설계가 몇 개 있으나 "아직 잘 익지 않았고" 시설 레벨 아키텍처가 설계마다 새로 정해진다. 모듈러는 <b>설계를 일찍 얼려야</b> 하므로 표준 미확정 구간에서 <b>재설계 리스크</b>가 크다.</td><td>DSX·Vera Rubin 레퍼런스 개정 빈도, 벤더의 IEC/UL 양변형 확보 여부</td></tr>
+    <tr><td>🟠 <b>커미셔닝 압축이 사고로 드러난다</b></td><td>6~9개월 공기 중 일부가 커미셔닝 최소화로 만들어졌다면, <b>가동 후 장애</b>로 청구서가 온다. 한 건의 대형 사고가 산업 전체 채택 속도를 늦출 수 있다.</td><td>대형 캠퍼스 가동 후 다운타임 사례, 보험 요율 변화</td></tr>
+    <tr><td>🟡 <b>표준화가 상품화로 뒤집힌다</b></td><td>NVIDIA DSX는 벤더를 레퍼런스에 편입시켜 락인을 주지만, <b>동시에 스펙을 공개 표준으로 만든다</b>. 표준이 성숙하면 후발·저가 인테그레이터가 같은 스펙을 복제할 수 있고 그때 마진은 아래로 향한다.</td><td>DSX 생태계 참여사 수 증가, 비상장 신규 진입(InfraPartners·BladeRoom형) 속도</td></tr>
+  </table>
+  </div>
+</section>
+
+<section class="card">
+  <h2>🧭 해석·시사점</h2>
+
+  <h3>① 병목이 이동했다 — 전력 → 노동 → 커미셔닝</h3>
+  <p>이 기사의 가장 값진 정보는 벤더 순위가 아니라 <b>병목의 위치가 옮겨간 사실</b>이다. 전력은 여전히 어렵지만 돈·시간·비하인드-더-미터 발전으로 부분적으로 풀린다. 노동은 지금 가장 아픈 곳이지만 모듈러가 <b>면허 전기기사 시간을 85% 줄이는</b> 방식으로 우회하고 있다. 그러면 남는 것은 <b>커미셔닝(3~8개월)과 물류(슈퍼로드·크레인·보험)</b>다. <b>다음 사이클의 렌트는 그 칸에서 걷힌다.</b></p>
+  <div class="analogy"><b>정리 —</b> "누가 이기든 돈 버는 자리"는 고정된 게 아니라 <b>병목이 옮겨가면 함께 옮겨간다.</b> 지금 전력 장비가 좋아 보이는 이유의 상당 부분은 <b>지금 그 칸이 막혀 있기</b> 때문이다. 그러니 좋은 질문은 "누가 좋은 회사냐"가 아니라 <b>"18개월 뒤에 막히는 칸은 어디냐"</b>다.</div>
+
+  <h3>② 이중 성장 vs 마진 확장은 다른 이야기다 <span class="eng">(당초 결론에서 수정됨)</span></h3>
+  <p>"MW당 콘텐츠 2배"는 강력한 문장이라 그대로 강세 논거로 쓰기 쉽다. 그런데 같은 기사가 <b>Capex 절감은 8%뿐</b>이고 진짜 가치는 <b>$4M/MW의 조기 가동 이익 = 오퍼레이터에게 귀속</b>이라고 계산한다. 즉 콘텐츠 확장은 <b>TAM(시장 크기) 확장</b>이며, 그것이 <b>마진 확장</b>이 되려면 벤더가 그 가치의 일부를 <b>가격으로 회수</b>할 힘이 있어야 한다. 현재 그 힘의 원천은 <b>캐파 부족(리드타임 12개월+, 매진)</b>이다. 그렇다면 지금의 높은 수익성은 <b>구조적 해자</b>인지 <b>공급부족 렌트</b>인지 구분해야 하고, 이는 <b>리드타임·book-to-bill·최소물량 요구</b>로 매주 재판정할 수 있는 문제다. <span class="eng">(초기 판정은 "콘텐츠 2배 = 마진 2배 방향"이었으나, 원문 자체의 이중마진·귀착 계산 때문에 "TAM 확장은 확실, 마진 확장은 조건부"로 하향했다.)</span></p>
+
+  <h3>③ 마진 귀착의 3파전이 종목 선택을 결정한다</h3>
+  <p>오퍼레이터 주도 / EPC·SI 주도 / OEM 주도 — 이 세 모델의 점유율이 곧 <b>절감액의 분배</b>다. 지금은 OEM 캐파가 매진돼 세 모델이 동시에 커지고 있어 모두가 좋아 보이지만, <b>캐파가 풀리는 순간 제로섬으로 바뀐다.</b> 그때 유리한 쪽은 <b>고객의 설계를 강요하지 않으면서 공장과 현장을 둘 다 잡는 구조</b>다 — Comfort Systems의 "당신 장비·당신 설계, 우리 공장"과 Quanta의 "설계→제작→인도→현장 연결→커미셔닝 전 구간 보유"가 그 형태다. 반대로 <b>자사 아키텍처를 통째로 사게 하는 OEM 모델</b>은 고객 협상력이 회복될 때 가장 먼저 압박받는다.</p>
+
+  <h3>④ 말보다 현금 — 검증 가능한 계기판</h3>
+  <p>이 산업에서 가장 정직한 신호는 <b>고객이 미리 낸 돈</b>이다. Comfort Systems는 분기 영업현금흐름 <b>$1.14B</b>를 냈고, 원문에 따르면 그 배경은 <b>선수금(advance billings)이 6개월간 $1.11B 늘어 $3.23B</b>가 된 것이다. 이 돈이 모듈러 공장 증설 자금이 된다. <b>고객이 캐파를 확보하려고 선불을 낼 정도면 부족은 실재한다.</b> 마찬가지로 Modine의 <b>$40억 캐파 예약 + $1.65억 선급</b>도 같은 성격의 신호다. 이런 구조는 <b>자체 현금으로 확장하는 형태</b>여서, 증설을 외부 조달(희석·부채)로 메워야 하는 사업 모델과는 질이 다르다.</p>
+
+  <h3>⑤ NVIDIA DSX는 양날의 칼이다</h3>
+  <p>DSX 레퍼런스에 편입된 벤더(Vertiv OneCore, Eaton Beam, Schneider, Siemens 양변형)는 사실상 <b>NVIDIA 생태계의 승인 부품</b>이 된다. 이것은 강력한 락인이다. 그러나 <b>표준의 본질은 복제 가능성</b>이다. 스펙이 공개·성숙할수록 후발 인테그레이터가 같은 설계를 따라 만들 수 있고, 그때 표준은 해자가 아니라 <b>상품화의 통로</b>가 된다. 지금 DSX가 유리한 이유는 표준이 <b>아직 미성숙</b>해서 "누가 검증됐나"가 희소하기 때문이다.</p>
+
+  <h3>⑥ 800VDC 전환은 모듈러의 구조적 긴장을 만든다</h3>
+  <p>모듈러의 전제는 <b>"설계를 일찍 얼리고 반복한다"</b>다. 그런데 원문은 415/480VAC는 잘 템플릿화됐지만 <b>800VDC는 레퍼런스가 아직 잘 익지 않아 시설 레벨 아키텍처를 설계마다 새로 정하고 있다</b>고 말한다. <b>반복이 전제인 모델이 표준 미확정 구간에 들어가는 것</b>은 그 자체가 긴장이다. 여기서 Aran Industries처럼 <b>ETAP·PSCAD·PSSE·Revit에 붙어 2개월 이상의 다인 전기설계를 몇 시간의 컴퓨트 + 엔지니어 1명 리뷰로 압축</b>하는 소프트웨어가 나오는 것은 자연스럽다 — 표준이 흔들릴 때 <b>재설계 비용을 낮추는 도구</b>의 가치가 오른다.</p>
+
+  <h3>⑦ 오퍼레이터를 볼 때의 렌즈: "속도를 사는가, 만드는가"</h3>
+  <p>같은 AI 데이터센터 사업자도 갈린다. <b>Hut 8은 완성 스택을 산다</b>(Vertiv OneCore로 704MW 임대 상업화) — 자본은 덜 쓰지만 벤더 캐파와 리드타임에 종속된다. <b>Crusoe는 제조를 사내화한다</b>(Easter-Owens 인수 → Spark 공장) — 통제력을 얻지만 공장 capex를 진다. <b>Compass는 70~85%를 오프사이트화한 자체 키트</b>를 갖고, <b>QTS는 장비를 미리 사서 창고 700만 제곱피트에 재고로 쥔다</b>(운전자본을 써서 시간을 산다). <b>같은 "빠르다"는 말이 재무제표에서는 전혀 다른 위치에 나타난다</b> — 벤더 의존/공장 capex/운전자본 중 무엇으로 지불했는지가 그 회사의 진짜 리스크다.</p>
+</section>
+
+<section class="card">
+  <h2>📖 용어집</h2>
+  <dl class="gloss">
+    <dt>스틱빌드 <span class="eng">stick build</span></dt>
+    <dd>전통 방식. 현장에서 부재를 하나하나(막대기처럼) 세워 올리는 건설.</dd>
+    <dt>화이트스페이스 / 그레이스페이스</dt>
+    <dd>화이트스페이스 = IT 장비(서버·랙)가 실제로 놓이는 공간. 그레이스페이스 = 그것을 지원하는 전력·냉각 설비 공간.</dd>
+    <dt>MEP</dt>
+    <dd>Mechanical(기계)·Electrical(전기)·Plumbing(배관). 건물의 설비 공사 전체.</dd>
+    <dt>EPC / EPCM</dt>
+    <dd>EPC = 설계·조달·시공을 묶어 책임지는 계약. EPCM은 여기에 관리(Management) 역할이 더해진 형태로, 시공 자체는 다른 업체가 한다.</dd>
+    <dt>IT-ready</dt>
+    <dd>서버를 넣을 수 있는 상태. 건물 완공이 아니라 <b>전기·냉각이 실제로 작동하는</b> 상태를 뜻한다.</dd>
+    <dt>커미셔닝 <span class="eng">commissioning</span></dt>
+    <dd>시운전·검증. 설비를 실제로 돌려보며 설계대로 작동하는지, 고장 상황에서도 버티는지 확인하는 단계.</dd>
+    <dt>FAT <span class="eng">Factory Acceptance Test</span></dt>
+    <dd>공장 인수 시험. 모듈이 공장을 떠나기 전 정격 부하로 돌려보는 시험. 조립 각 공정마다 검사 게이트도 함께 돈다.</dd>
+    <dt>1-10-100 규칙</dt>
+    <dd>결함 수정 비용의 경험 법칙 — 설계·조립 단계에 1원이면, 생산 시작 후 10원, 출하 후 100원이 든다. 공장 시험이 중요한 이유.</dd>
+    <dt>book-to-bill</dt>
+    <dd>기간 중 수주 ÷ 매출. 1보다 크면 파는 속도보다 주문이 빨리 쌓인다는 뜻. 2.9면 매출의 약 3배가 주문으로 들어왔다.</dd>
+    <dt>백로그 <span class="eng">backlog</span></dt>
+    <dd>수주 잔고. 이미 계약했지만 아직 매출로 인식하지 않은 금액. 미래 매출의 가시성 지표.</dd>
+    <dt>선수금 <span class="eng">advance billings</span></dt>
+    <dd>고객이 일하기 전에 미리 준 돈. 회사에는 부채로 잡히지만 실제로는 <b>고객이 대준 무이자 운전자금</b>이다.</dd>
+    <dt>슈퍼로드 <span class="eng">superload</span></dt>
+    <dd>특수운송 한계를 크게 넘는 화물. 지나는 <b>교량마다 구조 검토</b>가 필요해 일정이 주 단위로 늘어난다.</dd>
+    <dt>UPS · 스위치기어 · 버스웨이 · BESS</dt>
+    <dd>UPS = 무정전 전원장치(정전 시 배터리로 버팀). 스위치기어 = 전기를 나누고 끊는 배전 설비. 버스웨이 = 천장을 지나며 각 랙에 전기를 배분하는 금속 도체 통로. BESS = 배터리 에너지 저장 시스템.</dd>
+    <dt>CDU · CRAH</dt>
+    <dd>CDU = 냉각수 분배 장치(액체냉각의 심장). CRAH = 전산실 공조기(공기 냉각).</dd>
+    <dt>800VDC</dt>
+    <dd>차세대 데이터센터 전력 표준 후보. 기존 교류(415/480VAC) 대신 고전압 직류로 배전해 변환 손실과 설비 면적을 줄이려는 전환. 전력·열·컴퓨트를 함께 설계하도록 강제한다.</dd>
+    <dt>PEMB</dt>
+    <dd>사전 설계 금속 건물. 주골조·부골조·외피 3부분으로 나뉘어 절단·타공까지 끝난 상태로 도착, 현장에서 볼트로 조립.</dd>
+    <dt>프리캐스트 / 틸트업</dt>
+    <dd>프리캐스트 = 공장에서 콘크리트 패널을 미리 굳혀 가져오기. 틸트업 = 같은 패널을 <b>건물 슬래브 위에서</b> 타설한 뒤 세우기(장거리 운송 회피).</dd>
+    <dt>디지털 트윈</dt>
+    <dd>실물과 똑같이 만든 가상 모델. 착공 전에 배치·전력·열 거동을 시뮬레이션해 설계를 고치고, 같은 설계를 여러 사이트에 재사용한다.</dd>
+  </dl>
+</section>
+
+<section class="card">
+  <h2>출처</h2>
+  <ul class="refs">
+    <li><a href="https://newsletter.semianalysis.com/p/the-wild-wild-west-of-lego-datacenters" target="_blank" rel="noopener">SemiAnalysis — "The Wild Wild West Of LEGO Datacenters" (2026-07-30)</a>
+      <span class="desc">본 문서의 원문. 저자 Nicolas Bontigui · Eric (Junqi) Wen · Jeremie Eliahou Ontiveros 외 3인. 원문은 QTS·EdgeConneX·Aligned·Schneider Electric·Applied Digital·DG Matrix·Aran Industries·Karman Industries·Radiant 등의 취재 협조를 밝히고 있다. 유료 구독 콘텐츠.</span></li>
+    <li><a href="https://www.sec.gov/Archives/edgar/data/1035983/000110465926086255/fix-20260723xex99d1.htm" target="_blank" rel="noopener">Comfort Systems USA — Q2 2026 실적 보도자료 (SEC 8-K EX-99.1, 2026-07-23)</a>
+      <span class="desc">백로그 $14.06B · 매출 $3.27B · 희석EPS $12.53 · 영업현금흐름 $1.14B 확인.</span></li>
+    <li><a href="https://www.sec.gov/Archives/edgar/data/1674101/000167410126000006/exhibit991vrt02112026.htm" target="_blank" rel="noopener">Vertiv Holdings — Q4/FY2025 실적 보도자료 (SEC 8-K EX-99.1, 2026-02-11)</a>
+      <span class="desc">백로그 $15.0B(+109%) · Q4 book-to-bill ~2.9x · TTM 유기적 수주 +81% 확인.</span></li>
+    <li><a href="https://www.sec.gov/Archives/edgar/data/1674101/000162828026050323/q22026exhibit991vrt07292026.htm" target="_blank" rel="noopener">Vertiv Holdings — Q2 2026 실적 보도자료 (SEC 8-K EX-99.1, 2026-07-29)</a>
+      <span class="desc">원문 발행 하루 전 공시. 매출 $3,274M(+24%) · 조정 영업이익률 22.6% · 영업현금흐름 $1,100M · 순현금 전환 · FY26 가이던스 상향. 백로그·book-to-bill은 미공개.</span></li>
+    <li><a href="https://www.sec.gov/Archives/edgar/data/1674101/000162828026024824/vrt-20260413.htm" target="_blank" rel="noopener">Vertiv Holdings — BMarko Structures 인수 종결 (SEC 8-K, 2026-04-13)</a>
+      <span class="desc">인수 종결 사실 확인. "캐파 약 7배" 배수는 회사 자료에 없음(SemiAnalysis 추정).</span></li>
+  </ul>
+  <p style="font-size:13.5px;color:#5b6b62;margin-top:14px">※ 원문에 등장하는 기업별 수치 중 SEC 확인분을 제외한 나머지(각사 경영진 추정 MW당 콘텐츠, 모듈러 침투율, 공기·원가 절감률, 비상장사 캐파)는 <b>SemiAnalysis 모델 또는 원문의 인용</b>이며 본 문서에서 독립 검증하지 않았다.</p>
+</section>
+
+<footer>
+  본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.<br>
+  작성 2026-07-30 · 원문 해설 + 자체 분석 · 정량 일부 SEC 1차 출처 교차검증
+</footer>
+
+</div></body></html>
