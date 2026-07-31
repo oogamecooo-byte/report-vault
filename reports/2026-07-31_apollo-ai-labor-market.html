@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI는 아직 임금을 깎지 못했다 — Apollo 백서 해부 | 2026-07-31</title>
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="노동시장">
+<meta name="vault-date" content="2026-07-31">
+<meta name="description" content="Apollo Global Management의 2026년 7월 백서 'The Impact of AI on the U.S. Labor Market'을 원문 29쪽 전수 검증. 관측된 AI 사용량으로 측정한 첫 인과 추정이라는 의의는 크지만, 헤드라인 -6.7% 임금 효과는 노동력의 0.4%를 차지하는 4개 직업에 걸려 있고 가장 노출이 큰 집단에서는 효과가 사라진다. 투자자 관점의 재계산과 시사점.">
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --page-bg:#EBE4D3; --card-bg:#FDF6E3; --ink:#1f2328; --ink-2:#57534a; --ink-3:#8a8578;
+    --accent:#1a5c8a; --accent-dark:#123f60; --line:#e8e1cf; --line-2:#d9d0b8;
+    --up:#137333; --down:#b3261e; --warn:#5c4a00; --quote-bg:#f7efd8; --amber:#b45309;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--page-bg);color:var(--ink);
+    font-family:"Apple SD Gothic Neo","Noto Sans KR","Pretendard",-apple-system,sans-serif;
+    line-height:1.78;padding:28px 16px 60px;font-size:16px;}
+  .card{max-width:1020px;margin:0 auto;background:var(--card-bg);border:1px solid var(--line);
+    border-radius:14px;box-shadow:0 2px 14px rgba(90,75,40,.10);padding:46px 52px 56px;}
+  @media (max-width:700px){.card{padding:26px 18px 38px;}body{padding:12px 6px 30px;font-size:15px;}}
+
+  .kicker{color:var(--accent-dark);font-weight:700;font-size:.85rem;letter-spacing:.08em;margin-bottom:8px;}
+  h1{font-size:1.72rem;line-height:1.34;font-weight:800;margin-bottom:10px;letter-spacing:-.01em;}
+  .sub{color:var(--ink-2);font-size:.97rem;margin-bottom:18px;}
+  .meta{font-size:.84rem;color:var(--ink-3);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 2px;margin-bottom:30px;}
+  .meta a{color:var(--accent);text-decoration:none;} .meta a:hover{text-decoration:underline;}
+
+  .toc{background:var(--quote-bg);border:1px solid var(--line-2);border-radius:10px;padding:16px 24px;
+    margin-bottom:36px;font-size:.92rem;}
+  .toc b{display:block;margin-bottom:6px;} .toc a{color:var(--accent-dark);text-decoration:none;}
+  .toc a:hover{text-decoration:underline;} .toc ol{margin-left:20px;}
+
+  h2.sec{font-size:1.28rem;font-weight:800;border-left:5px solid var(--accent);padding-left:12px;margin:52px 0 16px;}
+  h3{font-size:1.05rem;font-weight:800;margin:28px 0 10px;color:var(--accent-dark);}
+  p{margin-bottom:13px;} .muted{color:var(--ink-2);font-size:.9rem;}
+  strong{font-weight:700;} em{font-style:normal;background:linear-gradient(transparent 62%,#f3e3a8 62%);font-weight:600;}
+
+  .summary{background:#fff;border:1px solid var(--line-2);border-left:5px solid var(--accent-dark);
+    border-radius:10px;padding:22px 26px 18px;margin-bottom:34px;}
+  .summary h2{font-size:1.1rem;font-weight:800;margin-bottom:12px;color:var(--accent-dark);}
+  .summary ul{list-style:none;} .summary li{margin-bottom:9px;padding-left:26px;position:relative;font-size:.97rem;line-height:1.7;}
+  .summary li .b{position:absolute;left:0;top:0;}
+
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:18px 0 10px;}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px 12px;border-top:3px solid var(--accent);}
+  .stat.r{border-top-color:var(--down);} .stat.a{border-top-color:var(--amber);} .stat.g{border-top-color:var(--up);}
+  .stat .lbl{font-size:.78rem;color:var(--ink-3);font-weight:600;margin-bottom:2px;}
+  .stat .val{font-size:1.35rem;font-weight:800;line-height:1.25;}
+  .stat .note{font-size:.78rem;color:var(--ink-2);margin-top:3px;}
+
+  figure{margin:26px 0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 16px 12px;}
+  figure svg{display:block;width:100%;height:auto;}
+  figcaption{font-size:.83rem;color:var(--ink-2);margin-top:10px;padding:0 4px;line-height:1.6;}
+
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.88rem;background:#fff;}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:right;}
+  th{background:var(--quote-bg);font-weight:700;text-align:center;color:var(--accent-dark);}
+  td:first-child,th:first-child{text-align:left;}
+  tbody tr.hl{background:#fdf1f0;} tbody tr.hl2{background:#f2f7f2;}
+  .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .neg{color:var(--down);font-weight:700;} .pos{color:var(--up);font-weight:700;}
+
+  blockquote{background:var(--quote-bg);border-left:4px solid var(--line-2);border-radius:0 8px 8px 0;
+    padding:14px 20px;margin:18px 0;font-size:.93rem;color:var(--ink-2);}
+  .flag{background:#fdf1f0;border:1px solid #edd3d0;border-left:5px solid var(--down);border-radius:0 8px 8px 0;
+    padding:16px 20px;margin:20px 0;}
+  .flag b{color:#8c211b;}
+  .note-box{background:#fff;border:1px solid var(--line);border-left:5px solid var(--amber);border-radius:0 8px 8px 0;
+    padding:16px 20px;margin:20px 0;font-size:.94rem;}
+  ul.body,ol.body{margin:6px 0 16px 22px;} ul.body li,ol.body li{margin-bottom:8px;}
+  .footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:.83rem;color:var(--ink-3);}
+  .footer a{color:var(--accent);}
+  @media print{body{background:#fff;padding:0;} .card{box-shadow:none;border:none;background:#fff;}}
+</style>
+</head>
+<body>
+<div class="card">
+
+<div class="kicker">리서치 · 노동시장</div>
+<h1>AI는 아직 임금을 깎지 못했다</h1>
+<div class="sub">Apollo 백서 「The Impact of AI on the U.S. Labor Market」(2026년 7월) 원문 29쪽 해부 — 그리고 헤드라인 숫자가 실제로 어디서 나왔는지</div>
+<div class="meta">
+  원자료: Sania Edlich · Torsten Slok, <i>The Impact of AI on the U.S. Labor Market: Early Evidence from Observed Adoption</i>, Apollo Global Management, 2026년 7월 (29쪽) ·
+  대조 검증: 논문 부록 B 직업별 원자료 재집계, <a href="https://fred.stlouisfed.org/series/A576RC1">FRED A576RC1</a>(임금총액) · <a href="https://fred.stlouisfed.org/series/GDP">GDP</a> 2026-07-31 조회
+</div>
+
+<div class="toc">
+  <b>차례</b>
+  <ol>
+    <li><a href="#s1">이 논문이 새로 한 일 — 이론적 노출에서 관측된 사용으로</a></li>
+    <li><a href="#s2">논문이 내세운 네 개의 숫자</a></li>
+    <li><a href="#s3">고노출 11개 직업의 정체 — 5.8만이 아니라 '콜센터'다</a></li>
+    <li><a href="#s4">강건성 검정이 헤드라인을 뒤집는다</a></li>
+    <li><a href="#s5">서비스직 -24.3%는 직업 한 개에서 나왔다</a></li>
+    <li><a href="#s6">규모 감각 — 280억 달러는 얼마나 큰가</a></li>
+    <li><a href="#s7">문서 자체의 품질 신호</a></li>
+    <li><a href="#s8">해석·시사점 (투자자 관점)</a></li>
+    <li><a href="#s9">앞으로 무엇을 볼 것인가</a></li>
+  </ol>
+</div>
+
+<div class="summary">
+  <h2>한 장 요약</h2>
+  <ul>
+    <li><span class="b">🔴</span> 헤드라인은 <strong>"고노출 직업 실질임금 증가율 -6.7%p, 고용 효과 없음"</strong>. 그러나 논문 자신의 강건성 표(Table 6)에서 <em>노출 기준을 0.6으로 올리면 효과가 -1.7%로 줄고 통계적으로 사라진다</em>. 가장 노출이 큰 집단에서 효과가 가장 작다.</li>
+    <li><span class="b">🔴</span> -6.7%를 만드는 실체는 노출점수 0.5~0.6 구간의 <strong>4개 직업(통계보조·SW QA·금융애널리스트·DB아키텍트) 약 58만 명, 노동력의 0.40%</strong>다. 모두 2022~24년 기술·금융 인력 조정기를 정면으로 통과한 직군이다.</li>
+    <li><span class="b">🔴</span> 초록이 앞세운 <strong>"서비스직 -24.3%"</strong>는 처치집단에 서비스 직군이 <em>의료 녹취사 단 하나(노동력의 0.03%)</em>뿐인 회귀에서 나왔다. 같은 표의 생산직 고용 계수는 +2.02(=+653%)로, 처치 칸이 사실상 비어 있음을 드러낸다.</li>
+    <li><span class="b">🟠</span> "5.8백만 명"의 <strong>절반(46.9%)이 고객 서비스 상담원 한 직업</strong>이고, 영업사원까지 더하면 66%. 이 표본은 'AI에 노출된 미국 노동자'가 아니라 사실상 <strong>콜센터·후선 사무직</strong>이다.</li>
+    <li><span class="b">🟠</span> 부록 B 원자료로 재집계하면 11개 고노출 직업의 2022→24년 실질임금 변화는 <strong>고용가중 +0.8%</strong>(단순평균 -0.9%). 4개는 오히려 올랐다. -6.7%는 관측된 하락이 아니라 <em>반사실(counterfactual) 대비 격차</em>다.</li>
+    <li><span class="b">🟠</span> 총액 효과 <strong>연 280억 달러 = 미국 임금총액의 0.21%, GDP의 0.086%</strong>. 거시적으로는 반올림 오차 수준이다.</li>
+    <li><span class="b">🟢</span> 그럼에도 방법론적 의의는 크다. <strong>"AI가 할 수 있는 일"이 아니라 "실제로 하고 있는 일"로 측정한 첫 인과 추정</strong>이고, 관측 사용량은 이론적 노출치보다 일관되게 훨씬 낮다(Figure 5). 확산은 능력보다 훨씬 느리다.</li>
+    <li><span class="b">⚖️</span> 방어 가능한 요약: <strong>"2023~25년 미국 노동시장에서 AI로 귀속시킬 수 있는 임금 효과는 대략 -1.7~-1.9%, 대상은 정보처리 사무직에 국한, 고용 감소는 확인되지 않음."</strong> 대량실업도, 급격한 임금 붕괴도 아직 데이터에 없다.</li>
+  </ul>
+</div>
+
+<h2 class="sec" id="s1">1. 이 논문이 새로 한 일 — 이론적 노출에서 관측된 사용으로</h2>
+
+<p>2022년 말 ChatGPT 공개 이후 나온 AI 노동시장 연구는 거의 전부 <strong>이론적 노출(theoretical exposure)</strong>을 썼다. 미 노동부의 직업정보 데이터베이스 O*NET에 적힌 직무 설명을 놓고 "이 일은 AI가 할 수 있는가"를 전문가나 모델이 채점하는 방식이다. Webb(2019), Felten 외(2021), Eloundou 외(2024)가 대표적이고, 결과는 늘 "노동력의 30~80%가 영향권"이라는 큰 숫자였다.</p>
+
+<p>Apollo 백서는 대신 <strong>관측된 사용(observed usage)</strong>을 쓴다. 2026년 3월 공개된 <strong>Anthropic Economic Index</strong>는 실제 Claude 대화 로그에서 직업별로 "그 직업 업무 중 몇 %가 AI와 함께 수행된 것으로 관측되었는가"를 중요도 가중해 점수화한 것이다. 즉 <em>할 수 있는 일이 아니라 실제로 하고 있는 일</em>을 센다.</p>
+
+<p>이 전환이 만드는 차이가 이 논문에서 가장 견고한 부분이다. 논문 Figure 5는 8개 직업에 대해 실측 기반 지표(Anthropic·Tomlinson)와 이론 지표(Felten·Eisfeldt·Eloundou)를 나란히 놓는데, <strong>모든 직업에서 실측치가 이론치보다 크게 낮다</strong>. 변호사는 실측 0.17~0.27 대 이론 0.65, 초등교사는 실측 0.10~0.19 대 이론 0.61이다. 논문 Table 1도 같은 방향을 보인다 — 평균 노출이 높아질수록 측정치 간 <strong>불일치</strong>가 커진다(고노출군 표준편차 0.247 대 저노출군 0.205, t=-6.68).</p>
+
+<blockquote>즉 지난 3년간 시장을 움직여온 "AI 노출 인구" 추정치는 대부분 <strong>능력의 상한</strong>을 노동시장의 현실로 오독한 것이었다. 이 논문의 3.7%라는 숫자는 그 오독을 교정한다.</blockquote>
+
+<p>다만 이 측정에도 방향성 있는 편향이 있다. 논문 스스로 인용하는 Bick 외(2026)는 <strong>채팅 로그 기반 지표가 편집·프로그래밍 같은 범용 활동으로 사용을 과다분류</strong>하는 반면 설문 기반 지표는 직업 고유의 목적지향 업무를 더 잘 잡는다고 지적한다. 실제로 이 지수에서 노출 1위는 컴퓨터 프로그래머(0.75)다. Claude의 사용자 구성이 개발자에 크게 기울어 있다는 사실을 감안하면, 이 지수는 부분적으로 <strong>"누가 AI에 노출되었나"가 아니라 "누가 Claude를 쓰나"</strong>를 측정한다.</p>
+
+<h2 class="sec" id="s2">2. 논문이 내세운 네 개의 숫자</h2>
+
+<p>설계는 이중차분(DiD)이다. 미 노동통계국 직업별 임금·고용 조사(OEWS) 2015~2025년, Anthropic 지수와 6자리 직업코드로 매칭된 <strong>321개 직업</strong>, 직업·연도 고정효과, 직업 단위 군집 표준오차. 처치 = 노출점수 0.5 이상, 구조적 단절 = ChatGPT가 온전히 사용 가능했던 첫 해인 2023년.</p>
+
+<div class="stat-grid">
+  <div class="stat r"><div class="lbl">고노출 직업 실질임금</div><div class="val">-6.7%p</div><div class="note">계수 -0.0667 · t=-3.69 · 실제 환산 -6.45%</div></div>
+  <div class="stat"><div class="lbl">고용 효과</div><div class="val">유의성 없음</div><div class="note">계수 -0.0639 · t=-0.73</div></div>
+  <div class="stat a"><div class="lbl">영향받는 노동자</div><div class="val">580만 명</div><div class="note">노동력의 3.7% · 321개 중 11개 직업</div></div>
+  <div class="stat a"><div class="lbl">연간 노동소득 손실</div><div class="val">$280억</div><div class="note">논문이 제시한 하한 추정</div></div>
+</div>
+
+<p>여기에 두 개의 하위집단 결과가 붙는다. <strong>임금 4분위</strong>에서는 최저 분위가 -10.7%(t=-3.45)로 가장 크고 최고 분위는 유의하지 않다. <strong>직군</strong>에서는 서비스직 -24.3%, 판매·사무직 -7.3%, 관리·전문직 -4.0%, 생산직은 유의성 없음. 논문은 이를 두고 "기업이 AI 생산성 이득을 인력 감축이 아니라 <strong>임금 압축</strong>으로 회수하고 있으며, 부담은 가장 경제적으로 취약한 층에 집중된다"고 결론짓는다.</p>
+
+<figure>
+<svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="임금 분위별 AI 노출 효과 계수와 95% 신뢰구간">
+  <text x="10" y="20" font-size="13" font-weight="700" fill="#123f60">임금 분위별 실질임금 효과 (계수 ×100, 95% 신뢰구간)</text>
+  <line x1="60" y1="60" x2="860" y2="60" stroke="#9a948a" stroke-width="1.2"/>
+  <text x="866" y="64" font-size="11" fill="#8a8578">0</text>
+  <g stroke="#e8e1cf" stroke-width="1">
+    <line x1="60" y1="115" x2="860" y2="115"/><line x1="60" y1="170" x2="860" y2="170"/><line x1="60" y1="225" x2="860" y2="225"/>
+  </g>
+  <g font-size="10.5" fill="#8a8578"><text x="24" y="119">-5</text><text x="20" y="174">-10</text><text x="20" y="229">-15</text></g>
+  <!-- Q1 -->
+  <rect x="125" y="60" width="110" height="118" fill="#b3261e" opacity=".82"/>
+  <line x1="180" y1="111" x2="180" y2="245" stroke="#6f1712" stroke-width="2"/>
+  <line x1="168" y1="111" x2="192" y2="111" stroke="#6f1712" stroke-width="2"/>
+  <line x1="168" y1="245" x2="192" y2="245" stroke="#6f1712" stroke-width="2"/>
+  <text x="180" y="196" font-size="15" font-weight="800" fill="#fff" text-anchor="middle">-10.7</text>
+  <text x="180" y="271" font-size="12.5" font-weight="700" fill="#1f2328" text-anchor="middle">Q1 최저</text>
+  <text x="180" y="288" font-size="10.5" fill="#8a8578" text-anchor="middle">t=-3.45</text>
+  <!-- Q2 -->
+  <rect x="305" y="60" width="110" height="63" fill="#c9a0a0" opacity=".8"/>
+  <line x1="360" y1="29" x2="360" y2="216" stroke="#8a8578" stroke-width="2"/>
+  <line x1="348" y1="29" x2="372" y2="29" stroke="#8a8578" stroke-width="2"/>
+  <line x1="348" y1="216" x2="372" y2="216" stroke="#8a8578" stroke-width="2"/>
+  <text x="360" y="140" font-size="14" font-weight="800" fill="#57534a" text-anchor="middle">-5.7</text>
+  <text x="360" y="271" font-size="12.5" font-weight="700" fill="#1f2328" text-anchor="middle">Q2</text>
+  <text x="360" y="288" font-size="10.5" fill="#8a8578" text-anchor="middle">t=-1.31</text>
+  <!-- Q3 -->
+  <rect x="485" y="60" width="110" height="45" fill="#c9a0a0" opacity=".8"/>
+  <line x1="540" y1="55" x2="540" y2="154" stroke="#8a8578" stroke-width="2"/>
+  <line x1="528" y1="55" x2="552" y2="55" stroke="#8a8578" stroke-width="2"/>
+  <line x1="528" y1="154" x2="552" y2="154" stroke="#8a8578" stroke-width="2"/>
+  <text x="540" y="122" font-size="14" font-weight="800" fill="#57534a" text-anchor="middle">-4.1</text>
+  <text x="540" y="271" font-size="12.5" font-weight="700" fill="#1f2328" text-anchor="middle">Q3</text>
+  <text x="540" y="288" font-size="10.5" fill="#8a8578" text-anchor="middle">t=-1.77</text>
+  <!-- Q4 -->
+  <rect x="665" y="60" width="110" height="31" fill="#c9a0a0" opacity=".8"/>
+  <line x1="720" y1="32" x2="720" y2="151" stroke="#8a8578" stroke-width="2"/>
+  <line x1="708" y1="32" x2="732" y2="32" stroke="#8a8578" stroke-width="2"/>
+  <line x1="708" y1="151" x2="732" y2="151" stroke="#8a8578" stroke-width="2"/>
+  <text x="720" y="108" font-size="14" font-weight="800" fill="#57534a" text-anchor="middle">-2.8</text>
+  <text x="720" y="271" font-size="12.5" font-weight="700" fill="#1f2328" text-anchor="middle">Q4 최고</text>
+  <text x="720" y="288" font-size="10.5" fill="#8a8578" text-anchor="middle">t=-1.03</text>
+</svg>
+<figcaption>출처: 논문 Table 4. 신뢰구간은 논문이 보고한 표준오차에 1.96을 곱해 직접 계산. Q1을 제외하면 세 분위 모두 신뢰구간이 0을 지난다 — 즉 "저임금일수록 크다"는 기울기는 <b>Q1 하나가 만든다</b>. 그 Q1의 처치집단은 사실상 고객 서비스 상담원·데이터 입력원·의무기록사로, 저임금 노동 일반이 아니라 <b>저임금 정보처리 사무직</b>이다.</figcaption>
+</figure>
+
+<h2 class="sec" id="s3">3. 고노출 11개 직업의 정체 — 5.8백만이 아니라 '콜센터'다</h2>
+
+<p>이 논문에서 가장 중요한 정보는 본문이 아니라 <strong>부록 B</strong>에 있다. 321개 직업 전부의 노출점수와 2022→2024년 고용·실질임금 변화가 실려 있어서, 처치집단이 정확히 누구인지 재구성할 수 있다. 노출점수 0.5 이상은 딱 11개다.</p>
+
+<div class="tw">
+<table>
+<thead><tr><th>직업</th><th>노출점수</th><th>노동력 비중</th><th>고노출군 내 비중</th><th>Δ고용<br>2022-24</th><th>Δ실질임금<br>2022-24</th></tr></thead>
+<tbody>
+<tr><td>컴퓨터 프로그래머</td><td>0.75</td><td>0.24%</td><td>6.5%</td><td class="neg">-17.2%</td><td class="neg">-6.1%</td></tr>
+<tr class="hl2"><td><strong>고객 서비스 상담원</strong></td><td>0.70</td><td><strong>1.73%</strong></td><td><strong>46.9%</strong></td><td class="neg">-5.3%</td><td class="pos">+2.6%</td></tr>
+<tr><td>데이터 입력원</td><td>0.67</td><td>0.14%</td><td>3.8%</td><td class="neg">-14.0%</td><td class="pos">+3.2%</td></tr>
+<tr><td>의무기록사</td><td>0.67</td><td>0.12%</td><td>3.3%</td><td>+0.1%</td><td class="pos">+2.1%</td></tr>
+<tr><td>시장조사·마케팅 전문가</td><td>0.65</td><td>0.33%</td><td>8.9%</td><td class="pos">+7.8%</td><td class="pos">+2.1%</td></tr>
+<tr><td>의료 녹취사</td><td>0.64</td><td>0.03%</td><td>0.8%</td><td class="neg">-11.5%</td><td class="neg">-1.5%</td></tr>
+<tr class="hl2"><td><strong>도매·제조 영업사원(비기술)</strong></td><td>0.63</td><td><strong>0.70%</strong></td><td><strong>19.0%</strong></td><td>-0.5%</td><td class="neg">-1.3%</td></tr>
+<tr class="hl"><td>데이터베이스 아키텍트</td><td>0.58</td><td>0.08%</td><td>2.2%</td><td class="pos">+3.7%</td><td class="neg">-2.7%</td></tr>
+<tr class="hl"><td>금융·투자 애널리스트</td><td>0.57</td><td>0.25%</td><td>6.8%</td><td class="pos">+16.9%</td><td>-0.2%</td></tr>
+<tr class="hl"><td>소프트웨어 QA</td><td>0.52</td><td>0.05%</td><td>1.4%</td><td>+1.7%</td><td class="neg">-2.9%</td></tr>
+<tr class="hl"><td>통계 보조원</td><td>0.51</td><td>0.02%</td><td>0.5%</td><td class="neg">-12.1%</td><td class="neg">-5.4%</td></tr>
+<tr><td colspan="2"><strong>합계 / 고용가중 평균</strong></td><td><strong>3.69%</strong></td><td>100%</td><td class="neg"><strong>-2.4%</strong></td><td class="pos"><strong>+0.8%</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p class="muted">붉은 음영 = 노출점수 0.5~0.6 구간(4장에서 다룸) · 녹색 음영 = 고노출군의 66%를 차지하는 두 직업. 출처: 논문 Figure 8 및 부록 B, 고용가중 평균은 직접 계산.</p>
+
+<p>표에서 세 가지가 바로 드러난다.</p>
+
+<p><strong>첫째, 표본이 대표적이지 않다.</strong> "AI에 고노출된 미국 노동자 5.8백만"의 <em>46.9%가 고객 서비스 상담원 한 직업</em>이고, 도매·제조 영업사원까지 더하면 <strong>66%</strong>다. 나머지 9개 직업을 다 합쳐도 3분의 1에 못 미친다. 이 결과를 인용할 때 "AI가 미국 노동시장에 준 충격"이라고 옮기는 것은 정확하지 않다. 정확한 진술은 <strong>"콜센터와 후선 사무직에서 관찰된 임금 압축"</strong>이다.</p>
+
+<p><strong>둘째, 원자료에는 임금 붕괴가 없다.</strong> 11개 중 4개는 2022→24년 실질임금이 <em>올랐고</em>, 가장 큰 직업인 고객 서비스 상담원이 +2.6%로 그중 하나다. 고용가중 평균은 <strong>+0.8%</strong>로, 321개 직업 전체 표본평균 +0.36%보다 오히려 높다(단순평균으로 보면 -0.92%로 표본평균보다 1.3%p 낮다). 논문의 -6.7%는 <em>관측된 임금 하락이 아니라, 고정효과가 만들어낸 반사실 경로 대비 격차</em>다. 두 숫자는 기간(2022-24 대 2015-25 패널)과 설계가 다르므로 직접 모순은 아니지만, <strong>6.7%p라는 크기의 대부분이 관측이 아니라 추정된 반사실에서 나온다</strong>는 사실은 결과를 읽는 방식을 바꾼다.</p>
+
+<p><strong>셋째, 노출 1위가 가장 오염된 직업이다.</strong> 컴퓨터 프로그래머는 고용 -17.2%, 실질임금 -6.1%로 11개 중 최악이다. 그러나 2023~24년은 2021~22년 제로금리기 과잉채용의 반작용이 기술 인력시장을 관통한 시기이기도 하다. 이 설계는 두 힘을 분리할 수 없다. 논문은 이 교란을 "post-pandemic labor market dynamics"라는 한 문장으로만 언급하고 넘어간다.</p>
+
+<figure>
+<svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="고노출 11개 직업의 노출점수 대비 실질임금 변화 산점도">
+  <rect x="207" y="46" width="215" height="264" fill="#fdf1f0" opacity=".85"/>
+  <text x="314" y="62" font-size="10.5" font-weight="700" fill="#8c211b" text-anchor="middle">0.5~0.6 구간 — 헤드라인을 만드는 4개</text>
+  <line x1="100" y1="141" x2="860" y2="141" stroke="#9a948a" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <text x="864" y="145" font-size="10.5" fill="#8a8578">0%</text>
+  <line x1="100" y1="46" x2="100" y2="310" stroke="#c9c2b2" stroke-width="1"/>
+  <line x1="100" y1="310" x2="860" y2="310" stroke="#c9c2b2" stroke-width="1"/>
+  <g font-size="10.5" fill="#8a8578" text-anchor="end">
+    <text x="94" y="54">+4</text><text x="94" y="99">+2</text><text x="94" y="190">-2</text><text x="94" y="236">-4</text><text x="94" y="281">-6</text>
+  </g>
+  <g font-size="10.5" fill="#8a8578" text-anchor="middle">
+    <text x="207" y="327">0.50</text><text x="314" y="327">0.55</text><text x="421" y="327">0.60</text>
+    <text x="529" y="327">0.65</text><text x="636" y="327">0.70</text><text x="743" y="327">0.75</text>
+  </g>
+  <text x="480" y="350" font-size="11.5" font-weight="600" fill="#57534a" text-anchor="middle">Anthropic 관측 노출점수 →</text>
+  <text x="24" y="180" font-size="11.5" font-weight="600" fill="#57534a" transform="rotate(-90 24 180)" text-anchor="middle">Δ실질임금 2022-24 (%)</text>
+  <g opacity=".78">
+    <circle cx="743" cy="280" r="12" fill="#b3261e"/>
+    <circle cx="636" cy="82" r="23" fill="#137333"/>
+    <circle cx="565" cy="68" r="10" fill="#137333"/>
+    <circle cx="578" cy="93" r="10" fill="#137333"/>
+    <circle cx="529" cy="93" r="13" fill="#137333"/>
+    <circle cx="520" cy="175" r="7" fill="#b3261e"/>
+    <circle cx="486" cy="171" r="17" fill="#b3261e"/>
+    <circle cx="379" cy="202" r="9" fill="#b3261e"/>
+    <circle cx="357" cy="146" r="12" fill="#b3261e"/>
+    <circle cx="250" cy="207" r="8" fill="#b3261e"/>
+    <circle cx="229" cy="264" r="7" fill="#b3261e"/>
+  </g>
+  <g font-size="10" fill="#1f2328">
+    <text x="743" y="303" text-anchor="middle">프로그래머</text>
+    <text x="636" y="52" text-anchor="middle" font-weight="700">고객 서비스 상담원 (1.73%)</text>
+    <text x="551" y="60" text-anchor="end">데이터입력</text>
+    <text x="596" y="112" >의무기록</text>
+    <text x="512" y="118" text-anchor="middle">시장조사</text>
+    <text x="486" y="197" text-anchor="middle">영업사원 (0.70%)</text>
+    <text x="528" y="178" text-anchor="start">녹취사</text>
+    <text x="379" y="222" text-anchor="middle">DB아키텍트</text>
+    <text x="357" y="127" text-anchor="middle">금융애널</text>
+    <text x="250" y="226" text-anchor="middle">SW QA</text>
+    <text x="229" y="283" text-anchor="middle">통계보조</text>
+  </g>
+  <text x="700" y="120" font-size="10.5" fill="#8a8578">원 크기 = 노동력 비중</text>
+</svg>
+<figcaption>가로축이 오른쪽으로 갈수록 AI를 실제로 더 많이 쓰는 직업이다. 만약 AI가 임금을 압박한다면 오른쪽으로 갈수록 점이 아래로 내려가야 한다. <b>실제로는 반대로 올라간다</b> — 가장 노출이 큰 직업 대부분이 0선 위에 있고, 임금이 내려간 직업은 왼쪽(0.5~0.6 구간)에 몰려 있다.</figcaption>
+</figure>
+
+<h2 class="sec" id="s4">4. 강건성 검정이 헤드라인을 뒤집는다</h2>
+
+<p>논문은 0.5라는 기준선이 자의적이지 않음을 보이려고 0.4와 0.6에서도 같은 회귀를 돌린다(Table 6). 이 표가 이 논문에서 <strong>가장 중요한 표</strong>인데, 논문 본문은 이를 잘못 읽고 있다.</p>
+
+<figure>
+<svg viewBox="0 0 900 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="노출 기준선별 임금 계수와 신뢰구간">
+  <text x="10" y="20" font-size="13" font-weight="700" fill="#123f60">노출 기준선별 실질임금 계수 (계수 ×100, 95% 신뢰구간)</text>
+  <line x1="725" y1="40" x2="725" y2="222" stroke="#9a948a" stroke-width="1.4"/>
+  <text x="725" y="238" font-size="10.5" fill="#8a8578" text-anchor="middle">0</text>
+  <g font-size="10.5" fill="#8a8578" text-anchor="middle">
+    <text x="150" y="238">-11</text><text x="411" y="238">-6</text><text x="620" y="238">-2</text><text x="830" y="238">+2</text>
+  </g>
+  <!-- 0.4 -->
+  <line x1="545" y1="70" x2="708" y2="70" stroke="#57534a" stroke-width="2.5"/>
+  <line x1="545" y1="62" x2="545" y2="78" stroke="#57534a" stroke-width="2.5"/>
+  <line x1="708" y1="62" x2="708" y2="78" stroke="#57534a" stroke-width="2.5"/>
+  <circle cx="627" cy="70" r="7" fill="#57534a"/>
+  <text x="140" y="66" font-size="12.5" font-weight="700" fill="#1f2328" text-anchor="end">기준 ≥0.4</text>
+  <text x="140" y="82" font-size="10" fill="#8a8578" text-anchor="end">넓게 잡음 · 수십 개 직업</text>
+  <text x="740" y="66" font-size="12.5" font-weight="800" fill="#57534a">-1.9%</text>
+  <text x="740" y="82" font-size="10" fill="#8a8578">t=-2.37 · 유의</text>
+  <!-- 0.5 -->
+  <line x1="191" y1="130" x2="562" y2="130" stroke="#b3261e" stroke-width="3"/>
+  <line x1="191" y1="121" x2="191" y2="139" stroke="#b3261e" stroke-width="3"/>
+  <line x1="562" y1="121" x2="562" y2="139" stroke="#b3261e" stroke-width="3"/>
+  <circle cx="377" cy="130" r="9" fill="#b3261e"/>
+  <text x="140" y="126" font-size="12.5" font-weight="800" fill="#8c211b" text-anchor="end">기준 ≥0.5 (헤드라인)</text>
+  <text x="140" y="142" font-size="10" fill="#8a8578" text-anchor="end">11개 직업 · 580만 명</text>
+  <text x="740" y="126" font-size="13.5" font-weight="800" fill="#b3261e">-6.7%</text>
+  <text x="740" y="142" font-size="10" fill="#8a8578">t=-3.69 · 유의</text>
+  <!-- 0.6 -->
+  <line x1="488" y1="190" x2="781" y2="190" stroke="#57534a" stroke-width="2.5"/>
+  <line x1="488" y1="182" x2="488" y2="198" stroke="#57534a" stroke-width="2.5"/>
+  <line x1="781" y1="182" x2="781" y2="198" stroke="#57534a" stroke-width="2.5"/>
+  <circle cx="634" cy="190" r="7" fill="#57534a"/>
+  <text x="140" y="186" font-size="12.5" font-weight="700" fill="#1f2328" text-anchor="end">기준 ≥0.6</text>
+  <text x="140" y="202" font-size="10" fill="#8a8578" text-anchor="end">가장 노출 큰 7개 · 480만 명</text>
+  <text x="740" y="186" font-size="12.5" font-weight="800" fill="#57534a">-1.7%</text>
+  <text x="740" y="202" font-size="10" fill="#8a8578">t=-1.22 · <tspan fill="#b3261e" font-weight="700">유의성 없음</tspan></text>
+</svg>
+<figcaption>출처: 논문 Table 6. 신뢰구간은 보고된 표준오차로 직접 계산. 세 추정치는 <b>단조적이지 않다</b> — 처치를 가장 엄격하게 정의했을 때(≥0.6) 효과가 가장 작고 유의성도 사라진다.</figcaption>
+</figure>
+
+<div class="flag">
+<p><b>🔴 논문 본문의 서술이 자기 표와 어긋난다.</b> 18쪽은 "0.5 기준의 -6.7%라는 기준 결과는 이 두 추정치 <i>사이</i>에 있으며, 더 엄격한 정의가 더 강하게 영향받은 집단을 잡아낸다는 기울기와 일관된다"고 쓴다. 그러나 표의 값은 <strong>-1.89%(0.4) / -6.67%(0.5) / -1.74%(0.6)</strong>이다. -6.67은 나머지 둘 "사이"가 아니라 <strong>셋 중 가장 큰 값</strong>이고, 기울기는 존재하지 않는다.</p>
+</div>
+
+<p>이 비단조성이 왜 결정적인가. 만약 AI 사용이 임금을 누른다면, 사용량이 더 많은 집단만 남길수록 효과는 <em>커져야</em> 한다(용량-반응 관계). 실제로는 그 반대다. 그리고 0.6 결과는 부정확해서 유의성이 없는 것이 아니다 — 표준오차가 0.0143으로 <strong>기준 사양(0.0181)보다 오히려 작다</strong>. 즉 <em>"효과가 작다"는 사실이 정밀하게 추정된 것</em>이다.</p>
+
+<p>산술적으로 무슨 일이 일어나는지는 3장 표에서 곧장 읽힌다. 0.5 기준과 0.6 기준의 차이는 붉게 음영한 <strong>4개 직업 — 통계 보조원, 소프트웨어 QA, 금융·투자 애널리스트, 데이터베이스 아키텍트</strong> 뿐이다. 합쳐서 노동력의 <strong>0.40%, 약 58만 명</strong>, 고노출군의 10.8%. 이 넷을 넣으면 -1.7%가 -6.7%가 되고, 빼면 되돌아간다.</p>
+
+<p>그리고 이 넷은 하필 <strong>2022~24년 기술·금융 부문 인력 조정을 정면으로 통과한 직군</strong>이며, 넷 다 그 기간 실질임금이 하락했다(-0.2%~-5.4%). 반면 금융·투자 애널리스트 고용은 같은 기간 <strong>+16.9%</strong>, DB 아키텍트는 +3.7%로 늘었다. 일자리가 늘면서 임금 증가율만 둔화한 패턴은 AI 대체보다 <strong>공급 증가와 직급 구성 변화</strong>에 더 잘 들어맞는다.</p>
+
+<h2 class="sec" id="s5">5. 서비스직 -24.3%는 직업 한 개에서 나왔다</h2>
+
+<p>초록이 가장 앞세우는 개별 숫자는 "서비스 노동자 24.3% 하락"이다. 논문은 서비스직의 예시로 <em>보육교사, 관리인, 웨이터, 경찰관, 사회복지사</em>를 든다. 그런데 처치집단인 11개 고노출 직업을 2자리 직업코드로 분류하면, 서비스 직군(코드 31~39)에 해당하는 것은 <strong>의료 녹취사(31-9094) 하나</strong>다. 노동력의 <strong>0.03%</strong>, 약 4만 명이다.</p>
+
+<p>즉 "서비스 노동자 -24.3%"는 <em>보육교사·웨이터·경찰관의 임금이 24% 덜 올랐다는 뜻이 전혀 아니다</em>. 그들의 노출점수는 0.01~0.06으로 사실상 0이고 전부 통제집단에 있다. 이 계수는 <strong>의료 녹취사 한 직업이 다른 모든 서비스 직업 대비 어떻게 움직였는가</strong>를 잰 것이다. 그리고 그 녹취사의 2022→24년 실제 실질임금 변화는 <strong>-1.5%</strong>였다.</p>
+
+<div class="flag">
+<p><b>🔴 같은 표가 스스로를 반증한다.</b> 논문 Table 5의 생산직(blue collar) 고용 계수는 <strong>+2.0186</strong>, 표준오차 1.3865다. 로그 사양에서 계수 2.02는 <strong>고용 +653%</strong>를 뜻한다. 생산직 중 노출점수 0.5 이상인 직업은 <em>하나도 없으므로</em> 이 칸의 처치집단은 비어 있고, 계수는 해석 불가능한 잡음이다. 논문은 이 값을 아무 표시 없이 표에 싣는다. 같은 표에서 나온 서비스직 -24.3%도 처치집단 1개라는 같은 문제를 안고 있다.</p>
+</div>
+
+<p>공정하게 말하면 논문도 10쪽에서 "서비스직 추정치는 작은 부분표본(n=239)에 기반하며 고노출 직업 구성에 민감할 수 있으므로 <strong>주의해서 해석해야 한다</strong>"고 적는다. 문제는 그 주의 문구가 본문 안쪽에 있고, <strong>초록과 요약에는 -24.3%가 단서 없이 실린다</strong>는 점이다. 인용은 초록에서 이루어진다.</p>
+
+<div class="note-box">
+<p><strong>수치를 읽는 법 하나.</strong> 논문은 로그 회귀계수를 그대로 퍼센트로 옮긴다. 작은 값에서는 문제없지만 큰 값에서는 과장된다. 계수 -0.2432의 실제 변화율은 -24.3%가 아니라 <strong>-21.6%</strong>이고, 서비스직 고용 -0.3214는 -32.1%가 아니라 <strong>-27.5%</strong>다. 기준 결과 -0.0667도 정확히는 -6.45%다.</p>
+</div>
+
+<h2 class="sec" id="s6">6. 규모 감각 — 280억 달러는 얼마나 큰가</h2>
+
+<p>논문은 총액 효과를 <strong>연 280억 달러</strong>의 노동소득 손실로 계산하고, 이를 "추상적 논쟁에 구체적 거시 규모를 부여"하는 기여로 제시한다. 그 규모를 실제 거시 지표에 대보면 이렇다.</p>
+
+<figure>
+<svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="280억 달러와 미국 임금총액 비교">
+  <text x="10" y="22" font-size="13" font-weight="700" fill="#123f60">미국 임금·급여 총액 대비 규모 (2026년 6월, 연율)</text>
+  <rect x="60" y="50" width="780" height="46" fill="#cfe0ea" stroke="#9ab6c8"/>
+  <rect x="60" y="50" width="1.7" height="46" fill="#b3261e"/>
+  <text x="70" y="80" font-size="12.5" font-weight="700" fill="#123f60">임금·급여 총액 13조 4,040억 달러</text>
+  <line x1="61" y1="50" x2="200" y2="132" stroke="#b3261e" stroke-width="1.2"/>
+  <circle cx="61" cy="50" r="3.5" fill="#b3261e"/>
+  <text x="206" y="130" font-size="12.5" font-weight="800" fill="#b3261e">← AI 귀속 손실 280억 달러 = 0.209%</text>
+  <text x="206" y="150" font-size="11.5" fill="#57534a">GDP(32조 4,752억) 대비 <tspan font-weight="700">0.086%</tspan> · 노동자 1인당 연 약 4,800달러</text>
+  <text x="206" y="172" font-size="11" fill="#8a8578">참고: 이 규모는 월간 고용보고서의 통상적 개정폭보다도 작다</text>
+</svg>
+<figcaption>임금총액·GDP는 FRED에서 2026-07-31 조회(A576RC1, GDP). 1인당 금액은 280억 달러를 580만 명으로 나눈 값.</figcaption>
+</figure>
+
+<p>논문이 이 숫자를 <strong>하한</strong>이라고 부르는 것은 타당하다. 매칭된 직업이 321개뿐이고, 관측 지수가 Claude 하나에 근거하며, 고노출 기준 아래에 있는 보완적 직업의 영향을 제외했기 때문이다. 그러나 하한이 이렇게 작다는 사실 자체가 정보다. 미국 노동시장의 임금 결정에서 <strong>2026년 중반 시점에 AI에 귀속시킬 수 있는 몫은 아직 측정 오차와 구분하기 어려운 크기</strong>다.</p>
+
+<p>미래 경로에 대한 논문의 유일한 정량 진술도 같은 방향이다. 노동통계국 고용전망을 노출 기준에 대입하면 고노출 노동자는 <strong>2032년 590만 명</strong>이 된다 — 580만에서 <strong>7년간 10만 명 증가</strong>다. 물론 이 계산은 직업별 노출점수가 2032년까지 고정되어 있다고 가정하며(논문도 "단순화"라고 명시한다), 확산이 계속되면 새 직업이 기준선을 넘어설 것이므로 현실적 상한이 아니다. 다만 <strong>논문 안에 실제로 제시된 유일한 전망 수치는 가속이 아니라 정체</strong>라는 점은 기록해둘 만하다.</p>
+
+<h2 class="sec" id="s7">7. 문서 자체의 품질 신호</h2>
+
+<p>이 문서는 심사를 거친 학술 논문이 아니라 사모·사모신용 운용사가 발간한 백서다. 그 점을 감안하더라도 편집 상태가 결과의 신뢰도에 영향을 준다.</p>
+
+<ul class="body">
+<li><strong>사건연구 그래프 두 개가 같은 그림이다.</strong> Figure 6은 "실질임금 사건연구", Figure 7은 "고용 사건연구"로 표시되어 있지만, <em>두 그림 모두 제목·데이터가 고용 사건연구</em>다. 결과적으로 이 문서에는 <strong>임금 회귀의 평행추세 근거가 실려 있지 않다</strong>. -6.7%는 전적으로 평행추세 가정 위에 서 있으므로, 이는 편집 실수 이상의 공백이다.</li>
+<li><strong>Figure 2의 출처 주석이 다른 자료의 것이다.</strong> AI 노출 점수 산점도 아래에 "Meta가 후원하고 Beignet Investor LLC가 발행한 273억 달러 투자등급 데이터센터 프로젝트 파이낸스를 포함한다. 출처: Goldman Sachs"라는 주석이 붙어 있다. 데이터센터 채권 자료의 주석이 그대로 옮겨진 것으로, 이 그림과 아무 관계가 없다.</li>
+<li><strong>본문과 그림의 숫자가 어긋난다.</strong> 본문은 일관되게 580만 명(3.7%)이라고 하지만 Figure 8의 제목은 "600만 명"이고, Figure 3의 고노출 두 조각을 합치면 4.1%(590만)가 된다.</li>
+<li><strong>보고된 유의성과 계산된 t값이 어긋나는 항목이 있다.</strong> 예를 들어 Q3 계수(-0.0405, 표준오차 0.0229)의 t값은 1.77, 관리·전문직 임금(-0.0395, 0.0212)은 1.86으로 통상적인 5% 기준에 못 미친다.</li>
+</ul>
+
+<p>저자 중 Torsten Slok은 Apollo의 수석 이코노미스트로 시장에서 인용 빈도가 매우 높다. 그만큼 이 문서의 헤드라인 숫자는 원문 검증 없이 재인용될 가능성이 크다.</p>
+
+<h2 class="sec" id="s8">8. 해석·시사점 (투자자 관점)</h2>
+
+<h3>① "AI 대량실업" 거래는 데이터에 아직 없다</h3>
+<p>이 논문은 AI 비관론의 근거로 유통되기 쉬운 형태를 하고 있지만, 실제 내용은 정반대에 가깝다. 고용 효과는 어떤 기준선에서도 유의하지 않고, 임금 효과의 방어 가능한 크기는 <strong>-1.7~-1.9%</strong>이며, 총액은 임금총액의 0.2%다. AI로 인한 노동 대체를 근거로 노동집약 서비스 기업의 구조적 이익 훼손이나 실업률 급등을 가격에 반영하는 포지션은, 2026년 중반 기준 <strong>관측 데이터의 지지를 받지 못한다</strong>.</p>
+
+<h3>② 그러나 그 반대편에도 청구서가 있다</h3>
+<p>현재 진행 중인 AI 설비투자 사이클의 회수 논리는 상당 부분 <strong>미래의 노동 대체</strong>에 기대고 있다. 관측된 노동시장 효과가 이렇게 작다는 것은, 대체가 아직 오지 않았거나(확산 지연) 생산성 이득이 노동비용 절감이 아닌 다른 형태로 나타나고 있다는 뜻이다. 어느 쪽이든 <strong>회수 시점이 뒤로 밀린다</strong>. 능력의 발전 속도와 확산의 속도가 다르다는 것이 이 논문의 가장 견고한 발견(Figure 5)이고, 이는 AI 인프라 투자의 <strong>기간 위험(duration risk)</strong>을 키운다.</p>
+
+<h3>③ 생산성 이득이 임금 압축으로 나타난다면, 그 이득은 대체로 흘러나간다</h3>
+<p>논문의 프레임 — 기업이 인력 감축이 아니라 임금 압축으로 AI 이득을 회수한다 — 을 그대로 받아들이더라도, 그 이득이 <strong>어디에 머무는지</strong>는 별개 문제다. 임금 압축은 느리고 분산적이며, 경쟁이 심한 산업에서는 가격 인하로 소비자에게 이전된다. 실제로 고노출 상위 직업이 밀집한 업종(콜센터·BPO·후선 사무 처리)은 계약 단가 경쟁이 극심한 영역이다. <strong>절감이 마진으로 굳는 곳은 병목을 쥔 쪽</strong>이고, 임금 압축 그 자체는 병목이 아니다.</p>
+
+<h3>④ 노출의 진짜 지형은 '저임금 노동'이 아니라 '정보처리 사무직'</h3>
+<p>가장 흔한 오독이 여기서 나온다. 최저 임금분위 -10.7%라는 결과는 <em>저임금 노동 일반</em>이 아니라 <strong>저임금 정보처리 직군</strong>(콜센터 상담·데이터 입력·의무기록·녹취)의 이야기다. 부록 B에서 관리인 0.04, 요리사 0.01, 보육교사 0.01, 배관공 0.01로 저임금 육체노동의 노출은 사실상 0이다. K자 양극화 논의에 이 결과를 대입할 때 정확한 채널은 <strong>"사무 계층의 공동화"</strong>이지 "저소득층 전반의 임금 붕괴"가 아니다. 두 채널은 시차와 정책 대응이 전혀 다르다.</p>
+
+<h3>⑤ 물가·통화정책 채널로 쓰기에는 너무 작다</h3>
+<p>고용 감소 없는 임금 압축은 원리적으로 디스인플레이션 요인이다. 그러나 임금총액의 0.2%라는 크기로는 서비스 물가에 식별 가능한 영향을 주지 못한다. <strong>"AI가 임금을 눌러 인플레이션이 잡힌다"는 완화 논거는 이 데이터에서 나오지 않는다.</strong> 흥미롭게도 이 논문의 참고문헌에는 2026년 7월 신트라 발언이 인용되어 있지만, 본문에서 통화정책 함의로 이어지지는 않는다.</p>
+
+<h3>⑥ 확산 데이터 자체가 정보 우위가 되고 있다</h3>
+<p>이 논문이 가능했던 이유는 단 하나 — 공개 연구용 사용 데이터를 내놓은 AI 제공자가 있었기 때문이다(논문 본문의 표현이다). 나머지 확산 데이터는 기업 지출 데이터(Ramp)나 제품 텔레메트리(Microsoft Copilot)처럼 비공개이거나 부분적이다. 결과적으로 <strong>AI 확산 곡선의 실시간 관측치는 모델 제공자와 결제 인프라 쪽에 먼저 쌓이고</strong>, 시장은 그것을 몇 분기 늦게 본다. 실무적으로 Anthropic Economic Index 같은 공개 관측 지수는 <strong>모니터링 소스</strong>로서 가치가 있다(신호가 아니라 관측 도구로).</p>
+
+<h3>⑦ 두 가지가 하나로 묶여 있다 — 분리해서 봐야 한다</h3>
+<p>이 논문의 -6.7%는 성격이 전혀 다른 두 현상의 평균이다. 하나는 <strong>0.5~0.6 구간 기술·금융 직군</strong>으로, 제로금리기 채용 과잉의 반작용과 분리 불가능하다. 다른 하나는 <strong>고객 서비스 상담원</strong>으로, 고노출군의 절반을 차지하고 최저 분위 결과의 실질적 원천이며, AI 대체 후보로서 선험적 개연성이 가장 높은 직업이다. 전자는 교란이고 후자는 신호다. <strong>주목할 대상은 콜센터 임금·고용의 향후 경로</strong>이지 종합 계수가 아니다. 다만 그 콜센터조차 2022→24년 실질임금은 +2.6%였다 — 신호는 아직 가설 단계다.</p>
+
+<h2 class="sec" id="s9">9. 앞으로 무엇을 볼 것인가</h2>
+
+<ul class="body">
+<li><strong>고객 서비스 상담원의 임금·고용 경로</strong> — 노출군의 47%를 차지하는 단일 직업. 여기서 실질임금이 꺾이면 이 논문의 가설이 처음으로 원자료 수준에서 확인된다. 반대로 계속 오르면 -6.7%는 기술 부문 조정의 잔상으로 정리된다.</li>
+<li><strong>기준선 0.6을 넘는 직업 수</strong> — 현재 7개. 확산이 실제로 깊어지는지 여부는 새 직업이 이 선을 넘는 속도로 나타난다. 논문의 2032년 전망(590만)이 뒤집히는 지점이기도 하다.</li>
+<li><strong>관측 지수와 이론 지수의 격차 축소</strong> — Figure 5의 간극이 좁혀지기 시작하면 확산 S곡선의 가파른 구간에 진입했다는 신호다. 현재는 두 배 이상 벌어져 있다.</li>
+<li><strong>고용과 임금 중 어느 쪽이 먼저 움직이는가</strong> — 논문의 핵심 주장은 "임금이 먼저, 고용은 아직"이다. 이 순서가 실제로 유지되는지, 아니면 어느 시점에 고용 쪽으로 전환되는지가 노동시장 충격의 성격을 가른다.</li>
+<li><strong>후속 연구의 재현 여부</strong> — 특히 임금 회귀의 사건연구(평행추세)가 제시되는지, 그리고 다른 제공자의 사용 데이터가 공개되어 Claude 편향을 교정할 수 있는지.</li>
+</ul>
+
+<div class="note-box">
+<p><strong>용어</strong> · <b>이중차분(DiD)</b>: 처치집단과 통제집단의 <i>사건 전후 변화폭 차이</i>를 비교해 인과효과를 추정하는 방법. 전제는 사건이 없었다면 두 집단이 평행하게 움직였으리라는 것(평행추세 가정). · <b>고정효과</b>: 직업별 고유 특성과 연도별 공통 충격을 흡수해, 같은 직업 안의 시간에 따른 변화만 식별에 쓰이게 하는 장치. · <b>O*NET</b>: 미 노동부의 직업정보 데이터베이스. 약 830개 직업, 직업당 20~30개 업무와 중요도가 기록됨. · <b>OEWS</b>: 노동통계국 직업별 고용·임금 통계. 사업체 110만 곳 대상이나 소규모 사업체·자영업·농업은 제외되어, 이 논문은 인구현재조사(CPS) 가중치로 보정했다.</p>
+</div>
+
+<div class="footer">
+  본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다. · 2026-07-31 작성 · 원문 29쪽 전수 확인 후 부록 B 원자료를 직접 재집계했으며, 논문에 보고된 계수·표준오차로 t값과 신뢰구간을 재계산했습니다. 원문 인용은 저작권 범위 내로 제한했습니다.
+</div>
+
+</div>
+</body>
+</html>
