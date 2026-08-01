@@ -1,0 +1,1226 @@
+<!DOCTYPE html><html lang=ko><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
+<title>미 재무부 Bill/Coupon 발행 → 금리 영향 모니터 v0.2 — 2026-06-30</title><style>
+:root{--bg:#FDF6E3;--panel:#FFFCF2;--ink:#073642;--sub:#586e75;--mut:#93a1a1;--line:#eee8d5;--blue:#268bd2;--orange:#cb4b16}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;line-height:1.7;font-size:15.5px}
+.wrap{max-width:980px;margin:0 auto;padding:36px 24px 90px}h1{font-size:25px;margin:0 0 6px;letter-spacing:-.5px}.sub{color:var(--sub);font-size:13px;margin-bottom:22px}
+h2{font-size:20px;margin:44px 0 6px;padding-bottom:8px;border-bottom:2px solid var(--line)}h3{font-size:15px;margin:22px 0 6px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:17px 19px;margin:13px 0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.kpi .v{font-size:21px;font-weight:800;letter-spacing:-.5px}.kpi .l{font-size:11.5px;color:var(--sub);margin-top:2px}.blue{color:var(--blue)}.orange{color:var(--orange)}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0}th,td{padding:5px 8px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--sub);background:#faf3df;font-weight:700}
+td.n{text-align:right;font-variant-numeric:tabular-nums}td.b{font-weight:700;color:var(--blue)}.scroll{max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+.note{font-size:13px;color:var(--sub)}.steel{border-left:4px solid var(--orange);background:#fbf1e9;padding:10px 14px;border-radius:0 10px 10px 0;margin:10px 0;font-size:13.5px}.steel b{color:var(--orange)}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:#e9f3fb;color:#0b5a8a;margin-right:6px}
+.flag{background:#fdf0d5;color:#8a5a00;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:700}
+ul{margin:7px 0 7px 2px;padding-left:20px}li{margin:5px 0}.two{display:grid;grid-template-columns:1fr 1fr;gap:13px}@media(max-width:720px){.two{grid-template-columns:1fr}}
+@media print{body{background:#fff}.card,.kpi{box-shadow:none}}</style><meta name="vault-stage" content="Monitoring">
+<meta name="vault-topic" content="매크로">
+<meta name="vault-date" content="2026-06-30">
+<meta name="vault-published" content="2026-08-01">
+<meta name="description" content="미 재무부 Bill/Coupon 발행 → 금리 영향 모니터 v0.2 — 2026-06-30">
+<meta name="robots" content="noindex, nofollow">
+</head><body><div class=wrap>
+<h1>🇺🇸 미 재무부 Bill/Coupon 발행 → 금리 영향 모니터 <span style="font-size:14px;color:var(--mut)">v0.2</span></h1>
+<div class=sub>as-of 2026-06-30 · 발행=재무부 MSPD/Auctions/avg_rate(Fiscal Data API) · 금리=FRED · 100% 1차 자료 직접 호출 · 2024-01-01~2026-06-30</div>
+
+<div class=card><div style="font-size:16px;font-weight:600;margin-bottom:6px">핵심 — 발행이 커브의 어디에 닿나</div><div class=kpis>
+<div class=kpi><div class="v blue">23.8%</div><div class=l>Front-end(Bill+FRN) 잔액비중 → 단기</div></div>
+<div class=kpi><div class="v orange">69.2%</div><div class=l>Nominal(Notes+Bonds) → 장기명목</div></div>
+<div class=kpi><div class="v" style="color:#2aa198">7.0%</div><div class=l>Real(TIPS) → 실질·breakeven</div></div>
+<div class=kpi><div class="v">5.22→3.74%</div><div class=l>단기 3M T-bill (Fed 인하)</div></div>
+<div class=kpi><div class="v">3.99→4.44%</div><div class=l>장기 10Y (역행 상승)</div></div>
+<div class=kpi><div class="v" style="color:#6c71c4">0.17→0.70%</div><div class=l>10Y term premium (공급 신호)</div></div>
+</div>
+<p class=note style="margin-top:8px">단기↓(연준 인하) + 장기↑ + <b>term premium 확대</b> = <b>bear steepening</b>. 이 국면에서 발행 mix가 커브의 어느 지점에 압력을 주는지를 버킷별로 대조한다(§금리 overlay). RRP 잔액 615.38→26.90B 소진 = front-end 완충 사라짐.</p></div>
+
+<h2>왜 CMB→Bill, TIPS→별도, FRN→front-end 인가 (분류 근거)</h2>
+<div class=card><p>목적이 "발행→<b>단기/장기 금리</b>"이므로 <b>법적 라벨이 아니라 커브 위치·듀레이션</b>으로 나눈다:</p><ul>
+<li>🔵 <b>CMB → Bill 포함</b>(초단기 할인채=front-end) · 단 <b>태깅</b>: lumpy(부채한도·세금). 실측 24Q4 $1,150B→25Q4~ $0. → §총발행 CMB 막대.</li>
+<li>🟢 <b>TIPS → 별도 버킷</b>: 금리가 <b>실질(real)</b>. 명목 10Y가 아니라 실질금리·breakeven으로 전달. 명목에 묻으면 신호 오염.</li>
+<li>🔵 <b>FRN → front-end</b>: 13주 Bill금리 리셋(듀레이션≈0). 법적 만기 2년이나 금리민감도는 Bill과 동일.</li>
+</ul><p class=note>법적 Bill/Coupon split은 <b>headline(비교용)</b>으로 병기(§① c1·c2), 3버킷은 <b>금리전달 렌즈</b>.</p></div>
+
+<h2>① 잔액 구성 — 법적 headline + 3버킷</h2>
+<div class=two><div><svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<rect x="64" y="136.4" width="816" height="128.0" fill="#93a1a1" opacity="0.16"/>
+<text x="72" y="204.4" font-size="11" fill="#657b83" font-style="italic">TBAC 15–20%</text>
+<line x1="64" y1="290.0" x2="880" y2="290.0" stroke="#eee8d5"/>
+<text x="56" y="294.0" font-size="10.5" fill="#93a1a1" text-anchor="end">14%</text>
+<line x1="64" y1="238.8" x2="880" y2="238.8" stroke="#eee8d5"/>
+<text x="56" y="242.8" font-size="10.5" fill="#93a1a1" text-anchor="end">16%</text>
+<line x1="64" y1="187.6" x2="880" y2="187.6" stroke="#eee8d5"/>
+<text x="56" y="191.6" font-size="10.5" fill="#93a1a1" text-anchor="end">18%</text>
+<line x1="64" y1="136.4" x2="880" y2="136.4" stroke="#eee8d5"/>
+<text x="56" y="140.4" font-size="10.5" fill="#93a1a1" text-anchor="end">20%</text>
+<line x1="64" y1="85.2" x2="880" y2="85.2" stroke="#eee8d5"/>
+<text x="56" y="89.2" font-size="10.5" fill="#93a1a1" text-anchor="end">22%</text>
+<line x1="64" y1="34.0" x2="880" y2="34.0" stroke="#eee8d5"/>
+<text x="56" y="38.0" font-size="10.5" fill="#93a1a1" text-anchor="end">24%</text>
+<line x1="64" y1="136.4" x2="880" y2="136.4" stroke="#657b83" stroke-width="1.2" stroke-dasharray="5,4"/>
+<text x="64.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.01</text>
+<text x="148.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.04</text>
+<text x="232.8" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.07</text>
+<text x="317.2" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.10</text>
+<text x="401.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.01</text>
+<text x="486.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.04</text>
+<text x="570.5" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.07</text>
+<text x="654.9" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.10</text>
+<text x="739.3" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.01</text>
+<text x="823.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.04</text>
+<text x="880.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.06</text>
+<polygon points="64.0,290 64.0,90.1 92.1,74.4 120.3,72.4 148.4,90.3 176.6,92.9 204.7,102.6 232.8,94.9 261.0,80.3 289.1,93.9 317.2,82.4 345.4,68.8 373.5,88.3 401.7,75.7 429.8,78.8 457.9,97.0 486.1,105.4 514.2,110.8 542.3,131.5 570.5,118.5 598.6,93.9 626.8,97.2 654.9,85.7 683.0,78.3 711.2,94.7 739.3,91.9 767.4,79.1 795.6,82.4 823.7,95.7 851.9,88.5 880.0,97.2 880.0,290" fill="#268bd2" opacity="0.08"/>
+<polyline points="64.0,90.1 92.1,74.4 120.3,72.4 148.4,90.3 176.6,92.9 204.7,102.6 232.8,94.9 261.0,80.3 289.1,93.9 317.2,82.4 345.4,68.8 373.5,88.3 401.7,75.7 429.8,78.8 457.9,97.0 486.1,105.4 514.2,110.8 542.3,131.5 570.5,118.5 598.6,93.9 626.8,97.2 654.9,85.7 683.0,78.3 711.2,94.7 739.3,91.9 767.4,79.1 795.6,82.4 823.7,95.7 851.9,88.5 880.0,97.2" fill="none" stroke="#268bd2" stroke-width="2.5"/>
+<circle cx="64.0" cy="90.1" r="2.1" fill="#268bd2"/>
+<circle cx="92.1" cy="74.4" r="2.1" fill="#268bd2"/>
+<circle cx="120.3" cy="72.4" r="2.1" fill="#268bd2"/>
+<circle cx="148.4" cy="90.3" r="2.1" fill="#268bd2"/>
+<circle cx="176.6" cy="92.9" r="2.1" fill="#268bd2"/>
+<circle cx="204.7" cy="102.6" r="2.1" fill="#268bd2"/>
+<circle cx="232.8" cy="94.9" r="2.1" fill="#268bd2"/>
+<circle cx="261.0" cy="80.3" r="2.1" fill="#268bd2"/>
+<circle cx="289.1" cy="93.9" r="2.1" fill="#268bd2"/>
+<circle cx="317.2" cy="82.4" r="2.1" fill="#268bd2"/>
+<circle cx="345.4" cy="68.8" r="2.1" fill="#268bd2"/>
+<circle cx="373.5" cy="88.3" r="2.1" fill="#268bd2"/>
+<circle cx="401.7" cy="75.7" r="2.1" fill="#268bd2"/>
+<circle cx="429.8" cy="78.8" r="2.1" fill="#268bd2"/>
+<circle cx="457.9" cy="97.0" r="2.1" fill="#268bd2"/>
+<circle cx="486.1" cy="105.4" r="2.1" fill="#268bd2"/>
+<circle cx="514.2" cy="110.8" r="2.1" fill="#268bd2"/>
+<circle cx="542.3" cy="131.5" r="2.1" fill="#268bd2"/>
+<circle cx="570.5" cy="118.5" r="2.1" fill="#268bd2"/>
+<circle cx="598.6" cy="93.9" r="2.1" fill="#268bd2"/>
+<circle cx="626.8" cy="97.2" r="2.1" fill="#268bd2"/>
+<circle cx="654.9" cy="85.7" r="2.1" fill="#268bd2"/>
+<circle cx="683.0" cy="78.3" r="2.1" fill="#268bd2"/>
+<circle cx="711.2" cy="94.7" r="2.1" fill="#268bd2"/>
+<circle cx="739.3" cy="91.9" r="2.1" fill="#268bd2"/>
+<circle cx="767.4" cy="79.1" r="2.1" fill="#268bd2"/>
+<circle cx="795.6" cy="82.4" r="2.1" fill="#268bd2"/>
+<circle cx="823.7" cy="95.7" r="2.1" fill="#268bd2"/>
+<circle cx="851.9" cy="88.5" r="2.1" fill="#268bd2"/>
+<circle cx="880.0" cy="97.2" r="2.1" fill="#268bd2"/>
+<text x="64" y="18" font-size="12.5" font-weight="bold" fill="#073642">[LEGAL headline] 잔액 중 Bill 비중 (%)</text></svg></div><div><svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<line x1="64" y1="290.0" x2="744" y2="290.0" stroke="#eee8d5"/>
+<text x="56" y="294.0" font-size="10.5" fill="#93a1a1" text-anchor="end">0%</text>
+<line x1="64" y1="253.4" x2="744" y2="253.4" stroke="#eee8d5"/>
+<text x="56" y="257.4" font-size="10.5" fill="#93a1a1" text-anchor="end">4%</text>
+<line x1="64" y1="216.9" x2="744" y2="216.9" stroke="#eee8d5"/>
+<text x="56" y="220.9" font-size="10.5" fill="#93a1a1" text-anchor="end">8%</text>
+<line x1="64" y1="180.3" x2="744" y2="180.3" stroke="#eee8d5"/>
+<text x="56" y="184.3" font-size="10.5" fill="#93a1a1" text-anchor="end">12%</text>
+<line x1="64" y1="143.7" x2="744" y2="143.7" stroke="#eee8d5"/>
+<text x="56" y="147.7" font-size="10.5" fill="#93a1a1" text-anchor="end">16%</text>
+<line x1="64" y1="107.1" x2="744" y2="107.1" stroke="#eee8d5"/>
+<text x="56" y="111.1" font-size="10.5" fill="#93a1a1" text-anchor="end">20%</text>
+<line x1="64" y1="70.6" x2="744" y2="70.6" stroke="#eee8d5"/>
+<text x="56" y="74.6" font-size="10.5" fill="#93a1a1" text-anchor="end">24%</text>
+<line x1="64" y1="34.0" x2="744" y2="34.0" stroke="#eee8d5"/>
+<text x="56" y="38.0" font-size="10.5" fill="#93a1a1" text-anchor="end">28%</text>
+<text x="64.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.01</text>
+<text x="134.3" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.04</text>
+<text x="204.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.07</text>
+<text x="275.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.10</text>
+<text x="345.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.01</text>
+<text x="415.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.04</text>
+<text x="486.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.07</text>
+<text x="556.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.10</text>
+<text x="626.8" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.01</text>
+<text x="697.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.04</text>
+<text x="744.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.06</text>
+<polyline points="64.0,72.5 87.4,66.2 110.9,65.5 134.3,72.3 157.8,72.3 181.2,74.9 204.7,73.6 228.1,67.6 251.6,71.7 275.0,69.0 298.5,63.3 321.9,69.5 345.4,66.3 368.8,66.5 392.3,72.1 415.7,76.3 439.2,77.3 462.6,83.9 486.1,80.7 509.5,71.4 533.0,71.9 556.4,69.4 579.9,66.1 603.3,71.0 626.8,70.1 650.2,66.5 673.7,67.0 697.1,73.2 720.6,70.0 744.0,72.4" fill="none" stroke="#268bd2" stroke-width="2.5"/>
+<circle cx="64.0" cy="72.5" r="2.1" fill="#268bd2"/>
+<circle cx="87.4" cy="66.2" r="2.1" fill="#268bd2"/>
+<circle cx="110.9" cy="65.5" r="2.1" fill="#268bd2"/>
+<circle cx="134.3" cy="72.3" r="2.1" fill="#268bd2"/>
+<circle cx="157.8" cy="72.3" r="2.1" fill="#268bd2"/>
+<circle cx="181.2" cy="74.9" r="2.1" fill="#268bd2"/>
+<circle cx="204.7" cy="73.6" r="2.1" fill="#268bd2"/>
+<circle cx="228.1" cy="67.6" r="2.1" fill="#268bd2"/>
+<circle cx="251.6" cy="71.7" r="2.1" fill="#268bd2"/>
+<circle cx="275.0" cy="69.0" r="2.1" fill="#268bd2"/>
+<circle cx="298.5" cy="63.3" r="2.1" fill="#268bd2"/>
+<circle cx="321.9" cy="69.5" r="2.1" fill="#268bd2"/>
+<circle cx="345.4" cy="66.3" r="2.1" fill="#268bd2"/>
+<circle cx="368.8" cy="66.5" r="2.1" fill="#268bd2"/>
+<circle cx="392.3" cy="72.1" r="2.1" fill="#268bd2"/>
+<circle cx="415.7" cy="76.3" r="2.1" fill="#268bd2"/>
+<circle cx="439.2" cy="77.3" r="2.1" fill="#268bd2"/>
+<circle cx="462.6" cy="83.9" r="2.1" fill="#268bd2"/>
+<circle cx="486.1" cy="80.7" r="2.1" fill="#268bd2"/>
+<circle cx="509.5" cy="71.4" r="2.1" fill="#268bd2"/>
+<circle cx="533.0" cy="71.9" r="2.1" fill="#268bd2"/>
+<circle cx="556.4" cy="69.4" r="2.1" fill="#268bd2"/>
+<circle cx="579.9" cy="66.1" r="2.1" fill="#268bd2"/>
+<circle cx="603.3" cy="71.0" r="2.1" fill="#268bd2"/>
+<circle cx="626.8" cy="70.1" r="2.1" fill="#268bd2"/>
+<circle cx="650.2" cy="66.5" r="2.1" fill="#268bd2"/>
+<circle cx="673.7" cy="67.0" r="2.1" fill="#268bd2"/>
+<circle cx="697.1" cy="73.2" r="2.1" fill="#268bd2"/>
+<circle cx="720.6" cy="70.0" r="2.1" fill="#268bd2"/>
+<circle cx="744.0" cy="72.4" r="2.1" fill="#268bd2"/>
+<polyline points="64.0,222.2 87.4,222.7 110.9,222.2 134.3,222.2 157.8,221.5 181.2,220.6 204.7,222.3 228.1,222.6 251.6,222.3 275.0,223.5 298.5,223.4 321.9,222.8 345.4,226.0 368.8,225.9 392.3,224.9 415.7,225.1 439.2,224.4 462.6,223.6 486.1,225.3 509.5,225.8 533.0,225.7 556.4,226.6 579.9,226.4 603.3,225.5 626.8,228.1 650.2,228.4 673.7,228.0 697.1,228.0 720.6,227.4 744.0,226.3" fill="none" stroke="#2aa198" stroke-width="2.5"/>
+<circle cx="64.0" cy="222.2" r="2.1" fill="#2aa198"/>
+<circle cx="87.4" cy="222.7" r="2.1" fill="#2aa198"/>
+<circle cx="110.9" cy="222.2" r="2.1" fill="#2aa198"/>
+<circle cx="134.3" cy="222.2" r="2.1" fill="#2aa198"/>
+<circle cx="157.8" cy="221.5" r="2.1" fill="#2aa198"/>
+<circle cx="181.2" cy="220.6" r="2.1" fill="#2aa198"/>
+<circle cx="204.7" cy="222.3" r="2.1" fill="#2aa198"/>
+<circle cx="228.1" cy="222.6" r="2.1" fill="#2aa198"/>
+<circle cx="251.6" cy="222.3" r="2.1" fill="#2aa198"/>
+<circle cx="275.0" cy="223.5" r="2.1" fill="#2aa198"/>
+<circle cx="298.5" cy="223.4" r="2.1" fill="#2aa198"/>
+<circle cx="321.9" cy="222.8" r="2.1" fill="#2aa198"/>
+<circle cx="345.4" cy="226.0" r="2.1" fill="#2aa198"/>
+<circle cx="368.8" cy="225.9" r="2.1" fill="#2aa198"/>
+<circle cx="392.3" cy="224.9" r="2.1" fill="#2aa198"/>
+<circle cx="415.7" cy="225.1" r="2.1" fill="#2aa198"/>
+<circle cx="439.2" cy="224.4" r="2.1" fill="#2aa198"/>
+<circle cx="462.6" cy="223.6" r="2.1" fill="#2aa198"/>
+<circle cx="486.1" cy="225.3" r="2.1" fill="#2aa198"/>
+<circle cx="509.5" cy="225.8" r="2.1" fill="#2aa198"/>
+<circle cx="533.0" cy="225.7" r="2.1" fill="#2aa198"/>
+<circle cx="556.4" cy="226.6" r="2.1" fill="#2aa198"/>
+<circle cx="579.9" cy="226.4" r="2.1" fill="#2aa198"/>
+<circle cx="603.3" cy="225.5" r="2.1" fill="#2aa198"/>
+<circle cx="626.8" cy="228.1" r="2.1" fill="#2aa198"/>
+<circle cx="650.2" cy="228.4" r="2.1" fill="#2aa198"/>
+<circle cx="673.7" cy="228.0" r="2.1" fill="#2aa198"/>
+<circle cx="697.1" cy="228.0" r="2.1" fill="#2aa198"/>
+<circle cx="720.6" cy="227.4" r="2.1" fill="#2aa198"/>
+<circle cx="744.0" cy="226.3" r="2.1" fill="#2aa198"/>
+<rect x="756" y="40" width="13" height="4" rx="2" fill="#268bd2"/>
+<text x="774" y="47" font-size="11" fill="#586e75">Front-end(Bill+FRN)</text>
+<rect x="756" y="61" width="13" height="4" rx="2" fill="#2aa198"/>
+<text x="774" y="68" font-size="11" fill="#586e75">Real(TIPS)</text>
+<text x="64" y="18" font-size="12.5" font-weight="bold" fill="#073642">[버킷] 금리전달 버킷 비중 (Nominal=잔여 ~69%)</text></svg></div></div>
+<p class=note>법적 Bill 21.5%(비교용). 금리전달 버킷: Front-end 23.8%(FRN 포함) / Nominal 69.2% / Real 7.0%.</p>
+
+<h2>② 순발행 플로우 — 법적 vs 버킷</h2>
+<div class=two><div><svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<line x1="64" y1="328.0" x2="880" y2="328.0" stroke="#eee8d5"/>
+<text x="56" y="332.0" font-size="10" fill="#93a1a1" text-anchor="end">-480</text>
+<line x1="64" y1="283.0" x2="880" y2="283.0" stroke="#eee8d5"/>
+<text x="56" y="287.0" font-size="10" fill="#93a1a1" text-anchor="end">-280</text>
+<line x1="64" y1="238.0" x2="880" y2="238.0" stroke="#eee8d5"/>
+<text x="56" y="242.0" font-size="10" fill="#93a1a1" text-anchor="end">-80</text>
+<line x1="64" y1="193.0" x2="880" y2="193.0" stroke="#eee8d5"/>
+<text x="56" y="197.0" font-size="10" fill="#93a1a1" text-anchor="end">+120</text>
+<line x1="64" y1="148.0" x2="880" y2="148.0" stroke="#eee8d5"/>
+<text x="56" y="152.0" font-size="10" fill="#93a1a1" text-anchor="end">+320</text>
+<line x1="64" y1="103.0" x2="880" y2="103.0" stroke="#eee8d5"/>
+<text x="56" y="107.0" font-size="10" fill="#93a1a1" text-anchor="end">+520</text>
+<line x1="64" y1="58.0" x2="880" y2="58.0" stroke="#eee8d5"/>
+<text x="56" y="62.0" font-size="10" fill="#93a1a1" text-anchor="end">+720</text>
+<line x1="64" y1="220.0" x2="880" y2="220.0" stroke="#657b83" stroke-width="1.3"/>
+<rect x="75.8" y="220.0" width="30.2" height="66.8" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="109.3" y="130.8" width="30.2" height="89.2" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<text x="109.3" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q2'24</text>
+<rect x="166.5" y="166.2" width="30.2" height="53.8" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="200.0" y="121.1" width="30.2" height="98.9" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<text x="200.0" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q3'24</text>
+<rect x="257.1" y="179.0" width="30.2" height="41.0" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="290.7" y="136.7" width="30.2" height="83.3" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<text x="290.7" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q4'24</text>
+<rect x="347.8" y="220.0" width="30.2" height="7.0" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="381.3" y="144.1" width="30.2" height="75.9" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<text x="381.3" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q1'25</text>
+<rect x="438.5" y="220.0" width="30.2" height="83.7" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="472.0" y="120.4" width="30.2" height="99.6" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<text x="472.0" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q2'25</text>
+<rect x="529.1" y="82.1" width="30.2" height="137.9" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="562.7" y="120.0" width="30.2" height="100.0" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<text x="562.7" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q3'25</text>
+<rect x="619.8" y="186.2" width="30.2" height="33.8" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="653.3" y="128.6" width="30.2" height="91.4" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<text x="653.3" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q4'25</text>
+<rect x="710.5" y="158.7" width="30.2" height="61.3" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="744.0" y="151.9" width="30.2" height="68.1" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<text x="744.0" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q1'26</text>
+<rect x="801.1" y="220.0" width="30.2" height="29.0" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="834.7" y="137.0" width="30.2" height="83.0" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<text x="834.7" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q2'26</text>
+<rect x="74" y="42" width="12" height="12" rx="2" fill="#268bd2"/>
+<text x="91" y="52" font-size="11.5" fill="#586e75">순 Bill</text>
+<rect x="162" y="42" width="12" height="12" rx="2" fill="#cb4b16"/>
+<text x="179" y="52" font-size="11.5" fill="#586e75">순 Coupon</text>
+<text x="64" y="20" font-size="12.5" font-weight="bold" fill="#073642">[LEGAL] 분기 순발행 ($B) *부분</text></svg></div><div><svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<line x1="64" y1="328.0" x2="880" y2="328.0" stroke="#eee8d5"/>
+<text x="56" y="332.0" font-size="10" fill="#93a1a1" text-anchor="end">-480</text>
+<line x1="64" y1="283.0" x2="880" y2="283.0" stroke="#eee8d5"/>
+<text x="56" y="287.0" font-size="10" fill="#93a1a1" text-anchor="end">-280</text>
+<line x1="64" y1="238.0" x2="880" y2="238.0" stroke="#eee8d5"/>
+<text x="56" y="242.0" font-size="10" fill="#93a1a1" text-anchor="end">-80</text>
+<line x1="64" y1="193.0" x2="880" y2="193.0" stroke="#eee8d5"/>
+<text x="56" y="197.0" font-size="10" fill="#93a1a1" text-anchor="end">+120</text>
+<line x1="64" y1="148.0" x2="880" y2="148.0" stroke="#eee8d5"/>
+<text x="56" y="152.0" font-size="10" fill="#93a1a1" text-anchor="end">+320</text>
+<line x1="64" y1="103.0" x2="880" y2="103.0" stroke="#eee8d5"/>
+<text x="56" y="107.0" font-size="10" fill="#93a1a1" text-anchor="end">+520</text>
+<line x1="64" y1="58.0" x2="880" y2="58.0" stroke="#eee8d5"/>
+<text x="56" y="62.0" font-size="10" fill="#93a1a1" text-anchor="end">+720</text>
+<line x1="64" y1="220.0" x2="880" y2="220.0" stroke="#657b83" stroke-width="1.3"/>
+<rect x="75.8" y="220.0" width="20.1" height="56.8" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="98.2" y="153.1" width="20.1" height="66.9" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="120.5" y="207.7" width="20.1" height="12.3" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="109.3" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q2'24</text>
+<rect x="166.5" y="162.3" width="20.1" height="57.7" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="188.8" y="124.6" width="20.1" height="95.4" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="211.2" y="220.0" width="20.1" height="0.5" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="200.0" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q3'24</text>
+<rect x="257.1" y="174.8" width="20.1" height="45.2" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="279.5" y="146.8" width="20.1" height="73.2" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="301.8" y="214.1" width="20.1" height="5.9" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="290.7" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q4'24</text>
+<rect x="347.8" y="220.0" width="20.1" height="1.9" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="370.2" y="139.7" width="20.1" height="80.3" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="392.5" y="220.0" width="20.1" height="9.4" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="381.3" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q1'25</text>
+<rect x="438.5" y="220.0" width="20.1" height="79.7" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="460.8" y="134.5" width="20.1" height="85.5" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="483.2" y="209.9" width="20.1" height="10.1" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="472.0" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q2'25</text>
+<rect x="529.1" y="78.5" width="20.1" height="141.5" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="551.5" y="125.2" width="20.1" height="94.8" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="573.8" y="218.4" width="20.1" height="1.6" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="562.7" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q3'25</text>
+<rect x="619.8" y="184.0" width="20.1" height="36.0" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="642.2" y="141.1" width="20.1" height="78.9" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="664.5" y="209.7" width="20.1" height="10.3" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="653.3" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q4'25</text>
+<rect x="710.5" y="157.8" width="20.1" height="62.2" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="732.8" y="143.0" width="20.1" height="77.0" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="755.2" y="220.0" width="20.1" height="9.8" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="744.0" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q1'26</text>
+<rect x="801.1" y="220.0" width="20.1" height="28.6" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="823.5" y="154.2" width="20.1" height="65.8" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="845.8" y="203.2" width="20.1" height="16.8" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="834.7" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q2'26</text>
+<rect x="74" y="42" width="12" height="12" rx="2" fill="#268bd2"/>
+<text x="91" y="52" font-size="11.5" fill="#586e75">Front-end</text>
+<rect x="186" y="42" width="12" height="12" rx="2" fill="#cb4b16"/>
+<text x="203" y="52" font-size="11.5" fill="#586e75">Nominal</text>
+<rect x="282" y="42" width="12" height="12" rx="2" fill="#2aa198"/>
+<text x="299" y="52" font-size="11.5" fill="#586e75">Real(TIPS)</text>
+<text x="64" y="20" font-size="12.5" font-weight="bold" fill="#073642">[버킷] 분기 순발행 ($B) *부분</text></svg></div></div>
+<p class=note>순발행 Bill 비중(연간): <b>2024 23.0% → 2025 18.1% → 2026 17.6%</b>. 버킷 렌즈에선 front-end(Bill+FRN)와 real(TIPS)이 분리돼 보임.</p>
+<h3>③ 총발행 + CMB 태깅</h3><svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<line x1="64" y1="308.0" x2="880" y2="308.0" stroke="#eee8d5"/>
+<text x="56" y="312.0" font-size="10" fill="#93a1a1" text-anchor="end">+0</text>
+<line x1="64" y1="241.0" x2="880" y2="241.0" stroke="#eee8d5"/>
+<text x="56" y="245.0" font-size="10" fill="#93a1a1" text-anchor="end">+2000</text>
+<line x1="64" y1="174.0" x2="880" y2="174.0" stroke="#eee8d5"/>
+<text x="56" y="178.0" font-size="10" fill="#93a1a1" text-anchor="end">+4000</text>
+<line x1="64" y1="107.0" x2="880" y2="107.0" stroke="#eee8d5"/>
+<text x="56" y="111.0" font-size="10" fill="#93a1a1" text-anchor="end">+6000</text>
+<line x1="64" y1="40.0" x2="880" y2="40.0" stroke="#eee8d5"/>
+<text x="56" y="44.0" font-size="10" fill="#93a1a1" text-anchor="end">+8000</text>
+<line x1="64" y1="308.0" x2="880" y2="308.0" stroke="#657b83" stroke-width="1.3"/>
+<rect x="73.6" y="99.9" width="16.5" height="208.1" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="91.9" y="273.1" width="16.5" height="34.9" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="110.2" y="274.8" width="16.5" height="33.2" rx="1.5" fill="#dc322f" opacity="0.9"/>
+<text x="101.1" y="323" font-size="10" fill="#586e75" text-anchor="middle">2024Q1</text>
+<rect x="147.8" y="119.1" width="16.5" height="188.9" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="166.1" y="269.7" width="16.5" height="38.3" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="184.4" y="279.4" width="16.5" height="28.6" rx="1.5" fill="#dc322f" opacity="0.9"/>
+<text x="175.3" y="323" font-size="10" fill="#586e75" text-anchor="middle">2024Q2</text>
+<rect x="222.0" y="98.4" width="16.5" height="209.6" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="240.3" y="269.1" width="16.5" height="38.9" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="258.6" y="277.0" width="16.5" height="31.0" rx="1.5" fill="#dc322f" opacity="0.9"/>
+<text x="249.5" y="323" font-size="10" fill="#586e75" text-anchor="middle">2024Q3</text>
+<rect x="296.2" y="87.6" width="16.5" height="220.4" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="314.5" y="269.3" width="16.5" height="38.7" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="332.8" y="269.5" width="16.5" height="38.5" rx="1.5" fill="#dc322f" opacity="0.9"/>
+<text x="323.6" y="323" font-size="10" fill="#586e75" text-anchor="middle">2024Q4</text>
+<rect x="370.4" y="98.5" width="16.5" height="209.5" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="388.7" y="268.0" width="16.5" height="40.0" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="407.0" y="287.4" width="16.5" height="20.6" rx="1.5" fill="#dc322f" opacity="0.9"/>
+<text x="397.8" y="323" font-size="10" fill="#586e75" text-anchor="middle">2025Q1</text>
+<rect x="444.6" y="110.7" width="16.5" height="197.3" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="462.9" y="266.5" width="16.5" height="41.5" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="481.1" y="301.8" width="16.5" height="6.2" rx="1.5" fill="#dc322f" opacity="0.9"/>
+<text x="472.0" y="323" font-size="10" fill="#586e75" text-anchor="middle">2025Q2</text>
+<rect x="518.7" y="85.7" width="16.5" height="222.3" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="537.0" y="267.9" width="16.5" height="40.1" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="555.3" y="306.0" width="16.5" height="2.0" rx="1.5" fill="#dc322f" opacity="0.9"/>
+<text x="546.2" y="323" font-size="10" fill="#586e75" text-anchor="middle">2025Q3</text>
+<rect x="592.9" y="68.7" width="16.5" height="239.3" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="611.2" y="268.1" width="16.5" height="39.9" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="629.5" y="308.0" width="16.5" height="0.0" rx="1.5" fill="#dc322f" opacity="0.9"/>
+<text x="620.4" y="323" font-size="10" fill="#586e75" text-anchor="middle">2025Q4</text>
+<rect x="667.1" y="83.7" width="16.5" height="224.3" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="685.4" y="267.1" width="16.5" height="40.9" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="703.7" y="308.0" width="16.5" height="0.0" rx="1.5" fill="#dc322f" opacity="0.9"/>
+<text x="694.5" y="323" font-size="10" fill="#586e75" text-anchor="middle">2026Q1</text>
+<rect x="741.3" y="87.3" width="16.5" height="220.7" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="759.6" y="266.1" width="16.5" height="41.9" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="777.9" y="307.2" width="16.5" height="0.8" rx="1.5" fill="#dc322f" opacity="0.9"/>
+<text x="768.7" y="323" font-size="10" fill="#586e75" text-anchor="middle">2026Q2</text>
+<rect x="815.5" y="220.8" width="16.5" height="87.2" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="833.8" y="294.5" width="16.5" height="13.5" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="852.1" y="308.0" width="16.5" height="0.0" rx="1.5" fill="#dc322f" opacity="0.9"/>
+<text x="842.9" y="323" font-size="10" fill="#586e75" text-anchor="middle">2026Q3</text>
+<rect x="74" y="42" width="12" height="12" rx="2" fill="#268bd2"/>
+<text x="91" y="52" font-size="11.5" fill="#586e75">총 Bill</text>
+<rect x="162" y="42" width="12" height="12" rx="2" fill="#cb4b16"/>
+<text x="179" y="52" font-size="11.5" fill="#586e75">총 Coupon</text>
+<rect x="266" y="42" width="12" height="12" rx="2" fill="#dc322f"/>
+<text x="283" y="52" font-size="11.5" fill="#586e75">그중 CMB</text>
+<text x="64" y="20" font-size="12.5" font-weight="bold" fill="#073642">[총발행] Bill~85%(롤오버)+CMB 태깅(lumpy·부채한도)</text></svg>
+<p class=note>총발행 Bill ~85%(롤오버). <b>빨강=CMB</b>: 2024년 대량(부채한도 대비)→2025 하반기 소멸. CMB 급변을 "전략적 단기편중"으로 오독 금지.</p>
+<div class=card><div style="font-weight:600;margin-bottom:4px">📘 순발행 vs 총발행 — 왜 다르고 무엇을 봐야 하나</div>
+<table style="font-size:13px"><thead><tr><th></th><th>총발행 (gross)</th><th>순발행 (net)</th></tr></thead><tbody>
+<tr><td><b>정의</b></td><td>기간 내 모든 경매 발행액 합계</td><td>총발행 − 만기상환 = <b>실제 늘어난 빚</b> (=월말 잔액 증감)</td></tr>
+<tr><td><b>Bill 비중</b></td><td class=n>~84% (거의 고정)</td><td class=n>2024 23.0% / 2025 18.1% / 2026 17.6% (요동)</td></tr>
+<tr><td><b>왜 다른가</b></td><td>Bill은 4주~1년마다 만기→재발행(<b>롤오버</b>). 같은 원금이 매번 다시 계상 → gross가 Bill로 부풀려짐</td><td>롤오버는 상쇄(발행=만기)되어 <b>0에 수렴</b> → 신규 자금을 어느 만기로 조달했는지만 남음</td></tr>
+<tr><td><b>무엇을 말하나</b></td><td>시장 회전율·유동성·롤오버 리스크(단기 재조달 부담)</td><td><b>재무부의 조달 만기 선택 = 정책 신호</b></td></tr>
+</tbody></table>
+<p class=note style="margin-top:6px">🔴 <b>"발행 비중"의 정책 판단은 반드시 순발행(+잔액 비중)으로</b>. 총발행 Bill ~85%는 "재무부가 단기채를 85% 발행한다"가 <b>아니라</b> Bill이 자주 롤오버된다는 뜻일 뿐. 다만 총발행이 큰 것 자체는 <b>단기 재조달 의존(rollover risk)</b>이라는 별개 리스크 신호.</p></div>
+
+<h2>🎯 발행 → 금리 Overlay (핵심)</h2>
+<div class=card><p><span class=tag>본 분석</span> 버킷별 공급을 대응 금리와 대조:</p></div>
+<h3>단기 (front-end = Bill+FRN+CMB)</h3>
+<div class=two><div><svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<line x1="64" y1="328.0" x2="880" y2="328.0" stroke="#eee8d5"/>
+<text x="56" y="332.0" font-size="10" fill="#93a1a1" text-anchor="end">-480</text>
+<line x1="64" y1="283.0" x2="880" y2="283.0" stroke="#eee8d5"/>
+<text x="56" y="287.0" font-size="10" fill="#93a1a1" text-anchor="end">-280</text>
+<line x1="64" y1="238.0" x2="880" y2="238.0" stroke="#eee8d5"/>
+<text x="56" y="242.0" font-size="10" fill="#93a1a1" text-anchor="end">-80</text>
+<line x1="64" y1="193.0" x2="880" y2="193.0" stroke="#eee8d5"/>
+<text x="56" y="197.0" font-size="10" fill="#93a1a1" text-anchor="end">+120</text>
+<line x1="64" y1="148.0" x2="880" y2="148.0" stroke="#eee8d5"/>
+<text x="56" y="152.0" font-size="10" fill="#93a1a1" text-anchor="end">+320</text>
+<line x1="64" y1="103.0" x2="880" y2="103.0" stroke="#eee8d5"/>
+<text x="56" y="107.0" font-size="10" fill="#93a1a1" text-anchor="end">+520</text>
+<line x1="64" y1="58.0" x2="880" y2="58.0" stroke="#eee8d5"/>
+<text x="56" y="62.0" font-size="10" fill="#93a1a1" text-anchor="end">+720</text>
+<line x1="64" y1="220.0" x2="880" y2="220.0" stroke="#657b83" stroke-width="1.3"/>
+<rect x="75.8" y="220.0" width="20.1" height="56.8" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="98.2" y="153.1" width="20.1" height="66.9" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="120.5" y="207.7" width="20.1" height="12.3" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="109.3" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q2'24</text>
+<rect x="166.5" y="162.3" width="20.1" height="57.7" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="188.8" y="124.6" width="20.1" height="95.4" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="211.2" y="220.0" width="20.1" height="0.5" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="200.0" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q3'24</text>
+<rect x="257.1" y="174.8" width="20.1" height="45.2" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="279.5" y="146.8" width="20.1" height="73.2" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="301.8" y="214.1" width="20.1" height="5.9" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="290.7" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q4'24</text>
+<rect x="347.8" y="220.0" width="20.1" height="1.9" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="370.2" y="139.7" width="20.1" height="80.3" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="392.5" y="220.0" width="20.1" height="9.4" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="381.3" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q1'25</text>
+<rect x="438.5" y="220.0" width="20.1" height="79.7" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="460.8" y="134.5" width="20.1" height="85.5" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="483.2" y="209.9" width="20.1" height="10.1" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="472.0" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q2'25</text>
+<rect x="529.1" y="78.5" width="20.1" height="141.5" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="551.5" y="125.2" width="20.1" height="94.8" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="573.8" y="218.4" width="20.1" height="1.6" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="562.7" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q3'25</text>
+<rect x="619.8" y="184.0" width="20.1" height="36.0" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="642.2" y="141.1" width="20.1" height="78.9" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="664.5" y="209.7" width="20.1" height="10.3" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="653.3" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q4'25</text>
+<rect x="710.5" y="157.8" width="20.1" height="62.2" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="732.8" y="143.0" width="20.1" height="77.0" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="755.2" y="220.0" width="20.1" height="9.8" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="744.0" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q1'26</text>
+<rect x="801.1" y="220.0" width="20.1" height="28.6" rx="1.5" fill="#268bd2" opacity="0.9"/>
+<rect x="823.5" y="154.2" width="20.1" height="65.8" rx="1.5" fill="#cb4b16" opacity="0.9"/>
+<rect x="845.8" y="203.2" width="20.1" height="16.8" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="834.7" y="343" font-size="10" fill="#586e75" text-anchor="middle">Q2'26</text>
+<rect x="74" y="42" width="12" height="12" rx="2" fill="#268bd2"/>
+<text x="91" y="52" font-size="11.5" fill="#586e75">Front-end</text>
+<rect x="186" y="42" width="12" height="12" rx="2" fill="#cb4b16"/>
+<text x="203" y="52" font-size="11.5" fill="#586e75">Nominal</text>
+<rect x="282" y="42" width="12" height="12" rx="2" fill="#2aa198"/>
+<text x="299" y="52" font-size="11.5" fill="#586e75">Real(TIPS)</text>
+<text x="64" y="20" font-size="12.5" font-weight="bold" fill="#073642">[버킷] 분기 순발행 ($B) *부분</text></svg></div><div><svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<line x1="64" y1="290.0" x2="744" y2="290.0" stroke="#eee8d5"/>
+<text x="56" y="294.0" font-size="10.5" fill="#93a1a1" text-anchor="end">3.0%</text>
+<line x1="64" y1="240.8" x2="744" y2="240.8" stroke="#eee8d5"/>
+<text x="56" y="244.8" font-size="10.5" fill="#93a1a1" text-anchor="end">3.5%</text>
+<line x1="64" y1="191.5" x2="744" y2="191.5" stroke="#eee8d5"/>
+<text x="56" y="195.5" font-size="10.5" fill="#93a1a1" text-anchor="end">4.0%</text>
+<line x1="64" y1="142.3" x2="744" y2="142.3" stroke="#eee8d5"/>
+<text x="56" y="146.3" font-size="10.5" fill="#93a1a1" text-anchor="end">4.5%</text>
+<line x1="64" y1="93.1" x2="744" y2="93.1" stroke="#eee8d5"/>
+<text x="56" y="97.1" font-size="10.5" fill="#93a1a1" text-anchor="end">5.0%</text>
+<line x1="64" y1="43.8" x2="744" y2="43.8" stroke="#eee8d5"/>
+<text x="56" y="47.8" font-size="10.5" fill="#93a1a1" text-anchor="end">5.5%</text>
+<text x="64.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.01</text>
+<text x="134.3" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.04</text>
+<text x="204.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.07</text>
+<text x="275.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.10</text>
+<text x="345.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.01</text>
+<text x="415.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.04</text>
+<text x="486.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.07</text>
+<text x="556.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.10</text>
+<text x="626.8" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.01</text>
+<text x="697.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.04</text>
+<text x="744.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.06</text>
+<polyline points="64.0,71.4 87.4,68.5 110.9,70.4 134.3,68.5 157.8,68.5 181.2,71.4 204.7,78.3 228.1,95.0 251.6,140.3 275.0,148.2 298.5,153.1 321.9,168.9 345.4,171.8 368.8,171.8 392.3,170.9 415.7,171.8 439.2,166.9 462.6,167.9 486.1,167.9 509.5,186.6 533.0,205.3 556.4,218.1 579.9,218.1 603.3,233.9 626.8,232.9 650.2,231.9 673.7,229.9 697.1,231.9 720.6,230.9 744.0,217.1" fill="none" stroke="#268bd2" stroke-width="2.5"/>
+<circle cx="64.0" cy="71.4" r="2.1" fill="#268bd2"/>
+<circle cx="87.4" cy="68.5" r="2.1" fill="#268bd2"/>
+<circle cx="110.9" cy="70.4" r="2.1" fill="#268bd2"/>
+<circle cx="134.3" cy="68.5" r="2.1" fill="#268bd2"/>
+<circle cx="157.8" cy="68.5" r="2.1" fill="#268bd2"/>
+<circle cx="181.2" cy="71.4" r="2.1" fill="#268bd2"/>
+<circle cx="204.7" cy="78.3" r="2.1" fill="#268bd2"/>
+<circle cx="228.1" cy="95.0" r="2.1" fill="#268bd2"/>
+<circle cx="251.6" cy="140.3" r="2.1" fill="#268bd2"/>
+<circle cx="275.0" cy="148.2" r="2.1" fill="#268bd2"/>
+<circle cx="298.5" cy="153.1" r="2.1" fill="#268bd2"/>
+<circle cx="321.9" cy="168.9" r="2.1" fill="#268bd2"/>
+<circle cx="345.4" cy="171.8" r="2.1" fill="#268bd2"/>
+<circle cx="368.8" cy="171.8" r="2.1" fill="#268bd2"/>
+<circle cx="392.3" cy="170.9" r="2.1" fill="#268bd2"/>
+<circle cx="415.7" cy="171.8" r="2.1" fill="#268bd2"/>
+<circle cx="439.2" cy="166.9" r="2.1" fill="#268bd2"/>
+<circle cx="462.6" cy="167.9" r="2.1" fill="#268bd2"/>
+<circle cx="486.1" cy="167.9" r="2.1" fill="#268bd2"/>
+<circle cx="509.5" cy="186.6" r="2.1" fill="#268bd2"/>
+<circle cx="533.0" cy="205.3" r="2.1" fill="#268bd2"/>
+<circle cx="556.4" cy="218.1" r="2.1" fill="#268bd2"/>
+<circle cx="579.9" cy="218.1" r="2.1" fill="#268bd2"/>
+<circle cx="603.3" cy="233.9" r="2.1" fill="#268bd2"/>
+<circle cx="626.8" cy="232.9" r="2.1" fill="#268bd2"/>
+<circle cx="650.2" cy="231.9" r="2.1" fill="#268bd2"/>
+<circle cx="673.7" cy="229.9" r="2.1" fill="#268bd2"/>
+<circle cx="697.1" cy="231.9" r="2.1" fill="#268bd2"/>
+<circle cx="720.6" cy="230.9" r="2.1" fill="#268bd2"/>
+<circle cx="744.0" cy="217.1" r="2.1" fill="#268bd2"/>
+<polyline points="64.0,61.6 87.4,61.6 110.9,59.6 134.3,59.6 157.8,59.6 181.2,60.6 204.7,55.7 228.1,61.6 251.6,97.0 275.0,102.9 298.5,133.4 321.9,143.3 345.4,154.1 368.8,153.1 392.3,151.2 415.7,151.2 439.2,157.1 462.6,147.2 486.1,153.1 509.5,158.1 533.0,167.9 556.4,169.9 579.9,179.7 603.3,204.3 626.8,223.0 650.2,223.0 673.7,223.0 697.1,225.0 720.6,228.0 744.0,223.0" fill="none" stroke="#2aa198" stroke-width="2.5"/>
+<circle cx="64.0" cy="61.6" r="2.1" fill="#2aa198"/>
+<circle cx="87.4" cy="61.6" r="2.1" fill="#2aa198"/>
+<circle cx="110.9" cy="59.6" r="2.1" fill="#2aa198"/>
+<circle cx="134.3" cy="59.6" r="2.1" fill="#2aa198"/>
+<circle cx="157.8" cy="59.6" r="2.1" fill="#2aa198"/>
+<circle cx="181.2" cy="60.6" r="2.1" fill="#2aa198"/>
+<circle cx="204.7" cy="55.7" r="2.1" fill="#2aa198"/>
+<circle cx="228.1" cy="61.6" r="2.1" fill="#2aa198"/>
+<circle cx="251.6" cy="97.0" r="2.1" fill="#2aa198"/>
+<circle cx="275.0" cy="102.9" r="2.1" fill="#2aa198"/>
+<circle cx="298.5" cy="133.4" r="2.1" fill="#2aa198"/>
+<circle cx="321.9" cy="143.3" r="2.1" fill="#2aa198"/>
+<circle cx="345.4" cy="154.1" r="2.1" fill="#2aa198"/>
+<circle cx="368.8" cy="153.1" r="2.1" fill="#2aa198"/>
+<circle cx="392.3" cy="151.2" r="2.1" fill="#2aa198"/>
+<circle cx="415.7" cy="151.2" r="2.1" fill="#2aa198"/>
+<circle cx="439.2" cy="157.1" r="2.1" fill="#2aa198"/>
+<circle cx="462.6" cy="147.2" r="2.1" fill="#2aa198"/>
+<circle cx="486.1" cy="153.1" r="2.1" fill="#2aa198"/>
+<circle cx="509.5" cy="158.1" r="2.1" fill="#2aa198"/>
+<circle cx="533.0" cy="167.9" r="2.1" fill="#2aa198"/>
+<circle cx="556.4" cy="169.9" r="2.1" fill="#2aa198"/>
+<circle cx="579.9" cy="179.7" r="2.1" fill="#2aa198"/>
+<circle cx="603.3" cy="204.3" r="2.1" fill="#2aa198"/>
+<circle cx="626.8" cy="223.0" r="2.1" fill="#2aa198"/>
+<circle cx="650.2" cy="223.0" r="2.1" fill="#2aa198"/>
+<circle cx="673.7" cy="223.0" r="2.1" fill="#2aa198"/>
+<circle cx="697.1" cy="225.0" r="2.1" fill="#2aa198"/>
+<circle cx="720.6" cy="228.0" r="2.1" fill="#2aa198"/>
+<circle cx="744.0" cy="223.0" r="2.1" fill="#2aa198"/>
+<polyline points="64.0,165.0 87.4,128.5 110.9,133.4 134.3,89.1 157.8,103.9 181.2,121.6 204.7,163.0 228.1,200.4 251.6,225.0 275.0,175.8 298.5,178.7 321.9,166.9 345.4,169.9 368.8,192.5 392.3,202.4 415.7,230.9 439.2,202.4 462.6,219.1 486.1,197.4 509.5,231.9 533.0,230.9 556.4,230.9 579.9,243.7 603.3,243.7 626.8,238.8 650.2,252.6 673.7,212.2 697.1,203.4 720.6,193.5 744.0,177.8" fill="none" stroke="#6c71c4" stroke-width="2.5"/>
+<circle cx="64.0" cy="165.0" r="2.1" fill="#6c71c4"/>
+<circle cx="87.4" cy="128.5" r="2.1" fill="#6c71c4"/>
+<circle cx="110.9" cy="133.4" r="2.1" fill="#6c71c4"/>
+<circle cx="134.3" cy="89.1" r="2.1" fill="#6c71c4"/>
+<circle cx="157.8" cy="103.9" r="2.1" fill="#6c71c4"/>
+<circle cx="181.2" cy="121.6" r="2.1" fill="#6c71c4"/>
+<circle cx="204.7" cy="163.0" r="2.1" fill="#6c71c4"/>
+<circle cx="228.1" cy="200.4" r="2.1" fill="#6c71c4"/>
+<circle cx="251.6" cy="225.0" r="2.1" fill="#6c71c4"/>
+<circle cx="275.0" cy="175.8" r="2.1" fill="#6c71c4"/>
+<circle cx="298.5" cy="178.7" r="2.1" fill="#6c71c4"/>
+<circle cx="321.9" cy="166.9" r="2.1" fill="#6c71c4"/>
+<circle cx="345.4" cy="169.9" r="2.1" fill="#6c71c4"/>
+<circle cx="368.8" cy="192.5" r="2.1" fill="#6c71c4"/>
+<circle cx="392.3" cy="202.4" r="2.1" fill="#6c71c4"/>
+<circle cx="415.7" cy="230.9" r="2.1" fill="#6c71c4"/>
+<circle cx="439.2" cy="202.4" r="2.1" fill="#6c71c4"/>
+<circle cx="462.6" cy="219.1" r="2.1" fill="#6c71c4"/>
+<circle cx="486.1" cy="197.4" r="2.1" fill="#6c71c4"/>
+<circle cx="509.5" cy="231.9" r="2.1" fill="#6c71c4"/>
+<circle cx="533.0" cy="230.9" r="2.1" fill="#6c71c4"/>
+<circle cx="556.4" cy="230.9" r="2.1" fill="#6c71c4"/>
+<circle cx="579.9" cy="243.7" r="2.1" fill="#6c71c4"/>
+<circle cx="603.3" cy="243.7" r="2.1" fill="#6c71c4"/>
+<circle cx="626.8" cy="238.8" r="2.1" fill="#6c71c4"/>
+<circle cx="650.2" cy="252.6" r="2.1" fill="#6c71c4"/>
+<circle cx="673.7" cy="212.2" r="2.1" fill="#6c71c4"/>
+<circle cx="697.1" cy="203.4" r="2.1" fill="#6c71c4"/>
+<circle cx="720.6" cy="193.5" r="2.1" fill="#6c71c4"/>
+<circle cx="744.0" cy="177.8" r="2.1" fill="#6c71c4"/>
+<rect x="756" y="40" width="13" height="4" rx="2" fill="#268bd2"/>
+<text x="774" y="47" font-size="11" fill="#586e75">3M T-bill</text>
+<rect x="756" y="61" width="13" height="4" rx="2" fill="#2aa198"/>
+<text x="774" y="68" font-size="11" fill="#586e75">SOFR</text>
+<rect x="756" y="82" width="13" height="4" rx="2" fill="#6c71c4"/>
+<text x="774" y="89" font-size="11" fill="#586e75">2Y</text>
+<text x="64" y="18" font-size="12.5" font-weight="bold" fill="#073642">단기금리 (front-end 공급이 닿는 곳)</text></svg></div></div>
+<svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<line x1="64" y1="290.0" x2="880" y2="290.0" stroke="#eee8d5"/>
+<text x="56" y="294.0" font-size="10.5" fill="#93a1a1" text-anchor="end">$0B</text>
+<line x1="64" y1="253.4" x2="880" y2="253.4" stroke="#eee8d5"/>
+<text x="56" y="257.4" font-size="10.5" fill="#93a1a1" text-anchor="end">$100B</text>
+<line x1="64" y1="216.9" x2="880" y2="216.9" stroke="#eee8d5"/>
+<text x="56" y="220.9" font-size="10.5" fill="#93a1a1" text-anchor="end">$200B</text>
+<line x1="64" y1="180.3" x2="880" y2="180.3" stroke="#eee8d5"/>
+<text x="56" y="184.3" font-size="10.5" fill="#93a1a1" text-anchor="end">$300B</text>
+<line x1="64" y1="143.7" x2="880" y2="143.7" stroke="#eee8d5"/>
+<text x="56" y="147.7" font-size="10.5" fill="#93a1a1" text-anchor="end">$400B</text>
+<line x1="64" y1="107.1" x2="880" y2="107.1" stroke="#eee8d5"/>
+<text x="56" y="111.1" font-size="10.5" fill="#93a1a1" text-anchor="end">$500B</text>
+<line x1="64" y1="70.6" x2="880" y2="70.6" stroke="#eee8d5"/>
+<text x="56" y="74.6" font-size="10.5" fill="#93a1a1" text-anchor="end">$600B</text>
+<line x1="64" y1="34.0" x2="880" y2="34.0" stroke="#eee8d5"/>
+<text x="56" y="38.0" font-size="10.5" fill="#93a1a1" text-anchor="end">$700B</text>
+<text x="64.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.01</text>
+<text x="148.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.04</text>
+<text x="232.8" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.07</text>
+<text x="317.2" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.10</text>
+<text x="401.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.01</text>
+<text x="486.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.04</text>
+<text x="570.5" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.07</text>
+<text x="654.9" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.10</text>
+<text x="739.3" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.01</text>
+<text x="823.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.04</text>
+<text x="880.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.06</text>
+<polygon points="64.0,290 64.0,64.9 92.1,106.4 120.3,72.6 148.4,94.6 176.6,129.2 204.7,47.0 232.8,138.9 261.0,131.6 289.1,119.7 317.2,216.4 345.4,217.7 373.5,116.8 401.7,221.3 429.8,204.3 457.9,144.0 486.1,198.4 514.2,174.6 542.3,121.5 570.5,211.6 598.6,261.5 626.8,272.1 654.9,271.1 683.0,287.2 711.2,251.2 739.3,286.5 767.4,284.0 795.6,284.2 823.7,287.0 851.9,285.7 880.0,280.2 880.0,290" fill="#657b83" opacity="0.08"/>
+<polyline points="64.0,64.9 92.1,106.4 120.3,72.6 148.4,94.6 176.6,129.2 204.7,47.0 232.8,138.9 261.0,131.6 289.1,119.7 317.2,216.4 345.4,217.7 373.5,116.8 401.7,221.3 429.8,204.3 457.9,144.0 486.1,198.4 514.2,174.6 542.3,121.5 570.5,211.6 598.6,261.5 626.8,272.1 654.9,271.1 683.0,287.2 711.2,251.2 739.3,286.5 767.4,284.0 795.6,284.2 823.7,287.0 851.9,285.7 880.0,280.2" fill="none" stroke="#657b83" stroke-width="2.5"/>
+<circle cx="64.0" cy="64.9" r="2.1" fill="#657b83"/>
+<circle cx="92.1" cy="106.4" r="2.1" fill="#657b83"/>
+<circle cx="120.3" cy="72.6" r="2.1" fill="#657b83"/>
+<circle cx="148.4" cy="94.6" r="2.1" fill="#657b83"/>
+<circle cx="176.6" cy="129.2" r="2.1" fill="#657b83"/>
+<circle cx="204.7" cy="47.0" r="2.1" fill="#657b83"/>
+<circle cx="232.8" cy="138.9" r="2.1" fill="#657b83"/>
+<circle cx="261.0" cy="131.6" r="2.1" fill="#657b83"/>
+<circle cx="289.1" cy="119.7" r="2.1" fill="#657b83"/>
+<circle cx="317.2" cy="216.4" r="2.1" fill="#657b83"/>
+<circle cx="345.4" cy="217.7" r="2.1" fill="#657b83"/>
+<circle cx="373.5" cy="116.8" r="2.1" fill="#657b83"/>
+<circle cx="401.7" cy="221.3" r="2.1" fill="#657b83"/>
+<circle cx="429.8" cy="204.3" r="2.1" fill="#657b83"/>
+<circle cx="457.9" cy="144.0" r="2.1" fill="#657b83"/>
+<circle cx="486.1" cy="198.4" r="2.1" fill="#657b83"/>
+<circle cx="514.2" cy="174.6" r="2.1" fill="#657b83"/>
+<circle cx="542.3" cy="121.5" r="2.1" fill="#657b83"/>
+<circle cx="570.5" cy="211.6" r="2.1" fill="#657b83"/>
+<circle cx="598.6" cy="261.5" r="2.1" fill="#657b83"/>
+<circle cx="626.8" cy="272.1" r="2.1" fill="#657b83"/>
+<circle cx="654.9" cy="271.1" r="2.1" fill="#657b83"/>
+<circle cx="683.0" cy="287.2" r="2.1" fill="#657b83"/>
+<circle cx="711.2" cy="251.2" r="2.1" fill="#657b83"/>
+<circle cx="739.3" cy="286.5" r="2.1" fill="#657b83"/>
+<circle cx="767.4" cy="284.0" r="2.1" fill="#657b83"/>
+<circle cx="795.6" cy="284.2" r="2.1" fill="#657b83"/>
+<circle cx="823.7" cy="287.0" r="2.1" fill="#657b83"/>
+<circle cx="851.9" cy="285.7" r="2.1" fill="#657b83"/>
+<circle cx="880.0" cy="280.2" r="2.1" fill="#657b83"/>
+<text x="64" y="18" font-size="12.5" font-weight="bold" fill="#073642">익일 역레포(RRP) 잔액 — front-end 유동성 완충 소진</text></svg>
+<p class=note>Fed가 단기금리를 5.22→3.74% 내렸으나, <b>RRP 완충 소진(615.38→26.90B)</b> + 대량 Bill 공급이 겹쳐 front-end는 MMF가 직접 흡수. SOFR 5.32→3.68%. → 단기금리는 <b>연준 경로가 1차 동인</b>, Bill 공급은 <b>RRP 소진 이후</b> 프리미엄(레포·bill 스프레드)으로 나타남.</p>
+<h3>장기 명목 (nominal = Notes+Bonds)</h3>
+<div class=two><div><svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<line x1="64" y1="290.0" x2="744" y2="290.0" stroke="#eee8d5"/>
+<text x="56" y="294.0" font-size="10.5" fill="#93a1a1" text-anchor="end">3.5%</text>
+<line x1="64" y1="222.6" x2="744" y2="222.6" stroke="#eee8d5"/>
+<text x="56" y="226.6" font-size="10.5" fill="#93a1a1" text-anchor="end">4.0%</text>
+<line x1="64" y1="155.3" x2="744" y2="155.3" stroke="#eee8d5"/>
+<text x="56" y="159.3" font-size="10.5" fill="#93a1a1" text-anchor="end">4.5%</text>
+<line x1="64" y1="87.9" x2="744" y2="87.9" stroke="#eee8d5"/>
+<text x="56" y="91.9" font-size="10.5" fill="#93a1a1" text-anchor="end">5.0%</text>
+<text x="64.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.01</text>
+<text x="134.3" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.04</text>
+<text x="204.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.07</text>
+<text x="275.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.10</text>
+<text x="345.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.01</text>
+<text x="415.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.04</text>
+<text x="486.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.07</text>
+<text x="556.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.10</text>
+<text x="626.8" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.01</text>
+<text x="697.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.04</text>
+<text x="744.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.06</text>
+<polyline points="64.0,224.0 87.4,188.9 110.9,195.7 134.3,129.7 157.8,153.9 181.2,174.1 204.7,210.5 228.1,234.8 251.6,248.2 275.0,184.9 298.5,198.4 321.9,144.5 345.4,144.5 368.8,190.3 392.3,191.6 415.7,199.7 439.2,167.4 462.6,190.3 486.1,172.8 509.5,191.6 533.0,201.1 556.4,207.8 579.9,219.9 603.3,198.4 626.8,187.6 650.2,226.7 673.7,182.2 697.1,168.7 720.6,162.0 744.0,163.3" fill="none" stroke="#cb4b16" stroke-width="2.5"/>
+<circle cx="64.0" cy="224.0" r="2.1" fill="#cb4b16"/>
+<circle cx="87.4" cy="188.9" r="2.1" fill="#cb4b16"/>
+<circle cx="110.9" cy="195.7" r="2.1" fill="#cb4b16"/>
+<circle cx="134.3" cy="129.7" r="2.1" fill="#cb4b16"/>
+<circle cx="157.8" cy="153.9" r="2.1" fill="#cb4b16"/>
+<circle cx="181.2" cy="174.1" r="2.1" fill="#cb4b16"/>
+<circle cx="204.7" cy="210.5" r="2.1" fill="#cb4b16"/>
+<circle cx="228.1" cy="234.8" r="2.1" fill="#cb4b16"/>
+<circle cx="251.6" cy="248.2" r="2.1" fill="#cb4b16"/>
+<circle cx="275.0" cy="184.9" r="2.1" fill="#cb4b16"/>
+<circle cx="298.5" cy="198.4" r="2.1" fill="#cb4b16"/>
+<circle cx="321.9" cy="144.5" r="2.1" fill="#cb4b16"/>
+<circle cx="345.4" cy="144.5" r="2.1" fill="#cb4b16"/>
+<circle cx="368.8" cy="190.3" r="2.1" fill="#cb4b16"/>
+<circle cx="392.3" cy="191.6" r="2.1" fill="#cb4b16"/>
+<circle cx="415.7" cy="199.7" r="2.1" fill="#cb4b16"/>
+<circle cx="439.2" cy="167.4" r="2.1" fill="#cb4b16"/>
+<circle cx="462.6" cy="190.3" r="2.1" fill="#cb4b16"/>
+<circle cx="486.1" cy="172.8" r="2.1" fill="#cb4b16"/>
+<circle cx="509.5" cy="191.6" r="2.1" fill="#cb4b16"/>
+<circle cx="533.0" cy="201.1" r="2.1" fill="#cb4b16"/>
+<circle cx="556.4" cy="207.8" r="2.1" fill="#cb4b16"/>
+<circle cx="579.9" cy="219.9" r="2.1" fill="#cb4b16"/>
+<circle cx="603.3" cy="198.4" r="2.1" fill="#cb4b16"/>
+<circle cx="626.8" cy="187.6" r="2.1" fill="#cb4b16"/>
+<circle cx="650.2" cy="226.7" r="2.1" fill="#cb4b16"/>
+<circle cx="673.7" cy="182.2" r="2.1" fill="#cb4b16"/>
+<circle cx="697.1" cy="168.7" r="2.1" fill="#cb4b16"/>
+<circle cx="720.6" cy="162.0" r="2.1" fill="#cb4b16"/>
+<circle cx="744.0" cy="163.3" r="2.1" fill="#cb4b16"/>
+<polyline points="64.0,193.0 87.4,171.4 110.9,176.8 134.3,116.2 157.8,135.1 181.2,153.9 204.7,175.5 228.1,195.7 251.6,203.8 275.0,159.3 298.5,174.1 321.9,117.5 345.4,110.8 368.8,153.9 392.3,143.1 415.7,133.7 439.2,98.7 462.6,117.5 486.1,102.7 509.5,98.7 533.0,124.3 556.4,132.4 579.9,132.4 603.3,109.5 626.8,105.4 650.2,136.4 673.7,104.1 697.1,90.6 720.6,89.2 744.0,100.0" fill="none" stroke="#dc322f" stroke-width="2.5"/>
+<circle cx="64.0" cy="193.0" r="2.1" fill="#dc322f"/>
+<circle cx="87.4" cy="171.4" r="2.1" fill="#dc322f"/>
+<circle cx="110.9" cy="176.8" r="2.1" fill="#dc322f"/>
+<circle cx="134.3" cy="116.2" r="2.1" fill="#dc322f"/>
+<circle cx="157.8" cy="135.1" r="2.1" fill="#dc322f"/>
+<circle cx="181.2" cy="153.9" r="2.1" fill="#dc322f"/>
+<circle cx="204.7" cy="175.5" r="2.1" fill="#dc322f"/>
+<circle cx="228.1" cy="195.7" r="2.1" fill="#dc322f"/>
+<circle cx="251.6" cy="203.8" r="2.1" fill="#dc322f"/>
+<circle cx="275.0" cy="159.3" r="2.1" fill="#dc322f"/>
+<circle cx="298.5" cy="174.1" r="2.1" fill="#dc322f"/>
+<circle cx="321.9" cy="117.5" r="2.1" fill="#dc322f"/>
+<circle cx="345.4" cy="110.8" r="2.1" fill="#dc322f"/>
+<circle cx="368.8" cy="153.9" r="2.1" fill="#dc322f"/>
+<circle cx="392.3" cy="143.1" r="2.1" fill="#dc322f"/>
+<circle cx="415.7" cy="133.7" r="2.1" fill="#dc322f"/>
+<circle cx="439.2" cy="98.7" r="2.1" fill="#dc322f"/>
+<circle cx="462.6" cy="117.5" r="2.1" fill="#dc322f"/>
+<circle cx="486.1" cy="102.7" r="2.1" fill="#dc322f"/>
+<circle cx="509.5" cy="98.7" r="2.1" fill="#dc322f"/>
+<circle cx="533.0" cy="124.3" r="2.1" fill="#dc322f"/>
+<circle cx="556.4" cy="132.4" r="2.1" fill="#dc322f"/>
+<circle cx="579.9" cy="132.4" r="2.1" fill="#dc322f"/>
+<circle cx="603.3" cy="109.5" r="2.1" fill="#dc322f"/>
+<circle cx="626.8" cy="105.4" r="2.1" fill="#dc322f"/>
+<circle cx="650.2" cy="136.4" r="2.1" fill="#dc322f"/>
+<circle cx="673.7" cy="104.1" r="2.1" fill="#dc322f"/>
+<circle cx="697.1" cy="90.6" r="2.1" fill="#dc322f"/>
+<circle cx="720.6" cy="89.2" r="2.1" fill="#dc322f"/>
+<circle cx="744.0" cy="100.0" r="2.1" fill="#dc322f"/>
+<rect x="756" y="40" width="13" height="4" rx="2" fill="#cb4b16"/>
+<text x="774" y="47" font-size="11" fill="#586e75">10Y</text>
+<rect x="756" y="61" width="13" height="4" rx="2" fill="#dc322f"/>
+<text x="774" y="68" font-size="11" fill="#586e75">30Y</text>
+<text x="64" y="18" font-size="12.5" font-weight="bold" fill="#073642">장기 명목금리 (nominal 공급·WAM이 닿는 곳)</text></svg></div><div><svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<line x1="64" y1="290.0" x2="880" y2="290.0" stroke="#eee8d5"/>
+<text x="56" y="294.0" font-size="10.5" fill="#93a1a1" text-anchor="end">-0.2%</text>
+<line x1="64" y1="247.3" x2="880" y2="247.3" stroke="#eee8d5"/>
+<text x="56" y="251.3" font-size="10.5" fill="#93a1a1" text-anchor="end">0.0%</text>
+<line x1="64" y1="204.7" x2="880" y2="204.7" stroke="#eee8d5"/>
+<text x="56" y="208.7" font-size="10.5" fill="#93a1a1" text-anchor="end">0.2%</text>
+<line x1="64" y1="162.0" x2="880" y2="162.0" stroke="#eee8d5"/>
+<text x="56" y="166.0" font-size="10.5" fill="#93a1a1" text-anchor="end">0.4%</text>
+<line x1="64" y1="119.3" x2="880" y2="119.3" stroke="#eee8d5"/>
+<text x="56" y="123.3" font-size="10.5" fill="#93a1a1" text-anchor="end">0.6%</text>
+<line x1="64" y1="76.7" x2="880" y2="76.7" stroke="#eee8d5"/>
+<text x="56" y="80.7" font-size="10.5" fill="#93a1a1" text-anchor="end">0.8%</text>
+<line x1="64" y1="34.0" x2="880" y2="34.0" stroke="#eee8d5"/>
+<text x="56" y="38.0" font-size="10.5" fill="#93a1a1" text-anchor="end">1.0%</text>
+<text x="64.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.01</text>
+<text x="148.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.04</text>
+<text x="232.8" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.07</text>
+<text x="317.2" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.10</text>
+<text x="401.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.01</text>
+<text x="486.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.04</text>
+<text x="570.5" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.07</text>
+<text x="654.9" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.10</text>
+<text x="739.3" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.01</text>
+<text x="823.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.04</text>
+<text x="880.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.06</text>
+<polygon points="64.0,290 64.0,210.9 92.1,181.3 120.3,189.1 148.4,135.3 176.6,153.1 204.7,176.7 232.8,200.5 261.0,215.8 289.1,205.8 317.2,143.0 345.4,151.6 373.5,100.7 401.7,101.5 429.8,139.3 457.9,140.9 486.1,154.5 514.2,129.7 542.3,149.1 570.5,135.1 598.6,146.5 626.8,140.0 654.9,141.2 683.0,151.2 711.2,125.5 739.3,116.2 767.4,148.6 795.6,107.8 823.7,97.2 851.9,86.5 880.0,98.7 880.0,290" fill="#6c71c4" opacity="0.08"/>
+<polyline points="64.0,210.9 92.1,181.3 120.3,189.1 148.4,135.3 176.6,153.1 204.7,176.7 232.8,200.5 261.0,215.8 289.1,205.8 317.2,143.0 345.4,151.6 373.5,100.7 401.7,101.5 429.8,139.3 457.9,140.9 486.1,154.5 514.2,129.7 542.3,149.1 570.5,135.1 598.6,146.5 626.8,140.0 654.9,141.2 683.0,151.2 711.2,125.5 739.3,116.2 767.4,148.6 795.6,107.8 823.7,97.2 851.9,86.5 880.0,98.7" fill="none" stroke="#6c71c4" stroke-width="2.5"/>
+<circle cx="64.0" cy="210.9" r="2.1" fill="#6c71c4"/>
+<circle cx="92.1" cy="181.3" r="2.1" fill="#6c71c4"/>
+<circle cx="120.3" cy="189.1" r="2.1" fill="#6c71c4"/>
+<circle cx="148.4" cy="135.3" r="2.1" fill="#6c71c4"/>
+<circle cx="176.6" cy="153.1" r="2.1" fill="#6c71c4"/>
+<circle cx="204.7" cy="176.7" r="2.1" fill="#6c71c4"/>
+<circle cx="232.8" cy="200.5" r="2.1" fill="#6c71c4"/>
+<circle cx="261.0" cy="215.8" r="2.1" fill="#6c71c4"/>
+<circle cx="289.1" cy="205.8" r="2.1" fill="#6c71c4"/>
+<circle cx="317.2" cy="143.0" r="2.1" fill="#6c71c4"/>
+<circle cx="345.4" cy="151.6" r="2.1" fill="#6c71c4"/>
+<circle cx="373.5" cy="100.7" r="2.1" fill="#6c71c4"/>
+<circle cx="401.7" cy="101.5" r="2.1" fill="#6c71c4"/>
+<circle cx="429.8" cy="139.3" r="2.1" fill="#6c71c4"/>
+<circle cx="457.9" cy="140.9" r="2.1" fill="#6c71c4"/>
+<circle cx="486.1" cy="154.5" r="2.1" fill="#6c71c4"/>
+<circle cx="514.2" cy="129.7" r="2.1" fill="#6c71c4"/>
+<circle cx="542.3" cy="149.1" r="2.1" fill="#6c71c4"/>
+<circle cx="570.5" cy="135.1" r="2.1" fill="#6c71c4"/>
+<circle cx="598.6" cy="146.5" r="2.1" fill="#6c71c4"/>
+<circle cx="626.8" cy="140.0" r="2.1" fill="#6c71c4"/>
+<circle cx="654.9" cy="141.2" r="2.1" fill="#6c71c4"/>
+<circle cx="683.0" cy="151.2" r="2.1" fill="#6c71c4"/>
+<circle cx="711.2" cy="125.5" r="2.1" fill="#6c71c4"/>
+<circle cx="739.3" cy="116.2" r="2.1" fill="#6c71c4"/>
+<circle cx="767.4" cy="148.6" r="2.1" fill="#6c71c4"/>
+<circle cx="795.6" cy="107.8" r="2.1" fill="#6c71c4"/>
+<circle cx="823.7" cy="97.2" r="2.1" fill="#6c71c4"/>
+<circle cx="851.9" cy="86.5" r="2.1" fill="#6c71c4"/>
+<circle cx="880.0" cy="98.7" r="2.1" fill="#6c71c4"/>
+<text x="64" y="18" font-size="12.5" font-weight="bold" fill="#073642">10Y Term Premium (공급이 가장 깨끗이 드러나는 성분)</text></svg></div></div>
+<p class=note>연준 인하에도 <b>10Y 3.99→4.44%·30Y 4.22→4.91% 상승</b>. 동시에 <b>term premium 0.17→0.70% 확대</b>. Coupon 경매규모 유지(=꾸준한 명목 듀레이션 공급) + WAM·재정이 term premium 상방에 기여(단, 단독 원인 아님 → Steelman).</p>
+<h3>실질 (real = TIPS)</h3>
+<svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<line x1="64" y1="290.0" x2="744" y2="290.0" stroke="#eee8d5"/>
+<text x="56" y="294.0" font-size="10.5" fill="#93a1a1" text-anchor="end">1.4%</text>
+<line x1="64" y1="247.3" x2="744" y2="247.3" stroke="#eee8d5"/>
+<text x="56" y="251.3" font-size="10.5" fill="#93a1a1" text-anchor="end">1.6%</text>
+<line x1="64" y1="204.7" x2="744" y2="204.7" stroke="#eee8d5"/>
+<text x="56" y="208.7" font-size="10.5" fill="#93a1a1" text-anchor="end">1.8%</text>
+<line x1="64" y1="162.0" x2="744" y2="162.0" stroke="#eee8d5"/>
+<text x="56" y="166.0" font-size="10.5" fill="#93a1a1" text-anchor="end">2.0%</text>
+<line x1="64" y1="119.3" x2="744" y2="119.3" stroke="#eee8d5"/>
+<text x="56" y="123.3" font-size="10.5" fill="#93a1a1" text-anchor="end">2.2%</text>
+<line x1="64" y1="76.7" x2="744" y2="76.7" stroke="#eee8d5"/>
+<text x="56" y="80.7" font-size="10.5" fill="#93a1a1" text-anchor="end">2.4%</text>
+<line x1="64" y1="34.0" x2="744" y2="34.0" stroke="#eee8d5"/>
+<text x="56" y="38.0" font-size="10.5" fill="#93a1a1" text-anchor="end">2.6%</text>
+<text x="64.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.01</text>
+<text x="134.3" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.04</text>
+<text x="204.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.07</text>
+<text x="275.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.10</text>
+<text x="345.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.01</text>
+<text x="415.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.04</text>
+<text x="486.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.07</text>
+<text x="556.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.10</text>
+<text x="626.8" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.01</text>
+<text x="697.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.04</text>
+<text x="744.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.06</text>
+<polyline points="64.0,219.6 87.4,179.1 110.9,187.6 134.3,102.3 157.8,127.9 181.2,144.9 204.7,194.0 228.1,213.2 251.6,240.9 275.0,172.7 298.5,179.1 321.9,110.8 345.4,127.9 368.8,191.9 392.3,194.0 415.7,174.8 439.2,147.1 462.6,172.7 486.1,166.3 509.5,200.4 533.0,204.7 556.4,202.5 579.9,206.8 603.3,176.9 626.8,183.3 650.2,221.7 673.7,162.0 697.1,174.8 720.6,147.1 744.0,119.3" fill="none" stroke="#2aa198" stroke-width="2.5"/>
+<circle cx="64.0" cy="219.6" r="2.1" fill="#2aa198"/>
+<circle cx="87.4" cy="179.1" r="2.1" fill="#2aa198"/>
+<circle cx="110.9" cy="187.6" r="2.1" fill="#2aa198"/>
+<circle cx="134.3" cy="102.3" r="2.1" fill="#2aa198"/>
+<circle cx="157.8" cy="127.9" r="2.1" fill="#2aa198"/>
+<circle cx="181.2" cy="144.9" r="2.1" fill="#2aa198"/>
+<circle cx="204.7" cy="194.0" r="2.1" fill="#2aa198"/>
+<circle cx="228.1" cy="213.2" r="2.1" fill="#2aa198"/>
+<circle cx="251.6" cy="240.9" r="2.1" fill="#2aa198"/>
+<circle cx="275.0" cy="172.7" r="2.1" fill="#2aa198"/>
+<circle cx="298.5" cy="179.1" r="2.1" fill="#2aa198"/>
+<circle cx="321.9" cy="110.8" r="2.1" fill="#2aa198"/>
+<circle cx="345.4" cy="127.9" r="2.1" fill="#2aa198"/>
+<circle cx="368.8" cy="191.9" r="2.1" fill="#2aa198"/>
+<circle cx="392.3" cy="194.0" r="2.1" fill="#2aa198"/>
+<circle cx="415.7" cy="174.8" r="2.1" fill="#2aa198"/>
+<circle cx="439.2" cy="147.1" r="2.1" fill="#2aa198"/>
+<circle cx="462.6" cy="172.7" r="2.1" fill="#2aa198"/>
+<circle cx="486.1" cy="166.3" r="2.1" fill="#2aa198"/>
+<circle cx="509.5" cy="200.4" r="2.1" fill="#2aa198"/>
+<circle cx="533.0" cy="204.7" r="2.1" fill="#2aa198"/>
+<circle cx="556.4" cy="202.5" r="2.1" fill="#2aa198"/>
+<circle cx="579.9" cy="206.8" r="2.1" fill="#2aa198"/>
+<circle cx="603.3" cy="176.9" r="2.1" fill="#2aa198"/>
+<circle cx="626.8" cy="183.3" r="2.1" fill="#2aa198"/>
+<circle cx="650.2" cy="221.7" r="2.1" fill="#2aa198"/>
+<circle cx="673.7" cy="162.0" r="2.1" fill="#2aa198"/>
+<circle cx="697.1" cy="174.8" r="2.1" fill="#2aa198"/>
+<circle cx="720.6" cy="147.1" r="2.1" fill="#2aa198"/>
+<circle cx="744.0" cy="119.3" r="2.1" fill="#2aa198"/>
+<polyline points="64.0,106.5 87.4,91.6 110.9,93.7 134.3,74.5 157.8,87.3 181.2,102.3 204.7,110.8 228.1,130.0 251.6,123.6 275.0,91.6 298.5,106.5 321.9,89.5 345.4,72.4 368.8,80.9 392.3,80.9 415.7,112.9 439.2,89.5 462.6,100.1 486.1,78.8 509.5,74.5 533.0,85.2 556.4,98.0 579.9,112.9 603.3,108.7 626.8,85.2 650.2,108.7 673.7,98.0 697.1,63.9 720.6,80.9 744.0,110.8" fill="none" stroke="#b58900" stroke-width="2.5"/>
+<circle cx="64.0" cy="106.5" r="2.1" fill="#b58900"/>
+<circle cx="87.4" cy="91.6" r="2.1" fill="#b58900"/>
+<circle cx="110.9" cy="93.7" r="2.1" fill="#b58900"/>
+<circle cx="134.3" cy="74.5" r="2.1" fill="#b58900"/>
+<circle cx="157.8" cy="87.3" r="2.1" fill="#b58900"/>
+<circle cx="181.2" cy="102.3" r="2.1" fill="#b58900"/>
+<circle cx="204.7" cy="110.8" r="2.1" fill="#b58900"/>
+<circle cx="228.1" cy="130.0" r="2.1" fill="#b58900"/>
+<circle cx="251.6" cy="123.6" r="2.1" fill="#b58900"/>
+<circle cx="275.0" cy="91.6" r="2.1" fill="#b58900"/>
+<circle cx="298.5" cy="106.5" r="2.1" fill="#b58900"/>
+<circle cx="321.9" cy="89.5" r="2.1" fill="#b58900"/>
+<circle cx="345.4" cy="72.4" r="2.1" fill="#b58900"/>
+<circle cx="368.8" cy="80.9" r="2.1" fill="#b58900"/>
+<circle cx="392.3" cy="80.9" r="2.1" fill="#b58900"/>
+<circle cx="415.7" cy="112.9" r="2.1" fill="#b58900"/>
+<circle cx="439.2" cy="89.5" r="2.1" fill="#b58900"/>
+<circle cx="462.6" cy="100.1" r="2.1" fill="#b58900"/>
+<circle cx="486.1" cy="78.8" r="2.1" fill="#b58900"/>
+<circle cx="509.5" cy="74.5" r="2.1" fill="#b58900"/>
+<circle cx="533.0" cy="85.2" r="2.1" fill="#b58900"/>
+<circle cx="556.4" cy="98.0" r="2.1" fill="#b58900"/>
+<circle cx="579.9" cy="112.9" r="2.1" fill="#b58900"/>
+<circle cx="603.3" cy="108.7" r="2.1" fill="#b58900"/>
+<circle cx="626.8" cy="85.2" r="2.1" fill="#b58900"/>
+<circle cx="650.2" cy="108.7" r="2.1" fill="#b58900"/>
+<circle cx="673.7" cy="98.0" r="2.1" fill="#b58900"/>
+<circle cx="697.1" cy="63.9" r="2.1" fill="#b58900"/>
+<circle cx="720.6" cy="80.9" r="2.1" fill="#b58900"/>
+<circle cx="744.0" cy="110.8" r="2.1" fill="#b58900"/>
+<rect x="756" y="40" width="13" height="4" rx="2" fill="#2aa198"/>
+<text x="774" y="47" font-size="11" fill="#586e75">10Y 실질(TIPS)</text>
+<rect x="756" y="61" width="13" height="4" rx="2" fill="#b58900"/>
+<text x="774" y="68" font-size="11" fill="#586e75">10Y breakeven</text>
+<text x="64" y="18" font-size="12.5" font-weight="bold" fill="#073642">실질금리·기대인플레 (TIPS 공급이 닿는 곳)</text></svg>
+<p class=note>10Y 실질 1.73→2.20%, breakeven 2.26→2.24%. TIPS 공급은 얇아(잔액 7.0%) 실질금리 신호가 조용. 명목-실질 분리 트랙이 필요한 이유.</p>
+
+<h2>④ WAM · ⑤ 이자비용</h2>
+<div class=two><div><svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<line x1="64" y1="290.0" x2="744" y2="290.0" stroke="#eee8d5"/>
+<text x="56" y="294.0" font-size="10.5" fill="#93a1a1" text-anchor="end">66mo</text>
+<line x1="64" y1="238.8" x2="744" y2="238.8" stroke="#eee8d5"/>
+<text x="56" y="242.8" font-size="10.5" fill="#93a1a1" text-anchor="end">72mo</text>
+<line x1="64" y1="187.6" x2="744" y2="187.6" stroke="#eee8d5"/>
+<text x="56" y="191.6" font-size="10.5" fill="#93a1a1" text-anchor="end">78mo</text>
+<line x1="64" y1="136.4" x2="744" y2="136.4" stroke="#eee8d5"/>
+<text x="56" y="140.4" font-size="10.5" fill="#93a1a1" text-anchor="end">84mo</text>
+<line x1="64" y1="85.2" x2="744" y2="85.2" stroke="#eee8d5"/>
+<text x="56" y="89.2" font-size="10.5" fill="#93a1a1" text-anchor="end">90mo</text>
+<line x1="64" y1="34.0" x2="744" y2="34.0" stroke="#eee8d5"/>
+<text x="56" y="38.0" font-size="10.5" fill="#93a1a1" text-anchor="end">96mo</text>
+<text x="64.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.03</text>
+<text x="139.6" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.06</text>
+<text x="215.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.09</text>
+<text x="290.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.12</text>
+<text x="366.2" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.03</text>
+<text x="441.8" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.06</text>
+<text x="517.3" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.09</text>
+<text x="592.9" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.12</text>
+<text x="668.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.03</text>
+<text x="744.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.06</text>
+<polyline points="64.0,251.6 139.6,243.1 215.1,246.5 290.7,249.0 366.2,244.8 441.8,236.2 517.3,248.2 592.9,252.5 668.4,255.0 744.0,250.7" fill="none" stroke="#6c71c4" stroke-width="2.5"/>
+<circle cx="64.0" cy="251.6" r="2.1" fill="#6c71c4"/>
+<circle cx="139.6" cy="243.1" r="2.1" fill="#6c71c4"/>
+<circle cx="215.1" cy="246.5" r="2.1" fill="#6c71c4"/>
+<circle cx="290.7" cy="249.0" r="2.1" fill="#6c71c4"/>
+<circle cx="366.2" cy="244.8" r="2.1" fill="#6c71c4"/>
+<circle cx="441.8" cy="236.2" r="2.1" fill="#6c71c4"/>
+<circle cx="517.3" cy="248.2" r="2.1" fill="#6c71c4"/>
+<circle cx="592.9" cy="252.5" r="2.1" fill="#6c71c4"/>
+<circle cx="668.4" cy="255.0" r="2.1" fill="#6c71c4"/>
+<circle cx="744.0" cy="250.7" r="2.1" fill="#6c71c4"/>
+<polyline points="64.0,80.9 139.6,82.6 215.1,84.3 290.7,86.1 366.2,83.5 441.8,85.2 517.3,87.8 592.9,92.0 668.4,90.3 744.0,91.2" fill="none" stroke="#859900" stroke-width="2.5"/>
+<circle cx="64.0" cy="80.9" r="2.1" fill="#859900"/>
+<circle cx="139.6" cy="82.6" r="2.1" fill="#859900"/>
+<circle cx="215.1" cy="84.3" r="2.1" fill="#859900"/>
+<circle cx="290.7" cy="86.1" r="2.1" fill="#859900"/>
+<circle cx="366.2" cy="83.5" r="2.1" fill="#859900"/>
+<circle cx="441.8" cy="85.2" r="2.1" fill="#859900"/>
+<circle cx="517.3" cy="87.8" r="2.1" fill="#859900"/>
+<circle cx="592.9" cy="92.0" r="2.1" fill="#859900"/>
+<circle cx="668.4" cy="90.3" r="2.1" fill="#859900"/>
+<circle cx="744.0" cy="91.2" r="2.1" fill="#859900"/>
+<rect x="756" y="40" width="13" height="4" rx="2" fill="#6c71c4"/>
+<text x="774" y="47" font-size="11" fill="#586e75">전체 WAM</text>
+<rect x="756" y="61" width="13" height="4" rx="2" fill="#859900"/>
+<text x="774" y="68" font-size="11" fill="#586e75">Coupon만(×12)</text>
+<text x="64" y="18" font-size="12.5" font-weight="bold" fill="#073642">WAM 가중평균만기 (개월)</text></svg></div><div><svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<line x1="64" y1="290.0" x2="744" y2="290.0" stroke="#eee8d5"/>
+<text x="56" y="294.0" font-size="10.5" fill="#93a1a1" text-anchor="end">2%</text>
+<line x1="64" y1="226.0" x2="744" y2="226.0" stroke="#eee8d5"/>
+<text x="56" y="230.0" font-size="10.5" fill="#93a1a1" text-anchor="end">3%</text>
+<line x1="64" y1="162.0" x2="744" y2="162.0" stroke="#eee8d5"/>
+<text x="56" y="166.0" font-size="10.5" fill="#93a1a1" text-anchor="end">4%</text>
+<line x1="64" y1="98.0" x2="744" y2="98.0" stroke="#eee8d5"/>
+<text x="56" y="102.0" font-size="10.5" fill="#93a1a1" text-anchor="end">5%</text>
+<line x1="64" y1="34.0" x2="744" y2="34.0" stroke="#eee8d5"/>
+<text x="56" y="38.0" font-size="10.5" fill="#93a1a1" text-anchor="end">6%</text>
+<text x="64.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.01</text>
+<text x="134.3" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.04</text>
+<text x="204.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.07</text>
+<text x="275.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.10</text>
+<text x="345.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.01</text>
+<text x="415.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.04</text>
+<text x="486.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.07</text>
+<text x="556.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.10</text>
+<text x="626.8" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.01</text>
+<text x="697.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.04</text>
+<text x="744.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.06</text>
+<polyline points="64.0,212.5 87.4,209.4 110.9,208.3 134.3,207.0 157.8,204.6 181.2,204.0 204.7,201.0 228.1,199.4 251.6,200.9 275.0,202.8 298.5,203.3 321.9,204.5 345.4,204.4 368.8,203.9 392.3,203.8 415.7,203.3 439.2,202.8 462.6,202.0 486.1,200.5 509.5,199.4 533.0,200.0 556.4,200.8 579.9,201.6 603.3,202.8 626.8,203.7 650.2,203.3 673.7,202.6 697.1,202.1 720.6,201.3 744.0,199.7" fill="none" stroke="#073642" stroke-width="2.5"/>
+<circle cx="64.0" cy="212.5" r="2.1" fill="#073642"/>
+<circle cx="87.4" cy="209.4" r="2.1" fill="#073642"/>
+<circle cx="110.9" cy="208.3" r="2.1" fill="#073642"/>
+<circle cx="134.3" cy="207.0" r="2.1" fill="#073642"/>
+<circle cx="157.8" cy="204.6" r="2.1" fill="#073642"/>
+<circle cx="181.2" cy="204.0" r="2.1" fill="#073642"/>
+<circle cx="204.7" cy="201.0" r="2.1" fill="#073642"/>
+<circle cx="228.1" cy="199.4" r="2.1" fill="#073642"/>
+<circle cx="251.6" cy="200.9" r="2.1" fill="#073642"/>
+<circle cx="275.0" cy="202.8" r="2.1" fill="#073642"/>
+<circle cx="298.5" cy="203.3" r="2.1" fill="#073642"/>
+<circle cx="321.9" cy="204.5" r="2.1" fill="#073642"/>
+<circle cx="345.4" cy="204.4" r="2.1" fill="#073642"/>
+<circle cx="368.8" cy="203.9" r="2.1" fill="#073642"/>
+<circle cx="392.3" cy="203.8" r="2.1" fill="#073642"/>
+<circle cx="415.7" cy="203.3" r="2.1" fill="#073642"/>
+<circle cx="439.2" cy="202.8" r="2.1" fill="#073642"/>
+<circle cx="462.6" cy="202.0" r="2.1" fill="#073642"/>
+<circle cx="486.1" cy="200.5" r="2.1" fill="#073642"/>
+<circle cx="509.5" cy="199.4" r="2.1" fill="#073642"/>
+<circle cx="533.0" cy="200.0" r="2.1" fill="#073642"/>
+<circle cx="556.4" cy="200.8" r="2.1" fill="#073642"/>
+<circle cx="579.9" cy="201.6" r="2.1" fill="#073642"/>
+<circle cx="603.3" cy="202.8" r="2.1" fill="#073642"/>
+<circle cx="626.8" cy="203.7" r="2.1" fill="#073642"/>
+<circle cx="650.2" cy="203.3" r="2.1" fill="#073642"/>
+<circle cx="673.7" cy="202.6" r="2.1" fill="#073642"/>
+<circle cx="697.1" cy="202.1" r="2.1" fill="#073642"/>
+<circle cx="720.6" cy="201.3" r="2.1" fill="#073642"/>
+<circle cx="744.0" cy="199.7" r="2.1" fill="#073642"/>
+<polyline points="64.0,71.7 87.4,73.4 110.9,74.4 134.3,75.2 157.8,75.5 181.2,75.5 204.7,75.9 228.1,79.6 251.6,88.1 275.0,104.3 298.5,114.6 321.9,124.5 345.4,132.9 368.8,136.5 392.3,139.0 415.7,140.6 439.2,141.8 462.6,142.4 486.1,141.9 509.5,143.9 533.0,150.0 556.4,157.2 579.9,163.1 603.3,171.0 626.8,177.4 650.2,179.9 673.7,181.1 697.1,181.5 720.6,181.8 744.0,180.8" fill="none" stroke="#268bd2" stroke-width="2.5"/>
+<circle cx="64.0" cy="71.7" r="2.1" fill="#268bd2"/>
+<circle cx="87.4" cy="73.4" r="2.1" fill="#268bd2"/>
+<circle cx="110.9" cy="74.4" r="2.1" fill="#268bd2"/>
+<circle cx="134.3" cy="75.2" r="2.1" fill="#268bd2"/>
+<circle cx="157.8" cy="75.5" r="2.1" fill="#268bd2"/>
+<circle cx="181.2" cy="75.5" r="2.1" fill="#268bd2"/>
+<circle cx="204.7" cy="75.9" r="2.1" fill="#268bd2"/>
+<circle cx="228.1" cy="79.6" r="2.1" fill="#268bd2"/>
+<circle cx="251.6" cy="88.1" r="2.1" fill="#268bd2"/>
+<circle cx="275.0" cy="104.3" r="2.1" fill="#268bd2"/>
+<circle cx="298.5" cy="114.6" r="2.1" fill="#268bd2"/>
+<circle cx="321.9" cy="124.5" r="2.1" fill="#268bd2"/>
+<circle cx="345.4" cy="132.9" r="2.1" fill="#268bd2"/>
+<circle cx="368.8" cy="136.5" r="2.1" fill="#268bd2"/>
+<circle cx="392.3" cy="139.0" r="2.1" fill="#268bd2"/>
+<circle cx="415.7" cy="140.6" r="2.1" fill="#268bd2"/>
+<circle cx="439.2" cy="141.8" r="2.1" fill="#268bd2"/>
+<circle cx="462.6" cy="142.4" r="2.1" fill="#268bd2"/>
+<circle cx="486.1" cy="141.9" r="2.1" fill="#268bd2"/>
+<circle cx="509.5" cy="143.9" r="2.1" fill="#268bd2"/>
+<circle cx="533.0" cy="150.0" r="2.1" fill="#268bd2"/>
+<circle cx="556.4" cy="157.2" r="2.1" fill="#268bd2"/>
+<circle cx="579.9" cy="163.1" r="2.1" fill="#268bd2"/>
+<circle cx="603.3" cy="171.0" r="2.1" fill="#268bd2"/>
+<circle cx="626.8" cy="177.4" r="2.1" fill="#268bd2"/>
+<circle cx="650.2" cy="179.9" r="2.1" fill="#268bd2"/>
+<circle cx="673.7" cy="181.1" r="2.1" fill="#268bd2"/>
+<circle cx="697.1" cy="181.5" r="2.1" fill="#268bd2"/>
+<circle cx="720.6" cy="181.8" r="2.1" fill="#268bd2"/>
+<circle cx="744.0" cy="180.8" r="2.1" fill="#268bd2"/>
+<polyline points="64.0,268.2 87.4,264.8 110.9,263.3 134.3,258.2 157.8,254.2 181.2,252.4 204.7,247.8 228.1,246.0 251.6,243.3 275.0,241.0 298.5,239.2 321.9,235.5 345.4,233.0 368.8,230.4 392.3,228.4 415.7,226.6 439.2,225.5 462.6,222.9 486.1,221.3 509.5,220.4 533.0,218.8 556.4,218.1 579.9,217.5 603.3,216.0 626.8,215.2 650.2,213.8 673.7,212.4 697.1,211.3 720.6,210.1 744.0,207.9" fill="none" stroke="#cb4b16" stroke-width="2.5"/>
+<circle cx="64.0" cy="268.2" r="2.1" fill="#cb4b16"/>
+<circle cx="87.4" cy="264.8" r="2.1" fill="#cb4b16"/>
+<circle cx="110.9" cy="263.3" r="2.1" fill="#cb4b16"/>
+<circle cx="134.3" cy="258.2" r="2.1" fill="#cb4b16"/>
+<circle cx="157.8" cy="254.2" r="2.1" fill="#cb4b16"/>
+<circle cx="181.2" cy="252.4" r="2.1" fill="#cb4b16"/>
+<circle cx="204.7" cy="247.8" r="2.1" fill="#cb4b16"/>
+<circle cx="228.1" cy="246.0" r="2.1" fill="#cb4b16"/>
+<circle cx="251.6" cy="243.3" r="2.1" fill="#cb4b16"/>
+<circle cx="275.0" cy="241.0" r="2.1" fill="#cb4b16"/>
+<circle cx="298.5" cy="239.2" r="2.1" fill="#cb4b16"/>
+<circle cx="321.9" cy="235.5" r="2.1" fill="#cb4b16"/>
+<circle cx="345.4" cy="233.0" r="2.1" fill="#cb4b16"/>
+<circle cx="368.8" cy="230.4" r="2.1" fill="#cb4b16"/>
+<circle cx="392.3" cy="228.4" r="2.1" fill="#cb4b16"/>
+<circle cx="415.7" cy="226.6" r="2.1" fill="#cb4b16"/>
+<circle cx="439.2" cy="225.5" r="2.1" fill="#cb4b16"/>
+<circle cx="462.6" cy="222.9" r="2.1" fill="#cb4b16"/>
+<circle cx="486.1" cy="221.3" r="2.1" fill="#cb4b16"/>
+<circle cx="509.5" cy="220.4" r="2.1" fill="#cb4b16"/>
+<circle cx="533.0" cy="218.8" r="2.1" fill="#cb4b16"/>
+<circle cx="556.4" cy="218.1" r="2.1" fill="#cb4b16"/>
+<circle cx="579.9" cy="217.5" r="2.1" fill="#cb4b16"/>
+<circle cx="603.3" cy="216.0" r="2.1" fill="#cb4b16"/>
+<circle cx="626.8" cy="215.2" r="2.1" fill="#cb4b16"/>
+<circle cx="650.2" cy="213.8" r="2.1" fill="#cb4b16"/>
+<circle cx="673.7" cy="212.4" r="2.1" fill="#cb4b16"/>
+<circle cx="697.1" cy="211.3" r="2.1" fill="#cb4b16"/>
+<circle cx="720.6" cy="210.1" r="2.1" fill="#cb4b16"/>
+<circle cx="744.0" cy="207.9" r="2.1" fill="#cb4b16"/>
+<polyline points="64.0,219.2 87.4,218.4 110.9,218.0 134.3,217.0 157.8,216.0 181.2,215.6 204.7,214.6 228.1,214.1 251.6,213.5 275.0,212.9 298.5,212.8 321.9,211.8 345.4,210.9 368.8,210.4 392.3,209.7 415.7,208.9 439.2,208.2 462.6,207.0 486.1,206.2 509.5,206.1 533.0,205.1 556.4,204.4 579.9,203.9 603.3,203.0 626.8,202.4 650.2,201.9 673.7,200.9 697.1,200.2 720.6,199.6 744.0,198.5" fill="none" stroke="#b58900" stroke-width="2.5"/>
+<circle cx="64.0" cy="219.2" r="2.1" fill="#b58900"/>
+<circle cx="87.4" cy="218.4" r="2.1" fill="#b58900"/>
+<circle cx="110.9" cy="218.0" r="2.1" fill="#b58900"/>
+<circle cx="134.3" cy="217.0" r="2.1" fill="#b58900"/>
+<circle cx="157.8" cy="216.0" r="2.1" fill="#b58900"/>
+<circle cx="181.2" cy="215.6" r="2.1" fill="#b58900"/>
+<circle cx="204.7" cy="214.6" r="2.1" fill="#b58900"/>
+<circle cx="228.1" cy="214.1" r="2.1" fill="#b58900"/>
+<circle cx="251.6" cy="213.5" r="2.1" fill="#b58900"/>
+<circle cx="275.0" cy="212.9" r="2.1" fill="#b58900"/>
+<circle cx="298.5" cy="212.8" r="2.1" fill="#b58900"/>
+<circle cx="321.9" cy="211.8" r="2.1" fill="#b58900"/>
+<circle cx="345.4" cy="210.9" r="2.1" fill="#b58900"/>
+<circle cx="368.8" cy="210.4" r="2.1" fill="#b58900"/>
+<circle cx="392.3" cy="209.7" r="2.1" fill="#b58900"/>
+<circle cx="415.7" cy="208.9" r="2.1" fill="#b58900"/>
+<circle cx="439.2" cy="208.2" r="2.1" fill="#b58900"/>
+<circle cx="462.6" cy="207.0" r="2.1" fill="#b58900"/>
+<circle cx="486.1" cy="206.2" r="2.1" fill="#b58900"/>
+<circle cx="509.5" cy="206.1" r="2.1" fill="#b58900"/>
+<circle cx="533.0" cy="205.1" r="2.1" fill="#b58900"/>
+<circle cx="556.4" cy="204.4" r="2.1" fill="#b58900"/>
+<circle cx="579.9" cy="203.9" r="2.1" fill="#b58900"/>
+<circle cx="603.3" cy="203.0" r="2.1" fill="#b58900"/>
+<circle cx="626.8" cy="202.4" r="2.1" fill="#b58900"/>
+<circle cx="650.2" cy="201.9" r="2.1" fill="#b58900"/>
+<circle cx="673.7" cy="200.9" r="2.1" fill="#b58900"/>
+<circle cx="697.1" cy="200.2" r="2.1" fill="#b58900"/>
+<circle cx="720.6" cy="199.6" r="2.1" fill="#b58900"/>
+<circle cx="744.0" cy="198.5" r="2.1" fill="#b58900"/>
+<rect x="756" y="40" width="13" height="4" rx="2" fill="#073642"/>
+<text x="774" y="47" font-size="11" fill="#586e75">Total</text>
+<rect x="756" y="61" width="13" height="4" rx="2" fill="#268bd2"/>
+<text x="774" y="68" font-size="11" fill="#586e75">Bills</text>
+<rect x="756" y="82" width="13" height="4" rx="2" fill="#cb4b16"/>
+<text x="774" y="89" font-size="11" fill="#586e75">Notes</text>
+<rect x="756" y="103" width="13" height="4" rx="2" fill="#b58900"/>
+<text x="774" y="110" font-size="11" fill="#586e75">Bonds</text>
+<text x="64" y="18" font-size="12.5" font-weight="bold" fill="#073642">평균 이자율 by 종류 (%) — 잔액 carry</text></svg></div></div>
+<svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<line x1="64" y1="290.0" x2="880" y2="290.0" stroke="#eee8d5"/>
+<text x="56" y="294.0" font-size="10.5" fill="#93a1a1" text-anchor="end">$850B</text>
+<line x1="64" y1="238.8" x2="880" y2="238.8" stroke="#eee8d5"/>
+<text x="56" y="242.8" font-size="10.5" fill="#93a1a1" text-anchor="end">$900B</text>
+<line x1="64" y1="187.6" x2="880" y2="187.6" stroke="#eee8d5"/>
+<text x="56" y="191.6" font-size="10.5" fill="#93a1a1" text-anchor="end">$950B</text>
+<line x1="64" y1="136.4" x2="880" y2="136.4" stroke="#eee8d5"/>
+<text x="56" y="140.4" font-size="10.5" fill="#93a1a1" text-anchor="end">$1000B</text>
+<line x1="64" y1="85.2" x2="880" y2="85.2" stroke="#eee8d5"/>
+<text x="56" y="89.2" font-size="10.5" fill="#93a1a1" text-anchor="end">$1050B</text>
+<line x1="64" y1="34.0" x2="880" y2="34.0" stroke="#eee8d5"/>
+<text x="56" y="38.0" font-size="10.5" fill="#93a1a1" text-anchor="end">$1100B</text>
+<text x="64.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.01</text>
+<text x="148.4" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.04</text>
+<text x="232.8" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.07</text>
+<text x="317.2" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">24.10</text>
+<text x="401.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.01</text>
+<text x="486.1" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.04</text>
+<text x="570.5" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.07</text>
+<text x="654.9" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">25.10</text>
+<text x="739.3" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.01</text>
+<text x="823.7" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.04</text>
+<text x="880.0" y="306" font-size="9.5" fill="#93a1a1" text-anchor="middle">26.06</text>
+<polygon points="64.0,290 64.0,288.9 92.1,265.6 120.3,256.2 148.4,251.8 176.6,237.4 204.7,234.3 232.8,210.4 261.0,195.6 289.1,197.4 317.2,196.6 345.4,191.0 373.5,194.5 401.7,186.1 429.8,179.6 457.9,180.7 486.1,179.1 514.2,176.3 542.3,170.2 570.5,152.3 598.6,132.2 626.8,124.2 654.9,118.3 683.0,114.7 711.2,118.4 739.3,120.2 767.4,108.8 795.6,97.7 823.7,101.0 851.9,88.7 880.0,74.8 880.0,290" fill="#cb4b16" opacity="0.08"/>
+<polyline points="64.0,288.9 92.1,265.6 120.3,256.2 148.4,251.8 176.6,237.4 204.7,234.3 232.8,210.4 261.0,195.6 289.1,197.4 317.2,196.6 345.4,191.0 373.5,194.5 401.7,186.1 429.8,179.6 457.9,180.7 486.1,179.1 514.2,176.3 542.3,170.2 570.5,152.3 598.6,132.2 626.8,124.2 654.9,118.3 683.0,114.7 711.2,118.4 739.3,120.2 767.4,108.8 795.6,97.7 823.7,101.0 851.9,88.7 880.0,74.8" fill="none" stroke="#cb4b16" stroke-width="2.5"/>
+<circle cx="64.0" cy="288.9" r="2.1" fill="#cb4b16"/>
+<circle cx="92.1" cy="265.6" r="2.1" fill="#cb4b16"/>
+<circle cx="120.3" cy="256.2" r="2.1" fill="#cb4b16"/>
+<circle cx="148.4" cy="251.8" r="2.1" fill="#cb4b16"/>
+<circle cx="176.6" cy="237.4" r="2.1" fill="#cb4b16"/>
+<circle cx="204.7" cy="234.3" r="2.1" fill="#cb4b16"/>
+<circle cx="232.8" cy="210.4" r="2.1" fill="#cb4b16"/>
+<circle cx="261.0" cy="195.6" r="2.1" fill="#cb4b16"/>
+<circle cx="289.1" cy="197.4" r="2.1" fill="#cb4b16"/>
+<circle cx="317.2" cy="196.6" r="2.1" fill="#cb4b16"/>
+<circle cx="345.4" cy="191.0" r="2.1" fill="#cb4b16"/>
+<circle cx="373.5" cy="194.5" r="2.1" fill="#cb4b16"/>
+<circle cx="401.7" cy="186.1" r="2.1" fill="#cb4b16"/>
+<circle cx="429.8" cy="179.6" r="2.1" fill="#cb4b16"/>
+<circle cx="457.9" cy="180.7" r="2.1" fill="#cb4b16"/>
+<circle cx="486.1" cy="179.1" r="2.1" fill="#cb4b16"/>
+<circle cx="514.2" cy="176.3" r="2.1" fill="#cb4b16"/>
+<circle cx="542.3" cy="170.2" r="2.1" fill="#cb4b16"/>
+<circle cx="570.5" cy="152.3" r="2.1" fill="#cb4b16"/>
+<circle cx="598.6" cy="132.2" r="2.1" fill="#cb4b16"/>
+<circle cx="626.8" cy="124.2" r="2.1" fill="#cb4b16"/>
+<circle cx="654.9" cy="118.3" r="2.1" fill="#cb4b16"/>
+<circle cx="683.0" cy="114.7" r="2.1" fill="#cb4b16"/>
+<circle cx="711.2" cy="118.4" r="2.1" fill="#cb4b16"/>
+<circle cx="739.3" cy="120.2" r="2.1" fill="#cb4b16"/>
+<circle cx="767.4" cy="108.8" r="2.1" fill="#cb4b16"/>
+<circle cx="795.6" cy="97.7" r="2.1" fill="#cb4b16"/>
+<circle cx="823.7" cy="101.0" r="2.1" fill="#cb4b16"/>
+<circle cx="851.9" cy="88.7" r="2.1" fill="#cb4b16"/>
+<circle cx="880.0" cy="74.8" r="2.1" fill="#cb4b16"/>
+<text x="64" y="18" font-size="12.5" font-weight="bold" fill="#073642">연환산 시장성 이자비용 ($B/년)</text></svg>
+<p class=note>WAM ~71mo(안정·소폭↓). 현재 <b>Bill 평균 3.706% vs Note 3.283%</b> → Bill이 Note보다 <b>비쌈(원가절감 아님)</b>. 연환산 이자비용 $0.85T→$1.06T.</p>
+
+<h2>🧭 재무부 정책/운영 방향 — "단기채 비중을 늘리려는가?"</h2>
+<div class=card><p><span class=tag>scorecard</span> 각 신호를 <b>MORE(bill 확대)/NEUTRAL/FEWER</b>로 채점(실측+QRA):</p>
+<table><thead><tr><th>신호</th><th>현재값</th><th>방향</th></tr></thead><tbody><tr><td>잔액 Bill 비중 vs TBAC 20% 상단</td><td class=n>21.5% (+1.5pp)</td><td><b>MORE(상단 상회 지속=높은 bill 용인)</b></td></tr><tr><td>쿠폰 경매규모 동결 분기수</td><td class=n>0분기 전 만기 무변경</td><td><b>FEWER(coupon 증액=bill 축소)</b></td></tr><tr><td>순발행 Bill 비중 연간 추세</td><td class=n>2024 23.0% → 2025 18.1% → 2026 17.6% → 횡보</td><td><b>NEUTRAL</b></td></tr><tr><td>Buyback 궤적(분기)</td><td class=n>$69B → $92B</td><td><b>MORE(bill 조달 동반 능동관리)</b></td></tr><tr><td>QRA forward guidance</td><td class=n>Chrome 취득 필요(Step Q)</td><td><b>미정 — 'coupon 유지'=MORE / 'coupon 증액'=FEWER</b></td></tr></tbody></table></div>
+<svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#FFFCF2;border:6px solid #fff;border-radius:10px">
+<line x1="64" y1="268.0" x2="880" y2="268.0" stroke="#eee8d5"/>
+<text x="56" y="272.0" font-size="10" fill="#93a1a1" text-anchor="end">+0</text>
+<line x1="64" y1="222.4" x2="880" y2="222.4" stroke="#eee8d5"/>
+<text x="56" y="226.4" font-size="10" fill="#93a1a1" text-anchor="end">+20</text>
+<line x1="64" y1="176.8" x2="880" y2="176.8" stroke="#eee8d5"/>
+<text x="56" y="180.8" font-size="10" fill="#93a1a1" text-anchor="end">+40</text>
+<line x1="64" y1="131.2" x2="880" y2="131.2" stroke="#eee8d5"/>
+<text x="56" y="135.2" font-size="10" fill="#93a1a1" text-anchor="end">+60</text>
+<line x1="64" y1="85.6" x2="880" y2="85.6" stroke="#eee8d5"/>
+<text x="56" y="89.6" font-size="10" fill="#93a1a1" text-anchor="end">+80</text>
+<line x1="64" y1="40.0" x2="880" y2="40.0" stroke="#eee8d5"/>
+<text x="56" y="44.0" font-size="10" fill="#93a1a1" text-anchor="end">+100</text>
+<line x1="64" y1="268.0" x2="880" y2="268.0" stroke="#657b83" stroke-width="1.3"/>
+<rect x="74.6" y="247.5" width="27.2" height="20.5" rx="1.5" fill="#6c71c4" opacity="0.9"/>
+<rect x="104.8" y="263.0" width="27.2" height="5.0" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="104.8" y="283" font-size="10" fill="#586e75" text-anchor="middle">2024Q2</text>
+<rect x="156.2" y="185.7" width="27.2" height="82.3" rx="1.5" fill="#6c71c4" opacity="0.9"/>
+<rect x="186.4" y="213.3" width="27.2" height="54.7" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="186.4" y="283" font-size="10" fill="#586e75" text-anchor="middle">2024Q3</text>
+<rect x="237.8" y="179.3" width="27.2" height="88.7" rx="1.5" fill="#6c71c4" opacity="0.9"/>
+<rect x="268.0" y="216.2" width="27.2" height="51.8" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="268.0" y="283" font-size="10" fill="#586e75" text-anchor="middle">2024Q4</text>
+<rect x="319.4" y="152.6" width="27.2" height="115.4" rx="1.5" fill="#6c71c4" opacity="0.9"/>
+<rect x="349.6" y="200.7" width="27.2" height="67.3" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="349.6" y="283" font-size="10" fill="#586e75" text-anchor="middle">2025Q1</text>
+<rect x="401.0" y="110.2" width="27.2" height="157.8" rx="1.5" fill="#6c71c4" opacity="0.9"/>
+<rect x="431.2" y="148.5" width="27.2" height="119.5" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="431.2" y="283" font-size="10" fill="#586e75" text-anchor="middle">2025Q2</text>
+<rect x="482.6" y="210.8" width="27.2" height="57.2" rx="1.5" fill="#6c71c4" opacity="0.9"/>
+<rect x="512.8" y="258.9" width="27.2" height="9.1" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="512.8" y="283" font-size="10" fill="#586e75" text-anchor="middle">2025Q3</text>
+<rect x="564.2" y="151.9" width="27.2" height="116.1" rx="1.5" fill="#6c71c4" opacity="0.9"/>
+<rect x="594.4" y="211.0" width="27.2" height="57.0" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="594.4" y="283" font-size="10" fill="#586e75" text-anchor="middle">2025Q4</text>
+<rect x="645.8" y="134.4" width="27.2" height="133.6" rx="1.5" fill="#6c71c4" opacity="0.9"/>
+<rect x="676.0" y="191.2" width="27.2" height="76.8" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="676.0" y="283" font-size="10" fill="#586e75" text-anchor="middle">2026Q1</text>
+<rect x="727.4" y="58.0" width="27.2" height="210.0" rx="1.5" fill="#6c71c4" opacity="0.9"/>
+<rect x="757.6" y="100.2" width="27.2" height="167.8" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="757.6" y="283" font-size="10" fill="#586e75" text-anchor="middle">2026Q2</text>
+<rect x="809.0" y="243.6" width="27.2" height="24.4" rx="1.5" fill="#6c71c4" opacity="0.9"/>
+<rect x="839.2" y="268.0" width="27.2" height="0.0" rx="1.5" fill="#2aa198" opacity="0.9"/>
+<text x="839.2" y="283" font-size="10" fill="#586e75" text-anchor="middle">2026Q3</text>
+<rect x="74" y="42" width="12" height="12" rx="2" fill="#6c71c4"/>
+<text x="91" y="52" font-size="11.5" fill="#586e75">Buyback 총매입</text>
+<rect x="202" y="42" width="12" height="12" rx="2" fill="#2aa198"/>
+<text x="219" y="52" font-size="11.5" fill="#586e75">그중 1M~2Y(현금관리)</text>
+<text x="64" y="20" font-size="12.5" font-weight="bold" fill="#073642">재무부 Buyback 분기 매입액 ($B) — bill 조달 동반 능동관리</text></svg>
+<div class=card>
+<p>🔴🔴 <b>능동(activist) vs 수동(shock absorber) 구분 — validator 함정 차단</b></p>
+<p style="font-size:14px">"재무부가 bill 비중을 늘린다"는 두 해석이 <b>동일하게 관측</b>되므로 반드시 구분:</p>
+<ul style="font-size:14px">
+<li><b>(a) 능동적 정책 의도</b> — 금융환경 완화·수요 흡수 목적의 의도적 bill skew. 2024 "activist Treasury issuance(ATI)" 논쟁(전임 재무부 대상 stealth QE 비판).</li>
+<li><b>(b) 수동적 잔차</b> — coupon 규모를 안정 유지하는 표준 원칙 하에서 적자·부채한도·TGA 변동이 <b>자동으로 bill로</b> 흘러 비중이 오르내림(bills as shock absorber).</li>
+</ul>
+<p style="font-size:14px">🔑 <b>구분 열쇠</b>: ① coupon 규모를 재정 필요 대비 <b>의도적으로 억제</b>하는가(억제=능동 쪽) ② QRA 언어가 "financial conditions"를 언급하는가 ③ <b>TBAC 권고(15–20%)를 벗어나는가</b> ④ buyback을 bill 조달로 확대하는가.</p>
+<div class=steel><b>현재 잠정 판정</b> — 쿠폰 경매규모가 <b>0분기 동결</b>(2024 중반 이후 전 만기 무변경)이고 bill 잔액이 TBAC 상단을 지속 상회. 이는 "<b>명시적으로 bill을 늘린다</b>"기보다 "<b>coupon을 억제한 채 bill이 잔차를 흡수하게 두는 준-능동 스탠스</b>" — (a)와 (b)의 중간. coupon 동결이라는 <b>선택</b>이 사실상 bill 상승을 낳음. <b>진짜 능동 전환 신호</b> = QRA가 coupon 증액 예고(→bill 축소 의도) 또는 coupon을 재정 대비 더 억제(→bill 확대 의도). <b>최종 판정은 QRA 문구(Step Q)로 확정.</b></div>
+<div class=steel><b>Steelman(구조/인과)</b> — 관찰된 높은 bill 비중이 <b>수요-주도</b>(MMF·스테이블코인 T-bill 수요가 강해 재무부가 반응)일 수 있어, "재무부 의도"로 과잉귀속 금지. 또 coupon 동결은 <b>시장 안정성(예측가능성)</b> 원칙이지 bill skew 의도가 아닐 수 있음(동결≠억제).</div>
+<p class=note>정치 컨텍스트(현 재무장관의 ATI 관련 과거 발언 vs 재임 후 실제 발행): <span class=flag>뉴스/QRA로 검증</span> — 메모리 단정 금지.</p>
+</div>
+
+<h2>QRA 선행 <span class=flag>메커니즘=API 실측 · 문구=Chrome</span></h2>
+<div class=card><ul>
+<li>🔒 10Y 리펀딩 경매(최근): <b>2025-02:$42B, 2025-05:$42B, 2025-08:$42B, 2025-11:$42B, 2026-02:$42B, 2026-05:$42B</b> → coupon=동결 leg.</li>
+<li>🔄 4주 Bill $55↔$110B 주간조정 = 잔차 leg.</li>
+<li>➡️ 재정·TGA 서프라이즈 먼저 front-end로. QRA coupon <b>증액 예고 = 레짐 전환</b>(장기 term premium에 상방).</li>
+</ul></div>
+<div class=steel><b>QRA 원문</b> — 차입추정치·가이던스 문구는 treasury.gov QRA(Chrome, SKILL Step Q)에서 취득 후 여기 채움.</div>
+
+<h2>⑥ Steelman & 판단</h2>
+<div class=card><p><span class=tag>본 분석</span> 단기↓·장기↑·term premium↑ 국면에서 front-end 공급(Bill+FRN)은 RRP 소진 후 단기 스프레드로, nominal 공급은 term premium 상방으로 대체로 정합.</p>
+<div class=steel><b>구조/인과축</b> — 금리 <b>레벨</b>의 대부분은 연준 경로+매크로 기대. 공급은 term premium(작고 느린 성분)으로만. 발행 mix에 금리를 <b>과잉귀속 금지</b>. <b>역인과</b>: Bill 증가는 front-end 수요(MMF)가 강해서일 수 있음(수요가 공급을 당김).</div>
+<div class=steel><b>시간지평축</b> — front-end 공급→단기금리는 비교적 즉각·깨끗. nominal 공급→term premium은 느리고 노이즈 큼. "장기금리" 결론은 약하게, "단기금리"는 선명하게.</div>
+<div class=steel><b>데이터축</b> — term premium(THREEFYTP10)은 모델 추정치(관측 아님). ACM 등 다른 모델과 값 다름. 절대수준보다 방향·변화로 해석.</div>
+<p><span class=tag>유지/수정/철회</span> (분석가가 최신값으로 채움)</p></div>
+
+<h2>⑦ 데이터</h2><div class=two>
+<div><h3>버킷 비중 (%, 월말)</h3><div class=scroll><table><thead><tr><th>월</th><th style=text-align:right>Bill(법)</th><th style=text-align:right>FE</th><th style=text-align:right>Nom</th><th style=text-align:right>Real</th></tr></thead><tbody><tr><td>2024-01-31</td><td class=n>21.8</td><td class=n>23.8</td><td class=n>68.8</td><td class=n>7.4</td></tr><tr><td>2024-02-29</td><td class=n>22.4</td><td class=n>24.5</td><td class=n>68.2</td><td class=n>7.4</td></tr><tr><td>2024-03-31</td><td class=n>22.5</td><td class=n>24.6</td><td class=n>68.0</td><td class=n>7.4</td></tr><tr><td>2024-04-30</td><td class=n>21.8</td><td class=n>23.8</td><td class=n>68.8</td><td class=n>7.4</td></tr><tr><td>2024-05-31</td><td class=n>21.7</td><td class=n>23.8</td><td class=n>68.7</td><td class=n>7.5</td></tr><tr><td>2024-06-30</td><td class=n>21.3</td><td class=n>23.5</td><td class=n>68.9</td><td class=n>7.6</td></tr><tr><td>2024-07-31</td><td class=n>21.6</td><td class=n>23.7</td><td class=n>68.9</td><td class=n>7.4</td></tr><tr><td>2024-08-31</td><td class=n>22.2</td><td class=n>24.3</td><td class=n>68.3</td><td class=n>7.4</td></tr><tr><td>2024-09-30</td><td class=n>21.7</td><td class=n>23.9</td><td class=n>68.7</td><td class=n>7.4</td></tr><tr><td>2024-10-31</td><td class=n>22.1</td><td class=n>24.2</td><td class=n>68.6</td><td class=n>7.3</td></tr><tr><td>2024-11-30</td><td class=n>22.6</td><td class=n>24.8</td><td class=n>67.9</td><td class=n>7.3</td></tr><tr><td>2024-12-31</td><td class=n>21.9</td><td class=n>24.1</td><td class=n>68.5</td><td class=n>7.3</td></tr><tr><td>2025-01-31</td><td class=n>22.4</td><td class=n>24.5</td><td class=n>68.5</td><td class=n>7.0</td></tr><tr><td>2025-02-28</td><td class=n>22.2</td><td class=n>24.4</td><td class=n>68.5</td><td class=n>7.0</td></tr><tr><td>2025-03-31</td><td class=n>21.5</td><td class=n>23.8</td><td class=n>69.0</td><td class=n>7.1</td></tr><tr><td>2025-04-30</td><td class=n>21.2</td><td class=n>23.4</td><td class=n>69.5</td><td class=n>7.1</td></tr><tr><td>2025-05-31</td><td class=n>21.0</td><td class=n>23.3</td><td class=n>69.6</td><td class=n>7.2</td></tr><tr><td>2025-06-30</td><td class=n>20.2</td><td class=n>22.5</td><td class=n>70.2</td><td class=n>7.3</td></tr><tr><td>2025-07-31</td><td class=n>20.7</td><td class=n>22.9</td><td class=n>70.0</td><td class=n>7.1</td></tr><tr><td>2025-08-31</td><td class=n>21.7</td><td class=n>23.9</td><td class=n>69.1</td><td class=n>7.0</td></tr><tr><td>2025-09-30</td><td class=n>21.5</td><td class=n>23.9</td><td class=n>69.1</td><td class=n>7.0</td></tr><tr><td>2025-10-31</td><td class=n>22.0</td><td class=n>24.1</td><td class=n>68.9</td><td class=n>6.9</td></tr><tr><td>2025-11-30</td><td class=n>22.3</td><td class=n>24.5</td><td class=n>68.5</td><td class=n>7.0</td></tr><tr><td>2025-12-31</td><td class=n>21.6</td><td class=n>23.9</td><td class=n>69.0</td><td class=n>7.0</td></tr><tr><td>2026-01-31</td><td class=n>21.7</td><td class=n>24.1</td><td class=n>69.2</td><td class=n>6.8</td></tr><tr><td>2026-02-28</td><td class=n>22.2</td><td class=n>24.4</td><td class=n>68.8</td><td class=n>6.7</td></tr><tr><td>2026-03-31</td><td class=n>22.1</td><td class=n>24.4</td><td class=n>68.8</td><td class=n>6.8</td></tr><tr><td>2026-04-30</td><td class=n>21.6</td><td class=n>23.7</td><td class=n>69.5</td><td class=n>6.8</td></tr><tr><td>2026-05-31</td><td class=n>21.9</td><td class=n>24.1</td><td class=n>69.1</td><td class=n>6.8</td></tr><tr><td>2026-06-30</td><td class=n>21.5</td><td class=n>23.8</td><td class=n>69.2</td><td class=n>7.0</td></tr></tbody></table></div></div>
+<div><h3>WAM</h3><table><thead><tr><th>월</th><th style=text-align:right>전체mo</th><th style=text-align:right>Cpn yr</th></tr></thead><tbody><tr><td>2024-03-31</td><td class="n b">70.5</td><td class=n>7.54</td></tr><tr><td>2024-06-30</td><td class="n b">71.5</td><td class=n>7.53</td></tr><tr><td>2024-09-30</td><td class="n b">71.1</td><td class=n>7.51</td></tr><tr><td>2024-12-31</td><td class="n b">70.8</td><td class=n>7.49</td></tr><tr><td>2025-03-31</td><td class="n b">71.3</td><td class=n>7.52</td></tr><tr><td>2025-06-30</td><td class="n b">72.3</td><td class=n>7.50</td></tr><tr><td>2025-09-30</td><td class="n b">70.9</td><td class=n>7.47</td></tr><tr><td>2025-12-31</td><td class="n b">70.4</td><td class=n>7.43</td></tr><tr><td>2026-03-31</td><td class="n b">70.1</td><td class=n>7.45</td></tr><tr><td>2026-06-30</td><td class="n b">70.6</td><td class=n>7.44</td></tr></tbody></table>
+<h3>순발행 (법적, $B)</h3><table><thead><tr><th>분기</th><th style=text-align:right>Bill</th><th style=text-align:right>Cpn</th><th style=text-align:right>Bill/net</th></tr></thead><tbody><tr><td>Q2 2024</td><td class=n>-297</td><td class=n>+396</td><td class="n b">n/m</td></tr><tr><td>Q3 2024</td><td class=n>+239</td><td class=n>+439</td><td class="n b">35.2%</td></tr><tr><td>Q4 2024</td><td class=n>+182</td><td class=n>+370</td><td class="n b">33.0%</td></tr><tr><td>Q1 2025</td><td class=n>-31</td><td class=n>+337</td><td class="n b">-10.1%</td></tr><tr><td>Q2 2025</td><td class=n>-372</td><td class=n>+442</td><td class="n b">n/m</td></tr><tr><td>Q3 2025</td><td class=n>+613</td><td class=n>+444</td><td class="n b">58.0%</td></tr><tr><td>Q4 2025</td><td class=n>+150</td><td class=n>+406</td><td class="n b">27.0%</td></tr><tr><td>Q1 2026</td><td class=n>+272</td><td class=n>+303</td><td class="n b">47.4%</td></tr><tr><td>Q2 2026</td><td class=n>-129</td><td class=n>+369</td><td class="n b">-53.7%</td></tr></tbody></table></div></div>
+
+<h2>⑧ 방법론 & 출처</h2><ul>
+<li>발행: MSPD Table 1(구성)·Table 3(WAM·CUSIP만기)·avg_interest_rates(이자)·Auctions Query(총발행·CMB flag·경매규모). Fiscal Data API 직접.</li>
+<li>🔴 <b>금리전달 버킷</b>: front-end=Bills(CMB포함)+FRN / nominal=Notes+Bonds / real=TIPS. 법적 split은 headline 병기.</li>
+<li>금리: FRED fredgraph.csv(키 불필요) — DTB3·SOFR·DGS2/10/30·DFII10·T10YIE·THREEFYTP10·RRPONTSYD. 월말 관측.</li>
+<li>QRA: 경매규모=API 실측. 차입추정치·가이던스=treasury.gov QRA(Chrome).</li>
+<li>⚠️ term premium=모델 추정. 발행→금리는 상관·정합성 관찰이지 기계적 인과 아님(Steelman).</li>
+</ul></div></body></html>
