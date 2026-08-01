@@ -1,0 +1,488 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SECZ 수익모델 해부 (R-Dive) — 곡괭이는 맞는데 값을 못 받고 있다 | 2026-08-02</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="vault-stage" content="Dive">
+<meta name="vault-skill" content="R-Dive">
+<meta name="vault-topic" content="SECZ">
+<meta name="vault-date" content="2026-08-02">
+<meta name="description" content="Securitize(SECZ) 수익모델 정밀 해부 — S-1 원문 8,508줄 직독. 아키타입은 '곡괭이'가 맞지만 AUM이 88.5% 늘 때 본업 매출은 1.1% 줄었다. 12개 함정 중 11개 적신호. 고등학생·대학생 눈높이 해설.">
+<style>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+:root{--page:#EBE4D3;--card:#FDF6E3;--ink:#1f2328;--muted:#5f5a4e;--line:#e0d8c4;--line2:#e8e1cf;
+--navy:#1e3a5f;--navy2:#2c5170;--good:#2f6f4f;--bad:#a13d2d;--warn:#8a6d1a;--pur:#6b4a86;--thead:#f3ecd8;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",Roboto,sans-serif;line-height:1.72;font-size:15.5px;overflow-wrap:anywhere}
+.wrap{max-width:1040px;margin:0 auto;padding:22px 18px 70px}
+header.rep{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fdf6e3;border-radius:14px;padding:26px 30px;margin-bottom:20px;box-shadow:0 2px 10px rgba(30,58,95,.18)}
+header.rep h1{margin:0 0 6px;font-size:23px;line-height:1.38} header.rep .sub{font-size:12.7px;opacity:.9}
+header.rep .big{font-size:14.5px;margin:14px 0 0;line-height:1.78}
+.kpis{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}
+.kpi{background:rgba(253,246,227,.12);border:1px solid rgba(253,246,227,.25);border-radius:10px;padding:9px 13px;flex:1;min-width:132px}
+.kpi .k{font-size:11.3px;opacity:.85} .kpi .v{font-size:18px;font-weight:700;margin-top:2px} .kpi .n{font-size:11.2px;opacity:.8}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 26px;margin:18px 0;box-shadow:0 1px 4px rgba(120,100,60,.07)}
+h2{font-size:20px;margin:2px 0 4px;padding-bottom:8px;border-bottom:2px solid var(--navy);color:var(--navy)}
+.q{font-size:13.4px;color:var(--muted);margin:0 0 14px;font-style:italic}
+h3{font-size:16.5px;margin:22px 0 8px;color:var(--navy2)} h4{font-size:15px;margin:16px 0 6px}
+a{color:#1d5a8a;text-decoration:none} a:hover{text-decoration:underline}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.4px}
+.scroll{overflow-x:auto}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--thead);font-weight:600} td.c{text-align:center} td.n{text-align:right;font-variant-numeric:tabular-nums}
+td.v{font-size:15px}
+.alert{background:#f7e8e2;border-left:4px solid var(--bad);border-radius:0 8px 8px 0;padding:12px 16px;margin:14px 0;font-size:13.9px}
+.note{background:#eef2ec;border-left:4px solid var(--good);border-radius:0 8px 8px 0;padding:12px 16px;margin:14px 0;font-size:13.9px}
+.steel{background:#f6efdc;border-left:4px solid var(--warn);border-radius:0 8px 8px 0;padding:12px 16px;margin:14px 0;font-size:13.9px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:3px solid var(--line);background:#f7f1de;color:#3a3730;font-size:13.5px;border-radius:0 8px 8px 0}
+.muted{color:var(--muted)} .sm{font-size:12.9px}
+ul.tight{margin:8px 0 8px 2px;padding-left:20px} ul.tight li{margin:7px 0}
+details.bg{background:#f3ecd8;border:1px solid var(--line);border-radius:10px;padding:12px 18px;margin:14px 0}
+details.bg summary{cursor:pointer;font-weight:700;color:var(--navy)}
+.gbox{background:#f0ede1;border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:16px 0}
+.gt{font-weight:700;color:var(--navy2);margin-bottom:8px;font-size:14px}
+.gi{margin:10px 0;padding-bottom:9px;border-bottom:1px dashed var(--line)} .gi:last-child{border:0;padding-bottom:0}
+.gn{font-weight:700;font-size:14.2px} .gn .en{font-weight:400;font-size:11.8px;color:var(--muted)}
+.gd{font-size:13.5px;margin-top:2px} .gx{font-size:13px;margin-top:4px;color:#3a3730;background:#f7f1de;border-radius:6px;padding:6px 10px}
+.fig{background:#fff;border:1px solid var(--line2);border-radius:10px;padding:14px 16px;margin:16px 0}
+.fig .cap{font-size:12.4px;color:var(--muted);margin-bottom:8px} .fig svg{display:block;width:100%;height:auto}
+.grade{display:inline-block;padding:2px 10px;border-radius:20px;font-weight:700;font-size:13px}
+.foot{font-size:12px;color:var(--muted);margin-top:28px;border-top:1px solid var(--line);padding-top:12px}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}header.rep{background:var(--navy)}}
+</style>
+<div class="wrap">
+
+<header class="rep">
+<h1>🔧 SECZ 수익모델 해부 — 곡괭이 자리는 맞는데, 값을 받고 있다는 증거가 없다</h1>
+<div class="sub">R-Dive · Securitize Corp.(NYSE:SECZ) · 2026-08-02 · 1차 자료 = <a style="color:#bcd8ef" href="https://www.sec.gov/Archives/edgar/data/2094496/000162828026051182/secz-20260731.htm">SEC Form S-1(2026-07-31) 8,508줄 직독</a> · 직전 R-Dive 2026-06-10 대비 <b>델타</b></div>
+<p class="big"><b>이번 실행에서 달라진 것부터:</b> 12개 함정 중 적신호가 <b style="color:#f0c0a8">8개 → 11개</b>로 늘었고, 종합 등급이 <b style="color:#f0c0a8">🟡 → 🔴</b>로 내려갔다. 다만 이건 '회사가 나빠졌다'가 아니다 — <b>재무 숫자의 기간은 직전과 똑같다(2026년 3월까지).</b> 바뀐 건 원문을 더 깊이 판 결과다.<br><br>
+한 줄로 말하면 — <b style="color:#e8d9b0">SECZ는 '토큰화 자산이 늘면 거기 붙는 수수료가 자동으로 늘어나는 곡괭이'라는 이름표를 달고 있는데, 지난 1년간 맡아둔 자산은 88.5% 늘었지만 본업 매출은 오히려 1.1% 줄었다.</b> 계기판이 꺼져 있는 셈이다. 대신 매출을 만든 것은 (a) 블록체인 재단에 판 <b>일회성 통합 프로젝트</b>와 (b) <b>인수해서 사 온 펀드 관리 사업</b>이었다.<br><br>
+🔴 <b>중요한 단서</b> — 이 등급은 '사업의 실패'가 아니라 <b>'공시의 공백 + 회계 통제 미해소'에 대한 할인</b>이다. 요율·반복매출 비중·갱신율이 전부 미공시이고, 매출 인식 규정 자체가 아직 해소되지 않은 회계 취약점의 대상이다.</p>
+<div class="kpis">
+  <div class="kpi"><div class="k">아키타입</div><div class="v">② 곡괭이</div><div class="n">55% + ① 믹스시프트 35%</div></div>
+  <div class="kpi"><div class="k">12함정 적신호</div><div class="v">11 / 12</div><div class="n">직전 8 → 11 (🟡 1)</div></div>
+  <div class="kpi"><div class="k">종합 등급</div><div class="v" style="color:#f0c0a8">🔴</div><div class="n">직전 🟡에서 강등</div></div>
+  <div class="kpi"><div class="k">AUM vs 본업매출</div><div class="v">+88.5% / −1.1%</div><div class="n">Q1'25 → Q1'26</div></div>
+</div>
+</header>
+
+<details class="bg"><summary>📖 배경 — SECZ가 무슨 회사인지 30초 요약 (이미 아는 분은 접어두세요)</summary>
+<p style="margin-bottom:0">주식·펀드·채권 같은 <b>실물 금융자산을 블록체인 위에 올려주는(토큰화) 회사</b>다. 2026년 7월 1일 SPAC 합병으로 뉴욕증권거래소에 상장했다.<br>
+특별한 점은 <b>미국 금융당국 인가를 여러 개 동시에 갖고 있다</b>는 것 — 주주명부를 관리하는 <b>명의개서대리인</b>, 증권을 중개하는 <b>브로커-딜러</b>, 매매를 체결하는 <b>대체거래소(ATS)</b>. 그래서 "발행부터 거래까지 한 회사 안에서 다 된다"고 주장한다.<br>
+가장 유명한 고객이 <b>BlackRock</b>이고, 그 회사의 토큰화 국채 펀드 <b>BUIDL</b>을 Securitize가 만들어 굴린다.<br>
+매출은 두 갈래다 — <b>토큰화(Tokenization)</b> 60%와 <b>자산 서비싱(Asset Servicing)</b> 40%.</p>
+</details>
+
+<div class="card">
+<h2>Part A. 이 회사는 어떤 방식으로 돈이 들어오는 회사인가</h2>
+<p class="q">이 장이 답하는 질문 — "SECZ는 6가지 수익모델 유형 중 어디에 속하나? 그리고 그 유형에서 흔히 터지는 함정은 무엇인가?"</p>
+
+<p>수익모델을 유형으로 먼저 못 박는 이유가 있다. <b>유형이 정해지면 반드시 점검해야 할 함정이 자동으로 따라오기 때문</b>이다. 예를 들어 '맡아둔 자산에 수수료를 붙이는' 유형이면, <b>실효 요율(매출 ÷ AUM)</b>을 반드시 계산해 봐야 한다. 그리고 이번에 최대 적신호가 정확히 거기서 나왔다.</p>
+
+<div class="scroll"><table>
+<thead><tr><th>유형</th><th>해당?</th><th>근거</th></tr></thead>
+<tbody>
+<tr><td><b>② 곡괭이 (take-rate·AUM형)</b></td><td class="c"><b>주력 55%</b></td><td>회사가 스스로 매출 공식을 <b>"AUM × ARPU"</b>로 정의한다. 자산서비싱도 펀드당 연간 수수료·AUM 기반.</td></tr>
+<tr><td><b>① 믹스 시프트형</b></td><td class="c"><b>부 35%</b></td><td>🔴 <b>방향이 교과서와 반대.</b> 보통은 저품질→고품질로 옮겨가는데, SECZ는 고마진 본업(토큰화, GM 87%)이 정체하고 저마진 인수 사업(펀드 관리, GM 약 48%)이 커졌다.</td></tr>
+<tr><td>④ 백로그·multi-faucet형</td><td class="c">약 10%</td><td>매출원이 여러 개인 건 맞지만 '백로그' 쪽은 불성립 — 확정 잔고가 분기 매출의 0.35배뿐.</td></tr>
+<tr><td>③ 정부 집중형 / ⑤ 순수 float형 / ⑥ 하드웨어형</td><td class="c">✕</td><td>해당 없음.</td></tr>
+</tbody></table></div>
+
+<div class="alert"><b>확정: "② 곡괭이를 <i>지향</i>하지만, 지금 손익계산서의 실체는 일회성 프로젝트 + 인수한 서비스업"</b><br>
+직전(6/10) 판정과 유형은 같지만, 이번엔 <b>왜 그런지</b>가 원문으로 훨씬 단단해졌다. 그리고 그 결과가 좋지 않다.</div>
+<div class="gbox"><div class="gt">💡 이 장에 나온 말</div><div class="gi"><div class="gn">AUM (운용자산)</div><div class="gd">플랫폼에 올라와 있는 자산의 총액. 은행으로 치면 '맡아둔 예금 총액'.</div><div class="gx">🔴 <b>AUM은 매출이 아니라 매출의 <i>재료</i>다.</b> 재료가 늘어도 요리(과금)를 못 하면 매출은 안 는다. 이번 보고서의 최대 발견이 정확히 이 지점이다.</div></div><div class="gi"><div class="gn">Take rate / 요율(bps)</div><div class="gd">맡아둔 자산 100원당 몇 원을 수수료로 떼는지. 1bp = 0.01%.</div><div class="gx">예: AUM 1조원에 20bp면 연 20억원. 🔴 SECZ는 <b>이 숫자를 S-1 어디에도 공개하지 않았다.</b> 곡괭이 사업에서 요율 미공시는 매출액 미공시만큼 큰 공백이다.</div></div><div class="gi"><div class="gn">곡괭이 (pick-and-shovel)</div><div class="gd">금광 시대에 금 캔 사람보다 <b>곡괭이·삽을 판 사람</b>이 안정적으로 벌었다는 비유. 누가 이기든 수혜를 보는 위치.</div><div class="gx">SECZ가 자처하는 자리다. 이번 분석의 결론은 '자리는 맞는데 <b>값(요율)을 받고 있다는 증거가 없다</b>'는 것.</div></div></div>
+</div>
+
+<div class="card">
+<h2>Part B. 무엇을 만들어 파는가 → 그것이 어떻게 돈이 되는가</h2>
+<p class="q">이 장이 답하는 질문 — "제품이 정확히 무엇이고, 각 제품은 어떤 방식으로 과금하며, 그중 진짜 돈이 되는 건 어디인가?"</p>
+
+<h3>B.1 제품 6개 — 그리고 그중 진짜로 자라는 것은 하나뿐</h3>
+<div class="scroll"><table>
+<thead><tr><th style="width:150px">제품</th><th>무엇을 파나 / 어떻게 과금하나</th><th class="c" style="width:82px">가격<br>결정력</th><th class="c" style="width:82px">전환비용<br>(락인)</th><th class="c" style="width:78px">성장</th></tr></thead>
+<tbody>
+<tr><td><b>① 온체인 통합</b><br><span class="sm muted">블록체인 재단 대상</span></td><td>새 블록체인을 플랫폼에 연결해 주고 받는 <b>일회성 통합 수수료</b>. 통합이 끝나는 <b>그 순간 매출 전액 인식</b>.<br>🔴 체인당 원칙적으로 1회 — <b>재구매 자체가 없다</b>. 고객이 떠나는 게 아니라 거래가 끝난다.</td><td class="c">🔴 약</td><td class="c">🔴 낮음</td><td class="c">🔴 −</td></tr>
+<tr><td><b>② 토큰화·유통</b><br><span class="sm muted">BUIDL 등</span></td><td>맡아둔 자산에 수수료를 붙이는 <b>진짜 곡괭이 라인</b>. 회사 서사가 전부 여기 걸려 있다.<br>🔴 <b>실제 요율(bps)이 S-1 어디에도 없다.</b></td><td class="c">🔴 약</td><td class="c">🔴 낮음</td><td class="c">🔴 −1.1%</td></tr>
+<tr><td><b>③ 명의개서대리인</b><br><span class="sm muted">Transfer Agent</span></td><td>주주명부 <b>공식 원본</b>을 관리하고 매달 받는 반복 수수료. 회계상으로도 <b>월 단위로 인식</b>된다.</td><td class="c">🟡 중</td><td class="c">🟢 <b>높음</b></td><td class="c">🟢 <b>+27.8%</b></td></tr>
+<tr><td><b>④ 펀드 관리</b><br><span class="sm muted">MG Stover 인수</span></td><td>펀드의 NAV 계산·보고·컴플라이언스 대행. 펀드당 연간 수수료.<br>🔴 인수 시 <b>기술 가치를 사실상 0으로 평가</b>했다 — 산 것은 기술이 아니라 고객관계와 사람.</td><td class="c">🔴 약</td><td class="c">🟡 중</td><td class="c">🔴 마진↓</td></tr>
+<tr><td><b>⑤ 브로커딜러·ATS</b><br><span class="sm muted">+ 커스터디·인수인</span></td><td>거래 체결 수수료. 🆕 토큰화 증권 <b>보관 + 인수인 자격</b>을 새로 승인받았다.<br>🔴 승인만 받았고 <b>매출 기여는 미공시</b> — 아직 물이 안 나온 수도꼭지.</td><td class="c">🟡 잠재</td><td class="c">—</td><td class="c">미공시</td></tr>
+<tr><td><b>⑥ 투자자문</b><br><span class="sm muted">Securitize Capital</span></td><td>운용보수. FY25 매출의 <b>1.07%</b>로 사실상 무의미.<br>🔴 그런데 서사에는 치명적 — 회사가 3번 반복하는 <b>"SEC 등록 5종 수직통합"</b> 주장 중 이 법인은 <b>미등록</b>이다.</td><td class="c">—</td><td class="c">낮음</td><td class="c">—</td></tr>
+</tbody></table></div>
+
+<div class="note">🟢 <b>이 표에서 유일하게 녹색이 세 개 붙은 줄이 있다 — ③ 명의개서대리인.</b> 토큰화는 −1.1%, 인수한 펀드 관리는 −4.4%인 분기에 <b>플러스인 곳은 여기뿐</b>이고(+27.8%), 회사도 그 증가를 "주로 명의개서대리인 사업이 견인"이라고 명시했다. <b>SECZ 투자 논리의 진짜 심장은 여기 하나다.</b></div>
+
+<h3>B.2 기술 해자? — 특허는 0건이다</h3>
+<p>토큰화 회사라면 대단한 기술 특허가 있을 것 같지만, S-1 전체에서 <code>patent</code>라는 단어는 <b>0회</b> 등장한다. 확인된 사실은 이렇다.</p>
+<ul class="tight">
+<li>지식재산 보호 수단 = <b>상표 + 비밀유지계약뿐</b>. 회사가 "중요하다(material)"고 부른 대상은 기술이 아니라 <b>브랜드</b>다.</li>
+<li>자체 개발 소프트웨어 <b>자본화 금액 $0</b>. 무형자산의 87.7%는 <b>인수해서 사 온 고객관계</b>.</li>
+<li>암호 보안의 핵심(MPC)은 <b>Fireblocks에 외주</b>, 서버는 AWS 의존.</li>
+</ul>
+<div class="steel"><b>그럼 해자가 없나? — 있다. 다만 기술이 아니라 <i>시간과 인가</i>다.</b><br>
+발행사가 명의개서대리인을 바꾸려면 <b>SEC 등록 변경 + 투자자 전원 재확인(KYC) + 온체인 토큰 전체 이관</b>을 다 감수해야 한다. 그리고 미국 당국이 <b>공개 블록체인을 법정 주주명부로 쓰는 것을 명시적으로 허용</b>했는데 그 자격을 가진 곳이 희소하다. 이건 복제 가능하지만 <b>2018년부터 8년이 걸린</b> 종류의 해자다.<br>
+🔴 단, 회사 스스로 <b>"경쟁이 계속 심해질 것"</b>이라 인정하고, S-1의 경쟁자 명단에서 <b>가장 위협적인 기존 대형 명의개서대리인들과 DTCC를 아예 빼놓았다.</b></div>
+<div class="gbox"><div class="gt">💡 이 장에 나온 말</div><div class="gi"><div class="gn">명의개서대리인 (Transfer Agent)</div><div class="gd">어떤 회사의 주주가 누구이고 몇 주를 가졌는지 기록하는 <b>공식 원본 장부</b>와 그 관리 기관.</div><div class="gx">🟢 SECZ의 진짜 해자가 여기다. 발행사가 갈아타려면 SEC 등록 변경 + 투자자 전원 재확인(KYC) + 토큰 이관을 다 감수해야 한다.</div></div><div class="gi"><div class="gn">일시 인식 vs 기간 인식<br><span class='en'>point-in-time / over-time</span></div><div class="gd">매출을 언제 장부에 적는지. 앞은 '일 끝낸 그 순간 전부'(이사 한 번 100만원), 뒤는 '기간 동안 나눠서'(넷플릭스 월 구독).</div><div class="gx">🔴 우리가 '반복 매출'이라며 프리미엄을 주는 건 <b>뒤쪽</b>이다. SECZ 토큰화 매출은 4조각 중 3개가 앞쪽이고 뒤쪽은 유지·지원 하나뿐이다.</div></div></div>
+
+<h3>B.3 매출 추이 — 매출은 느는데 마진은 내려간다</h3>
+<div class="fig"><p class="cap">그림 1. 매출 스트림(왼쪽 축, 백만 달러)과 매출총이익률(오른쪽 축, %) · 출처 S-1 · Q1'26은 연율 환산 · <b>3개 점 모두 실측</b>(전망 없음)</p>
+<div id="fig-rate"></div><div class="dd-legend" id="leg-rate"></div></div>
+<p><b>읽는 법</b> — 파란선(토큰화)과 보라선(자산서비싱)은 둘 다 올라간다. 그런데 <b>빨간선(마진)은 90% → 77%로 계속 내려간다</b>. 회사도 그 원인을 두 번 모두 <b>MG Stover 인수</b>라고 명시했다. 즉 <b>매출을 사 왔고, 그 대가로 마진을 내줬다.</b></p>
+
+<h3>B.4 🔴 이번 분석의 핵심 발견 — 계기판이 꺼져 있다</h3>
+<div class="fig"><p class="cap">그림 2. 맡아둔 자산은 88.5% 늘었는데 본업 매출은 1.1% 줄었다 (Q1'25 → Q1'26)</p>
+<svg viewBox="0 0 940 250" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif">
+ <text x="30" y="26" font-size="13" font-weight="700" fill="#1f2328">평균 AUM (맡아둔 자산)</text>
+ <rect x="30" y="38" width="200" height="44" rx="6" fill="#c3d4e3"/>
+ <text x="130" y="66" font-size="13.5" font-weight="700" fill="#1e3a5f" text-anchor="middle">$1.67B</text>
+ <text x="240" y="66" font-size="12" fill="#5f5a4e">Q1'25</text>
+ <rect x="30" y="90" width="377" height="44" rx="6" fill="#1e3a5f"/>
+ <text x="218" y="118" font-size="13.5" font-weight="700" fill="#fdf6e3" text-anchor="middle">$3.15B</text>
+ <text x="417" y="118" font-size="12" fill="#5f5a4e">Q1'26</text>
+ <text x="470" y="90" font-size="17" font-weight="700" fill="#2f6f4f">▲ +88.5%</text>
+ <text x="470" y="112" font-size="12.5" fill="#5f5a4e">거의 두 배로 늘었다</text>
+
+ <line x1="30" y1="152" x2="910" y2="152" stroke="#e0d8c4"/>
+ <text x="30" y="178" font-size="13" font-weight="700" fill="#1f2328">토큰화 매출 (본업)</text>
+ <rect x="30" y="190" width="200" height="20" rx="4" fill="#e2b7ab"/>
+ <text x="240" y="205" font-size="12" fill="#5f5a4e">Q1'25 &nbsp;$11.26M</text>
+ <rect x="30" y="214" width="198" height="20" rx="4" fill="#a13d2d"/>
+ <text x="240" y="229" font-size="12" fill="#5f5a4e">Q1'26 &nbsp;$11.14M</text>
+ <text x="470" y="205" font-size="17" font-weight="700" fill="#a13d2d">▼ −1.1%</text>
+ <text x="470" y="227" font-size="12.5" fill="#5f5a4e">오히려 줄었다</text>
+ <rect x="640" y="176" width="272" height="62" rx="8" fill="#f7e8e2" stroke="#a13d2d"/>
+ <text x="776" y="199" font-size="12.5" font-weight="700" fill="#a13d2d" text-anchor="middle">곡괭이 사업의 계기판이</text>
+ <text x="776" y="220" font-size="12.5" font-weight="700" fill="#a13d2d" text-anchor="middle">정확히 꺼져 있는 모습</text>
+</svg></div>
+
+<div class="alert"><b>왜 이게 치명적인가.</b> SECZ에 높은 가격표를 붙이는 논리는 딱 하나다 — <i>"토큰화 자산이 불어나면 거기 붙는 요율이 자동으로 매출을 밀어올린다."</i> 그런데 <b>그 요율이 S-1 어디에도 공개되지 않았고</b>, 회사 스스로 가격을 시장에서 관측하지 못해 <b>자기가 들인 원가로 역산</b>한다고 밝혔다. 이건 가격을 정하는 쪽이 아니라 <b>건별로 협상하는 쪽</b>의 회계 패턴이다.</div>
+
+<div class="steel"><b>🔴 그리고 회사가 같은 문서에서 AUM–매출 관계를 네 가지로 다르게 쓴다.</b><br>
+① "매출 = AUM × ARPU" &nbsp;② "매출 성장은 AUM과 <b>고도로 상관</b>" &nbsp;③ "AUM이 줄면 <b>불균형하게 큰</b> 악영향" &nbsp;④ 위험요인에서는 <b>"우리 매출은 AUM에 실질적으로 직접 연동되지 않는다"</b><br>
+앞의 셋이 참이면 <b>요율이 급락한 것</b>이고, 마지막이 참이면 <b>AUM 성장 서사 자체가 매출로 전환되지 않는다</b>는 뜻이다. <b>어느 쪽이든 나쁘다.</b> 투자자는 AUM이 오를 때 앞의 셋을, 내릴 때 마지막을 듣게 된다.</div>
+<div class="gbox"><div class="gt">💡 이 장에 나온 말</div><div class="gi"><div class="gn">RPO (잔여 이행의무) / 백로그</div><div class="gd">계약은 했는데 아직 서비스를 안 해서 앞으로 매출이 될 금액. '확정된 미래 매출'.</div><div class="gx">⚠️ 단, <b>월 단위로 제공되는 서비스는 회계 규칙상 여기 안 담긴다.</b> 그래서 RPO가 작다고 곧바로 '반복 매출 없음'이라 결론내면 안 된다 — 이번에 직전 판정을 철회한 이유.</div></div><div class="gi"><div class="gn">이연수익 (선수금)</div><div class="gd">돈은 먼저 받았는데 서비스는 아직이라 '빚'으로 잡아둔 금액. <b>미래 매출의 저수지</b>.</div><div class="gx">늘면 좋은 신호, 줄면 나쁜 신호. SECZ는 한 분기에 65억원→15억원 수준으로 <b>77% 말랐다</b>.</div></div><div class="gi"><div class="gn">계약자산 / 미청구채권</div><div class="gd">매출로 장부엔 적었는데 <b>아직 청구서(인보이스)조차 안 보낸</b> 금액. 매출채권보다 한 단계 더 먼 상태.</div><div class="gx">🔴 SECZ는 매출의 <b>54~57%</b>가 여기를 거친다.</div></div></div>
+</div>
+
+<div class="card">
+<h2>Part C. 12개 함정 전수 점검</h2>
+<p class="q">이 장이 답하는 질문 — "수익모델을 볼 때 흔히 속는 12가지 지점에서, 이 회사는 어떤가?"</p>
+<p>이번엔 각 판정을 <b>일부러 무너뜨려 보는 방식</b>으로 검증했다. 그 결과 <b>직전 판정 2개가 실제로 뒤집혔다</b>(C.3 근거 철회, C.8 번복).</p>
+<div class="scroll"><table>
+<thead><tr><th style="width:44px">#</th><th style="width:126px">함정</th><th class="c" style="width:52px">판정</th><th class="c" style="width:98px">직전 대비</th><th>내용</th></tr></thead>
+<tbody><tr><td class="c">C.1</td><td><b>마진 분모 검증</b></td><td class="c v">🚩</td><td class="c sm">유지 (근거 교체)</td><td>마진이 '나쁜 숫자'가 아니라 <b>'검증 불가능한 숫자'</b>다. 매출의 54~57%가 청구서 없이 인식되고, 최소 10.5%는 락업 토큰으로 받았는데 토큰 매출 총액은 회사가 <b>공시를 명시 거부</b>했다. 단일 보고부문이라 사업부별 마진을 외부에서 계산할 방법도 없다.<br><span class='sm muted'>※ 반증 성공분 기록 — GM 90%→77% 하락은 마진 조작이 아니라 <b>100% 인수(MG Stover) 믹스</b>였다. 인수분을 뺀 코어 GM은 87.6%→86.6%로 사실상 유지.</span></td></tr><tr><td class="c">C.2</td><td><b>반복매출 프리미엄</b></td><td class="c v">🚩</td><td class="c sm">유지 (논거 교체)</td><td>회사는 "매출 대부분이 <b>반복·계약 수수료</b>"라고 주장하는데, 같은 문서의 회계 정책은 토큰화 4조각 중 3개가 일시 인식이라고 적는다. 판별할 유일한 지표(일시/기간 분해)를 공시하지 않았고 <code>ARR</code>·<code>갱신율</code>·<code>NRR</code>은 <b>파일 전체 0회</b>.<br><span class='sm muted'>※ 직전 근거였던 'RPO가 작다'는 <b>철회</b> — RPO는 오히려 +42.8% 늘었다.</span></td></tr><tr><td class="c">C.3</td><td><b>발표숫자 vs 장부매출</b></td><td class="c v">🚩</td><td class="c sm">🔄 <b>번복</b></td><td>직전 근거였던 '$85M ARR 주장'이 <b>S-1에 아예 없다</b>(grep 0회) → 철회. 대신 더 강한 격차가 감사받은 숫자에서 나왔다 — Q1'26 매출의 26%가 <b>말라가는 선수금 잔액</b>에서 나왔고(잔액 15억원), 54%는 청구서도 없이 인식됐다.</td></tr><tr><td class="c">C.4</td><td><b>백로그 품질</b></td><td class="c v">🚩</td><td class="c sm">유지</td><td>향후 12개월 <b>확정된</b> 매출 커버리지가 연율 매출의 약 <b>3.2%</b>. 선수금 저수지도 −76.9%로 말랐다(신규 유입 중 분기말 잔존 <b>1억원 미만</b>).</td></tr><tr><td class="c">C.5</td><td><b>가격 결정력</b></td><td class="c v">🚩</td><td class="c sm">유지</td><td>가격을 시장에서 관측하지 못해 <b>원가를 역산</b>해 값을 매긴다 — 가격설정자가 아니라 <b>가격수용자</b>의 회계 패턴. 회사 자인 3연타: 브랜드가 <b>"낮은 가격"</b>에 묶여 있고, <b>가격 인상이 고객 이탈 사유 목록</b>에 올라 있으며, 경쟁사가 더 싼 구조를 내면 "덜 수익적인 관행"을 채택할 수 있다.</td></tr><tr><td class="c">C.6</td><td><b>고객·유통 집중도</b></td><td class="c v">🚩</td><td class="c sm">유지</td><td>공시된 집중도 지표는 <b>둘 다 개선</b>됐다(매출 62%→21%, 계약자산 95%→63%). 그런데 개선분이 <b>총매출 3.3배 증가만으로 산술적으로 전부 설명된다</b> — 기준선이 올라가 자동 탈락한 것. 더 큰 문제는 계약 쪽: 핵심 고객들과 <b>파트너십 계약 자체가 없고</b>, 그들이 <b>자체 토큰화를 하는 것을 막는 조항도 없다</b>.</td></tr><tr><td class="c">C.7</td><td><b>매크로 민감도</b></td><td class="c v">🚩</td><td class="c sm">⬆️ <b>격상</b></td><td>암호자산 시장 하나에 매출·손익이 몰려 있다. 회사 자인 — <b>"2025년 4분기에 AUM이 감소했다"</b>, 같은 분기 <b>조정 EBITDA 적자</b>. 매출을 토큰으로 받은 부분은 평가손 26%까지 났다.</td></tr><tr><td class="c">C.8</td><td><b>금리 비대칭</b></td><td class="c v">🟡</td><td class="c sm">🔄 <b>번복</b></td><td>직전 '해당 없음(구조적 강점)'에서 뒤집혔다. 합병으로 <b>무차입 순현금 약 4,700억원</b>이 생기면서 <b>이자수익이 조정 EBITDA의 3.7배</b>가 됐다. 금리가 내려가면 이 완충이 줄어든다.<br><span class='sm muted'>※ CRCL 같은 직격탄은 아니라 🟡. 다만 '금리와 무관한 회사'는 더 이상 아니다.</span></td></tr><tr><td class="c">C.9</td><td><b>운영 레버리지</b></td><td class="c v">🚩</td><td class="c sm">⬆️ <b>격상</b></td><td>매출을 <b>1년에 약 580억원 늘리는 동안 영업비용을 약 570억원 늘렸다</b> — 증분 비용/증분 매출 <b>98.2%</b>. 매출이 3.3배가 됐는데 영업손실은 5%밖에 안 줄었다. 고정비가 희석되는 구조가 아직 작동하지 않는다.</td></tr><tr><td class="c">C.10</td><td><b>현금 전환</b></td><td class="c v">🚩</td><td class="c sm">유지</td><td>FY25 조정 EBITDA <b>+34억원</b> vs 영업현금 <b>−232억원</b>(괴리 약 266억원). Q1'26도 같은 방향으로 벌어진다.<br><span class='sm muted'>※ 합병 현금 4,700억원으로 <b>단기 존속 위험은 해소</b>됐다. 이건 '망한다'가 아니라 '아직 스스로 벌지 못한다'는 뜻.</span></td></tr><tr><td class="c">C.11</td><td><b>주당 희석</b></td><td class="c v">🚩</td><td class="c sm">유지</td><td>조건 없이 늘어나는 잔여 희석이 <b>약 3,018만 주 = 유통주식의 18.5%</b>. 그 위에 <b>evergreen 연 5% × 9년</b>이 조건 없이 얹힌다. 매출 규모가 흡수할 수 있는 크기가 아니다.</td></tr><tr><td class="c">C.12</td><td><b>모델 전환 신호</b></td><td class="c v">🚩</td><td class="c sm">⬆️ <b>격상</b></td><td>전환이 <b>역방향</b>이다. 고마진 본업(토큰화)은 정체하고, 저마진 인수 사업(펀드 관리)이 비중을 키웠다. 미래 채널(NYSE·EU·인수인 자격)은 전부 MOU·pending·매출 미공시 상태.</td></tr></tbody></table></div>
+<p class="sm muted" style="margin-top:10px">판정: 🚩 적신호 / 🟡 주의 / 🟢 양호 · 금액은 읽기 쉽도록 원화 근사 병기(1달러≈1,430원 가정), 정확한 달러 수치는 원문 참조.</p>
+<div class="gbox"><div class="gt">💡 이 장에 나온 말</div><div class="gi"><div class="gn">조정 EBITDA</div><div class="gd">회사가 '일회성'이라 판단한 비용을 빼고 다시 계산한 이익.</div><div class="gx">🔴 회계 규칙(GAAP)이 아니라 <b>회사가 스스로 정의하는 숫자</b>다. 회사도 "다른 회사는 다르게 계산할 수 있다"고 인정한다.</div></div><div class="gi"><div class="gn">영업현금흐름 (OCF)</div><div class="gd">실제로 통장에 들어온 돈. 장부상 이익과 크게 벌어지면 매출의 질을 의심해야 한다.</div><div class="gx">SECZ Q1'26: 조정 EBITDA <b>+8.3억원</b>인데 영업현금 <b>−91억원</b>. 약 100억원이 벌어져 있다.</div></div><div class="gi"><div class="gn">중대한 취약점<br><span class='en'>material weakness</span></div><div class="gd">회사가 장부를 만드는 절차에 큰 구멍이 있다고 <b>감사인이 공식 지적</b>한 상태. '틀린 숫자가 나올 수 있는 구조'라는 뜻.</div><div class="gx">🔴 SECZ는 2025년 말에도 미해소 상태이고, 구멍 난 항목 안에 <b>'토큰화 매출 인식'</b>이 들어 있다.</div></div><div class="gi"><div class="gn">재작성 (restatement)</div><div class="gd">이미 공개한 재무제표가 틀려서 다시 만들어 발표하는 것. 상장사에서 매우 무거운 사건.</div><div class="gx">SECZ는 2023·2024년 <b>두 해를 재작성</b>했고, 앞으로 또 없을 것이라 보장하지 않는다.</div></div></div>
+</div>
+
+<div class="card">
+<h2>Part D. 종합 판정</h2>
+<p class="q">이 장이 답하는 질문 — "그래서 이 회사의 수익모델은 몇 점짜리인가? 무엇을 보면 생각을 바꿔야 하나?"</p>
+
+<h3>D.1 네 가지 차원 등급</h3>
+<div class="scroll"><table>
+<thead><tr><th style="width:150px">차원</th><th class="c" style="width:90px">이번</th><th class="c" style="width:80px">직전(6/10)</th><th>핵심 근거 한 줄</th></tr></thead>
+<tbody>
+<tr><td><b>예측 가능성</b><br><span class="sm muted">내년에 또 들어오나</span></td><td class="c v">🔴</td><td class="c">🟡</td><td>확정된 향후 12개월 매출이 연율 매출의 <b>3.2%</b>. 선수금 저수지 −77%. 반복성을 잴 지표(ARR·갱신율)가 <b>전부 0건</b>.</td></tr>
+<tr><td><b>수익성</b><br><span class="sm muted">남기는가</span></td><td class="c v">🔴</td><td class="c">🟡</td><td>매출을 580억 늘리는 동안 비용을 570억 늘렸다(<b>증분 98.2%</b>). 창사 이래 <b>전 회계연도 영업손실</b>.</td></tr>
+<tr><td><b>과금 강도</b><br><span class="sm muted">제값을 받나</span></td><td class="c v">🔴</td><td class="c">🔴</td><td>AUM +88.5%에 본업 매출 −1.1%. 요율 <b>미공시</b>. 브랜드가 <b>"낮은 가격"</b>에 묶여 있다고 자인.</td></tr>
+<tr><td><b>고객 락인</b><br><span class="sm muted">못 떠나나</span></td><td class="c v">🟡</td><td class="c">🟡</td><td>계약 해자는 약하지만(파트너십 계약 자체가 없음), <b>명의개서대리인 지위</b>는 실재. BlackRock이 해지권을 쥐고도 <b>추가 계약을 4번</b> 붙였다.</td></tr>
+<tr style="background:#f7e8e2"><td><b>종합</b></td><td class="c v"><b>🔴</b></td><td class="c"><b>🟡</b></td><td><b>강등.</b> 단 '회사가 나쁘다'가 아니라 <b>'토큰화 인프라 프리미엄을 지급할 근거가 S-1 안에 없다'</b>는 뜻.</td></tr>
+</tbody></table></div>
+
+<h3>D.2 이번에 새로 확인된 것 (직전 6/10 이후)</h3>
+<ul class="tight">
+<li>🆕 <b>Tokenized SECZ가 실제로 가동됐다</b> — 다만 <b>수수료를 받는다는 서술이 S-1 어디에도 없다</b>. 수익모델이 아니라 쇼케이스이고, 심지어 <b>위험요인에만</b> 서술된다(유동성 파편화·가격 괴리를 회사가 스스로 나열).</li>
+<li>🆕 <b>브로커딜러가 토큰화 증권 보관 + 인수인 자격을 새로 승인받았다</b> — 가장 구체적인 신규 채널. 단 <b>매출 기여는 미공시</b>.</li>
+<li>🆕 <b>NYSE 협업은 계약이 아니라 MOU</b>이고 원문 표현이 전부 "할 계획 / 될 위치 / 될 것으로 기대"다. EU 라이선스는 <b>심사 중(pending)</b>.</li>
+<li>🆕 <b>사업 2건이 조용히 접혔다</b> — DeFi 대여 사업 전량 청산, 그리고 매출을 락업 토큰으로 받는 구조가 15개월 만에 켜졌다 꺼졌다(<b>실수령률 12%</b>, 평가손 26%).</li>
+<li>🆕 <b>희석 상한 없는 항목 확정</b> — 조건 없는 잔여 희석 18.5% + <b>evergreen 연 5% × 9년</b>.</li>
+<li>🔄 <b>직전 논거 하나를 철회</b> — 'RPO가 작으니 백로그가 없다'고 했는데, RPO는 오히려 <b>+42.8% 늘었고</b> 월 단위 서비스는 회계 규칙상 애초에 RPO에 안 담긴다.</li>
+</ul>
+
+<h3>D.3 종합 — 한 문장</h3>
+<div class="alert" style="font-size:14.6px"><b>SECZ는 '토큰화 자산에 요율이 붙는 곡괭이'라는 이름표를 달고 있지만, 지난 15개월의 실적을 만든 것은 그 요율이 아니라 (a) 블록체인 재단에 판 일회성 프로젝트와 (b) 인수해서 사 온 펀드 관리였다. 따라서 지금 지급할 수 있는 것은 <i>토큰화 인프라 멀티플</i>이 아니라 <i>규제 인가를 보유한 금융 서비스 롤업 멀티플</i>이다.</b></div>
+
+<p><b>그럼에도 논리가 살아 있는 이유는 하나다</b> — 유일하게 자라는 <b>명의개서대리인 라인</b>이 ①당국의 공개 블록체인 주주명부 허용 ②브로커딜러 자격 확장 ③NYSE 표준 제정 참여를 타고 <b>계약으로 고정된 반복 매출</b>로 전환되는 경로. 이게 성립하면 SECZ는 토큰화 시대의 DTCC 자리를 선점한 것이고, 지금 매출 규모는 의미 없는 숫자가 된다.<br>
+🔴 <b>그런데 그 전환의 증거가 S-1에 하나도 없다.</b> 반면 약점 쪽 증거는 감사받은 숫자와 회사 자인으로 확정돼 있다.</p>
+
+<div class="steel"><b>🔴 가장 강력한 반대 논리 (Steelman) — 그리고 그 결과</b><br><br>
+<b>반박:</b> "AUM +88.5%에 매출 −1.1%"를 과금 실패로 읽는 건 <b>인프라 사업의 성장 곡선을 오독한 것</b>이다. DTCC도 Computershare도 초기엔 자산에 수수료를 붙여 벌지 않았다 — 먼저 <b>레일과 명부 지위</b>를 깔았고 렌트는 한참 뒤에 걷혔다. 그 관점이면 FY25의 통합 수수료는 '일회성 매출'이 아니라 <b>재단들이 자기 돈 내고 사 준 분배망 21개</b>다. 실제로 RPO는 +42.8% 늘었고, 반복 수수료는 회계 구조상 애초에 RPO에 안 담기며, BlackRock은 해지권을 쥐고도 <b>추가 계약을 4번</b> 붙였다.<br><br>
+<b>결과 — 부분 인용, 결론은 유지:</b> 이 반박이 이겨서 <b>'RPO가 작다' 논거는 철회</b>했고, 락인 등급을 🔴로 내리지 않고 🟡로 유지했다. 그러나 <b>반박의 급소는 검증 가능성</b>이다 — 이 반박이 참이려면 유지·거래 수수료가 이미 상당해야 하는데, 회사는 그걸 판별할 <b>모든</b> 지표를 공시하지 않았다. 말할 수 있었고 말해야 했던 것을 말하지 않은 채 <b>"매출 대부분이 반복 수수료"라고 주장만</b> 했다. 그리고 그 매출 인식 규정이 바로 <b>아직 해소되지 않은 회계 취약점의 직접 대상</b>이다.<br><br>
+→ <b>인프라 곡선 가설이 참일 가능성은 인정한다. 다만 거기에 프리미엄을 지급하려면 지금 존재하지 않는 증거가 필요하다.</b></div>
+
+<h3>D.4 🔴 생각을 바꿔야 할 지점 (falsifier)</h3>
+<div class="scroll"><table>
+<thead><tr><th style="width:150px">확인 시점</th><th>무엇을</th><th>그러면</th></tr></thead>
+<tbody>
+<tr><td><b>2026-08-12</b><br><span class="sm muted">2분기 실적·첫 10-Q</span></td><td><b>토큰화 매출이 플러스로 돌아서나</b></td><td>플러스면 "정체" 서사를 철회하고 예측가능성 등급을 되돌린다. <b>두 분기 연속 마이너스면</b> 아키타입 주력을 ①(믹스시프트)로 뒤집어야 한다.</td></tr>
+<tr><td>같은 날</td><td><b>일시/기간 인식 분해 또는 유지보수 수수료 금액</b>을 공시하나</td><td>공시되면 위 Steelman 반박을 <b>주 해석으로 승격</b>한다.</td></tr>
+<tr><td>같은 날</td><td>회계 취약점 <b>개선 진행 상황</b> + 선수금이 회복되나</td><td>둘 다 개선되면 C.1·C.3의 근거가 약해진다.</td></tr>
+</tbody></table></div>
+<div class="gbox"><div class="gt">💡 이 장에 나온 말</div><div class="gi"><div class="gn">MOU (양해각서)</div><div class="gd">'같이 해봅시다'라는 의향서. <b>계약이 아니라 법적 구속력이 없다.</b></div><div class="gx">🔴 NYSE 건이 정확히 이것이다. 원문도 '할 계획 / 될 위치 / 될 것으로 기대'로만 쓴다. 뉴스 헤드라인과 실제 확정도의 차이가 가장 크게 벌어지는 지점.</div></div><div class="gi"><div class="gn">evergreen (자동 증액)</div><div class="gd">임직원에게 줄 주식 풀이 <b>매년 자동으로</b> 늘어나는 규정.</div><div class="gx">🔴 SECZ는 첫해 10%에 더해 <b>매년 발행주식의 5%씩 9년간</b>, 가격 조건도 성과 조건도 누적 상한도 없이 늘어난다.</div></div><div class="gi"><div class="gn">Steelman (자기 반박)</div><div class="gd">내 결론에 대한 <b>가장 강력한 반대 논리를 내가 직접 만들어</b> 부딪혀 보는 것.</div><div class="gx">이번 실행에서 이 반박이 실제로 이겨서 직전 논거 하나를 철회했다(RPO). 결론이 뒤집히지는 않았다.</div></div></div>
+</div>
+
+<div class="card">
+<h2>📋 12함정 요약</h2>
+<div class="scroll"><table><thead><tr><th>#</th><th>함정</th><th class="c">이번</th><th class="c">직전</th><th class="c">변화</th></tr></thead><tbody>
+<tr><td>C.1</td><td>마진 분모</td><td class="c">🚩</td><td class="c">🚩</td><td class="c">유지(근거 교체)</td></tr>
+<tr><td>C.2</td><td>반복매출</td><td class="c">🚩</td><td class="c">🚩</td><td class="c">유지(논거 교체)</td></tr>
+<tr><td>C.3</td><td>발표 vs 장부</td><td class="c">🚩</td><td class="c">🚩</td><td class="c">🔄 번복</td></tr>
+<tr><td>C.4</td><td>백로그 품질</td><td class="c">🚩</td><td class="c">🚩</td><td class="c">유지</td></tr>
+<tr><td>C.5</td><td>가격 결정력</td><td class="c">🚩</td><td class="c">🚩</td><td class="c">유지</td></tr>
+<tr><td>C.6</td><td>집중도</td><td class="c">🚩</td><td class="c">🚩</td><td class="c">유지</td></tr>
+<tr><td>C.7</td><td>매크로 민감도</td><td class="c">🚩</td><td class="c">🟡</td><td class="c">⬆️ 격상</td></tr>
+<tr><td>C.8</td><td>금리 비대칭</td><td class="c">🟡</td><td class="c">없음</td><td class="c">🔄 번복</td></tr>
+<tr><td>C.9</td><td>운영 레버리지</td><td class="c">🚩</td><td class="c">🟡</td><td class="c">⬆️ 격상</td></tr>
+<tr><td>C.10</td><td>현금 전환</td><td class="c">🚩</td><td class="c">🚩</td><td class="c">유지</td></tr>
+<tr><td>C.11</td><td>주당 희석</td><td class="c">🚩</td><td class="c">🚩</td><td class="c">유지</td></tr>
+<tr><td>C.12</td><td>모델 전환</td><td class="c">🚩</td><td class="c">🟡</td><td class="c">⬆️ 격상</td></tr>
+<tr style="background:#f7e8e2"><td colspan="2"><b>합계</b></td><td class="c"><b>11🚩 1🟡</b></td><td class="c"><b>8🚩</b></td><td class="c"><b>악화</b></td></tr>
+</tbody></table></div>
+</div>
+
+<div class="foot">
+<b>1차 자료</b> — <a href="https://www.sec.gov/Archives/edgar/data/2094496/000162828026051182/secz-20260731.htm">SEC Form S-1 (2026-07-31, Acc 0001628280-26-051182)</a> 전문 8,508줄 직독 · <a href="https://www.sec.gov/Archives/edgar/data/2094496/000121390026076444/ea0297239-8k_securitize.htm">Form 8-K (2026-07-08)</a> · <a href="https://app.rwa.xyz/assets/SECZ">rwa.xyz</a> · yfinance(2026-07-31 종가 $6.67).<br>
+<b>재무 기간 주의</b> — 본 S-1의 재무제표는 <b>2026년 3월 31일까지</b>만 수록한다. 직전 R-Dive(2026-06-10)와 <b>동일 기간</b>이며, 다음 신규 재무는 <b>2026-08-12</b> 첫 분기보고서다. 이번 등급 변화는 새 실적이 아니라 <b>원문을 더 깊이 판 결과</b>다.<br>
+<b>미확인 항목</b> — 요율(bps)·take rate·ARPU / 반복매출 비중·ARR·갱신율 / 일시 vs 기간 인식 분해 / 유지보수 수수료 금액 / 사업부별 마진(단일 보고부문) / 토큰 결제 매출 총액(회사가 공시 거부) — 전부 <b>❌ 미공시</b>이며 추정하지 않았다.<br>
+<b>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</b> 수익모델 한 축만 다루므로 산업·경영진·밸류에이션은 Deep-Dive를 참조.
+</div>
+</div>
+<script>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+const VIZ={"trajectory": {"periods": ["FY2024", "FY2025", "Q1'26 연율"], "forecastFrom": 3, "inflection": {"index": 1, "label": "MG Stover 인수"}, "series": [{"key": "tok", "label": "토큰화 매출 ($M)", "axis": "left", "color": "#2980b9", "values": [10.1, 37.4, 44.5]}, {"key": "svc", "label": "자산서비싱 매출 ($M)", "axis": "left", "color": "#8e6bb5", "values": [8.5, 24.7, 33.4]}, {"key": "gm", "label": "매출총이익률 (%)", "axis": "right", "color": "#c0392b", "values": [90.1, 78.3, 77.1]}]}};
+DDViz.renderTrajectory('fig-rate','leg-rate',VIZ.trajectory);
+// 3개 점 모두 실측이라 라이브러리가 기본 부착하는 '전망' 범례를 제거
+(function(){var l=document.getElementById('leg-rate');if(!l)return;
+ [].slice.call(l.querySelectorAll('span')).forEach(function(s){if(s.textContent.indexOf('전망')>-1)s.remove();});})();
+</script>
