@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRAM(메모리 반도체) 섹터 주간 종합 분석 — 2026-08-02</title>
+<style>
+  :root{
+    --bg:#FDF6E3; --layer:#FBF0D8; --card:#FFFDF6; --ink:#3B3228; --muted:#7A6E5A;
+    --line:#E6DCC3; --accent:#B58900; --red:#C0392B; --amber:#B9770E; --green:#5E8C2E;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;line-height:1.62;font-size:15px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:30px 20px 70px}
+  header{background:var(--layer);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:22px}
+  h1{margin:0 0 6px;font-size:25px;letter-spacing:-.5px}
+  .sub{color:var(--muted);font-size:13px;line-height:1.7}
+  .sub b{color:var(--ink)}
+  .status{display:inline-block;margin:14px 0 2px;padding:9px 18px;border-radius:30px;font-weight:700;font-size:17px}
+  .st-red{background:#F7D9D4;color:var(--red);border:1px solid #E0A99F}
+  .st-amb{background:#FBEBC7;color:var(--amber);border:1px solid #E4C879}
+  .st-grn{background:#E0EFCB;color:var(--green);border:1px solid #B9D68E}
+  section{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:18px 22px;margin:16px 0;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+  h2{font-size:19px;margin:2px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  h3{font-size:15.5px;margin:16px 0 7px;color:#4a3f30}
+  h4{font-size:14px;margin:12px 0 5px;color:#5a4d38}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.3px;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  th,td{padding:8px 10px;border:1px solid var(--line);text-align:left;vertical-align:top}
+  th{background:var(--layer);font-weight:700;color:#5a4d38}
+  .c{text-align:center;white-space:nowrap}
+  ul{margin:8px 0;padding-left:20px}
+  li{margin:4px 0}
+  p{margin:8px 0}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px dotted #C9A94E}
+  a:hover{border-bottom-style:solid}
+  code{background:var(--layer);padding:1px 5px;border-radius:4px;font-size:12.5px}
+  .wl{color:var(--muted);font-size:12.5px}
+  .pill{display:inline-block;padding:1px 8px;border-radius:20px;font-size:12px;font-weight:700}
+  .p-red{background:#F7D9D4;color:var(--red)} .p-amb{background:#FBEBC7;color:var(--amber)} .p-grn{background:#E0EFCB;color:var(--green)}
+  blockquote.bq{background:var(--layer);border-left:4px solid var(--accent);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:13.6px;color:#4a3f30}
+  blockquote.steel{background:var(--layer);border:1px dashed #D8C68C;border-radius:9px;padding:12px 15px;margin:12px 0;font-size:13.6px}
+  blockquote.steel b{color:var(--accent)}
+  hr{border:none;border-top:1px solid var(--line);margin:18px 0}
+  .foot{margin-top:26px;font-size:12px;color:var(--muted);background:var(--layer);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .toolbar{text-align:right;margin:0 0 10px}
+  .toolbar button{background:var(--layer);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:12.5px;color:var(--ink);cursor:pointer}
+  @media print{body{background:#fff}.wrap{max-width:100%}.toolbar{display:none}section,header,.foot{box-shadow:none}}
+
+/* ===== report-viz.css (INLINE) ===== */
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+</style>
+<meta name="vault-stage" content="Monitoring">
+<meta name="vault-topic" content="메모리">
+<meta name="vault-date" content="2026-08-02">
+<meta name="vault-published" content="2026-08-02">
+<meta name="description" content="DRAM(메모리 반도체) 섹터 주간 종합 분석 — 2026-08-02">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="wrap">
+<div class="toolbar"><button onclick="window.print()">🖨 인쇄/PDF</button></div>
+<header>
+  <h1>💾 DRAM(메모리 반도체) 섹터 주간 종합 분석</h1>
+  <div class="sub"><b>2026-08-02</b> · Roundhill Memory ETF 앵커 · 메모리 섹터 주간 심층 · Chrome MCP 전용 수집</div>
+  <div class="status st-amb">종합 상태 : ⚠️ 주의</div>
+</header>
+<p><strong>📎 배경·범위</strong></p>
+<ul>
+<li><strong>분석 앵커 = DRAM ETF</strong>(Roundhill Memory ETF, NASDAQ: DRAM). <strong>무게중심 = 메모리 섹터</strong>(ETF NAV를 움직이는 swap 결합비중 <strong>한국 2강 49.16% + MU 24.54%</strong>)이지 MU 단일주 검증이 아니다. <strong>MU = 추적 단일 종목</strong>(밸류·HBM 점유 관찰). MU 사실·시나리오는 MU-Memory.md가 owner(재정의 ❌).</li>
+<li><strong>감시 대상 thesis</strong>: *&quot;Physical AI 시대에도 메모리 반도체가 핵심 곡괭이. agentic AI를 넘어 Physical AI 발전이 미국 생산성 향상에 필요하고, Physical AI 관심·투자가 늘 것. 메모리 주가가 중간에 주춤해도 장기 보유할 만하다.&quot;* 톤 = thesis 무결성 감시.</li>
+<li><strong>defer</strong>: 빅테크 capex·매크로 지수·유동성 → macro-weekly / 메모리 밸류체인 산업 구조 → Chain-Dive.</li>
+<li><strong>범위</strong>: 2026-07-25 ~ 08-02 (직전 실행 7/25 대비 델타). 기준 종가 = <strong>7월 31일 금요일</strong>(미·한·일 동일).</li>
+<li><strong>수집</strong>: Chrome MCP 전용(WebFetch·WebSearch 0회) + yfinance + news-headlines MCP. 결정론적 수집 게이트 <code>finalize PASS</code>(브라우저 필수 16피드 전건).</li>
+</ul>
+<hr>
+
+<section><h2>한 장 요약</h2>
+<ul>
+<li><strong>종합 판정</strong>: 🟠 <strong>주의</strong> — 사상 최대 실적과 사상급 낙폭이 같은 주에 났고, 그 괴리의 원인이 이번 주에 <strong>이름을 얻었다: LTA(장기공급계약)의 ceiling.</strong></li>
+<li>🔴 <strong>3사 실적 = 전원 사상 최대인데 2사가 컨센 미달.</strong> SK하이닉스 OPM <strong>76%</strong>(매출·이익 각각 −5.6%·−5.4% 미달), 삼성 DS OPM <strong>70%</strong>(전사 영업이익의 <strong>99.7%</strong>), 키옥시아 OPM <strong>71.9%</strong>(Q2 가이던스가 컨센 하회). 미달 사유는 수요가 아니라 <strong>&quot;LTA 때문에 가격을 덜 올렸다&quot;</strong> — 가격을 공격적으로 올린 삼성만 이겼다.</li>
+<li>🔴 <strong>NVIDIA가 Vera Rubin의 SOCAMM 메모리를 반토막 검토</strong> — 메모리가 시스템 BOM의 <strong>29%</strong>로 NVIDIA 선호선(20%)을 넘었다. 랙당 CPU 메모리 55TB→28TB. <strong>단 GPU HBM4 20.7TB는 불변.</strong></li>
+<li>🔴 <strong>ETF 구조가 바뀌었다</strong> — <strong>CXMT(중국 최대 DRAM) 2.52% 신규 편입</strong>(골드만 TRS) + <strong>SKHY(SK하이닉스 ADR) 0.49% 첫 등장</strong>(holdings watch 발동). 종목 21→23개.</li>
+<li>🔴 <strong>섹터④ 근접도 🟡→🟠</strong> — CXMT STAR 데뷔 장중 <strong>+471.6%</strong>(중국 최대 상장사) + <strong>중국 이머전 DUV 노광장비 양산 개시 보도</strong>. 종전 &quot;자본 장벽만 약화·기술 장벽은 유지&quot; 전제에서 <strong>기술 장벽 축까지 흔들렸다.</strong></li>
+<li>🟠 <strong>현물 ASP 상승이 멈췄다</strong> — 7/31 DRAM 현물 7개 품목 중 상승 1·하락 1·보합 5(7/24는 4/4 전원 상승). <strong>DDR5가 먼저 멈췄다.</strong></li>
+<li><strong>7월 성적표</strong>: DRAM ETF <strong>−31.8%</strong> · 키옥시아 −48.2% · SanDisk −46.6% · SK하이닉스 −35.2% · MU −28.7% · 삼성 −21.4% · ^SOX −20.6%.</li>
+<li>🟢 <strong>SK그룹–NVIDIA $500B+ 파트너십 LOI(7/25)</strong> — SKT 2GW AI 팩토리 + SK하이닉스 차세대 AI 메모리 장기 공급. 수요 범위에 <strong>&quot;physical AI&quot;를 명시</strong>(§F thesis를 당사자가 직접 진술).</li>
+</ul>
+<hr>
+</section>
+<section><h2>§A. 시세·peer 매트릭스</h2>
+<p>기준일 <strong>2026-07-31 종가</strong>(WoW = 7/24 대비).</p>
+<table><thead><tr><th>종목</th><th>종가</th><th>1d</th><th><strong>WoW</strong></th><th>주중 저점(7/24 대비)</th><th>7월</th><th>밸류/HBM</th><th>ETF 비중</th></tr></thead><tbody>
+<tr><td><strong>DRAM ETF</strong></td><td><strong>$50.37</strong></td><td>−3.76%</td><td><strong>−5.32%</strong></td><td>$44.85 (<strong>−15.7%</strong>)</td><td><strong>−31.79%</strong></td><td>NAV <strong>$53.10</strong> · <strong>−5.14% 디스카운트</strong></td><td>—</td></tr>
+<tr><td><strong>MU</strong></td><td>$823.03</td><td>−5.90%</td><td><strong>−10.63%</strong></td><td>$739.00 (−19.8%)</td><td>−28.69%</td><td>P/S <strong>10.30</strong> · fwd P/E <strong>5.35</strong> · HBM #3</td><td><strong>24.54% (#2)</strong></td></tr>
+<tr><td><strong>삼성전자</strong></td><td>₩262,500</td><td><strong>+26.81%</strong></td><td><strong>+5.21%</strong></td><td>₩207,000 (−17.0%)</td><td>−21.41%</td><td>P/S 4.22→<strong>3.55</strong> · HBM #2</td><td><strong>26.39% (#1)</strong></td></tr>
+<tr><td><strong>SK하이닉스</strong></td><td>₩1,718,000</td><td><strong>+29.95%</strong>(상한가)</td><td>−2.33%</td><td>₩1,322,000 (−24.8%)</td><td>−35.17%</td><td>P/S 9.45→<strong>6.45</strong> · HBM <strong>#1</strong></td><td><strong>22.77% (#3)</strong></td></tr>
+<tr><td><strong>SKHY</strong>(ADR·$)</td><td>$143.73</td><td>−3.54%</td><td>−7.01%</td><td>$126.79 (−18.0%)</td><td>—</td><td>52주 밴드 <strong>25.2%</strong></td><td>🆕 <strong>0.49% 첫 등장</strong></td></tr>
+<tr><td><strong>키옥시아</strong> 285A.T</td><td>¥46,500</td><td><strong>+17.72%</strong>(ストップ高)</td><td><strong>−16.98%</strong></td><td>¥38,380 (−31.5%)</td><td><strong>−48.15%</strong></td><td>P/S 13.11→<strong>6.76</strong> · NAND</td><td>3.14%</td></tr>
+<tr><td>SNDK / STX / WDC</td><td>$1,214.83 / $856.13 / $544.84</td><td></td><td><strong>−15.43% / +0.52% / +4.82%</strong></td><td></td><td>−46.6 / −11.3 / −14.7%</td><td>NAND·스토리지</td><td>3.76 / 5.05 / 4.98%</td></tr>
+<tr><td>🆕 <strong>CXMT</strong></td><td>(STAR 상장 7/27)</td><td></td><td></td><td></td><td></td><td>중국 최대 DRAM</td><td>🆕 <strong>2.52%</strong>(GS TRS)</td></tr>
+<tr><td>ASML / AMAT / LRCX / SMH / ^SOX</td><td>$1,629 / $507.67 / $293.02 / $540.53 / 11,311</td><td></td><td>−7.29 / −5.33 / −3.99 / −3.68 / <strong>−4.30%</strong></td><td></td><td>−20.6%(^SOX)</td><td>장비/지수</td><td>—</td></tr>
+</tbody></table>
+<ul>
+<li>🏛️ *각주*: <strong>Roundhill Memory ETF(DRAM)</strong> = 메모리 반도체 종목만 담은 ETF, 본 스킬의 분석 앵커. 비중은 <strong>swap(총수익스왑) 결합비중</strong> — Roundhill이 RIC 분산 규정을 지키려 일부를 스왑으로 보유하므로 경제적 노출 기준으로 읽어야 한다. <strong>NAV(순자산가치)</strong> = ETF가 담은 종목들의 실제 가치, <strong>시장가</strong>는 거래소에서 붙은 값. 둘의 차이가 프리미엄/디스카운트다.</li>
+</ul>
+<h3>🔴 이번 주 최대 관찰 — &quot;같은 날, 아시아는 상한가 미국은 반락&quot;</h3>
+<p>경로: 7/24 $53.20 → 7/27 $52.43 → 7/28 $47.77 → <strong>7/29 $44.85(주중 저점·7/24 대비 −15.7%)</strong> → <strong>7/30 $52.34(+16.7%)</strong> → 7/31 $50.37(−3.76%).</p>
+<p>7월 31일 하루에 정반대 두 장면이 겹쳤다. <strong>아시아</strong>에서는 SK하이닉스가 <strong>+29.95%(사실상 상한가)</strong>, 삼성이 +26.81%, 키옥시아가 <strong>ストップ高</strong>(시가·고가·저가·종가가 전부 ¥46,500이고 거래량이 118만 주뿐 = 매수 주문이 체결되지 못하고 쌓인 상태)로 마감했다. 같은 달력일 <strong>미국</strong>에서는 DRAM ETF가 −3.76%, MU가 −5.90%로 밀렸다.</p>
+<p>이 어긋남은 ETF 가격에 그대로 찍혔다.</p>
+<table><thead><tr><th>날짜</th><th>Roundhill NAV</th><th>시장 종가</th><th>프리미엄/디스카운트</th></tr></thead><tbody>
+<tr><td>7/30</td><td>$47.48</td><td>$52.34</td><td><strong>+10.2% 프리미엄</strong></td></tr>
+<tr><td><strong>7/31</strong></td><td><strong>$53.10</strong> (+11.84%)</td><td><strong>$50.37</strong></td><td><strong>−5.14% 디스카운트</strong></td></tr>
+</tbody></table>
+<ul>
+<li>🎯 *해석*: 7/30에는 <strong>미국 시장이 아시아의 반등을 먼저 사버려</strong> ETF가 NAV보다 10% 비싸게 거래됐고, 7/31에 한국·일본이 실제로 상한가로 따라오자 <strong>NAV가 +11.84% 점프</strong>하면서 이번엔 시장가가 −5.14% 싸게 남았다. </li>
+<li>💬 <strong>Claude 해석</strong>: <strong>−5.14% 디스카운트는 &quot;미국 시장이 아시아의 상한가를 되돌림으로 본다&quot;는 가격 신호</strong>다. 헐값이라는 뜻이 아니라, 월요일(8/3) 서울·도쿄에서 일부 반납될 것을 미리 반영했다는 뜻으로 읽는 게 자연스럽다. 낮은 신뢰도. (직전 실행에서 지적한 <strong>NAV 날짜 불일치 함정</strong>은 이번엔 없다 — Roundhill이 −5.14%를 공식 표기했다.)</li>
+<li>⚠️ *데이터 주의*: yfinance의 <code>navPrice</code>는 $47.4772로 <strong>하루 지연된 7/30 NAV</strong>다. 이 값으로 프리미엄을 계산하면 +6.1% 프리미엄이라는 정반대 결론이 나온다. <strong>Roundhill 공식 수치를 쓴다.</strong></li>
+</ul>
+<h3>🔴 ETF 구성 변화 — 한국 2강의 경쟁자가 같은 NAV 안으로 들어왔다</h3>
+<p>Roundhill 공식 holdings(as of <strong>2026-08-02</strong>) 기준 결합비중:</p>
+<table><thead><tr><th>종목</th><th>비중</th><th>구성</th><th>델타(7/23 대비)</th></tr></thead><tbody>
+<tr><td><strong>삼성전자</strong></td><td><strong>26.39% (#1)</strong></td><td>005930 KS 19.29 + 스왑 7.10 + 우선주 0.04</td><td>26.25% → <strong>#2→#1 재역전</strong></td></tr>
+<tr><td><strong>Micron</strong></td><td><strong>24.54% (#2)</strong></td><td>MU 24.54</td><td>26.58% → <strong>#1→#2</strong></td></tr>
+<tr><td><strong>SK하이닉스</strong></td><td><strong>22.77% (#3)</strong></td><td>000660 KS 16.87 + 스왑 5.90 + 🆕 <strong>SKHY 0.49</strong></td><td>22.57%</td></tr>
+<tr><td>Seagate / WDC / SanDisk</td><td>5.05 / 4.98 / 3.76%</td><td></td><td></td></tr>
+<tr><td>키옥시아</td><td>3.14%</td><td>285A JP</td><td>3.66%</td></tr>
+<tr><td>🆕 <strong>CXMT</strong></td><td><strong>2.52%</strong></td><td><strong>BTMTQT8 TRS 052427 GS</strong></td><td><strong>신규</strong></td></tr>
+<tr><td>Nanya / GigaDevice</td><td>1.92 / 1.51%</td><td></td><td></td></tr>
+</tbody></table>
+<p><strong>Top3 73.70% · 한국 2강 49.16% · AUM $24.55B · 23종목(21→23) · 발행주 462,450,000주(456.92M → +5.53M 순유입).</strong></p>
+<ul>
+<li>🔴 <strong>CXMT 편입(2.52%)</strong> — 7월 27일 STAR 시장에 상장한 중국 최대 DRAM 업체가 상장 며칠 만에 ETF에 들어왔다. 형태는 주식 직접보유가 아니라 <strong>골드만삭스가 짜준 총수익스왑(TRS)</strong>이다.</li>
+<li>📑 *각주*: <strong>TRS(총수익스왑)</strong> = 주식을 실제로 사지 않고 &quot;그 주식의 수익률만 받는&quot; 계약. 중국 A주는 Stock Connect·QFII 같은 제도를 통해야 직접 살 수 있는데, 스왑을 쓰면 그 관문을 거치지 않고 경제적 노출만 얻는다. 🎯 <strong>의미</strong>: ETF 이름은 &quot;메모리&quot;지만, 이제 <strong>한국 2강(49.16%)의 최대 경쟁자를 같은 바구니에 2.52% 담고 있다.</strong> thesis 리스크 신호 섹터④(한국 2강 구조 충격)가 발동하면 ETF는 한쪽에서 잃고 다른 한쪽에서 일부 벌게 되는 구조로 바뀐 것이며, 이는 완충인 동시에 <strong>&quot;한국 2강 집중 베팅&quot;이라는 종전 성격의 희석</strong>이다.</li>
+<li>🔴 <strong>SKHY 라인 첫 등장(0.49%)</strong> — 직전 실행까지 &quot;미편입&quot;으로 추적하던 <strong>SKHY holdings watch가 발동</strong>했다. 다만 로컬주(000660 KS 16.87%)와 스왑(5.90%)이 그대로 있는 <strong>부분 등장</strong>이지 swap→ADR 전면 전환은 아니다. ⚠️ <strong>같은 회사이므로 비중 이중계산 금지</strong>(SK하이닉스 총 노출 = 22.77%).</li>
+<li>🆕 30일 SEC 수익률 0.56% → <strong>1.10%</strong> / 레버리지 형제 ETF <strong>RAM</strong>(T-REX 2X Long DRAM) 존재 확인.</li>
+</ul>
+<hr>
+</section>
+<section><h2>§B. 공시 심층</h2>
+<h3>🔴 <a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260729800013" target="_blank">🇰🇷 SK하이닉스 2Q26 — OPM 76%, 그런데 컨센서스 미달 (rcpNo 20260729800013)</a></h3>
+<table><thead><tr><th>항목</th><th>2Q26</th><th>QoQ</th><th>YoY</th></tr></thead><tbody>
+<tr><td>매출</td><td><strong>₩79.32조</strong></td><td>+50.9%</td><td><strong>+256.8%</strong></td></tr>
+<tr><td>영업이익</td><td><strong>₩60.54조</strong></td><td>+61.0%</td><td><strong>+557.2%</strong></td></tr>
+<tr><td><strong>영업이익률</strong></td><td><strong>76%</strong></td><td>+4%p</td><td>+35%p</td></tr>
+<tr><td>법인세차감전이익</td><td>₩122.71조</td><td>+137.7%</td><td>+1,306.8%</td></tr>
+<tr><td>당기순이익</td><td>₩93.92조</td><td>+132.8%</td><td>+1,242.5%</td></tr>
+</tbody></table>
+<p>상반기 누계 매출 <strong>₩131.9조</strong>(사상 첫 100조 돌파) · 영업이익 ₩98.15조. 현금 <strong>₩88조</strong>(전분기 +₩33.6조) · 총차입금 ₩18.6조 · <strong>순현금 ₩69.4조</strong>.</p>
+<ul>
+<li>📑 *각주(6줄)*: <strong>DART</strong>는 금융감독원 전자공시(dart.fss.or.kr)로, 한국 상장사는 미국 SEC가 아니라 여기가 1차 출처다. <strong>연결재무제표기준 영업(잠정)실적 공정공시</strong>는 감사 전 잠정치를 투자자에게 먼저 알리는 의무 공시다. <strong>영업이익률(OPM)</strong> = 영업이익 ÷ 매출. 제조업에서 76%는 극단적으로 높은 수치이며, 이는 원가가 낮아서가 아니라 <strong>판매가격(ASP)이 급등</strong>했기 때문이다. 🎯 <strong>의미</strong>: 회사 스스로 *&quot;AI 서버용 고성능 제품이 가격 상승을 주도&quot;*라고 밝혔다 — MU가 Q3 FY26에서 &quot;+74% 매출이 거의 전부 가격&quot;이라고 자인한 것과 같은 구조다.</li>
+<li>🔴 <strong>그런데 컨센서스를 밑돌았다</strong> — 시장 추정 매출 ₩84조·영업이익 ₩64조 대비 각각 <strong>−5.6% / −5.4%</strong>(<a href="https://www.trendforce.com/news/2026/07/29/news-sk-hynix-posts-record-2q-results-but-misses-estimates-reportedly-due-to-conservative-pricing-completes-10-ltas/" target="_blank">TrendForce 7/29</a>, CNBC 인용). 로이터가 인용한 애널리스트들은 원인을 <strong>&quot;장기고객계약(LTA) 하의 보수적인 가격 인상&quot;</strong>으로 지목했다. DS투자증권 이수림: *&quot;삼성이 가격결정력이 더 강하고 더 공격적으로 인상했다.&quot;*</li>
+<li>그럼에도 가격 자체는 강했다 — <strong>DRAM ASP +30% QoQ · NAND ASP +mid-50%대</strong>(bit는 +15%).</li>
+<li><strong>LTA 10건 완료</strong>(<a href="https://news.skhynix.com/en/q2-2026-business-results/" target="_blank">SK하이닉스 IR 7/29</a>). 로이터에 따르면 <strong>고객 예치금(customer deposits)</strong> 등 금융 장치가 포함돼 있다 — MU의 SCA 구조와 동형이다.</li>
+<li>🔴 <strong>2026 capex를 ₩30.173조(2025) → ₩40조대 후반으로 상향</strong>(약 <strong>+60%</strong>). 동시에 보도자료는 *&quot;CapEx Discipline(설비투자 규율)을 지키면서&quot;*를 명시했다. <strong>M15X 양산 일정 가속</strong>, <strong>용인 1단계 클린룸 2027년 초 오픈</strong>.</li>
+<li><strong>HBM4</strong> = 2분기 양산 출하 개시, 수율·품질이 성숙 제품인 HBM3E 수준에 도달, 하반기 램프업. <strong>HBM4E</strong> 샘플링 완료·2027 양산 목표. 🆕 <strong>iHBM</strong> — 하이브리드 본딩 + 패키지 내장 냉각으로 열저항 <strong>−30%</strong>를 노리는 차세대 구상(HBM5 겨냥).</li>
+<li><strong>NAND</strong> = 321단이 이미 최대 비중, 연말까지 국내 캐파의 ~50%로 확대. 단 <strong>3Q NAND bit 출하는 +low-single%만</strong> 전망.</li>
+<li>⚠️ <strong>세전이익 ₩122.71조 vs 영업이익 ₩60.54조 = 비영업 +약 62조.</strong> 잠정공시라 구성이 공시되지 않았다. <strong>&quot;순이익률 118%&quot;를 액면 그대로 인용하면 안 되며</strong>, 다음 분기보고서에서 확인이 필요한 항목으로 등재한다. (🎯 직전 빅테크 Q2 보고서에서 확인된 &quot;비영업 평가이익이 헤드라인 이익을 오염시키는&quot; 패턴과 같은 계열의 점검이다.)</li>
+</ul>
+<h3>🔴 <a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260730800103" target="_blank">🇰🇷 삼성전자 2Q26 — DS부문이 전사 영업이익의 99.7% (rcpNo 20260730800103)</a></h3>
+<p>전사 매출 <strong>₩171.50조</strong>(QoQ +28.11% · YoY +130.00%) · 영업이익 <strong>₩89.49조</strong>(QoQ +56.37% · <strong>YoY +1,813.83%</strong>) · EPS ₩10,849(+52%). 둘 다 사상 최대.</p>
+<p>부문별(<a href="https://news.samsung.com/global/samsung-electronics-announces-second-quarter-2026-results" target="_blank">삼성 뉴스룸 7/30</a>):</p>
+<table><thead><tr><th>부문</th><th>매출</th><th>영업이익</th><th>OPM</th></tr></thead><tbody>
+<tr><td><strong>DS(반도체)</strong></td><td><strong>₩127.5조</strong></td><td><strong>₩89.2조</strong></td><td><strong>70.0%</strong></td></tr>
+<tr><td>SDC(디스플레이)</td><td>₩7.5조</td><td>₩0.7조</td><td>9.3%</td></tr>
+<tr><td><strong>MX·네트워크(스마트폰)</strong></td><td>₩33.2조</td><td><strong>−₩0.7조 (적자)</strong></td><td>—</td></tr>
+<tr><td>VD·DA(TV·가전)</td><td>₩14.5조</td><td>소폭 적자</td><td>—</td></tr>
+</tbody></table>
+<ul>
+<li>🔴 <strong>DS부문 영업이익 ₩89.2조 ÷ 전사 ₩89.49조 = 99.7%.</strong> 삼성전자는 이번 분기에 사실상 <strong>메모리 회사 하나</strong>였다.</li>
+<li>🔴🔴 <strong>그리고 스마트폰(MX)이 적자다.</strong> 회사가 밝힌 원인은 *&quot;업계 전반의 부품 원가 압박(elevated component cost pressures)&quot;* — 즉 <strong>메모리 가격이다.</strong> 삼성은 메모리를 파는 회사인데도 자기 세트 사업이 메모리 원가로 적자를 냈다.</li>
+<li>🎯 *각주*: 이것은 같은 주 <a href="https://investor.apple.com/" target="_blank">애플 FY26 Q3 콜</a>에서 팀 쿡이 *&quot;100년 만의 홍수&quot;*라며 메모리 원가로 매출총이익률이 2개 분기 −2.8%p 빠졌다고 밝힌 것과 <strong>동일한 현상이 공급자 내부에서 재현된 것</strong>이다. <strong>곡괭이의 렌트가 다운스트림(세트)에서 걷히고 있다</strong>는 증거이며, 사용자 thesis의 &quot;메모리 = 핵심 곡괭이&quot; 명제를 <strong>삼성 자신의 손익계산서가 지지</strong>한다. 동시에 이 렌트는 소비자 가격으로 전이되는 중이다.</li>
+<li><strong>HBM</strong>: HBM4 매출 확대, <strong>업계 최초 HBM4E 샘플을 주요 고객에 출하</strong>. 3Q HBM4 매출 3배 이상 전망(보도).</li>
+<li><strong>NAND</strong>: ASP <strong>+high-60%대</strong>, bit는 +low-single% — 3사 중 가장 공격적인 가격 인상. <strong>eSSD가 2026년 NAND 매출의 60% 초과</strong>(+20%p YoY) 전망, 원인은 <strong>agentic AI의 KV 캐시 전용 스토리지 수요</strong>. <strong>V10 NAND 8월 양산 개시</strong>.</li>
+<li>🔴 <strong>LTA 최초 구체 공개</strong>(<a href="https://www.trendforce.com/news/2026/07/30/news-samsung-targets-60-70-capacity-under-ltas-five-key-customers-reportedly-include-aws-microsoft-google/" target="_blank">TrendForce 7/30</a>): 총 생산능력의 <strong>60~70%</strong>를 장기계약 물량으로 배정 목표(MU SCA ~50% 대비 공격적). <strong>5개 대형 데이터센터 고객 확보 + 5개 협상 마무리 단계</strong>(보도상 AWS·Microsoft·Google Cloud + Meta·Oracle 추정). <strong>롤링 5년 구조·매년 재협상</strong>, <strong>선급금이 계약물량의 약 1/4</strong>, commodity 메모리에 <strong>가격 floor 메커니즘</strong> 존재. LTA를 <strong>NAND로 확대</strong> 중.</li>
+<li><strong>전망</strong>: H2 서버 중심 견조, server DRAM·eSSD·HBM 가속. *&quot;생산을 늘리려는 노력에도 공급 제약은 계속될 전망&quot;*이며 <strong>모바일·PC의 부분적 수요 둔화에도 시장은 공급부족을 유지</strong>한다고 봤다. AI 메모리 부족은 <strong>내년 더 악화되고 수급 불균형은 2028까지</strong> 이어진다는 것이 회사 시각이다.</li>
+<li>파운드리: <strong>HBM base-die 수요 + 미국 고객 수주</strong>로 개선(인센티브 충당 전 기준), 2nm HPC design win, <strong>Taylor Fab 2 2026년 말 착공 → 2030 양산</strong>.</li>
+<li><a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260730800137" target="_blank">분기배당 ₩374/주 · 총 ₩2.456조 · 시가배당률 0.1%(rcpNo 20260730800137)</a> — 🟢 참고: 주가 급등으로 시가배당률이 0.1%까지 눌렸다.</li>
+</ul>
+<h3>🔴 <a href="https://ssl4.eir-parts.net/doc/285A/tdnet/2859908/00.pdf" target="_blank">🇯🇵 키옥시아 Q1 FY26 — GM 80%, 그런데 가이던스는 컨센 하회 (2026-07-31)</a></h3>
+<table><thead><tr><th>항목</th><th>Q1 FY26 (4~6월)</th><th>QoQ</th><th>YoY</th></tr></thead><tbody>
+<tr><td>매출</td><td><strong>¥1,767.1B</strong></td><td>+76.2%</td><td><strong>+415.5%</strong></td></tr>
+<tr><td>영업이익</td><td><strong>¥1,270.0B</strong></td><td>+48.8%(가이드 기준)</td><td>+2,728%</td></tr>
+<tr><td><strong>영업이익률</strong></td><td><strong>71.9%</strong></td><td></td><td></td></tr>
+<tr><td>매출총이익률</td><td><strong>80%</strong> (JV 제외 82%)</td><td></td><td></td></tr>
+<tr><td>순이익</td><td>¥842.2B</td><td></td><td></td></tr>
+<tr><td>EPS</td><td>¥1,539.91</td><td></td><td></td></tr>
+</tbody></table>
+<p>세그먼트: SSD·스토리지 ¥1,174.7B / 스마트 디바이스 ¥525.7B / 기타 ¥66.7B. 회사는 증가 원인을 <strong>&quot;생성형 AI에 집중한 데이터센터 고객의 강한 수요에 따른 ASP의 유의미한 상승&quot;</strong>으로 명시했다.</p>
+<ul>
+<li>🔴 <strong>Q2 가이던스</strong>: 매출 ¥2,390.0B(+35.2% QoQ) · 영업이익 ¥1,890.0B(+48.8%) → <strong>OPM 79.1%로 가속</strong>. 그런데 <a href="https://x.com/TrendForce" target="_blank">TrendForce·회사 X</a>에 따르면 <strong>이 가이던스가 시장 추정치를 밑돌았다.</strong></li>
+<li>🔴 <strong>capex가 비정상적으로 낮다</strong> — 유형자산 취득 <strong>¥51.2B = 매출의 2.9%.</strong> SK하이닉스가 capex를 60% 늘리고 삼성이 P4·P5·Taylor를 동시에 짓는 분기에, 키옥시아는 <strong>증설 대신 부채를 갚았다</strong>(장기차입금 조기상환 ¥433.2B). 자기자본비율 37.9% → <strong>50.8%</strong>.</li>
+<li>🆕🔴 <strong>Nanya Technology 지분 취득 ¥78.2B</strong> — NAND 회사가 대만 DRAM 3위 업체의 주식을 샀다. (Nanya는 DRAM ETF에도 1.92% 편입돼 있다.) 목적·지분율은 이번 결산 자료에 없다 — <strong>추가 검증 필요</strong>.</li>
+<li>🆕 <strong>3:1 액면분할</strong>(2026-10-01 효력·7/31 이사회 승인) + <strong>자사주 취득 기구 신설</strong>. 배당은 ¥0 유지.</li>
+<li><strong>2028년까지 물량의 50%를 LTA로 커버</strong>한다는 목표를 재확인.</li>
+<li>📑 *각주*: <strong>액면분할</strong>은 주식 1주를 3주로 쪼개 주당 가격을 낮추는 것으로, 기업가치와 무관하고 유동성·소액투자 접근성을 높인다. 위 표의 수치들은 <strong>분할 전 기준</strong>이다.</li>
+</ul>
+<h3>MU — <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0000723125&amp;type=&amp;dateb=&amp;owner=include&amp;count=40" target="_blank">SEC EDGAR CIK 0000723125</a>: 신규 8-K/10-Q <strong>0건</strong></h3>
+<ul>
+<li><strong>변동 없음.</strong> 7/25 이후 접수된 것은 Form 4 3건뿐이며 모두 이미 알려진 7/23~24 거래의 사후 보고다. SCA RPO ~$100B 불변. <a href="https://investors.micron.com/" target="_blank">MU IR</a> 기준 최근 보도자료도 <strong>7/16이 마지막</strong>(7/25~8/1 신규 0건).</li>
+<li>✅ <strong>직전 daily의 미확인 항목 해소</strong> — CEO Mehrotra의 7/24 매도 총량이 Form 4 2건 합산 <strong>40,000주</strong>(체결가 $906.48~$965.85)로 확정됐다. <a href="https://www.sec.gov/Archives/edgar/data/723125/000124265426000013/0001242654-26-000013-index.htm" target="_blank">Form 4 #13</a> 31,285주 + <a href="https://www.sec.gov/Archives/edgar/data/723125/000124265426000014/0001242654-26-000014-index.htm" target="_blank">Form 4 #14</a> 8,715주. Form 144 예고분과 일치.</li>
+<li>🔴 Form 4상 매도 후 <strong>직접 소유분은 304,503주</strong>로 보고됐다. 월 40,000주 정례(10b5-1 플랜, 2026-01-30 채택) 속도가 유지되면 <strong>약 7.6개월분</strong>이다. 사전 계획이라 방향성 콜은 아니지만, <strong>CEO의 현금화 속도는 사실로 기록</strong>한다.</li>
+<li>다음 catalyst: <strong>KeyBanc Technology Leadership Forum 2026-08-10</strong> · Q4 FY26(~9월 말).</li>
+</ul>
+<hr>
+</section>
+<section><h2>§C. 뉴스·X 심층 + 애널 (7-Day Cover)</h2>
+<h3>🔴🔴 <a href="https://www.trendforce.com/news/2026/07/28/news-nvidia-reportedly-halves-vera-rubin-socamm-capacity-as-memory-costs-near-29-of-system-bom/" target="_blank">NVIDIA Reportedly Halves Vera Rubin SOCAMM Capacity as Memory Costs Near 29% of System BOM</a> — TrendForce / 2026-07-28</h3>
+<table><thead><tr><th>항목</th><th>내용</th></tr></thead><tbody>
+<tr><td>문제</td><td>메모리가 Vera Rubin <strong>VR200 BOM ~$2.1M의 약 29%</strong> — NVIDIA 선호선 <strong>20%</strong>를 크게 초과</td></tr>
+<tr><td>대응</td><td>Vera CPU당 SOCAMM <strong>192GB → 96GB</strong> · 랙 총 CPU 메모리 <strong>55TB → 28TB</strong></td></tr>
+<tr><td><strong>불변</strong></td><td><strong>GPU HBM4 용량은 랙당 20.7TB 그대로</strong></td></tr>
+<tr><td>원가 효과</td><td>VR200 LPDDR5X 원가 $1.2M → <strong>$586K</strong>(1/4까지 줄이면 $293K)</td></tr>
+<tr><td>배경</td><td>NVIDIA는 추정 LPDRAM 수요의 <strong>약 60%만</strong> 확보 전망(TrendForce 6월)</td></tr>
+<tr><td>참고</td><td>Bernstein: HBM4 가격 <strong>2027년 $53/GB</strong>까지 상승 전망</td></tr>
+</tbody></table>
+<ul>
+<li>🔴 *각주(6줄)*: <strong>SOCAMM</strong> = 서버용으로 만든 저전력 모바일 DRAM(LPDDR5X) 모듈로, GPU 옆에 붙는 HBM과 달리 <strong>CPU에 붙는 메모리</strong>다. <strong>BOM(자재명세서)</strong> = 제품 한 대를 만드는 데 들어가는 부품 원가의 총합. 🎯 <strong>왜 중요한가</strong>: 이것은 <strong>최대 고객이 가격에 반응해 탑재량을 줄이는 것</strong> — 상품(commodity) 사이클의 교과서적 정점 메커니즘이다. 사용자 thesis의 &quot;GPU당 DRAM 2~3배&quot;(<span class="wl">[[project_token_economics_debate]]</span>) leg를 직접 겨눈다. <strong>단 두 가지 유보가 있다</strong>: ① 줄인 건 <strong>LPDDR5X이고 HBM4는 그대로</strong>다 ② TrendForce 원문은 축소 이유를 <strong>&quot;공급을 60%밖에 못 받아서 Vera CPU 생산량을 늘리려고&quot;</strong>로 설명한다 — 즉 <strong>수요 파괴가 아니라 공급 부족에 대한 적응</strong>일 수 있다. 두 해석 모두 살아 있다.</li>
+<li>🟡 <strong>후속 X 신호(미검증·8/2)</strong>: *&quot;금요일 새 리서치 — NVIDIA가 계획보다 메모리가 적은 <strong>Rubin Ultra</strong>를 낼 수도. 192GB / 256GB / 288GB / 384GB 네 안 중 하나만.&quot;* 사실이면 축소가 <strong>HBM으로 번지는</strong> 것이다. <strong>다음 실행 1차 검증 대상.</strong></li>
+</ul>
+<h3>🟢 <a href="https://news.skhynix.com/en/skhynix-nvidia-partnership-2026/" target="_blank">SK Group and NVIDIA Expand Strategic Partnership Across AI Factories and Next-Generation Memory</a> — SK하이닉스 / 2026-07-25</h3>
+<ul>
+<li><strong>$500B 초과 규모 포괄 파트너십</strong>에 대해 <strong>의향서(LOI) 서명</strong>. SK텔레콤이 <strong>2GW급 NVIDIA Vera Rubin DSX AI 팩토리</strong>를 한국에 건설(<strong>첫 가동 2027</strong>), <strong>SK하이닉스 HBM4 탑재</strong>.</li>
+<li><strong>SK하이닉스 ↔ NVIDIA 차세대 AI 메모리 장기 파트너십</strong> — NVIDIA는 안정 공급을 확보하고, 양사가 HBM 포함 차세대 AI 메모리를 <strong>공동 개발</strong>.</li>
+<li>🔴 <strong>§F 직결</strong>: 문서가 수요 범위를 *&quot;대규모 언어모델 학습부터 <strong>agentic AI와 physical AI</strong>까지&quot;*로 명시했다.</li>
+<li>젠슨 황: *&quot;한국은 글로벌 AI 강국이 될 모든 재료를 갖췄다.&quot;* / 최태원 회장: *&quot;AI 시대의 경쟁력은 AI를 얼마나 잘 쓰느냐가 아니라 <strong>얼마나 많은 지능을 생산할 수 있느냐</strong>에 달렸다.&quot;*</li>
+<li>⚠️ *각주*: <strong>LOI(Letter of Intent, 의향서)</strong>는 <strong>구속력 있는 계약이 아니다.</strong> 금액($500B+)은 양사가 밝힌 규모이며 확정 매출이 아니다. 그럼에도 §F 관점에서 중요한 이유는, <strong>병목을 쥔 쪽(SK하이닉스)과 최대 고객(NVIDIA)이 공동 문서에 physical AI를 수요 축으로 적어 넣었다</strong>는 사실 자체다.</li>
+</ul>
+<h3>🔴 <a href="https://www.trendforce.com/news/2026/07/30/news-samsung-targets-60-70-capacity-under-ltas-five-key-customers-reportedly-include-aws-microsoft-google/" target="_blank">Samsung Targets 60–70% Capacity Under LTAs; Five Key Customers Reportedly Include AWS, Microsoft, Google</a> — TrendForce / 2026-07-30</h3>
+<ul>
+<li>Invest Chosun 인용 애널리스트 추정: <strong>2027년까지 글로벌 DRAM 캐파의 거의 절반이 장기계약에 묶일 수 있다.</strong> 2026 하반기 서버 DDR5 출하의 30% 이상이 이미 LTA.</li>
+<li>🔴 <strong>TrendForce 결론</strong>: *&quot;여러 미국 CSP가 다년 LTA를 맺었고, 이 계약들은 <strong>공급자가 해당 고객에게 가격을 올리는 것을 제한한다.</strong>&quot;* 그 결과 3Q26 서버 DRAM 계약가는 <strong>+13~18% QoQ</strong>로 전망된다.</li>
+<li>📑 *각주(5줄)*: <strong>LTA(장기공급계약)</strong> = 고객과 여러 해에 걸쳐 물량·가격 조건을 미리 정해두는 계약. <strong>floor(가격 바닥)</strong>는 불황에 마진을 지켜주고, <strong>ceiling(가격 천장)</strong>은 호황에 상승분을 잘라낸다. 🎯 <strong>의미</strong>: 지금까지 이 스킬은 &quot;floor는 트로프만 높이고 peak는 봉인 못 한다&quot;고 서술해 왔다. <strong>이번 주 SK하이닉스와 키옥시아의 컨센 미달이 그 서술을 뒤집었다</strong> — ceiling은 이미 작동하고 있다.</li>
+</ul>
+<h3>🔴 <a href="https://www.trendforce.com/news/2026/07/27/news-cxmts-471-star-debut-makes-it-chinas-top-listed-firm-reshaping-global-memory-dynamics/" target="_blank">CXMT&#x27;s 471% STAR Debut Makes It China&#x27;s Top Listed Firm, Reshaping Global Memory Dynamics</a> — TrendForce / 2026-07-27</h3>
+<ul>
+<li>공모가 RMB 8.66 → 상장 첫날 장중 <strong>+471.6%</strong>. <strong>중국 최대 시가총액 상장사</strong> 등극. 조달 RMB 57.9B(STAR 사상 최대).</li>
+<li>🔴 이어서 <a href="https://www.trendforce.com/news/2026/07/28/news-china-reportedly-mass-produces-immersion-duv-tools-smic-hua-hong-cxmt-deliveries-expected-this-year/" target="_blank">China Reportedly Mass-Produces Immersion DUV Tools; SMIC, Hua Hong, CXMT Deliveries Expected This Year</a> (7/28) — 상하이의 국가 지원 제조사가 <strong>이머전 DUV 노광장비 양산을 시작</strong>했고 SMIC·Hua Hong·CXMT에 <strong>연내 인도</strong> 예정이라는 보도.</li>
+<li>🔴 *각주(5줄)*: <strong>이머전 DUV</strong>는 EUV 이전 세대의 핵심 노광 장비로, 지금까지 ASML(네덜란드)이 사실상 독점해 왔고 대중 수출통제의 핵심 지렛대였다. 🎯 <strong>왜 중요한가</strong>: 직전 실행은 CXMT를 두고 *&quot;자본 장벽은 낮아졌지만 기술 장벽은 유지&quot;*로 판정했다. <strong>이번 주에 그 기술 장벽 축에 첫 균열이 보고됐다.</strong> 두 축이 동시에 흔들리면 3과점의 &quot;공급 규율&quot; 전제가 약해진다 — thesis 리스크 신호 <strong>섹터④를 🟡에서 🟠으로 올리는 근거</strong>다. (⚠️ 단 보도 단계이며 성능·수율·양산 규모는 미검증.)</li>
+</ul>
+<h3>🟠 <a href="https://www.trendforce.com/news/2026/07/31/news-nands-2026-playbook-samsung-sk-hynix-chase-upgrades-and-ssd-mix-over-volume/" target="_blank">NAND&#x27;s 2026 Playbook: Samsung, SK hynix Chase Upgrades and SSD Mix Over Volume</a> — TrendForce / 2026-07-31</h3>
+<blockquote class="bq">*&quot;결정적으로, 회복을 이끄는 것은 출하량 증가가 아니라 <strong>ASP 상승</strong>이다. 대규모 증설이 2028~29년까지 없는 상황에서, 메모리 업체들은 수요를 공격적으로 좇기보다 <strong>공급 규율과 공정·제품 업그레이드로 가격결정력을 지키는 쪽</strong>을 택하고 있다.&quot;*</blockquote>
+<ul>
+<li>SK NAND 매출 추정 ₩21.42조(+358.7% YoY)·영업이익 ₩13.52조. SSD 비중 2Q25 ~50% → 2Q26 <strong>~70%</strong>.</li>
+<li>🔴 <strong>2027년에는 고단수 전환과 신규 팹 램프로 공급 증가가 가속되어, 소비자 수요 약세와 겹치면 2H27 공급과잉으로 갈 수 있다</strong>는 것이 TrendForce의 결론이다(직전 실행에서 처음 붙은 &quot;2H27&quot; 좌표가 유지·강화).</li>
+</ul>
+<h3>🟠 <a href="https://www.therobotreport.com/industry-reacts-fcc-ban-u-s-imports-new-humanoid-quadruped-robots/" target="_blank">Experts react to FCC limits on U.S. imports of new humanoid and mobile robots</a> — The Robot Report / 2026-07-29</h3>
+<ul>
+<li>FCC가 7/28 해외산 <strong>휴머노이드·4족보행 로봇 및 연결형 전력 인버터</strong>의 신규 수입을 국가안보 사유로 금지. 국방부·국토안보부 조건부 승인분, 이미 FCC 인증을 받은 모델, 연방 조달은 제외.</li>
+<li>🔴 <strong>전문가 3인이 모두 &quot;미국 physical AI에 역풍&quot;이라고 평가</strong>:</li>
+<li>Georg Stieler(STM): *&quot;단기적으로 이 조치는 서구 대안이 나오기 전에 스타트업·연구자를 저가 중국 플랫폼에서 차단해 <strong>미국 physical AI 혁신을 늦출 수 있다.</strong>&quot;* 그리고 *&quot;핵심 의존은 업스트림에 남는다 — <strong>액추에이터, 감속기, 배터리, 센서, 희토류 영구자석.</strong> 중국이 자석용 희토류 정련과 소결 영구자석 생산의 90% 이상을 차지한다.&quot;*</li>
+<li>Henrik Christensen(UCSD): *&quot;금지 범위가 중국보다 훨씬 넓을 수 있다. 캐나다·유럽 로봇도 영향을 받을 수 있다. <strong>산업 전반에 매우 나쁜 소식이다.</strong>&quot;*</li>
+<li>Rueben Scriven(Interact Analysis): *&quot;이 발표는 오히려 <strong>미국 휴머노이드 산업을 억제할 가능성이 크다.</strong>&quot;*</li>
+<li>🎯 *각주*: 여기서 Stieler가 지목한 <strong>감속기(reducer)</strong>는 <span class="wl">[[project_physical_ai_bottleneck_map]]</span>이 <strong>미래 병목 1위</strong>로 등재한 바로 그 부품이다. 규제는 완제품 수입을 막지만 <strong>부품 병목은 그대로</strong>다.</li>
+</ul>
+<h3>🟡 시장·매크로 배경 (news-headlines MCP · RSS date 검증 완료)</h3>
+<ul>
+<li><a href="https://www.bloomberg.com/news/articles/2026-08-02/crushed-by-kospi-rout-angry-koreans-rip-lee-and-vow-not-to-buy" target="_blank">Crushed by Kospi Rout, Angry Koreans Rip Lee and Vow Not to Buy</a> — Bloomberg 8/2. 7월 코스피 급반전이 위험 선호가 강한 한국 개인투자자마저 흔들었다. 🎯 ETF NAV의 49.16%가 한국 2강이므로 <strong>한국 개인 수급은 ETF NAV의 직접 입력</strong>이다.</li>
+<li>🔴 <a href="https://www.bloomberg.com/news/articles/2026-08-01/loan-investors-are-pushing-back-as-fear-rises-credit-weekly" target="_blank">AI Loan Market Sees Investor Demands Rise, Borrowers Offer Better Terms</a> — Bloomberg 8/1. *&quot;대출 투자자들이 수년 만에 처음으로 반발하고 있으며, 이는 사모펀드부터 <strong>부채가 많은 AI 기업</strong>까지 모두의 조달비용 상승으로 이어질 가능성이 크다.&quot;* 🎯 직전 주 Meta 데이터센터 회사채 수요 부진에 이어 <strong>AI 인프라 조달 채널의 마찰이 2주 연속</strong> 관측됐다 — §J의 IREN 동방향 논의와 직결.</li>
+<li><a href="https://finance.yahoo.com/" target="_blank">Leopold Aschenbrenner&#x27;s AI hedge fund collapses after margin calls</a> — Quartz 7/31. 마진콜로 공개주식 포지션 전량을 청산했고, <strong>롱 포지션에 SK하이닉스·SanDisk가 포함</strong>돼 있었다. 🎯 이번 주 낙폭의 일부는 펀더멘털이 아니라 <strong>레버리지 청산 flow</strong>다.</li>
+</ul>
+<h3>📱 X (7일 · 🟡 X 신호 = 미검증)</h3>
+<ul>
+<li>🔴 <strong>MarketWatch 인용</strong>: iShares Semiconductor ETF(SOXX) <strong>7월 −22.1% = 2002년 12월 이후 최대 월간 낙폭.</strong> MU −28.7%, SanDisk −46.6%. 원인으로 <strong>CXMT 상장 + 중국산 DUV 개발 + AI 설비투자 수익성 우려</strong>를 지목. *&quot;단 ETF는 연초 대비 여전히 약 +68% — AI용 반도체 수요가 사라진 것은 아니다. 시장은 반도체 기업을 일괄 평가하던 단계에서 <strong>수주·이익률·현금흐름·설비투자 회수기간으로 선별하는 단계</strong>로 넘어가고 있다.&quot;*</li>
+<li><strong>7/29 시점 7월 메모리주 성과</strong>: 키옥시아 −58% · SanDisk −49% · SK하이닉스 −47% · 삼성 −37% · Intel −33% · MU −28% · WDC −28% · Seagate −25% · AMD −12.5% · TSMC −5.6%.</li>
+<li><strong>Barron&#x27;s 인용</strong>: MU가 전일 +18%에서 −5.9%로 반전. Amazon capex $220B 상향과 Apple의 메모리 가격 인정은 <strong>원래 강한 호재</strong>인데, <strong>연준 인사의 금리 인상 가능성 시사</strong>가 기업 설비투자 우려로 상쇄했다는 해석.</li>
+<li><strong><a href="https://x.com/TrendForce" target="_blank">@TrendForce</a></strong> (7/31·5건): *&quot;AI는 2027년에도 메모리 수요를 견인하며 <strong>DRAM을 타이트하게 유지하고 가격을 견고하게</strong> 할 것&quot;* / *&quot;메모리가 <strong>KV 캐시 수요에 휘청</strong>이고 있다 — Penguin Solutions·Marvell·Meta가 CXL 기반 해법을, NVIDIA는 KVTC를 배치 중&quot;* / DDR5 MRDIMM Renesas 16,000 MT/s 2H27 생산·AMD 관심 / 키옥시아 Q2 가이던스 컨센 하회.</li>
+<li><strong><a href="https://x.com/MicronTech" target="_blank">@MicronTech</a></strong>: 7/25 <strong>Meta와 공동으로 오픈소스 DCPerf 벤치마크를 써서 대규모 데이터센터 워크로드에서 LPDDR5X 성능을 검증</strong> — *&quot;기존 사고방식에 도전하며, 저전력 메모리가 AI와 범용 워크로드 모두에서 성능·용량·에너지효율을 어떻게 균형 잡을 수 있는지 보여준다.&quot;* 🎯 NVIDIA가 SOCAMM(LPDDR5X)을 줄이려는 바로 그 주에, MU는 LPDDR5X의 서버 적용을 밀고 있다.</li>
+<li><strong><a href="https://x.com/Dylan522p" target="_blank">@Dylan522p</a>(SemiAnalysis)</strong>: 메모리·HBM 전용 신호 <strong>0건</strong>(2주 연속).</li>
+</ul>
+<h3>📑 애널리스트 컨센서스 (yfinance <code>.info</code>)</h3>
+<p>MU 목표 <strong>중앙값 $1,550 · 평균 $1,522.26 · 42명 strong_buy</strong> = 현재가 $823.03 대비 <strong>+88.3%</strong>. 주가가 WoW −10.6% 빠졌는데 목표가는 그대로여서 <strong>괴리는 오히려 벌어졌다</strong>(전주 +68.3% → 이번 주 +88.3%). 🎯 목표가가 3주 연속 요지부동인데 주가만 −34%(52주 고점 대비) 빠진 상태 = <strong>시장이 애널리스트 컨센서스를 신뢰하지 않는다</strong>는 구도가 심화됐다.</p>
+<hr>
+</section>
+<section><h2>§D. 재무 trajectory</h2>
+<h3>3사 동시 실적 — 사상 최대, 그리고 첫 균열</h3>
+<table><thead><tr><th></th><th><strong>SK하이닉스</strong></th><th><strong>삼성 DS</strong></th><th><strong>키옥시아</strong></th><th>(참고) <strong>MU Q3 FY26</strong></th></tr></thead><tbody>
+<tr><td>영업이익률</td><td><strong>76.0%</strong></td><td><strong>70.0%</strong></td><td><strong>71.9%</strong></td><td>80.4%</td></tr>
+<tr><td>컨센서스</td><td><strong>−5.6% / −5.4% 미달</strong></td><td><strong>상회</strong></td><td><strong>Q2 가이드 하회</strong></td><td>상회(6/24)</td></tr>
+<tr><td>DRAM ASP QoQ</td><td><strong>+30%</strong></td><td>—</td><td>—</td><td>+low-60%대</td></tr>
+<tr><td>NAND ASP QoQ</td><td><strong>+mid-50%</strong></td><td><strong>+high-60%</strong></td><td>(ASP가 주원인)</td><td>+mid-80%대</td></tr>
+<tr><td>NAND bit QoQ</td><td>+15%</td><td><strong>+low-single</strong></td><td>—</td><td>+mid-single</td></tr>
+</tbody></table>
+<ul>
+<li>🔴 <strong>패턴이 선명하다: ASP가 전부이고, 물량은 거의 늘지 않았다.</strong> 4개 회사가 각기 다른 표현으로 같은 말을 했다.</li>
+<li>🔴 <strong>그리고 이번 분기에 처음으로 &quot;가격을 덜 올린 쪽이 진다&quot;는 서열이 나타났다.</strong> 가장 공격적으로 올린 삼성(NAND ASP +high-60%)만 컨센을 이겼고, LTA 10건을 맺고 보수적으로 간 SK하이닉스는 미달, LTA 50% 커버리지를 목표로 하는 키옥시아는 가이던스가 하회했다.</li>
+</ul>
+<h3>🔴 LTA/SCA 지형 — 산업 전체가 계약으로 이동 중</h3>
+<table><thead><tr><th>회사</th><th>목표·현황</th><th>구조</th></tr></thead><tbody>
+<tr><td><strong>삼성</strong></td><td><strong>CAPA의 60~70%</strong> 목표 · 현재 계약의 ~40%</td><td>롤링 5년·매년 재협상·선급금 물량의 1/4·<strong>가격 floor</strong></td></tr>
+<tr><td><strong>MU</strong></td><td>장기 메모리 매출의 <strong>~50%</strong> 목표</td><td>SCA 16건·5년·take-or-pay·<strong>floor/ceiling</strong>·RPO ~$100B</td></tr>
+<tr><td><strong>키옥시아</strong></td><td><strong>2028까지 물량 50%</strong></td><td>—</td></tr>
+<tr><td><strong>SK하이닉스</strong></td><td><strong>LTA 10건 완료</strong></td><td>고객 예치금 포함</td></tr>
+<tr><td><strong>산업 전체</strong></td><td><strong>2027년까지 글로벌 DRAM 캐파의 거의 절반</strong>(애널리스트 추정)</td><td>2H26 서버 DDR5 출하의 30%+</td></tr>
+</tbody></table>
+<h3>3축 매트릭스 (사이클 보정)</h3>
+<p>① Earnings Growth 🟢 (3사 전원 사상 최대) ② Margin 🟢 (OPM 70~76%) ③ Cash Generation 🟢 (SK 순현금 ₩69.4조·키옥시아 OCF ¥866.3B) = <strong>3/3</strong>.</p>
+<p>🔴 단 이는 <strong>peak ASP 스냅샷</strong>이며, 이번 분기에 <strong>&quot;기록인데 컨센 미달&quot;</strong>이라는 새로운 형태의 균열이 처음 나타났다. MU의 GM 사이클(FY23 <strong>−9%</strong> ↔ Q3 FY26 <strong>84.6%</strong>)이 이 국면의 진폭을 상기시킨다.</p>
+<hr>
+</section>
+<section><h2>§E. 경쟁 매트릭스 — 4자 구도의 첫 분기</h2>
+<table><thead><tr><th>항목</th><th><strong>MU</strong></th><th><strong>SK하이닉스</strong></th><th><strong>삼성(DS)</strong></th><th><strong>키옥시아</strong></th><th><strong>CXMT</strong></th></tr></thead><tbody>
+<tr><td>2Q26 OPM</td><td>80.4%(FQ3)</td><td><strong>76.0%</strong></td><td><strong>70.0%</strong></td><td><strong>71.9%</strong></td><td>—</td></tr>
+<tr><td>P/S</td><td>10.30</td><td>6.45</td><td>3.55</td><td>6.76</td><td>—</td></tr>
+<tr><td><strong>HBM 점유</strong></td><td><strong>#3 추격자</strong>(의도적 ~20% 할당)</td><td><strong>#1</strong>(HBM4 양산·HBM4E 2027·<strong>iHBM</strong>)</td><td>#2(<strong>HBM4E 업계 최초 샘플</strong>·3Q 매출 3배 전망)</td><td>NAND only</td><td>미진입</td></tr>
+<tr><td>capex 방향</td><td>FY27 &gt;$40B · 美 &gt;$250B/2035</td><td><strong>2026 ₩40조대 후반(+~60%)</strong> · M15X 가속 · 용인 2027초</td><td>P4 2026말 · P5 2030 · <strong>Taylor Fab2 2026말 착공</strong></td><td><strong>PP&amp;E 매출의 2.9%</strong>(증설 대신 상환)</td><td>IPO RMB 57.9B 대부분 DRAM</td></tr>
+<tr><td>재무</td><td>순현금 $24.4B</td><td><strong>순현금 ₩69.4조</strong></td><td>—</td><td>자기자본비율 37.9%→<strong>50.8%</strong></td><td>조달 완료</td></tr>
+<tr><td>특이</td><td>Mehrotra 월 4만주 매도</td><td>NVIDIA $500B+ LOI</td><td><strong>DS가 전사 이익의 99.7%</strong></td><td><strong>Nanya 지분 ¥78.2B 취득</strong>·3:1 분할</td><td><strong>STAR 데뷔 +471.6%</strong>·ETF 2.52% 편입</td></tr>
+</tbody></table>
+<ul>
+<li>🎯 *각주*: 이 표에서 이번 주 가장 눈에 띄는 것은 <strong>키옥시아의 capex 전략이 나머지와 정반대</strong>라는 점이다. 3사가 증설 경쟁을 하는 동안 키옥시아는 매출의 2.9%만 설비에 쓰고 부채를 ¥433.2B 갚았다. 이는 (a) 사이클을 신뢰하지 않거나 (b) IPO 이후 재무 정상화를 우선하는 것이며, 어느 쪽이든 <strong>NAND 공급 증가를 늦추는 방향</strong>이다. 동시에 Nanya 지분 취득은 <strong>NAND 회사가 DRAM 쪽으로 발을 걸치는</strong> 움직임이다.</li>
+</ul>
+<hr>
+</section>
+<section><h2>§F. 🔴 Physical AI 수요축 — 이번 주 <strong>처음으로 양방향</strong></h2>
+<h3>chain 재확인</h3>
+<p>메모리 = Physical AI 밸류체인의 <strong>수혜 계층</strong>이라는 사슬은 세 축의 메모리 파일에 근거한다 — 토큰 이코노믹스(GPU당 DRAM 2~3배·GPU 수명 5→7~8년·<strong>로봇 = 2차 수요 파동</strong>), 생산성 다리 사슬(역량 ≠ 생산성 · 전력·로봇 같은 <strong>hard link</strong> 필요 = agentic을 넘는 Physical AI leg), Physical AI 병목 지도(메모리 = seg#4 수혜·단 IREN과 동일 AI-capex 베타).</p>
+<h3>강화 방향</h3>
+<p>1. <strong>SK그룹–NVIDIA $500B+ LOI(7/25)</strong> — 수요 범위에 <strong>&quot;agentic AI와 physical AI&quot;</strong> 명시. 병목 소유자와 최대 고객의 공동 문서.</p>
+<p>2. <strong>삼성</strong>: agentic AI 확산을 H2 서버 수요의 축으로 명시. <strong>eSSD가 2026 NAND 매출의 60% 초과</strong> 전망(+20%p YoY)이며 원인이 <strong>KV 캐시 전용 스토리지</strong>다.</p>
+<p>3. <strong>TrendForce 7/31</strong>: *&quot;메모리가 KV 캐시 수요에 휘청이고 있다&quot;* — Penguin Solutions·Marvell·Meta가 <strong>CXL 기반 해법</strong>을, NVIDIA가 <strong>KVTC</strong>를 배치 중.</p>
+<ul>
+<li>🔤 *각주*: <strong>KV 캐시</strong>는 LLM이 긴 대화를 이어갈 때 앞부분 계산 결과를 저장해 두는 메모리다. 대화가 길어지고 에이전트가 여러 단계를 거칠수록 폭증하며, <strong>agentic AI가 메모리를 직접 잡아먹는 경로</strong>다. <strong>CXL</strong>은 CPU 밖의 메모리를 확장해 붙이는 규격.</li>
+</ul>
+<p>4. <strong>Micron × Meta 공동 LPDDR5X 연구</strong>(7/25) — 저전력 메모리의 데이터센터 적용 확장.</p>
+<p>5. <a href="https://www.eetimes.com/" target="_blank"><strong>EE Times 7/31 CEA-Leti</strong></a> — *&quot;AI의 memory wall이 패키징을 아키텍처로 만들고 있다&quot;* (3D 스태킹·칩렛·저전력).</p>
+<h3>🔴 약화 방향 (신규)</h3>
+<p>1. <strong>FCC 휴머노이드 수입 금지(7/28)</strong> — 전문가 3인 전원이 &quot;미국 physical AI 혁신을 오히려 늦출 수 있다&quot;고 평가(§C 상세).</p>
+<p>2. 🔴 <strong>로보틱스 펀딩이 급감했다</strong> — The Robot Report 투자 카테고리 기준 <strong>7/25~8/1 신규 1건</strong>(Kraken Technology Series B·금액 미공개). 직전 주(7/21~7/24)는 ATOMS $1.7B 포함 <strong>~$1.98B</strong>였다. ⚠️ 주말이 끼었고 실적 시즌이라 <strong>단주 노이즈일 가능성</strong>이 크지만, 델타로는 기록한다.</p>
+<p>3. <strong>NVIDIA SOCAMM 콘텐츠 축소</strong> — 가격 상승이 탑재량을 줄이는 첫 실물 사례.</p>
+<p>4. <strong>소비자 bit 수요 미회복 유지</strong> — 삼성도 &quot;모바일·PC의 부분적 수요 둔화&quot;를 인정했다.</p>
+<h3>🔴 chain 무결성 판정</h3>
+<p><strong>THESIS-VALID 유지.</strong> 다만 이번 주는 <strong>처음으로 chain에 양방향 힘이 동시에 관측</strong>됐다 — <strong>수요 서사</strong>(LOI·KV 캐시·eSSD 60%)는 강화됐고, <strong>실물 채널</strong>(정책 규제·펀딩·고객 탑재량)은 약화됐다. thesis의 검증점은 이제 &quot;관심이 있는가&quot;가 아니라 <strong>&quot;관심이 출하 물량으로 내려오는가&quot;</strong>다.</p>
+<h3>🔴 AI-capex 상관 (상시)</h3>
+<p><strong>DRAM ETF와 IREN은 같은 AI-capex 사이클 베타 → 동방향</strong>이며 서로 헤지가 되지 않는다. 이번 주 공통 동인이 두 개 관측됐다 — ① <strong>AI 대출시장 투자자 반발</strong>(Bloomberg 8/1)로 AI 기업 조달비용 상승 전망(직전 주 Meta DC 회사채 수요 부진에 이어 2주 연속) ② <strong>Aschenbrenner 펀드 강제청산</strong>으로 레버리지 AI 롱 포지션이 시장에 쏟아짐. 상류가 막히면 메모리와 neocloud가 <strong>함께</strong> 압박받는다.</p>
+<hr>
+</section>
+<section><h2>§G. 공급·사이클 국면</h2>
+<h3><a href="https://www.dramexchange.com/" target="_blank">ASP 방향 — 🔴 상승이 멈췄다</a></h3>
+<p><a href="https://www.dramexchange.com/" target="_blank">DRAMeXchange</a> 2026-07-31 18:10 (GMT+8):</p>
+<table><thead><tr><th>품목</th><th>Session Average</th><th>Change</th><th>(7/24 대비 주간)</th></tr></thead><tbody>
+<tr><td>DDR5 16Gb (2Gx8) 4800/5600</td><td>50.967</td><td><strong>0.00%</strong></td><td>50.833 → +0.26%</td></tr>
+<tr><td>DDR5 16Gb eTT</td><td>23.630</td><td>0.00%</td><td>—</td></tr>
+<tr><td>DDR4 16Gb (2Gx8) 3200</td><td>85.220</td><td><strong>+0.29%</strong></td><td>83.250 → +2.37%</td></tr>
+<tr><td>DDR4 16Gb eTT</td><td>11.450</td><td>0.00%</td><td>—</td></tr>
+<tr><td>DDR4 8Gb (1Gx8) 3200</td><td>42.112</td><td><strong>−0.04%</strong></td><td>—</td></tr>
+<tr><td>DDR4 8Gb eTT</td><td>4.210</td><td>0.00%</td><td>—</td></tr>
+<tr><td>DDR3 4Gb 1600/1866</td><td>13.810</td><td>0.00%</td><td>—</td></tr>
+</tbody></table>
+<p><strong>상승 1 · 하락 1 · 보합 5.</strong> 직전 실행(7/24)에서는 <strong>4개 품목이 전원 상승</strong>이었다.</p>
+<ul>
+<li>🎯 *각주*: <strong>현물(스팟)</strong>은 소량 즉시 거래 가격, <strong>계약가</strong>는 대형 고객과의 분기 협상가다. 주목할 것은 <strong>DDR5(AI 서버용)가 주간 +0.26%로 사실상 멈춘 반면 DDR4(레거시)는 +2.37%로 아직 오른다</strong>는 점 — 상승 동력이 AI 쪽에서 먼저 식었다는 뜻으로 읽힌다. 단 현물 시장은 얇고 후행한다.</li>
+<li><strong>계약가</strong>: 3Q26 서버 DRAM <strong>+13~18% QoQ</strong>(TrendForce·LTA가 상단 cap). 여전히 두 자릿수 인상이다.</li>
+<li><strong>재고</strong>: 제조사 lean 유지, 모듈 업체만 소비자 약세로 누적.</li>
+</ul>
+<h3>capex — 증설 경쟁은 오히려 가속</h3>
+<p>SK하이닉스 <strong>2026 ₩40조대 후반(+~60% YoY)</strong> · M15X 양산 가속 · 용인 1단계 2027 초 / 삼성 P4·P5 + Taylor Fab2 2026말 착공 / MU FY27 &gt;$40B / <strong>키옥시아만 예외 — PP&amp;E 매출의 2.9%</strong> / CXMT IPO RMB 57.9B 대부분 DRAM 라인·기술.</p>
+<ul>
+<li><strong>산출 도래 시점</strong>: 대형 증설 <strong>2028~29</strong>. NAND는 <strong>2H27 공급과잉 가능</strong>(TrendForce). 반면 삼성은 <strong>불균형이 2028까지</strong> 이어진다고 본다.</li>
+<li><strong>데이터센터 건설투자 프록시</strong>: macro-weekly §11(<code>PROFCONS</code>)이 owner — 본 실행에서 재수집하지 않았고 인용 가능한 당주 결과가 없어 <strong>미기재</strong>.</li>
+</ul>
+<h3>🔴 사이클 위치 판정 — *(자기 반박으로 수정됨)*</h3>
+<p><strong>피크 부근 · 가격 상승 정지. 단 이번 주의 본질은 &quot;정점 통과&quot;가 아니라 &quot;계약이 사이클을 대체하는 중&quot;이다.</strong></p>
+<p>작성 전 검토에서 &quot;사이클 정점 통과&quot; 판정을 세웠다가 철회했다. 근거: ① SK하이닉스의 미스는 <strong>수요 약화가 아니라 스스로 가격을 묶은 결과</strong>다(DRAM ASP는 +30% QoQ로 여전히 급등 중) ② NVIDIA의 SOCAMM 축소는 원문상 <strong>공급을 60%밖에 못 받아 CPU 생산량을 늘리려는 적응</strong>이며 HBM4 용량은 불변이다 ③ 키옥시아 Q2 가이던스는 OPM <strong>79%로 가속</strong>이다 ④ 7월 −32%는 펀더멘털보다 밸류 되돌림·강제청산·개인 투매로 더 단순하게 설명된다. → 판정을 <strong>&quot;진폭이 계약으로 압축되는 국면&quot;</strong>으로 바꾼다. rollover 신호는 아직 없다.</p>
+<hr>
+</section>
+<section><h2>§H. 밸류 (사이클 위치)</h2>
+<ul>
+<li><strong>MU</strong>: P/S(TTM) <strong>10.30x</strong>(7/24 11.52x) · trailing P/E 18.59x · <strong>forward P/E 5.35x</strong> · beta 2.14 · 공매도 3.21% · 52주 [$105.46, $1,255.00] · <strong>52주 고점 대비 −34.4%</strong>.</li>
+<li>🔴 <strong>fwd P/E 5.35x = 피크이익 함정</strong>의 전형. 사이클 정점 이익을 분모에 넣으면 멀티플이 착시로 낮아진다. <strong>정상화(normalized) 이익 기준</strong>으로 봐야 하며, peak 스냅샷을 적정가 산출에 쓰지 않는다.</li>
+<li>🔴 <strong>사이클 정상화 관찰 지표가 이번 실행에서 최근접했다</strong> — P/S가 10.30x이고 <strong>&lt;10x 도달 가격은 $799.31, 현재가에서 −2.88%</strong>다. 직전 실행에서는 −13.2%였다. (관찰 지표 정의 owner = MU-Memory §7, 재정의 ❌.)</li>
+<li><strong>DRAM ETF</strong>: 설정(2026-04-02) 이후 시장가 <strong>+161.51%</strong>(6/30 기준) · 보수 0.65% · 30일 SEC 수익률 <strong>1.10%</strong>(전주 0.56%) · 설정후 밴드[$26.14, $81.34]의 <strong>43.9% 지점</strong>.</li>
+<li>🎯 *각주*: ETF에는 개별 종목 시나리오를 그대로 대입할 수 없다. NAV는 <strong>한국 2강 49.16% + MU 24.54% + NAND/스토리지 ~12% + CXMT 2.52% + 소액 분산</strong>의 합성이며, 아래 시나리오는 <strong>MU 단일주</strong> 기준이지 ETF 기준이 아니다.</li>
+</ul>
+<p><strong>MU 5년 시나리오(MU-Memory §5 owner)</strong>: 🟢 Bull 2.2x(25%) / 🟡 Base 1.15x(40%) / 🔴 Bear 0.45x(35%·FY23형 ASP 붕괴) → <strong>기댓값 1.17x</strong>.</p>
+<hr>
+</section>
+<section><h2>§I. ⚠️ Thesis 리스크 신호 매트릭스</h2>
+<table><thead><tr><th>신호</th><th>판정</th><th>근거(이번 주)</th></tr></thead><tbody>
+<tr><td><strong>섹터① ASP 사이클 rollover</strong></td><td>🟡 <strong>근접도 상승</strong> (⚪→🟡)</td><td>현물 상승 정지(상승1·하락1·보합5) · 3사 중 2사 컨센 미달 · NVIDIA 콘텐츠 축소. <strong>단 계약가 3Q26 +13~18% · 키옥시아 Q2 OPM 79% 가이드 · 제조사 재고 lean = rollover 미발동</strong></td></tr>
+<tr><td><strong>섹터② HBM 공급과잉·수요 파탄</strong></td><td>⚪ <strong>미발동</strong></td><td>HBM4 3사 모두 램프업(SK 양산·삼성 3Q 3배·HBM4E 최초 샘플·MU #3). NVIDIA 축소는 HBM(20.7TB 불변)이 아니라 SOCAMM/LPDDR5X. 🟡 단 X 미검증 신호로 <strong>Rubin Ultra HBM 용량 축소 가능성</strong> 제기 — 다음 실행 1차 검증 대상</td></tr>
+<tr><td><strong>섹터③ 🔴 Physical AI 투자 모멘텀 reversal</strong></td><td>🟢 <strong>미발동 · 단 첫 양방향</strong></td><td>강화(SK-NVIDIA LOI가 physical AI 명시·KV캐시 병목·eSSD 60%) vs <strong>약화(FCC 로봇 수입금지+전문가 3인 &quot;미국 혁신 둔화&quot; 평가·로보틱스 펀딩 1건)</strong>. 검증점이 &quot;관심&quot;에서 <strong>&quot;출하 물량&quot;</strong>으로 이동</td></tr>
+<tr><td><strong>섹터④ 한국 2강 구조 충격</strong></td><td>🟠 <strong>근접도 추가 상승</strong> (🟡→🟠)</td><td><strong>CXMT STAR 데뷔 +471.6%(중국 최대 상장사)</strong> + 🔴 <strong>중국 이머전 DUV 양산 개시 보도</strong>(SMIC·Hua Hong·CXMT 연내 인도) = 종전 &quot;자본 장벽만 약화·기술 장벽 유지&quot; 전제에서 <strong>기술 장벽 축까지 균열</strong>. 추가로 <strong>DRAM ETF 자체가 CXMT를 2.52% 편입</strong> = 한국 2강의 경쟁자가 같은 NAV 안으로</td></tr>
+</tbody></table>
+<p><strong>MU 밸류·HBM 관찰 지표</strong>(MU-Memory §7 owner · 분석 관점): ① 사이클 정상화 = ❌ 미충족이나 <strong>최근접</strong>(P/S 10.30x · &lt;10x까지 −2.88%) ② HBM 점유 입증 = 🟡 PARTIAL(변동 없음) → <strong>0.5/2</strong>. 🔺 보조 = SCA/LTA 구조신호는 🟢 부분 입증에서 <strong>성격이 바뀌었다</strong> — 이번 주 데이터는 floor보다 <strong>ceiling(상방 cap)의 실증</strong>이다.</p>
+<hr>
+</section>
+<div class="dd-fig">
+<p class="cap">MU 단일주 5년 시나리오 (MU-Memory §5 owner) — 확률 가중 기댓값 <span class="ev-badge" id="ev-scn"></span></p>
+<div id="fig-scn"></div>
+<p class="cap" style="margin-top:8px">🔴 <strong>ETF 기준이 아니다.</strong> DRAM ETF NAV는 한국 2강 49.16% + MU 24.54% + NAND/스토리지 ~12% + CXMT 2.52%의 합성이므로 위 단일주 시나리오를 그대로 대입할 수 없다.</p>
+</div>
+<section><h2>§J. 종합 + thesis 재평가</h2>
+<h3>thesis 상태</h3>
+<ul>
+<li><strong>chain = THESIS-VALID (양방향 힘 등장)</strong>. Physical AI → 메모리 수요 사슬은 서사·아키텍처·계약 층위에서 유지되나, 정책 규제와 펀딩·탑재량이라는 <strong>실물 채널에서 처음으로 반대 방향 신호</strong>가 나왔다.</li>
+<li><strong>MU 단일주 ENTRY = BROKEN 유지</strong>(밸류·타이밍 UNFAVORABLE). 다만 관찰 지표 #1이 <strong>최근접</strong>했다(P/S 10.30x · &lt;10x까지 −2.88%).</li>
+</ul>
+<h3>이번 주가 바꾼 것</h3>
+<p>1. 🔴 <strong>&quot;LTA의 ceiling&quot;이 이론에서 실적으로 내려왔다.</strong> 이 스킬은 그동안 &quot;SCA/LTA의 floor는 트로프만 높이고 peak는 봉인하지 못한다&quot;고 서술해 왔다. <strong>이번 주에 그 절반이 반증됐다</strong> — SK하이닉스는 LTA 때문에 가격을 덜 올려 컨센을 미스했고, 키옥시아 가이던스도 하회했으며, LTA 비중이 낮고 가격을 가장 공격적으로 올린 삼성만 이겼다. → <strong>곡괭이 질 판정을 <code>floored-(A)</code>에서 <code>capped-and-floored (A)</code>로 수정한다.</strong> 진폭이 양방향으로 압축된다는 뜻이며, 이는 <strong>하방 안전 강화인 동시에 상방 기대의 축소</strong>다. 장기 보유 thesis에는 우호적이고, 사이클 최상단을 노리는 매매에는 불리하다.</p>
+<p>2. 🔴 <strong>ETF의 정체가 바뀌었다.</strong> &quot;한국 2강 + MU 묶음&quot;에 <strong>중국 최대 DRAM(CXMT 2.52%)</strong>과 <strong>SK하이닉스 ADR(0.49%)</strong>이 들어왔다. 섹터④가 발동하면 ETF는 한쪽에서 잃고 다른 한쪽에서 일부 버는 구조가 됐다 — 완충이자 <strong>집중 베팅 성격의 희석</strong>이다.</p>
+<p>3. 🔴 <strong>중국 추격의 두 장벽이 동시에 흔들렸다.</strong> 자본(IPO 471% 데뷔)에 이어 기술(이머전 DUV 양산 보도)까지.</p>
+<p>4. <strong>가격 상승이 DDR5에서 먼저 멈췄다.</strong> 사이클 시계에 좌표가 하나 더 찍혔다.</p>
+<p>5. <strong>7월이 2002년 이후 최악의 반도체 월</strong>로 끝났는데, 그 안에서 3사가 모두 사상 최대 실적을 냈다. <strong>주가와 실적이 정반대로 간 달</strong>이다.</p>
+<h3>🔴 자기 반박으로 판정이 수정된 지점</h3>
+<p><strong>§G 사이클 판정</strong>과 <strong>§C/§J 곡괭이 질 서술</strong> 두 곳. 상세는 §G 말미 참조.</p>
+<h3>🔴 IREN AI-capex 상관 (상시)</h3>
+<p><strong>DRAM ETF와 IREN은 동일 AI-capex 사이클 베타 → 동방향</strong>이며 서로 헤지가 되지 않는다(<strong>분산 아님</strong>). 이번 주 공통 동인 = <strong>AI 대출시장 투자자 반발</strong>(Bloomberg 8/1·조달비용 상승 전망)과 <strong>Aschenbrenner 펀드 강제청산</strong>(레버리지 AI 롱 포지션 청산·롱에 SK하이닉스·SanDisk 포함). 상류 조달이 막히면 메모리 수요와 neocloud가 함께 압박받는다.</p>
+<hr>
+</section>
+<section><h2>⏭️ 다음 주 watch</h2>
+<table><thead><tr><th>시점</th><th>이벤트</th><th>볼 것</th></tr></thead><tbody>
+<tr><td><strong>8/3(월)</strong></td><td>서울·도쿄 개장</td><td>7/31 상한가의 반납 폭 — ETF −5.14% 디스카운트가 맞았는지</td></tr>
+<tr><td><strong>8/4~6</strong></td><td><strong>FMS 2026</strong>(Future of Memory and Storage·산타클라라)</td><td>MU·키옥시아·NVIDIA 세션 — KV 캐시·eSSD·agentic 데이터 이동</td></tr>
+<tr><td><strong>8/10</strong></td><td><strong>MU KeyBanc Technology Leadership Forum</strong></td><td>Q4 FY26 전 마지막 경영진 발언</td></tr>
+<tr><td>상시</td><td><strong>Rubin Ultra 메모리 구성</strong></td><td>🟡 X 미검증 신호(192/256/288/384GB) 1차 검증 — 사실이면 섹터② 재평가</td></tr>
+<tr><td>상시</td><td>DRAMeXchange 스팟 · TrendForce 계약가</td><td>DDR5 재상승 여부 = 섹터① 방향</td></tr>
+<tr><td>상시</td><td>Roundhill holdings</td><td>CXMT 비중 변화 · SKHY 라인 확대 여부</td></tr>
+<tr><td>~9월말</td><td>MU Q4 FY26</td><td>SCA 매출 비중 · HBM 단독 숫자 · ASP 둔화폭</td></tr>
+<tr><td>미정</td><td>SK하이닉스 분기보고서</td><td><strong>세전이익−영업이익 ₩62조 갭의 구성</strong></td></tr>
+</tbody></table>
+<hr>
+</section>
+<section><h2>📚 출처</h2>
+<p><strong>1차 공시</strong> — <a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260729800013" target="_blank">SK하이닉스 2Q26 잠정실적 rcpNo 20260729800013</a> · <a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260730800103" target="_blank">삼성 2Q26 확정 rcpNo 20260730800103</a> · <a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260730800137" target="_blank">삼성 배당 rcpNo 20260730800137</a> · <a href="https://ssl4.eir-parts.net/doc/285A/tdnet/2859908/00.pdf" target="_blank">키옥시아 Q1 FY26 결산(PDF)</a> · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0000723125&amp;type=&amp;dateb=&amp;owner=include&amp;count=40" target="_blank">MU SEC EDGAR CIK 0000723125</a> · <a href="https://www.sec.gov/Archives/edgar/data/723125/000124265426000013/0001242654-26-000013-index.htm" target="_blank">MU Form 4 Mehrotra #13</a> · <a href="https://www.sec.gov/Archives/edgar/data/723125/000124265426000014/0001242654-26-000014-index.htm" target="_blank">#14</a> · <a href="https://www.roundhillinvestments.com/etf/dram/" target="_blank">Roundhill DRAM ETF</a> · <a href="https://investors.micron.com/" target="_blank">Micron IR</a></p>
+<p><strong>기업 발표</strong> — <a href="https://news.skhynix.com/en/q2-2026-business-results/" target="_blank">SK하이닉스 2Q26 보도자료</a> · <a href="https://news.skhynix.com/en/skhynix-nvidia-partnership-2026/" target="_blank">SK그룹–NVIDIA 파트너십</a> · <a href="https://news.samsung.com/global/samsung-electronics-announces-second-quarter-2026-results" target="_blank">삼성전자 2Q26 뉴스룸</a> · <a href="https://www.kioxia-holdings.com/en-jp/ir.html" target="_blank">키옥시아 IR</a></p>
+<p><strong>전용 매체·리서치</strong> — <a href="https://www.dramexchange.com/" target="_blank">DRAMeXchange</a> · <a href="https://www.trendforce.com/news/2026/07/28/news-nvidia-reportedly-halves-vera-rubin-socamm-capacity-as-memory-costs-near-29-of-system-bom/" target="_blank">TrendForce NVIDIA SOCAMM 축소</a> · <a href="https://www.trendforce.com/news/2026/07/29/news-sk-hynix-posts-record-2q-results-but-misses-estimates-reportedly-due-to-conservative-pricing-completes-10-ltas/" target="_blank">TrendForce SK하이닉스 컨센 미달</a> · <a href="https://www.trendforce.com/news/2026/07/30/news-samsung-targets-60-70-capacity-under-ltas-five-key-customers-reportedly-include-aws-microsoft-google/" target="_blank">TrendForce 삼성 LTA 60~70%</a> · <a href="https://www.trendforce.com/news/2026/07/31/news-nands-2026-playbook-samsung-sk-hynix-chase-upgrades-and-ssd-mix-over-volume/" target="_blank">TrendForce NAND 2026 Playbook</a> · <a href="https://www.trendforce.com/news/2026/07/27/news-cxmts-471-star-debut-makes-it-chinas-top-listed-firm-reshaping-global-memory-dynamics/" target="_blank">TrendForce CXMT 471% 데뷔</a> · <a href="https://www.trendforce.com/news/2026/07/28/news-china-reportedly-mass-produces-immersion-duv-tools-smic-hua-hong-cxmt-deliveries-expected-this-year/" target="_blank">TrendForce 중국 이머전 DUV</a> · <a href="https://newsletter.semianalysis.com/archive" target="_blank">SemiAnalysis</a> · <a href="https://semiengineering.com/tag/memory/" target="_blank">SemiEngineering memory</a> · <a href="https://www.eetimes.com/" target="_blank">EE Times</a></p>
+<p><strong>Physical AI(§F)</strong> — <a href="https://www.therobotreport.com/" target="_blank">The Robot Report</a> · <a href="https://www.therobotreport.com/industry-reacts-fcc-ban-u-s-imports-new-humanoid-quadruped-robots/" target="_blank">FCC 로봇 수입금지 전문가 반응</a></p>
+<p><strong>시장·매체</strong> — <a href="https://www.bloomberg.com/news/articles/2026-08-02/crushed-by-kospi-rout-angry-koreans-rip-lee-and-vow-not-to-buy" target="_blank">Bloomberg 코스피 급락</a> · <a href="https://www.bloomberg.com/news/articles/2026-08-01/loan-investors-are-pushing-back-as-fear-rises-credit-weekly" target="_blank">Bloomberg AI 대출시장 반발</a> · <a href="https://www.bloomberg.com/news/articles/2026-08-01/warsh-s-silent-treatment-has-s-p-traders-bracing-for-wild-swings" target="_blank">Bloomberg Warsh 침묵</a> · <a href="https://www.barrons.com/livecoverage/stock-market-news-today-073026/card/memory-stocks-surge-sandisk-tops-s-p-500-gainers--nMZbVxcvGn2DZEJ5pUYe" target="_blank">Barron&#x27;s 메모리주 급등</a> · <a href="http://www.etf.com/sections/equity/even-dram-bears-are-committed-ride" target="_blank">etf.com DRAM 베어</a></p>
+<p><strong>X</strong> — <a href="https://x.com/MicronTech" target="_blank">@MicronTech</a> · <a href="https://x.com/TrendForce" target="_blank">@TrendForce</a> · <a href="https://x.com/Dylan522p" target="_blank">@Dylan522p</a> · $MU / $DRAM 캐시태그</p>
+<p><strong>시세</strong> — yfinance(2026-07-31 종가 기준·14티커)</p>
+<h3>⚠️ 수집 상태</h3>
+<ul>
+<li><strong>X 7일 전수 cover 미달성</strong> — X 타임라인 가상화로 스크롤 누적이 반복 실패. <code>since:/until:</code> 범위 쿼리로 대체했고 $MU live 11건·top 6건, $DRAM 6건, @MicronTech 8건, @Dylan522p 8건, @TrendForce 5건을 확보했다. 정직 표기하며 X는 방화벽 규칙상 <strong>&quot;🟡 X 신호&quot;</strong>로만 사용했다.</li>
+<li><strong>news-headlines RSS 신선도</strong>: Bloomberg ✅ 2026-08-01~02 / <strong>WSJ 🔴 stale(2025-01-27 캐시 → 미사용)</strong> / <strong>Reuters 🔴 deprecated(전 UA 401 → 미사용)</strong> / MarketWatch ⚠️ 상위 10건은 신선(8/1)이나 후미에 2024~2025 항목 혼재·메모리 관련 0건 / AP ⚠️ date 필드 공백.</li>
+<li><strong>SemiEngineering memory 태그 신규 0건</strong>(최신 7/9) · <strong>SemiAnalysis 메모리 전용 0건</strong>(최신 메모리편 6/23) — 방문 확인 후 기록.</li>
+<li><strong>yfinance DRAM navPrice T-1 지연</strong>(47.4772 = 7/30 NAV) → Roundhill 공식 7/31 NAV $53.10 및 공식 표기 프리미엄/디스카운트 −5.14% 사용.</li>
+</ul>
+<hr>
+<p>*본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.*</p></section>
+</div>
+<script>
+/* ===== report-viz.js (INLINE·의존성 0) ===== */
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+const VIZ={"scenario": {"horizonLabel": "5년 (MU 단일주)", "threshold": 1.0, "cases": [{"label": "🟢 Bull", "tone": "bull", "prob": 0.25, "mult": 2.2, "note": "SCA/LTA de-risk 입증+HBM4 점유"}, {"label": "🟡 Base", "tone": "base", "prob": 0.4, "mult": 1.15, "note": "사이클 정상화"}, {"label": "🔴 Bear", "tone": "bear", "prob": 0.35, "mult": 0.45, "note": "FY23형 ASP 붕괴"}]}};
+document.addEventListener('DOMContentLoaded',function(){try{DDViz.renderScenario('fig-scn','ev-scn',VIZ.scenario);}catch(e){console.error('viz',e);}});
+</script>
+</body>
+</html>
