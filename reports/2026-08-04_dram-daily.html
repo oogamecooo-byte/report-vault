@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRAM(메모리 섹터) 일일 퀵 체크 — 2026-08-04</title>
+<style>
+  :root{
+    --bg:#FDF6E3; --layer:#FBF0D8; --card:#FFFDF6; --ink:#3B3228; --muted:#7A6E5A;
+    --line:#E6DCC3; --accent:#B58900; --red:#C0392B; --amber:#B9770E; --green:#5E8C2E;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;line-height:1.62;font-size:15px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:30px 20px 70px}
+  header{background:var(--layer);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:22px}
+  h1{margin:0 0 6px;font-size:25px;letter-spacing:-.5px}
+  .sub{color:var(--muted);font-size:13px;line-height:1.7}
+  .sub b{color:var(--ink)}
+  .status{display:inline-block;margin:14px 0 2px;padding:9px 18px;border-radius:30px;font-weight:700;font-size:17px}
+  .st-red{background:#F7D9D4;color:var(--red);border:1px solid #E0A99F}
+  .st-amb{background:#FBEBC7;color:var(--amber);border:1px solid #E4C879}
+  .st-grn{background:#E0EFCB;color:var(--green);border:1px solid #B9D68E}
+  section{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:18px 22px;margin:16px 0;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+  h2{font-size:19px;margin:2px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  h3{font-size:15.5px;margin:16px 0 7px;color:#4a3f30}
+  h4{font-size:14px;margin:12px 0 5px;color:#5a4d38}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.3px;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  th,td{padding:8px 10px;border:1px solid var(--line);text-align:left;vertical-align:top}
+  th{background:var(--layer);font-weight:700;color:#5a4d38}
+  .c{text-align:center;white-space:nowrap}
+  ul{margin:8px 0;padding-left:20px}
+  li{margin:4px 0}
+  p{margin:8px 0}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px dotted #C9A94E}
+  a:hover{border-bottom-style:solid}
+  code{background:var(--layer);padding:1px 5px;border-radius:4px;font-size:12.5px}
+  .wl{color:var(--muted);font-size:12.5px}
+  .pill{display:inline-block;padding:1px 8px;border-radius:20px;font-size:12px;font-weight:700}
+  .p-red{background:#F7D9D4;color:var(--red)} .p-amb{background:#FBEBC7;color:var(--amber)} .p-grn{background:#E0EFCB;color:var(--green)}
+  blockquote.bq{background:var(--layer);border-left:4px solid var(--accent);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:13.6px;color:#4a3f30}
+  blockquote.steel{background:var(--layer);border:1px dashed #D8C68C;border-radius:9px;padding:12px 15px;margin:12px 0;font-size:13.6px}
+  blockquote.steel b{color:var(--accent)}
+  hr{border:none;border-top:1px solid var(--line);margin:18px 0}
+  .foot{margin-top:26px;font-size:12px;color:var(--muted);background:var(--layer);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .toolbar{text-align:right;margin:0 0 10px}
+  .toolbar button{background:var(--layer);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:12.5px;color:var(--ink);cursor:pointer}
+  @media print{body{background:#fff}.wrap{max-width:100%}.toolbar{display:none}section,header,.foot{box-shadow:none}}
+</style>
+<meta name="vault-stage" content="Monitoring">
+<meta name="vault-topic" content="메모리">
+<meta name="vault-date" content="2026-08-04">
+<meta name="vault-published" content="2026-08-04">
+<meta name="description" content="DRAM(메모리 섹터) 일일 퀵 체크 — 2026-08-04">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="wrap">
+<div class="toolbar"><button onclick="window.print()">🖨 인쇄/PDF</button></div>
+<header>
+  <h1>💾 DRAM(메모리 섹터) 일일 퀵 체크</h1>
+  <div class="sub"><b>2026-08-04</b> · Roundhill Memory ETF 앵커 · Chrome MCP 전용 수집</div>
+  <div class="status st-amb">종합 상태 : ⚠️ 주의</div>
+</header>
+<blockquote class="bq"><strong>수집 환경</strong>: Chrome MCP 전용(WebFetch/WebSearch 0회). yfinance 배치(DRAM ETF + 한국 2강 + SKHY + 키옥시아 + NAND/스토리지 + MU + 장비/지수) + SEC EDGAR(MU CIK 0000723125) + DART(한국 2강) + EDINET(키옥시아) + yf.news 백본 5티커 + TrendForce/DRAMeXchange/SemiAnalysis + 전자신문/디일렉 + X(@MicronTech·$MU) + news-headlines(RSS date 검증) + Roundhill 공식. 매크로 지수 = macro-daily 참조.</blockquote>
+<blockquote class="bq"><strong>데이터 기준</strong>: 미국장 <strong>2026-08-03 종가</strong> · 서울·도쿄 <strong>8/3 종가</strong> · <strong>DRAM 칩 스팟 8/3 18:10 GMT+8</strong> · 모듈·NAND·GDDR 스팟은 <strong>7/27 14:40 GMT+8</strong>(주간 갱신 테이블·8/3분 미반영).</blockquote>
+<blockquote class="bq">🔴 <strong>델타 창 = 2세션</strong>(미국 7/31·8/3 / 서울·도쿄 7/31·8/3). 직전 보고서가 <strong>미국장 7/30 종가</strong> 기준이었고, 그 사이 7/31에 <strong>아시아 상한가급 폭등 + 미국 반락</strong>이 동시에 났다. &quot;어제 대비&quot;로 읽으면 방향이 정반대로 잡힌다.</blockquote>
+<hr>
+
+<section><h2>📌 한 장 요약</h2>
+<ul>
+<li><strong>종합 상태: ⚠️ 주의</strong> — 신규 발현 0·신호③ 미발동이라 🔴 아님. ±5% 초과 4종목 + 신호④ 임박 zone 강화가 겹쳤다.</li>
+<li>🔴🔴 <strong>Kimi K3는 메모리 악재가 아니라 서버 DRAM 호재였다</strong> — 7/16 폭락의 진원이던 &quot;compressed memory&quot; 모델을 SemiAnalysis가 해부한 결과, 실제 서빙에서는 prefix cache 때문에 KV 캐시가 <strong>다시 시퀀스 길이에 비례</strong>하고, B300 1노드 HBM은 3.25M 토큰밖에 못 담아 스래싱하며, <strong>CPU DRAM 219.91GB/rank 오프로드가 KV 캐시를 4.85배로 늘린다</strong>.</li>
+<li>🔴 **가격 레벨은 최고치, 가격 상승 *속도*는 3중 감속<strong> — 7월 범용 DDR4 8Gb $24(집계 이래 최고)·MLC 128Gb $30.05(첫 $30 돌파)인데, 3Q26 DDR4 계약가 </strong>+15~20%<strong>(2Q +45~50%) · NAND 7월 </strong>+4.26% MoM<strong>(연초 두 자릿수) · 서버 </strong>DDR5 RDIMM 32GB 주간 스팟 −0.64% 첫 하락**.</li>
+<li>🔴 <strong>신호④ 강화 — CXMT 베이징 2공장 검토(월 웨이퍼 60만장 이상 = 2배 이상)</strong> + <strong>애플이 CXMT 메모리를 테스트하고 제재 리스트 제외를 압박</strong>해 왔다는 보도. 직전 실행이 완화 증거로 올린 &quot;미 의회 제동&quot;과 <strong>정면 충돌</strong>한다.</li>
+<li>🔴 <strong>한국 2강 −8.8% 동반 급락은 리스크 신호가 아니다</strong> — 7/31 SK하이닉스 <strong>+29.95%</strong>(사실상 상한가)·삼성 <strong>+26.81%</strong>의 기계적 되돌림이고, 2세션 누적으로는 서울이 <strong>+15~19% 순증</strong>이다. 미국 상장분(MU −5.16%·ETF −2.31%)과 방향이 정확히 뒤집혔다.</li>
+<li>🟠 <strong>한국 2강 최고위 2인이 폭락 바닥에서 매수했다</strong> — 최태원 SK하이닉스 <strong>3,620주 @₩1,353,677(≈49.0억)</strong> · 노태문 삼성전자 <strong>3,045주 @₩230,000(≈7.0억)</strong>, 둘 다 7/30. 같은 창의 임원 매도 5건 합계는 약 4.3억.</li>
+<li>🟠 <strong>삼성 파운드리 2H26 100% 가동 목표</strong> — 견인축이 <strong>HBM4 base die</strong> + 미국 대형 고객(현재 가동률 70~80%).</li>
+<li>✅ <strong>직전 판정 1건 철회</strong> — DRAMeXchange 모듈·NAND 표는 &quot;7/20에서 갱신 정지·추적 불가&quot;가 아니라 <strong>월요일 주간 갱신 케이던스</strong>였다(오늘 7/27로 전진 확인).</li>
+</ul>
+<hr>
+</section>
+<section><h2>🎯 thesis 4축 daily 요약</h2>
+<table><thead><tr><th>축</th><th>신호</th><th>오늘 한 줄</th></tr></thead><tbody>
+<tr><td>① ASP / bit / 재고</td><td class="c"><span class="pill p-amb">🟡</span></td><td>칩 스팟 <strong>상승 3 · 보합 4 · 하락 0</strong>으로 재가속(DDR5 16Gb +0.72%·DDR4 16Gb +0.57%). 7월 월평균은 DDR4 8Gb <strong>$24</strong>·MLC 128Gb <strong>$30.05</strong>로 집계 이래 최고. 🔴 그러나 <strong>가격 상승 속도는 3중 감속</strong>(계약 +45~50%→+15~20% / NAND +4.26% MoM / 서버 모듈 스팟 첫 −0.64%). rollover 아님</td></tr>
+<tr><td>② HBM 점유 / HBM4</td><td class="c"><span class="pill p-amb">🟡</span></td><td>삼성 파운드리 <strong>2H26 100% 가동 목표</strong>의 견인축 = <strong>HBM4 base die</strong> + 미국 대형 고객. 2nm 수율 ~60%(대형 양산엔 ~70% 필요). <strong>HBM 점유 정량 신규 공시 0</strong> — MU는 여전히 <strong>HBM #3 추격자</strong>, SK하이닉스가 <strong>#1</strong>(엔비디아 주력)</td></tr>
+<tr><td>③ Physical AI 수요</td><td class="c"><span class="pill p-grn">🟢</span></td><td>reversal 0. 오히려 <strong>반대 방향 정량 증거</strong> — agentic 서빙(중앙값 입력 142k 토큰·65턴/세션)이 <strong>서버 DRAM 계층을 hard link로 요구</strong>(KV 캐시 4.85배). 한국 8/3 수급이 반도체→<strong>로봇</strong>으로 이동(코스모로보틱스 +21.30%)한 것은 관심의 방향 지표이나 양면적</td></tr>
+<tr><td>④ 공급 규율 / glut</td><td>🔴 임박 zone <strong>유지·강화</strong></td><td><strong>CXMT 베이징 2공장 검토 = 월 웨이퍼 60만장 이상(2배 이상)</strong> + <strong>애플의 CXMT 테스트·제재 제외 압박</strong>. TrendForce는 <strong>NAND 2H27 공급 완화 / DRAM 타이트 유지</strong>로 두 시계를 분리. 한국 2강 <strong>capex 신규 DART 공시 0</strong></td></tr>
+</tbody></table>
+<hr>
+</section>
+<section><h2>§D. 🔴 thesis 4축 daily (상세)</h2>
+<h3>§D-1. ① ASP / bit / 재고</h3>
+<p><strong>DRAM 칩 스팟 — <a href="https://www.dramexchange.com/" target="_blank">DRAMeXchange</a> <code>Last Update: Aug.3 2026 18:10 (GMT+8)</code></strong></p>
+<table><thead><tr><th>품목</th><th>8/3 세션 평균</th><th>세션 변동</th><th>7/30 평균</th><th>방향</th></tr></thead><tbody>
+<tr><td>DDR5 16Gb (2Gx8) 4800/5600</td><td><strong>51.333</strong></td><td><strong>+0.72%</strong></td><td>50.967</td><td>재가속(7/30 +0.07%)</td></tr>
+<tr><td>DDR5 16Gb eTT</td><td>23.630</td><td>0.00%</td><td>23.630</td><td>보합 지속</td></tr>
+<tr><td>DDR4 16Gb (2Gx8) 3200</td><td><strong>85.707</strong></td><td><strong>+0.57%</strong></td><td>84.976</td><td>🔴 절대가 반등(7/30에 첫 하락했던 품목)</td></tr>
+<tr><td>DDR4 16Gb eTT</td><td>11.450</td><td>0.00%</td><td>11.450</td><td>하락 → 보합</td></tr>
+<tr><td>DDR4 8Gb (1Gx8) 3200</td><td>42.112</td><td>0.00%</td><td>42.130</td><td>보합</td></tr>
+<tr><td>DDR4 8Gb eTT</td><td>4.210</td><td>0.00%</td><td>4.210</td><td>하락 → 보합</td></tr>
+<tr><td>DDR3 4Gb 512Mx8</td><td>13.838</td><td>+0.20%</td><td>13.810</td><td>상승 전환</td></tr>
+</tbody></table>
+<p><strong>상승 3 · 보합 4 · 하락 0.</strong> 직전 실행의 &quot;상승 2·보합 3·하락 2&quot;에서 <strong>하락이 사라졌다.</strong> 주력 DDR4 16Gb는 7/30에 처음 내려앉았던 절대가를 되올렸다.</p>
+<p><strong>모듈·NAND·웨이퍼 스팟 — <code>Last Update: Jul.27 2026 14:40 (GMT+8)</code></strong></p>
+<blockquote class="bq">✅ <strong>직전 판정 철회</strong> — 직전 실행은 이 표들을 *&quot;7/20에서 10일째 갱신 정지 · 서버 모듈 추적 불가&quot;*로 판정했으나, 오늘 재조회에서 <strong>전부 Jul.27로 전진</strong>했다. 즉 정지가 아니라 <strong>월요일 14:40 GMT+8 주간 갱신 케이던스</strong>다(Module·GDDR·Wafer는 컬럼 헤더가 <code>Weekly High / Weekly Low / Average Change</code>로 이미 주간임을 표시하고 있었다). 다만 8/3(월) 갱신분은 수집 시점에 아직 안 올라와 <strong>7일 경과 값</strong>이고, Flash·Memory Card는 <code>Daily</code> 헤더인데도 Jul.27이라 <strong>이 둘은 실제 지연</strong>으로 남는다.</blockquote>
+<table><thead><tr><th>구분</th><th>품목</th><th>7/27 평균</th><th>주간 변동</th><th>7/20</th></tr></thead><tbody>
+<tr><td>Module</td><td>DDR5 UDIMM 16GB</td><td>215.000</td><td>+1.90%</td><td>211.000</td></tr>
+<tr><td>Module</td><td><strong>DDR5 RDIMM 32GB (서버)</strong></td><td><strong>1,545.000</strong></td><td><strong>−0.64%</strong></td><td>1,555.000</td></tr>
+<tr><td>Module</td><td>DDR4 UDIMM 16GB</td><td>156.000</td><td>0.00%</td><td>156.000</td></tr>
+<tr><td>Flash</td><td>MLC 64Gb 8GBx8</td><td>32.913</td><td>+1.07%</td><td>(직전 +3.74%)</td></tr>
+<tr><td>Flash</td><td>SLC 2Gb 256MBx8</td><td>4.200</td><td>+2.61%</td><td>(직전 +1.19%)</td></tr>
+<tr><td>Wafer</td><td>512Gb TLC</td><td>19.250</td><td>+1.69%</td><td>(직전 −1.28%)</td></tr>
+<tr><td>Wafer</td><td>256Gb / 128Gb TLC</td><td>10.787 / 6.853</td><td>+3.09% / +3.01%</td><td>—</td></tr>
+</tbody></table>
+<p>🔴 <strong>서버 모듈이 처음 내렸다.</strong> DDR5 RDIMM 32GB는 1,555.000 → <strong>1,545.000(−0.64%)</strong>로 주간 하락 전환했고, 같은 주에 PC용 UDIMM 16GB는 <strong>+1.90%</strong> 올랐다. <strong>서버는 빠지고 PC는 오르는 갈림</strong>이며, 이는 서버 물량이 계약(LTA)으로 빠져나가 현물 서버 모듈이 얇아진 구조와 정합한다.</p>
+<p><strong>월평균가 — <a href="https://www.thelec.kr/news/articleView.html?idxno=60443" target="_blank">디일렉 8/3 「범용 D램, 7월도 최고가 갱신...3분기 20% 뛴다」</a></strong> (D램익스체인지·TrendForce 인용)</p>
+<ul>
+<li>PC용 범용 <strong>DDR4 8Gb 7월 평균 $24</strong>(전월 $21 · <strong>+14.29% MoM</strong>) = <strong>2016년 6월 집계 이래 최고가</strong></li>
+<li>메모리카드·USB향 범용 낸드 <strong>MLC 128Gb 7월 평균 $30.05</strong> = <strong>2015년 8월 집계 이래 최초로 $30 돌파</strong></li>
+<li>🔴 3Q26 DDR4 공급가 <strong>+15~20% QoQ</strong> 전망 — <strong>2분기 +45~50%보다 상승폭 축소</strong></li>
+<li>🔴 낸드 7월 <strong>+4.26% MoM</strong> — 연초 두 자릿수 상승세와 대비. TrendForce 해석은 *&quot;이미 많이 올라간 MLC 가격에 대한 반발&quot;*</li>
+</ul>
+<blockquote class="bq">🔤 <strong>스팟(현물) vs 계약(고정거래)</strong> — 스팟은 브로커·유통 시장의 당일 호가라 물량이 얇고 변동이 크다. 계약가는 제조사와 대형 고객이 분기 단위로 정하는 가격으로 실제 매출을 좌우한다. 위 세 소스는 <strong>일 단위 칩 스팟 / 주 단위 모듈 스팟 / 월 단위 평균가</strong>로 시간 축이 각각 다르므로 한 표에 섞어 읽으면 안 된다.</blockquote>
+<p><strong>🔴 peak ASP 경계 — 오늘의 핵심 판정</strong>: 가격 <strong>레벨</strong>은 여전히 사상 최고를 경신하지만, 가격 <strong>상승 속도</strong>는 세 소스에서 동시에 꺾이고 있다(DRAM 계약 상승률 반토막 이하 · NAND 월간 상승률 1/3 이하 · 서버 현물 모듈 첫 마이너스). 이는 MU 경영진이 컨콜에서 *&quot;가격 인상률의 의미있는 둔화&quot;*로 자인한 것과 정합하며, <strong>현 마진이 peak ASP 구간임을 다시 확인</strong>한다. 단 <strong>bit 출하</strong> 축은 여전히 low-single-digit(키옥시아 1QFY26 실적)이라 물량이 가격을 대신할 조짐은 없다. rollover(하락 우세) 미발동.</p>
+<h3>§D-2. ② HBM 점유 / HBM4 ramp</h3>
+<p><strong><a href="https://www.trendforce.com/news/2026/08/03/news-samsung-foundry-eyes-2h26-full-utilization-as-hbm4-base-dies-and-u-s-orders-fuel-turnaround-hopes/" target="_blank">TrendForce 8/3 「Samsung Foundry Eyes 2H26 Full Utilization as HBM4 Base Dies and U.S. Orders Fuel Turnaround Hopes」</a></strong></p>
+<ul>
+<li>삼성 파운드리 가동률 현재 <strong>70~80% → 2H26 100%</strong> 목표(조선비즈). 견인축 = <strong>HBM4 base die 수요</strong> + 미국 대형 테크 고객 주문. 작년엔 4nm·5nm 가동률이 50% 아래였다.</li>
+<li>비메모리(파운드리+시스템LSI) 2Q 적자 약 <strong>₩6,000억</strong> 추정(뉴시스). 일부는 3Q 흑자전환 전망(허프포스트코리아 인용 애널)으로, HBM4 base die 램프 + 엑시노스 물량 증가가 근거.</li>
+<li>2nm 수율 현재 <strong>~60%</strong>, 대형 양산 계약 확보엔 <strong>~70%</strong> 필요(조선비즈). 브로드컴 2nm 물량은 올해 작년의 <strong>2배 이상</strong> 예상(뉴스1). 구글 차세대 TPU &quot;Icefish&quot;는 메인 다이가 TSMC이나 <strong>메모리 연결 I/O 부품을 삼성 2nm가 맡을 가능성</strong>(The Information).</li>
+<li>선단공정이 올해 파운드리 매출의 <strong>50%+</strong>, AI·HPC 매출 비중 high-teens → <strong>30%+</strong> 전망.</li>
+</ul>
+<blockquote class="bq">🎯 <strong>해석</strong> — HBM4가 메모리 밖(파운드리 가동률)에서 수요 증거를 만들고 있다는 점이 오늘의 증분이다. base die는 로직 공정이라 HBM4 램프가 실제 웨이퍼 투입으로 옮겨붙었다는 <strong>간접이지만 회계로 잡히는</strong> 신호다. 다만 이는 <strong>삼성 파운드리의 회복 서사</strong>이지 HBM 점유 재배분의 증거는 아니다.</blockquote>
+<p><strong>MU 위치 — 재프레임 불변</strong>: MU는 HBM에서 <strong>#3 추격자</strong>이고 <strong>SK하이닉스가 #1</strong>(엔비디아 주력 공급)이다. MU는 HBM 점유를 <strong>의도적으로 DRAM 점유(약 20%) 수준에 맞추고</strong> 있으므로 &quot;SK하이닉스와의 격차 축소&quot;는 잣대로 무효이며, 올바른 잣대는 <strong>그 20% 할당에서 나오는 마진의 입증</strong>이다. HBM 총매출·단독 마진·엔비디아 primary 인증은 <strong>오늘도 미공시</strong> = PARTIAL 유지.</p>
+<p><strong>SKHY(SK하이닉스 ADR) = US-hours HBM #1 센티널</strong>: 8/3 <strong>$142.72(−0.70%)</strong> · 시간외 <strong>$145.34(+1.84%)</strong>. 같은 달력일 서울은 −8.79%였는데 미국 시간대에서는 −0.70%에 그쳤다 — <strong>서울이 먼저 마감했고 미국장에서 추가 매도가 붙지 않았다</strong>는 뜻이다. ⚠️ 같은 회사이므로 ETF 비중 이중계산 금지.</p>
+<h3>§D-3. ③ Physical AI 수요축</h3>
+<p><strong>🔴 <a href="https://newsletter.semianalysis.com/p/kimi-k3-the-manos-the-mythos-the" target="_blank">SemiAnalysis 8/4 「Kimi K3, The Manos, The Mythos, The Legendos」</a> — 오늘의 최대 발견</strong></p>
+<p>Kimi K3는 <strong>2026-07-16 메모리 폭락의 진원</strong>이었던 모델이다(&quot;DeepSeek 모먼트&quot; 서사). 그 아키텍처가 실제로 메모리를 덜 쓰는지가 축③·신호②의 핵심 쟁점이었는데, SemiAnalysis의 결론은 <strong>반대</strong>다.</p>
+<ul>
+<li><strong>구조</strong>: KDA(Kimi Delta Attention) 선형 어텐션 + MLA 하이브리드(<strong>KDA:MLA = 3:1</strong>), LatentMoE(전문가 입력차원 7168 → <strong>3584</strong>로 절반), Attention Residuals(층 방향 어텐션), Quantile Balancing. KDA는 이론상 디코드 시 <strong>시퀀스 길이와 무관한 상수 메모리</strong>다.</li>
+<li>🔴 <strong>그런데 실제 서빙에서는 그렇지 않다</strong> — SemiAnalysis는 *&quot;KV 캐시 효율을 공간 복잡도만으로 추론해서는 안 된다&quot;*고 못박는다. prefix cache 적중을 위해 recurrent state를 어딘가에 저장해야 하는데, 경계를 모르면 <strong>모든 토큰 위치에 캐시</strong>해야 하므로 vLLM은 <strong>32K 토큰마다 + 프롬프트 경계마다</strong> 저장한다. 그 결과 *&quot;KV 캐시 메모리 사용량이 다시 시퀀스 길이에 비례해 늘어나 선형 어텐션을 쓰는 목적을 무산시킨다.&quot;*</li>
+<li>🔴 <strong>KV 캐시 거주 계층 = HBM → 서버 DRAM → SSD</strong>를 명시. 레지스터→캐시→주기억→디스크 계층의 유비.</li>
+<li>🔴 <strong>정량</strong>: B300 1노드에서 가중치를 뺀 뒤 <strong>GPU HBM이 담을 수 있는 KV 캐시 = 3.25M 토큰</strong>. concurrency가 8을 넘으면 캐시 스래싱이 시작돼 <strong>이론 적중률 95% → 실측 10% 미만</strong>으로 붕괴한다. <strong>rank당 CPU DRAM 219.91GB 오프로드</strong>를 붙이면 <strong>+15.76M 토큰 = 총 4.85배</strong>가 되고, *&quot;성능 개선이 거대하다.&quot;* NVIDIA·AMD <strong>Day-0 vLLM 레시피가 DRAM 오프로드를 전면에 내세운다.</strong></li>
+<li>벤치마크 자체가 실제 agentic 트레이스(중앙값 <strong>입력 142k 토큰 · 출력 444 토큰/턴 · 65턴/세션</strong>)로 바뀌었고, TCO에서 <strong>cache read가 지출의 대부분</strong>이다.</li>
+</ul>
+<blockquote class="bq">🎯 <strong>해석·시사점</strong> — 이것은 사용자 thesis의 hard link(역량 ≠ 생산성, 물리 자원이 병목)를 <strong>컴퓨트 계층에서 정량으로 지지하는 첫 1차급 증거</strong>다. 모델이 메모리를 아끼도록 설계되어도, <strong>에이전트 워크로드의 긴 컨텍스트 × 다중 턴</strong>이 그 절약분을 다시 삼키고 결국 <strong>서버 DRAM 용량</strong>으로 흘러간다. ⚠️ 단 이는 <strong>현 vLLM 구현 기준</strong>이다 — prefix cache 경계 문제가 해결되면 4.85배 논거는 약해질 수 있고, 이 수치는 HBM이 아니라 <strong>CPU 측 DRAM</strong> 이야기라 HBM 수요와 혼동하면 안 된다. <strong>매수신호 아님.</strong></blockquote>
+<p><strong>기타 축③ 관측</strong>: 한국 8/3 수급이 반도체에서 <strong>로봇·제약바이오</strong>로 이동했다(<a href="https://www.etnews.com/20260803000375" target="_blank">전자신문 8/3</a> — 코스모로보틱스 +21.30%·에스피지 +14.90%, 코스닥 장중 매수 사이드카). Physical AI 테마 관심의 방향 지표이지만 <strong>메모리에서 빠져나간 돈</strong>이라는 점에서 양면적이다. 국내 AI 인프라 쪽에서는 <a href="https://www.etnews.com/20260803000263" target="_blank">삼성SDS 주도 국가AI컴퓨팅센터가 착공</a>했다. 엣지·automotive 메모리 신규 hit는 <strong>0건</strong>. <strong>reversal 신호 0.</strong></p>
+<h3>§D-4. ④ 공급 규율 · glut 전조</h3>
+<p><strong>🔴 CXMT 확장 + 애플 채택 — 같은 날 두 축이 동시에 움직였다</strong></p>
+<ul>
+<li><a href="https://www.marketwatch.com/story/microns-stock-sees-choppy-trading-as-china-fears-loom-large-0965123f" target="_blank">MarketWatch 8/3 「Micron&#x27;s stock sees choppy trading as China fears loom large」</a>: CXMT(<strong>세계 4위 메모리</strong>·상하이 상장 후 공모가 대비 <strong>400%+</strong> 급등)가 <strong>베이징에 두 번째 메모리 공장 건설을 검토</strong> 중이라는 보도가 나왔다. MU는 장중 하락했다가 종가에 낙폭을 만회했다.</li>
+<li><a href="https://finance.yahoo.com/markets/stocks/articles/micron-stock-falls-apple-tests-190529091.html" target="_blank">GuruFocus 8/4 「Micron Stock Falls — Apple Tests Chinese Memory Chips From Rising Rival」</a>: 2공장이 실현되면 <strong>월 웨이퍼 생산이 60만장 이상으로 2배 이상</strong> 늘 수 있다. 그리고 <strong>애플이 CXMT 메모리를 테스트해 왔으며, CXMT를 미국 무역 제한 리스트에서 빼도록 압박해 왔다</strong>고 전한다. 🔴 <strong>2차 매체 인용이고 1차 확인이 안 된 사안</strong>이다.</li>
+<li>🔴 <strong>직전 실행의 완화 증거와 정면 충돌한다.</strong> 7/30 전자신문은 *&quot;미 의회, 애플 중국산 메모리 도입 제동&quot;*을 전했고, 직전 보고서는 이를 <strong>신호④의 첫 반대 증거</strong>로 기록했다. 오늘 나온 것은 그 반대편 — <strong>애플이 실제로 중국 메모리를 원하고 정치적으로 밀고 있다</strong>는 것이다. 즉 정치(의회)와 상업(수요처)이 반대로 움직이고 있으며, <strong>최종 수요처의 의지가 확인됐다는 점에서 완화가 아니라 강화</strong> 방향으로 읽어야 한다.</li>
+<li>CXMT는 이 ETF 안에도 <strong>2.55%</strong>(골드만삭스 총수익스왑) 편입돼 있어, 한국 2강(49.78%)의 최대 경쟁자가 같은 NAV를 공유한다.</li>
+</ul>
+<p><strong>공급 시계의 분화</strong> — <a href="https://www.trendforce.com/news/2026/07/31/news-kioxia-1qfy26-gross-margin-hits-80-reaffirms-50-lta-target-for-2028/" target="_blank">TrendForce 7/31(키옥시아)</a>은 <strong>NAND가 2H27에 공급 완화 국면에 진입</strong>한다고 본다(신규 캐파 가동 + 소비자 전자 수요 약세 → 가격 하방 압력). 반면 <strong>DRAM은 타이트 유지</strong>다. 즉 <strong>글루트 시계가 NAND(2H27)와 DRAM(더 뒤)으로 분리</strong>됐다.</p>
+<p><strong>중국 장비 축</strong>: <a href="https://www.trendforce.com/news/2026/08/03/news-amec-targets-60-high-end-market-coverage-within-five-years-as-chinas-chip-equipment-ambitions-grow/" target="_blank">TrendForce 8/3</a> — AMEC이 5년 내 하이엔드 장비 시장 <strong>60% 커버</strong>를 목표로 제시. 직전 실행이 올린 &quot;중국 이머전 DUV 양산&quot; 축과 같은 방향이다.</p>
+<p><strong>한국 2강 capex</strong>: DART 델타 창(7/31~8/4) 신규 9건 중 <strong><code>신규시설투자등</code> 0건</strong> — capex 증액 확정 공시 없음.</p>
+<hr>
+</section>
+<section><h2>§A. 시세</h2>
+<p><strong>앵커 — DRAM ETF (Roundhill Memory ETF)</strong>: 종가 <strong>$51.13 (+1.51%)</strong> · 시간외 $51.44(+0.61%) · 거래량 63,441,164주(7/30 130.1M → 8/3 63.4M로 정상화) · 52주 위치 <strong>44.1%</strong>.</p>
+<ul>
+<li><strong>NAV / 프리미엄·디스카운트 = 산출 생략(사유 기재)</strong> — yfinance <code>navPrice</code> $47.4772는 7/29($44.85)·7/30($52.34)·7/31($50.37)·8/3($51.13) <strong>어느 종가와도 매핑되지 않는다</strong>(직전 실행 $44.7663에서 전진했으나 기준일 불명). <a href="https://www.roundhillinvestments.com/etf/dram/" target="_blank">Roundhill 공식 페이지</a>의 성과 블록도 <strong>as of 07/31</strong>(종가 $50.37·−3.76%)에 머물러 8/3 NAV가 미공표다. 허수를 피하기 위해 프리미엄/디스카운트를 산출하지 않으며 추정치도 적지 않는다. <strong>NAV 재검증 owner = DRAM-weekly.</strong></li>
+<li><strong>구성(Roundhill 공식 as of 08/02·오늘 재조회)</strong>: 삼성전자 26.74% · Micron 24.54% · SK하이닉스 23.04% · Seagate 5.05% · WDC 4.98% · SanDisk 3.76% · 키옥시아 3.14% · <strong>CXMT 2.55%</strong> · Nanya 1.92% · GigaDevice 1.14%. <strong>Top3 74.32% · 한국 2강 49.78%</strong> · AUM $24.55B · 23종목 · 발행주 462,450,000. 🔴 as-of가 같은데(8/2) 직전 주간 기록치와 값이 다르다(삼성 26.39→26.74·SK 22.77→23.04·GigaDevice 1.51→1.14) — <strong>비중 변화가 아니라 소스 사후 재기재</strong>로 보는 것이 옳다. 정합 owner = DRAM-weekly.</li>
+</ul>
+<table><thead><tr><th>그룹</th><th>티커</th><th>8/3 종가</th><th>1일</th><th>시간외</th><th>52주 위치</th></tr></thead><tbody>
+<tr><td><strong>ETF 앵커</strong></td><td><strong>DRAM</strong></td><td><strong>$51.13</strong></td><td><strong>+1.51%</strong></td><td>+0.61%</td><td>44.1%</td></tr>
+<tr><td>한국 2강</td><td>000660.KS (SK하이닉스)</td><td><strong>₩1,567,000</strong></td><td><strong>−8.79%</strong></td><td>—</td><td>49.4%</td></tr>
+<tr><td>한국 2강</td><td>005930.KS (삼성전자)</td><td><strong>₩239,500</strong></td><td><strong>−8.76%</strong></td><td>—</td><td>58.3%</td></tr>
+<tr><td>US-hours proxy</td><td><strong>SKHY</strong> (SK하이닉스 ADR)</td><td>$142.72</td><td>−0.70%</td><td>+1.84%</td><td>23.7%</td></tr>
+<tr><td>키옥시아</td><td>285A.T</td><td>¥49,160</td><td><strong>+5.72%</strong></td><td>—</td><td>44.0%</td></tr>
+<tr><td>NAND</td><td>SNDK</td><td>$1,288.03</td><td><strong>+6.03%</strong></td><td>+1.71%</td><td>54.4%</td></tr>
+<tr><td>HDD</td><td>STX</td><td>$831.06</td><td>−2.93%</td><td>+0.47%</td><td>72.2%</td></tr>
+<tr><td>HDD</td><td>WDC</td><td>$527.22</td><td>−3.23%</td><td>+0.94%</td><td>67.4%</td></tr>
+<tr><td>단일주</td><td><strong>MU (Micron)</strong></td><td><strong>$829.50</strong></td><td><strong>+0.79%</strong></td><td>+0.99%</td><td>65.3%</td></tr>
+<tr><td>장비</td><td>ASML / AMAT / LRCX</td><td>$1,642.52 / $518.21 / $294.61</td><td>+0.83% / +2.08% / +0.54%</td><td>—</td><td>73.3 / 63.9 / 58.9%</td></tr>
+<tr><td>지수</td><td>SMH / ^SOX</td><td>545.46 / 11,430.35</td><td>+0.91% / +1.05%</td><td>—</td><td>67.7 / 64.7%</td></tr>
+</tbody></table>
+<blockquote class="bq">🔴 <strong>한국·일본 종가 확정 경위</strong> — yfinance 일봉에는 8/3 행이 아직 없어 <code>.info</code> 실시간 필드로 확정했고, <a href="https://www.etnews.com/20260803000375" target="_blank">전자신문 8/3 16:32 보도</a>(SK하이닉스 −8.79% 156만7000원 / 삼성전자 −8.76% 23만9500원)로 <strong>교차검증</strong>했다. 기계 수집이 잡은 7/31 종가(+29.95%/+26.81%)를 당일치로 쓰면 <strong>2세션 stale</strong>이 된다.</blockquote>
+<p><strong>🔴 델타 창 안에서 지역이 정확히 뒤집혔다 (7/30 → 8/3, 2세션 누적)</strong></p>
+<table><thead><tr><th></th><th>DRAM</th><th>MU</th><th>SNDK</th><th>STX</th><th>WDC</th><th>SKHY</th><th>000660.KS</th><th>005930.KS</th><th>285A.T</th></tr></thead><tbody>
+<tr><td>2세션</td><td>−2.31%</td><td><strong>−5.16%</strong></td><td>+0.63%</td><td>−2.42%</td><td>−1.09%</td><td>−4.21%</td><td><strong>+18.53%</strong></td><td><strong>+15.70%</strong></td><td><strong>+24.46%</strong></td></tr>
+</tbody></table>
+<p>직전 보고서의 구도는 *&quot;미국 상장 메모리는 순증인데 아시아 제조국 로컬은 순감&quot;*이었다. <strong>2세션 만에 정반대가 됐다.</strong> 진원은 7/31 아시아장이다 — 서울에서 SK하이닉스가 <strong>+29.95%</strong>(사실상 상한가)·삼성전자가 <strong>+26.81%</strong> 올랐고, 도쿄에서 키옥시아는 <strong>¥46,500 시가=고가=저가=종가·거래량 117.9만주</strong>의 전형적인 스톱高 패턴으로 <strong>+17.72%</strong> 마감했다. 같은 7/31 미국장은 반대로 반락했다(ETF −3.76%·MU −5.90%·SKHY −3.54%). 그리고 8/3 서울이 <strong>−8.8%</strong> 되돌렸다.</p>
+<p><strong>🔴 그래서 8/3 한국 −8.8%를 &quot;메모리 급락&quot;으로 읽으면 틀린다.</strong> <a href="https://www.etnews.com/20260803000375" target="_blank">전자신문</a>이 인용한 이경민 대신증권 연구원의 진단이 정확하다 — *&quot;직전 거래일 30% 안팎 급등했던 삼성전자와 SK하이닉스를 중심으로 외국인 차익실현 매물이 출회되며 되돌림 장세.&quot;* 코스피는 <strong>6,257.45(−5.12%)</strong>인데 코스닥은 <strong>737.35(+2.44%)</strong>로 갈렸고, 코스닥에서는 장중 <strong>매수</strong> 사이드카가 발동했다. 지수 하락이 아니라 <strong>한 섹터에서 다른 섹터로의 자금 이동</strong>이다.</p>
+<p><strong>ADR 괴리 — 압축됐다</strong>: implied ratio = SKHY ÷ (000660.KS ÷ 원달러) = 142.72 ÷ (1,567,000 ÷ <strong>1,428.89</strong>) = <strong>0.1301</strong>. 직전 실행의 <strong>0.1602</strong>에서 −18.8% 압축됐고, 통용되는 1:8(0.1250) 전환비율을 가정하면 프리미엄이 <strong>+28.2% → +4.1%</strong>로 줄었다. 🔴 다만 <strong>ADR 전환비율이 미검증 추정</strong>이라 절대수준은 확정할 수 없고, 서울 마감(8/3 15:30 KST)과 미국 마감(8/3 16:00 ET) 사이에 <strong>약 13.5시간 시차</strong>가 섞여 순수 차익거래 지표도 아니다. 읽을 수 있는 것은 <strong>괴리가 빠르게 좁혀졌다는 방향</strong>뿐이다.</p>
+<p><strong>MU 보조 지표</strong>: 시총 $936.83B · <strong>P/S(TTM) 10.38x</strong> · trailing P/E 18.73x · <strong>fwd P/E 5.33x</strong> · beta 2.213 · 공매도 <strong>3.21% of float</strong>(36.21M주·shortRatio 0.69) · 애널 <strong>42명 strong_buy</strong>, 목표 중앙 <strong>$1,550</strong> / 평균 $1,522.26. 52주 고점 $1,255 대비 <strong>−33.9%</strong>.</p>
+<p><strong>환율</strong>: 원달러 <strong>1,428.89</strong>(−0.91%) · 엔달러 157.382.</p>
+<p><strong>🔴 섹터 상관 1줄</strong>: 8/3 미국장은 NASDAQ <strong>+2.13%</strong> · S&amp;P500 <strong>+1.48%</strong>(7,600.50) · 다우 <strong>+1.32%</strong>(사상 최고) · ^SOX +1.05% · SMH +0.91%였는데, <strong>메모리군은 지수를 하회했고</strong>(MU +0.79%) <strong>HDD는 마이너스</strong>였다(STX −2.93%·WDC −3.23%). 방향은 여전히 AI-capex와 <strong>동방향</strong>이나 이날은 베타가 1을 밑돌았다 — 상승장에 올라타지 못한 국면이다. 독립 동인이 아니므로 AI 인프라 자산과 함께 담으면 <strong>분산 아님</strong>.</p>
+<p><strong>±5% 변동 alert 4건</strong>: 000660.KS −8.79% · 005930.KS −8.76% · SNDK +6.03% · 285A.T +5.72%.</p>
+<hr>
+</section>
+<section><h2>§B. 공시 속보</h2>
+<p><strong>MU — <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0000723125&amp;type=&amp;dateb=&amp;owner=include&amp;count=40" target="_blank">SEC EDGAR (CIK 0000723125)</a></strong></p>
+<p>🔴 <strong>직전 보고서(7/31) 이후 신규 접수 0건.</strong> EDGAR 최신 접수일은 <strong>2026-07-28</strong>(Form 4 2건)이며 이미 직전 보고서에 반영됐다. <strong>8-K·10-Q 0건</strong>(최근 40건 조회 범위 2026-04-10~07-28에 없음). 참고로 7/17 이후 전수는 Form 4 4건(7/17·7/27·7/28×2) + Form 144 2건(7/23·7/24)이다. <strong>인사이더 클러스터 신규 0.</strong></p>
+<p><strong>한국 2강 — DART (flag 중심 · 정독 owner는 DRAM-weekly)</strong></p>
+<p>델타 창(7/31~8/4) 신규 <strong>9건</strong> — SK하이닉스 1건 · 삼성전자 8건. 🔴 <strong><code>단일판매·공급계약체결</code> 0건 · <code>신규시설투자등</code> 0건</strong> = 삼성의 *&quot;5대 데이터센터 고객 공급계약 체결&quot;*은 <strong>2회 연속 1차 공시로 확인되지 않는다.</strong> 컨콜 진술 단계 유지.</p>
+<table><thead><tr><th>회사</th><th>보고자</th><th>방향</th><th>수량</th><th>단가</th><th>금액(추정)</th><th>rcpNo</th></tr></thead><tbody>
+<tr><td>SK하이닉스</td><td><strong>최태원</strong> (회장)</td><td>🟢 장내매수</td><td><strong>+3,620</strong></td><td>₩1,353,677</td><td><strong>≈₩49.0억</strong></td><td><a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260731000082" target="_blank">20260731000082</a></td></tr>
+<tr><td>삼성전자</td><td><strong>노태문</strong> (사장)</td><td>🟢 장내매수</td><td><strong>+3,045</strong></td><td>₩230,000</td><td><strong>≈₩7.0억</strong></td><td><a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260731000755" target="_blank">20260731000755</a></td></tr>
+<tr><td>삼성전자</td><td>조익현</td><td>🔴 매도</td><td>−400 / −550</td><td>₩252,000 / ₩193,900</td><td>≈₩2.1억</td><td><a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260803000043" target="_blank">20260803000043</a></td></tr>
+<tr><td>삼성전자</td><td>이종민</td><td>🔴 매도</td><td>−381</td><td>₩211,500</td><td>≈₩0.8억</td><td><a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260731000690" target="_blank">20260731000690</a></td></tr>
+<tr><td>삼성전자</td><td>신영주</td><td>🔴 매도</td><td>−200</td><td>₩254,500</td><td>≈₩0.5억</td><td><a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260803000197" target="_blank">20260803000197</a></td></tr>
+<tr><td>삼성전자</td><td>김현우</td><td>🔴 매도</td><td>−200</td><td>₩208,500</td><td>≈₩0.4억</td><td><a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260803000173" target="_blank">20260803000173</a></td></tr>
+<tr><td>삼성전자</td><td>박태훈</td><td>🔴 매도</td><td>−185</td><td>₩253,000</td><td>≈₩0.5억</td><td><a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260803000004" target="_blank">20260803000004</a></td></tr>
+</tbody></table>
+<ul>
+<li>🔴 <strong>정정</strong> — 직전 보고서는 최태원 회장 매수 규모를 7/30 종가 ₩1,322,000 기준 *&quot;약 47억 9,000만원&quot;*으로 적었으나, 1차 공시상 실제 단가는 <strong>₩1,353,677</strong>이므로 <strong>약 49.0억원</strong>이 맞다. 직접 보유 <strong>0주 → 3,620주</strong>(발행주식총수 730,492,365·소유비율 0.00%).</li>
+<li>🟠 <strong>최고위 2인이 폭락 바닥에서 샀다.</strong> 두 매수 모두 <strong>계약체결일 7/30</strong>으로, SK하이닉스가 ₩1,322,000(52주 위치 40%대)·삼성전자가 ₩207,000까지 밀린 날이다. 매수 합계 ≈<strong>₩56.0억</strong> vs 같은 창 임원 매도 5건 합계 ≈<strong>₩4.3억</strong>. 🔴 다만 <strong>경영진 매수는 ASP 사이클에 대한 정보가 아니다</strong> — 축①~④ 어디에도 정량 증거를 주지 않으므로 <strong>심리 항목으로만</strong> 기록한다.</li>
+<li>매도 5건은 단가가 ₩193,900~₩254,500에 흩어져 있는데, <code>변동일</code>이 <strong>계약결제일(T+2)</strong>이라 실제 체결은 7/27~7/30 구간이다. 규모가 185~950주로 작고 방향이 통일돼 있지 않아 <strong>클러스터로 보지 않는다.</strong></li>
+<li>기타 flag: 삼성전자 「최대주주등소유주식변동신고서」(7/31) · <strong>삼성물산</strong> 「주식등의대량보유상황보고서(일반)」(7/31).</li>
+</ul>
+<p><strong>키옥시아 — EDINET</strong></p>
+<p><a href="https://disclosure2.edinet-fsa.go.jp/WZEK0040.aspx?S100YTK3,," target="_blank">2026-07-31 15:27 臨時報告書 (E35948 · 문서 S100YTK3)</a> <strong>1건</strong>. 내용은 7/31 이사회의 <strong>RSU·PSU 주식보수 유닛 부여 결정</strong>으로, 보통주 <strong>83,972주</strong>(PSU는 업적목표 최대 달성 가정치)다. 대상자 납세 부담을 고려해 교부 비율을 45~100% 사이에서 별도 결정하고 일부는 금전으로 지급할 수 있다. → <strong>임원 보수 성격이며 NAND 감산/증산·수급·실적 관련 material은 0건.</strong> 1QFY26 실적(7/31 15:30 JST)은 TSE 결산단신 경로라 EDINET에 없다(내용은 §C-4).</p>
+<hr>
+</section>
+<section><h2>§C. 뉴스 + X + 전용매체</h2>
+<h3>🔴 Critical</h3>
+<p><strong>1) <a href="https://newsletter.semianalysis.com/p/kimi-k3-the-manos-the-mythos-the" target="_blank">SemiAnalysis 8/4 — Kimi K3 아키텍처 해부</a></strong> → §D-3에 전문 서술. 요지는 <strong>&quot;compressed memory&quot; 모델이 오히려 서버 DRAM을 필수화한다</strong>는 것(KV 캐시 4.85배).</p>
+<p><strong>2) <a href="https://www.thelec.kr/news/articleView.html?idxno=60443" target="_blank">디일렉 8/3 — 범용 D램 7월도 최고가 갱신, 3분기 20% 뛴다</a></strong> → §D-1. 레벨 최고치 / 속도 감속.</p>
+<p><strong>3) CXMT 2공장 + 애플 채택 압박</strong> → §D-4. <a href="https://www.marketwatch.com/story/microns-stock-sees-choppy-trading-as-china-fears-loom-large-0965123f" target="_blank">MarketWatch 8/3</a> · <a href="https://finance.yahoo.com/markets/stocks/articles/micron-stock-falls-apple-tests-190529091.html" target="_blank">GuruFocus 8/4</a>.</p>
+<p><strong>4) <a href="https://www.trendforce.com/news/2026/07/31/news-kioxia-1qfy26-gross-margin-hits-80-reaffirms-50-lta-target-for-2028/" target="_blank">TrendForce 7/31 — 키옥시아 1QFY26: GM 80%인데 순이익은 컨센·자체 가이던스 동시 미달</a></strong></p>
+<ul>
+<li>매출 <strong>¥1.767조</strong>(+76.2% QoQ · <strong>+415.5% YoY</strong>)로 가이던스 상회. <strong>GM 80%</strong>(JV 항목 제외 82%) · <strong>OPM 75%</strong>.</li>
+<li>🔴 그러나 4~6월 순이익 <strong>¥842.1B</strong>는 시장 컨센 ¥968.7B와 <strong>자체 가이던스 ¥869.0B를 둘 다 하회</strong>(닛케이). Q2 가이던스도 매출 ¥2.390조(+35.2%)·non-GAAP 순이익 ¥1.280조(+44.3%)로 컨센 ¥1.3431조에 <strong>미달</strong>.</li>
+<li>🔴 <strong>NAND ASP는 QoQ 약 +70%인데 bit 출하 증가는 low-single-digit</strong> = MU와 <strong>완전히 동일한 패턴</strong>(전부 가격, 물량 아님). 2026년 bit 수요는 high-teens 성장 전망.</li>
+<li>데이터센터·관련 매출 <strong>¥1.1747조</strong>(전년 대비 5배 이상) — <strong>한 분기 매출이 직전 회계연도 전체와 맞먹는다.</strong></li>
+<li>LTA: <strong>CY2028 50% 물량 커버</strong> 목표 재확인. 단 뉴스핌은 *&quot;키옥시아의 장기계약 공시가 삼성·SK하이닉스보다 제한적&quot;*(고객 수·계약 조건·선급금 미공개)이라 지적.</li>
+<li>capex FY2026~28 연평균 <strong>¥470B</strong>, FY2026 R&amp;D 약 ¥200B. BiCS10 기타카미 양산·BiCS11 개발·AI 추론 SSD·UFS 5.0.</li>
+</ul>
+<blockquote class="bq">🎯 <strong>해석</strong> — 3사 중 <strong>두 번째로 &quot;사상 최대인데 컨센 미달&quot;</strong> 사례다(직전 주 SK하이닉스에 이어). 마진이 아니라 <strong>가격을 어디까지 올렸는가</strong>가 어닝 서프라이즈를 가르고 있고, 계약 비중이 높은 쪽이 진다. 진폭이 양방향으로 압축되고 있다는 관측과 정합한다.</blockquote>
+<p><strong>5) <a href="https://www.etnews.com/20260803000375" target="_blank">전자신문 8/3 — 코스피 5%대 하락해 6250선 마감</a></strong> → §A. 외국인 차익실현·수급의 로봇/바이오 이동.</p>
+<p><strong>6) <a href="https://www.trendforce.com/news/2026/08/03/news-samsung-foundry-eyes-2h26-full-utilization-as-hbm4-base-dies-and-u-s-orders-fuel-turnaround-hopes/" target="_blank">TrendForce 8/3 — 삼성 파운드리 2H26 100% 가동 목표</a></strong> → §D-2. 견인축 = HBM4 base die.</p>
+<h3>🟠 High</h3>
+<table><thead><tr><th>헤드라인</th><th>매체</th><th>축</th></tr></thead><tbody>
+<tr><td><a href="https://www.bloomberg.com/news/articles/2026-08-03/korean-firms-expanded-short-term-debt-funding-before-market-rout" target="_blank">Korean Firms Expanded Short-Term Debt Funding Before Market Rout</a></td><td>Bloomberg 8/3</td><td>④ (조달 마찰)</td></tr>
+<tr><td><a href="https://www.bloomberg.com/news/articles/2026-08-03/emerging-market-stocks-fall-as-korea-chipmakers-slide-once-again" target="_blank">Emerging-Market Currencies Trade Mixed as US-Iran Tensions Ease</a> — 원 제목 slug가 *&quot;Korea chipmakers slide once again&quot;*</td><td>Bloomberg 8/3</td><td>§A</td></tr>
+<tr><td><a href="https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-08-03-2026/card/-the-one-constant-in-korean-stocks-volatility-wn6yVrYbJQC3y5Sk5PvG" target="_blank">🎢The One Constant in Korean Stocks? Volatility</a></td><td>WSJ 8/3 라이브</td><td>§A</td></tr>
+<tr><td><a href="https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-08-03-2026/card/new-month-same-jitters-ai-anxiety-creeps-into-august-s70UPpDEuiXzJvZbMBgO" target="_blank">New Month, Same Jitters: AI Anxiety Creeps Into August</a></td><td>WSJ 8/3 라이브</td><td>상관</td></tr>
+<tr><td><a href="https://www.trendforce.com/news/2026/08/03/news-amec-targets-60-high-end-market-coverage-within-five-years-as-chinas-chip-equipment-ambitions-grow/" target="_blank">AMEC Targets 60% High-End Market Coverage Within Five Years</a></td><td>TrendForce 8/3</td><td>④</td></tr>
+<tr><td><a href="https://www.thelec.kr/news/articleView.html?idxno=60415" target="_blank">두산, SK실트론 인수</a> · <a href="https://www.thelec.kr/news/articleView.html?idxno=60473" target="_blank">맥스리니어 AI 데이터 압축 가속기 &#x27;팬서&#x27;…메모리 병목 잡는다</a></td><td>디일렉</td><td>④ / ①</td></tr>
+<tr><td><a href="https://www.etnews.com/20260803000280" target="_blank">마이크로칩, GPU가 SSD에 직접 접근…AI 데이터센터 병목 줄인다</a></td><td>전자신문 8/3</td><td>③</td></tr>
+<tr><td><a href="https://247wallst.com/investing/2026/08/03/seagate-and-western-digital-dive-6-sk-hynix-and-micron-slide-5-as-m" target="_blank">Seagate and Western Digital Dive 6%, SK Hynix and Micron Slide 5% as Memory Stocks Cool</a></td><td>24/7 Wall St. 8/3</td><td>§A</td></tr>
+</tbody></table>
+<p><strong>yf.news 백본</strong> — 고정 5티커 <code>MU·DRAM·SNDK·STX·WDC</code> <strong>5/5 전건 확보</strong>(각 10건). 8/3 MU 헤드라인은 <strong>10건 중 6건이 CXMT/중국 경쟁</strong> 주제로, 당일 서사가 단일 축에 쏠렸다.</p>
+<p><strong>X — 🚨 X→뉴스 방화벽 적용(공식 보도·SEC/DART 미확인 정보는 &quot;✅ 사실&quot;이 아니라 &quot;🟡 X 신호&quot;)</strong></p>
+<ul>
+<li><a href="https://x.com/MicronTech" target="_blank">@MicronTech</a>: 최신 게시가 <strong>2026-07-31 00:20Z</strong> <a href="https://x.com/MicronTech/status/2082984645499724158" target="_blank">#NationalInternDay</a>(인턴 300명+ 기념·HR 콘텐츠)다. 🔴 <strong>이후 4일간 신규 0건</strong> — 7/28~7/31 폭락과 7/30~7/31 반등 구간 전체에 공식 계정이 침묵했다.</li>
+<li><a href="https://x.com/search?q=%24MU&amp;f=live" target="_blank">$MU 라이브 검색</a>: 8/3 22:30~22:43Z <strong>8분 창에 13건</strong>을 확보했으나 <strong>전량 팔로워 유인 스팸·알고리즘 시그널 봇</strong>이었다. <strong>실질 시장심리 콘텐츠 0건</strong> = 사실로 승격할 항목 없음.</li>
+</ul>
+<hr>
+</section>
+<section><h2>§E. 규율 — 섹터 ⚠️ Thesis 리스크 신호</h2>
+<blockquote class="bq">⚠️ <strong>Thesis 리스크 신호</strong>(정의 원본: 섹터 메모리)는 가격 손절 장치가 아니라 <strong>thesis 훼손 조기경보 모니터</strong>다.</blockquote>
+<table><thead><tr><th>#</th><th>조건</th><th>오늘 상태</th><th>델타</th></tr></thead><tbody>
+<tr><td><strong>①</strong></td><td>메모리 ASP 사이클 rollover(섹터 glut 전환)</td><td><strong>미발동 🟡</strong> — 칩 스팟 하락 0·월평균 최고가 경신. 감속 증거는 3중으로 누적(계약 +45~50%→+15~20% / NAND +4.26% MoM / 서버 모듈 −0.64%)</td><td>현물은 개선, 속도 지표는 악화</td></tr>
+<tr><td><strong>②</strong></td><td>HBM 공급과잉 · 수요 破綻</td><td><strong>미발동 🟡</strong> — HBM4 base die가 삼성 파운드리 가동률을 70~80%→100%로 끌어올리는 국면</td><td>수요측 보강</td></tr>
+<tr><td><strong>③</strong></td><td>🔴 <strong>Physical AI 투자 모멘텀 reversal</strong>(= thesis 전제 붕괴)</td><td><strong>미발동 🟢</strong> — 오히려 반대 방향 정량 증거(agentic 서빙 KV 캐시 서버 DRAM 4.85배)</td><td>4축 중 가장 견고</td></tr>
+<tr><td><strong>④</strong></td><td>한국 2강 구조 충격(수출통제·중국 CXMT/YMTC 추격·정전)</td><td><strong>🔴 임박 zone 유지·강화</strong> — CXMT 베이징 2공장(웨이퍼 2배 이상) + 애플 채택·제재 제외 압박이 같은 날. 신규 발동은 아님(검토 단계·2차 매체)</td><td>직전의 &quot;완화 첫 증거&quot;가 하루 만에 상쇄</td></tr>
+</tbody></table>
+<p><strong>MU 단일주 상태 관측 2</strong> (종목 사실·정의 owner는 종목 메모리 — 여기서는 관측만)</p>
+<table><thead><tr><th>#</th><th>관측</th><th>오늘 상태</th></tr></thead><tbody>
+<tr><td>① 사이클 밸류</td><td>사이클 정상화 여부(P/S &lt; 10x 또는 −50%급 조정)</td><td><strong>미도달</strong> — P/S(TTM) <strong>10.38x</strong>(직전 실행 10.94x에서 개선). &lt;10x 도달가 $799.32 = 현재가 대비 <strong>−3.64%</strong>. 52주 고점 대비 −33.9%. <strong>fwd P/E 5.33x = peak earnings trap 지속</strong></td></tr>
+<tr><td>② HBM 점유</td><td>점유 입증(재프레임 = 약 20% 할당의 마진 입증)</td><td><strong>🟡 PARTIAL 불변</strong> — HBM 총매출·단독 마진·엔비디아 primary <strong>오늘도 미공시</strong>. 신규 공시 0</td></tr>
+</tbody></table>
+<p><strong>밸류·사이클 규율(분석 관점)</strong>: forward P/E가 한 자릿수 초반이라는 사실 자체가 <strong>피크 이익 × 트로프 멀티플</strong> 착시의 전형이다. 애널 42명이 목표 중앙 $1,550(현재가 +86.9%)을 유지하는데 주가가 그 절반 수준에 머무는 구도도 <strong>시장이 컨센서스를 신뢰하지 않는다</strong>는 뜻으로 읽는 편이 안전하다. 메모리는 가격결정력 없는 commodity이고 사이클 진폭이 극단이라, 장기 보유 명제는 <strong>진폭 인내</strong>를 전제로만 성립한다.</p>
+<p><strong>🔴 섹터 상관</strong>: 오늘도 메모리는 AI-capex와 <strong>동방향</strong>이다(이날은 베타 &lt; 1). 독립 동인이 아니므로 AI 인프라 자산과 함께 담으면 <strong>분산 아님</strong>.</p>
+<h3>종합 상태: <strong>⚠️ 주의</strong></h3>
+<p>신규 발동 0 · 신호③ 미발동이라 🔴 경고가 아니다. 다만 ±5% 초과 4종목과 신호④ 임박 zone 강화가 겹쳤다. 🔴 <strong>한국 2강 −8.8%를 훼손 신호로 승격하지 않는다</strong> — 이는 7/31 +30% 상한가의 기계적 되돌림이고, 2세션 누적으로는 서울이 +15~19% 순증이다. 오늘 판정을 실제로 움직인 것은 가격이 아니라 <strong>축① 속도 감속의 3중 누적</strong>과 <strong>축④ 수요처 확인(애플)</strong>이다.</p>
+<h3>thesis frame</h3>
+<ul>
+<li>chain <strong>THESIS-VALID</strong> — Physical AI → 메모리 수요 연쇄는 유효하고, 오늘은 <strong>컴퓨트 계층에서 정량 근거가 하나 늘었다</strong>(KV 캐시 → 서버 DRAM 4.85배).</li>
+<li>MU 단일주는 <strong>ENTRY BROKEN</strong> — 관측① 미충족(P/S 10.38x)·②PARTIAL. 사이클 정점 밸류 판정 유지.</li>
+<li><strong>곡괭이 질 = <code>capped-and-floored (A)</code></strong> — 하방은 계약(LTA/SCA)이 받치고 상방은 같은 계약이 깎는다. 키옥시아가 <strong>사상 최대 마진에도 순이익이 컨센과 자체 가이던스를 동시에 미달</strong>한 것이 이번 주 두 번째 실증이다.</li>
+<li><strong>메모리 ≈ AI-capex 상관</strong> — 독립 동인 아님, 따라서 AI 인프라 자산과 함께 들면 <strong>분산 아님</strong>.</li>
+</ul>
+<hr>
+</section>
+<section><h2>액션 아이템 · 다음 점검</h2>
+<p>1. 🔴 <strong>DRAMeXchange 주간 테이블 8/3분 반영 확인</strong> — Module·Flash·Wafer·GDDR이 <code>Jul.27</code> → <code>Aug.3</code>으로 전진하는지. 특히 <strong>서버 DDR5 RDIMM 32GB가 2주 연속 하락하는지</strong>가 축① 판정의 핵심이다(첫 −0.64%). Flash·Memory Card는 <code>Daily</code> 헤더인데도 주간 지연 상태라 별도 추적.</p>
+<p>2. 🔴 <strong>애플–CXMT 건의 1차 확인</strong> — 오늘 근거는 2차 매체 인용이다. 애플 공식·미 상무부/BIS 문서·주요 통신사 1차 보도 중 하나가 붙기 전까지 <strong>🟡 미검증</strong>으로 유지. 확인되면 신호④ 재판정 대상.</p>
+<p>3. 🔴 <strong>CXMT 베이징 2공장의 확정 여부</strong> — 검토 → 착공/투자 확정으로 넘어가는지. 월 웨이퍼 60만장 이상은 3과점 공급 규율의 전제를 바꾼다.</p>
+<p>4. <strong>삼성 LTA의 1차 실체</strong> — DART <code>단일판매·공급계약체결</code> / <code>신규시설투자등</code> 공시 등장 여부(오늘까지 2회 연속 0건). 등장 전까지 &quot;5대 DC 고객 계약&quot;은 컨콜 진술로 표기.</p>
+<p>5. <strong>SemiAnalysis 후속</strong> — prefix cache 경계 문제(vLLM 32K 단위 캐싱)가 개선되면 &quot;DRAM 오프로드 4.85배&quot; 논거가 약해진다. 이 수치는 <strong>CPU 측 DRAM</strong> 이야기이지 HBM이 아니라는 점도 계속 분리해서 읽을 것.</p>
+<p>6. <strong>키옥시아 3:1 주식분할(10/1)</strong> 및 Q2 가이던스(컨센 미달) 후속 — NAND 감속의 실적 검증점.</p>
+<p>7. <strong>MU Q4 FY26</strong>(~2026년 9월 말) — ASP 둔화폭·SCA 매출 비중·HBM 단독 숫자. 중간 이벤트로 <strong>KeyBanc Tech Leadership Forum 8/10</strong>.</p>
+<p>8. <strong>ETF holdings 정합</strong> — Roundhill 공식 as-of 08/02 값이 직전 주간 기록치와 어긋난다(삼성 26.39→26.74 등). 같은 as-of의 값 차이이므로 <strong>소스 재기재 여부 확인 = DRAM-weekly 과제</strong>.</p>
+<p>9. <strong>WSJ RSS</strong> — 4일 연속 전량 2025-01자 stale. 다음 실행에도 stale이면 RSS 경로를 소스 목록에서 제외하고 HTML 스캔 단일화 검토(오늘은 HTML 스캔 25건으로 대체 성공).</p>
+<p>10. <strong>@MicronTech 침묵 지속 여부</strong> — 4일째 무게시. 실적 공백기의 정상 패턴인지, FMS2026 이후 커뮤니케이션 축소인지 다음 실행에서 재확인.</p>
+<hr>
+<p><strong>배경 (처음 보는 경우만)</strong></p>
+<p>DRAM ETF(Roundhill Memory ETF · Cboe BZX: DRAM) = 메모리 반도체 섹터 ETF다. NAV를 좌우하는 것은 <strong>한국 2강 + Micron</strong>의 총수익스왑 결합비중이다(as of 2026-08-02: 삼성전자 26.74% · Micron 24.54% · SK하이닉스 23.04% · Top3 74.32% · 한국 2강 49.78% · AUM $24.55B · 23종목). Micron은 HBM에서 <strong>#3</strong>이고 SK하이닉스가 <strong>#1</strong>이다. 메모리는 가격결정력 없는 commodity이고 사이클 진폭이 극단이다. thesis는 &quot;Physical AI 시대에도 메모리가 핵심 곡괭이&quot;다. 🔴 이 ETF의 <strong>낸드 노출은 SanDisk + 키옥시아 ≈ 6.9%</strong>이고 <strong>STX·WDC(≈10.0%)는 HDD</strong>라 오히려 대체재 쪽이다. 🔴 중국 최대 DRAM 업체 <strong>CXMT도 2.55%</strong>로 같은 NAV 안에 들어 있다.</p>
+<blockquote class="bq">⚠️ <strong>수집 이슈</strong></blockquote>
+<blockquote class="bq">- <strong>DRAMeXchange 모듈·NAND 스팟은 <code>Jul.27 14:40 GMT+8</code>(7일 경과)</strong> — 주간 갱신 테이블이며 8/3(월) 갱신분 미반영. 축① 판정에 쓸 때 이 시점 차이를 명시했다.</blockquote>
+<blockquote class="bq">- <strong>ETF NAV·프리미엄 산출 생략</strong> — yfinance <code>navPrice</code> $47.4772가 어느 종가와도 매핑되지 않고 Roundhill 공식 성과 블록도 as of 07/31에 머물러 있다(§A).</blockquote>
+<blockquote class="bq">- <strong>ADR 전환비율(1:N) 미검증</strong> — implied ratio는 산출했으나 프리미엄 절대수준은 확정 불가(§A).</blockquote>
+<blockquote class="bq">- <strong>애플–CXMT 건 = 2차 매체 인용</strong>(GuruFocus·&quot;according to the supplied information&quot;) — 1차 미확인(§D-4).</blockquote>
+<blockquote class="bq">- <strong>WSJ RSS 5건 전량 2025-01-27자 stale(4일 연속) → 제외</strong>, WSJ는 8/3 라이브커버리지 HTML 25건으로 대체. <strong>Reuters MCP 경로는 폐기 유지</strong>(<code>deprecated_bot_blocked</code>). Bloomberg 40건·MarketWatch 30건은 신선도 ✅.</blockquote>
+<blockquote class="bq">- <strong>$MU 라이브 검색 = 13건 전량 스팸</strong> — 실질 시장심리 콘텐츠 0건(수집 실패가 아니라 소스 품질 문제).</blockquote>
+<blockquote class="bq">- <strong>ETF holdings as-of 불일치</strong> — 같은 as-of(8/2)인데 직전 주간 기록치와 값이 다르다(§A·액션 8).</blockquote>
+<p>*본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.*</p></section>
+</div>
+</body>
+</html>
