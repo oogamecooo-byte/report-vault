@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPCX ($SPCX) — Deep-Dive 7계층 풀 심층 — 2026-08-08</title>
+<style>body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Apple SD Gothic Neo','Segoe UI',sans-serif;line-height:1.65;margin:0;padding:32px 12px;}
+.container{max-width:1000px;margin:0 auto;background:#FDF6E3;border-radius:14px;padding:36px 44px;box-shadow:0 2px 16px rgba(80,60,20,.12);}
+h1{font-size:1.7em;border-bottom:3px solid #c44;padding-bottom:10px;margin-top:0;}
+h2{font-size:1.3em;border-bottom:1px solid #d9cfb3;padding-bottom:6px;margin-top:32px;}
+h3{font-size:1.08em;margin-top:22px;color:#7a3a10;}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.9em;}
+th,td{border:1px solid #ddd0ad;padding:7px 10px;text-align:left;vertical-align:top;}
+thead th{background:#efe6cb;}
+tbody tr:nth-child(even) td{background:#f7efd9;}
+blockquote{background:#f5edd6;border-left:4px solid #c9a84a;margin:14px 0;padding:12px 16px;border-radius:0 6px 6px 0;font-size:.95em;}
+a{color:#0a66c2;text-decoration:none;} a:hover{text-decoration:underline;}
+ul{padding-left:22px;} li{margin:4px 0;}
+hr{border:none;border-top:1px solid #e0d6b8;margin:24px 0;}
+strong{color:#3a2c10;} em{color:#5c4a00;}
+code{background:#efe6cb;padding:1px 5px;border-radius:4px;font-size:.9em;}
+del{color:#8a7a5a;}
+@media print{body{background:#fff;padding:0;}.container{box-shadow:none;max-width:100%;}table,blockquote{break-inside:avoid;}}/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+.dd-fig{background:#fff;border:1px solid #e8e1cf;}
+.dd-callout{background:#fbf3ec;border:1px solid #e6c9bb;border-left:5px solid #c0392b;border-radius:8px;padding:16px 20px;margin:18px 0;}
+.dd-callout h3{margin-top:0;color:#8e2b16;}
+.dd-heat{border-collapse:collapse;width:100%;font-size:.82em;}
+.dd-heat th,.dd-heat td{border:1px solid #e2e6e9;padding:5px 7px;text-align:center;}
+.dd-heat td.name{text-align:left;font-weight:600;}
+.dd-heat tr.subj td{outline:2px solid #1a1a1a;outline-offset:-2px;}
+@media print{.dd-fig{border-color:#ccc;}}
+</style>
+<meta name="vault-stage" content="Dive">
+<meta name="vault-topic" content="SPCX">
+<meta name="vault-skill" content="Deep-Dive">
+<meta name="vault-date" content="2026-08-08">
+<meta name="vault-published" content="2026-08-08">
+<meta name="description" content="SPCX ($SPCX) — Deep-Dive 7계층 풀 심층 — 2026-08-08">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="container">
+<h1>SPCX ($SPCX) — Deep-Dive 7계층 풀 심층</h1>
+<blockquote>2026-08-08 · Deep-Dive v1.27 (<code>--full</code> · DD-v1.7 scoring) · 시세 as-of <strong>2026-08-07 종가 $133.11</strong><br>1차 자료 = 424B4(acc 0001628280-26-042639) · <strong>Q2'26 10-Q(acc 0001628280-26-052535, 2026-08-04)</strong> · 8-K EX-99.1(acc 0001628280-26-052515) · 8-K Cursor(acc 0001628280-26-043411)<br>선행 4-Dive(Step 1.5) 전건 신규 산출 — [R-Dive](../../RDive_Reports/SPCX/SPCX_RDive_2026-08-08.html) · [History-Dive](../../HistoryDive_Reports/SPCX/SPCX_HistoryDive_2026-08-08.html) · [People-Dive](../../PeopleDive_Reports/SPCX/SPCX_PeopleDive_2026-08-08.html) · chart-dive(🔒 비공개)<br>직전 Deep-Dive: [2026-06-13](SPCX_DeepDive_2026-06-13.html) (종합 ⭐4.10 · 5년 EV 1.29x)</blockquote>
+<hr>
+<h2>한 장 요약</h2>
+<ul>
+<li><strong>한 줄 정체 (변경)</strong>: 6월엔 <em>"Starlink가 벌어 AI에 베팅하는 콘글로머릿"</em>이었다. Q2'26 실측 후 정확한 서술은 <strong>"자산·자본·조직이 이미 데이터센터 회사로 넘어간 우주 회사"</strong> — 서버·네트워크 장비 <strong>$34,771M</strong>가 위성 <strong>$13,788M</strong>의 <strong>2.52배</strong>, 전사 capex의 <strong>86.2%가 AI</strong>.</li>
+<li>🔴 <strong>종합 ⭐3.76</strong> (직전 4.10 → <strong>−0.34</strong>). 하향 3축 = 날씨(거시 노출 악화)·옆의 나무(AI 임대 구조적 열위)·사람(거버넌스 1차 발견).</li>
+<li>🔴 <strong>5년 기댓값 0.66x</strong> (직전 1.29x). 🔴🔴 <strong>이 숫자는 매출이 아니라 출구 멀티플 가정이 지배한다</strong> — 출구 P/S를 20/13/6으로 놓으면 0.91x, <strong>28/18/8이면 1.27x</strong>(직전 1.29x가 암묵적으로 여기 있었다). Bull(2031 매출 $202B = 현 분기 연환산의 6.5배)조차 본전에 <strong>9.4x</strong>가 필요하고, <strong>Base는 17.5x</strong>가 필요하다.</li>
+<li>🔴 <strong>AI "흑자 전환"의 실체 = 단일 고객 1곳</strong> — Customer B(신규·AI 전용) 혼자 연결매출 <strong>19.5%</strong>, AI 솔루션·인프라 매출의 <strong>약 69%</strong>. 계약 기간·갱신 조건 미공시.</li>
+<li>🔴 <strong>보조 비율이 이미 한 분기 역전됐다</strong> — Q2'26 Connectivity+Space 영업이익 <strong>+$1,114M</strong> &lt; AI 영업손실 <strong>−$1,257M</strong>. "현금엔진이 문샷을 먹인다"는 구조가 처음 깨졌다.</li>
+<li>🔴 <strong>현금 소모</strong> — H1 FCF <strong>−$25,010M</strong>, 분기 순소모 ≈$16.6B, 순현금 $60.6B 기준 <strong>약 3.6분기</strong>. IPO $85.7B + 회사채 $25B로 $110B를 조달한 직후다.</li>
+<li>🟠 <strong>거버넌스 신규 1차</strong> — Musk 성과주 <strong>1,302,072,285주(Class B·10표)</strong>: 귀속 조건은 화성 100만 명 정착지·연 100TW 궤도 데이터센터인데 <strong>의결권은 지금 전부 행사</strong>된다. 관계자 리스 <strong>약정 총액 $20,206M</strong>(이사 Gracias의 Valor · 그는 보상·지명위원)이고, 회사는 <strong>텍사스 §21.418/§21.419 방패를 적극 채택</strong>했다.</li>
+<li>🟠 <strong>공언의 비대칭</strong> — "무엇을"의 이행률 ≈ <strong>100%</strong>, "언제"의 이행률 ≈ <strong>10%</strong>. 장기 하드웨어 공언 <strong>지연 계수 중앙값 2.3배</strong>. 🔴 단 반복 운영(Starlink 위성·Falcon cadence)은 <strong>역사상 초과 달성</strong> — 여기에 계수를 적용하면 과도한 할인.</li>
+<li>🧭 <strong>분면 = 「강한데 비싼」 유지</strong> (직전과 동일 · G1→G2로 소폭 오른쪽 이동) ‖ <strong>0to1 Track A 3/7 → 불운위험 · tell 혼재</strong> ‖ ⭐ ≠ 매수신호</li>
+</ul>
+<h3>별도 렌즈 3종 (7축 미합산)</h3>
+<ul>
+<li><strong>밸류 〔H.7〕</strong>: 🔴 <strong>고평가</strong> ‖ 신뢰도 <strong>낮음</strong> ‖ 아키타입 <strong>Ⓓ/Ⓒ 병기</strong> · 역-DCF <strong>envelope 밖</strong> · §H.1 재평가 의존 <strong>높음</strong> ‖ swing = <strong>Customer B 갱신·다변화</strong> ‖ 🎯 <strong>진입 보류</strong>(재검토 구간 $108 이하 · 낮은 신뢰도 · 최종 판단은 사용자) ‖ <strong>BRCR 0.392 vs EV/GP 백분위 0.867 → 괴리 +0.475</strong> · 구속 병목 <strong>C 포획효율 0.25(자본갈증)</strong> · <code>[발사=소유 / AI컴퓨트=올라탐]</code></li>
+<li><strong>내구성 〔G.8〕</strong>: ⚪ <strong>조건부</strong> ‖ 신뢰도 <strong>중간</strong> ‖ 금리 🟢<strong>견딤</strong>(변동금리 부채 <strong>$0</strong>·현금 $100.8B로 고금리 순호재) · 물가 🔴<strong>취약</strong>(firm fixed-price <strong>1~14년</strong>·CPI 조항 <strong>0</strong>·가스 무헤지·<strong>GPU 스팟 발주</strong>) · 스태그 <strong>결합 시 창이 닫힘</strong> ‖ swing = <strong>2027 비취소 확정지출 $22,244M의 성격</strong> ‖ 🎯 <strong>"고금리는 못 죽인다 — 죽이는 건 2027년이다"</strong></li>
+<li>🔴 두 렌즈 모두 <strong>soft-flag이며 장기 thesis 종목에 stop sign이 아니다</strong>. ⚠️ Thesis 리스크 신호 <strong>발동 0건 유지</strong>.</li>
+</ul>
+<hr>
+<h2>🧑‍⚖️ 종합 매수 판단</h2>
+<div class="dd-fig"><p class="cap"><b>확신도 7축 레이더</b> — 사업·thesis 매력도(가중평균 ⭐3.76) · 직전 실행(2026-06-13) 점선 비교</p><div id="fig-score7"></div><div class="dd-legend" id="fig-score7-leg"></div><p class="dd-note">⭐ = 사업 매력도이지 매수 신호가 아니다. 밸류 멀티플 미반영. 방법론 stamp DD-v1.7.</p></div>
+<blockquote>🔴 <strong>낮은 신뢰도 종합 콜 · enforcement 아님 · 최종 판단·실행은 사용자.</strong> 장기 thesis 종목이므로 🔴 보류도 <strong>매도 신호가 아니다</strong>(⚠️ Thesis 리스크 신호 입력일 뿐).</blockquote>
+<p><strong>verdict: 🔴 현재가($133.11) 진입 보류</strong> — 사업의 강함(⭐3.76·내러티브 5축)은 실재하나, 현 가격은 매출 0인 물리 스택의 성공을 EV의 72.5%만큼 선지불한 상태이고, 그 검증점들(Customer B 다변화·Flight 14·Terafab definitive·락업 전량 해제)이 전부 앞으로 4개월 캘린더에 박혀 있다 — <strong>기다림의 정보 이득이 크고 비용이 낮다.</strong></p>
+<p><strong>요약 1줄</strong>: 🔴 진입 보류 — EV의 72.5%가 매출 0 사업(궤도컴퓨트·Terafab)의 미검증 옵션가다(낮은 신뢰도 콜·최종 판단은 사용자).</p>
+<p><strong>근거</strong></p>
+<ul>
+<li><strong>밸류</strong> [§H.7] — 🔴 고평가(신뢰도 낮음·1~5년 지평 한정). 역-DCF가 envelope 밖(요구 정상상태 FCF 중앙 ~$220B ≈ 애플 TTM의 2배), SOTP 중립이 EV의 27.5%만 설명 → <strong>72.5%($1.23조)가 미검증 옵션가</strong>, EV/GP 141.6x = 86.7 백분위. 🎯 매수 적정성 read 자체가 진입 보류이고, 재검토 trigger는 <strong>12/08 락업 전량 해제 창 $108 이하 + 가격 단독 불충분(Customer B 다변화 동반 필요)</strong>.</li>
+<li><strong>기댓값</strong> [§H.1] — 5년 기댓값(주당) <strong>0.66x</strong>(직전 1.29x에서 반토막). Base조차 본전에 exit P/S 17.5x가 필요한 bull-tail 의존 구조. 지연 계수 2.3배 적용으로 5년 창 안 궤도 컴퓨트 매출 기여 0 산정.</li>
+<li><strong>구조·규율 3건 방향 일치</strong> [§H.5·§H.6] — 분면 「강한데 비싼」 유지·무게중심 A→C 이동·약한 고리 = E1 자본시장·3 잠금장치 통과 ❌ + 0to1 Track A 3/7 = 「불운에 시달릴 위험」. 세 입력 관점이 본 종합과 같은 방향이라 tie-break 불요.</li>
+<li><strong>시간 형세 — 본 통합의 축</strong> [§G.8] — 금리는 🟢 견딘다(변동금리 $0·순현금 $60.6B = 고금리 순호재). 그러나 <strong>"죽이는 건 2027년"</strong>: 비취소 확정지출 $27.96B 중 $22.24B가 2027 집행·분기 순소모 ~$16.6B → 순현금 약 3.6분기·금리 부호 반전 ~3~4분기 후. 이 스트레스 창에 <strong>Cursor 희석의 역방향 구조(주가 하락 = 희석 확대)</strong>와 <strong>12/08 락업 전량 해제 + Cursor 수령주 재판매</strong>가 같은 방향으로 겹친다 — <strong>더 싸게·더 알고 살 기계적 이벤트가 구조적으로 앞에 있다.</strong></li>
+<li><strong>성장 서사의 조건부성</strong> [§D·§L.3] — "AI 흑자 전환"은 Customer B 단일 계약(AI 솔루션·인프라 매출의 약 69%·계약 기간 미공시) + D&amp;A 되더하기(조정 EBITDA의 80.5%)의 산물이고, 이미 한 분기에 보조 비율 역전(우주·통신 흑자 +$1,114M &lt; AI 적자 −$1,257M)이 발생했다. swing 변수(Q3 10-Q Note 3) 검증 전에 프리미엄을 지불할 이유가 약하다.</li>
+<li><strong>옵션가의 하부 구조가 법적으로 잠기지 않았다</strong> — Terafab = 구속력 없는 framework(Tesla·Intel 이탈 자유 명시·definitive 8-K 0건·$16.8B는 SEC 아닌 웹 공지) · STARMIND "vendor agnostic" 페이지 ↔ CEO "Nvidia 전속" 모순 미해소 · Flight 13 기체 회수 미완으로 열차폐 "해결" 선언 검증 지연. <strong>EV 72.5%가 얹힌 자리들이다.</strong></li>
+<li><strong>엇갈림 명시(봉합 ❌)</strong> — 반대편 신호: ① 컨센 목표 평균 +75%로 유일한 🟢이나 <strong>분산 12.9배로 신호 무력</strong> ② §G.8 금리 기둥 🟢 vs 시간축 🔴의 축내 상충 ③ 종합 ⭐3.76·연결 영업 사실상 손익분기·순현금 $60.6B는 <strong>강하다</strong> — 「강한데 비싼」의 '강한'은 진짜다. 본 🔴는 <strong>강함의 부정이 아니라 가격·시점의 판정</strong>이며, ⚠️ Thesis 리스크 신호 발동은 <strong>0건 유지</strong>.</li>
+<li><em>(판사 근거 8번 = 타이밍 축 참고 read. 🔒 chart-dive는 비공개 전용 스킬이므로 그 소비분은 본 발행본에서 제외했다 — 판정·다른 근거는 영향받지 않는다.)</em></li>
+</ul>
+<p><strong>Steelman</strong></p>
+<ul>
+<li><strong>본 분석</strong>: 0.66x · 72.5% 옵션가 · 2027 시간 형세가 결합해 현재가 진입의 기대값이 낮다.</li>
+<li><strong>자기 반박 (구조 축 + 시간 지평 축)</strong>: 0.66x와 "고평가"는 전부 <strong>성숙 peer 출구 멀티플 앵커(15/9/4.5)와 지연 계수 2.3배라는 보수적 가정 위에 서 있다</strong>. 이 회사의 실측 이력은 반복 운영에서 <strong>역사상 초과 달성</strong>(위성 4,000→9,600기·Falcon cadence — 본 보고서 스스로 "여기 계수 적용은 과도한 할인"이라 명기)이고, 연결 손익분기 도달도 빨랐으며 EPS 리비전은 급등 상향이다. 시장이 이 회사를 '통신+임대업'이 아니라 '물리 AI 스택 소유자'로 계속 채점하면 출구 멀티플 (28/18/8)이 유지되고 <strong>그 경우 기댓값은 1.27x로 뒤집힌다</strong> — 즉 본 verdict는 밸류 판정이 아니라 <strong>채점 기준 선택의 함수</strong>일 수 있다. 또한 검증점 대기 전략은 검증 통과 시 더 높은 가격을 지불하는 비용을 진다.</li>
+<li><strong>유지 / 수정 / 철회 → 유지 (시간 지평 한정 명시)</strong>: 반박이 성립하려면 Customer B 집중·framework 비구속·Starship 재사용 미검증이라는 <strong>검증 안 된 세 다리가 동시에 서야</strong> 하는데, 그 판별점들(Q3 10-Q·Flight 14·definitive 8-K)이 모두 12월 락업 창 이전~부근에 캘린더로 도래한다 — <strong>확인 비용이 낮고 확인 가치가 크므로 지금 지불할 이유가 없다.</strong> 단 판정은 <strong>1~5년 지평에 한정하고 10년+는 미결</strong>로 남긴다.</li>
+</ul>
+<p><strong>한계</strong></p>
+<ul>
+<li><strong>Cursor 클로징 VWAP·확정 발행주식수 미확정</strong> → 0.66x의 분모(희석 ~3.3~4.0%)가 최종치가 아니다. 주가가 낮아질수록 희석이 커지는 구조라 하방 시나리오에서 기댓값이 추가 악화될 수 있으나 정량 미반영.</li>
+<li><strong>swing 변수 자체가 관측 불가 상태</strong> — Customer A·B 신원·계약기간·갱신 조건 미공시. 본 verdict의 해제 조건(다변화 확인)을 <strong>지금은 원리적으로 확인할 수 없다.</strong></li>
+<li><strong>Valor 리스 금리·기간·담보 미공개</strong> → 관계자 조달의 유불리 판정 유보 상태로 verdict에 미산입. H1 기타손실 −$1,962M 성격 이월 · liens 7.51% 판정 유보도 동일.</li>
+<li><strong>상장 39거래일</strong> = 멀티플 분포·장기 이동평균 구조적 부재 → 타이밍 read 신뢰도가 특히 낮고, 본 종합 콜 전체가 낮은 신뢰도 가드레일을 상속한다.</li>
+<li><strong>문서 간 불일치 1건 지적</strong>: 종목 Memory의 "5년 기댓값 1.29x 재계산 미실시" 문구는 본 보고서의 0.66x 재계산으로 사실상 해소됐으나 Memory에 아직 미반영(stale) — 갱신 필요.</li>
+</ul>
+<hr>
+<h1>Part 1 — Top-Down 7계층</h1>
+<h2>A. 🌦️ 날씨 — 지정학 + 거시 ⭐3.5 (가중 3.0)</h2>
+<blockquote>🔴 anchor 재분석 ❌ — 본 종목의 <em>노출·민감도</em>만 평가한다(본 분석 owner = macro-weekly).</blockquote>
+<h3>A.2 지정학 — 🟢 강한 순풍 (변동 없음)</h3>
+<table><thead><tr><th>frame</th><th>정합</th><th>이 종목의 노출</th></tr></thead><tbody>
+<tr><td>Fryman 대만 억제 — 4대 기둥 중 <strong>전략적 억제</strong>(핵 + 위성·지상국·사이버 + AI 리더십)</td><td>🟢</td><td>Starshield·발사 주권. 미국이 궤도 접근을 외주 줄 수 없는 자산</td></tr>
+<tr><td>미·중 패권</td><td>🟢</td><td>중국 Guowang·Qianfan 국가자본 컨스텔레이션과 정면. LEO 선점 = 국가 자산</td></tr>
+<tr><td>달러 패권 / Compute Dollar L5</td><td>🟢</td><td>"궤도 AI 컴퓨트" = 컴퓨트를 전략자원으로 보는 frame의 극단 구현</td></tr>
+<tr><td>수출통제·ITAR·CFIUS</td><td>🟡</td><td>보호(진입장벽)와 제약(부품·해외 매출) 양면</td></tr>
+<tr><td>국가안보 우선순위 직결</td><td>🟢</td><td>🔴 <strong>Starshield는 Space가 아니라 Connectivity 세그먼트</strong>(§L.4) — 기업·정부 매출 <strong>+108%</strong>의 일부</td></tr>
+</tbody></table>
+<p>→ 지정학 소계 <strong>4.8</strong></p>
+<h3>A.3 거시 — 🔴 직전 대비 가장 크게 나빠진 축</h3>
+<table><thead><tr><th>항목</th><th>등급</th><th>근거</th></tr></thead><tbody>
+<tr><td>순유동성 구조 (Warsh 표면완화·실질긴축)</td><td>⚪</td><td>회사가 <strong>자본시장 의존 기업으로 변신</strong>했다 — IPO $85.7B + 회사채 $25B + 관계자 리스 약정 $20.2B + 주식대가 M&amp;A 3건. 조달 창이 닫히는 국면에 직격 노출</td></tr>
+<tr><td>금리 사이클 + rate sensitivity</td><td>⚪</td><td>실물 재무는 방어적(회사채 <strong>전량 고정 6.03%·변동금리 0</strong>, 현금·유가증권 $100.0B float 수혜) ↔ <strong>밸류 듀레이션은 극대</strong>(P/S 76x·영업이익률 −1.8%). 두 채널이 반대 방향</td></tr>
+<tr><td>DXY·달러 유동성</td><td>⚪</td><td>매출 대부분 USD·직접 노출 제한</td></tr>
+<tr><td>경기 사이클·macro-beta</td><td>🔴</td><td>고베타 적자주. 상장 39거래일에 고점 대비 −37%·저점 대비 +23% 진폭. <strong>AI capex 사이클 단일 변수에 매출 32.8% + capex 86.2% 동시 노출</strong></td></tr>
+</tbody></table>
+<p>→ 거시 소계 <strong>2.13</strong></p>
+<h3>A.5 매크로 sensitivity</h3>
+<table><thead><tr><th>변수</th><th>방향</th><th>채널</th></tr></thead><tbody>
+<tr><td>Fed Funds +100bp</td><td>실물 ⚖️ / 밸류 🔴</td><td>부채 고정·현금 $100.0B 이자수익 ↔ 듀레이션 할인</td></tr>
+<tr><td>10Y +100bp</td><td>🔴</td><td>밸류에이션 채널이 지배</td></tr>
+<tr><td><strong>전력 가격</strong></td><td>🔴</td><td>🔴 유가가 아니라 <strong>전력</strong>이 실질 투입재(데이터센터)</td></tr>
+<tr><td>지정학 충격(대만·중동)</td><td>🟢</td><td>정부·안보 수요 증가 = <strong>양(+)의 노출</strong></td></tr>
+</tbody></table>
+<h3>A.6 ⭐ 산출 근거</h3>
+<table><thead><tr><th>하위</th><th>환산</th></tr></thead><tbody>
+<tr><td>지정학 5항목 (🟢5·🟢5·🟢5·🟡4·🟢5)</td><td>24</td></tr>
+<tr><td>거시 4항목 (⚪2.5·⚪2.5·⚪2.5·🔴1)</td><td>8.5</td></tr>
+<tr><td><strong>9항목 평균 = 32.5/9 = 3.61</strong></td><td><strong>⭐3.5</strong></td></tr>
+</tbody></table>
+<p><strong>▶ Flip 트리거</strong> 🟢 = 금리 완화·디스인플레 전환으로 조달 창 확대 / 정부 우주·안보 예산 신규 배정 ‖ 🔴 = 자본시장 접근 악화(신규 조달 실패·스프레드 확대) / AI capex 사이클 반전</p>
+<hr>
+<h2>B. ⛰️ 산 — 산업 ⭐4.5 (가중 1.5)</h2>
+<p><strong>B.1 세상 바꾸는 산업? ✅ YES ⭐5</strong> — 궤도 접근·글로벌 광대역·AI 컴퓨트 3중.</p>
+<p><strong>B.2 미·중 패권 자본 투입 🟢</strong> — NASA Artemis(HLS)·우주군·Starshield / 중국 Guowang 국가자본 / CHIPS 인접(Terafab). 미투입 시 5~10년 비가역 열위가 성립하는 산업.</p>
+<p><strong>B.3 내러티브 5축 — 🔴 최강 등급(5축 전부 ✅)</strong></p>
+<div class="dd-fig"><p class="cap"><b>내러티브 다중성 5축</b> — 축 충족 여부가 아니라 <b>깊이</b>(⭐1~5)를 그린다</p><div id="fig-narr"></div><div class="dd-legend" id="fig-narr-leg"></div><p class="dd-note">확신도 7축 레이더와 별개 — 이쪽은 산업 내러티브의 깊이다.</p></div>
+<table><thead><tr><th>축</th><th>판정</th><th>깊이</th><th>근거</th></tr></thead><tbody>
+<tr><td>🔧 기술</td><td>✅</td><td>⭐5</td><td>재사용 발사·9,600기 컨스텔레이션·궤도 컴퓨트</td></tr>
+<tr><td>👥 사회</td><td>✅</td><td>⭐4</td><td>164국 광대역 보급·가입자 12.0M(YoY 2배)</td></tr>
+<tr><td>🏛️ 정책</td><td>✅</td><td>⭐5</td><td>NASA·DoD·FCC(EchoStar 65MHz 승인)</td></tr>
+<tr><td>🌐 지정학</td><td>✅</td><td>⭐5</td><td>발사 주권·vs Guowang·우크라이나 선례</td></tr>
+<tr><td>💰 자본</td><td>✅</td><td>⭐5</td><td>사상 최대 IPO($85.7B)·회사채 $25B·기관 유입 초기</td></tr>
+</tbody></table>
+<p><strong>B.4 TAM·CAGR 🟡</strong> — 3중 TAM 전부 30%+. 🔴 단 <strong>산업 CAGR ≠ 본 종목 segment CAGR</strong>: <strong>Space 세그먼트는 H1'26 매출 −1.9%·발사 −7.1%·질량 −5.5%로 성장하지 않았다.</strong></p>
+<p><strong>⭐ 산출</strong> = (5 + 5 + 4.8 + 4)/4 = <strong>4.7 → ⭐4.5</strong></p>
+<p><strong>▶ Flip</strong> 🟢 = Starship V3 실운용 배치로 궤도 투입 단가 재하락 ‖ 🔴 = 광대역 가격 전쟁(Kuiper 본격 상용) / AI capex 산업 전반 감속</p>
+<hr>
+<h2>C. 🌲 숲 — 섹터 ⭐4.0 (가중 1.5)</h2>
+<h3>C.1 병목 시점 매트릭스</h3>
+<table><thead><tr><th>시점</th><th>병목</th><th>본 종목 위치</th><th>가격 반영</th></tr></thead><tbody>
+<tr><td>🕐 T0 (0~6M)</td><td>전력·냉각·GPU 공급</td><td>🔴 <strong>임차인이자 임대인</strong> — 병목을 쥔 게 아니라 통과한다</td><td>高</td></tr>
+<tr><td>🕑 T+6~24M</td><td>궤도 투입 질량(Starship)·광통신</td><td>🟢 소유(발사) + 내재화 중(Mesh Optical)</td><td>중</td></tr>
+<tr><td>🕒 T+2~5Y</td><td>궤도 컴퓨트 성립 시 병목이 <strong>발사 능력</strong>으로 이동</td><td>🟢 소유</td><td>低(옵션)</td></tr>
+</tbody></table>
+<p>🔴 <strong>핵심</strong>: 지금 매출을 만드는 자리(AI 컴퓨트 임대)는 병목이 아니다. **424B4가 스스로 <em>"excess capacity"</em>라고 규정<strong>했다 — 자사 학습 수요가 1순위, 외부 고객이 잔여 순위다. 병목 소유는 </strong>발사**이고, 그 값은 궤도 컴퓨트가 성립해야 실현된다.</p>
+<h3>C.2 4중 필터</h3>
+<table><thead><tr><th>필터</th><th>등급</th><th>비고</th></tr></thead><tbody>
+<tr><td>① 수요/공급</td><td>🟢</td><td>발사·광대역·컴퓨트 전부 수요 초과</td></tr>
+<tr><td>② 경쟁사 수</td><td>🟡</td><td>발사 준독점 / 광대역 과점 / AI 임대 다수</td></tr>
+<tr><td>③ 섹터 1~2등</td><td>⭐4</td><td>발사⭐5·광대역⭐5 ↔ AI 임대⭐2·광고⭐1</td></tr>
+<tr><td>④ Gross/Op Margin</td><td>🟡</td><td>GM <strong>55.3%</strong> 🟢 ↔ 연결 영업 <strong>−1.8%</strong> (전년 −$970M → −$143M 개선)</td></tr>
+</tbody></table>
+<p><strong>⭐ 산출</strong> = (병목 4.0 + 4중필터 4.25)/2 = <strong>4.13 → ⭐4.0</strong></p>
+<p><strong>▶ Flip</strong> 🟢 = 궤도 컴퓨트 첫 실증(병목 소유가 실현) ‖ 🔴 = 컴퓨트 임대 단가 하락(GPU 글럿) / Kuiper 규모 도달</p>
+<hr>
+<h2>D. 🌳 나무 — 기업 ⭐4.0 (가중 1.0)</h2>
+<blockquote>🔴 제품·수익모델 정량 해부는 [R-Dive 2026-08-08](../../RDive_Reports/SPCX/SPCX_RDive_2026-08-08.html)가 owner. 여기서는 요약 + 판정만.</blockquote>
+<p><strong>아키타입 (R-Dive 확정)</strong> — 주 <strong>⑥ 구독·하드웨어형</strong>(Connectivity 54.9%·유일 영업흑자 +$1,656M) + 부 🔴 <strong>④ 백로그·자산집약 용량계약형(신규 승격)</strong>(AI 컴퓨트 임대 + 발사) + 진행 <strong>① 믹스시프트</strong>.</p>
+<p>🔴 오분류 차단 근거(1차): 10-Q가 클라우드 매출을 <em>"fixed monthly services fee … recognized ratably over the contract term"</em>으로 정의 → <strong>용량 예약형 임대이지 구독 SaaS가 아니다.</strong></p>
+<p><strong>세그먼트 실측 (Q2'26 · 10-Q Note 18, $M)</strong></p>
+<table><thead><tr><th>세그먼트</th><th>매출</th><th>비중</th><th>GM</th><th>영업손익</th><th>조정EBITDA</th><th>capex</th><th><strong>capex/매출</strong></th></tr></thead><tbody>
+<tr><td>🚀 Space</td><td>962</td><td>12.3%</td><td>65.8%</td><td><strong>−542</strong></td><td>−205</td><td>1,174</td><td>1.22x</td></tr>
+<tr><td>📡 Connectivity</td><td>4,291</td><td>54.9%</td><td>52.0%</td><td><strong>+1,656</strong></td><td>+2,597</td><td>1,367</td><td><strong>0.32x</strong></td></tr>
+<tr><td>🧠 AI</td><td>2,561</td><td>32.8%</td><td>56.8%</td><td><strong>−1,257</strong></td><td>+1,146</td><td><strong>15,828</strong></td><td>🔴 <strong>6.18x</strong></td></tr>
+<tr><td><strong>합계</strong></td><td><strong>7,814</strong></td><td>100%</td><td>55.3%</td><td><strong>−143</strong></td><td>+3,538</td><td><strong>18,369</strong></td><td>2.35x</td></tr>
+</tbody></table>
+<p>🔴 <strong>매출의 1/3을 만드는 세그먼트가 자본의 6/7을 가져간다.</strong> AI capex YoY <strong>+2,013%</strong>.</p>
+<div class="dd-fig"><p class="cap"><b>Q2'26 매출 구성비 vs capex 구성비</b> — 같은 회사의 두 얼굴</p><div id="fig-mix"></div></div>
+<p><strong>D.5 곡괭이 판정 + 질</strong> — 곡괭이 <strong>O</strong>(궤도 접근·컨스텔레이션 길목). 🔴 <strong>질 = (B) 자본갈증형</strong>:</p>
+<p>① 마진 얇음(연결 영업 −1.8%) ② capex 강도 극단(매출 대비 2.35x·AI 6.18x) ③ financing 의존(IPO+채권+관계자 리스+주식대가 M&amp;A 3건) ④ 현금전환 음(H1 FCF −$25.0B)</p>
+<p>→ ⭐ 가산 ❌ + <strong>financing·희석·레버리지 risk 명시 의무</strong>.</p>
+<p><strong>D.6 해자 ⭐4</strong> — Durable ⭐5(궤도 슬롯·스펙트럼·발사장·NASA/DoD 계약·규제 자산) + Variable ⭐3(Starship·AI 모델·칩)</p>
+<p><strong>D.7 수직통합·산업 횡단 ⭐5</strong> — 발사 → 위성 → 단말 → <strong>광통신(Mesh Optical, 7/6 클로징)</strong> → <strong>칩(Terafab)</strong> → 모델(Grok) → 툴(Cursor). 다중 캐즘 동시.</p>
+<p><strong>D.8 하방·상방 ⭐3</strong> — 하방: 순현금 $60.6B + 확정형 백로그 $47.5B ↔ 🔴 분기 순소모 $16.6B(<strong>3.6분기</strong>). 상방: 시총 $1.75T에서 텐배거($17.5T)는 <strong>비현실(자동 warn)</strong>.</p>
+<p><strong>⭐ 산출</strong> = (D.0 4 + D.5 3.25 + D.6 4 + D.7 5 + D.8 3)/5 = <strong>3.85 → ⭐4.0</strong></p>
+<p><strong>▶ Flip</strong> 🟢 = Customer B 갱신·확대 + 임대 고객 다변화 / AI 세그먼트 D&amp;A 차감 후 흑자 ‖ 🔴 = Connectivity 성장 둔화 / 임대 계약 미갱신</p>
+<hr>
+<h2>E. 🌲🌳 옆의 나무 — 경쟁 ⭐3.5 (가중 1.0)</h2>
+<h3>E.1 peer 비교 (yfinance 2026-08-07 · TTM · GAAP)</h3>
+<div class="dd-fig"><p class="cap"><b>경쟁사 히트맵</b> — 열별 우열 색조(★ = 본 종목)</p><div id="fig-peers"></div><p class="dd-note">전 종목 USD·미국 GAAP · TTM 기준. 상장 2개월 종목의 P/S는 성장률과 함께 읽어야 한다.</p></div>
+<table><thead><tr><th>종목</th><th>시총</th><th>매출(TTM)</th><th>P/S</th><th>GM</th><th>영업이익률</th><th>매출성장</th></tr></thead><tbody>
+<tr><td><strong>SPCX</strong></td><td><strong>$1,754B</strong></td><td><strong>$23.0B</strong></td><td><strong>76.1x</strong></td><td>51.9%</td><td><strong>−1.8%</strong></td><td><strong>+91.9%</strong></td></tr>
+<tr><td>RKLB (발사)</td><td>$51.8B</td><td>$0.68B</td><td>76.2x</td><td>36.6%</td><td>−22.4%</td><td>+63.5%</td></tr>
+<tr><td>ASTS (D2C)</td><td>$27.9B</td><td>$0.08B</td><td>328.7x</td><td>44.8%</td><td>−1014%</td><td>+1952%</td></tr>
+<tr><td>IRDM (성숙 위성통신)</td><td>$5.3B</td><td>$0.88B</td><td>6.0x</td><td>71.9%</td><td>+15.1%</td><td>+3.8%</td></tr>
+<tr><td>VSAT</td><td>$11.1B</td><td>$4.63B</td><td>2.4x</td><td>33.2%</td><td>+4.1%</td><td>−1.2%</td></tr>
+<tr><td><strong>CRWV (컴퓨트 임대)</strong></td><td>$49.5B</td><td>$6.23B</td><td><strong>7.9x</strong></td><td>69.4%</td><td>−6.9%</td><td>+111.6%</td></tr>
+<tr><td><strong>NBIS (컴퓨트 임대)</strong></td><td>$47.7B</td><td>$0.88B</td><td><strong>54.4x</strong></td><td>72.1%</td><td>−32.1%</td><td>+683.9%</td></tr>
+<tr><td>LMT (방산 anchor)</td><td>$135.7B</td><td>$77.0B</td><td>1.8x</td><td>11.8%</td><td>+12.0%</td><td>+10.5%</td></tr>
+<tr><td>NVDA (마진 대조군)</td><td>$5,425B</td><td>$253.5B</td><td>21.4x</td><td>74.1%</td><td><strong>+65.6%</strong></td><td>+85.2%</td></tr>
+<tr><td>TSLA (스토리 프리미엄 대조군)</td><td>$1,298B</td><td>$103.6B</td><td>12.5x</td><td>18.9%</td><td>+1.4%</td><td>+25.5%</td></tr>
+</tbody></table>
+<h3>E.2 종합 판정</h3>
+<ul>
+<li><strong>(a) 수익 모델 우월성 🟡</strong> — 반복매출 <strong>83.0%</strong>·확정형 백로그 $47.5B 🟢 ↔ 마진 혼재·소비자 ARPU −22.4%·임대 갱신 시 시세 노출</li>
+<li><strong>(b) 정부 vs 민간 🟡</strong> — 기업·정부 매출 <strong>+108.3%</strong>, Connectivity 내 비중 33.5%→<strong>42.1%</strong> → 방어적 이동. Shotwell: <em>"기업 고객을 잃어본 적 없다"</em>·항공 침투 10% 미만</li>
+<li><strong>(c) 경쟁 포지션 ⭐3</strong> — 발사 ⭐5·광대역 ⭐5 ↔ 🔴 <strong>AI 컴퓨트 임대 구조적 열위 ⭐1</strong>·광고 ⭐1</li>
+</ul>
+<h3>🔴 본 종목이 열위인 peer (의무 항목)</h3>
+<ul>
+<li><strong>CoreWeave·Nebius 대비 = 중립성 열위(구조적·비가역)</strong> — 이들은 자체 프런티어 모델이 없어 임차인과 경쟁하지 않는다. SPCX는 <strong>Grok으로 임차인과 경쟁하면서 그 임차인에게 컴퓨트를 판다.</strong> 424B4가 스스로 <em>"남는(excess) 용량을 제한된 수의 제3자에게"</em>라고 규정한 것이 같은 얘기다. <strong>Customer B 단일 69% 집중이 이 열위의 정량적 표현</strong>이다.</li>
+<li><strong>Meta·Google 대비 = 광고 열위</strong> — X 광고 Q2'26 $367M, <strong>YoY −13.8%</strong>(절대 역성장).</li>
+<li><strong>하이퍼스케일러 대비 = 스택 열위</strong> — SPCX가 파는 것은 <strong>용량(GW)</strong>, AWS·Azure·GCP가 파는 것은 관리형 서비스가 얹힌 스택. 전환비용이 얕다.</li>
+</ul>
+<p>🔴 <strong>핵심 비대칭</strong>: <strong>우위인 사업(발사·광대역)은 성숙했고, 성장의 전부를 만드는 사업(AI 임대·매출 32.8%)에서는 구조적으로 열위다.</strong></p>
+<p><strong>⭐ 산출</strong> = (4 + 4 + 3)/3 = <strong>3.67 → ⭐3.5</strong> <em>(직전 4.0 → 하향)</em></p>
+<p><strong>▶ Flip</strong> 🟢 = 임대 고객 3곳 이상 다변화 / Kuiper 지연 ‖ 🔴 = Customer B 이탈 / CoreWeave·Nebius가 SPCX 고객을 흡수</p>
+<hr>
+<h2>F. 👤 사람 ⭐3.5 (가중 1.5)</h2>
+<blockquote>상세 = [People-Dive 2026-08-08](../../PeopleDive_Reports/SPCX/SPCX_PeopleDive_2026-08-08.html). 여기서는 요약·판정만.</blockquote>
+<table><thead><tr><th>축</th><th>⭐</th><th>근거 (1차)</th></tr></thead><tbody>
+<tr><td>① 약력</td><td>5</td><td>Zip2→PayPal→SpaceX(2002)→Tesla→xAI. 24년 재직</td></tr>
+<tr><td>② 명성</td><td>5</td><td>424B4가 "언론 주목"을 <strong>위험요인으로 명기</strong></td></tr>
+<tr><td>③ 능력</td><td>4.5</td><td>재사용 로켓·9,600기·170회/년 실현 ↔ H1'26 발사 −7.1%·질량 −5.5%</td></tr>
+<tr><td><strong>④ 도덕성</strong></td><td><strong>2.5</strong></td><td>2018 SEC $20M 합의 + <strong>2026-03-20 배심 평결 10(b)/10b-5 위반 인정</strong>(Pampena·개인 자격·항소 중)</td></tr>
+<tr><td><strong>⑥ Skin in the Game</strong></td><td><strong>5</strong></td><td>의결권 82.4% · <strong>2025 총보수 $54,080</strong> · 상장 후 Form 4 매도 0건 · 366일 락업 <strong>조기해제 전면 면제</strong> · 이미 획득한 Class A <strong>25,172,695주 반납</strong></td></tr>
+<tr><td><strong>⑦ 거버넌스</strong></td><td><strong>1</strong></td><td><strong>지배기업 면제 채택</strong>(424B4: <em>"Class A 주주는 동일한 보호를 받지 못한다"</em>) · Class B가 이사 5/9 단독 선임 · 해임에도 Class B 과반 필요 · <strong>텍사스 §21.418/§21.419 방패 적극 채택</strong></td></tr>
+<tr><td>⑧ 외부평가</td><td>3</td><td>이사 9명 중 6명이 20년 투자자·<strong>결별/이견 이력자 0명</strong> · 비상근 이사 보수 0 · spacex.com에 경영진 페이지 없음</td></tr>
+</tbody></table>
+<p><strong>핵심 인재</strong>: Shotwell(President·COO·<strong>2031년까지 잔류 인센티브</strong>·2025 보수 $85.8M) · Johnsen(CFO·2031년까지) · <strong>Gracias(이사·Valor 창업자 — 최대 이해상충 축)</strong>.</p>
+<p>🔴 <strong>키맨 리스크 최고 수준</strong> — 임원 3명뿐 · <strong>키맨 생명보험 없음</strong> · 공식 승계계획 없음.</p>
+<h3>🔴 거버넌스 신규 1차 발견 3건</h3>
+<ul>
+<li><strong>Musk 성과주 1,302,072,285주(Class B·10표)</strong> — 귀속 조건 = 시총 구간 <strong>AND</strong> ⑴화성 100만 명 영구 정착지(10억 주) ⑵연 100TW 지구 밖 데이터센터(3.02억 주). 🔴 <strong>경제성은 먼 미래인데 의결권은 지금 전부 행사</strong>된다. 그리고 <strong>부여 3주 뒤 화성 계획이 5~7년 공식 연기</strong>됐다(§L.2).</li>
+<li><strong>관계자 리스 약정 총액 $20,206M</strong>(3건·SpaceX 보증·기지급 $2,802M) — 10-Q 잔액 $13,329M(총차입 33.9%)은 그 일부다. 상대방 Valor의 창업자·CEO·CIO <strong>Gracias는 보상·지명위원 3인 중 1인</strong>. 🔴 금리·기간·담보 <strong>미공개</strong>.</li>
+<li><strong>CFO 성과지표가 FCF → 조정 EBITDA로 교체</strong>(2026-01-04) — FY25 FCF −$13.95B 상황에서 <strong>자본비용을 지표 밖으로 밀어내는 축으로 전환</strong>. §G의 "조정 EBITDA의 80.5%가 D&amp;A 되더하기"와 직결.</li>
+</ul>
+<p>⚖️ <strong>반대 방향 병기</strong>: failed sale-leaseback은 <strong>회계 판정이지 부당거래 판정이 아니다</strong>. AI 장비 리스 조달은 업계 표준이고, 424B4가 3건을 <strong>모두 상세 공시</strong>했다. 조건이 시장가와 어긋난다는 증거는 현재 <strong>0</strong>. → 판정은 "부당"이 아니라 <strong>"구조적으로 다툴 수 없게 설계된 대규모 관계자 거래"</strong>이며, 감시 대상이지 확정 결함이 아니다.</p>
+<p><strong>⑤ 비전축</strong>: 🚨 <strong>사용자 ⭐ 수기 대기</strong> — <code>⭐ ___</code></p>
+<blockquote>💬 Claude 의견: 정렬(의미주의자)·추진력 양축 모두 <strong>관측 최상단</strong>이고 근거가 사후 각색 불가한 계약 기록이다(급여 7년 동결·획득 주식 반납 후 조건부 교체·화성을 보상 정지조건으로 서명). <strong>다만 그 강함이 곧 소액주주 리스크의 크기다</strong> — 보상 조건 어디에도 주당가치·희석·현금흐름이 없고, 실제로 소액주주 승인 없이 $60.0B 발행이 결정됐다. 지금 관측되는 특징(카리스마·사명 우선·절대 지배)은 <strong>붕괴 전 사기 사례와 사전적으로 구별 불가</strong>하며, 이 종목에서 둘을 가르는 것은 인물 덕목이 아니라 <strong>실물</strong>(재사용 로켓·9,600기·분기 매출 $7.8B)이다. → <strong>비전축을 근거로 비중을 늘리는 논리는 성립하지 않는다.</strong></blockquote>
+<p><strong>⭐ 산출</strong> = (5+5+4.5+2.5+5+1+3)/7 = 26/7 = <strong>3.71 → ⭐3.5</strong> <em>(직전 4.0 → 하향)</em></p>
+<p><strong>▶ Flip</strong> 🟢 = 첫 DEF 14A에서 독립성·위원회 구성 개선 / 관계자 조달 조건 공개 ‖ 🔴 = 성과주 조건 사후 완화 / 관계자 조달 4번째 형태 / 핵심 2인(Shotwell·Johnsen) 이탈</p>
+<hr>
+<h2>G. 🔢 숫자 — 재무건전성 ⭐3.5 (가중 1.0)</h2>
+<h3>G.1 기본 정량</h3>
+<p><strong>재무건전성 (점수 반영)</strong> — 매출 Q2 $7,814M(<strong>YoY +92%</strong>·QoQ +66%) · GM 43.9%→<strong>55.3%</strong> · 연결 영업 <strong>−$143M</strong>(전년 −$970M) · H1 OCF <strong>+$3,466M</strong> · H1 capex <strong>−$28,476M</strong> · <strong>H1 FCF −$25,010M</strong> · 현금+유가증권 <strong>$100,009M</strong> · 총차입 $39,364M · <strong>순현금 $60,645M</strong> · 백로그 <strong>$47,461M</strong>(1년내 56%)</p>
+<p><strong>참고 (점수 미반영)</strong> — 시총 $1,754B · P/S(TTM) <strong>76.1x</strong> · Q2 연환산 56.1x · P/B 13.8x · 컨센 목표가 $233(n=17·범위 $62~$800)</p>
+<h3>G.1.5 🎯 시총 10배 랜드마크</h3>
+<div class="dd-fig"><p class="cap"><b>시총 10배 사다리</b>(로그축) — 크기 좌표일 뿐 밸류 앵커가 아니다</p><div id="fig-ladder"></div><div class="dd-ladder-sentence" id="fig-ladder-sent"></div></div>
+<p>💡 지금은 <strong>$1.75조 = TSLA($1.30조)와 META($1.51조) 사이</strong>. 텐배거면 <strong>$17.5조 = 현존 최대 NVDA($5.42조)의 3.2배</strong> → 🔴 <strong>자동 warn: 텐배거 비현실</strong> <em>(규모 비교일 뿐 밸류 앵커 아님)</em>.</p>
+<h3>G.3 4축 매트릭스</h3>
+<table><thead><tr><th>축</th><th>등급</th><th>근거</th></tr></thead><tbody>
+<tr><td>① Earnings Growth</td><td>🟢</td><td>3년 CAGR +34% · Q2 YoY <strong>+92%</strong> · QoQ +66% = 가속</td></tr>
+<tr><td>② Margin Expansion</td><td>🟡</td><td>GM 43.9%→55.3% · 영업손실 85% 축소 ↔ 🔴 <strong>AI GM 25.2%→56.8% 급등은 감가 분류의 산물</strong>(10-Q: 학습용 DC 감가는 R&amp;D, 임대용 서버 감가는 COGS) · 조정 EBITDA의 <strong>80.5%가 D&amp;A 되더하기</strong></td></tr>
+<tr><td>③ Cash Generation</td><td>🔴</td><td>H1 FCF <strong>−$25,010M</strong> · 분기 순소모 ≈$16.6B · 순현금 기준 <strong>약 3.6분기</strong></td></tr>
+<tr><td>④ 고금리·고물가 내구성</td><td>🟡</td><td>G.4-a 5 sub 🟢3개 (아래)</td></tr>
+</tbody></table>
+<h3>G.4-a 금리·부채 내구성 quick-screen (옵션 B · 점수 반영)</h3>
+<table><thead><tr><th>sub</th><th>측정</th><th>등급</th><th>근거</th></tr></thead><tbody>
+<tr><td>① 이자보상</td><td>EBIT/Interest</td><td>🔴</td><td>Q2 EBIT −$143M(음수). <em>참고: 조정EBITDA/이자 = 5.62x</em></td></tr>
+<tr><td>② Net Debt/EBITDA</td><td>(차입−현금)/EBITDA</td><td>🟢</td><td><strong>−4.3x (순현금 $60.6B)</strong></td></tr>
+<tr><td>③ 만기 분산</td><td>5년 내 비중·단일연도 집중</td><td>🟡</td><td>회사채 2031~2056 분산 ↔ 🔴 <strong>Valor 리스 만기 미공개</strong></td></tr>
+<tr><td>④ net 변동금리</td><td>변동−헤지</td><td>🟢</td><td>회사채 <strong>변동금리 0</strong>(실효 6.03%) ↔ Valor 조건 미공개</td></tr>
+<tr><td>⑤ Quick Liquidity</td><td>(현금+AFS)/단기부채</td><td>🟢</td><td>$100.0B vs 유동 관계자차입 $2.0B</td></tr>
+</tbody></table>
+<p>→ 🟢 3개 = <strong>🟡</strong></p>
+<blockquote>🔴 정밀 진단(연도별 만기 사다리·헤지 cliff·covenant 전수·스태그플레이션 결합 시나리오)은 <strong>§G.8</strong>(별도 렌즈·점수 미합산).</blockquote>
+<h3>G.5 trajectory</h3>
+<div class="dd-fig"><p class="cap"><b>재무 trajectory</b> — 매출·capex(좌축 $M) + 영업이익률(우축 %) · ▼ = 변곡점</p><div id="fig-traj"></div><div class="dd-legend" id="fig-traj-leg"></div><p class="dd-note">H1'26은 반기 실적. capex는 반년이 FY25 연간을 초과했다.</p></div>
+<table><thead><tr><th>($M)</th><th>FY23</th><th>FY24</th><th>FY25</th><th>H1'26</th></tr></thead><tbody>
+<tr><td>매출</td><td>10,387</td><td>14,015</td><td>18,674</td><td>12,508</td></tr>
+<tr><td>GM</td><td>41.2%</td><td>42.9%</td><td>49.4%</td><td>~55%</td></tr>
+<tr><td>R&amp;D</td><td>2,105</td><td>3,464</td><td><strong>8,643</strong></td><td>—</td></tr>
+<tr><td>영업손익</td><td>−3,505</td><td><strong>+466</strong></td><td>−2,589</td><td>—</td></tr>
+<tr><td>OCF</td><td>4,520</td><td>5,776</td><td>6,785</td><td>3,466</td></tr>
+<tr><td>Capex</td><td>−4,415</td><td>−11,163</td><td><strong>−20,737</strong></td><td><strong>−28,476</strong></td></tr>
+<tr><td><strong>FCF</strong></td><td>+105</td><td>−5,387</td><td><strong>−13,952</strong></td><td><strong>−25,010</strong></td></tr>
+</tbody></table>
+<p>🔴 <strong>변곡점</strong>: FY24 순흑자 → FY25 순손실 전환(매출 +33%인데도) = R&amp;D 2.5배 + 이자. capex는 3년 4.7배 → <strong>H1'26 반년이 FY25 연간을 초과</strong>했다.</p>
+<p><strong>PP&amp;E 구성 (2026-06-30)</strong> — 서버·네트워크 <strong>$34,771M</strong> &gt; 위성 $13,788M(<strong>2.52배</strong>) · CIP $4,604M→<strong>$12,554M</strong>(2.7배) · 총 PP&amp;E $83,071M. 🔴 <strong>자산 구성이 이미 데이터센터 회사다.</strong></p>
+<h3>G.6 실물 병목 7카테고리</h3>
+<p>전력 인프라 🟢 · AI 생산성 🟢 · 자동화 🟡 · 에너지 🟢 · 산업재 🟢 · 공급망 재편 🟢 · <strong>국방·안보 🟢</strong>(Starshield=Connectivity)</p>
+<p><strong>⭐ 산출</strong> = (5 + 4 + 1 + 4)/4 = <strong>3.5 → ⭐3.5</strong></p>
+<p><strong>▶ Flip</strong> 🟢 = OCF가 capex를 따라잡기 시작(CFO "1년 미만 회수" 검증) ‖ 🔴 = 순소모 유지 상태로 추가 대규모 조달 / DSO 추가 확대</p>
+<hr>
+<h2>§G.8 고금리·고물가 환경 내구성 정밀 진단 — 별도 렌즈 · 7축·§G.3 ④축 미합산</h2>
+<blockquote>🔴 내구성 전담 서브에이전트 산출을 종합층에서 roll-up(재계산 ❌). §A.5 민감도·§G.4 부채 수치·§H.7 밸류 멀티플 어느 것도 재계산하지 않았다.<br><strong>아키타입 소비 1줄</strong> — (B) 자본갈증형이므로 본 진단은 <em>"부채 상환능력"이 아니라 <strong>"재투자 자금 조달 지속능력"</strong></em>을 내구성의 정의로 잡는다(순현금 종목이라 전통적 레버리지 진단은 판별력이 없다).</blockquote>
+<h3>기둥 1 — 금리 🟢 견딤</h3>
+<table><thead><tr><th>항목</th><th>산출</th></tr></thead><tbody>
+<tr><td>① 만기 사다리 (10-Q Note 9)</td><td>2026잔여 $944M / 2027 $2,402M / 2028 $2,867M / 2029 $3,422M / 2030 $3,597M / <strong>Thereafter $25,201M</strong>. 🔴🔴 <strong>5년 만기 합계 $13,232M ≈ Other financings $13,406M(≒Valor 리스)와 일치</strong> → <strong>회사채 $25B는 2031년까지 만기 0</strong>(WAM <strong>11.7년</strong> · 실효 <strong>6.030%</strong>). 재차환 충격 +300bp에도 증분 이자 +$397M = 조정EBITDA의 <strong>2.8%</strong></td></tr>
+<tr><td>② net 변동금리·헤지 cliff</td><td>🔴🔴 10-Q Item 3 원문: <em>"we had <strong>no variable rate debt outstanding</strong>."</em> → <strong>변동금리 부채 $0</strong>(Valor 리스도 <strong>고정 5.9%</strong>). 헤지 <strong>0건</strong>(<code>swap</code>·<code>derivative</code>·<code>hedg</code> 0 hit) → <strong>헤지 cliff 부재</strong>, 대신 <strong>미래 조달 전량이 spot 시장가</strong></td></tr>
+<tr><td>③ covenant 전수</td><td>🔴🔴 <strong>발견 A — 이미 한 번 trip 했다</strong>: <em>"the Company had a <strong>technical default</strong> when the Company acquired xAI on February 2, 2026 due to the amount of debt assumed… On March 2, 2026, the Company obtained a <strong>waiver</strong>."</em> → <strong>"EBITDA 몇 % 빠지면 trip?"의 답은 "EBITDA가 아니라 M&amp;A 한 건이면 trip한다"</strong>&lt;br&gt;🔴🔴 <strong>발견 B — liens 한도가 이미 걸쳐 있다</strong>: 회사채 약정 <strong>담보 설정 한도 = 연결 총자산의 7.5%</strong> = $192,770M × 7.5% = <strong>$14,458M</strong> vs 담보 성격 채무(Other financings $13,406M + 금융리스 $1,079M) <strong>$14,485M = 7.51%</strong>. ⚖️ <strong>위반 선언 금지 3근거</strong>(indenture "Lien" 정의·permitted liens 예외 미열람 / failed sale-leaseback은 법적으로 Valor 소유 장비 리스라 lien 미해당 가능 / 금융리스 별도 basket 통상) → <strong>판정 유보</strong>. 남는 사실 = <strong>headroom이 Valor tranche 한 건 크기</strong>이고 그 tranche는 반년에 <strong>2.96배</strong> 커졌다</td></tr>
+<tr><td>④ WACC 2차 충격</td><td>(a) 재투자 IRR — 명목 회수 ≈3.8년, WACC 8/10/12% 얹으면 NPV 손익분기 4.6/5.1/5.8년 → 🔴 <strong>GPU 경제수명이 5년 아래면 WACC 10%+에서 NPV 음전</strong>(⚠️ Claude 가정 밴드) (b) 차환 금리 잠식 🟢 무시 가능 (c) 🔴🔴 <strong>조달 창 = 진짜 병목</strong></td></tr>
+<tr><td>⑤ 주식 조달 이중 압박</td><td>🔴 Cursor 3.31%(<strong>주가 −30% 시 4.7%로 확대</strong> = 시장 스트레스와 희석이 같은 방향) · EchoStar 확정지출 일부가 <strong>Class A 주식 지급</strong>(금액 미공시) · 🆕 <strong>EchoStar 채무 이자 대납 구조</strong>(2027-11-30까지·상환 기대 없이 탕감·기지급 $856M) · SBC H1 $1,470M(매출 11.8%)</td></tr>
+<tr><td>⑥ float 비대칭</td><td>🟢🟢 <strong>부호 = 명백히 양(+)</strong> — 현금·유가증권 <strong>$100,839M</strong> 중 단기 금리 연동 <strong>$76.1B(75.5%·MMF $65,625M)</strong>. <strong>금리 +100bp = 이자수익 +약 $761M/년 vs 이자비용 +$0</strong> → <strong>고금리가 순호재</strong>. 🔴 424B4의 "+100bp immaterial"은 현금 $25.1B 시절 기준이라 <strong>stale</strong>. ⚖️ 단 <strong>부호가 붙는 잔액이 소멸 예정</strong>(순이자 −$289M/분기는 앞으로 악화 방향)</td></tr>
+</tbody></table>
+<h3>기둥 2 — 물가 🔴 취약</h3>
+<p>🔴 <strong>인플레 부호 게이트 (선행)</strong> — 종합 <strong>−1(피해자)</strong>. 단 전통적 원자재 베타는 낮고 실제 경로는 <strong>(a) 천연가스 (b) GPU·장비 가격 (c) 엔지니어 인건비</strong> 셋이다.</p>
+<table><thead><tr><th>항목</th><th>산출</th></tr></thead><tbody>
+<tr><td>① 계약구조</td><td>🔴 Launch <strong>1~5년</strong> / Launch &amp; Development <strong>1~14년</strong> firm fixed-price · <em>"<strong>All</strong> of our launch contracts with U.S. government agencies are <strong>firm fixed-price</strong>"</em> (<strong>cost-plus 아님 확정</strong>) · AI 클라우드 = <em>"<strong>fixed monthly fees</strong>"</em> · 🔴🔴 <strong>CPI 연동·escalation 조항 전문검색 0 hit</strong> — 인플레 조정 조항이 공시상 <strong>존재하지 않는다</strong>&lt;br&gt;🔴 아이러니: <code>cost-plus</code>는 424B4에 <strong>1회</strong> 등장하는데 <em>"The prevailing <strong>cost-plus</strong> procurement model offered limited incentives to reduce costs"</em> — <strong>SpaceX가 파괴했다고 자랑하는 구 모델</strong> 서술이다. 그 서사가 고물가 국면엔 정확히 약점이 된다</td></tr>
+<tr><td>② COGS 분해</td><td>🟡 문구만 1차·정량 미공시. 구조 산술: 연결 COGS $3,495M vs D&amp;A 되더하기 $2,848M → <strong>COGS의 큰 부분이 과거 capex의 감가</strong>이고 감가는 취득원가 기준이라 <strong>인플레에 명목 고정</strong> → 당기 원자재 베타 낮음. 대신 노출이 <strong>capex 시점의 장비 가격</strong>으로 이동</td></tr>
+<tr><td>③ Item 7A commodity</td><td>❌ <strong>미수집 — 공시 섹션 자체가 없다</strong>(<code>Commodity</code> 0 hit). 있는 건 FX(무헤지 명시)와 금리뿐. <strong>추정하지 않는다</strong></td></tr>
+<tr><td>④ 헤지·장기계약</td><td>🔴🔴 <strong>본 기둥 최대 발견 — 방어 장치가 사실상 0</strong>&lt;br&gt;<strong>전력</strong>: <em>"we currently rely significantly on <strong>natural gas and gas turbine technology</strong> to power our data center operations"</em> + <strong>Colossus II는 전용 천연가스 발전소로 구동</strong> · <code>PPA</code>/<code>power purchase</code> <strong>0 hit</strong>&lt;br&gt;<strong>GPU</strong>: 🔴🔴 <em>"we have <strong>no long-term or other material contractual arrangements with our direct chip suppliers</strong>, instead procuring <strong>all of our GPUs on a purchase-order basis</strong>"</em> — <strong>capex 86%의 핵심 부품을 장기계약 없이 스팟 발주</strong>&lt;br&gt;<strong>비취소 확정지출 $27,955M</strong> = 헤지가 아니라 <strong>물량 약정</strong>(헤지의 반대 방향)</td></tr>
+<tr><td>⑤ 인건비</td><td>🟡 <strong>22,000명+ · 노조 0</strong>(계약상 escalator 없음 = 하방 유리) ↔ 보상이 <strong>경쟁사 보상 경쟁</strong>에 연동되고 상당 부분이 주식이라 <strong>주가 하락 시 리텐션 비용이 주식 수로 전가</strong>(⑤ 희석과 결합). R&amp;D H1 $7,062M(전년 대비 <strong>+101%</strong>)</td></tr>
+<tr><td>⑥ 실질 마진 분해</td><td>🔴 <strong>명목 개선 ≠ 실질 개선</strong>. AI GM 25.2%→56.8% 급등의 원인은 <strong>재고차익이 아니라 감가 분류</strong>(10-Q: 같은 GPU라도 <strong>외부 임대면 COGS, 자사 학습이면 R&amp;D</strong>). 판가 기여 ≈ <strong>0</strong>(ARPU −22.4%·광고 −13.8%), 물량·믹스가 지배, <strong>재고 holding gain 무시 가능</strong>(재고 $2,718M = 분기 COGS의 0.78분기치). 🔴 재고 평가법 10-Q 미기재</td></tr>
+</tbody></table>
+<h3>기둥 3 — 스태그플레이션 결합 시나리오</h3>
+<blockquote>베이스: 매출 $31.3B · <strong>현금성 비용 $20.4B</strong>(총비용 − D&amp;A) · 조정EBITDA $14.2B · capex $73.5B(회사 안내) · OCF ~$6.9B. 🔴 "원가 +X%"는 <strong>현금성 비용에만</strong> 적용(감가는 명목 고정).</blockquote>
+<table><thead><tr><th></th><th>A 경미&lt;br&gt;(+5%/+100bp/−5%)</th><th>B 기준&lt;br&gt;(+10%/+200bp/−10%)</th><th>C 심각 1970s&lt;br&gt;(+20%/+300bp/−20%)</th><th>D 디플레형&lt;br&gt;(−10%/−100bp/−20%)</th></tr></thead><tbody>
+<tr><td>① 영업이익</td><td>≈−$2.5B</td><td>≈−$4.4B</td><td>≈−$8.1B</td><td>≈−$2.0B (원가 하락 완충)</td></tr>
+<tr><td>② 이자보상</td><td>4.7x</td><td>4.1x</td><td>2.6x</td><td>🔴 <strong>이자수익이 먼저 준다</strong>($76.1B×−100bp = −$761M)</td></tr>
+<tr><td>③ FCF / 순현금 활주로</td><td><strong>3.5분기</strong></td><td><strong>3.3분기</strong></td><td>🔴 <strong>~1분기</strong></td><td>손익 최선 / <strong>자산 최악</strong></td></tr>
+<tr><td>④ covenant</td><td>자산 증가로 완화</td><td>동</td><td>🔴 자산 감액 → <strong>분모 축소로 한도 동반 축소</strong></td><td>🔴 GPU 시세↓ → 서버 $34.8B 감액</td></tr>
+<tr><td><strong>판정</strong></td><td>🟢 견딤</td><td>⚪ 조건부</td><td>🔴 결합취약</td><td>⚪ 조건부(엇갈림)</td></tr>
+</tbody></table>
+<p>🔴🔴 <strong>임계점 — "단일로는 생존, 결합 시 창이 닫힌다"</strong></p>
+<ul>
+<li>단일 변수는 어느 하나로도 안 죽는다(금리만 +300bp = EBITDA의 2.8% / 물가만 +20% = 순현금으로 4년 / 물량만 −20% = 버팀).</li>
+<li><strong>결합 임계 3중 조건</strong>: ① 순현금 <strong>$20B 하회</strong>(현 속도 2.5분기) + ② IG 신규 발행 스프레드 <strong>+200bp 이상</strong> + ③ <strong>Customer B 갱신 불발</strong>.</li>
+<li>이 지점에서 쓸 카드가 셋뿐인데 <strong>전부 스트레스와 같은 방향으로 나빠진다</strong> — (a) capex 삭감(🔴 2027 $22.2B은 <strong>non-cancelable</strong>) (b) 주식 발행(🔴 주가↓ = 희석↑) (c) 관계자 조달 확대(🔴 liens 7.5% 한도 + 거버넌스 신호).</li>
+</ul>
+<p><strong>2차 효과</strong>: (a) 🔴🔴 <strong>확정지출의 79.6%($22,244M)가 2027 한 해에 몰려 있고</strong>, 그 해는 Cursor 클로징 후 첫 온전한 연간 + Starship V3 전환 검증 + Terafab 착공 + 12/08 락업 해제 이후 첫 해다 (b) operating leverage 역회전(증분 영업마진 QoQ 57.7% → 매출 −10% = 영업 −$1.8B) (c) <strong>Customer B 갱신 불발 시 매출 소실과 서버 $34.8B 감액이 동시에</strong> (d) Valor 조달 창 축소(평균 고정금리 <strong>5.5% → 5.9%, +40bp 이미 관측</strong>).</p>
+<p><strong>1970s analog 채점 = 3🔴 / 1🟡 / 1🟢</strong> — ①에너지 공급충격 🔴(가스 직접 노출·헤지 0) ②임금-물가 나선 🟡 ③<strong>명목 고정가 장기계약 🔴🔴</strong>(1~14년·CPI 조항 0) ④실질금리 급반전 🟢(부채 전량 고정·현금이 수혜) ⑤자본집약 재투자수익 붕괴 🔴</p>
+<p>→ 🔴 <strong>1970s형 노출은 금리 축이 아니라 계약·에너지·재투자 축에 있다</strong> — 통상의 "고금리 스트레스 테스트"로는 이 종목의 취약점을 못 잡는다.</p>
+<h3>G.8.4 종합 verdict</h3>
+<blockquote><strong>🏷️ 종합 내구성 = ⚪ 조건부</strong> ‖ 신뢰도 <strong>중간</strong> ‖ 풀 DD 승격 <strong>높음</strong>(적기 = Q3 10-Q 이후)<br><strong>금리 기둥 🟢 견딤 / 물가 기둥 🔴 취약 / 결합 축 🔴에 근접</strong> — 🔴 <strong>봉합하지 않고 병기한다.</strong><br><br>🎯 <strong>"버틸 수 있는가" 한 줄 — 버틴다. 단 2027년까지만 자동으로 버틴다.</strong><br>고금리는 순호재이고(변동금리 0 + 현금 $100.8B), 고물가 단독도 4년치 순현금이 흡수한다. 무너지는 조건은 딱 하나 — <strong>고물가·수요둔화·조달창 축소가 비취소 확정지출 $22.2B와 같은 해에 겹치는 순간</strong>이다.<br>▸ <strong>회복 trigger</strong>: AI capex $1당 OCF 증분이 <strong>$0.13 → $0.50 이상</strong> 회복(자기금융化 개시)<br>▸ <strong>악화 trigger</strong>: Other financings 평균 고정금리가 <strong>5.9% → 6.5% 이상</strong> 재점프 — 또는 순현금 <strong>$20B 하회</strong><br><br><strong>핵심 swing 변수 1개</strong>: 🔴🔴 <strong>2027년 비취소 확정지출 $22,244M의 성격</strong> — (a) 이미 계약된 GPU·클라우드 용량이라 매출로 전환되는 <em>선행투자</em>인가, (b) 수요와 무관하게 나가는 <em>좌초 약정</em>인가. <strong>이 하나가 A~D 4개 시나리오의 결론을 전부 뒤집는다.</strong><br><br>🔴 <strong>금리 레짐 조건부 부호 (의무)</strong>: 금리 기둥 🟢은 <strong>$100B 현금을 들고 있는 동안에만</strong> 유효하다. 계획대로 소진되면 <strong>같은 고금리 레짐이 순호재 → 순악재로 부호가 뒤집힌다</strong>. 전환 추정 구간 ≈ 현금·유가증권 <strong>$40B 부근</strong> = 현 소모 속도로 <strong>약 3~4분기 후</strong>.</blockquote>
+<h3>G.8.5 의무 라벨 4종</h3>
+<ul>
+<li>⚠️ <strong>낮은 신뢰도 참고</strong> — 미공시 3건(Valor 개별 조건·cloud 계약기간·재무 covenant 지표)과 정량 공시 부재(commodity·원가 분해·재고 평가법)가 판정의 분모이고, WACC·NPV 밴드는 전부 가정이다.</li>
+<li>🎯 <strong>직접 한 줄</strong>: <strong>"고금리는 못 죽인다. 죽이는 건 2027년이다."</strong> (enforcement 아님 · 최종 판단은 사용자)</li>
+<li>🔴 <strong>장기 thesis 종목에 stop sign ❌</strong> — 매도·진입금지 신호가 아니다. ⚠️ 신호 판정 owner는 종목 Memory이며 <strong>발동 0건 유지</strong>.</li>
+<li>🔴 <strong>점수 미반영</strong> — 7축 ⭐·§G.3 ④축에 합산되지 않는다.</li>
+</ul>
+<h3>Steelman (3축)</h3>
+<ul>
+<li><strong>① 데이터 축 — "capex는 정의상 재량 지출이다"</strong>: 순현금 $60.6B·변동금리 0·covenant 준수만 보면 내구성 상위권이고, 결합취약 논거는 전적으로 "capex를 못 줄인다"에 얹혀 있다. Musk는 Tesla 2018·2022에 실제로 capex를 급감시킨 전력이 있고, 반으로 줄이면 활주로가 <strong>3.6 → 8분기</strong>다. → <strong>🔧 부분 인정. 그래서 🔴가 아니라 ⚪로 둔다.</strong> 단 <strong>2027 $22,244M은 non-cancelable로 재량 밖</strong>이고 그것만으로 연 $22.2B = 현 OCF 연 $6.9B의 <strong>3.2배</strong>다 — <strong>재량 capex를 0으로 만들어도 확정지출만으로 순현금이 2.7년에 소진된다.</strong> 재량성 논거는 절반만 성립.</li>
+<li><strong>② 구조 축 — "이 회사 원가는 인플레가 아니라 학습곡선이 지배한다"</strong>: "fixed-price = 원가 노출"은 인과가 거꾸로다 — <strong>고정가로 계약하고 원가를 내리는 것이 이 회사의 수익모델 그 자체</strong>(Falcon 재사용)이고, 증거도 있다: <strong>Q2 Space COGS는 매출 +29%인데 −0.3%(YoY $330M → $329M)로 완전히 flat</strong>이다. → <strong>가장 강한 반박이고 Space에 대해서는 유효</strong>하다. 그러나 (a) Space는 매출의 12.3%뿐 (b) 학습곡선은 자체 제조 원가에 작동하지 <strong>가스·GPU·전력 같은 외부 조달 투입에는 작동하지 않는다</strong> — 그리고 매출의 32.8%·capex의 86.2%가 후자다 (c) <strong>AI COGS는 $186M → $1,106M로 5.9배</strong>. → 🔧 <strong>수정</strong>: 물가 판정을 "전사 🔴"에서 <strong>"Space 🟢 / Connectivity 🟡 / AI 🔴 — 무게중심이 AI로 이동 중"</strong>으로 분해. 판정 유지, 강도 하향.</li>
+<li><strong>③ 시간 지평 축</strong>: 단기(4~6분기)엔 순현금이 방패이고, 장기(5년+)엔 Starship 완전재사용 + 궤도 컴퓨트가 성립하면 원가 구조 자체가 바뀌어 인플레 논의가 무의미해진다. <strong>즉 이 진단은 중기(2027~2029) 한 구간에만 유효</strong>하고, 그 구간이 정확히 확정지출 $22.2B + 락업 전량 해제 + Cursor 희석 확정이 겹치는 구간이다. → <strong>반박이 아니라 판정을 날카롭게 만든다. 유지 + 강화 — 내구성 리스크는 상시가 아니라 2027 집중형이다.</strong></li>
+</ul>
+<h3>▶ Flip 트리거</h3>
+<p><strong>🟢</strong> = Valor 리스 개별 조건 공시 + 시장가 수준 확인 / cloud 계약 기간 3년+ &amp; 가격 연동 조항 존재 / 2027 확정지출 재협상·이연 / Customer B 신원·IG 등급 확인 / <strong>전력 PPA·GPU 장기공급계약 최초 공시</strong></p>
+<p><strong>🔴</strong> = liens 7.5% 근접·초과 또는 <strong>재차 waiver</strong> / Other financings 평균금리 <strong>6.5% 이상</strong> 재점프 / 순현금 <strong>$20B 하회</strong> / AI 매출 QoQ 역성장 / 회사채 추가 발행이 실효 6.03% 대비 <strong>+150bp 이상</strong> 프라이싱 / 2027 확정지출 집행 중 <strong>자산 감액 최초 인식</strong></p>
+<p><strong>🔴 레짐 falsifier (validator 함정 차단)</strong>: 본 진단은 고금리·고물가 레짐 전제를 검증하지 않으며, 레짐이 지속되지 않아도 기각되지 않는다 — 물가 손상 경로(firm fixed-price 1~14년·GPU 스팟 발주·가스 무헤지)는 <strong>레짐이 아니라 계약 구조</strong>에서 나온다. <strong>진짜 falsifier는 단 하나 — "capex가 실제로 자기금융된다"</strong>(AI capex $1당 OCF 증분 $0.13 → $0.50 이상).</p>
+<blockquote>❌ <strong>미수집</strong>: Valor 리스 개별 금리·기간·담보(Note 17 미기재) · cloud 계약 기간 · Credit Facility 재무 covenant 지표·수준 · commodity ±10% 민감도(공시 섹션 부재) · 재고 평가법 · 원가의 원자재·전력·인건비 금액 분해 · 신용등급<br>⚠️ <strong>출처 교차 메모</strong>: Valor 리스 <strong>약정 총액 $20,206M·기지급 $2,802M</strong>은 <strong>424B4</strong> 기재분(2026-04-30까지)이고 <strong>10-Q에는 없다</strong>(전문검색 0 hit) — 두 문서의 기준일이 다르다. 10-Q는 <strong>잔액 $13,329M</strong>만 제시한다.</blockquote>
+<hr>
+<h1>Part 2 — 시나리오 · 자금흐름 · 규제 · 공시</h1>
+<h2>H.1 Bull / Base / Bear 시나리오 — 🔴 History-Dive 지연 계수 적용</h2>
+<h3>지연 계수 적용 규칙 (History-Dive 2026-08-08 산출 · 소비만)</h3>
+<ul>
+<li>일회성 신규 하드웨어 마일스톤: <strong>×2.3배</strong>(중앙값 · 범위 1.9~12.5x · n=5 장기 공언)</li>
+</ul>
+<p><em>(Falcon Heavy 3.15x · Artemis III HLS 2.26x · Commercial Crew 1.91x · 화성 유인 1.9~2.2x · 화성 무인 3.3~4.3x)</em></p>
+<ul>
+<li>🔴 <strong>반복 운영 목표는 할인 금지</strong> — Starlink 위성 4,000기 목표 → <strong>9,600기 실현</strong>, Falcon cadence 초과 달성. 역사상 <strong>초과</strong> 달성 영역이다. 여기에 계수를 적용하면 과도한 할인이 된다.</li>
+<li><strong>적용 결과</strong>: 궤도 AI 컴퓨트 배치 424B4 <em>"as early as 2028"</em> → <strong>2030~2032</strong>. Terafab은 <strong>목표일 자체가 없어 시나리오 산입 불가</strong>.</li>
+<li>→ 🔴 <strong>5년(2031) 창 안에서 STARMIND 매출 기여를 0으로 놓는다. 즉 2031년까지의 AI 매출은 전부 "지상 컴퓨트 임대"가 만들어야 한다.</strong> 궤도는 5년 창 밖의 순수 옵션이다.</li>
+</ul>
+<h3>5년(2031) bottom-up</h3>
+<p><em>Q2'26 연환산 앵커: Connectivity $17.2B / Space $3.8B / AI $10.2B (합 $31.3B)</em></p>
+<table><thead><tr><th></th><th>확률</th><th>Connectivity</th><th>Space</th><th>AI (지상 임대+광고)</th><th>2031 매출</th><th>암묵 exit P/S</th><th>시총</th><th>누적희석</th><th><strong>주당</strong></th></tr></thead><tbody>
+<tr><td>🟢 Bull</td><td>25%</td><td>$80B&lt;br&gt;가입자 45M·ARPU 안정·기업정부 지배</td><td>$22B&lt;br&gt;Starship 정상가동+Starshield</td><td>$100B&lt;br&gt;컴퓨트 15GW·고객 다변화</td><td><strong>$202B</strong></td><td>15.0x</td><td>$3.03T</td><td>−8%</td><td><strong>1.59x</strong></td></tr>
+<tr><td>🟡 Base</td><td>45%</td><td>$57B&lt;br&gt;가입자 30M·ARPU $60대</td><td>$12B&lt;br&gt;Starship 2.3배 지연 후 가동</td><td>$46B&lt;br&gt;7GW·부분 다변화</td><td><strong>$115B</strong></td><td>9.0x</td><td>$1.03T</td><td>−13%</td><td><strong>0.51x</strong></td></tr>
+<tr><td>🔴 Bear</td><td>30%</td><td>$38B&lt;br&gt;Kuiper·Guowang 가격전·ARPU 추가하락</td><td>$6B&lt;br&gt;재사용 경제성 미달</td><td>$14B&lt;br&gt;AI capex 사이클 꺾임·Customer B 미갱신</td><td><strong>$58B</strong></td><td>4.5x</td><td>$0.26T</td><td>−22%</td><td><strong>0.12x</strong></td></tr>
+</tbody></table>
+<h3>🔴 5년 기댓값(주당) = <strong>0.66x</strong> ← 직전 Deep-Dive <strong>1.29x</strong> 대비 하향</h3>
+<div class="dd-fig"><p class="cap"><b>Bull / Base / Bear + 비대칭 손익막대</b> — <span class="ev-badge" id="fig-scen-badge"></span></p><div id="fig-scen"></div><p class="dd-note">출구 P/S 가정(15/9/4.5·성숙 peer 앵커) 기준. 이 가정을 28/18/8로 바꾸면 기댓값은 1.27x가 된다 — 판정 전체가 이 하나에 걸려 있다.</p></div>
+<h3>🔴🔴 암묵 exit 멀티플 역산 — 이 종목 밸류의 핵심</h3>
+<table><thead><tr><th>출구 P/S 가정 (Bull/Base/Bear)</th><th>5년 기댓값(주당)</th><th>성격</th></tr></thead><tbody>
+<tr><td>15 / 9 / 4.5 (성숙 peer 앵커)</td><td><strong>0.66x</strong></td><td>Connectivity=통신 인프라 배수, AI 임대=CoreWeave(EV/S 13.2x) 배수</td></tr>
+<tr><td>20 / 13 / 6</td><td>0.91x</td><td></td></tr>
+<tr><td>28 / 18 / 8</td><td><strong>1.27x</strong></td><td>← 직전 Deep-Dive의 1.29x가 암묵적으로 여기에 있었다</td></tr>
+<tr><td>40 / 25 / 10</td><td>1.78x</td><td>현 멀티플의 절반 이상이 5년 뒤에도 존속</td></tr>
+</tbody></table>
+<p><strong>본전(1.0x)에 필요한 2031 exit P/S</strong>: Bull $202B → <strong>9.4x</strong> / Base $115B → <strong>17.5x</strong> / Bear $58B → <strong>38.8x</strong></p>
+<p>🔴 <strong>판정</strong>: 이 종목의 5년 기댓값은 <strong>매출 성장이 아니라 출구 멀티플 가정이 지배</strong>한다. Bull(2031 매출 $202B = 현 분기 연환산의 <strong>6.5배</strong>)을 달성해도 본전 필요 배수는 9.4x로 무난하지만, <strong>Base는 17.5x</strong>를 요구한다 — 영업이익률 10~15% 예상 기업에 NVDA(EV/S 21.2x·영업이익률 65.6%)에 근접한 배수를 요구하는 셈이다. → <strong>"매출 성장 + 시장 재평가 둘 다 필요"한 thesis</strong>임을 명시한다.</p>
+<h3>2년(2028) / 3년(2029) 형태</h3>
+<table><thead><tr><th></th><th>2년(2028) 매출</th><th>1.0x 필요 P/S</th><th>3년(2029) 매출</th><th>1.0x 필요 P/S</th></tr></thead><tbody>
+<tr><td>Bull</td><td>$70B</td><td><strong>25.1x</strong></td><td>$110B</td><td><strong>16.0x</strong></td></tr>
+<tr><td>Base</td><td>$50B</td><td><strong>35.1x</strong></td><td>$72B</td><td><strong>24.4x</strong></td></tr>
+</tbody></table>
+<p><em>(5년 목표 매출에서 역산한 궤적 · 성장은 front-load된다고 보고 반올림. 참고: 현재 P/S(TTM) 76.1x · Q2 연환산 56.1x · NVDA 21.4x · TSLA 12.5x)</em></p>
+<p>⚠️ <strong>Base 2년 배수 &lt; 2.0x → "bull tail 의존" 플래그.</strong> 🛡️ 단 이 종목은 <strong>back-loaded 구조적 장기 병목</strong>(궤도 컴퓨트·Starship 완전 재사용)에 해당하므로 <strong>게이트가 아니라 flag</strong>다.</p>
+<hr>
+<h2>H.2 Catalyst 캘린더</h2>
+<table><thead><tr><th>일시</th><th>이벤트</th><th>영향</th><th>source</th></tr></thead><tbody>
+<tr><td><strong>2026-08 중</strong></td><td><strong>Starship Flight 14 — 상단 첫 지상 포획 + V3 첫 실운용 배치</strong> (규제 승인 조건부)</td><td>🔴</td><td>Reuters 8/5</td></tr>
+<tr><td>진행 중</td><td>Flight 13 기체 인도양 회수 → 열차폐 분석</td><td>🔴</td><td>@SpaceX 8/7</td></tr>
+<tr><td><strong>2026-08-21</strong></td><td>락업 시간 트랜치 70일 (+7%)</td><td>🟡</td><td>S-1</td></tr>
+<tr><td>09-10 / 09-25 / 10-10 / 10-25</td><td>시간 트랜치 4회 (각 +7% · 누적 35%)</td><td>🟡</td><td>S-1</td></tr>
+<tr><td><strong>2026 Q3</strong></td><td><strong>Cursor 클로징 8-K</strong> — 확정 발행주식수·최종 7거래일 VWAP → 희석률 확정</td><td>🔴</td><td>8-K 6/16</td></tr>
+<tr><td>Q3 클로징 후</td><td>Cursor 수령주 등록(S-3)·재판매 개시</td><td>🟡</td><td>—</td></tr>
+<tr><td><strong>~2026-11</strong></td><td><strong>Q3'26 실적</strong> — ① Customer B 갱신·확대 ② 임대 고객 다변화 ③ capex 가이던스에 Terafab·지상모바일 분리 여부</td><td>🔴</td><td>—</td></tr>
+<tr><td><strong>2026-12-08</strong></td><td><strong>180일 락업 전량 만기</strong> — 첫 대형 수급 이벤트</td><td>🔴</td><td>S-1</td></tr>
+<tr><td>2026-12</td><td>회사 목표 <strong>"$100B ARR"</strong> 자동 채점 시점</td><td>🔴</td><td>컨콜</td></tr>
+<tr><td>2027 중</td><td><strong>비취소 확정지출 $22,244M 집행 연도</strong></td><td>🔴</td><td>10-Q</td></tr>
+<tr><td>2027-06-12</td><td>Musk 366일 락업 만료</td><td>🟡</td><td>S-1</td></tr>
+<tr><td>2027 예상</td><td><strong>첫 DEF 14A</strong> — 이사 독립성 갱신(해리슨/구글 거래 문턱 재판정)</td><td>🟡</td><td>—</td></tr>
+</tbody></table>
+<hr>
+<h2>H.3 ⚠️ Thesis 리스크 신호 (정의 원본 = 종목 Memory §4-2 · 모든 🔴 Flip roll-up)</h2>
+<table><thead><tr><th>#</th><th>신호</th><th>관측 trigger</th><th>현 상태</th></tr></thead><tbody>
+<tr><td>①</td><td>Starship 임계경로 실패</td><td>Flight 14 포획 실패 · 열차폐 분석 부정 · cadence 재하락</td><td>🟡 검증 지연</td></tr>
+<tr><td>②</td><td>AI burn 무한정 (🔧 <strong>임대업 분리 추적</strong>)</td><td>임대 제외 시 모델·소셜 사업 적자 추세 지속</td><td>🟡</td></tr>
+<tr><td>③</td><td>Connectivity 둔화</td><td>가입자·세그먼트 EBITDA 성장 꺾임</td><td>🟢 미발현</td></tr>
+<tr><td>④</td><td>Musk 키맨·자본배분</td><td>관계자 조달 확대 · 주식대가 M&amp;A 반복</td><td>🟠 <strong>관찰 강화</strong></td></tr>
+<tr><td>⑤</td><td>경쟁·규제</td><td>Kuiper·Guowang 가격전 / FCC·FAA·반독점</td><td>🟡</td></tr>
+<tr><td>⑥</td><td>락업·희석</td><td>12/08 전량 해제 · Cursor 수령주 재판매</td><td>🟡 구조 이벤트 도래</td></tr>
+<tr><td>⑦</td><td>발사 실패·인명</td><td>—</td><td>🟢</td></tr>
+<tr><td>⑧</td><td>밸류 over-shoot</td><td>5년 기댓값 추가 악화</td><td>🔧 <strong>재계산 완료(본 보고서) = 0.66x</strong></td></tr>
+<tr><td>🆕 ⑨</td><td><strong>보조 비율 역전</strong></td><td>Connectivity+Space 영업이익 &lt; AI 영업손실 <strong>2분기 연속</strong></td><td>🟠 <strong>Q2'26 이미 1분기 역전</strong>&lt;br&gt;(+$1,114M vs −$1,257M)</td></tr>
+<tr><td>🆕 ⑩</td><td><strong>조용한 폐기</strong></td><td>starmind/terafab 공식 페이지 문구 diff·항목 삭제</td><td>🟡 감시</td></tr>
+<tr><td>🆕 ⑪</td><td><strong>주식 통화 고갈</strong></td><td>저가 구간에서 또 전량 주식 대가 인수</td><td>🟡 감시</td></tr>
+</tbody></table>
+<blockquote><strong>발동 0건 유지.</strong> 🆕 ⑨⑩⑪은 본 Deep-Dive의 History-Dive·People-Dive 산출에서 나온 <strong>신규 제안 신호</strong>다.</blockquote>
+<hr>
+<h2>H.5 🧭 CAE · Edge Grid 좌표</h2>
+<blockquote>〔CAE: <strong>C</strong> 제약 / <strong>A</strong> 조정 / <strong>E</strong> 표현 · 번호 = 세부층〕<br>〔중요도 <strong>L</strong> 다층성 · <strong>R</strong> 비가역성 · <strong>H</strong> 병목경도 / 엣지 <strong>G</strong> 선반영격차 · <strong>P</strong> 연료잔량 · <strong>D</strong> 컨센서스반증, 각 0~3〕<br>⭐ = 매력도 · <strong>분면 = 행동</strong></blockquote>
+<p><strong>(a) CAE 분류</strong> — 걸친 레이어: <strong>C1 물리</strong>(궤도역학·재사용 경제) · <strong>C2 에너지</strong>(데이터센터 전력·태양광·냉각) · <strong>A2 힘의 질서</strong>(발사주권·국방 patron) · <strong>A5 산업</strong>(재사용 발사·컨스텔레이션·AI 인프라) · <strong>A4 기술</strong> · <strong>E1 자본시장</strong>(IPO·주식대가 M&amp;A·관계자 조달).</p>
+<ul>
+<li>🔴 <strong>무게중심이 A(조정) → C(제약)로 이동했다</strong> (직전 Deep-Dive 대비 델타). 회사가 스스로를 <em>"전력·냉각·칩이라는 물리 병목을 우주로 우회하는 인프라 사업"</em>으로 규정했고, 자산 구성(서버 $34.8B &gt; 위성 $13.8B)이 그 이동을 확인한다.</li>
+<li>🔴 <strong>약한 고리 = E1 자본시장</strong>. 물리(C)를 이기는 계획이 <strong>자본 조달 창에 종속</strong>돼 있다 — 분기 순소모 $16.6B · 2027 비취소 확정지출 $22.2B · (B) 자본갈증형.</li>
+</ul>
+<p><strong>(b) Edge Grid 프로파일</strong> (합산 평균 ❌ · 프로파일 표기)</p>
+<ul>
+<li>중요도 <strong>上 <code>L3 · R3 · H3</code></strong> — 6개 레이어 다층 / 재사용·컨스텔레이션·팹 capex 비가역 / 궤도 접근 = 하드 병목</li>
+<li>엣지 <strong>下~中 <code>G2 · P2 · D1</code></strong></li>
+<li><strong>G2</strong> (선반영격차 = 조금 열림) — 직전 G1(IPO 직후 +19% pop·고점 $211.39)에서 <strong>−37% 하락</strong>해 공모가 −1.4%. 격차는 열렸으나 <strong>본전에 Base 17.5x 필요</strong>라 여전히 작다.</li>
+<li><strong>P2</strong> (연료 잔량) — 기관 보유 <strong>3.2%</strong>(1,088곳)로 매우 낮아 유입 여지 ↔ 🔴 반대편에 <strong>락업 해제 물량</strong>(8/21~10/25 누적 35% + 12/08 전량)</li>
+<li><strong>D1</strong> (컨센서스 반증 여지 작음) — 컨센 목표가 <strong>$233(+75%)</strong> · 매수 이상 77%. 🔴 단 추정 범위 <strong>$62~$800(12.9배)</strong> = 컨센서스라기보다 <strong>합의의 부재</strong></li>
+<li>🔴 <strong>음의 상관 명시</strong>: 비가역성(R3)이 가시화된 순간(자산이 이미 데이터센터·2027 확정지출 $22.2B)이 곧 엣지가 줄어든 순간이다.</li>
+</ul>
+<p><strong>(c) 2×2 분면</strong> — 중요도 <strong>上</strong> × 엣지 <strong>下~中</strong> = <strong>좌상 「강한데 비싼」 유지</strong> (직전과 동일 분면, G1→G2로 소폭 오른쪽 이동)</p>
+<p><strong>(d) 분면 판정·행동</strong> — 트림·회피 구간. <strong>3 잠금장치(①실현확률 교차 ②D 게이트 강제분기 ③유효범위) 통과 ❌</strong> → 집중매수 권한 없음.</p>
+<hr>
+<h2>H.6 💎 0to1 독점 판정 (틸 7문) — 별도 렌즈 · 7축 미합산</h2>
+<table><thead><tr><th>문항</th><th>판정</th><th>⭐</th><th>cross-ref</th><th>한 줄 근거</th></tr></thead><tbody>
+<tr><td>① 기술(10배)</td><td><strong>YES</strong></td><td>5</td><td>§D.0.1-c·§D.6</td><td>재사용 발사 = 비용/kg 10배 이상. 실측(9,600기·170회/년)</td></tr>
+<tr><td>② 시기</td><td>⚠️</td><td>3</td><td>§C.1</td><td>전력·냉각 병목은 지금 binding ↔ AI capex 사이클 정점 리스크</td></tr>
+<tr><td>③ 독점(작게 시작)</td><td>⚠️</td><td>3</td><td>§C.2·§D.5</td><td>발사는 <strong>달성된</strong> 준독점. 그러나 <strong>지금 자본을 넣는 곳은 거대시장(AI 컴퓨트)에 분산 진입</strong></td></tr>
+<tr><td>④ 사람</td><td>⚠️</td><td>3</td><td>§F</td><td>실행력 최상 ↔ 거버넌스 ⭐1 · 도덕성 ⭐2.5</td></tr>
+<tr><td>⑤ 유통</td><td>⚠️</td><td>3</td><td>§D.0.6·§D.7</td><td>Starlink 직판·정부 채널 강 ↔ 컴퓨트는 <strong>Customer B 단일 69% 집중</strong></td></tr>
+<tr><td>⑥ 존속성(라스트 무버)</td><td><strong>YES</strong></td><td>5</td><td>§D.8·§D.6</td><td>궤도 슬롯·스펙트럼·발사 인프라 = 10~20년 방어</td></tr>
+<tr><td>⑦ 숨겨진 비밀</td><td><strong>YES</strong></td><td>5</td><td>§B.3</td><td><em>"AI의 미래는 물리 스택 통제로 결정된다 — 전력·냉각 병목은 궤도에서 풀린다."</em> 컨센서스가 동의하지 않는다</td></tr>
+<tr><td>〔보조〕 시장정의 tell</td><td><strong>혼재</strong></td><td>—</td><td>§C.2·§K.2</td><td>아래</td></tr>
+</tbody></table>
+<p><strong>0to1 종합: Track A 〔3/7 YES〕 → 📖 「불운에 시달릴 위험(≤4)」 ‖ Track B ⭐3.9 (7문 평균·DD-v1.7) ‖ tell = 혼재</strong></p>
+<blockquote><strong>tell 해설</strong>: 회사 자기정의 <em>"space, connectivity, and AI"</em> = <strong>합집합 화법</strong>(독점을 숨기는 쪽 신호). 그런데 마진 교차검증에서 <strong>연결 영업이익률 −1.8%</strong> → 거대시장 화법과 숫자가 어긋난다. 🔴 단 이 어긋남은 세그먼트를 열면 해소된다 — <strong>Connectivity 단독 영업이익률 38.6%</strong> = 진짜 독점 마진. → <strong>혼재</strong>(진짜 독점 1칸 + 분산 진입 2칸).<br>라벨: 점수 = 사업 매력도(확신) ≠ 매수 신호 · <strong>7축 가중평균(10.5) 미합산 · 별도 렌즈</strong></blockquote>
+<hr>
+<h2>H.7 💰 밸류에이션 정밀 판정 — 별도 렌즈 · 7축 미합산</h2>
+<blockquote>🔴 밸류에이션 전담 서브에이전트 산출을 종합층에서 roll-up한 것이다(재계산 ❌). 아키타입은 §D.0(R-Dive) 확정분을 소비.</blockquote>
+<p><strong>아키타입</strong> — 밸류 archetype은 <strong>Ⓓ 자산/현금흐름형</strong>과 <strong>Ⓒ 고성장 pre-profit</strong>을 <strong>병기</strong>한다. Connectivity(54.9%·영업 +38.6%)는 Ⓓ로, AI 임대(32.8%·영업 −49.1%·capex/매출 6.18x)는 Ⓒ로 읽어야 하며 <strong>하나로 단정하면 어느 쪽이든 틀린다.</strong></p>
+<h3>H.7.2 5렌즈 감사표</h3>
+<table><thead><tr><th>렌즈</th><th>결과</th><th>신호</th><th>핵심 산출</th></tr></thead><tbody>
+<tr><td>① 역-DCF distance</td><td><strong>envelope 밖</strong></td><td>🔴</td><td>EV $1,693B가 요구하는 <strong>정상상태 FCF $143~500B/년</strong>(중앙 ~$220B) = <strong>애플 TTM $107.7B의 약 2배</strong>. 10년·WACC 9%·터미널 FCF 마진 25%(천장의 1.4배)라는 최대 관대 코너에서조차 <strong>매출 CAGR 44~56%</strong> 요구</td></tr>
+<tr><td>② Ⓓ SOTP</td><td><strong>비싸</strong></td><td>🔴</td><td>세그먼트 SOTP(중립)가 EV의 <strong>27.5%만 설명</strong> → 🔴🔴 <strong>72.5%($1.23조)가 미검증 옵션가</strong>(궤도컴퓨트·Starship·Terafab). 관대 칸조차 36% 미설명</td></tr>
+<tr><td>② Ⓒ EV/GP·흑자경로</td><td><strong>비싸</strong> (단 경로는 실재)</td><td>🔴</td><td>EV/GP <strong>141.6x</strong> ↔ 열위 peer CRWV <strong>19.1x</strong>(7.4배). ✅ 연결 영업적자 −$970M→−$143M으로 실제 축소</td></tr>
+<tr><td>③ 상대가치</td><td><strong>근거 없는 프리미엄</strong></td><td>🔴</td><td>EV/GP <strong>86.7 백분위</strong> · EV/EBITDA <strong>91.7 백분위</strong>로 교차 확인. 성장 ⚪(CRWV +111.6%보다 낮음)·마진 🔴·현금전환 🔴 → 프리미엄 정당화 불가</td></tr>
+<tr><td>③-다 역사 percentile·Z(σ)</td><td><strong>N/A</strong></td><td>—</td><td>🔴 <strong>상장 39거래일 · 분포 미정착 + 아키타입 한 분기 전환</strong> → 억지 산출 금지. 참고 밴드만: 고점 $211.39(P/S 120.9x) → 현재 $133.11(76.1x) → 저점 $108.27(61.9x)</td></tr>
+<tr><td>④ 컨센서스</td><td><strong>선반영/variant 판정 흐릿</strong></td><td>🟢(약)</td><td>n=17 · 평균 $233(<strong>+75%</strong>) · 🔴 <strong>고/저 $800/$62 = 12.9배 분산</strong>, FY27 매출 컨센도 3.3배 분산 → <strong>합의가 아니라 합의의 부재</strong>. 리비전은 🟢🟢 급등 상향(FY27 EPS 30일 +126%). variant 승격 ❌(램프 근거가 <strong>미공개 단일 계약</strong>)</td></tr>
+<tr><td>⑤ §H.1 재평가 의존</td><td><strong>높음</strong></td><td>🔴</td><td>기댓값 0.66x. 본전을 만드는 Base exit P/S 17.5x는 <strong>영구성장 9.1%/년 가정과 등가</strong></td></tr>
+<tr><td>⑥ BRCR 병목 렌트</td><td><strong>고평가 사칭</strong></td><td>🔴</td><td>S 0.60 × R 0.35 × D 0.45 × <strong>C 0.25</strong> = 0.0236 → 정규화 <strong>0.392</strong> vs EV/GP 백분위 <strong>0.867</strong> → 괴리 <strong>+0.475</strong>(EV/EBITDA 교차 +0.525 동일 방향)</td></tr>
+</tbody></table>
+<p><strong>🔩 BRCR 구속 병목</strong> = <strong>C 포획효율 0.25 (자본갈증)</strong> — 병목을 쥐고 있어도(발사) 그 렌트가 주주 현금으로 내려오기 전에 AI capex가 전부 흡수한다. <strong>못 걷어서가 아니라 걷은 렌트를 즉시 재투입해야 해서</strong> 포획이 안 된다.</p>
+<p><strong>보조게이트 태그</strong> = <code>[혼합: 발사·궤도접근 = 소유 / AI 컴퓨트 = 올라탐]</code> — 매출 12.3%만 "소유"이고 성장의 주력 32.8%는 "올라탐"(엔비디아에 렌트 지불). Terafab이 확정계약으로 전환되면 이동 가능하나 <strong>definitive 8-K 0건</strong>.</p>
+<h3>H.7.3 종합 판정</h3>
+<blockquote><strong>🏷️ 밸류에이션 판정: 🔴 고평가 ‖ 신뢰도 밴드: 낮음 ‖ 풀 DD 승격: 높음 ‖ 지평 한정: 1~5년(10년+ 미결)</strong><br><br>🎯 <strong>매수 적정성 한 줄 — 🔴 진입 보류.</strong> 현재가 $133.11은 이 회사가 애플의 2배를 버는 미래를 이미 값으로 치르고 있고, 그 값의 <strong>72.5%는 아직 매출 0인 사업</strong>(궤도컴퓨트·Terafab)에 붙은 옵션가다.<br><strong>더 싸게 사는 trigger</strong>: <strong>2026-12-08 180일 락업 전량 해제 창(11월 말~12월 중순)에서 $108 이하로 눌리는 국면</strong>(= 상장 후 저점 근방 · EV/S FY27 컨센 기준 15.0x · Cursor 클로징 희석 3.3% 반영 시 같은 밸류의 주가는 <strong>약 $104.6</strong>). 🔴 <strong>단 가격 조건 단독으로는 불충분</strong> — swing 변수(Customer B 다변화)가 Q3 10-Q에서 확인되는 것이 함께 필요하다.<br><br><strong>핵심 swing 변수 1개</strong>: <strong>Customer B 계약의 갱신·확대와 임대 고객 다변화 여부.</strong> AI 임대 매출의 약 69%, 연결 매출의 19.5%가 이 한 곳이고 컨센 FY26·FY27 램프 전체가 이 계약의 연장선 위에 서 있다. 확인 시점 = <strong>Q3'26 10-Q Note 3(고객 집중)</strong>.</blockquote>
+<p>🔴 <strong>엇갈림 명시 (봉합 ❌)</strong>: 6개 렌즈 중 <strong>④ 컨센서스 하나만 반대편</strong>이다. 그리고 <strong>컨센 FY27 매출 $90.9B는 §H.1 Base의 2031년 $115B의 79%를 4년 앞당겨 달성한다는 뜻</strong> — 두 렌즈의 매출 궤적 자체가 충돌한다. 어느 쪽이 맞는지는 본 산출로 판별할 수 없다. 컨센 쪽에 낮은 가중치를 준 것이 판정을 만든 <strong>결정적 재량</strong>이며, 그래서 신뢰도가 "낮음"이다.</p>
+<h3>H.7.4 의무 라벨 4종</h3>
+<ul>
+<li><strong>낮은 신뢰도 참고</strong> — 상장 39거래일로 자기 역사 분포가 없고, 아키타입이 한 분기 만에 전환됐으며, 판정을 좌우하는 exit 멀티플·터미널 마진이 모두 미검증 가정이다. <strong>"높음" 등급 부여 ❌.</strong></li>
+<li><strong>🎯 직접 한 줄은 enforcement가 아니다</strong> — "진입 보류"는 직접 답변이지 강제 규칙이 아니다. <strong>최종 판단은 사용자.</strong></li>
+<li><strong>장기 thesis 종목에 stop sign ❌</strong> — soft-flag다. 하드 게이트·진입 차단·보유 매도 신호 어느 것도 아니며, ⚠️ 신호 ⑧은 "재계산 근거 확보"이지 발동이 아니다.</li>
+<li><strong>점수 미반영</strong> — 본 판정은 <strong>7축 ⭐에 재유입되지 않는다</strong>(§H.5·§H.6과 동일 격리).</li>
+</ul>
+<h3>H.7.5 Steelman (3축)</h3>
+<ul>
+<li><strong>① 데이터 축 — "TTM 분모를 쓴 것 자체가 판정을 만들었다"</strong>: 직전 분기 매출이 <strong>QoQ +66%</strong>인 회사에서 TTM은 1년 전의 죽은 숫자다. 컨센 FY26 $44.2B·FY27 $90.9B로 재출발하면 EV/S가 <strong>38.3x → 18.6x</strong>로 떨어지고 요구 CAGR도 envelope 경계 안으로 들어온다. → <strong>🔧 부분 수용</strong>(재출발 칸을 산출에 포함, P/S 76x를 판정 근거로 쓰지 않음). <strong>철회하지 않는 이유</strong>: 컨센에서 재출발해도 요구 터미널 FCF 마진 20~25%가 envelope 상한(12~18%) <strong>밖</strong>이고, 그 컨센 자체가 미공개 단일 계약에 걸려 있다 — <strong>분모를 바꿔도 마진 가정이 안 바뀐다.</strong></li>
+<li><strong>② 구조 축 — "옵션가 72.5%는 결함이 아니라 이 회사의 정의다"</strong>: 임계 통과형 자산의 값은 정의상 현재 세그먼트 배수로 설명되지 않는다(2000년 아마존을 소매 배수로 SOTP했다면 AWS는 100% "미설명"). → <strong>✅ 유지, 단 판정 근거 재서술</strong>: 실물 옵션의 값은 <strong>행사 비용과 만기</strong>에 비례해 깎이는데, Terafab은 8/6 착공 발표에도 <strong>definitive 8-K 0건 · SEC 전문검색 히트 424B4 1건뿐 · $16.8B는 웹 공지 only</strong>이고, STARMIND는 공식 페이지가 "벤더 불가지론"인데 CEO는 "엔비디아 전속"이라 <strong>회사 스스로 설계 방침을 일치시키지 못하고 있다</strong>. → 판정 근거는 "옵션이 없다"가 아니라 <strong>"옵션 값을 검증할 1차 자료가 아직 없다"</strong>.</li>
+<li><strong>③ 시간 지평 축</strong>: 단기(1년) 락업·희석·현금소모 → 부정 / 중기(5년) 기댓값 0.66x → 부정 / 장기(10년+) 궤도 접근 단가가 계단식으로 내려가면 <strong>DCF 밖의 문제</strong>가 된다. → <strong>🔧 수정</strong>: 판정 🔴는 <strong>1~5년 지평에 한정</strong>하고, 10년+ 지평은 <strong>판정하지 않는다(미결)</strong>.</li>
+</ul>
+<h3>▶ Flip 트리거 (밸류 판정이 바뀌는 조건)</h3>
+<table><thead><tr><th>방향</th><th>트리거</th><th>관측 경로</th></tr></thead><tbody>
+<tr><td>🔴 → ⚪</td><td><strong>Customer B 외 10% 이상 신규 고객 1곳 등장</strong></td><td>Q3'26 10-Q Note 3</td></tr>
+<tr><td>🔴 → ⚪</td><td><strong>분기 FCF 적자 폭 절반 이하 축소</strong>(−$12.5B 이내) = CFO "1년 미만 회수"의 첫 실증</td><td>Q3'26 현금흐름표</td></tr>
+<tr><td>🔴 → 🟢</td><td><strong>Terafab definitive agreement 8-K 제출</strong> + capex 분리 공시 → 미설명 72.5% 중 일부가 "검증된 옵션"으로 이동</td><td>SEC 8-K (현재 0건)</td></tr>
+<tr><td>🔴 강화</td><td>Customer B 비중 하락 + AI 임대 QoQ 성장 30% 미만 → 컨센 하향 리비전 시작</td><td>Q3'26 + eps_revisions 반전</td></tr>
+<tr><td>🔴 강화</td><td><strong>Cursor 클로징 VWAP $110 이하 확정</strong> → 희석 4% 초과</td><td>클로징 8-K</td></tr>
+<tr><td>프레임 재정의</td><td>2027 확정지출 $22.2B 집행 후에도 FCF 음(−) → <strong>"지속 자본조달 의존형"으로 재분류</strong></td><td>FY27 10-K</td></tr>
+</tbody></table>
+<hr>
+<h2>I. 자금흐름 · 지분</h2>
+<h3>I.0 Capital Structure</h3>
+<table><thead><tr><th>주체</th><th>지분·의결권</th><th>source</th></tr></thead><tbody>
+<tr><td><strong>Musk (Class B)</strong></td><td><strong>의결권 82.4%</strong>(옵션 기준 84.4%) · <strong>이사 5/9 단독 선임</strong></td><td>424B4</td></tr>
+<tr><td>🆕 <strong>Musk 성과주</strong></td><td><strong>1,302,072,285주(Class B·10표)</strong> — 귀속 조건 = 시총 15개 구간 <strong>AND</strong> ⑴<strong>화성 100만 명 영구 정착지</strong>(10억 주) ⑵<strong>연 100TW 지구 밖 데이터센터</strong>(3.02억 주). 🔴 <strong>경제성은 먼 미래인데 의결권은 지금 전부 행사</strong>된다</td><td>424B4 · 2026-01-13 이사회</td></tr>
+<tr><td>Antonio Gracias (Valor 30개 법인)</td><td>Class A <strong>503,414,530주</strong> = Class A의 <strong>6.7%</strong> · 🔴 <strong>의결권은 1% 미만</strong></td><td>424B4</td></tr>
+<tr><td>총주식</td><td><strong>13,176M</strong> (Class A 7,607 + Class B 5,569)</td><td>10-Q</td></tr>
+<tr><td>Public float</td><td>약 <strong>1,278M주</strong> = 총주식의 <strong>9.7%</strong></td><td>yfinance</td></tr>
+<tr><td>기관 보유</td><td><strong>3.21%</strong> (1,088곳) — 상장 2개월</td><td>yfinance</td></tr>
+</tbody></table>
+<p>🔴 <strong>두 번째로 큰 경제적 지분 보유자(Gracias, Class A 6.7%)조차 표에서는 사실상 무력</strong>하다 — 이중주식 구조의 실증.</p>
+<h3>I.0.2 Dual-class + 지배기업 면제</h3>
+<p>Class A 1표 / Class B <strong>10표</strong>. <strong>나스닥 지배기업(controlled company) 면제 명시 채택</strong> — 424B4 원문: <em>"Class A 주주는 동일한 보호를 받지 못한다."</em> 이사 해임에도 Class B 과반(=본인)이 필요하다. 소액주주 견제 장치 <strong>없음</strong>. 🔴 <strong>DEF 14A 미제출</strong>(첫 정기주총 전) → 위원회 헌장·독립성 갱신 자료가 현재 존재하지 않는다.</p>
+<h3>I.0.5 잠재 희석</h3>
+<table><thead><tr><th>항목</th><th>규모</th><th>비고</th></tr></thead><tbody>
+<tr><td><strong>Cursor</strong></td><td>$60.0B ÷ 클로징 7거래일 VWAP</td><td>$133.11 기준 약 <strong>451M주 = 3.31%</strong>. 🔴 <strong>주가가 낮을수록 희석이 커지는 구조</strong>($110이면 3.98%)</td></tr>
+<tr><td>Mesh Optical</td><td>3.8M주 + 승계 옵션 52,005 / RSU 243,240</td><td>0.03%</td></tr>
+<tr><td>EchoStar 스펙트럼</td><td><strong>261,792,453주</strong>(2025-09) + 잔여 대가 일부 주식(금액 미공시)</td><td>—</td></tr>
+<tr><td>SBC</td><td>Q2 전사 $831M (AI만 $516M)</td><td>연 ~0.2%</td></tr>
+<tr><td>🔴 Q2 가중평균 주식수</td><td><strong>5,864M</strong> vs 실제 13,182M (<strong>2.25배</strong>)</td><td>주당 지표를 단순 연장하면 왜곡된다</td></tr>
+</tbody></table>
+<h3>I.3 Short Interest / 옵션</h3>
+<ul>
+<li>공매도 <strong>165.0M주</strong> — 총주식 대비 <strong>1.25%</strong> / float(1,278M) 대비로 계산하면 <strong>12.9%</strong>. 🔴 yfinance <code>shortPercentOfFloat</code> 2.67%와 불일치(float 정의 차이로 추정 · <strong>단정 금지</strong>)</li>
+<li>옵션 <strong>IV(ATM) 90~100%</strong> — 극단적. 🔴 Call OI가 <strong>$320·$450·$250 등 초 OTM에 집중</strong>(8/21 만기 $450 콜 OI 51,499계약) = <strong>로또형 투기 수요</strong>. P/C 0.76~0.99</li>
+<li>Form 4 <strong>0건</strong>(7일 창) · Cursor 수령주 S-3 <strong>0건</strong></li>
+</ul>
+<h3>I.5 Steelman</h3>
+<ul>
+<li><strong>데이터</strong>: 상장 2개월이라 13F·Form 4·공매도 시계열이 축적되지 않았다. 기관 3.2%는 "외면"이 아니라 <strong>아직 안 담은 것</strong>일 수 있다(인덱스 편입 미도래).</li>
+<li><strong>구조</strong>: "Founder 고지분 = bullish"의 반박 — Musk의 82.4%는 정렬(⑥ Skin ⭐5)이자 무력화(⑦ 거버넌스 ⭐1)다. <strong>같은 사실이 양방향</strong>이다.</li>
+<li><strong>시간</strong>: 락업·전환 만기는 <strong>예정된 충격</strong>(12/08·2027-06-12)이고 dual-class는 <strong>영구 구조</strong>다 — 두 축을 분리해 읽어야 한다.</li>
+</ul>
+<hr>
+<h2>J. 산업 · 규제 · 정책 risk</h2>
+<h3>J.1 산업 historical evolution (History-Dive 소비)</h3>
+<p>🔴 <strong>이 회사는 규제·조달 구조 자체를 바꿔가며 시장을 열었다</strong>: 2004 Kistler GAO 이의 제기 → <strong>COTS 프로그램 창설</strong> / 2014 미 공군 제소 → 2015 합의 → <strong>EELV 경쟁 개방·Falcon 9 NSSL 인증</strong>. 즉 정책 risk가 이 회사에는 <strong>양방향</strong>이다.</p>
+<p>회사 연혁은 세 흐름의 합류다 — SpaceX(2002-03-14 델라웨어 설립 → 2024-02-14 텍사스 재편입) + xAI(2023-03) + Twitter/X(2022-10 인수). 🔴 <strong>2026-02 이후 시대의 M&amp;A 총량이 앞선 20년을 초과</strong>한다.</p>
+<h3>J.2 규제·법적 risk</h3>
+<ul>
+<li><strong>FAA</strong> 발사 허가 — 🔴 <strong>Flight 14 발사·포획 타이밍이 규제 승인에 종속</strong> / 궤도 잔해</li>
+<li><strong>FCC</strong> 스펙트럼·ITU 착지권 — 🟢 EchoStar 65MHz 이전 승인 완료</li>
+<li><strong>ITAR</strong> — 보호(진입장벽) + 제약(부품·해외) 양면</li>
+<li><strong>반독점</strong> — 발사·광대역 준독점 + 🔴 <strong>지상 모바일 진출로 통신 3사와 전선 확대</strong>(Reuters 8/5 · 발표에 Verizon·AT&amp;T·T-Mobile 주가 2.2~4% 하락)</li>
+<li><strong>X</strong>: EU DSA·콘텐츠 / <strong>xAI</strong>: AI 규제</li>
+<li>🔴 <strong>Musk 개인</strong>: 2018 SEC $20M 합의 + <strong>2026-03-20 배심 평결 10(b)/10b-5 위반 인정</strong>(Pampena · 개인 자격 · 회사 비당사자 · 항소 진행 중)</li>
+<li>🔴 <strong>텍사스 회사법 §21.418·§21.419 적극 채택</strong> — 관계자 거래를 소송으로 다투는 문턱을 <strong>구조적으로 상향</strong></li>
+</ul>
+<h3>J.3 정책 sensitivity</h3>
+<p>NASA Artemis(Artemis III 2028 예정 · 지연 계수 2.26x 관측) · 우주군·Starshield 예산 · CHIPS 인접(Terafab) · FCC 스펙트럼. 🔴 정책 의존 = 단일 동력 risk이나, <strong>정부가 대안을 갖기 어려운 위치</strong>(발사 주권)라 완화적이다.</p>
+<hr>
+<h2>K. 공시 · 컨콜 · 가이던스</h2>
+<h3>K.1 Q2'26 컨콜 (2026-08-04) — 상장 후 첫 온전한 분기</h3>
+<p>매출 $7,814M(+92% YoY) · 영업 −$143M · 조정 EBITDA $3,538M · capex $18,369M(Q3·Q4도 유사 안내)</p>
+<p>🔴 <strong>답변 패턴에서 드러난 것 3건</strong></p>
+<ul>
+<li><strong>Citigroup John Godin이 Terafab 자본을 명시적으로 질문했는데 CFO 답변에 Terafab이 단 한 번도 등장하지 않았다</strong>(capex 일반론 + "1년 미만 회수"만). 이어받은 Musk는 $1T 매출 화제로 전환.</li>
+<li>Musk: <em>"We're <strong>exclusive to Nvidia</strong>"</em> + <em>"Starmind = essentially an optimized <strong>Vera Rubin NVL72</strong> computer"</em> ↔ 🔴 공식 페이지는 <strong>8/8 현재도 "AI chip vendor agnostic"</strong> 유지. <strong>제원(높이 20→30m·컴퓨트 150→250kW)은 갱신됐는데 벤더 문구만 안 바뀌었다</strong> → "방치된 페이지"라는 설명이 약해진다.</li>
+<li>Musk: 궤도 AI 컴퓨트 <em>"내년(2027)부터 발사 시작"</em> ↔ 424B4 <em>"as early as 2028"</em> / 열차폐 <em>"problem solved"</em> ↔ 🔴 Flight 13 기체 8/7까지 인도양 미회수.</li>
+</ul>
+<h3>K.2 경영진 발언 패턴 (History-Dive·People-Dive 소비)</h3>
+<p>🔴 <strong>비대칭이 뚜렷하다</strong> — <strong>"무엇을"의 이행률 ≈ 100%</strong>(하드웨어 목표 달성 4/4: 궤도·재사용·유인·컨스텔레이션), <strong>"언제"의 이행률 ≈ 10%</strong>(기한 내 이행 1/11 · 완전 폐기·철회 2/11).</p>
+<p>🔴 <strong>불리한 YoY를 일관되게 생략</strong>: ARPU −22.4%(회사는 "$66, 전분기와 동일"만) · X 광고 −13.8%(회사는 QoQ +7%만) · H1 발사 −7.1%·질량 −5.5%(회사는 절대치만).</p>
+<p>🔴 <strong>일정 하향·사업 폐기를 별도 발표 없이 처리</strong>(Falcon V가 "계약 완료" 상태에서 소멸 · Red Dragon · 화성 2024) → <strong>공시가 아니라 웹페이지 문구 diff가 조기 신호원</strong>이다(⚠️ 신규 신호 ⑩의 근거).</p>
+<h3>K.3 가이던스 trajectory</h3>
+<p>상장 2개월 · 컨콜 1회 → 🔴 <strong>가이던스 대 실적 이력 N/A</strong>. 첫 채점 = Q3'26 실적 + <strong>2026-12 "$100B ARR" 목표</strong>(현재 공개 조각으로 설명되는 부분 <strong>48%</strong>).</p>
+<blockquote>🔗 5~10년 장기 로드맵·공언 이행 이력(지연 계수 포함)의 owner = [History-Dive Part E](../../HistoryDive_Reports/SPCX/SPCX_HistoryDive_2026-08-08.html).</blockquote>
+<h3>K.4b 🔴🔴 AI 밸류체인 이익 귀착 검증 (AI 밸류체인 종목 — 의무 적용)</h3>
+<table><thead><tr><th>지표</th><th>값</th><th>판정</th></tr></thead><tbody>
+<tr><td>OCF (H1'26)</td><td>+$3,466M ↔ 매출 +53.7%</td><td>🔴 방향 괴리</td></tr>
+<tr><td>DSO</td><td><strong>41.9일</strong> (약 +12일 확대) · AR <strong>+127.7%</strong> vs 매출 +53.7%</td><td>🔴 현금이 뒤로 묶임</td></tr>
+<tr><td>재고·운전자본</td><td>운전자본 팽창</td><td>🔴</td></tr>
+<tr><td>FCF (H1)</td><td><strong>−$25,010M</strong></td><td>🔴</td></tr>
+<tr><td><strong>AI capex $1당 OCF 증분</strong></td><td><strong>$0.13</strong></td><td>🔴</td></tr>
+<tr><td>자본 회수 산술</td><td>연환산 임대매출 ÷ H1 AI capex = <strong>0.37x</strong> (CFO <em>"1년 미만 회수"</em> 주장)</td><td>🔴 미검증</td></tr>
+</tbody></table>
+<p><strong>판정 = 🔴 "AI 수혜주 라벨은 있으나 현금이 아직 안 도는 칸"</strong></p>
+<p>⚠️ 단 <strong>병목 강도 A급 선점 비용</strong>으로 재해석할 여지는 남긴다 — 성숙기 패자 판정과 성장기 선점 비용은 시점으로 구분해야 한다. 🔴 <strong>validator 함정 차단</strong>: 이 검증은 "AI 수익화 스토리 찾기"가 아니라 <strong>귀속(attribution) 검증</strong>이며, 귀속이 확인되지 않는 지점에서는 단정을 보류한다.</p>
+<hr>
+<h2>L. 동적 발견 (Dynamic Rabbit Holes)</h2>
+<h4>L.1 🔴🔴 Cursor 이탈 비용 $10.0B — "$60B 주식 인수는 선택이 아니었다"</h4>
+<ul>
+<li><strong>발견 트리거</strong>: History-Dive Part(M&amp;A 스코어카드) · 424B4 재독 · 중요도 🔴</li>
+<li><strong>why</strong>: 424B4가 Cursor 인수 옵션 <strong>미행사 시 해지수수료 $1.5B + 이연 서비스료 $8.5B = $10.0B</strong>를 명시한다. 즉 <strong>행사는 사실상 선택지가 아니었다.</strong></li>
+<li><strong>Backreference</strong>: 종목 Memory §3-5-2의 "2026-04 인수 권리 확보"(🟡 2차) → <strong>1차로 승격</strong>. §I.0.5 희석 논의의 전제가 바뀐다 — 질문이 "왜 샀나"에서 <strong>"왜 그렇게 계약했나"</strong>로 이동한다.</li>
+<li><strong>결론 영향</strong>: 수정 — 희석은 여전히 실재하나, 이를 <strong>"자본배분 실책"으로 읽는 프레임은 약해진다</strong>(⚠️ 신호 ④ 판정에 반영).</li>
+</ul>
+<h4>L.2 🔴 Musk 성과주 조건과 화성 연기의 3주 간격</h4>
+<ul>
+<li><strong>발견 트리거</strong>: People-Dive §I.0 · History-Dive 연표 · 중요도 🔴</li>
+<li><strong>why</strong>: 2026-01-13 이사회가 <strong>화성 100만 명 영구 정착지</strong>를 귀속 조건으로 10억 주를 부여했고, <strong>그 3주 뒤인 2026-02에 화성 계획이 5~7년 공식 연기</strong>됐다.</li>
+<li><strong>결론 영향</strong>: ⚠️ 신호 ④에 <strong>"성과 조건 사후 완화"</strong> 관측점 신설. 조건이 완화되면 그 자체가 거버넌스 신호다.</li>
+</ul>
+<h4>L.3 🔴 보조 비율 역전이 이미 한 분기 발생했다</h4>
+<ul>
+<li><strong>why</strong>: Q2'26 Connectivity+Space 영업이익 합 <strong>+$1,114M</strong> &lt; AI 영업손실 <strong>−$1,257M</strong>. 종목 Memory가 정의한 <em>"Starlink 흑자가 AI 적자를 먹인다"</em> 구조가 <strong>이번 분기에 처음 깨졌다.</strong></li>
+<li><strong>결론 영향</strong>: ⚠️ 신규 신호 ⑨ 신설(2분기 연속 시 발동). §D.8 하방 판정에 반영.</li>
+</ul>
+<h4>L.4 Starshield 세그먼트 오분류 정정</h4>
+<ul>
+<li><strong>why</strong>: 종목 Memory §3-4는 Starshield를 Space 라인으로 적었으나, <strong>10-Q 수익인식·8-K 보도자료 모두 Connectivity 세그먼트</strong>로 계상한다.</li>
+<li><strong>결론 영향</strong>: 국방 노출을 Space 매출($962M·12.3%)로 재면 <strong>과소평가</strong>된다. §A.2·§G.6 국방 항목에 반영.</li>
+</ul>
+<h4>L.5 관계자 리스의 실체는 잔액이 아니라 약정 총액</h4>
+<ul>
+<li><strong>why</strong>: 10-Q 잔액 $13,329M이 아니라 <strong>계약 총 지급예정액 $20,206M</strong>(3건 · SpaceX 보증 · 기지급 $2,802M). 이해상충 당사자(Gracias)가 <strong>보상·지명위원</strong>이고, 회사는 <strong>텍사스 §21.418/§21.419 방패를 적극 채택</strong>했다.</li>
+<li><strong>결론 영향</strong>: §F ⑦ 거버넌스 ⭐1 · §G.8 금리 기둥 입력.</li>
+</ul>
+<h4>L.6 CFO 성과지표가 FCF → 조정 EBITDA로 교체됐다 (2026-01-04)</h4>
+<ul>
+<li><strong>why</strong>: FY25 FCF −$13.95B 상황에서 <strong>자본비용을 지표 밖으로 밀어내는 축으로 전환</strong>. 4M 옵션 · 조정 EBITDA $10B당 371,125주. 424B4: <em>"Musk가 다른 임원 보상에 1차 책임."</em></li>
+<li><strong>결론 영향</strong>: §G ②축의 "조정 EBITDA 80.5%가 D&amp;A 되더하기"와 직결 — <strong>지표 신뢰도 재평가</strong>. §K.2 발언 패턴과 정합.</li>
+</ul>
+<h4>L.deferred (다음 실행 우선)</h4>
+<ul>
+<li>H1 기타손실 −$1,962M 잔여 성격 (채무소멸손실 $1,545M + 디지털자산 평가손 $539M로 대부분 설명되나 최종 확인 필요)</li>
+<li><strong>Valor 리스 금리·기간·담보</strong> — 유불리 판정의 전제</li>
+<li><strong>Customer A/B 신원·계약기간</strong> (Q3'26 10-Q Note 3)</li>
+<li><strong>Cursor 클로징 VWAP·확정 발행주식수</strong> (클로징 8-K)</li>
+<li><strong>Intel 측 1차(10-K·8-K·IR)에서 Terafab 언급 여부</strong> — INTC thesis 재검토 조건 ②와 직결</li>
+<li>세그먼트별 백로그 분해 · Mesh Optical PPA</li>
+</ul>
+<hr>
+<h2>🔴 종합 판단</h2>
+<h3>7축 종합</h3>
+<table><thead><tr><th>축</th><th>⭐</th><th>가중</th><th>직전(6/13)</th><th>델타</th></tr></thead><tbody>
+<tr><td>🌦️ 날씨 (지정학+거시)</td><td><strong>3.5</strong></td><td>3.0</td><td>4.0</td><td><strong>−0.5</strong></td></tr>
+<tr><td>⛰️ 산 (산업)</td><td><strong>4.5</strong></td><td>1.5</td><td>— ※</td><td>—</td></tr>
+<tr><td>🌲 숲 (섹터)</td><td><strong>4.0</strong></td><td>1.5</td><td>— ※</td><td>—</td></tr>
+<tr><td>🌳 나무 (기업)</td><td><strong>4.0</strong></td><td>1.0</td><td>4.0</td><td>0</td></tr>
+<tr><td>🌲🌳 옆의 나무 (경쟁)</td><td><strong>3.5</strong></td><td>1.0</td><td>4.0</td><td><strong>−0.5</strong></td></tr>
+<tr><td>👤 사람</td><td><strong>3.5</strong></td><td>1.5</td><td>4.0</td><td><strong>−0.5</strong></td></tr>
+<tr><td>🔢 숫자 (재무건전성)</td><td><strong>3.5</strong></td><td>1.0</td><td>3.5</td><td>0</td></tr>
+<tr><td><strong>종합 (가중평균)</strong></td><td><strong>3.76</strong></td><td>10.5</td><td>4.10</td><td><strong>−0.34</strong></td></tr>
+</tbody></table>
+<p>※ 직전 보고서는 v1.11 metaphor(날씨=지정학 / 산=거시 / 숲=산업)였고, 본 보고서는 v1.12(날씨=지정학+거시 / 산=산업 / 숲=섹터)다. 산·숲은 직접 비교 불가하며 직전 "숲(산업) 5.0"이 본 보고서의 산 4.5 + 숲 4.0으로 분할됐다.</p>
+<p><strong>라벨: 종합 ⭐ = 사업·thesis 매력도(가중평균) · 밸류 멀티플 미반영.</strong> 별도 렌즈 3종(§H.5 분면 · §H.6 0to1 · §H.7 밸류)과 §G.8은 모두 7축 미합산이다.</p>
+<p><strong>하향 3축의 근거 (전부 이번 분기의 신규 1차 자료)</strong></p>
+<ul>
+<li><strong>날씨 −0.5</strong>: 지정학은 그대로 🟢인데 <strong>거시 노출이 나빠졌다</strong>. 회사가 자본시장 의존 기업으로 변신했고(관계자 리스 약정 $20.2B·회사채 $25B·주식대가 M&amp;A 3건), 순소모 3.6분기, 2027 비취소 확정지출 $22.2B — Warsh 실질긴축 국면에 직격 노출이다.</li>
+<li><strong>옆의 나무 −0.5</strong>: <strong>성장의 전부를 만드는 사업에서 구조적으로 열위</strong>임이 Q2 숫자로 확정됐다(AI 임대 32.8% · CoreWeave·Nebius 대비 중립성 열위 · Customer B 69% 집중).</li>
+<li><strong>사람 −0.5</strong>: 정성이 아니라 <strong>1차 발견</strong>이다 — 성과주 13억 주의 의결권 즉시/경제성 화성 비대칭, 관계자 리스 약정 총액 $20.2B와 보상위원 겸직, 텍사스 §21.418/§21.419 방패, CFO KPI의 FCF→EBITDA 전환.</li>
+</ul>
+<h3>시간 지평 종합 — 세 지평의 답이 다르다</h3>
+<table><thead><tr><th>지평</th><th>판단</th><th>근거</th></tr></thead><tbody>
+<tr><td><strong>단기 (0~6M)</strong></td><td>🔴 부정</td><td>락업 8/21~10/25 누적 35% + <strong>12/08 전량 해제</strong> · Cursor 희석 확정 · 순현금 3.6분기 소모 · IV 90~100%</td></tr>
+<tr><td><strong>중기 (6M~3Y)</strong></td><td>🔴 부정</td><td>5년 기댓값 0.66x · Base 2년 배수 &lt;2.0x · 2027 확정지출 $22.2B 집행 연도</td></tr>
+<tr><td><strong>장기 (3~10Y+)</strong></td><td>⚪ <strong>미결(판정하지 않음)</strong></td><td>궤도 접근 단가가 계단식으로 내려가면 배수·DCF·SOTP 전부 판별력을 잃는다. 하드웨어 목표 달성률 4/4("늦었지만 됐다")가 이 회사의 반복 사실이다</td></tr>
+</tbody></table>
+<p>🔴 <strong>텐배거 horizon 현실성</strong>: 시총 $1.75조 → $17.5조는 현존 최대 기업(NVDA $5.42조)의 3.2배. <strong>비현실(자동 warn)</strong>.</p>
+<h3>종합 판정: <strong>부분 수정 (유지하되 가격 판정 하향)</strong></h3>
+<p>사업 구조는 여전히 우수하다(⭐3.76). 그러나 직전 Deep-Dive 이후 <strong>세 가지가 실제로 바뀌었다</strong>:</p>
+<ul>
+<li><strong>정체가 한 번 더 이동했다</strong> — "Starlink가 벌어 AI에 베팅"에서 <strong>"자산·자본·조직이 이미 데이터센터 회사"</strong>로. 서버가 위성의 2.52배, capex의 86.2%가 AI.</li>
+<li><strong>성장의 원천이 단일 계약 하나로 좁혀졌다</strong> — AI "흑자 전환"을 만든 것은 Grok 수익화도 X 광고 회복도 아니라 <strong>Customer B 한 곳에 빌려준 컴퓨트</strong>(AI 솔루션·인프라 매출의 약 69%)다.</li>
+<li><strong>밸류 판정의 성격이 바뀌었다</strong> — 직전엔 "사업은 좋은데 가격이 비싸다"였다. 지금은 <strong>"현 EV의 72.5%가 매출 0인 사업에 붙은 옵션가이고, 그 옵션의 행사가가 아직 공시되지 않았다"</strong>이다(Terafab definitive 8-K 0건 · STARMIND 매출 0 · 궤도 배치는 지연 계수 적용 시 2030~2032).</li>
+</ul>
+<p><strong>모든 🔴 Flip 트리거 집계</strong> → §H.3 ⚠️ Thesis 리스크 신호 11개(기존 8 + 신규 ⑨⑩⑪)로 roll-up. <strong>발동 0건 유지.</strong></p>
+<hr>
+<h2>⚠️ 수집 상태 (실패·불완전 항목만)</h2>
+<ul>
+<li>❌ <strong>Valor 리스 개별 금리·기간·담보·조기상환</strong> — 10-Q Note 17 미기재 (유불리 판정의 전제)</li>
+<li>❌ <strong>cloud services 계약 기간·갱신 조건</strong> — <em>"over the contract term"</em>만 있고 기간 미공시</li>
+<li>❌ <strong>Credit Facility 재무 covenant 지표·수준</strong> — <em>"customary financial covenant"</em>로만 표기</li>
+<li>❌ <strong>commodity ±10% 민감도</strong> — 424B4에 Commodity Price Risk 섹션 자체가 부재</li>
+<li>❌ <strong>재고 평가법 · 원가의 원자재·전력·인건비 금액 분해</strong> — 미공시</li>
+<li>❌ <strong>Customer A/B 신원·계약기간</strong> · <strong>세그먼트별 백로그 분해</strong> · <strong>Mesh Optical PPA</strong> · <strong>Cursor 클로징 VWAP</strong> — 전부 미공시</li>
+<li>❌ <strong>SPCX 5년 멀티플 분포(percentile·Z σ)</strong> — 상장 39거래일로 <strong>구조적 부재</strong>. 억지 산출하지 않았다</li>
+<li>⚠️ <strong>13F·Form 4 시계열</strong> — 상장 2개월로 미축적 (Form 4 7일 창 0건)</li>
+<li>⚠️ <strong>사람축 ⑤ 비전 ⭐</strong> — 사용자 수기 대기(Claude 💬 의견만 병기)</li>
+<li>⚠️ <strong>History-Dive 5건</strong> — 424B4 마일스톤 그래픽 · 개별 소송 각주 · Swarm/Pioneer 대가 1차 · 2011~2013 매니페스트 아카이브(3회 시도) · Valor 리스 조건</li>
+<li>⚠️ <strong>수집 절차 예외 1건</strong> — Step 1.5의 Chrome 3종 순차 규칙 대신, History-Dive와 People-Dive를 <strong>전용 탭 분리 + 도메인 분할</strong>(History=SEC/Wayback/매체, People=X 전담)로 병렬 실행했다. 탭 경합·X rate-limit 두 위험을 각각 차단하는 조건으로 대체한 것이며, 두 에이전트 모두 탭 생성·종료를 확인했다.</li>
+<li>⚠️ <strong>🧑‍⚖️ 콜아웃 대조(감사)</strong> — 상단 종합 매수 판단은 판사 반환문 <strong>원문</strong>이며, 세 가지만 손댔다: ① 인용 라벨을 브리프 항목번호 → 본 보고서 §번호로 치환(브리프는 미발행 문서) ② 포트폴리오 요소 제거(개인 규율 점검표 전체 · 한계 항목 중 개인 설정 파일 참조 1건) ③ <strong>근거 8번(타이밍 축 참고 read) 제외</strong> — 🔒 chart-dive는 비공개 전용 스킬이라 그 소비분은 발행본에 싣지 않는다. 반환문 전량은 내부 파일에 보존했다. 판사 인용 표본 검증(§3-5-3 "주가가 빠질수록 희석이 커지는 구조" · §4-5 Valor · Kill #8 재계산) <strong>전건 실재 확인 — 허위 인용 0건</strong>.</li>
+</ul>
+<h2>📌 다음 실행 보완 (§L.deferred 포함)</h2>
+<ul>
+<li><strong>Q3'26 10-Q Note 3(고객 집중)</strong> — Customer B 갱신·확대 여부 = §H.7 swing 변수</li>
+<li><strong>Q3'26 현금흐름표</strong> — AI capex $1당 OCF 증분 $0.13 → ? = §G.8 falsifier</li>
+<li><strong>Cursor 클로징 8-K</strong> — 확정 발행주식수·최종 7거래일 VWAP → 희석률 확정</li>
+<li><strong>Terafab definitive agreement 8-K</strong> — framework → 확정 계약 전환 여부(현재 SEC 히트 424B4 1건뿐)</li>
+<li><strong>Intel 측 1차(10-K·8-K·IR)에서 Terafab 언급 여부</strong> — INTC thesis 재검토 조건 ②와 직결</li>
+<li><strong>liens 7.5% 한도</strong> — indenture "Lien" 정의·permitted liens 예외 목록 열람 후 판정 확정</li>
+<li><strong>spacex.com/spacexai/starmind 문구 diff 추적</strong> — "AI chip vendor agnostic" ↔ "엔비디아 전속" 모순 해소 여부(⚠️ 신규 신호 ⑩)</li>
+<li>종목 Memory 갱신 제안 4건 — §3-4 <strong>Starshield = Connectivity 세그먼트 정정</strong> · §3-5-2 Cursor 인수권리 <strong>🟡 2차 → 1차 승격</strong>($10.0B 이탈 비용) · §4-2에 <strong>신규 신호 ⑨⑩⑪ 추가</strong> · §8에 <strong>성과주 13억 주 조건</strong> 기재</li>
+</ul>
+<hr>
+<p><em>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</em></p>
+</div>
+<script>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+const VIZ = {"score7": {"label": "확신도 7축", "max": 5, "axes": ["🌦️날씨", "⛰️산(산업)", "🌲숲(섹터)", "🌳나무", "🌲🌳옆나무", "👤사람", "🔢숫자"], "series": [{"name": "2026-08-08 (⭐3.76)", "color": "#2980b9", "scores": [3.5, 4.5, 4.0, 4.0, 3.5, 3.5, 3.5]}, {"name": "2026-06-13 (⭐4.10)", "color": "#8e8e8e", "dash": true, "scores": [4.0, 4.0, 5.0, 4.0, 4.0, 4.0, 3.5]}]}, "narrative": {"label": "내러티브 5축 깊이", "max": 5, "axes": ["🔧기술", "👥사회", "🏛️정책", "🌐지정학", "💰자본"], "series": [{"name": "SPCX 내러티브 깊이", "color": "#27ae60", "scores": [5, 4, 5, 5, 5]}]}, "bars": {"title": "Q2'26 매출 vs capex 구성비 (%)", "mode": "bar", "unit": "%", "items": [{"label": "AI — 매출", "value": 32.8, "color": "#c0392b"}, {"label": "AI — capex", "value": 86.2, "color": "#c0392b"}, {"label": "Connectivity — 매출", "value": 54.9, "color": "#27ae60"}, {"label": "Connectivity — capex", "value": 7.4, "color": "#27ae60"}, {"label": "Space — 매출", "value": 12.3, "color": "#2980b9"}, {"label": "Space — capex", "value": 6.4, "color": "#2980b9"}]}, "peers": {"metrics": [{"key": "ps", "label": "P/S", "unit": "x", "better": "low"}, {"key": "gm", "label": "매출총이익률", "unit": "%", "better": "high"}, {"key": "om", "label": "영업이익률", "unit": "%", "better": "high"}, {"key": "g", "label": "매출성장", "unit": "%", "better": "high"}, {"key": "mc", "label": "시총", "unit": "$B", "better": "neutral"}], "rows": [{"name": "SPCX", "subject": true, "note": "콘글로(우주+통신+AI)", "vals": {"ps": 76.1, "gm": 51.9, "om": -1.8, "g": 91.9, "mc": 1754.6}}, {"name": "RKLB", "note": "발사", "vals": {"ps": 76.2, "gm": 36.6, "om": -22.4, "g": 63.5, "mc": 51.8}}, {"name": "ASTS", "note": "D2C 위성", "vals": {"ps": 328.7, "gm": 44.8, "om": -1014.0, "g": 1952.2, "mc": 27.9}}, {"name": "IRDM", "note": "성숙 위성통신", "vals": {"ps": 6.0, "gm": 71.9, "om": 15.1, "g": 3.8, "mc": 5.3}}, {"name": "VSAT", "note": "위성통신", "vals": {"ps": 2.4, "gm": 33.2, "om": 4.1, "g": -1.2, "mc": 11.1}}, {"name": "CRWV", "note": "컴퓨트 임대 · 🔴 본 종목 열위 peer", "vals": {"ps": 7.9, "gm": 69.4, "om": -6.9, "g": 111.6, "mc": 49.5}}, {"name": "NBIS", "note": "컴퓨트 임대", "vals": {"ps": 54.4, "gm": 72.1, "om": -32.1, "g": 683.9, "mc": 47.7}}, {"name": "LMT", "note": "방산 anchor", "vals": {"ps": 1.8, "gm": 11.8, "om": 12.0, "g": 10.5, "mc": 135.7}}, {"name": "TSLA", "note": "스토리 프리미엄 대조군", "vals": {"ps": 12.5, "gm": 18.9, "om": 1.4, "g": 25.5, "mc": 1297.7}}, {"name": "NVDA", "note": "마진 대조군", "vals": {"ps": 21.4, "gm": 74.1, "om": 65.6, "g": 85.2, "mc": 5424.5}}]}, "landmark": {"current": {"label": "SPCX 현재", "mcap": 1754.6}, "target": {"label": "텐배거 목표", "mcap": 17546.0}, "refs": [{"name": "IRDM", "mcap": 5.3}, {"name": "RKLB", "mcap": 51.8}, {"name": "LMT", "mcap": 135.7}, {"name": "TSLA", "mcap": 1297.7}, {"name": "META", "mcap": 1508.4}, {"name": "AMZN", "mcap": 2960.6}, {"name": "MSFT", "mcap": 3712.7}, {"name": "NVDA", "mcap": 5424.5}], "sentence": "💡 지금은 TSLA($1.30조)와 META($1.51조) 사이 — 텐배거면 $17.5조로 현존 최대 NVDA($5.42조)의 3.2배. 🔴 텐배거 비현실(규모 비교일 뿐 밸류 앵커 아님).", "warn": true}, "trajectory": {"periods": ["FY23", "FY24", "FY25", "H1'26"], "forecastFrom": 4, "inflection": {"index": 2}, "series": [{"label": "매출 ($M)", "axis": "left", "color": "#2980b9", "values": [10387, 14015, 18674, 12508]}, {"label": "CapEx ($M)", "axis": "left", "color": "#c0392b", "values": [4415, 11163, 20737, 28476]}, {"label": "영업이익률 (%)", "axis": "right", "color": "#f39c12", "values": [-33.7, 3.3, -13.9, -1.8]}]}, "scenario": {"horizonLabel": "5년(2031)", "threshold": 1.5, "cases": [{"label": "🟢 Bull", "tone": "bull", "prob": 0.25, "mult": 1.59}, {"label": "🟡 Base", "tone": "base", "prob": 0.45, "mult": 0.51}, {"label": "🔴 Bear", "tone": "bear", "prob": 0.3, "mult": 0.12}]}};
+DDViz.renderRadar('fig-score7','fig-score7-leg',VIZ.score7);
+DDViz.renderRadar('fig-narr','fig-narr-leg',VIZ.narrative);
+DDViz.renderBars('fig-mix',VIZ.bars);
+DDViz.renderHeatmap('fig-peers',VIZ.peers);
+DDViz.renderMcapLadder('fig-ladder','fig-ladder-sent',VIZ.landmark);
+DDViz.renderTrajectory('fig-traj','fig-traj-leg',VIZ.trajectory);
+DDViz.renderScenario('fig-scen','fig-scen-badge',VIZ.scenario);
+</script>
+</body>
+</html>
