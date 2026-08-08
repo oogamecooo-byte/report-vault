@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SpaceX ($SPCX) — R-Dive 수익모델 정밀 해부 — 2026-08-08</title>
+<style>
+  :root{ --ink:#1f2328; --sub:#5b6168; --cream:#FDF6E3; --page:#EBE4D3; --line:#e8e1cf;
+         --red:#c0392b; --amber:#b9770e; --green:#1e8449; --blue:#2471a3; --accent:#2c3e50; }
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--page); color:var(--ink);
+        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+        line-height:1.66; font-size:15.5px; }
+  .wrap{ max-width:1020px; margin:26px auto; padding:0 16px; }
+  .card{ background:var(--cream); border:1px solid var(--line); border-radius:14px;
+         padding:30px 34px; margin-bottom:22px; box-shadow:0 1px 3px rgba(60,50,30,.05); }
+  h1{ font-size:27px; margin:0 0 6px; letter-spacing:-.5px; }
+  h2{ font-size:21px; margin:30px 0 12px; padding-bottom:7px; border-bottom:2px solid var(--accent); }
+  h2:first-child{ margin-top:0; }
+  h3{ font-size:17px; margin:24px 0 8px; color:var(--accent); }
+  h4{ font-size:15.2px; margin:18px 0 6px; color:#34495e; }
+  .sub{ color:var(--sub); font-size:13.5px; }
+  .tag{ display:inline-block; background:#ede6d3; border:1px solid var(--line); border-radius:20px;
+        padding:3px 12px; font-size:12.5px; margin:3px 5px 3px 0; }
+  .flag{ color:var(--red); font-weight:700; }
+  .ok{ color:var(--green); font-weight:700; }
+  .warn{ color:var(--amber); font-weight:700; }
+  table{ border-collapse:collapse; width:100%; margin:12px 0; font-size:13.4px; }
+  th,td{ border:1px solid #ddd6c4; padding:7px 9px; text-align:right; font-variant-numeric:tabular-nums; }
+  th{ background:#f3ecd9; font-weight:600; text-align:center; }
+  td.l,th.l{ text-align:left; }
+  td.c,th.c{ text-align:center; }
+  tr.tot td{ font-weight:700; background:#f6f0df; }
+  .box{ background:#fbf6e7; border:1px solid var(--line); border-left:4px solid var(--accent);
+        border-radius:7px; padding:12px 16px; margin:14px 0; }
+  .box.red{ border-left-color:var(--red); background:#fdeee9; }
+  .box.green{ border-left-color:var(--green); background:#eef6f0; }
+  .box.amber{ border-left-color:var(--amber); background:#fcf6e3; }
+  .gloss{ background:#f4efdf; border:1px solid var(--line); border-radius:7px; padding:10px 14px; margin:10px 0; font-size:13.4px; }
+  .gloss b{ color:var(--accent); }
+  ul,ol{ padding-left:22px; margin:8px 0; }
+  li{ margin:5px 0; }
+  code{ background:#f0e9d6; padding:1px 5px; border-radius:4px; font-size:13px; }
+  details{ background:#f6f0df; border:1px solid var(--line); border-radius:8px; padding:10px 15px; margin:14px 0; font-size:14px; }
+  summary{ cursor:pointer; font-weight:600; }
+  .prod{ border:1px solid var(--line); border-radius:10px; padding:16px 20px; margin:14px 0; background:#fbf6e7; page-break-inside:avoid; }
+  .prod h4{ margin-top:0; font-size:16px; color:var(--accent); }
+  .prod p{ margin:6px 0; font-size:14.3px; }
+  .prod .fld{ font-weight:700; color:#34495e; }
+  .chain{ background:#f2f4f7; border:1px solid #d8dee5; border-radius:8px; padding:14px 18px;
+          font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.6px; line-height:1.8; white-space:pre; overflow-x:auto; }
+  .dd-fig{ background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin:16px 0; page-break-inside:avoid; }
+  .dd-fig .cap{ margin:0 0 8px; font-size:13px; color:var(--sub); font-weight:600; }
+  .figrow{ display:flex; gap:16px; flex-wrap:wrap; }
+  .figrow > div{ flex:1 1 380px; }
+  footer{ text-align:center; color:var(--sub); font-size:12.8px; margin:24px 0 40px; }
+  @media print{
+    body{ background:#fff; font-size:11.6px; }
+    .card{ background:#fff; box-shadow:none; page-break-inside:avoid; }
+    .wrap{ margin:0; max-width:none; }
+    h2{ page-break-after:avoid; }
+    details{ background:#fff; }
+    details[open]{ display:block; }
+  }
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+</style>
+<meta name="vault-stage" content="Dive">
+<meta name="vault-topic" content="SPCX">
+<meta name="vault-skill" content="R-Dive">
+<meta name="vault-date" content="2026-08-08">
+<meta name="vault-published" content="2026-08-08">
+<meta name="description" content="SpaceX ($SPCX) — R-Dive 수익모델 정밀 해부 — 2026-08-08">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="wrap">
+
+<div class="card">
+  <h1>SpaceX ($SPCX) — R-Dive 수익모델 정밀 해부</h1>
+  <p class="sub">2026-08-08 · R-Dive v0.7 (full · 단독 모드) · <b>재실행</b> (직전 2026-06-13 대비 수익모델 구조 변경)<br>
+  1차 자료 = <b>Q2&rsquo;26 10-Q</b>(2026-08-04 제출, <code>spcx-20260630.htm</code>) · <b>8-K EX-99.1 실적 보도자료</b>(2026-08-04) · <b>8-K Cursor 합병계약</b>(2026-06-16) · <b>424B4 IPO 설명서</b>(2026-06-12) · CIK 1181412<br>
+  시세 As-of 2026-08-07 종가 <b>$133.11</b> (52주 $104.83~$225.64) · 시총 $1.755조 · 총주식 13,181,779,945주 (Class A 7,696,293,669 + Class B 5,485,486,276 · 7/28 기준)</p>
+  <span class="tag">아키타입 주 ⑥ 구독·하드웨어</span><span class="tag">부 ④ 백로그·자산집약 용량계약 🔴신규</span><span class="tag">진행 ① 믹스시프트</span><span class="tag">12함정 🔴 6건</span>
+</div>
+
+<div class="card">
+  <h2>📄 한 장 요약</h2>
+  <ul>
+    <li><b>델타(직전 6/13 대비)</b> — 아키타입이 바뀌었다. 직전 보고서의 &ldquo;Starlink 구독이 버는 돈으로 AI 적자를 태우는 회사&rdquo;는 <b>한 분기 만에 무효</b>가 됐다. AI 세그먼트 매출 비중 <b>17.1% &rarr; 32.8%</b>, 그 증가의 <b>85.7%가 컴퓨트 임대</b>(AI 솔루션·인프라 +605% YoY)다. 반면 X 광고는 <span class="flag">YoY &minus;13.8%</span>로 역성장 — 모델·소셜이 아니라 <b>임대업</b>이 숫자를 만들었다.</li>
+    <li><b>확정 아키타입</b> — 주 = <b>⑥ 구독·하드웨어형</b>(Connectivity 54.9%·유일 흑자 엔진) / 부 = <span class="flag">④ 백로그·자산집약 용량계약형 신규 승격</span>(AI 컴퓨트 임대 + 발사·Starshield) / 진행 = <b>① 믹스시프트</b>. <span class="flag">AI 세그먼트를 &ldquo;구독 SaaS&rdquo;로 읽으면 오분류</span> — 10-Q는 클라우드 매출을 <i>&ldquo;고정 월 서비스료를 계약기간에 걸쳐 안분 인식&rdquo;</i>으로 정의한다(용량 예약형, 사용량 과금 아님).</li>
+    <li><span class="flag">치명 함정 ① (C.6)</span> — Q2&rsquo;26 신규 등장한 <b>Customer B가 연결매출의 19.5%</b>이고 <b>AI 세그먼트 전용</b>이다. 역산하면 <b>AI 솔루션·인프라 매출의 약 69%</b>가 단일 고객. &ldquo;AI 흑자 전환&rdquo; 서사 전체가 한 계약에 얹혀 있다.</li>
+    <li><span class="flag">치명 함정 ② (C.1)</span> — AI 매출총이익률 25.2%(Q2&rsquo;25) &rarr; <b>56.8%</b>(Q2&rsquo;26)의 점프는 분모 문제다. 10-Q가 <b>학습용 데이터센터 자산 감가를 R&amp;D에</b>, 임대용 서버 감가를 COGS에 넣는다고 명시했다. 임대 비중이 커질수록 감가가 COGS로 이동해 <b>AI GM은 구조적으로 내려간다</b>.</li>
+    <li><b>핵심 edge</b> — 수직통합이 실제로 돈이 되는 칸은 <b>Connectivity 하나</b>. 위성 감가를 COGS에 넣고도 매출총이익률 <b>52.0%</b>, 영업이익률 <b>38.6%</b>, 기업·정부 매출 <span class="ok">+108% YoY</span>.</li>
+    <li><b>thesis 함의</b> — $SPCX는 이제 &ldquo;로켓+위성 회사&rdquo;도, &ldquo;머스크 AI 지주회사&rdquo;도 아니다. <b>가입자 구독 현금흐름 위에 초대형 컴퓨트 임대 사업을 얹은 자산집약 인프라 콘글로머릿</b>이며, 재평가의 방아쇠는 Grok의 성능이 아니라 <b>임대 계약의 갱신·고객 다변화·자본 회수율</b>이다.</li>
+  </ul>
+
+  <details>
+    <summary>배경 (한 번만 · 접이식)</summary>
+    <p>$SPCX = 순수 SpaceX가 아니라 <b>SpaceX + xAI + X(구 Twitter)</b> 통합 엔티티다(424B4가 재무를 소급 재작성). 2026-06-12 나스닥 상장(공모가 $135.00·순조달 $85.675B), 6/26 회사채 $25B 발행(브릿지론 상환), 7/6 Mesh Optical(광 트랜시버) 인수 클로징, Cursor(Anysphere) $60.0B 전량 주식 인수는 <b>Q3&rsquo;26 클로징 예정 · 2026-08-08 현재 클로징 8-K 미제출</b>. 3 보고 세그먼트 = Space / Connectivity / AI.</p>
+  </details>
+</div>
+
+<div class="card">
+  <h2>Part A — 아키타입 분류</h2>
+
+  <h3>A.1 세그먼트별 매핑 (Q2&rsquo;26 · 1차 = 10-Q Note 18)</h3>
+  <table>
+    <tr><th class="l">세그먼트</th><th>Q2&rsquo;26 매출</th><th>비중</th><th class="l">아키타입</th><th class="l">핵심 과금 단위</th><th class="l">자동 점검 함정</th></tr>
+    <tr><td class="l">📡 <b>Connectivity</b></td><td>$4,291M</td><td><b>54.9%</b></td><td class="l"><b>⑥ 구독+하드웨어 (주)</b></td><td class="l">월 구독($66 ARPU) + Kit 1회 + 기업·정부 다년계약</td><td class="l">C.5 · C.9 · C.2</td></tr>
+    <tr><td class="l">🧠 <b>AI</b></td><td>$2,561M</td><td><b>32.8%</b></td><td class="l"><span class="flag">④ 백로그·자산집약 용량계약 (신규 부)</span> + ⑦ 광고</td><td class="l"><b>고정 월 서비스료 × 예약 용량(GW)</b> / 광고 노출</td><td class="l">C.1 · C.4 · <b>C.6</b> · C.10</td></tr>
+    <tr><td class="l">🚀 <b>Space</b></td><td>$962M</td><td>12.3%</td><td class="l">④ 백로그·정부계약</td><td class="l">발사 1회 고정가 · 개발계약(원가투입법)</td><td class="l">C.4 · C.5</td></tr>
+    <tr class="tot"><td class="l">합계</td><td>$7,814M</td><td>100%</td><td class="l">혼합 콘글로머릿</td><td class="l">—</td><td class="l">—</td></tr>
+  </table>
+
+  <h3>A.2 본 종목 아키타입 확정</h3>
+  <ul>
+    <li><b>주 = ⑥ 구독·하드웨어형</b> — 매출 과반(54.9%)이고 <b>유일한 영업 흑자원</b>(+$1,656M). 유지.</li>
+    <li><b>부 = ④ 백로그·자산집약 용량계약형 — <span class="flag">신규 승격</span>.</b> 직전 6/13 R-Dive에서 ④는 발사(Space)만 담당했다. 이제 <b>AI 컴퓨트 임대가 ④의 주력</b>이다: 매출 32.8% · <b>capex 86.2%</b> · 백로그 $47.5B · 클라우드 계약고 $14.1B.</li>
+    <li><b>진행형 = ① 믹스시프트</b> — AI 17.1%(FY25) → 32.8%, Space 21.9% → 12.3%.</li>
+  </ul>
+  <div class="box red">
+    <b>🔴 오분류 경고</b> — AI 세그먼트를 ⑥ 구독 SaaS로 분류하면 안 된다. 10-Q 원문: <i>&ldquo;revenue from cloud services based on <b>fixed monthly services fee</b> which is recognized <b>ratably over the contract term</b>&rdquo;</i> — 이는 <b>자산을 깔아두고 용량을 통째로 빌려주는 임대 계약</b>이고, net retention·seat 확장 같은 SaaS 지표가 아니라 <b>계약 잔고·용량(GW)·자본 회수율</b>로 평가해야 한다.
+  </div>
+
+  <h3>A.3 전환 falsifier (주↔부 역전 판별 조건)</h3>
+  <table>
+    <tr><th>#</th><th class="l">조건</th><th class="l">현재 위치</th><th class="l">판별 시점</th></tr>
+    <tr><td>①</td><td class="l">AI 세그먼트 매출 &gt; Connectivity</td><td class="l">$2,561M vs $4,291M (59.7%)</td><td class="l">QoQ +213% 지속 시 1~2분기</td></tr>
+    <tr><td>②</td><td class="l">AI 영업이익 <b>D&amp;A 차감 후</b> 흑자</td><td class="l">&minus;$1,257M (조정 EBITDA는 +$1,146M)</td><td class="l">Q3~Q4&rsquo;26</td></tr>
+    <tr><td>③</td><td class="l">Connectivity 영업이익 기여 &lt; 50%</td><td class="l">현재 사실상 100%</td><td class="l">—</td></tr>
+    <tr><td>④</td><td class="l"><b>역방향(승격 철회)</b> — Customer B 계약 종료·갱신 실패</td><td class="l">계약 기간 ❌ 미공시</td><td class="l">갱신 시점 미공시</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Part B.0 — 제품·서비스·기술 이해</h2>
+  <h3>B.0.1 주력 제품 카탈로그 (매출·전략 중요도 순)</h3>
+
+  <div class="prod">
+    <h4>① Starlink 소비자 광대역 — 매출 $2,485M (Q2&rsquo;26 · 전사 31.8%)</h4>
+    <p><span class="fld">무엇</span> — 저궤도(LEO) 위성 인터넷 서비스 + 사용자 단말(Starlink Kit)을 묶어 파는 소비자 구독 상품. 가정·이동(로밍)·해상용 요금제로 나뉜다.</p>
+    <p><span class="fld">작동·구성</span> — 약 9,600기의 광대역·모바일 위성(2026-03-31 기준)이 지구 저궤도를 돌며, 위상배열 안테나가 든 접시형 단말이 머리 위를 지나가는 위성을 자동으로 갈아타며 연결을 유지한다. 위성 간 레이저 링크로 지상국이 없는 바다·오지도 커버한다. 원가의 핵심은 <b>위성을 자기 로켓으로 자기가 쏘아 올린다</b>는 점이다.</p>
+    <p><span class="fld">고객·용도</span> — 광케이블이 안 닿는 시골·산간·선박·차량. pain point = &ldquo;대안이 없음&rdquo;. 164개국 서비스.</p>
+    <p><span class="fld">차별점</span> — 발사 단가를 스스로 통제하고, 9,600기 선점으로 궤도·주파수 자원을 먼저 확보했다. Kuiper·OneWeb 등은 발사를 남에게 맡기거나 규모가 한 자릿수 배 작다(424B4 경쟁 단락).</p>
+    <p><span class="fld">매출 위치</span> — Connectivity 소비자 라인. <span class="flag">가입자는 2배(6.0M→12.0M)인데 ARPU는 $85→$66(&minus;22.4%)</span> — 규모는 늘고 단가는 내려가는 전형적 매스마켓 진입 국면.</p>
+  </div>
+
+  <div class="prod">
+    <h4>② Starlink 기업·정부 + Starshield — 매출 $1,806M (Q2&rsquo;26 · 전사 23.1%)</h4>
+    <p><span class="fld">무엇</span> — 항공사·해운·통신사·정부에 파는 관리형 연결 서비스 + 국가안보용 전용 위성망(Starshield).</p>
+    <p><span class="fld">작동·구성</span> — 소비자망과 같은 컨스텔레이션을 쓰되, 우선순위 대역·전용 단말·SLA·보안 요건을 붙인다. Starshield는 정부 전용 위성·센싱 페이로드를 따로 올린다.</p>
+    <p><span class="fld">고객·용도</span> — American Airlines·Southwest·Virgin Atlantic·Iberia·Aer Lingus 기내 와이파이, SoftBank·NTT Docomo·Spark NZ 등 통신사 직접연결(Direct-to-Cell), 미 우주군.</p>
+    <p><span class="fld">차별점</span> — 항공 침투율이 아직 낮고(회사 주장 10% 미만), 인증·통합에 수년이 걸려 한번 붙으면 잘 안 바뀐다.</p>
+    <p><span class="fld">매출 위치</span> — <span class="flag">Connectivity 세그먼트</span>다. Starshield는 &ldquo;우주/국방 라인&rdquo;이 아니라 <b>Connectivity 기업·정부 매출</b>로 잡힌다(10-Q: Starshield 다년 계약은 원가투입법으로 기간 인식 / 8-K 보도자료도 Starshield 수주를 Connectivity 항목에 기재). <span class="ok">+108.3% YoY</span>로 세그먼트 내 비중 33.5%→<b>42.1%</b>. Q2 중 <b>$6B 이상 다년 미 정부 계약</b> 수주.</p>
+  </div>
+
+  <div class="prod">
+    <h4>③ 🔴 AI 컴퓨트 임대 (Cloud Services) — 매출 $2,194M (Q2&rsquo;26 · 전사 28.1%) — <span class="flag">신규 주력</span></h4>
+    <p><span class="fld">무엇</span> — 자사가 AI 학습용으로 지은 GPU 데이터센터의 <b>남는 용량을 제3자에게 통째로 빌려주는</b> 사업. 10-Q의 &ldquo;AI 솔루션·인프라&rdquo; 매출 대부분이 여기서 나온다.</p>
+    <p><span class="fld">작동·구성</span> — Colossus II 등 기가와트급 클러스터에 GPU를 설치하고, 그 <b>정격 전력(nameplate compute draw)</b>을 용량 단위로 판다. 과금은 <b>고정 월 서비스료를 계약 기간에 걸쳐 균등 인식</b>하는 구조 — 쓴 만큼 내는 종량제가 아니라 <b>자리를 통째로 예약하는 임대</b>에 가깝다.</p>
+    <p><span class="fld">고객·용도</span> — <span class="flag">10-Q 기준 특정되지 않음</span>(Customer B로만 표기). 424B4는 스스로 <i>&ldquo;우리는 <b>남는 용량(excess capacity)</b>을 <b>제한된 수의 제3자(a limited number of third parties)</b>에게 판매할 의도&rdquo;</i>라고 못 박았다 — 즉 <b>소수 대형 고객 집중은 설계 의도</b>다.</p>
+    <p><span class="fld">차별점</span> — 전력·부지·냉각을 자체 확보하고 GPU를 대량 선취한다. 다만 임대업 자체의 기술 해자는 얕다 — 같은 GPU, 같은 전력, 같은 랙이다.</p>
+    <p><span class="fld">매출 위치</span> — AI 세그먼트의 85.7%. <span class="flag">YoY +605%</span>($311M→$2,194M).</p>
+  </div>
+
+  <div class="prod">
+    <h4>④ Falcon / Starship 발사 — 매출 $962M (Q2&rsquo;26 · 전사 12.3%)</h4>
+    <p><span class="fld">무엇</span> — 고객 위성을 궤도에 올려주는 발사 서비스(Launch Services, 1회 고정가·1~5년 계약)와, 정부 우주 프로그램용 우주선 개발·임무 서비스(Launch &amp; Development, 1~14년 계약).</p>
+    <p><span class="fld">작동·구성</span> — Falcon 9/Heavy의 1단 부스터를 회수·재사용해 발사당 원가를 크게 낮춘다. Starship은 완전 재사용을 목표로 개발 중이며, 회사는 이것이 궤도 투입 원가를 <i>&ldquo;기존 평균 대비 99% 이상&rdquo;</i> 낮출 것이라 주장한다(8-K 보도자료 · <b>주장</b>).</p>
+    <p><span class="fld">고객·용도</span> — 상업 위성 사업자, NASA, 국방·정보기관, 그리고 <b>자사 Starlink</b>(사내 발사는 세그먼트 간 매출로 잡지 않는다).</p>
+    <p><span class="fld">차별점</span> — 발사 빈도·페이로드·신뢰도에서 압도적 — 424B4가 경쟁사로 ULA·Arianespace·Northrop Grumman·Blue Origin·Rocket Lab·Firefly·Relativity를 열거하면서도 <i>&ldquo;발사 솔루션의 폭과 발사 빈도에서 의미 있는 우위&rdquo;</i>를 명시.</p>
+    <p><span class="fld">매출 위치</span> — <span class="flag">Q2 매출은 +29% YoY인데 H1 매출은 &minus;1.9%</span>, H1 발사 78회(&minus;7.1%)·궤도 질량 1,041톤(&minus;5.5%). 감소분은 대부분 <b>내부 발사</b>(908톤, &minus;3.2%) — V3 위성·Starship 전환 대기 구간이라는 해석이 가능하나 미확정.</p>
+  </div>
+
+  <div class="prod">
+    <h4>⑤ Grok / X — 광고 $367M + 구독·API(AI 솔루션 내) (Q2&rsquo;26)</h4>
+    <p><span class="fld">무엇</span> — 프런티어 LLM Grok과 소셜 플랫폼 X. 광고 판매 + 프리미엄 구독 + 데이터 라이선싱 + API.</p>
+    <p><span class="fld">작동·구성</span> — X의 실시간 데이터로 Grok을 학습·강화하고, Grok을 X에 붙여 다시 사용자를 붙든다. 광고는 클릭·조회 등 <b>광고주가 선택한 인게이지먼트가 발생한 시점</b>에 인식(단기 취소가능 계약·4분기 성수기).</p>
+    <p><span class="fld">고객·용도</span> — 광고주 + 소비자·기업 구독자. LTM 지원 계정 약 13억, MAU 약 5.5억, 그중 Grok 기능 사용 MAU 약 1.17억(2026-03-31).</p>
+    <p><span class="fld">차별점</span> — 실시간 데이터 + 자체 컴퓨트 수직통합. 단 424B4가 직접 경쟁자로 OpenAI·Anthropic·Google·Meta·Microsoft·오픈소스를 열거한다.</p>
+    <p><span class="fld">매출 위치</span> — <span class="flag">광고 YoY &minus;13.8%</span>($426M→$367M). 컨콜은 QoQ +7%만 제시했다. <b>AI 세그먼트에서 유일하게 역성장하는 라인</b>.</p>
+  </div>
+
+  <div class="box amber">
+    <b>파이프라인 (매출 $0 · 별도 표기)</b> — <b>STARMIND</b>(궤도 AI 컴퓨트 위성 &ldquo;AI1&rdquo;, 전개 30m×75m·컴퓨트 250kW 피크, 생산 2027말·배치 424B4 기준 &ldquo;as early as 2028&rdquo;) · <b>TERAFAB</b>(칩 팹, 424B4 <i>&ldquo;with Tesla and Intel&rdquo;</i> · 8/6 텍사스 Grimes County 착공 발표·초기 capex ~$16.8B) · <b>Gigasat Factory</b>(위성 양산동).
+    <span class="flag">셋 다 매출 0</span>이고, Terafab은 424B4 위험요인이 <i>&ldquo;framework agreement… Tesla도 Intel도 잔류 의무 없음&rdquo;</i>이라 못 박은 <b>비구속 기본합의</b> 상태다. $16.8B는 SEC 공시가 아니라 <b>웹 공지 수치</b>(10-Q &ldquo;Terafab&rdquo; 언급 0건).
+  </div>
+
+  <h3>B.0.2 핵심 기술·IP·해자</h3>
+  <ul>
+    <li><b>기반 기술 스택</b> — ① 재사용 부스터(발사 원가) ② 대량 위성 자체 제조 + 위상배열 단말 ③ 위성 간 레이저 링크 ④ 기가와트급 AI 학습 클러스터(회사 주장 &ldquo;세계 최초 코히런트 GW급 학습 클러스터&rdquo;) ⑤ 7/6 인수한 Mesh Optical의 <b>광 트랜시버</b>(데이터센터 간 고속 전송) 내재화.</li>
+    <li><b>IP</b> — <span class="flag">424B4가</span> <i>&ldquo;우리 사업에 중요한 지식재산은 <b>독자 노하우와 소프트웨어</b>, 브랜드, 그리고 <b>선별적으로 특허화한</b> 발명&rdquo;</i>이라고 서술 — <b>특허 건수·핵심 특허·만료 시점은 미공시</b>. 즉 해자의 실체는 특허가 아니라 <b>영업비밀 + 규모 + 규제 자산(스펙트럼·궤도 슬롯·발사 인허가)</b>이다.</li>
+    <li><b>재현 난이도</b> — 발사·컨스텔레이션은 매우 높음(자본·기술·규제·궤도 선점 4중 장벽). <b>컴퓨트 임대는 낮음</b> — GPU·전력·부지를 사면 되는 사업이고, 424B4 스스로 CoreWeave·Nebius·하이퍼스케일러를 경쟁자로 지목했다.</li>
+    <li><b>R&amp;D 방향</b> — Q2&rsquo;26 R&amp;D $3,548M(매출의 <b>45.4%</b>) 중 <b>AI가 $2,178M(61.4%)</b> — Grok 학습과 데이터센터 비용. Space $1,076M(Starship). Connectivity $294M(V3 위성).</li>
+    <li><span class="flag">마케팅 vs 실증 구분</span> — &ldquo;궤도 투입 원가 99% 절감&rdquo;(Starship)·&ldquo;연 1 TW 칩 생산&rdquo;(Terafab)·&ldquo;냉각 오버헤드 한 자릿수 배수 절감&rdquo;(STARMIND)은 모두 <b>주장(claim)</b>이며 1차 실증 없음. 실측으로 확인되는 것은 발사 횟수·궤도 질량·가입자 수·정격 컴퓨트(GW)뿐이다.</li>
+    <li><b>스펙트럼 자산 (신규)</b> — EchoStar AWS-4·H-Block 라이선스 매입 진행. 신탁 이전 2026-05-22 완료, 회사가 신탁에 <b>$856M 선지급</b>(무형자산 아닌 선급금 계상). <span class="flag">잔여 대가 일부가 Class A 주식으로 지급될 계약</span>(C.11 희석 항목).</li>
+  </ul>
+
+  <h3>B.0.3 제품 → 수익모델 연결 <span class="sub">(R-Dive 고유)</span></h3>
+  <table>
+    <tr><th class="l">주력 제품</th><th class="l">과금 유형</th><th>아키타입</th><th class="l">가격 결정력</th><th class="l">전환비용·lock-in</th><th class="l">운영레버리지 기여</th></tr>
+    <tr><td class="l">Starlink 소비자</td><td class="l">구독(월) + HW 1회</td><td>⑥</td><td class="l"><span class="flag">약·하락중</span> (ARPU &minus;22.4%)</td><td class="l"><span class="warn">중</span> (Kit 매몰비용·계약은 월단위 해지 자유)</td><td class="l"><span class="ok">강</span> (위성 감가 고정비)</td></tr>
+    <tr><td class="l">Starlink 기업·정부 + Starshield</td><td class="l">다년 계약 + 원가투입법</td><td>⑥+④</td><td class="l"><span class="ok">강</span> (인증·SLA·대체 부재)</td><td class="l"><span class="ok">강</span> (기체 개조·규제 인증)</td><td class="l"><span class="ok">강</span></td></tr>
+    <tr><td class="l"><b>AI 컴퓨트 임대</b></td><td class="l"><b>고정 월 서비스료(용량 예약)</b></td><td><b>④</b></td><td class="l"><span class="warn">중</span> (계약 중 고정 / 갱신 시 GPU 시세)</td><td class="l"><span class="flag">약~중</span> (데이터 이전 외 물리적 lock-in 얕음)</td><td class="l"><span class="ok">강</span> — 단 <b>선행 capex 필요</b></td></tr>
+    <tr><td class="l">Falcon/Starship 발사</td><td class="l">1회 고정가 + 정부 개발계약</td><td>④</td><td class="l"><span class="ok">강</span> (준독점)</td><td class="l"><span class="ok">강</span></td><td class="l"><span class="warn">중</span> (Starship R&amp;D가 상쇄)</td></tr>
+    <tr><td class="l">Grok / X 광고</td><td class="l">광고 노출 + 구독·API</td><td>⑦+⑥</td><td class="l"><span class="flag">약</span> (역성장 중)</td><td class="l"><span class="flag">약</span></td><td class="l"><span class="flag">음(&minus;)</span> (학습 비용 선행)</td></tr>
+  </table>
+  <div class="box red">
+    <b>🔴 해자 → 수익 전환 한 줄</b> — 수직통합이라는 해자가 실제로 현금이 되는 칸은 <b>Connectivity의 운영레버리지 하나</b>다(감가 후 GM 52.0% · 영업이익률 38.6%). 발사의 준독점 가격결정력은 Starship R&amp;D에 잡아먹혀 세그먼트 영업 <b>&minus;$542M</b>이고, <b>AI 임대는 해자가 아니라 자본으로 사 온 매출</b>이다 — 424B4 스스로 &ldquo;남는 용량을 제한된 수의 제3자에게&rdquo;라고 규정했다.
+  </div>
+</div>
+
+<div class="card">
+  <h2>Part B.1~B.5 — 수익모델 정량</h2>
+
+  <h3>B.1 매출 스트림 분해 <span class="sub">(1차 = 10-Q Note 3 disaggregation, $M)</span></h3>
+  <table>
+    <tr><th class="l">스트림</th><th>Q2&rsquo;26</th><th>Q1&rsquo;26</th><th>Q2&rsquo;25</th><th>비중(Q2&rsquo;26)</th><th>YoY</th><th class="l">과금 유형</th><th>반복성</th></tr>
+    <tr><td class="l">Launch Services</td><td>648</td><td>330</td><td>490</td><td>8.3%</td><td>+32.2%</td><td class="l">1회 고정가</td><td>🟡</td></tr>
+    <tr><td class="l">Launch &amp; Development</td><td>314</td><td>289</td><td>256</td><td>4.0%</td><td>+22.7%</td><td class="l">정부 개발계약</td><td>🟡</td></tr>
+    <tr class="tot"><td class="l">🚀 Space 소계</td><td>962</td><td>619</td><td>746</td><td>12.3%</td><td>+29.0%</td><td class="l">—</td><td>—</td></tr>
+    <tr><td class="l">Consumer (Starlink)</td><td>2,485</td><td>2,148</td><td>1,721</td><td>31.8%</td><td>+44.4%</td><td class="l">월 구독 + Kit</td><td>🟢</td></tr>
+    <tr><td class="l">Enterprise &amp; Gov (Starlink·Starshield)</td><td>1,806</td><td>1,109</td><td>867</td><td>23.1%</td><td class="ok">+108.3%</td><td class="l">다년 계약</td><td>🟢</td></tr>
+    <tr class="tot"><td class="l">📡 Connectivity 소계</td><td>4,291</td><td>3,257</td><td>2,588</td><td>54.9%</td><td>+65.8%</td><td class="l">—</td><td>—</td></tr>
+    <tr><td class="l">Advertising (X)</td><td>367</td><td>343</td><td>426</td><td>4.7%</td><td class="flag">&minus;13.8%</td><td class="l">광고 노출</td><td>🟡</td></tr>
+    <tr><td class="l"><b>AI Solutions &amp; Infra</b> (컴퓨트 임대·구독·API)</td><td><b>2,194</b></td><td>475</td><td>311</td><td><b>28.1%</b></td><td class="flag">+605.5%</td><td class="l"><b>고정 월 서비스료</b></td><td>🟢</td></tr>
+    <tr class="tot"><td class="l">🧠 AI 소계</td><td>2,561</td><td>818</td><td>737</td><td>32.8%</td><td>+247.5%</td><td class="l">—</td><td>—</td></tr>
+    <tr class="tot"><td class="l">합계</td><td>7,814</td><td>4,694</td><td>4,071</td><td>100%</td><td>+91.9%</td><td class="l">—</td><td>—</td></tr>
+  </table>
+  <div class="box">
+    <b>🔴 믹스 시프트 방향</b> — 저→고품질 전환이 아니라 <b>구독형 → 자산집약 임대형</b> 전환이다. AI 비중 FY23 28.5% → FY24 18.7% → FY25 17.1% → <b>Q2&rsquo;26 32.8%</b>(V자). 단 FY23의 AI 비중은 광고가 만든 것이고, 지금의 AI 비중은 <b>임대가 만든 것</b>이라 같은 숫자가 전혀 다른 사업을 가리킨다.
+  </div>
+
+  <h3>B.2 과금·가격 모델 + 🔴 정량 강제</h3>
+  <table>
+    <tr><th class="l">정량 메트릭</th><th class="l">산식</th><th>Q2&rsquo;26</th><th>Q2&rsquo;25</th><th class="l">해석</th></tr>
+    <tr><td class="l"><b>Starlink ARPU</b></td><td class="l">가입자 서비스매출 ÷ 평균가입자 ÷ 개월</td><td><b>$66/월</b></td><td>$85/월</td><td class="l"><span class="flag">&minus;22.4%</span> — 매스마켓 가격압박</td></tr>
+    <tr><td class="l"><b>Implied 컴퓨트 임대 단가</b></td><td class="l">AI 솔루션·인프라 매출 ÷ 기말 정격 컴퓨트</td><td><b>$1,567M<br>/GW·분기</b><br>(연환산 $6.27B/GW)</td><td>$778M<br>/GW·분기</td><td class="l">⚠️ 분모에 <b>자사 학습용 용량 포함</b> → 실제 임대 단가는 이보다 <b>높다</b>. 방향성 참고용</td></tr>
+    <tr><td class="l"><b>capex per GW</b> (추가 용량)</td><td class="l">AI capex ÷ 정격 컴퓨트 증가분</td><td><b>$15,828M ÷ 0.4GW<br>≈ $39.6B/GW</b></td><td>—</td><td class="l">⚠️ 미가동 건설중자산(CIP $12,554M) 포함 → <b>과대</b>. H1 기준 $23,551M ÷ 1.0GW ≈ <b>$23.6B/GW</b></td></tr>
+    <tr><td class="l"><b>자본 회수 산술</b></td><td class="l">연환산 임대매출 ÷ H1 AI capex</td><td><b>$8,776M ÷ $23,551M<br>= 0.37x</b></td><td>—</td><td class="l"><span class="flag">CFO의 &ldquo;1년 미만 회수&rdquo; 주장과 큰 간극.</span> <b>총매출 기준으로도 2.7년</b> (원가·opex 제외 전)</td></tr>
+    <tr><td class="l">Take rate / Float yield</td><td class="l">—</td><td><b>해당 없음</b></td><td>—</td><td class="l">거래 중개·예치 모델 아님</td></tr>
+  </table>
+  <div class="gloss">
+    💡 <b>📐 Implied 임대 단가</b> = 임대 매출 ÷ 깔아둔 컴퓨트 용량(GW). &ldquo;설비 1GW를 굴려 분기당 얼마를 버나&rdquo;. 분모에 자기가 쓰는 용량이 섞이면 실제 단가는 과소평가된다.<br>
+    💡 <b>🔤 정격 컴퓨트(nameplate compute draw)</b> = 기말 설치된 GPU 수 × 각 GPU의 총 전력 소비. 10-Q는 <i>&ldquo;설치 용량을 나타내며 실제 전력 소비나 가동률을 뜻하지 않는다&rdquo;</i>고 명시 — <b>가동률은 미공시</b>.
+  </div>
+
+  <div class="dd-fig">
+    <p class="cap">그림 1 — 총매출($M, 좌축) vs AI 세그먼트 매출 비중(%, 우축). ▼ = 컴퓨트 임대 변곡. 마지막 두 점은 실측 분기 ×4 <b>연환산</b>(전망 아님)</p>
+    <div id="fig-rate"></div>
+    <div class="dd-legend" id="leg-rate"></div>
+  </div>
+
+  <div class="figrow">
+    <div class="dd-fig">
+      <p class="cap">그림 2 — Q2&rsquo;26 매출 구성</p>
+      <div id="fig-rev"></div>
+    </div>
+    <div class="dd-fig">
+      <p class="cap">그림 3 — Q2&rsquo;26 capex 구성 <span class="flag">(AI 86.2%)</span></p>
+      <div id="fig-capex"></div>
+    </div>
+  </div>
+
+  <h3>B.3 단위 경제학 — 🔴 세그먼트별 매출총이익률 <span class="sub">(10-Q Note 18 원가 직접 산출)</span></h3>
+  <table>
+    <tr><th class="l">세그먼트</th><th>매출</th><th>매출원가</th><th>매출총이익률</th><th>(Q2&rsquo;25)</th><th>영업이익률</th><th>조정 EBITDA 마진</th><th>capex ÷ 매출</th></tr>
+    <tr><td class="l">🚀 Space</td><td>962</td><td>329</td><td><b>65.8%</b></td><td>55.8%</td><td>&minus;56.3%</td><td>&minus;21.3%</td><td>1.22x</td></tr>
+    <tr><td class="l">📡 Connectivity</td><td>4,291</td><td>2,060</td><td><b>52.0%</b></td><td>45.9%</td><td class="ok">+38.6%</td><td>+60.5%</td><td><b>0.32x</b></td></tr>
+    <tr><td class="l">🧠 AI</td><td>2,561</td><td>1,106</td><td><b>56.8%</b></td><td>25.2%</td><td>&minus;49.1%</td><td>+44.7%</td><td class="flag">6.18x</td></tr>
+    <tr class="tot"><td class="l">연결</td><td>7,814</td><td>3,495</td><td>55.3%</td><td>43.9%</td><td>&minus;1.8%</td><td>+45.3%</td><td>2.35x</td></tr>
+  </table>
+  <ul>
+    <li><b>Starlink 가입자당 경제</b> — 소비자 매출 $2,485M ÷ 평균 11.15M 가입자 ÷ 3개월 = <b>$74.3/월</b>(전체 가입자 분모 기준). 회사 공식 ARPU는 $66 — 차이는 ARPU 정의가 <i>&ldquo;직접 계약한 기업·정부 관리형 고객을 제외&rdquo;</i>하기 때문. <span class="flag">즉 공식 ARPU 하락은 소비자 매스마켓 확장 효과이지, 고마진 기업 매출까지 내려간 것은 아니다.</span></li>
+    <li><b>발사당 평균</b> — 고객 발사 10회에 Launch Services $648M → <b>회당 약 $64.8M</b>(대형·고가 임무 믹스). H1은 17회에 $978M → 회당 $57.5M.</li>
+    <li><b>LTV / CAC / CAC payback</b> — ❌ <b>미공시</b>. 고객획득비·해지율 모두 10-Q·8-K에 없음. 추정하지 않는다.</li>
+  </ul>
+
+  <h3>B.4 매출 품질 + 집중도</h3>
+  <ul>
+    <li><b>백로그 = $47,461M</b> (2026-06-30 · 10-Q). FY25말 $28,377M 대비 <b>1.67배</b>. 이 중 <b>이연수익 $14,286M</b>이 이미 현금·청구 완료분.</li>
+    <li><b>인식 일정 (1차 명시)</b> — <b>1년 내 56%</b>($26.6B) / 1~3년 34%($16.1B) / 이후 10%.</li>
+    <li><b>품질 판정 = <span class="ok">확정형 우위</span></b>. 10-Q 정의가 <i>&ldquo;집행 가능한 합의(enforceable agreement)에 도달한 계약만 포함하며, <b>옵션 구매권과 제약이 걸린 변동대가는 제외</b>&rdquo;</i>라고 명시 — IDIQ 천장형이 아니다. 단 <b>세그먼트별 백로그 분해는 미공시</b>라, $14.1B 클라우드 계약고가 이 백로그의 얼마를 차지하는지는 확인 불가.</li>
+  </ul>
+  <div class="box red">
+    <b>🔴 고객 집중 (10-Q Note 3 · 본 재실행 최대 발견)</b>
+    <table>
+      <tr><th class="l">고객</th><th>Q2&rsquo;26 연결매출 비중</th><th>Q2&rsquo;25</th><th class="l">성격</th></tr>
+      <tr><td class="l"><b>Customer A</b></td><td>18.3% (≈$1,430M)</td><td>16.7%</td><td class="l"><b>3개 세그먼트 전부</b>에 걸침 (정부 성격 추정 — <span class="flag">명시 없음</span>)</td></tr>
+      <tr><td class="l"><b>Customer B</b></td><td class="flag">19.5% (≈$1,524M)</td><td>10% 미만</td><td class="l"><span class="flag">AI 세그먼트 전용</span> — Q2&rsquo;26 신규 등장</td></tr>
+      <tr class="tot"><td class="l">A+B 합계</td><td>37.8%</td><td>—</td><td class="l">—</td></tr>
+    </table>
+    → <b>Customer B는 AI 세그먼트의 약 59.5%, AI 솔루션·인프라 매출의 약 69.4%</b>(Claude 역산). &ldquo;AI 흑자 전환&rdquo;의 실체는 <b>단일 고객 1곳</b>이다.
+  </div>
+  <p><b>유통·비용 집중</b> — <span class="flag">관계자 조달 의존이 매우 크다.</span> 총차입 $39,364M 중 <b>$13,329M(33.9%)가 Valor Equity Partners와의 AI 인프라 장비 리스</b>(failed sale-leaseback으로 차입 계상)이고, Valor 창업자·CEO·CIO <b>Antonio Gracias는 본 회사 이사</b>다. 분기 이자 $629M 중 <b>$327M(52.0%)</b>가 이 건. 2025-12-31 $4,507M → 반년 만에 <b>2.96배</b>. <span class="flag">금리·기간·담보 미공개</span> → 유불리 판정 불가. 별도로 Tesla Megapack $295M(Q2) 매입.</p>
+
+  <h3>B.5 가치사슬 내 수익 포착 지점</h3>
+<div class="chain">[전력·부지·GPU·발사체] → SpaceX 수직통합 →
+  ├ 궤도 접근 (Falcon/Starship) ── 외부 고객 발사 $962M   (준독점 가격결정력, 그러나 영업 −$542M)
+  ├ 컨스텔레이션 (Starlink) ───── 소비자 구독 $2,485M + 기업·정부 $1,806M   ★ 유일 흑자 길목
+  └ 컴퓨트 (Colossus II) ─────── 자사 Grok 학습(비용) + 남는 용량 임대 $2,194M   ← 신규 길목</div>
+  <p><b>마진을 떼는 길목</b> = ★ Connectivity 구독. <b>AI 임대는 길목이 아니라 재고 소진</b>이다 — 424B4 문구 그대로 &ldquo;excess capacity&rdquo;를 파는 것이므로, 자사 학습 수요가 커지면 팔 물량이 줄고 작으면 남는다. <b>길목의 가격결정력이 자기 사업 계획에 종속</b>돼 있다.</p>
+</div>
+
+<div class="card">
+  <h2>Part C — 12 함정 강제 체크리스트</h2>
+
+  <h3>C.1 마진 분모 forensics <span class="flag">🔴🔴 (본 재실행 백미)</span></h3>
+  <ul>
+    <li><b>본 종목</b> — AI 매출총이익률이 25.2%(Q2&rsquo;25) → <b>56.8%</b>(Q2&rsquo;26)로 뛰었다. 그런데 10-Q 원문은 원가 분류를 이렇게 나눈다 — <b>AI 매출원가</b> = <i>&ldquo;…데이터센터 시설비, <b>서버·네트워크 장비 감가상각</b>, 퍼블릭 클라우드 비용…&rdquo;</i> / <b>AI R&amp;D</b> = <i>&ldquo;…Grok 학습, <b>프로세서를 포함한 데이터센터 자산의 감가상각</b>, 장비 리스료, 네트워크 장비…&rdquo;</i>. 즉 <b>같은 GPU라도 외부 임대에 쓰면 COGS, 자사 학습에 쓰면 R&amp;D</b>로 간다.</li>
+    <li><b>산술 증거</b> — AI D&amp;A 총액 <b>$1,885M</b> &gt; AI 매출원가 전체 <b>$1,106M</b>(여기엔 전력·대역폭·크리에이터 지급·무형자산 상각·인건비도 포함). → <b>AI 감가의 대부분이 R&amp;D에 있다.</b></li>
+    <li><span class="flag">🚩 적신호 = 있음</span> — (1) <b>AI GM 56.8% &gt; Connectivity GM 52.0%</b>이지만 두 숫자는 비교 불가다. Connectivity는 위성·발사 감가를 <b>COGS에 넣고도</b> 52.0%다. (2) 임대 비중이 커질수록 감가가 R&amp;D→COGS로 이동해 <b>AI GM은 구조적으로 하락</b>한다. (3) 조정 EBITDA $3,538M 중 <b>D&amp;A 되더하기가 $2,848M = 80.5%</b>, AI만 보면 되더하기 D&amp;A $1,885M &gt; 조정 EBITDA $1,146M — <b>감가를 빼면 흑자가 사라진다</b>(&minus;$739M).</li>
+    <li><b>진짜 사업 마진 분모</b> = 세그먼트 <b>영업이익</b>(D&amp;A 후). 연결 &minus;1.8%, AI &minus;49.1%, Connectivity +38.6%.</li>
+  </ul>
+
+  <h3>C.2 반복매출 프리미엄</h3>
+  <p>반복형 = 구독(소비자 $2,485M) + 다년 관리형($1,806M) + 임대 월정액($2,194M) ≈ <b>$6,485M = 83.0%</b>. 일회성 = 발사·Kit·광고. <span class="warn">🚩 = 부분 있음</span> — 소비자 구독 계약은 10-Q 명시로 <i>&ldquo;generally month-to-month&rdquo;</i>(언제든 해지 가능)라 명목 반복이지 계약상 잠금이 아니다. 임대는 계약기간·갱신조건 <b>미공시</b>. 광고는 <i>&ldquo;단기 취소 가능&rdquo;</i> 명시.</p>
+
+  <h3>C.3 ARR ↔ 장부매출 격차</h3>
+  <p><span class="ok">🚩 없음(양호)</span> — 회사는 ARR을 쓰지 않고 <b>백로그($47.5B)·이연수익($14.3B)·클라우드 계약고($14.1B)</b>를 쓴다. $14.1B 계약고 → Q2 인식 <b>$1.6B</b>(회사 명시)로 <b>인식분이 명시적으로 분리 제시</b>됐다. 다만 계약고 $14.1B의 인식 기간은 미공시.</p>
+
+  <h3>C.4 백로그 품질 — 확정 vs 천장</h3>
+  <p><span class="ok">🟢 확정형</span> — &ldquo;집행 가능한 합의&rdquo;만 포함 + 옵션·제약 변동대가 제외(10-Q 정의). 1년 내 56%. <span class="warn">🚩 부분</span> — 세그먼트 분해 미공시. <b>미래 지출 측 백로그도 봐야 한다</b>: 비취소 확정 지출 약정 <b>$27,955M</b>, 그중 <b>2027년 한 해에 $22,244M</b> 집중(AI 인프라 + 제3자 클라우드 용량). 즉 <b>받을 돈 $47.5B와 나갈 돈 $28.0B가 동시에 잠겨 있다</b>.</p>
+
+  <h3>C.5 가격 결정력 — commodity vs 차별화</h3>
+  <ul>
+    <li><span class="ok">강</span> — 발사(준독점) · 기업·정부 연결(인증·SLA) · Starshield(정부 다년).</li>
+    <li><span class="flag">약</span> — 소비자 Starlink(ARPU &minus;22.4%) · X 광고(&minus;13.8%).</li>
+    <li><span class="warn">중·미검증</span> — 컴퓨트 임대: 계약 중엔 고정 월정액이라 방어되지만, <b>갱신 시 GPU 임대 시세에 노출</b>된다. 424B4가 자신을 CoreWeave·Nebius·하이퍼스케일러와 같은 판에 놓았다.</li>
+    <li><span class="flag">🚩 = 있음</span> — 매출의 약 33%(소비자 $2,485M + 광고 $367M)가 가격이 내려가는 라인이고, 신규 성장 32.8%(AI)는 <b>갱신 시 시장가 노출</b> 구간이다.</li>
+  </ul>
+
+  <h3>C.6 고객·유통 집중도 <span class="flag">🔴🔴 (아키타입 ④ 자동 점검 · 최대 적신호)</span></h3>
+  <ul>
+    <li><b>매출 집중</b> — Customer A 18.3% + <b>Customer B 19.5%</b> = <b>37.8%</b>. B는 <b>AI 세그먼트 전용</b>이며 AI 솔루션·인프라의 <b>약 69%</b>(역산).</li>
+    <li><b>설계 의도임을 회사가 명시</b> — 424B4: <i>&ldquo;남는 용량을 <b>제한된 수의 제3자</b>에게 판매할 의도&rdquo;</i>. 즉 집중은 사고가 아니라 사업 구조다.</li>
+    <li><b>관계자 조달 집중</b> — 총차입의 <b>33.9%</b>·분기 이자의 <b>52.0%</b>가 이사(Gracias)가 지배하는 Valor와의 장비 리스. 조건 미공개.</li>
+    <li><span class="flag">🚩 = 있음(가장 강함)</span> — 단일 고객 &gt;10% 두 곳 + <b>이익 통제권이 사외 관계자 조달에 묶임</b>. Cursor에는 <b>컴퓨트를 파는 관계</b>(Cursor Compute Agreement)이기도 해, 임대 매출의 상대방 구성(외부 vs 계열·인수예정)이 흐려질 여지가 있다(Q2 순금액은 회사 표현 <i>not material</i>).</li>
+  </ul>
+
+  <h3>C.7 매크로 민감도 — 단일 외부 변수</h3>
+  <p><b>AI capex 사이클.</b> 매출의 28.1%(임대) + capex의 86.2%가 여기 걸려 있고, 계약고 $14.1B의 상대방도 AI 기업이다. 임대 수요가 꺾이면 <b>매출과 자산가치가 동시에</b> 맞는다. 2순위 = 정부 예산(Starshield·NASA), 3순위 = 규제·스펙트럼. <span class="flag">🚩 = 있음</span> — 매출의 &gt;30%가 단일 변수에 직접 노출.</p>
+
+  <h3>C.8 금리 비대칭 — float 모델</h3>
+  <p><span class="ok">해당 없음</span>(예치자산 이자 사업 아님). 대신 <b>부채 금리 노출</b>: SpaceX Notes 실효금리 <b>6.03%</b>, <b>변동금리 부채 0</b>(10-Q Item 3) → 금리 상승 즉시 타격은 없다. <span class="flag">단 Valor 리스 $13,329M의 금리 조건 미공개</span>라 실질 조달비용은 산출 불가. 대칭성: 현금·유가증권 $100,009M에서 분기 이자수익 $340M 발생 → 금리 하락 시 이 쪽이 먼저 준다.</p>
+
+  <h3>C.9 운영 레버리지</h3>
+  <p><b>YoY 증분 영업마진</b> = ΔOp $827M ÷ ΔRev $3,743M = <b>22.1%</b>. <b>QoQ 증분</b> = $1,800M ÷ $3,120M = <b>57.7%</b>. Connectivity가 레버리지의 출처(매출 +65.8%인데 영업이익 +79.4%, 마진 35.7%→38.6%). <span class="warn">🚩 부분</span> — AI는 레버리지가 아니라 <b>선행 자본</b>으로 매출을 산다(capex/매출 6.18x). SBC도 H1 $1,470M(매출의 11.8%)로 고정비화.</p>
+
+  <h3>C.10 현금 전환 — NI vs OCF vs FCF <span class="flag">🔴 (AI 밸류체인 조건부 검증 포함)</span></h3>
+  <table>
+    <tr><th class="l">항목</th><th>H1&rsquo;26</th><th>H1&rsquo;25</th></tr>
+    <tr><td class="l">순손실</td><td>&minus;$4,817M</td><td>&minus;$1,536M</td></tr>
+    <tr><td class="l">D&amp;A 되더하기</td><td>+$5,290M</td><td>+$2,970M</td></tr>
+    <tr><td class="l">SBC</td><td>+$1,470M</td><td>+$694M</td></tr>
+    <tr><td class="l"><b>채무소멸손실</b></td><td class="flag">+$1,545M</td><td>—</td></tr>
+    <tr><td class="l">디지털자산 평가손</td><td>+$539M</td><td>&minus;$252M</td></tr>
+    <tr><td class="l"><b>매출채권 증가</b></td><td class="flag">&minus;$2,003M</td><td>&minus;$470M</td></tr>
+    <tr><td class="l">이연수익 증가</td><td>+$2,169M</td><td>+$680M</td></tr>
+    <tr class="tot"><td class="l">영업현금흐름(OCF)</td><td>+$3,466M</td><td>+$351M</td></tr>
+    <tr class="tot"><td class="l">capex</td><td>&minus;$28,476M</td><td>&minus;$6,965M</td></tr>
+    <tr class="tot"><td class="l">FCF</td><td class="flag">&minus;$25,010M</td><td>&minus;$6,614M</td></tr>
+  </table>
+  <ul>
+    <li><b>NI↔OCF 괴리 원인 규명</b> — 비현금 D&amp;A $5,290M + SBC $1,470M + <b>채무소멸손실 $1,545M</b>(브릿지론 → $25B 회사채 전환 과정) + 디지털자산 평가손 $539M. <span class="flag">이 $1,545M이 H1 기타손실 &minus;$1,962M의 대부분을 설명한다</span> — 기존 메모리(§8)의 미해결 이월 과제였다.</li>
+    <li><b>🔴 운전자본 전가 검증 (AI 밸류체인 의무 항목)</b>
+      <ul>
+        <li><b>매출 H1 +53.7% vs 매출채권 +127.7%</b>(연초 $1,579M → $3,596M). CF상 AR 유출도 $470M → <b>$2,003M(4.26배)</b>.</li>
+        <li><b>DSO ≈ 41.9일</b>(Q2&rsquo;26, AR÷분기매출×91). 연초 기준 근사치 약 30일 → <b>약 12일 확대</b>(⚠️ Q4&rsquo;25 단독 매출 미공시라 근사).</li>
+        <li><b>AI capex $1당 OCF 증분</b> — 전사 OCF 증가 $3,115M ÷ AI capex $23,551M = <b>$0.13</b>.</li>
+        <li><b>차입 동반</b> — 관계자 리스 반년 +$8,822M.</li>
+        <li>→ <span class="flag">판정 🔴 &ldquo;라벨만&rdquo; 쪽에 가깝다</span>: 매출은 늘었는데 <b>OCF 증가가 자본 투입의 13%</b>에 그치고, <b>DSO가 확대</b>되며, <b>관계자 차입이 동반 팽창</b>했다. ⚖️ <b>단 병목 선점 비용으로 재해석할 여지</b>: 이연수익이 +$2,169M 늘었고(선수금 유입), 백로그가 1.67배로 커졌으며, 건설중자산 $12,554M은 아직 매출을 내지 않는다. <b>다음 2분기가 판별점</b>.</li>
+      </ul>
+    </li>
+    <li><span class="flag">🚩 = 있음(투자형이나 규모가 극단)</span> — 분기 순소모 ≈ OCF $1,733M &minus; capex $18,369M = <b>&minus;$16.6B</b>. 순현금 $60,645M 기준 <b>약 3.6분기</b>. 회사는 Q3·Q4도 유사 capex를 안내했다.</li>
+  </ul>
+
+  <h3>C.11 주당 희석 조정</h3>
+  <table>
+    <tr><th class="l">희석 요인</th><th class="l">규모</th><th class="l">상태</th></tr>
+    <tr><td class="l"><b>Cursor</b></td><td class="l">$60.0B ÷ 클로징 직전 7거래일 VWAP</td><td class="l"><span class="flag">미확정</span> — 8/8 현재 클로징 8-K·S-3 <b>0건</b>. $133.11 기준 약 450.8M주 = <b>3.31%</b> / $116.41 기준 3.76%</td></tr>
+    <tr><td class="l">Mesh Optical</td><td class="l">3.8M주 + 승계 옵션·RSU 295K주</td><td class="l">✅ 7/6 클로징 · <b>0.03%</b></td></tr>
+    <tr><td class="l"><b>EchoStar 스펙트럼</b></td><td class="l">잔여 대가 <b>일부 Class A 주식</b></td><td class="l"><span class="flag">금액·주식수 미공시</span></td></tr>
+    <tr><td class="l">SBC</td><td class="l">H1 $1,470M (매출의 11.8%)</td><td class="l">상시</td></tr>
+    <tr><td class="l">IPO 신주</td><td class="l">638.9M주 · 순조달 $85,675M</td><td class="l">✅ 완료</td></tr>
+  </table>
+  <div class="box red">
+    <b>🔴 주당 지표 함정</b> — Q2&rsquo;26 가중평균 주식수 <b>5,864M</b>인데 7/28 실제 발행주식은 <b>13,182M(2.25배)</b>. 우선주 전환·IPO가 분기 말에 몰려 가중평균이 낮게 잡힌 것이다. → <b>Q2 EPS(&minus;$0.09)나 주당 매출을 그대로 연장하면 심하게 왜곡</b>된다(실주식수 기준 Q2 EPS는 약 &minus;$0.04). 또한 Cursor는 <b>고정 금액·변동 주식수</b> 구조라 <b>주가가 낮을수록 희석이 커진다</b>(계약일 종가 $211.39 대비 현재 &minus;37%).
+  </div>
+
+  <h3>C.12 모델 전환 신호 = 재평가 트리거</h3>
+  <ul>
+    <li><b>현재 방향</b> — 구독형 → <b>자산집약 임대형</b>. AI 17.1%→32.8%, capex 86.2%가 AI.</li>
+    <li><span class="ok">🚩(긍정)</span> — 임대 계약고 $14.1B 중 Q2 인식은 $1.6B뿐 → <b>인식 램프업 여지</b>가 크다. Starship 완전 재사용이 성립하면 Space 물량 감소가 반전되고 궤도 컴퓨트 경로가 열린다.</li>
+    <li><span class="flag">🚩(부정)</span> — 전환의 질이 낮다: <b>단일 고객 69%</b>, <b>가격결정력은 갱신 시 시장가</b>, <b>자본 회수 산술이 회사 주장과 어긋남</b>(0.37x). 그리고 원래 AI 적자 원천이던 <b>X 광고는 개선이 아니라 악화</b>(&minus;13.8%)이고 <b>AI R&amp;D는 +94%</b>로 늘었다.</li>
+    <li><b>변곡 판별 시점</b> — Q3&rsquo;26 실적(Cursor 클로징 후 첫 세그먼트 손익 + Customer B 지속 여부) · 2027년 확정 지출 $22.2B 집행 여부.</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Part E — 경쟁 지형 (수익모델 관점)</h2>
+  <p class="sub">아래 경쟁자 명단은 전부 <b>424B4 &ldquo;Competition&rdquo; 단락 원문</b>에 열거된 이름이다(Claude 추정 아님). 정량 peer 비교는 Deep-Dive §E owner.</p>
+  <table>
+    <tr><th class="l">시장</th><th class="l">424B4가 지목한 경쟁자</th><th class="l">SPCX 위치</th><th class="l">수익모델 함의</th></tr>
+    <tr><td class="l"><b>발사</b></td><td class="l">ULA · Arianespace · Northrop Grumman · <b>Blue Origin</b> · <b>Rocket Lab</b> · Firefly · Relativity</td><td class="l"><span class="ok">우위</span> — 회사 명시 <i>&ldquo;발사 솔루션 폭·발사 빈도에서 의미 있는 우위&rdquo;</i></td><td class="l">가격결정력 강. 단 Q2 매출 +29%에도 <b>H1 &minus;1.9%</b>로 성장 부재</td></tr>
+    <tr><td class="l"><b>소비자·기업 광대역</b></td><td class="l">지상망(Verizon·Telefónica 등) · GEO(EchoStar·SES·Telesat·Viasat) · LEO/MEO(<b>Amazon Kuiper</b> · Blue Origin TeraWave · <b>Eutelsat OneWeb</b> · Iridium NEXT · Telesat Lightspeed)</td><td class="l"><span class="ok">우위</span>(규모·자체 발사)</td><td class="l">ARPU &minus;22.4%는 경쟁 패배가 아니라 <b>매스마켓 하향 확장</b>의 결과</td></tr>
+    <tr><td class="l"><b>위성→휴대폰</b></td><td class="l"><b>AST SpaceMobile</b> · Lynk · Globalstar · Skylo</td><td class="l"><span class="warn">병행</span> — V1 모바일 위성 약 650기</td><td class="l">통신사 도매(SoftBank·NTT Docomo·Spark NZ) = B2B2C</td></tr>
+    <tr><td class="l"><b>🔴 AI 컴퓨트 임대</b></td><td class="l"><b>CoreWeave · Nebius · 하이퍼스케일러</b></td><td class="l"><span class="flag">열위(구조적)</span></td><td class="l">갱신 시 시세 노출</td></tr>
+    <tr><td class="l"><b>프런티어 모델·광고</b></td><td class="l"><b>OpenAI · Anthropic · Google · Meta · Microsoft</b> · 오픈소스 / Threads · Reddit · TikTok</td><td class="l"><span class="flag">열위</span></td><td class="l">X 광고 <b>YoY &minus;13.8%</b> = 절대 역성장</td></tr>
+  </table>
+
+  <div class="box red">
+    <b>🔴 본 종목이 <u>열위</u>인 peer — 명시</b>
+    <ol>
+      <li><b>CoreWeave · Nebius 대비 = 중립성 열위 (구조적·되돌릴 수 없음).</b> 이들 전문 GPU 클라우드는 <b>자체 프런티어 모델을 갖지 않는다.</b> 반면 SPCX는 Grok으로 <b>임차인과 직접 경쟁하는 사업자</b>이면서 그 임차인에게 컴퓨트를 판다. 424B4가 스스로 &ldquo;<b>남는(excess)</b> 용량을 <b>제한된 수의</b> 제3자에게&rdquo;라고 규정한 것도 같은 얘기다 — <b>자사 학습 수요가 1순위이고 외부 고객은 잔여 순위</b>다. AI 랩 입장에서 경쟁사에게 자기 학습 인프라를 의존하는 것은 구조적 부담이므로, <b>장기 계약·다중 리전·다변화된 고객 기반을 쌓는 데 불리</b>하다. Customer B 단일 고객 69% 집중은 이 열위의 정량적 표현이다.</li>
+      <li><b>Meta · Google 대비 = 광고 열위.</b> X 광고는 Q2&rsquo;26 <b>$367M으로 YoY &minus;13.8%</b> — 시장 비교 이전에 <b>절대값이 줄었다</b>(SPCX 1차 공시). 광고는 SPCX AI 세그먼트에서 유일하게 역성장하는 라인이다. (peer 성장률 정량 = ❌ 미수집 · Deep-Dive §E 담당)</li>
+      <li><b>하이퍼스케일러 대비 = 서비스 스택 열위.</b> SPCX가 파는 것은 <b>용량(GW)</b>이고, AWS·Azure·GCP가 파는 것은 스토리지·네트워크·관리형 서비스가 얹힌 스택이다. 전환비용이 얕고 lock-in이 약하다.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Part D — 종합 판정</h2>
+
+  <h3>D.1 자가점검 (0번 + 9문항)</h3>
+  <table>
+    <tr><th>#</th><th class="l">질문</th><th class="l">상태</th></tr>
+    <tr><td>0</td><td class="l">주력 제품 5개 5필드 서술 + 기술·IP·해자 + B.0.3 매핑</td><td class="l">✅ (IP는 특허 건수 미공시 → 노하우·규제자산 중심)</td></tr>
+    <tr><td>1</td><td class="l">무엇을 누구에게 왜 파나</td><td class="l">✅ B2C(구독) + B2B/B2G(다년) + B2B(용량 임대)</td></tr>
+    <tr><td>2</td><td class="l">매출 몇 주머니·비중·추세</td><td class="l">✅ 6 라인 (B.1)</td></tr>
+    <tr><td>3</td><td class="l">주력 과금모델</td><td class="l">✅ 구독 + <b>고정 월 서비스료 용량임대</b> + 고정가 계약 + 광고</td></tr>
+    <tr><td>4</td><td class="l">반복매출 비중</td><td class="l">✅ 83.0% — 단 계약상 잠금은 약함</td></tr>
+    <tr><td>5</td><td class="l">고객·유통 집중</td><td class="l"><span class="flag">A 18.3% + B 19.5% / 관계자 차입 33.9%</span></td></tr>
+    <tr><td>6</td><td class="l">마진 분모</td><td class="l"><span class="flag">세그먼트 간 감가 분류가 다름 (C.1)</span></td></tr>
+    <tr><td>7</td><td class="l">매출 흔들 외부 변수</td><td class="l">✅ AI capex 사이클</td></tr>
+    <tr><td>8</td><td class="l">발표 숫자 vs 장부</td><td class="l">✅ 백로그 $47.5B 확정형 / 계약고 $14.1B 중 $1.6B 인식</td></tr>
+    <tr><td>9</td><td class="l">믹스 방향</td><td class="l">✅ 구독형 → 자산집약 임대형</td></tr>
+  </table>
+
+  <h3>D.2 수익모델 등급 (4차원)</h3>
+  <table>
+    <tr><th class="l">차원</th><th>등급</th><th class="l">근거</th></tr>
+    <tr><td class="l">예측가능성 (반복성)</td><td>🟡</td><td class="l">백로그 $47.5B·1년내 56%·이연수익 $14.3B는 🟢. 그러나 소비자는 월단위 해지 자유, 임대는 갱신조건 미공시, 광고는 역성장</td></tr>
+    <tr><td class="l">수익성 (마진 구조)</td><td>🟡</td><td class="l">Connectivity 영업 +38.6% 🟢 vs AI &minus;49.1% 🔴. 연결 &minus;1.8%. 조정 EBITDA는 D&amp;A 되더하기 80.5%로 과대표시</td></tr>
+    <tr><td class="l">과금 강도</td><td>🟡</td><td class="l">발사·기업·정부 강 / 소비자 ARPU &minus;22.4% / 임대는 갱신 시 시세 노출</td></tr>
+    <tr><td class="l">고객 stickiness</td><td>🟡</td><td class="l">기업·정부·항공은 🟢 강 / 소비자·광고·임대는 lock-in 얕음 + <b>단일 고객 69% 집중</b></td></tr>
+  </table>
+
+  <h3>D.3 종합 판정</h3>
+  <p><b>아키타입 확정</b> = 주 <b>⑥ 구독·하드웨어형</b>(Connectivity) + 부 <span class="flag">④ 백로그·자산집약 용량계약형 신규 승격</span>(AI 컴퓨트 임대 + 발사) + 진행 <b>① 믹스시프트</b>.</p>
+  <div class="box green">
+    <b>핵심 edge (1개) — Connectivity의 감가 후 운영레버리지.</b> 위성·발사·지상국 감가를 전부 매출원가에 넣고도 GM 52.0%·영업이익률 38.6%이고, 그 위에서 기업·정부 매출이 +108% 성장하며 믹스를 고마진 쪽으로 끌고 있다. 수직통합이 회계상 실제로 돈이 되는 유일한 칸이다.
+  </div>
+  <div class="box red">
+    <b>치명 함정 (2개)</b>
+    <ol>
+      <li><b>C.6 단일 고객 집중</b> — Customer B 한 곳이 AI 솔루션·인프라 매출의 <b>약 69%</b>. 이번 분기 &ldquo;AI 흑자 전환&rdquo;이라는 서사 전체가 <b>한 계약의 인식</b>이며, 계약 기간·갱신 조건은 공시되지 않았다.</li>
+      <li><b>C.1 마진 분모 + C.10 자본 회수</b> — AI GM 56.8%는 학습용 자산 감가가 R&amp;D에 빠진 숫자이고, 임대가 커질수록 하락한다. 동시에 <b>AI capex $1당 OCF 증분 $0.13</b> · <b>FCF &minus;$25.0B</b> · <b>분기 순소모 &minus;$16.6B(순현금 약 3.6분기)</b> — CFO의 &ldquo;1년 미만 회수&rdquo; 주장은 공시 산술로 뒷받침되지 않는다.</li>
+    </ol>
+  </div>
+  <p><b>thesis 함의</b> — $SPCX의 수익모델은 이번 분기에 <b>&ldquo;구독 현금흐름 + 미래 옵션&rdquo;에서 &ldquo;구독 현금흐름 + 초대형 자산임대업&rdquo;으로 갈아탔다.</b> 따라서 이 종목의 재평가 방아쇠는 Grok의 벤치마크나 Starship 발사 성공이 아니라, <b>① Customer B 계약이 갱신·확대되는가 ② 임대 고객이 다변화되는가 ③ 2027년 확정 지출 $22.2B에 대응하는 OCF가 실제로 따라오는가</b> — 이 셋으로 좁혀진다.</p>
+</div>
+
+<div class="card">
+  <h2>🔤 입문자 각주</h2>
+  <div class="gloss">
+    💡 <b>🔤 백로그(backlog)</b> — 계약은 맺었는데 아직 일을 안 해서 매출로 안 잡힌 잔고. &ldquo;예약된 미래 매출&rdquo;.<br>
+    💡 <b>🔤 이연수익(deferred revenue)</b> — 돈은 이미 받았는데 서비스를 아직 제공 안 해 부채로 잡아둔 금액. 백로그 중 현금이 들어온 부분.<br>
+    💡 <b>🔤 failed sale-leaseback</b> — 장비를 팔고 다시 빌려 쓰는 거래인데, 회계상 &ldquo;실제로 판 게 아니다&rdquo;라고 판정돼 <b>매각이 아니라 차입</b>으로 잡히는 것.<br>
+    💡 <b>📐 증분 영업마진(incremental margin)</b> — 매출이 100 늘 때 영업이익이 몇 늘었나. 고정비 사업일수록 높다.<br>
+    💡 <b>📐 DSO(매출채권 회수기간)</b> — 매출채권 ÷ 매출 × 일수. 물건·서비스를 주고 돈을 받기까지 걸리는 평균 일수. 늘어나면 &ldquo;매출은 잡혔는데 현금은 아직&rdquo;이라는 뜻.<br>
+    💡 <b>🔤 CIP(건설중자산)</b> — 짓고 있는 중이라 아직 가동도 감가상각도 시작 안 한 자산.<br>
+    💡 <b>🔤 SBC(주식보상비용)</b> — 직원에게 주식으로 준 보상. 현금은 안 나가지만 주식수가 늘어 주주 몫이 줄어든다.<br>
+    💡 <b>📊 capex ÷ 매출 감각</b> — 소프트웨어 0.05x 안팎 / 통신사 0.2~0.3x / 반도체 팹 0.3~0.5x. <b>AI 세그먼트 6.18x는 이 범위 밖</b>이다(교육용 일반 범위 · 본 종목 수치는 위 표의 1차 값).
+  </div>
+</div>
+
+<div class="card">
+  <h2>📋 12 함정 🚩 요약</h2>
+  <table>
+    <tr><th>#</th><th class="l">함정</th><th>판정</th><th class="l">한 줄</th></tr>
+    <tr><td>C.1</td><td class="l">마진 분모 forensics</td><td><span class="flag">🔴 있음</span></td><td class="l">학습용 감가는 R&amp;D·임대용 감가는 COGS → AI GM 56.8%는 Connectivity 52.0%와 비교 불가. 조정 EBITDA의 80.5%가 D&amp;A 되더하기</td></tr>
+    <tr><td>C.2</td><td class="l">반복매출 프리미엄</td><td>🟡 부분</td><td class="l">반복 83.0%이나 소비자는 월단위 해지 자유·광고는 단기 취소가능·임대 갱신조건 미공시</td></tr>
+    <tr><td>C.3</td><td class="l">ARR↔장부 격차</td><td><span class="ok">🟢 없음</span></td><td class="l">ARR 미사용. 계약고 $14.1B 중 인식 $1.6B 명시 분리</td></tr>
+    <tr><td>C.4</td><td class="l">백로그 품질</td><td>🟡 부분</td><td class="l">$47.5B 확정형·1년내 56% 🟢 / 세그먼트 분해 미공시 + <b>나갈 돈 $28.0B(2027 $22.2B)</b> 동시 잠김</td></tr>
+    <tr><td>C.5</td><td class="l">가격 결정력</td><td><span class="flag">🔴 있음</span></td><td class="l">매출 33%가 하락 라인(ARPU &minus;22.4%·광고 &minus;13.8%). 신규 32.8%는 갱신 시 시세 노출</td></tr>
+    <tr><td>C.6</td><td class="l"><b>고객·유통 집중도</b></td><td><span class="flag">🔴🔴 최대</span></td><td class="l">Customer B = AI 솔루션·인프라의 약 <b>69%</b> / 관계자(Valor·이사) 차입 33.9%·이자 52.0%</td></tr>
+    <tr><td>C.7</td><td class="l">매크로 민감도</td><td><span class="flag">🔴 있음</span></td><td class="l">AI capex 사이클에 매출 28.1% + capex 86.2% 동시 노출</td></tr>
+    <tr><td>C.8</td><td class="l">금리 비대칭</td><td><span class="ok">🟢 해당 없음</span></td><td class="l">float 모델 아님. 변동금리 부채 0·Notes 실효 6.03%. ⚠️ Valor 리스 금리 미공개</td></tr>
+    <tr><td>C.9</td><td class="l">운영 레버리지</td><td>🟡 양면</td><td class="l">증분 영업마진 YoY 22.1%·QoQ 57.7% (Connectivity 발). AI는 레버리지가 아니라 선행 자본</td></tr>
+    <tr><td>C.10</td><td class="l">현금 전환</td><td><span class="flag">🔴 있음</span></td><td class="l">FCF &minus;$25.0B · AI capex $1당 OCF 증분 $0.13 · DSO +약12일 · 분기 순소모 &minus;$16.6B</td></tr>
+    <tr><td>C.11</td><td class="l">주당 희석</td><td><span class="flag">🔴 있음</span></td><td class="l">Cursor 3.31%(현재가·미확정, 주가↓일수록 확대) + 스펙트럼 주식대가 미공시 + Q2 가중평균 5,864M vs 실제 13,182M</td></tr>
+    <tr><td>C.12</td><td class="l">모델 전환 신호</td><td>🟡 양면</td><td class="l">계약고 램프업 여지 🟢 / 전환의 질(단일고객·회수율·광고 악화) 🔴</td></tr>
+  </table>
+
+  <h3>⚠️ 수집 실패·미확정 항목</h3>
+  <ul>
+    <li>❌ <b>미공시</b> — LTV/CAC·해지율 · 세그먼트별 백로그 분해 · <b>Customer A/B 신원 및 계약 기간·갱신 조건</b> · Valor 리스 금리·기간·담보 · EchoStar 스펙트럼 잔여 주식 대가 · Cursor 손익 · Mesh Optical PPA(취득일로부터 1년 내 확정 예정)</li>
+    <li>❌ <b>미확정</b> — Cursor 클로징 (2026-08-08 기준 클로징 8-K·S-3 <b>0건</b> — EDGAR 8-K 목록 최신은 8/4 실적 건)</li>
+    <li>⚠️ <b>근사치</b> — 연초 DSO(Q4&rsquo;25 단독 매출 미공시로 H2&rsquo;25 평균 사용) · Customer B의 AI 라인 내 비중(연결 19.5%에서 역산)</li>
+  </ul>
+
+  <h3>🔗 1차 자료</h3>
+  <ul>
+    <li><a href="https://www.sec.gov/Archives/edgar/data/1181412/000162828026052535/spcx-20260630.htm">Q2&rsquo;26 10-Q (2026-08-04 · <code>spcx-20260630.htm</code> · acc 0001628280-26-052535)</a></li>
+    <li><a href="https://www.sec.gov/Archives/edgar/data/1181412/000162828026052515/earningsreleaseq22608042.htm">8-K EX-99.1 Q2&rsquo;26 실적 보도자료 (acc 0001628280-26-052515)</a></li>
+    <li><a href="https://www.sec.gov/Archives/edgar/data/1181412/000162828026043411/spaceexplorationtechnologi.htm">8-K Cursor 합병계약 (2026-06-16 · acc 0001628280-26-043411)</a></li>
+    <li><a href="https://www.sec.gov/Archives/edgar/data/1181412/000162828026042639/spaceexplorationtechnologi.htm">424B4 IPO 설명서 (2026-06-12 · acc 0001628280-26-042639)</a></li>
+  </ul>
+
+  <p class="sub"><b>후속</b> — 산업·사람·자금흐름·규제·정량 7축까지 보려면 <code>Deep-Dive SPCX</code> / 1페이지 압축은 <code>one-page-thesis SPCX</code>.</p>
+</div>
+
+<footer>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</footer>
+</div>
+
+<script>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+const VIZ = {
+  trajectory: {
+    periods: ["FY23","FY24","FY25","Q1·26(연환산)","Q2·26(연환산)"],
+    forecastFrom: 5,
+    inflection: { index: 4, label: "컴퓨트 임대 변곡" },
+    series: [
+      { key:"rev",  label:"총매출 ($M)",             axis:"left",  color:"#2980b9", values:[10387,14015,18674,18776,31256] },
+      { key:"rate", label:"AI 세그먼트 매출 비중 (%)", axis:"right", color:"#c0392b", values:[28.5,18.7,17.1,17.4,32.8] }
+    ]
+  },
+  revShare: { mode:"share", items:[
+      {label:"Connectivity", value:4291, color:"#2980b9"},
+      {label:"AI",           value:2561, color:"#c0392b"},
+      {label:"Space",        value:962,  color:"#7f8c8d"} ] },
+  capexShare: { mode:"share", items:[
+      {label:"AI",           value:15828, color:"#c0392b"},
+      {label:"Connectivity", value:1367,  color:"#2980b9"},
+      {label:"Space",        value:1174,  color:"#7f8c8d"} ] }
+};
+try {
+  DDViz.renderTrajectory('fig-rate','leg-rate', VIZ.trajectory);
+  DDViz.renderBars('fig-rev',   VIZ.revShare);
+  DDViz.renderBars('fig-capex', VIZ.capexShare);
+} catch(e) { console.error('viz render failed', e); }
+</script>
+</body>
+</html>
