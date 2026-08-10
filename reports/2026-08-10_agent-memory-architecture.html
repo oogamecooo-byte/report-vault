@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>세 갈래 길과 하나의 뇌 — AI 에이전트 기억 아키텍처의 수렴 | 2026-08-10</title>
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="메모리">
+<meta name="vault-date" content="2026-08-10">
+<meta name="description" content="AI 에이전트의 영속 기억은 컨텍스트 확장·외부 기억·가중치 흡수 중 어디로 수렴하는가. context rot 실증, 3대 랩 메모리 기능 연혁, 파국적 망각, 상보적 학습 시스템(CLS) 이론과의 정합, 그리고 HBM/DRAM/NAND 계층별 수혜 지도. '기억 없는 하인은 없다'(2026-08-10) 후속 1편.">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+  body { background:#E6EAF2; color:#1B2230; font-family:'Apple SD Gothic Neo','Pretendard','Noto Sans KR','Malgun Gothic',sans-serif; line-height:1.78; padding:30px 14px 60px; }
+  .card { max-width:900px; margin:0 auto; background:#FBFCFE; border-radius:16px; padding:52px 54px 46px; box-shadow:0 2px 18px rgba(38,50,86,.10); }
+  @media (max-width:660px){ .card{ padding:28px 18px; } body{ padding:16px 8px 40px; } }
+  .kicker { display:inline-block; background:#3D5A99; color:#F5F8FE; border-radius:6px; font-size:.72em; font-weight:800; letter-spacing:.08em; padding:3px 10px; margin-bottom:14px; }
+  h1 { font-size:2.0em; line-height:1.3; letter-spacing:-.02em; color:#141B2B; text-wrap:balance; margin-bottom:10px; }
+  .subtitle { color:#59647A; font-size:.95em; margin-bottom:8px; }
+  h2 { font-size:1.34em; line-height:1.4; letter-spacing:-.01em; color:#141B2B; margin:0 0 4px; text-wrap:balance; }
+  h3 { font-size:1.06em; color:#20293C; margin:28px 0 10px; }
+  p { margin:10px 0; }
+  ul, ol { margin:10px 0 10px 22px; }
+  li { margin:6px 0; }
+  a { color:#3D5A99; }
+  a:focus-visible { outline:2px solid #3D5A99; outline-offset:2px; border-radius:2px; }
+  strong { color:#141B2B; }
+  section.ch { margin-top:50px; padding-top:32px; border-top:1px solid #D8DEE9; }
+  .ch-no { font-size:.78em; font-weight:800; color:#3D5A99; letter-spacing:.14em; margin-bottom:6px; }
+  p.lead { font-size:1.03em; color:#252F45; }
+  p.lead::first-line { font-weight:600; }
+  .abstract { background:#EEF2F9; border:1.5px solid #C9D4E8; border-radius:14px; padding:22px 26px; margin:26px 0 10px; }
+  .abstract h2 { font-size:1.12em; margin-bottom:10px; }
+  .abstract li { margin:8px 0; }
+  .callout { background:#EEF2F9; border-left:4px solid #3D5A99; border-radius:0 10px 10px 0; padding:14px 20px; margin:16px 0; }
+  .callout .c-t { font-size:.76em; font-weight:800; letter-spacing:.09em; color:#3D5A99; margin-bottom:4px; }
+  .callout p { margin:4px 0; font-size:.95em; }
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:.92em; font-variant-numeric:tabular-nums; }
+  th { background:#EEF2F9; padding:9px 11px; border:1px solid #C9D4E8; text-align:left; color:#20293C; }
+  td { padding:9px 11px; border:1px solid #E2E7F0; vertical-align:top; }
+  .twrap { overflow-x:auto; }
+  figure { background:#FFFFFF; border:1px solid #DFE4EE; border-radius:12px; padding:18px 16px 10px; margin:20px 0; overflow-x:auto; }
+  figure svg { max-width:100%; height:auto; display:block; margin:0 auto; }
+  figcaption { font-size:.84em; color:#59647A; padding:8px 6px 6px; line-height:1.6; }
+  figcaption b { color:#20293C; }
+  .refs { font-size:.86em; color:#3A4459; }
+  .refs li { margin:5px 0; }
+  .footer { margin-top:52px; padding-top:18px; border-top:1px solid #D8DEE9; font-size:.84em; color:#59647A; }
+  @media print { body{ background:#fff; padding:0; } .card{ box-shadow:none; } }
+</style>
+</head>
+<body>
+<div class="card">
+
+<span class="kicker">RESEARCH · AI MEMORY 후속 Ⅰ</span>
+<h1>세 갈래 길과 하나의 뇌<br>— AI 에이전트 기억 아키텍처의 수렴</h1>
+<div class="subtitle">기능적 자아의 표준 아키텍처는 컨텍스트 확장인가, 외부 기억인가, 가중치 흡수인가 — 그리고 어느 반도체가 수혜를 받는가</div>
+<div class="subtitle">작성 2026-08-10 · <a href="2026-08-10_agent-memory-selfhood.html">기억 없는 하인은 없다(2026-08-10)</a>의 '남는 질문 1' 후속 · <a href="2026-08-10_human-memory-cognitive-science.html">인간 기억 전방위 조사</a> 연동 · 정보·교육 목적 (매수·매도 신호 아님)</div>
+
+<div class="abstract">
+<h2>요약</h2>
+<ul>
+<li><strong>택일이 아니라 하이브리드로 수렴이 사실상 끝났다.</strong> 2024~2025년에 OpenAI·Anthropic·Google 3사가 모두 '검색 기반 외부 기억'을 제품 표준으로 탑재했고, 컨텍스트 창은 1M 토큰 언저리에서 성장을 멈추고 "창 내 품질·가격" 경쟁으로 전환했으며, 가중치에 개인 기억을 직접 새기는 길은 파국적 망각 때문에 채택되지 않았다. 표준형은 <strong>실용 컨텍스트(작업기억) + 계층형 외부 기억(해마) + 백그라운드 응축(수면)</strong>이다.</li>
+<li><strong>뇌가 30년 전에 낸 답과 같은 구조다.</strong> 상보적 학습 시스템(CLS) 이론(1995)은 "빠른 일화 기록(해마)과 느린 통계 통합(신피질)은 한 시스템으로 겸할 수 없어 분리가 필연"이라고 예측했다. sleep-time compute까지 등장한 지금, 업계는 이 예측을 그대로 재연하고 있다.</li>
+<li><strong>반도체 수혜는 계층별로 갈린다.</strong> 컨텍스트·KV 캐시는 HBM(2026년 시장 $54.6B, +58% YoY 추정)을, 외부 기억은 서버 DRAM+QLC eSSD를 당긴다(2026년 DRAM +51%·NAND +45% 매출 전망). 가중치 흡수 갈래는 메모리를 새로 당기는 힘이 셋 중 가장 약하다. TrendForce의 규정 — "추론(KV 캐시+RAG 스토리지)이 메모리 시장을 다시 쓰고 있다" — 이 이 보고서의 결론과 일치한다.</li>
+</ul>
+</div>
+
+<!-- 01 -->
+<section class="ch" id="s1">
+<div class="ch-no">01 · 갈래 A</div>
+<h2>컨텍스트 확장 — 작업기억을 넓히는 길의 물리적·인지적 한계</h2>
+<p class="lead">가장 단순한 해법은 '모든 것을 컨텍스트에 넣기'다. 실제로 2024~2025년 컨텍스트 군비경쟁이 있었다: Gemini 1.5 Pro가 1M→2M 토큰(2024), GPT-4.1이 1M(2025.4), Claude Sonnet 4가 1M 베타(2025.8), Llama 4 Scout는 공칭 10M(2025.4, 실효성 논란)을 내걸었다. 그런데 2026년 현재 프런티어 모델들은 대체로 <strong>1M 언저리에서 수렴</strong>했다. 경쟁축이 창 크기에서 창 내 품질과 가격으로 이동한 것이다. 이유는 두 겹이다.</p>
+<h3>물리적 한계: KV 캐시는 HBM을 먹는다</h3>
+<p>트랜스포머 추론에서 컨텍스트의 비용은 KV 캐시로 나타난다 — 토큰당 2 × 층수 × KV헤드 × 헤드차원 × 정밀도 바이트가 선형으로 쌓인다. 대형 모델은 GQA를 쓰고도 토큰당 수백 KB 수준이라, <strong>Llama 3 70B를 128K 컨텍스트·배치 32로 돌리면 KV 캐시만 약 80GB — 모델 가중치보다 크다</strong>(TrendForce 인용 사례). 장문 컨텍스트 추론은 연산 문제이기 이전에 HBM 용량 문제다. DeepSeek의 MLA(2024)가 KV 캐시를 기존 대비 4~14% 수준으로 압축(약 86~96% 절감)하며 돌파구를 열었고 프롬프트 캐싱(캐시 히트 시 비용 ~90% 절감)이 표준화됐지만, 압축은 곡선의 기울기를 낮출 뿐 "컨텍스트 = 메모리 점유"라는 항등식 자체를 없애지 못한다.</p>
+<h3>인지적 한계: context rot — 넓은 창이 곧 좋은 기억이 아니다</h3>
+<p>더 결정적인 것은 실증된 품질 한계다. 'Lost in the Middle'(Liu et al., TACL 2024)은 긴 컨텍스트 중간에 놓인 정보의 회수율이 급락함을 보였고, Chroma의 'Context Rot'(2025.7)는 GPT-4.1, Claude Opus 4, Gemini 2.5 등 18개 모델 전부에서 <strong>입력이 길어질수록 성능이 단조 감소</strong>하며, 특히 유사하지만 관련 없는 방해 텍스트가 섞일 때 악화됨을 확인했다. 실효 컨텍스트는 공칭의 50~80% 이하라는 것이 업계 통설이 됐다.</p>
+<div class="callout"><div class="c-t">인간 기억과의 평행</div>
+<p><a href="2026-08-10_human-memory-cognitive-science.html#ch2">기억 보고서 2장</a>의 교훈이 재연되고 있다. 인간 작업기억이 4±1청크로 좁은 것은 결함이 아니라 간섭을 막는 설계이고, 그래서 진화는 작업기억을 넓히는 대신 장기기억이라는 별도 시스템을 만들었다. LLM도 같다 — 컨텍스트(작업기억)를 백만 토큰으로 넓혀도 간섭(context rot)이 생기며, 해법은 더 넓은 창이 아니라 <strong>선별해서 꺼내오는 별도의 기억 시스템</strong>이다. '무한 컨텍스트'가 영속 기억의 최종 해법이 될 수 없는 이유가 물리(HBM 비용)와 인지(간섭) 양쪽에서 동시에 확인된 셈이다.</p></div>
+</section>
+
+<!-- 02 -->
+<section class="ch" id="s2">
+<div class="ch-no">02 · 갈래 B</div>
+<h2>외부 기억 — 2024~2025년, 해마의 제품화가 완료됐다</h2>
+<p class="lead">둘째 갈래는 기억을 모델 밖 저장소에 두고 필요할 때 검색해 컨텍스트로 불러오는 길이다. 이 갈래의 결정적 사실은 <strong>3대 랩이 2024~2025년에 일제히 이를 기본 기능으로 탑재했다</strong>는 것이다 — 표준화 논쟁은 사실상 제품 출시로 종결됐다.</p>
+<div class="twrap">
+<table>
+<thead><tr><th>플랫폼</th><th>연혁</th><th>구조</th></tr></thead>
+<tbody>
+<tr><td><strong>ChatGPT</strong></td><td>Memory 발표 2024.2 → Plus 배포 2024.4 → 무료 포함 2024.9 → <strong>전체 과거 대화 참조 2025.4</strong></td><td>저장 메모리(추출된 사실) + 대화 이력 참조의 2계층</td></tr>
+<tr><td><strong>Claude</strong></td><td>Projects 2024.6 → 메모리 기능 Team/Enterprise 2025.9 → Pro/Max 확대 2025.10 (+시크릿 채팅)</td><td>프로젝트 단위 컨텍스트 + 자동 메모리</td></tr>
+<tr><td><strong>Gemini</strong></td><td>Saved Info 2024.11 → 개인화 2025.3 → 과거 대화 자동 참조 2025.8</td><td>저장 정보 + 이력 검색</td></tr>
+</tbody>
+</table>
+</div>
+<p>프레임워크 층에서는 구조가 더 명시적이다. MemGPT(2023, 이후 Letta로 상용화)는 운영체제의 가상메모리 은유 — core(RAM)/recall/archival(디스크) — 를 도입했고, LangChain의 LangMem SDK(2025.2)는 기억을 <strong>semantic/episodic/procedural</strong>로 분류하며, Mem0(2025)는 추출-갱신(ADD/UPDATE/DELETE) 파이프라인으로 전체 컨텍스트 주입 대비 p95 지연을 91% 줄였다고 보고한다. 주목할 점: 이 분류 체계는 <a href="2026-08-10_human-memory-cognitive-science.html#ch3">인간 장기기억의 분류(일화·의미·절차)</a>를 그대로 수입한 것이다. 인지과학의 지도가 소프트웨어 설계 문서가 됐다.</p>
+<div class="callout"><div class="c-t">시장 신호 — 벡터DB의 '카테고리 소멸'</div>
+<p>외부 기억의 저장소로 주목받던 전용 벡터DB는 시장 규모 자체는 성장하되(2026년 약 $3.7B, CAGR ~23%) <strong>독립 카테고리로서는 약화</strong>되고 있다 — pgvector·MongoDB·Oracle 등 기존 DB가 벡터 검색을 기능으로 흡수했고, 선두주자 Pinecone은 매출 감소(2024 $27M → 2025 $14M)와 매각 검토가 보도됐다. 함의: 외부 기억의 가치는 특정 DB 벤더가 아니라 <strong>그 아래 하드웨어(서버 DRAM + eSSD)와 그 위 플랫폼(메모리를 쥔 AI 랩)</strong>으로 흘러간다는 것. 소유권 문제(후속 Ⅱ)가 중요해지는 이유이기도 하다.</p></div>
+</section>
+
+<!-- 03 -->
+<section class="ch" id="s3">
+<div class="ch-no">03 · 갈래 C</div>
+<h2>가중치 흡수 — 개인 기억으로는 실패, '통합층'으로 재배치</h2>
+<p class="lead">셋째 갈래 — 사용자와의 경험을 모델 가중치에 직접 새기는 길 — 는 개인 기억 용도로는 채택되지 않았다. 원인은 인간 기억 연구가 예견한 그 문제, <strong>파국적 망각(catastrophic forgetting)</strong>이다.</p>
+<ul>
+<li><strong>순차 모델 편집의 붕괴.</strong> ROME/MEMIT 같은 지식 편집 기법을 반복 적용하면 점진적 망각을 거쳐 수십~수백 회 편집에서 모델이 급락·붕괴한다(Gupta et al., 2024). WISE(NeurIPS 2024)처럼 사이드 메모리로 완화하려는 시도가 이어지지만 프로덕션 표준은 없다.</li>
+<li><strong>사용자별 어댑터의 운영 실패.</strong> S-LoRA류 멀티 LoRA 서빙으로 GPU 1장당 수천 어댑터가 기술적으로는 가능하지만, 사용자마다 모델 품질을 재평가·롤백해야 하는 운영 비용과 프라이버시 문제 때문에 개인 기억 용도로는 쓰이지 않는다. 파인튜닝은 기업 도메인 적응 용도에 머물러 있다.</li>
+</ul>
+<p>그러나 C는 죽은 갈래가 아니라 <strong>역할이 재배치된 갈래</strong>다. 2025년의 흥미로운 신호들은 모두 "실시간 개인화"가 아니라 "백그라운드 통합"을 향한다: Google Titans(2025.1)는 테스트 시점에 학습하는 신경 장기기억 모듈로 초장문을 처리하고, Letta의 sleep-time compute(2025.4)는 유휴 시간에 백그라운드 에이전트가 기억을 정리·응축하며, OpenAI도 유사한 백그라운드 기억 재정리('dreaming'류) 도입이 보도됐다(세부 수치는 미확인). 경험을 즉시 새기지 않고, 나중에 몰아서 통합한다 — 뇌가 수면에 응고화를 배치한 것과 같은 시간 구조다.</p>
+</section>
+
+<!-- 04 -->
+<section class="ch" id="s4">
+<div class="ch-no">04 · 수렴</div>
+<h2>뇌가 이미 낸 답: 상보적 학습 시스템과의 구조적 일치</h2>
+<p class="lead">세 갈래의 성적표 — A는 물리·인지 한계 확정, B는 제품 표준화 완료, C는 통합층으로 재배치 — 를 겹치면 그림은 하나다. 그리고 그 그림은 McClelland·McNaughton·O'Reilly가 1995년에 그린 상보적 학습 시스템(CLS) 이론의 그림과 같다: <strong>빠른 일화 기록과 느린 통계 통합은 한 시스템으로 겸할 수 없다. 그래서 뇌는 해마와 신피질을 분리하고, 수면 중 재생으로 둘을 잇는다.</strong></p>
+<figure>
+<svg viewBox="0 0 740 320" role="img" aria-label="상보적 학습 시스템과 AI 에이전트 기억 스택의 대응: 해마는 외부 기억 저장소에, 신피질은 사전학습 가중치에, 수면 중 재생은 슬립타임 컴퓨트에, 작업기억은 컨텍스트와 KV 캐시에 대응한다">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker>
+  </defs>
+  <g font-size="12.5" fill="currentColor">
+    <text x="185" y="30" text-anchor="middle" font-weight="800" font-size="13.5">인간 (CLS 이론, 1995)</text>
+    <text x="555" y="30" text-anchor="middle" font-weight="800" font-size="13.5">AI 에이전트 (2026 표준형)</text>
+    <line x1="370" y1="16" x2="370" y2="304" stroke="#D8DEE9" stroke-width="1.2" stroke-dasharray="5 4"/>
+    <!-- 인간 측 -->
+    <rect x="60" y="48" width="250" height="50" rx="9" fill="#EEF2F9" stroke="#3D5A99" stroke-width="1.5"/>
+    <text x="185" y="69" text-anchor="middle" font-weight="700">작업기억 (4±1 청크)</text>
+    <text x="185" y="87" text-anchor="middle" font-size="11" fill="#59647A">의식의 작업대 — 좁게 유지</text>
+    <rect x="60" y="112" width="250" height="50" rx="9" fill="#F8F3EA" stroke="#B8641F" stroke-width="1.5"/>
+    <text x="185" y="133" text-anchor="middle" font-weight="700">해마 — 빠른 일화 기록</text>
+    <text x="185" y="151" text-anchor="middle" font-size="11" fill="#59647A">한 번의 경험도 즉시 저장</text>
+    <rect x="60" y="176" width="250" height="50" rx="9" fill="#E9F4F0" stroke="#0D9373" stroke-width="1.5"/>
+    <text x="185" y="197" text-anchor="middle" font-weight="700">신피질 — 느린 통계 통합</text>
+    <text x="185" y="215" text-anchor="middle" font-size="11" fill="#59647A">지식·스키마의 분산 저장</text>
+    <rect x="60" y="240" width="250" height="50" rx="9" fill="#FFFFFF" stroke="#9AA5BC" stroke-width="1.5"/>
+    <text x="185" y="261" text-anchor="middle" font-weight="700">수면 중 재생(replay)</text>
+    <text x="185" y="279" text-anchor="middle" font-size="11" fill="#59647A">해마 → 신피질 응고화</text>
+    <!-- 대응 화살표 -->
+    <g stroke="#9AA5BC" stroke-width="1.5">
+      <line x1="310" y1="73" x2="430" y2="73" marker-end="url(#ar)"/>
+      <line x1="310" y1="137" x2="430" y2="137" marker-end="url(#ar)"/>
+      <line x1="310" y1="201" x2="430" y2="201" marker-end="url(#ar)"/>
+      <line x1="310" y1="265" x2="430" y2="265" marker-end="url(#ar)"/>
+    </g>
+    <!-- AI 측 -->
+    <rect x="434" y="48" width="256" height="50" rx="9" fill="#EEF2F9" stroke="#3D5A99" stroke-width="1.5"/>
+    <text x="562" y="69" text-anchor="middle" font-weight="700">컨텍스트 + KV 캐시 (HBM)</text>
+    <text x="562" y="87" text-anchor="middle" font-size="11" fill="#59647A">~1M 토큰에서 성장 정체 · context rot</text>
+    <rect x="434" y="112" width="256" height="50" rx="9" fill="#F8F3EA" stroke="#B8641F" stroke-width="1.5"/>
+    <text x="562" y="133" text-anchor="middle" font-weight="700">외부 기억·RAG (DRAM+eSSD)</text>
+    <text x="562" y="151" text-anchor="middle" font-size="11" fill="#59647A">3사 표준 탑재 2024~25 · 일화/의미/절차</text>
+    <rect x="434" y="176" width="256" height="50" rx="9" fill="#E9F4F0" stroke="#0D9373" stroke-width="1.5"/>
+    <text x="562" y="197" text-anchor="middle" font-weight="700">사전학습 가중치 (HBM 상주)</text>
+    <text x="562" y="215" text-anchor="middle" font-size="11" fill="#59647A">세계 지식 — 주기적 재학습으로만 갱신</text>
+    <rect x="434" y="240" width="256" height="50" rx="9" fill="#FFFFFF" stroke="#9AA5BC" stroke-width="1.5"/>
+    <text x="562" y="261" text-anchor="middle" font-weight="700">sleep-time compute · dreaming</text>
+    <text x="562" y="279" text-anchor="middle" font-size="11" fill="#59647A">유휴 시간 배치 응축 (2025~)</text>
+  </g>
+</svg>
+<figcaption><b>그림 1. 상보적 학습 시스템(CLS)과 2026년 AI 기억 스택의 1:1 대응.</b> "빠른 기록과 느린 통합은 한 시스템으로 겸할 수 없다"는 1995년의 계산론적 예측이, 30년 뒤 세 갈래 실험(A·B·C)의 성패를 정확히 갈랐다. 업계는 뇌의 답안지에 수렴하고 있다.</figcaption>
+</figure>
+<p>이 일치는 우연이라기보다 수렴 진화에 가깝다. 같은 제약 — 한정된 고속 메모리, 간섭, 안정성-가소성 딜레마 — 에 놓인 두 시스템이 같은 해법에 도달한 것이다. 실무적 함의: <strong>세 갈래 중 무엇이 이기느냐는 질문은 닫혔고, 남은 질문은 하이브리드 내부의 배분</strong>(컨텍스트를 얼마나 크게, 외부 기억을 얼마나 촘촘하게, 통합을 얼마나 자주)이다. 관전 포인트는 Titans/TTT류 '테스트타임 가중치 기억'이 A·C의 경계를 허물지 여부다.</p>
+</section>
+
+<!-- 05 -->
+<section class="ch" id="s5">
+<div class="ch-no">05 · 반도체</div>
+<h2>수혜 지도 — 어느 칩이 어느 기억을 파는가</h2>
+<p class="lead">하이브리드 수렴은 메모리 반도체에 계층별로 다른 강도의 수요를 배정한다. 2025년 하반기부터의 '메모리 슈퍼사이클'은 이 구조 변화가 가격에 반영되기 시작한 신호로 읽힌다.</p>
+<div class="twrap">
+<table>
+<thead><tr><th>갈래</th><th>담당 기억</th><th>수혜 칩</th><th>강도</th><th>2026 관측 신호</th></tr></thead>
+<tbody>
+<tr><td><strong>A</strong> 컨텍스트·KV 캐시</td><td>작업기억</td><td><strong>HBM</strong> (+ KV 오프로딩용 CXL·SOCAMM2)</td><td><strong>강</strong></td><td>HBM 시장 $54.6B, +58% YoY 추정(BofA) · HBM4가 Rubin 세대 탑재 · AI 수요가 HBM의 55%+</td></tr>
+<tr><td><strong>B</strong> 외부 기억·RAG</td><td>일화·의미기억</td><td><strong>서버 DRAM + QLC eSSD</strong></td><td><strong>중~강 (이차 파도)</strong></td><td>2026년 매출 전망 DRAM +51%·NAND +45%(BofA) · AI 데이터 축적으로 QLC eSSD 수요 급증 · TrendForce "추론(KV 캐시+RAG 스토리지)이 메모리 시장을 다시 쓴다"</td></tr>
+<tr><td><strong>C</strong> 가중치 통합</td><td>의미기억 갱신</td><td>학습용 HBM·스토리지 (간헐)</td><td><strong>약</strong></td><td>주기적 재학습 수요로 흡수 · 사용자별 어댑터 저장량 미미</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout"><div class="c-t">모(母)보고서 논제와의 정합</div>
+<p><a href="2026-08-10_agent-memory-selfhood.html">'기억 없는 하인은 없다'</a>의 수요 3겹 분해(①HBM 대역폭 ②DRAM+NAND 영속 상태 ③LPDDR 온디바이스)가 아키텍처 조사로 재확인됐다. 특히 ②겹 — 사용자 수 × 시간에 비례해 단조 증가하는 일화기억 저장 — 은 외부 기억이 제품 표준이 된 지금 구조적으로 확정된 셈이다. 유보도 그대로 유효하다: MLA류 압축과 요약형 망각은 증가율을 낮추는 변수이며, 수요 논제는 주가 논제가 아니다.</p></div>
+<h3>관전 포인트</h3>
+<ul>
+<li><strong>HBM 용량 성장률 vs 컨텍스트 수요 성장률.</strong> 실효 컨텍스트가 다시 늘기 시작하면(예: MLA 후속 세대) A겹의 HBM 수요 곡선이 재가속한다.</li>
+<li><strong>테스트타임 학습의 실용화.</strong> Titans류가 상용 표준이 되면 '추론 중 쓰기 가능한 메모리'라는 새 요구가 생겨 HBM/DRAM 경계 제품(예: PIM)에 기회가 열린다.</li>
+<li><strong>벡터DB의 기능화 완주.</strong> 외부 기억의 소프트웨어 마진이 소멸할수록 가치는 하드웨어와 플랫폼 양끝으로 이동한다 — 기억의 소유권 문제(후속 Ⅱ)와 직결.</li>
+</ul>
+</section>
+
+<section class="ch" id="refs">
+<div class="ch-no">참고자료</div>
+<h2>주요 출처</h2>
+<ul class="refs">
+<li>Chroma Research (2025). Context Rot: How Increasing Input Tokens Impacts LLM Performance</li>
+<li>Liu, N. F., et al. (2024). Lost in the Middle: How Language Models Use Long Contexts. TACL</li>
+<li>DeepSeek-AI (2024). DeepSeek-V2 Technical Report (Multi-head Latent Attention)</li>
+<li>OpenAI (2024–2025). Memory and New Controls for ChatGPT; 메모리 전체 대화 참조 확장</li>
+<li>Anthropic (2025). Bringing Memory to Teams; Claude 메모리 Pro/Max 확대</li>
+<li>Packer, C., et al. (2023). MemGPT: Towards LLMs as Operating Systems. UC Berkeley / Letta (2025) Sleep-time Compute</li>
+<li>Mem0 (2025). Scalable Long-Term Memory for LLM Agents; LangChain LangMem SDK (2025)</li>
+<li>Behrouz, A., et al. (2025). Titans: Learning to Memorize at Test Time. Google Research</li>
+<li>Gupta, A., et al. (2024). Model Editing at Scale Leads to Gradual and Catastrophic Forgetting</li>
+<li>McClelland, J. L., McNaughton, B. L., &amp; O'Reilly, R. C. (1995). Why There Are Complementary Learning Systems in the Hippocampus and Neocortex. Psychological Review, 102</li>
+<li>TrendForce·SK hynix Newsroom (2026). AI 추론발 메모리 수요·HBM 시장 전망(BofA 추정 인용)</li>
+</ul>
+</section>
+
+<div class="footer">
+<p><strong>세 갈래 길과 하나의 뇌 — AI 에이전트 기억 아키텍처의 수렴</strong> · 2026-08-10 · '기억 없는 하인은 없다' 후속 Ⅰ</p>
+<p>정보 정리·교육 목적. 시장 수치는 인용 출처의 추정치이며 특정 종목·자산의 매수·매도 권유가 아니다.</p>
+</div>
+
+</div>
+</body>
+</html>
