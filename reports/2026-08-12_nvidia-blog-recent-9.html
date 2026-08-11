@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NVIDIA 공식 블로그 최근 9건 정독 — 병목은 칩이 아니라 그 밑단 | 2026-08-12</title>
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="NVDA">
+<meta name="vault-date" content="2026-08-12">
+<meta name="description" content="2026-08-04~08-11 NVIDIA 공식 블로그 9건을 전문 정독해 정리·요약·분석. 전력(800VDC)·저장(cuFile 개방)·미국 제조 온쇼어링이라는 밑단 3종과 오픈 모델 확산 전략을 관통 축으로 읽는다.">
+<style>
+  :root{ --bg:#EBE4D3; --card:#FDF6E3; --ink:#1f2328; --sub:#5b6169; --line:#e0d8c3;
+         --red:#B03A2E; --orange:#B9770E; --green:#1E5F45; --blue:#1D3A5F; --purple:#6B4E8A; }
+  *{box-sizing:border-box}
+  body{margin:0;padding:28px 16px 56px;background:var(--bg);color:var(--ink);
+       font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+       line-height:1.75;font-size:16px;}
+  .wrap{max-width:920px;margin:0 auto}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px 28px;margin-bottom:20px;
+        box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  h1{font-size:27px;line-height:1.35;margin:0 0 8px}
+  h2{font-size:21px;margin:0 0 14px;padding-bottom:9px;border-bottom:2px solid var(--line)}
+  h3{font-size:17px;margin:24px 0 6px}
+  h3:first-of-type{margin-top:6px}
+  .meta{color:var(--sub);font-size:13.5px;margin-bottom:2px}
+  .lead{font-size:16.5px;color:#33393f;margin:10px 0 0}
+  ul{padding-left:20px;margin:8px 0}
+  li{margin:5px 0}
+  a{color:var(--blue)}
+  .sum li{margin:7px 0}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;
+       border:1px solid currentColor;vertical-align:2px;margin-right:6px}
+  .t-red{color:var(--red)} .t-org{color:var(--orange)} .t-gry{color:var(--sub)}
+  .post{border-left:3px solid var(--line);padding-left:16px;margin:22px 0}
+  .post .ph{font-weight:700;font-size:16.5px}
+  .post .pd{color:var(--sub);font-size:13px;margin:2px 0 8px}
+  .num{background:#f3ecd8;border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14.5px}
+  .num b{color:var(--blue)}
+  .warn{background:#fbf0e4;border-left:4px solid var(--orange);padding:11px 14px;margin:12px 0;font-size:14.5px;border-radius:0 8px 8px 0}
+  .note{color:var(--sub);font-size:13.5px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f3ecd8}
+  .fn{font-size:13.5px;color:var(--sub);border-top:1px solid var(--line);margin-top:20px;padding-top:12px}
+  footer{text-align:center;color:var(--sub);font-size:13px;margin-top:26px}
+  @media print{ body{background:#fff} .card{background:#fff;box-shadow:none} }
+  @media (max-width:600px){ body{padding:16px 10px 40px} .card{padding:18px 16px} h1{font-size:22px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="card">
+  <h1>NVIDIA 공식 블로그 최근 9건 정독 — “병목은 칩이 아니라 그 밑단”</h1>
+  <div class="meta">2026-08-12 작성 · 대상 기간 2026-08-04 ~ 08-11 (미국 태평양시 기준) · 원문 9건 전문 정독</div>
+  <div class="meta">출처: NVIDIA 공식 블로그 <a href="https://blogs.nvidia.com/recent-news/">Recent News</a> · <a href="https://blogs.nvidia.com/feed/">RSS 피드</a></div>
+  <p class="lead">8일 동안 올라온 10건 중 소비자 게임 목록 1건을 뺀 <b>9건</b>을 전부 읽었다. 관통하는 축은 두 개다. 하나는 <b>“연산 성능의 한계는 이제 칩이 아니라 전력·저장·제조에 있다”</b>는 자기 서사이고, 다른 하나는 <b>오픈 모델을 무료로 뿌려 토큰 수요 저변을 넓히는</b> 전략이다. 두 축 모두 “NVIDIA가 무엇을 파는 회사인가”의 정의를 넓히는 방향으로 움직인다.</p>
+</div>
+
+<div class="card">
+  <h2>📌 한 장 요약</h2>
+  <ul class="sum">
+    <li><span class="tag t-red">중요</span><b>전력 규격을 자기가 쓴다</b> — 800 VDC<sup>1</sup> 직류 배전 아키텍처를 구글·마이크로소프트와 함께 OCP<sup>2</sup>에서 표준화했고, 장비·인프라 업체 <b>80곳 이상</b>이 이미 이 규격으로 제품을 만들고 있다. 2026년 하반기 파워랙 → 2027년 행(row) 단위 전력 센터(행당 2MW) → 신축용 DC 파워블록의 3단 로드맵.</li>
+    <li><span class="tag t-red">중요</span><b>고객사에 직접 투자한다</b> — 아르메니아 AI 팩토리를 연 Firebird에 “투자할 의향”을 공식 표명(금액 미공개). 앞서 CoreWeave도 투자했다. 300MW·GPU 7만 장(2027년까지), 세계 2GW 로드맵.</li>
+    <li><span class="tag t-red">중요</span><b>미국 제조 온쇼어링 계획에 협력사 실명이 붙었다</b> — 파트너와 함께 최대 <b>5,000억 달러</b> 규모 AI 인프라를 미국에서 생산하겠다는 계획에 TSMC·폭스콘·위스트론·코닝·루멘텀·코히런트·앰코가 명시됐다.</li>
+    <li><span class="tag t-red">중요</span><b>저장장치를 메모리처럼 쓰겠다</b> — GPU가 저장장치를 직접 읽고 쓰는 cuFile 인터페이스를 오픈소스로 공개(구글·인텔·메타와 공동 관리). 40곳 넘는 저장·플래시 업체가 참여하는 Storage-Next에 마이크론·키옥시아가 들어 있다.</li>
+    <li><span class="tag t-org">주목</span><b>모델은 팔지 않고, 모델 비용을 깎는 도구를 준다</b> — 300억 파라미터 오픈 모델 Nemotron 3.5 Lightning과 라우팅 라이브러리 NeMo Switchyard 공개. “작업 완료 비용을 Opus 4.8 단독 대비 약 1/3로 줄였다”고 주장(자체 내부 벤치마크).</li>
+    <li><span class="tag t-org">주목</span><b>피지컬 AI<sup>3</sup> 모델을 상업용으로 개방</b> — 자율주행 추론 모델 Alpamayo 2 Super를 상업 이용 가능 라이선스로 전환(누적 50만 다운로드), 월드 모델 Cosmos 3 계열도 오픈 라이선스.</li>
+    <li><span class="tag t-org">주목</span><b>수요 저변을 정책으로 넓힌다</b> — 미국 국립과학재단(NSF)의 주(州)·권역 AI 인프라 허브 사업 참여.</li>
+    <li><span class="tag t-gry">참고</span>같은 기간 GeForce NOW 8월 신작 26종 발표(소비자 게이밍 루틴 — 이 보고서에서는 다루지 않음).</li>
+  </ul>
+  <div class="warn"><b>이 자료의 성격</b> — 9건 전부 <b>NVIDIA 자사 채널</b>이다. 발표 사실(무엇을 내놨나)과 회사 주장(그래서 시장이 어떻게 된다)은 무게가 다르다. 아래 본문에서 인용한 성능·경제 효과 수치는 별도 표기가 없는 한 <b>NVIDIA 또는 NVIDIA 의뢰 기관의 자체 추정</b>이며, 독립 검증된 값이 아니다.</div>
+</div>
+
+<div class="card">
+  <h2>🔴 1부. 밑단 3종 — 전력·저장·제조</h2>
+  <p>이번 주 가장 무거운 세 건은 모델이 아니라 <b>인프라의 아래층</b> 이야기였다. 세 건 모두 “연산 성능을 더 끌어내려면 칩 바깥을 고쳐야 한다”는 같은 논리 구조를 갖는다.</p>
+
+  <div class="post">
+    <div class="ph"><a href="https://blogs.nvidia.com/blog/800-vdc-power-architecture-ai-factory/">AI 연산 성능 확장에 새 전력 아키텍처가 필요한 이유</a></div>
+    <div class="pd">2026-08-11 · 작성 Harry Petty · 분류 AI 인프라/하드웨어</div>
+    <p>글의 첫 문장이 논지 전부다. <b>“병목은 전력량(와트)이 아니라, 전력이 전력망에서 GPU까지 오는 방식”</b>이라는 것. 기존 교류(AC) 배전은 중간에 여러 번 전압 변환을 거치는데, 랙 밀도가 높아질수록 그 손실이 누적된다. 800 VDC는 고전압 직류로 보내 변환 단계를 줄여 더 많은 전력이 연산에 도달하게 한다.</p>
+    <div class="num">
+      <b>구조</b> — 구글·마이크로소프트와 공동 개발, OCP를 통해 2026년 3월 공동 백서 + 7월 저전압직류 고체변압기 규격 v0.3 공개. 규격에 맞춰 제품을 만드는 <b>장비·인프라 업체 80곳 이상</b>.<br>
+      <b>3단 로드맵</b> — ① MGX 호환 800 VDC 파워랙: <b>2026년 하반기</b>, 기존 교류 시설을 뜯지 않고 랙 열(row) 안에서 직류를 공급하는 혼합형 ② 행 단위 전력 센터: <b>2027년</b>, 머리 위 800 VDC 버스웨이로 <b>행당 최대 2MW</b> ③ DC 파워블록: 신축 시설용, 중압 전력을 한 번에 800 VDC로 변환.<br>
+      <b>인용</b> — Wood Mackenzie 추정 <b>2040년까지 전 세계 AI·데이터 인프라 투자 9조 달러</b>(외부 기관 추정치).
+    </div>
+    <p><b>왜 중요한가</b>: 이미 지어진 시설의 <b>좌초 위험을 없애는 것</b>이 이 발표의 실질적 메시지다. 토지·전력 사용권·건물을 그대로 두고 밀도를 올릴 길을 열어준다는 것인데, 이는 곧 <b>기존 데이터센터 사업자의 자산 수명을 늘리고 신규 착공 대비 회수 기간을 줄인다</b>는 뜻이다. 동시에, 전력 전달 규격을 NVIDIA가 주도하면 그 층에서 발생하는 부가가치의 배분도 규격을 따르는 쪽으로 재편된다.</p>
+  </div>
+
+  <div class="post">
+    <div class="ph"><a href="https://blogs.nvidia.com/blog/ai-storage-fms/">AI가 메모리를 압박하자 저장장치가 나섰다 (FMS 발표)</a></div>
+    <div class="pd">2026-08-04 · 작성 Jason Hardy · 분류 AI 인프라 · 미래 메모리·스토리지 학회(FMS)</div>
+    <p>데이터셋과 문맥창(컨텍스트)이 시스템 메모리 용량을 넘어서면서, 저장장치가 “데이터를 쌓아두는 수동적 장소”에서 <b>데이터 경로의 능동적 부품</b>으로 바뀌고 있다는 주장. GPU가 직접 저장 요청을 걸면서 동시 작업이 수천 건씩 쏟아지고, 그때마다 암호화·압축·검증·복원이 걸려 병목이 된다.</p>
+    <div class="num">
+      <b>개방</b> — GPU가 저장장치를 직접 읽고 쓰게 하는 <b>cuFile 인터페이스와 그 아래 저장 소프트웨어 스택을 오픈소스화</b>. 초기 관리 주체가 <b>구글·인텔·NVIDIA·메타</b>.<br>
+      <b>성능 주장</b> — Vera CPU(Vera BlueField-4 STX 구성)가 압축+암호화 2단 파이프라인에서 x86 CPU 대비 <b>처리량 최대 3.21배</b>(NVIDIA 자체 벤치마크).<br>
+      <b>진영</b> — Storage-Next 참여 <b>40곳 이상</b>, 본문에 <b>DDN·키옥시아·마이크론</b> 명시. 데이터 접근 프레임워크 SCADA, 문맥 저장 계층 CMX.
+    </div>
+    <p><b>왜 중요한가</b>: 40년 된 “메모리냐 저장장치냐”의 경제학이 <b>분(minute) 단위에서 마이크로초 단위로</b> 옮겨간다는 것이 이 글의 핵심 주장이다. 사실이라면 고대역폭 메모리에만 몰려 있던 수요 압력이 <b>기업용 플래시·컨트롤러·데이터 처리 가속기</b> 쪽으로도 번진다. 인터페이스를 개방하되 그 위 하드웨어(BlueField-4)는 자사 제품이라는 점이 이 발표의 구조다.</p>
+  </div>
+
+  <div class="post">
+    <div class="ph"><a href="https://blogs.nvidia.com/blog/nvidia-and-partners-build-in-america-for-america/">NVIDIA와 파트너들, 미국에서 미국을 위해 만든다</a></div>
+    <div class="pd">2026-08-05 갱신(최초 7월 1일 게시) · 분류 AI/기업 · ※ 갱신형 누적 문서</div>
+    <p>미국 제조 온쇼어링을 한 편에 모아 계속 갱신하는 문서다. 이번 갱신의 새 내용은 <b>위스트론 포트워스 공장 개소</b>와 <b>NSF 허브 참여</b>.</p>
+    <div class="num">
+      <b>제조</b> — 위스트론 포트워스 <b>30,100㎡(324,000평방피트)</b> 공장 가동, GB300 그레이스 블랙웰 울트라 생산 중이며 <b>베라 루빈 슈퍼칩</b> 생산 준비. 미국 첨단 제조에 <b>7억 달러</b> 투입·현재 <b>500명 → 연말 1,000명</b> 고용.<br>
+      <b>공급망 실명</b> — 파트너와 함께 미국에서 최대 <b>5,000억 달러</b> 규모 AI 인프라 생산 계획, 명시된 곳은 <b>TSMC·폭스콘·위스트론·코닝·루멘텀·코히런트·앰코</b>. TSMC 피닉스에서 블랙웰 웨이퍼 양산 중.<br>
+      <b>광학 쪽</b> — 코히런트가 텍사스 셔먼에 <b>세계 첫 6인치 인듐인(InP) 양산 팹</b> 착공(약 1,000명 고용 예상), 코닝은 노스캐롤라이나·텍사스에서 광 연결 제조 확대(3,000명+), 루멘텀은 노스캐롤라이나에서 광학 연구개발 심화.<br>
+      <b>전력·냉각</b> — 버티브·슈나이더·이튼·제이콥스·지멘스·트레인·GE 버노바가 설계·전력·냉각·운영에 참여. 루빈 세대가 <b>세계 최초 100% 액체냉각</b>, DSX 참조설계는 <b>물 소비 0</b>이라고 회사 측 설명.<br>
+      <b>경제효과 주장</b> — Public First 추정 2026년 한 해 <b>미국 GDP 기여 4,850억 달러·일자리 10만+</b>. 43개 주에 협력사 네트워크.
+    </div>
+    <div class="warn"><b>수치 취급 주의</b> — GDP 4,850억 달러, 램프(Ramp)의 “AI 고강도 도입 기업이 고용을 10%+ 더 늘렸다”는 통계, “일선 근로자 4분의 3이 AI 상시 사용” 같은 숫자는 모두 <b>NVIDIA가 인용한 제3자 추정</b>이다. 방향성 참고용이지 검증된 국민계정 수치가 아니다.</div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🟠 2부. 오픈 모델 — 팔지 않고 뿌려서 수요를 만든다</h2>
+
+  <div class="post">
+    <div class="ph"><a href="https://blogs.nvidia.com/blog/nemotron-lightning-switchyard-rtx-dgx/">Nemotron 3.5 Lightning과 NeMo Switchyard</a></div>
+    <div class="pd">2026-08-11 · 작성 Kari Briski · 분류 AI/에이전트</div>
+    <p>두 개를 같이 냈다. <b>Nemotron 3.5 Lightning</b>은 300억 파라미터 전문가혼합(MoE)<sup>4</sup> 개방형 모델로, 계속 돌아가는 에이전트의 <b>반복적이고 좁은 작업</b>(코드 리뷰·도구 호출·보안 경보 감시·요금 문의 응대)을 맡도록 설계됐다. 동급 대비 <b>출력 속도 최대 4배·작업 완료 30% 단축</b> 주장.</p>
+    <p><b>NeMo Switchyard</b>는 성격이 다르다. 에이전트 작업의 각 단계를 <b>그 단계에 가장 알맞은 모델로 자동 배분</b>하는 오픈소스 라우팅 라이브러리다. 자사 모델만이 아니라 개발자가 쓰는 개방형·상용 모델을 섞어 쓰도록 만들어졌다.</p>
+    <div class="num">
+      <b>비용 주장(전부 NVIDIA 내부 또는 파트너 측정)</b> — Switchyard로 “작업 완료 비용을 <b>Opus 4.8 단독 대비 약 3분의 1</b>로 축소”. 파트너 사례: LangChain <b>비용 74% 절감</b>(프런티어 모델 호출 7%만, 정확도 6% 손실), Ramp <b>비용 58%·실행시간 33%</b> 절감, Cognition(Devin) <b>평균 비용 28%</b> 절감, Classmethod <b>27%</b> 절감, Boomi 도메인 라우팅 정확도 100%.<br>
+      <b>채택</b> — CrowdStrike(보안)·Harvey(법률)·CodeRabbit(코드 리뷰)·Lila Sciences·Fastino Labs가 Lightning을 자체 데이터로 추가 학습.
+    </div>
+    <p><b>왜 중요한가</b>: NVIDIA가 자기 블로그에서 <b>경쟁 프런티어 모델의 비용을 기준선으로 놓고 “3분의 1”을 말한다</b>는 사실 자체가 포지션이다. 모델 계층의 가격을 낮추면 그만큼 토큰을 더 쓰게 되고, 토큰을 더 쓰면 GPU 수요가 는다. <b>모델 마진을 압박하는 것이 자사 이익과 충돌하지 않는 구조</b>다. 다만 이 절감률은 전부 이해당사자 측정이라 독립 재현이 필요하다.</p>
+  </div>
+
+  <div class="post">
+    <div class="ph"><a href="https://blogs.nvidia.com/blog/local-ai-open-source-models-agents-nemotron/">NVIDIA와 로컬 AI 커뮤니티 — 오픈소스 모델과 지능형 에이전트</a></div>
+    <div class="pd">2026-08-11 · 작성 NVIDIA Writers · 분류 AI/로컬 AI · ※ 8월 내내 갱신되는 시리즈 문서</div>
+    <p>8월 한 달 동안 계속 추가되는 “로컬 AI” 특집. 흥미로운 건 <b>남의 모델을 자사 하드웨어 성능으로 소개하는 카탈로그 형식</b>이라는 점이다.</p>
+    <ul>
+      <li><b>메타 Muse Glimmer</b> — 300억 파라미터 밀집형 개방 가중치 모델, 문맥창 12만+ 토큰. RTX 5090에서 <b>초당 200토큰 이상</b>. 코딩·로컬 에이전트 특화.</li>
+      <li><b>Poolside AI Laguna S 2.1</b> — 1,180억 파라미터 개방 가중치 코딩 에이전트 모델, DGX Spark 한 대에서 구동.</li>
+      <li><b>DeepSeek-V4-Flash</b> — 2,840억 파라미터 MoE(활성 130억)·문맥창 100만 토큰.</li>
+      <li><b>Thinking Machines Lab Inkling-Small</b> — 2,760억 파라미터(토큰당 120억 활성), <b>GB300 NVL72로 학습</b>.</li>
+      <li><b>Cosmos 3 Edge</b>(40억, 로봇·자율주행용 온디바이스), 알리바바 Wan-Animate-2, MiniMax-H3, LTX-2.5 등.</li>
+      <li>DGX Spark 여러 대를 묶는 클러스터 도우미, 8월 중 크롬 ARM64 네이티브 지원 등 개인용 워크스테이션 편의 기능.</li>
+    </ul>
+    <p><b>왜 중요한가</b>: 프런티어 모델이 어디서 나오든 <b>“결국 우리 칩 위에서 돈다”</b>는 메시지를 매주 누적시키는 채널이다. 모델 계층의 승자가 누구인지에 회사의 이해가 걸려 있지 않다는 포지션을 반복 확인시켜 준다.</p>
+  </div>
+
+  <div class="post">
+    <div class="ph"><a href="https://blogs.nvidia.com/blog/open-world-models-physical-ai/">열린 월드 모델이 피지컬 AI의 최전선을 넓히는 법 (Cosmos 3)</a></div>
+    <div class="pd">2026-08-06 · 작성 Ming-Yu Liu · 분류 AI/로보틱스</div>
+    <p>피지컬 AI는 “겉모습”이 아니라 <b>결과를 예측</b>해야 하고, 배치할 때마다 로봇·센서·환경이 달라 <b>전부 특화 문제</b>가 된다는 것이 논지. 그래서 가중치를 열고 추가 학습을 허용하는 것이 선택이 아니라 <b>기술적 요건</b>이라고 주장한다.</p>
+    <div class="num">
+      <b>구성</b> — Cosmos 3 Super(640억)·Nano(160억)·Edge(40억). 리눅스재단 OpenMDW 1.1 라이선스.<br>
+      <b>벤치마크 주장</b> — Artificial Analysis 개방형 가중치 텍스트→이미지·이미지→영상 1위, 세계 생성 PAI-Bench 1위, Physics-IQ 이미지→영상 1위, 로봇 정책 RoboLab 1위.<br>
+      <b>채택</b> — 로봇: 두산로보틱스·LG전자·<b>삼성전자</b>·Skild AI / 자율주행: 리오토·샤오미·Afari / 비전: Centific·Linker Vision 등. Cosmos 연합체를 <b>일본</b>으로 확장(공장·물류·농업·건설·의료·운송).
+    </div>
+  </div>
+
+  <div class="post">
+    <div class="ph"><a href="https://blogs.nvidia.com/blog/alpamayo-2-super-open-model-now-available/">Alpamayo 2 Super — 로보택시·자율주행용 개방 모델, 상업 이용 개시</a></div>
+    <div class="pd">2026-08-04 · 작성 Jessica Soares · 분류 드라이빙</div>
+    <p>기존에는 연구개발용으로만 열려 있던 자율주행 추론 모델을 <b>Alpamayo 계열 전체에 상업 라이선스(OpenMDW-1.1)를 적용</b>했다. 미세조정·파생모델·상업 재배포가 허용되므로, 완성차·트럭·부품사가 자기 데이터로 고쳐 그대로 양산에 넣을 수 있다.</p>
+    <div class="num">
+      <b>규모·성능 주장</b> — 이전 100억 파라미터 모델의 <b>3배 규모</b>. 자율주행 추론 벤치마크 LingoQA에서 약 40개 모델 중 1위, NVIDIA 측정 기준 Qwen2.5-VL 72B <b>+17.0점</b>·Gemini 2.5 Pro <b>+15.1점</b>·GPT-4o <b>+23.2점</b>.<br>
+      <b>출력 5종</b> — 주행 궤적, 판단 근거를 설명하는 인과 사슬, 의도(양보·차선변경·정지), 학습용 자동 라벨, 화면 영역과 연결된 시각 질의응답.<br>
+      <b>채택</b> — 허깅페이스 누적 <b>50만 다운로드 초과</b>. 인과 사슬은 안전 검증 체계 Halos 및 ISO/PAS 8800 대응과 연결. 라벨링 주기를 “몇 달에서 며칠로” 압축한다고 주장.
+    </div>
+    <p><b>왜 중요한가</b>: 자율주행에서 가장 비싼 것은 <b>희귀 상황 데이터와 그 라벨링</b>이다. 여기에 “클라우드에서 큰 모델로 추론 궤적을 만들고, 그것을 증류해 차량 안 작은 모델로 넣는” 경로를 통째로 열어주는 구성이다. 자율주행 개발의 고정비 문턱을 낮추는 방향이라, 후발 주자에게 유리한 변화다.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🟠 3부. 국가·정책 채널 — 수요를 지리적으로 넓힌다</h2>
+
+  <div class="post">
+    <div class="ph"><a href="https://blogs.nvidia.com/blog/firebird-ai-factory-armenia-blackwell-rubin-dsx/">Firebird, 아르메니아에 독립국가연합 최대 AI 팩토리 개소</a></div>
+    <div class="pd">2026-08-08 · 작성 Rev Lebaredian · 분류 AI · 태그 블랙웰/루빈/DSX</div>
+    <p>개소식에 <b>아르메니아 총리, 카자흐스탄 부총리, 주아르메니아 미국 대리대사</b>가 참석했다. 이 참석자 명단 자체가 이 발표의 성격을 말해준다 — 기업 행사가 아니라 <b>국가 인프라 행사</b>다.</p>
+    <div class="num">
+      <b>계획</b> — 2027년 말까지 아르메니아에 <b>루빈·블랙웰 GPU 7만 장 이상, 300MW</b> 배치. 공동창업자 발언 기준 “2년 내 전 세계 <b>약 2기가와트</b>” 목표, 아르메니아·카자흐스탄 등 <b>프런티어 마켓</b> 집중.<br>
+      <b>자본 구조</b> — <b>NVIDIA가 Firebird에 투자할 의향을 표명</b>(금액·조건 미공개), 앞서 올해 <b>CoreWeave가 투자</b>.<br>
+      <b>공급 구성</b> — 델 파워엣지 서버, <b>슈나이더 일렉트릭</b>이 중·저압 배전반과 무정전 전원, <b>버티브</b>가 냉수식 냉각과 TrimCooler·중앙 냉각 관리. DSX 플랫폼 기준 <b>같은 면적에서 GPU 최대 40% 추가</b> 구동 주장. 착공에서 가동까지 <b>6개월 남짓</b>.<br>
+      <b>초기 수요</b> — Perplexity가 에이전트 플랫폼용으로 이용.
+    </div>
+    <p><b>왜 중요한가 (구조적 관전 포인트)</b>: 칩 공급자가 <b>고객사 지분에 투자</b>하고, 그 고객사가 다시 그 칩을 사는 구조가 또 한 건 늘었다. 이 구조 자체는 신용이 부족한 신흥 사업자의 착공을 앞당기는 정상적 산업금융이기도 하지만, <b>매출의 일부가 자기 자본으로 조달된 수요</b>일 가능성을 함께 키운다. 판단을 위해 필요한 것은 공시 쪽 숫자다 — 투자 금액, 매출 인식 시점, 고객 집중도, 매출채권 회수 기간. 블로그로는 확인되지 않고, <b>분기 보고서와 8-K로만 확인 가능한 영역</b>이다.</p>
+  </div>
+
+  <div class="post">
+    <div class="ph"><a href="https://blogs.nvidia.com/blog/nsf-state-regional-ai-hub-program/">NVIDIA, 미국 NSF 주·권역 AI 허브 사업 참여</a></div>
+    <div class="pd">2026-08-04 · 작성 John Josephakis · 분류 AI 인프라/기업</div>
+    <p>주 또는 여러 주에 걸친 대학 연합이 컴퓨트·데이터·소프트웨어를 함께 쓰도록 하는 미국 국립과학재단 사업이다. 자체 구축·클라우드·혼합을 자유롭게 고를 수 있고, 정부의 Genesis Mission 방향과 맞춰 간다고 설명한다.</p>
+    <div class="num">
+      <b>선례</b> — 2020년 플로리다대와의 민관 협력. 현재 AI 전담 교원 300명 이상, 16개 단과대 전체에 AI 교육 이식, 2017년 이후 AI 연구비 <b>5억 1,100만 달러</b> 수주. 앞서 NSF 주도 NAIRR 시범사업의 주요 기여자.
+    </div>
+    <p><b>왜 중요한가</b>: 대학은 지금 당장의 매출처로는 작지만, <b>도구를 처음 배우는 곳</b>이다. 표준 교육 환경을 선점하는 것은 장기 전환비용을 쌓는 행위다. 앞의 오픈 모델 전략과 정확히 같은 방향을 가리킨다.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🧭 4부. 9건을 관통하는 것 — 네 가지 판단</h2>
+
+  <h3>① 병목의 위치를 스스로 아래로 내렸다</h3>
+  <p>이번 주 글에서 NVIDIA는 “우리 칩이 부족해서 못 한다”고 말하지 않는다. 대신 <b>전력 전달 방식</b>(800 VDC), <b>저장 접근 경로</b>(cuFile·SCADA), <b>제조 능력</b>(위스트론·코히런트·앰코)을 병목으로 지목한다. 자기 제품이 병목이 아니라고 말하는 것은 두 가지를 동시에 뜻한다 — 수요는 이미 확보돼 있다는 자신감이거나, <b>성장의 다음 제약이 자기 통제 밖에 있다는 인정</b>이거나. 어느 쪽이든 투자자가 봐야 할 지표는 GPU 출하량 하나에서 <b>전력 확보량·냉각 방식·공급망 준공 일정</b>으로 넓어진다.</p>
+
+  <h3>② “표준은 열고, 중심은 쥔다”가 반복된다</h3>
+  <table>
+    <tr><th>연다</th><th>쥔다</th></tr>
+    <tr><td>800 VDC 규격을 OCP 공개(80+ 업체 참여)</td><td>DSX 참조설계 = 전력·냉각·연산의 시스템 설계 중심</td></tr>
+    <tr><td>cuFile 인터페이스 오픈소스화(구글·인텔·메타 공동 관리)</td><td>Vera BlueField-4 STX = 그 경로를 처리하는 하드웨어</td></tr>
+    <tr><td>Nemotron·Cosmos·Alpamayo 가중치 개방</td><td>학습·추론 하드웨어와 NeMo 도구 사슬</td></tr>
+  </table>
+  <p>규격을 열면 공급망이 빨리 형성되고, 형성된 공급망은 그 규격을 쓴 시스템 설계를 중심으로 정렬된다. <b>개방은 이타적 선택이 아니라 표준 장악 전술</b>로 읽는 것이 정확하다.</p>
+
+  <h3>③ 자금 순환 구조가 한 건 더 늘었다</h3>
+  <p>Firebird 건은 이번 주에서 <b>가장 조용하지만 가장 구조적인</b> 뉴스다. 칩 공급자가 고객 지분에 들어가고, 다른 컴퓨트 사업자(CoreWeave)도 같은 고객에 들어가 있다. 신흥국 인프라 착공을 앞당기는 정상적 산업금융으로 볼 여지가 분명히 있고, 실제로 6개월 만에 가동했다는 실행 속도는 그 근거다. 다만 이 구조가 늘어날수록 <b>“수요”와 “스스로 만든 수요”를 분리해 보는 회계적 확인</b>이 필요해진다. 블로그가 답할 수 없는 질문이므로, 다음 분기 보고서의 고객 집중도와 매출채권 회수 기간 항목에서 확인해야 한다.</p>
+
+  <h3>④ 미국 온쇼어링의 배선도가 실명으로 드러났다</h3>
+  <p>“5,000억 달러”라는 총액보다 유용한 것은 <b>어느 층에 누가 붙어 있는지</b>다. 이번 글이 명시한 배선은 이렇다.</p>
+  <table>
+    <tr><th>층</th><th>본문에 명시된 이름</th></tr>
+    <tr><td>웨이퍼·패키징</td><td>TSMC(피닉스 양산) · 앰코</td></tr>
+    <tr><td>광학·연결</td><td>코히런트(셔먼 6인치 인듐인 팹) · 코닝(NC·TX) · 루멘텀(NC)</td></tr>
+    <tr><td>시스템 조립</td><td>폭스콘(휴스턴) · 위스트론(포트워스·댈러스)</td></tr>
+    <tr><td>전력·냉각·건설</td><td>버티브 · 슈나이더 · 이튼 · GE 버노바 · 트레인 · 지멘스 · 제이콥스 · 캐터필러</td></tr>
+    <tr><td>메모리·저장</td><td>마이크론 · 키옥시아 · DDN (Storage-Next)</td></tr>
+  </table>
+  <p>이 표가 이번 주 9건에서 나온 가장 실용적인 산출물이다. <b>“AI가 커진다”는 명제를 어느 회사의 매출로 번역할지</b>를 회사 스스로 밝혀놓은 목록이기 때문이다. 다만 명단에 오른 것과 실제 매출·마진이 늘어나는 것은 별개이며, 각 회사 공시로 따로 확인해야 한다.</p>
+
+  <div class="warn"><b>반대편에서 보면</b> — 이 9건은 전부 발표자 측 자료다. 800 VDC와 cuFile은 OCP 문서·깃허브라는 <b>검증 가능한 산출물</b>이 있어 상대적으로 단단하지만, 성능 배수(3.21배)·비용 절감률(1/3, 74%, 58%)·경제 효과(4,850억 달러)는 <b>측정 주체가 이해당사자</b>다. 특히 “규격에 맞춰 만드는 업체 80곳”, “Storage-Next 40곳” 같은 참여사 수는 <b>참여 의사와 실제 양산은 다르다</b>는 점에서 진척도 지표로 쓰기엔 약하다. 이 자료의 올바른 용도는 <b>무엇이 언제 나오는지의 일정표</b>이지, 시장 규모의 근거가 아니다.</p></div>
+</div>
+
+<div class="card">
+  <h2>📅 확인할 일정 (본문에 명시된 것만)</h2>
+  <table>
+    <tr><th>시점</th><th>내용</th></tr>
+    <tr><td>2026년 하반기</td><td>MGX 호환 800 VDC 파워랙 출시 — 기존 교류 시설용 혼합형</td></tr>
+    <tr><td>2026-08-04~06</td><td>FMS(미래 메모리·스토리지 학회, 캘리포니아 산타클라라) — 저장 관련 발표 무대</td></tr>
+    <tr><td>2026년 중</td><td>위스트론 포트워스 고용 1,000명 확대 · 베라 루빈 슈퍼칩 생산 준비</td></tr>
+    <tr><td>2026-10-20~22</td><td>GTC 베를린 (등록 개시 안내)</td></tr>
+    <tr><td>2027년</td><td>행 단위 전력 센터(행당 2MW) 공급 개시 예정</td></tr>
+    <tr><td>2027년 말</td><td>Firebird 아르메니아 GPU 7만 장·300MW 완성 목표</td></tr>
+  </table>
+
+  <div class="fn">
+    <b>용어</b><br>
+    1. <b>800 VDC</b> — 800볼트 직류 배전. 교류를 여러 번 낮추며 생기는 변환 손실을 줄이려고 고전압 직류로 GPU 근처까지 보내는 방식.<br>
+    2. <b>OCP(Open Compute Project)</b> — 데이터센터 하드웨어 규격을 회원사가 공동으로 공개·표준화하는 비영리 단체.<br>
+    3. <b>피지컬 AI</b> — 화면 안이 아니라 로봇·차량·카메라처럼 물리 세계에서 움직이는 대상을 다루는 AI.<br>
+    4. <b>전문가혼합(MoE)</b> — 모델 전체 파라미터 중 입력마다 일부 전문가만 켜서 쓰는 구조. 총 크기는 크되 실제 계산량은 작다.<br><br>
+    <b>수집 방법</b> — 브라우저로 <a href="https://blogs.nvidia.com/feed/">RSS 피드</a>를 읽어 발행일 내림차순으로 목록을 잡고, 각 글을 직접 열어 본문 전문을 읽었다. 목록 페이지(<a href="https://blogs.nvidia.com/recent-news/">Recent News</a>)는 <b>10건에서 잘리고 2페이지 요청이 1페이지와 같은 내용을 돌려주기 때문에</b>, 같은 기간에 올라온 글 1건이 목록에서 빠지는 것을 확인했다(그래서 RSS를 기준으로 삼았다). 수치는 원문 표기를 그대로 옮겼고, 환산·추정은 하지 않았다.
+  </div>
+</div>
+
+<footer>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</footer>
+</div>
+</body>
+</html>
