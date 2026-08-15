@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macro Weekly Deep Dive — 2026-08-15</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; background: #EBE4D3; color: #1f2328; line-height: 1.72; padding: 24px; }
+  .container { max-width: 1080px; margin: 0 auto; background: #FDF6E3; border-radius: 14px; padding: 44px 50px; box-shadow: 0 3px 18px rgba(70,58,30,0.14); }
+  h1 { font-size: 1.8em; margin: 8px 0 18px; color: #2a2418; border-bottom: 3px solid #b58900; padding-bottom: 10px; }
+  h2 { font-size: 1.36em; margin: 30px 0 14px; color: #36301d; border-bottom: 1px solid #d8cfb8; padding-bottom: 6px; }
+  h3 { font-size: 1.14em; margin: 20px 0 10px; color: #473f26; }
+  h4 { font-size: 1.05em; margin: 14px 0 8px; color: #5c5237; }
+  p { margin: 8px 0; }
+  hr { border: none; border-top: 1px solid #d8cfb8; margin: 26px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13.5px; background: #fffdf6; border: 1px solid #e8e1cf; border-radius: 6px; overflow: hidden; }
+  th { background: #36301d; color: #f4ecd8; padding: 9px 11px; text-align: left; border-right: 1px solid #4a4230; }
+  th:last-child { border-right: none; }
+  td { padding: 9px 11px; border-top: 1px solid #ece4d0; border-right: 1px solid #f0e9d6; vertical-align: top; }
+  td:last-child { border-right: none; }
+  tr:nth-child(even) td { background: #faf4e4; }
+  tr:hover td { background: #f3ead2; }
+  code { background: #efe7d0; padding: 1px 6px; border-radius: 4px; font-size: 13px; font-family: 'SF Mono', Monaco, monospace; color: #a8341f; }
+  pre { background: #efe7d0; padding: 12px; border-radius: 6px; overflow-x: auto; margin: 12px 0; }
+  pre code { background: transparent; padding: 0; color: #36301d; }
+  a { color: #0a6f93; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  blockquote { border-left: 4px solid #b58900; padding: 10px 16px; background: #f6eed6; margin: 14px 0; color: #5c5237; border-radius: 0 8px 8px 0; }
+  ul { margin: 8px 0 8px 24px; }
+  li { margin: 4px 0; }
+  strong { font-weight: 700; color: #241f12; }
+  em { color: #5c5237; }
+  del { color: #9a8f70; }
+  .foot { margin-top: 40px; padding-top: 16px; border-top: 1px solid #d8cfb8; color: #5c5237; font-size: 12.5px; }
+  @media print { body { background: #fff; padding: 0; } .container { background: #fff; box-shadow: none; border-radius: 0; padding: 20px; } table { background: #fff; } }
+</style><meta name="vault-stage" content="Monitoring">
+<meta name="vault-topic" content="매크로">
+<meta name="vault-date" content="2026-08-15">
+<meta name="vault-published" content="2026-08-15">
+<meta name="description" content="Macro Weekly Deep Dive — 2026-08-15">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body><div class="container">
+<h1>🌐 Macro Weekly Deep Dive — 2026-08-15</h1>
+<p>주간 데이터 기준: FRED 129계열(~8/14)·yfinance 49심볼(8/14 종가)·Warsh 프레임(Dallas 6월판·Cleveland 7월판 8/12 갱신)·1차 정부소스(FOMC 성명 7/29, NY Fed 운영 스케줄 8/14, 재무부 보도자료, 백악관 포고문, CFTC·FinCEN·DOJ)·뉴스(Bloomberg/WSJ/MarketWatch/AP 8/8~8/15)·정책 X 6계정·외부 리서치 11종. 브라우저 필수 피드 <strong>49/49 수집 완료</strong>.</p>
+<p>직전 실행 2026-08-08 대비 1주 델타.</p>
+<h2>📌 한 장 요약</h2>
+<ul>
+<li><strong>종합 매크로 레짐: 🟢 골디락스 (유동성 단서부)</strong> — 직전 🟡 리플레이션에서 한 칸 이동. 근거는 인플레 축이 *전망*이 아니라 *실현치*에서 꺾인 것이다: <strong>7월 근원 CPI가 2.47%로 내려앉았다</strong>(직전 3%대). 성장은 확인됐고(ISM 제조 55.6·생산성 +2.24%), 물가는 실현 기준으로 식었다. 라벨을 완전히 바꾸지 못하게 붙잡는 단서가 유동성 축이다 — 아래 두 항목.</li>
+</ul>
+<ul>
+<li>🔴 <strong>연준이 준비금 관리 매입(RMP)을 끝냈다.</strong> 8/14~9/14 기간 스케줄은 *&quot;재투자 약 $17.0십억, 준비금 관리 매입 없음(no reserve management purchases)&quot;* 이다. 5개 기간 연속 $10십억이던 것이 <strong>0</strong>이 됐다. 직전 회차가 &quot;다음 스케줄 발표가 분기점&quot;이라고 예약해 둔 그 분기점이 이번 주 도착했고, 방향은 종료였다.</li>
+</ul>
+<ul>
+<li>🔴 <strong>그런데 학계 기준 준비금 여유는 같은 주에 신저를 찍었다.</strong> 준비금/은행자산 <strong>11.48%</strong>(전주 11.67%). 부족 구간으로 보는 11% 임계까지 0.48%p. 연준은 &quot;충분하다&quot;며 매입을 멈췄고, 바인딩 지표는 반대 방향으로 가고 있다. <strong>이 괴리가 이번 주 최대 관전 포인트다.</strong></li>
+</ul>
+<ul>
+<li>🔴 <strong>호르무즈가 다시 닫히는 쪽으로 틀었다.</strong> 8/14 UAE 유조선 2척이 호르무즈 통항 중 피격됐다. 직전 회차의 &quot;상업 해운 재개 합의 임박&quot;이 1주 만에 반대 사건을 맞았고, 브렌트는 +1.75% 되돌렸다.</li>
+</ul>
+<ul>
+<li>🔴 <strong>232조가 드론으로 확장됐다.</strong> 8/13 무인항공기(UAS)·부품 포고. 25kg 초과 기체와 도킹스테이션에 고율, 25kg 이하에 저율, 핵심 부품은 저율 + 국내 생산 시간을 주기 위한 유예. 같은 날 해군·조선 산업기반 재건 대통령 행동이 나왔다. 관세 도구함이 다시 한 칸 넓어졌다.</li>
+</ul>
+<ul>
+<li>🔴 <strong>관세의 법적 근거가 조용히 갈아탔다.</strong> 예일 예산연구소(8/11): 평균 법정 관세율 <strong>11.0%</strong> — *&quot;7월 24일 122조 관세가 만료되고 301조 신규 관세로 대체된 뒤 정착한 수준&quot;*. 연말 11.8% 예정. 소비자물가 영향 약 0.7%, 가구당 연 약 $1,100, 10년 세수 약 $1.9조.</li>
+</ul>
+<ul>
+<li>🔴 <strong>제인 스트리트가 7월에 약 $150억을 잃었다</strong>(WSJ·FT). 사상 최대 월간 손실이며, 헤지펀드 Situational Awareness 붕괴와 연관돼 있고, <strong>$110억 규모 공공 부채를 사모 투자자에게 넘기는 거래의 일부로 대주단에 공개</strong>됐다. 같은 주 연준 스태프 노트는 사모 신용(PC) 투자심리 악화를 다뤘다.</li>
+</ul>
+<ul>
+<li>🟠 <strong>재정 적자는 다시 벌어졌다.</strong> 7월 월간 −$432.3십억. 역년 누적(1~7월) <strong>−$1,196.5십억</strong> vs 전년 동기 −$917.9십억 = <strong>+30.4% 확대</strong>. TTM 기준 GDP 대비 −5.99%.</li>
+</ul>
+<ul>
+<li>🟠 <strong>달러 롱이 과밀하다.</strong> 투기적 달러 롱 포지션 +$480억으로 2015년 이후 최고, 3개월간 4배 이상(Kobeissi). 정작 DXY는 99.64로 2주 연속 내려왔다.</li>
+</ul>
+<ul>
+<li>🟠 <strong>주식은 사상 최고, 크립토는 바닥권.</strong> S&amp;P 500이 3주 연속 주간 상승하며 52주 범위의 99.1%에 있는 동안 비트코인은 <strong>6.6%</strong>, 이더리움은 9.7%에 있다. 같은 유동성 환경에서 두 자산군이 정반대에 서 있다.</li>
+</ul>
+<p>📖 <strong>배경 — 레짐 4분류·반복 용어</strong> (아는 독자는 건너뛰어도 된다)</p>
+<p>레짐 4분류 — 🟢 골디락스(적당한 성장 + 낮은 인플레 + 충분한 유동성) / 🟡 리플레이션(성장 가속 + 인플레 상승 + 유동성 확장) / 🟠 스태그플레이션(성장 둔화 + 인플레 상승 + 유동성 긴축) / 🔴 디플레이션(성장 둔화 + 인플레 하락 + 유동성 수축).</p>
+<p>순유동성 = 연준 대차대조표(WALCL) − 재무부 일반계정(TGA) − 역레포. 시장에 실제로 남는 중앙은행 유동성의 근사치. <strong>본 회차부터 세 다리 모두 수요일 레벨 기준</strong>으로 통일했다(총 역레포 기준).</p>
+<p>RMP(준비금 관리 매입) — 연준이 은행 지급준비금을 적정 수준으로 유지하려 국채를 사는 것. 양적완화가 아니라 배관 유지 목적이다.</p>
+<p>Warsh 인플레 프레임 — 현 연준 의장이 근원 PCE 대신 절사평균(크게 오르내린 품목을 잘라낸 뒤 남은 중간 지대)·중앙값 계열을 기저 인플레의 척도로 부각.</p>
+<p>실질금리 / 기간 프리미엄 — 실질금리 = 명목금리 − 기대인플레(물가연동채 시장가). 기간 프리미엄 = 장기채를 오래 들고 있는 대가로 요구하는 추가 보상. 명목금리 상승이 기대 정책경로에서 왔는지 기간 프리미엄에서 왔는지가 &quot;연준이 손댈 수 있는 긴축인가&quot;를 가른다.</p>
+<p>선반영 게이지(1년물 − 실효 연방기금금리) — 시장이 앞으로의 인상을 얼마나 미리 반영했는지.</p>
+<p>232조 / 301조 / 122조 — 232조(1962 무역확장법, 국가안보 근거), 301조(1974 무역법, 불공정 관행), 122조(1974 무역법, 국제수지 근거 — <strong>150일 법정 시한</strong>이 있어 항구적 근거가 못 된다).</p>
+<hr>
+<h2>종합 상태 대시보드</h2>
+<table><thead><tr><th>섹션</th><th>상태</th><th>전주</th><th>핵심 변화 (변한 것만)</th></tr></thead><tbody>
+<tr><td>1. 유동성</td><td>🟠</td><td>⬇️</td><td>🔴 <strong>RMP $10B → $0</strong>(8/14~9/14) · 순유동성 $5,442.4B(주간 −$57.5B·4주 −$150.6B) · 준비금/은행자산 <strong>11.48%</strong> 신저 · TGA $959.4B · MMF $7.93조(+$18.3B)</td></tr>
+<tr><td>2. 경기사이클</td><td>🟡</td><td>➡️</td><td>GDPNow Q3 <strong>4.3%</strong>(전주 5.8%서 −1.5%p) · 초기청구 209K로 20만 상향 돌파 · HY 271bp 불변 · ISM 신규 발표 없음(다음 9/1·9/3)</td></tr>
+<tr><td>3. 핵심 경제지표</td><td>🟢</td><td>⬆️</td><td>🔴 <strong>근원 CPI 2.47%</strong>(3%대서 급락) · CPI 3.4%(7월) · 소매판매 −0.58% m/m · PPI 전품목 +8.27% y/y 미해소 · GSCPI 0.79</td></tr>
+<tr><td>4. 연준</td><td>🟠</td><td>⬆️</td><td>RMP 종료 · FOMC 7/29 <strong>9–3</strong>(해맥·카시카리·로건 인상 선호) 1차 확인 · T/F 5축 변동 0(6페이지 전부 7/09) · MBS 비중 29.8%</td></tr>
+<tr><td>5. 재무부</td><td>🟠</td><td>⬇️</td><td>7월 적자 −$432.3B · 역년 누적 −$1,196.5B(전년 동기 +30.4%) · TGA $959.4B · FinCEN 실소유주 보고 <strong>영구 폐지</strong>(8/14 발효·기존 데이터 삭제)</td></tr>
+<tr><td>6. 행정부 정책</td><td>🔴</td><td>➡️</td><td>232조 <strong>드론(UAS)</strong> 포고 8/13 · 해군·조선 재건 행동 8/13 · 평균 관세율 11.0%(<strong>122조 → 301조 대체</strong>) · CFTC 긴급권한 발동</td></tr>
+<tr><td>7. 미중 패권</td><td>🟠</td><td>➡️</td><td>불법 환적 단속 강화(백악관 &quot;The Great Transshipment Scam&quot;) · DOJ 중국 국적자 미 군사장비 취득 유죄(8/10) · 대만 최대 연례 훈련 완료</td></tr>
+<tr><td>8. 달러 패권</td><td>🟡</td><td>➡️</td><td>DXY 99.64 · 🔴 <strong>스테이블코인 7일 +0.05% 정체</strong>($300.7B) · 투기 달러 롱 $480억(2015년 이후 최고) · 금 $4,432(+1.57%)</td></tr>
+<tr><td>9. 지정학</td><td>🔴</td><td>⬇️</td><td>🔴 <strong>호르무즈 UAE 유조선 2척 피격(8/14)</strong> · 브렌트 +1.75% · USS 링컨 장기 배치 = 바레인 5함대 물류 허브 상실 여파</td></tr>
+<tr><td>10. 시장 심리</td><td>🟠</td><td>➡️</td><td>공포·탐욕 65(Greed) · VIX 14.25(4.4%ile) · 🔴 <strong>제인 스트리트 7월 −$150억</strong> · 13F 시즌 진입 · S&amp;P 3주 연속 상승</td></tr>
+<tr><td>11. TFP/생산성</td><td>🟢</td><td>⬆️</td><td>노동생산성 +2.24% y/y · 🔴 Apollo: AI 발행이 장기 IG 공급의 <strong>~40%</strong> · Indeed: 데이터센터 검색 2022년 대비 <strong>8배</strong>·시설관리자 임금 프리미엄 63%</td></tr>
+<tr><td>12. 매크로 레짐</td><td>🟢</td><td>⬆️</td><td>🟡 → 🟢 <strong>골디락스(유동성 단서부)</strong> — 인플레 축이 실현치에서 꺾임. 유동성 수축이 유일한 반대 축</td></tr>
+</tbody></table>
+<hr>
+<h2>§1. 유동성 심층</h2>
+<h3>1-1. 🔴 RMP 종료 — 5개 기간 만의 방향 전환</h3>
+<table><thead><tr><th>기간</th><th>재투자</th><th>준비금 관리 매입(RMP)</th></tr></thead><tbody>
+<tr><td>2026-04-14 ~ 05-13</td><td>~$15.5B</td><td>~$25B</td></tr>
+<tr><td>2026-05-14 ~ 06-11</td><td>~$16.3B</td><td>~$10B</td></tr>
+<tr><td>2026-06-12 ~ 07-13</td><td>~$16.5B</td><td>~$10B</td></tr>
+<tr><td>2026-07-14 ~ 08-13</td><td>~$17.6B</td><td>~$10B</td></tr>
+<tr><td><strong>2026-08-14 ~ 09-14</strong></td><td><strong>~$17.0B</strong></td><td><strong>없음 (0)</strong></td></tr>
+</tbody></table>
+<p>뉴욕 연준 공개시장 데스크의 <a href="https://www.newyorkfed.org/markets/domestic-market-operations/monetary-policy-implementation/treasury-securities/treasury-securities-operational-details" target="_blank">운영 상세</a> 원문은 *&quot;approximately $17.0 billion in reinvestment purchases and <strong>no reserve management purchases</strong>&quot;* 다.</p>
+<p>읽는 법은 두 갈래다. <strong>(a) 임무 완료</strong> — RMP는 2025-12-10 지시문상 준비금을 충분(ample)까지 *끌어올리는* 용도이므로, 0 도달은 &quot;다 채웠다&quot;는 자신의 표현이다. 재투자는 오히려 유지되므로 대차대조표는 계속 유기적으로 성장한다. <strong>(b) 부족 회귀 임박</strong> — 준비금 여유가 줄고 있는 국면에서 보충을 멈추는 것은 완충을 얇게 만든다.</p>
+<p>이번 주 데이터는 <strong>두 해석 중 한쪽을 지지하지 않고, 오히려 갈라놓는다</strong>. 배관 스트레스 지표는 (a)를 지지하고(SOFR−IORB −3bp·SRF 낙찰 0.000·연준 레포 0), 재고 지표는 (b)를 지지한다(준비금/은행자산 11.48% 신저). 스트레스는 재고가 바닥날 때까지 나타나지 않는 후행 신호이므로, <strong>&quot;지금 조용하다&quot;는 (a)의 증거로 쓰기에 약하다.</strong></p>
+<h3>1-2. 순유동성 — 4주째 빠지고 있다</h3>
+<table><thead><tr><th>지표</th><th>최신 (8/12 수요일 레벨)</th><th>전주</th><th>Δ</th><th>판정</th></tr></thead><tbody>
+<tr><td>연준 대차대조표 (WALCL)</td><td>$6,759.96B</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>재무부 일반계정 (TGA)</td><td>$959.41B</td><td>$929.3B</td><td>+$30.1B</td><td>🟠</td></tr>
+<tr><td>총 역레포 (WLRRAL)</td><td>$358.12B</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td><strong>순유동성</strong></td><td><strong>$5,442.4B</strong></td><td>$5,499.9B</td><td><strong>−$57.5B</strong></td><td>🟠</td></tr>
+<tr><td>은행 지급준비금 (WRESBAL)</td><td>$2,944.06B</td><td>—</td><td>—</td><td>—</td></tr>
+</tbody></table>
+<p>4주 경로($조): 5.593(7/15) → 5.559(7/22) → 5.431(7/29) → 5.500(8/5) → <strong>5.442(8/12)</strong>. 4주 합계 <strong>−$150.6B</strong>. 주간 −$57.5B는 판정 임계 ±$60B를 아슬하게 밑돌아 형식상 &quot;중립&quot;이지만, 4주 누적은 명확한 수축이다.</p>
+<p>동인은 TGA다. 7/08 $749.2B → 8/12 <strong>$959.4B</strong>, 5주간 <strong>+$210B</strong>를 흡수했다. 직전 회차가 예고한 &quot;재무부가 9월 말 $950B를 향해 다시 쌓기 시작하면 반전은 짧게 끝난다&quot;가 그대로 실현됐고, <strong>$950B 목표는 이미 넘어섰다.</strong></p>
+<h3>1-3. 🔴 준비금/은행자산 — 임계까지 0.48%p</h3>
+<table><thead><tr><th>주</th><th>준비금/은행자산</th></tr></thead><tbody>
+<tr><td>7/08</td><td>12.09%</td></tr>
+<tr><td>7/15</td><td>12.23%</td></tr>
+<tr><td>7/22</td><td>11.92%</td></tr>
+<tr><td>7/29</td><td>11.66%</td></tr>
+<tr><td>8/05</td><td>11.67%</td></tr>
+<tr><td><strong>8/12</strong></td><td><strong>11.48%</strong></td></tr>
+</tbody></table>
+<p>Lopez-Salido·Vissing-Jorgensen(2023)이 부족 구간 진입선으로 추정한 <strong>11%</strong> 까지 0.48%p. 6주 중 5주가 하락이고 이번 주 낙폭(−0.19%p)이 그중 가장 크다. 준비금 자체는 거의 안 줄었는데(분자 $2.944조) <strong>은행 자산이 커지면서</strong>(분모 $25.65조) 비율이 눌리는 구조다 — 이것이 바로 &quot;Outgrow 가설&quot;이 경고한 경로다. AI 자본지출 사이클에서 은행이 데이터센터·전력 대출을 늘리면 reserves/GDP가 멀쩡해 보여도 reserves/bank assets가 먼저 깨진다.</p>
+<p><strong>Outgrow 가설 바인딩 지표 점검: 🟡 임계 근접(11~13% 구간 하단).</strong></p>
+<h3>1-4. 배관 스트레스 — 전부 조용하다</h3>
+<table><thead><tr><th>지표</th><th>값</th><th>임계</th><th>판정</th></tr></thead><tbody>
+<tr><td>SOFR − IORB</td><td>3.62% − 3.65% = <strong>−3bp</strong></td><td>+5bp 초과 시 🟡</td><td>🟢</td></tr>
+<tr><td>연준 레포(RPONTSYD)</td><td>$0.0B</td><td>$1B 초과 시 🟡</td><td>🟢</td></tr>
+<tr><td>SRF 낙찰</td><td>0.000 (국채·기관채·MBS 전부, 금리 3.75%)</td><td>수백억 진입 시 🟡</td><td>🟢</td></tr>
+<tr><td>오버나이트 역레포</td><td>$0.25B</td><td>소진 임박</td><td>🟠</td></tr>
+</tbody></table>
+<h3>1-5. MMF — 3주 연속 유입</h3>
+<p>주 종료 8/12 기준 총 <strong>$7.93조</strong>, 주간 <strong>+$182.6억</strong>(<a href="https://www.ici.org/research/stats/mmf" target="_blank">ICI</a> 8/13 발표). 정부형 +$206.9억 / 프라임 +$17.9억 / 비과세 −$42.2억. $7.5조 기준선을 크게 웃도는 대기 현금이며, 정부형이 프라임보다 빠르게 늘어 신용 리스크 회피가 미세하게 강해졌다.</p>
+<h3>1-6. 과잉유동성 — 동인은 여전히 통화수축이 아니다</h3>
+<p><strong>−0.11%p</strong> (실질 M2 +1.99% [6월] − 실질 GDP +2.10% [Q2]). 분해: 명목 M2 <strong>+5.53%</strong>(가속 중) − CPI 3.30%(7월) − 실질 GDP 2.10%.</p>
+<p>⚠️ 직전 회차의 −1.19%p와 차이가 나는 것은 *상태 변화가 아니라 정의·빈티지 차이*다. 실질 M2 계열은 6월판까지만 나와 있어 7월 CPI 급락(3.78% → 3.30%)이 아직 반영되지 않았다. 어느 계산이든 <strong>명목 M2가 가속 중이므로 통화수축發이 아니라는 결론은 동일</strong>하다.</p>
+<p><strong>신용 방향</strong>: 상업·산업 대출 <strong>+8.39%</strong> y/y vs 부동산 대출 +2.45% / 소비자 신용 +2.43%. 생산적 신용이 투기·소비 신용을 압도 → <strong>생산 방향 유지</strong>. 🔴 단 신용의 *방향*은 실시간 확인되나 *수익*은 사후에만 확인된다 — 1995년일 수도 1999년일 수도 있다.</p>
+<hr>
+<h2>§2. 경기사이클</h2>
+<table><thead><tr><th>지표</th><th>값</th><th>전주/전월</th><th>판정</th></tr></thead><tbody>
+<tr><td>ISM 제조업 PMI</td><td>55.6% (7월)</td><td>변동 없음 (다음 9/1)</td><td>🟢</td></tr>
+<tr><td>ISM 서비스 PMI</td><td>54.1% (7월)</td><td>변동 없음 (다음 9/3)</td><td>🟢</td></tr>
+<tr><td>ISM 서비스 고용</td><td>47.4% (7월)</td><td>수축</td><td>🔴</td></tr>
+<tr><td>선행지수 (BBKMLEIX)</td><td>−0.519 (6월)</td><td>—</td><td>🟡</td></tr>
+<tr><td>수익률 곡선 10Y−2Y</td><td>+0.51%p</td><td>정상</td><td>🟢</td></tr>
+<tr><td>수익률 곡선 10Y−3M</td><td>+0.82%p</td><td>정상</td><td>🟢</td></tr>
+<tr><td>초기 실업수당 청구</td><td>209,000 (8/8)</td><td>199,000 → <strong>20만 돌파</strong></td><td>🟡</td></tr>
+<tr><td>연속 청구</td><td>1,777,000 (8/1)</td><td>1,801,000 → 반전</td><td>🟢</td></tr>
+<tr><td>하이일드 스프레드</td><td>2.71% (271bp)</td><td>3년 창 10.8%ile</td><td>🟢</td></tr>
+<tr><td>투자등급 스프레드</td><td>0.79%</td><td>3년 창 23.3%ile</td><td>🟢</td></tr>
+<tr><td><strong>GDPNow 2026:Q3</strong></td><td><strong>4.3%</strong></td><td>5.8% → <strong>−1.5%p</strong></td><td>🟡</td></tr>
+</tbody></table>
+<p>ISM은 이번 주 신규 발표가 없어 7월 회차가 유지된다(제조 8/3·서비스 8/5 발표분). 🔴 다만 <strong>가격지수 70%대</strong>(제조 71.1·서비스 70.3)가 그대로 남아 있다는 사실은 §3의 실현 물가 급랭과 정면으로 어긋나며, 이번 주 판정에서 인플레 축을 완전히 내려놓지 못하게 하는 이유다.</p>
+<p><a href="https://www.atlantafed.org/research-and-data/data/gdpnow" target="_blank">GDPNow</a>는 8/14 갱신에서 <strong>4.3%</strong>(다음 8/18). 전주 5.8%에서 크게 내려온 것은 같은 날 나온 소매판매 부진 반영으로 보인다. 분기 초반 추정이라 신뢰구간이 넓으므로 단독 판정 변수로 쓰지 않는다.</p>
+<p><strong>기업 부채/유동성</strong>: 상업·산업 대출/M2 = 12.49%. 대출은 늘고 있으나(+8.39% y/y) 유동성 대비 레버리지는 여전히 낮은 구간.</p>
+<p><strong>사이클 위치 판정: 후기 확장(Late Expansion)</strong> — 신용 스프레드가 3년 창 하위 10~20%대, 곡선 정상, 기업 레버리지 낮음. 침체의 금융 전제 조건은 여전히 하나도 갖춰지지 않았다. 이번 주 유일한 신규 균열은 초기청구의 20만 돌파인데, 연속청구가 동시에 되돌았으므로 <strong>해고 사이클이 아니라 마찰적 이직 증가</strong>로 읽는 쪽이 자연스럽다.</p>
+<hr>
+<h2>§3. 핵심 경제지표 — 인플레가 실현치에서 꺾였다</h2>
+<table><thead><tr><th>지표</th><th>최신</th><th>전월</th><th>판정</th></tr></thead><tbody>
+<tr><td>CPI (y/y, 계절조정 기준)</td><td>3.30% (7월)</td><td>—</td><td>🟢</td></tr>
+<tr><td>CPI (공식 헤드라인)</td><td><strong>3.4%</strong> (7월)</td><td>3.5%</td><td>🟢</td></tr>
+<tr><td><strong>근원 CPI (y/y)</strong></td><td><strong>2.47%</strong> (7월)</td><td>3%대</td><td>🟢🟢</td></tr>
+<tr><td>PCE (y/y)</td><td>3.67% (6월)</td><td>—</td><td>🟠</td></tr>
+<tr><td>근원 PCE (y/y)</td><td>3.29% (6월)</td><td>—</td><td>🟠</td></tr>
+<tr><td>PPI 최종수요 (y/y)</td><td>+4.66% (7월)</td><td>—</td><td>🟠</td></tr>
+<tr><td><strong>PPI 전품목 (y/y)</strong></td><td><strong>+8.27%</strong> (7월)</td><td>—</td><td>🔴</td></tr>
+<tr><td>소매판매 (m/m)</td><td><strong>−0.58%</strong> (7월)</td><td>+0.4%대</td><td>🟠</td></tr>
+<tr><td>소매판매 control (m/m)</td><td>−0.75% (7월)</td><td>—</td><td>🟠</td></tr>
+<tr><td>산업생산 (y/y)</td><td>+1.14% (6월)</td><td>—</td><td>🟡</td></tr>
+<tr><td>비농업고용 (y/y)</td><td><strong>+0.20%</strong></td><td>—</td><td>🔴</td></tr>
+<tr><td>실업률</td><td>4.1% (7월)</td><td>—</td><td>🟡</td></tr>
+<tr><td>시간당 임금 (y/y)</td><td>+3.15% (7월)</td><td>—</td><td>🟡</td></tr>
+<tr><td>노동생산성 (y/y)</td><td>+2.24% (Q2)</td><td>—</td><td>🟢</td></tr>
+<tr><td>GSCPI</td><td><strong>0.79</strong> (7월)</td><td>1.19 (6월, 1.25서 하향개정)</td><td>🟢</td></tr>
+</tbody></table>
+<p><strong>노동시장 타이트니스 (JOLTS 6월 회차 · 신규 발표 없음)</strong>: 구인건수 <strong>7,359천</strong>(구인율 4.4%) · 채용 5,348천(채용률 3.4%) · <strong>자발적 퇴직률(Quits Rate) 2.0%</strong>(불변) · 해고율 1.1%(불변). 구인/실업자 배율 약 1.04. <strong>퇴직률 2.0%는 팬데믹 전 평균(2.3%)을 밑도는 수준으로, 노동자가 자발적으로 움직이지 않는 시장</strong>이다 — 초기청구 20만 돌파(§2)와 합치면 &quot;해고는 적은데 이동도 적은&quot; 냉각 구도다. 다음 JOLTS는 9월 초.</p>
+<p><strong>근원 CPI 2.47%가 이번 주의 사건이다.</strong> 세 갈래 독립 확인이 있다 — ① FRED 계열 직접 계산(CPILFESL 336.789, 전년 동월 대비 +2.467%) ② 재무장관 X 발언(8/14) *&quot;며칠 전 발표된 핵심 인플레이션은 2.5%였다 — 매우 좋은 수치&quot;* ③ KKR 플래시 매크로(8월) *&quot;지난달 근원 인플레의 뚜렷한 완화(notable moderation)&quot;*.</p>
+<p>🔴 <strong>그러나 파이프라인은 안 식었다.</strong> PPI 전품목이 +8.27% y/y이고 ISM 가격지수가 제조·서비스 모두 70%대다. 소비자 단계에서 식은 것이 생산자 단계에서도 식은 것은 아니며, 이 둘의 시차가 다음 분기 판정을 가른다. 소매판매 −0.58%는 그 전가가 <strong>가격 인상이 아니라 수요 파괴로</strong> 흡수되고 있을 가능성을 시사한다.</p>
+<h3>3-1. Warsh 인플레 프레임 (필수 3종)</h3>
+<table><thead><tr><th>지표</th><th>값</th><th>갱신</th><th>판정</th></tr></thead><tbody>
+<tr><td><strong>Dallas Trimmed Mean PCE</strong> (절사평균, 12M)</td><td><strong>2.2%</strong> (6월)</td><td>7/30 (다음 8/26)</td><td>🟢 Warsh 논거 강화 (2.3% 미만)</td></tr>
+<tr><td><strong>Cleveland Median CPI</strong> (중앙값, m/m)</td><td><strong>+0.3%</strong> (7월)</td><td>8/12</td><td>🟡</td></tr>
+<tr><td><strong>Cleveland 16% Trimmed-Mean CPI</strong> (m/m)</td><td><strong>+0.2%</strong> (7월)</td><td>8/12</td><td>🟢</td></tr>
+</tbody></table>
+<p><strong>Trimmed-Mean PCE ↔ Core PCE 괴리 분석</strong>: 절사평균(Trimmed) 2.2% vs 근원 PCE(Core PCE) 3.29% → <strong>괴리 1.09%p</strong> 🔴 (0.5%p 임계 초과, 전주와 동일 수준). 중앙값 CPI 흐름과 근원 CPI 2.47%는 이번 달 처음으로 방향이 수렴했다.</p>
+<p>🔴 <strong>판정: Warsh 논거가 이번 주 실질적으로 강화됐다.</strong> 그가 대안으로 밀어온 절사평균(2.2%)이 2% 목표에 붙어 있는 상태에서, 이제 *표준 지표인 근원 CPI마저* 2.47%로 내려왔다. 금리 인하 명분의 두 축이 처음으로 같은 방향을 가리킨다. 단 근원 PCE는 아직 3.29%이므로 8/26 갱신이 실제 분기점이다.</p>
+<h3>3-2. 쉘터 제외 + 스티키 CPI (이은택 프레임)</h3>
+<table><thead><tr><th>게이지</th><th>7월</th><th>위험선</th><th>판정</th></tr></thead><tbody>
+<tr><td>쉘터 제외 스티키 근원 CPI</td><td><strong>2.23%</strong></td><td>~3% 진입 시 🟡</td><td>🟢</td></tr>
+<tr><td>애틀랜타 근원 스티키 CPI</td><td><strong>2.72%</strong></td><td>3.3~3.4% 초과 시 🔴</td><td>🟢</td></tr>
+</tbody></table>
+<p>두 게이지 모두 위험선 아래이고, 직전 기준선(2.89%·3.09%)보다 더 내려왔다. <strong>&quot;No Way Back 인플레&quot; 신호는 이번 주 후퇴했다.</strong></p>
+<h3>3-3. 민간 고빈도 교차검증</h3>
+<table><thead><tr><th>소스</th><th>값</th><th>공식 대비</th></tr></thead><tbody>
+<tr><td><a href="https://truflation.com/dashboard" target="_blank">Truflation</a> 미 CPI y/y</td><td><strong>2.28%</strong></td><td>공식 3.40% → 괴리 <strong>1.12%p</strong> (전주 1.18%p)</td></tr>
+<tr><td>Truflation PCE</td><td>2.62%</td><td>공식 3.67%</td></tr>
+<tr><td><a href="https://www.clevelandfed.org/indicators-and-data/inflation-nowcasting" target="_blank">Cleveland Nowcast</a> 8월 (m/m)</td><td>CPI 0.35 · 근원 CPI 0.20 · PCE 0.34 · 근원 PCE 0.27</td><td>8/14 갱신</td></tr>
+<tr><td>Cleveland Nowcast 7월 PCE</td><td>0.15 · 근원 0.25</td><td>—</td></tr>
+</tbody></table>
+<p>⚠️ Truflation은 무료 티어 5일 지연이고 대시보드에 기준일이 표기되지 않는다. 수집일(8/15) 라벨로만 쓴다. 괴리가 1%p대에서 다섯 주째 유지되는 것은 공식 지표의 하방 여지를 계속 가리킨다.</p>
+<hr>
+<h2>§4. 연준</h2>
+<h3>4-1. 7월 FOMC — 9 대 3, 반대는 전부 &quot;인상&quot; 쪽 (1차 확인)</h3>
+<p><a href="https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm" target="_blank">7/29 성명</a> 원문 직접 확인:</p>
+<blockquote>연방공개시장위원회는 <strong>9 대 3</strong>으로 성명을 승인했다. 위원회는 연방기금금리 목표범위를 <strong>3.5~3.75%로 유지</strong>하기로 결정했다. (…) 통화정책 결정에 <strong>반대표를 던진 위원은 베스 해맥, 닐 카시카리, 로리 로건</strong>으로, 이들은 목표범위 <strong>인상</strong>을 선호했다.</blockquote>
+<p>성명 문언에서 눈에 띄는 두 가지: *&quot;생산성 증가와 자본 투자가 강하다&quot;* 를 경제 평가에 명시적으로 넣었고, 인플레 문장을 *&quot;위원회는 물가 안정을 <strong>제공할 것이다</strong>(will deliver)&quot;* 로 닫았다. 목표 미달을 인정하면서 확약의 강도는 오히려 올린 문장 구조다.</p>
+<p>시장조성사 시타델증권의 8/03 노트(*<a href="https://www.citadelsecurities.com/news-and-insights/from-forward-guidance-to-market-guidance/" target="_blank">From Forward Guidance to Market Guidance</a>*, Nohshad Shah)가 그 기자회견을 이렇게 정리한다 — 워시 의장이 *&quot;soft inflation target은 없다&quot;, &quot;5년 넘게 목표를 웃돈 인플레가 9주간의 좋은 데이터로 치유되지 않는다&quot;, &quot;흔들리지 않겠다&quot;* 고 못 박았고, <strong>6월 이후 명목·실질 국채금리의 큰 상승을 반복 강조하며 &quot;포워드 가이던스를 줄인 덕에 시장이 데이터에 직접 반응해 연준을 대신해 긴축을 배달하고 있다&quot;</strong> 고 주장했다. 노트의 반론이 핵심이다 — *&quot;모든 금융여건 긴축이 같지 않다. 연준이 수요를 억제해서 생긴 단기물 금리 상승과 (기간 프리미엄에서 온 상승은) 다르다.&quot;*</p>
+<p>🔴 <strong>이 주장은 §4-9가 매주 계산하는 바로 그 질문이다.</strong> 의장이 스스로 &quot;시장금리 상승이 인상을 대체한다&quot;는 논리를 채택했으므로, 그 논리의 유효성 판정은 더 이상 학술적 관심사가 아니라 <strong>정책 경로의 직접 입력</strong>이 됐다.</p>
+<p>한편 KKR(<a href="https://www.kkr.com/insights/flash-macro-jobs-update-july-2026" target="_blank">플래시 매크로: 미국 고용</a>, 8월)은 반대 방향을 본다 — *&quot;연준이 크게 뒤처져 있다는 서사를 누그러뜨리는 시장 친화적 보고서다. 워시 의장이 <strong>태스크포스들의 작업이 더 진전될 때까지 금리 조정을 미루고 싶어 한다</strong>고 계속 본다. 9월 인상의 긴급성은 거의 없다.&quot;*</p>
+<h3>4-2. 워시 태스크포스 5축 상태 레지스터 — 변동 0</h3>
+<table><thead><tr><th>T/F</th><th>리더 3명</th><th>이번 주 델타</th><th>페이지 최종 갱신</th><th>다음 관측</th></tr></thead><tbody>
+<tr><td>커뮤니케이션</td><td>Fisher · Fraga · King</td><td>변동 없음</td><td>2026-07-09</td><td>가이던스·SEP 축소 형태</td></tr>
+<tr><td>대차대조표</td><td>Dynan · Rajan · Stein</td><td>변동 없음</td><td>2026-07-09</td><td>축소 vs 만기 단축</td></tr>
+<tr><td>데이터</td><td>Chetty · McMillon · Murphy</td><td>변동 없음</td><td>2026-07-09</td><td>민간데이터 대체 vs 보완</td></tr>
+<tr><td>생산성·고용</td><td>Andreessen · Jones · Sharma</td><td>변동 없음</td><td>2026-07-09</td><td>낙관 톤 유지 여부</td></tr>
+<tr><td>인플레이션 체계 🔴</td><td>Mankiw · Sargent · White</td><td>변동 없음</td><td>2026-07-09</td><td>밴드(±α)·절사평균 채택</td></tr>
+</tbody></table>
+<p>6개 페이지(허브 + 5 하위) 전부 최종 갱신 <strong>2026-07-09</strong>, 첨부 PDF 0건. 주간 보도자료·연설·증언 창(8/8~8/15) 안에 T/F 관련 항목 0건.</p>
+<p><strong>관측 지점 D-day</strong>: 잭슨홀 전 중간 점검 D-약5 / 잭슨홀 D-약5~7 / 연내 권고안 D-138 / 내년 1월 목적·전략 성명 개정 D-169.</p>
+<p>🔴 권고안은 FOMC 구속력이 없다(의장 직속 기구). 관찰 전용.</p>
+<h3>4-3. 연준 자산 구성</h3>
+<table><thead><tr><th>구성요소</th><th>잔액($M, 8/12)</th><th>비중</th></tr></thead><tbody>
+<tr><td>국채 합계</td><td>4,538,288</td><td>70.1%</td></tr>
+<tr><td>└ 단기채(Bills)</td><td>533,509</td><td>8.2%</td></tr>
+<tr><td>└ 중장기채</td><td>3,621,850</td><td>56.0%</td></tr>
+<tr><td><strong>MBS</strong></td><td><strong>1,930,855</strong></td><td><strong>29.8%</strong></td></tr>
+<tr><td>보유증권 총액</td><td>6,471,490</td><td>100%</td></tr>
+</tbody></table>
+<p>MBS 비중은 계속 완만히 내려간다(전주 29.9%). 재투자처 문구는 여전히 국채 단기물이며 <strong>MBS 신규 매입 재개 신호 없음</strong>.</p>
+<p><strong>QT 상태</strong>: 보유자산 축소(QT)는 2025-12-01에 종료됐고, 현재 정책의 본질은 *구성 전환*이다 — 기관채·MBS 원금 상환분을 전액 국채로 재투자하므로 대차대조표는 커지는데 그 증가는 100% 국채이고 MBS는 계속 줄어든다. <strong>이번 주 RMP 종료로 그 성장 속도가 재투자분($17.0십억/월)만 남았다</strong> — QT 재개는 아니지만 &quot;유기적 성장&quot;의 기울기가 낮아졌다.</p>
+<p><strong>연준 인사 발언 (주간 창 8/8~8/15)</strong>: 연설·증언 RSS 전수 확인 결과 <strong>창 내 신규 0건</strong>. 직전 항목은 쿡 이사 8/05(*&quot;미국·알래스카 경제 전망&quot;*), 증언은 워시 의장 7/14 반기 통화정책 보고. 잭슨홀 주간을 앞둔 블랙아웃성 정적으로 보이며, <strong>다음 주 잭슨홀이 이번 공백의 반대편</strong>이다.</p>
+<h3>4-4. 이번 주 FEDS Notes 신규</h3>
+<table><thead><tr><th>Tier</th><th>제목</th><th>발행일</th><th>매칭 프레임</th><th>핵심</th></tr></thead><tbody>
+<tr><td>🔴</td><td><a href="https://www.federalreserve.gov/econres/notes/feds-notes/private-credit-and-leveraged-loan-markets-similarities-differences-and-substitution-20260811.html" target="_blank">Private Credit and Leveraged Loan Markets: Similarities, Differences, and Substitution</a></td><td>2026-08-11</td><td>신용·유동성</td><td>사모 신용(PC)과 레버리지드론(LL)은 구조가 다르지만 차입자 기반이 겹치며 상호 대체가 늘었다. <strong>&quot;최근 PC 시장 투자심리 악화로 중견기업의 자금조달 가능성 축소 우려가 제기됐다.&quot;</strong> 결론: *&quot;소규모 차입자는 PC 의존도가 높아 조건이 조여질 때 대안이 제한적인 반면, 대형 차입자는 두 시장을 오갈 수 있어 적응력이 낫다.&quot;*</td></tr>
+</tbody></table>
+<p>🔴 이 노트를 같은 주 Apollo의 *&quot;$1조+가 사모 IG로 이동할 것&quot;* 전망(§11)과 나란히 놓으면 <strong>같은 시장에 대한 정반대 톤</strong>이 된다. 연준 스태프는 심리 악화와 대체 한계를 말하고, 최대 사모 신용 운용사는 흡수 여력을 말한다. 스태프 노트는 연준 공식 입장이 아니며 포지션 트리거도 아니다.</p>
+<hr>
+<h2>§4-9. 실질 정책 제약도 심층</h2>
+<h3>실질 정책금리 3분모 (분모 빈티지 병기 의무)</h3>
+<table><thead><tr><th>분모</th><th>값</th><th>실질 정책금리 (EFFR 3.63%)</th><th>해석</th></tr></thead><tbody>
+<tr><td>근원 PCE (6월)</td><td>3.29%</td><td><strong>+0.34%p</strong></td><td>미세 긴축</td></tr>
+<tr><td>헤드라인 PCE (6월)</td><td>3.67%</td><td><strong>−0.04%p</strong></td><td>사실상 중립~완화</td></tr>
+<tr><td>절사평균 PCE (6월)</td><td>2.20%</td><td><strong>+1.43%p</strong></td><td>뚜렷한 긴축</td></tr>
+</tbody></table>
+<p>🔴 <strong>세 분모의 부호가 갈린다(완화 / 미세 긴축 / 뚜렷한 긴축). 이 사실 자체가 판정의 일부다</strong> — 연준이 어느 물가 지표를 채택하느냐가 &quot;지금 제약적인가&quot;의 답을 바꾸고, 그것이 정확히 인플레이션 체계 T/F가 다루는 문제다. 분모는 월간이라 이번 주 변동 없음(다음 8/26).</p>
+<p><strong>실질 단기 vs 실질 5년 괴리 = 1.77%p</strong> → 균일 긴축이 아니라 <strong>트위스트</strong>(단기는 느슨, 중장기는 조임). 전주 ~2.0%p에서 축소.</p>
+<h3>백분위 (창 길이 명시 의무)</h3>
+<table><thead><tr><th>지표</th><th>값</th><th>전체 이력</th><th>10년 창</th><th>창 시작</th></tr></thead><tbody>
+<tr><td>5년 실질금리 (DFII5)</td><td>2.11%</td><td>91.2%ile</td><td>94.8%ile</td><td>2003</td></tr>
+<tr><td>10년 실질금리 (DFII10)</td><td>2.39%</td><td>95.6%ile</td><td>98.8%ile</td><td>2003</td></tr>
+<tr><td>5y5y 선도 기대 (T5YIFR)</td><td>2.30%</td><td>53.0%ile</td><td>83.3%ile</td><td>2003</td></tr>
+<tr><td>기간 프리미엄 (THREEFYTP10)</td><td>0.826%</td><td><strong>54.2%ile</strong></td><td><strong>99.5%ile</strong></td><td>1990</td></tr>
+<tr><td>시카고 금융여건 (NFCI)</td><td>−0.549</td><td>32.0%ile</td><td>33.0%ile</td><td>1971</td></tr>
+<tr><td>세인트루이스 스트레스 (STLFSI4)</td><td>−0.771</td><td>9.9%ile</td><td>10.7%ile</td><td>1994</td></tr>
+<tr><td>하이일드 OAS</td><td>2.71%</td><td>—</td><td><strong>10.8%ile (3년 창)</strong></td><td>2023-08</td></tr>
+<tr><td>투자등급 OAS</td><td>0.79%</td><td>—</td><td><strong>23.3%ile (3년 창)</strong></td><td>2023-08</td></tr>
+</tbody></table>
+<p>🔴 기간 프리미엄은 <strong>10년 창 99.5%ile ↔ 전체 이력 54.2%ile</strong>로 정반대 서사가 나온다. 양적완화 시대 대비 높을 뿐 역사적으로는 평범하다. 🔴 신용 스프레드는 FRED가 약 3년 창만 반환하므로 &quot;역사적으로 타이트&quot;라고 쓸 수 없다.</p>
+<h3>기간 프리미엄 분해 — 누가 금리를 올렸나</h3>
+<p>10년 실질금리 3개월 변화 <strong>+39.0bp</strong> = 기간 프리미엄 <strong>+12.6bp</strong> + 기대 정책경로 잔차 <strong>+26.4bp</strong>.</p>
+<p><strong>기대 경로가 주도(약 68%)</strong> → 이 긴축은 *인상을 실제로 집행해야 유지되는 조건부 청구권*이며, 인상 철회 시 자기소멸한다. 워시 의장이 &quot;시장이 긴축을 배달한다&quot;고 말할 때 그가 기대고 있는 긴축의 3분의 2가 <strong>그 자신의 인상 예고를 시장이 되받아 적은 것</strong>이라는 뜻이다.</p>
+<h3>🎯 판별표 — 시장금리 상승이 정책금리 인상을 대체하는가</h3>
+<table><thead><tr><th>지표</th><th>현재</th><th>대체 O 조건</th><th>대체 X 조건</th><th>투표</th></tr></thead><tbody>
+<tr><td>5y5y 선도 기대</td><td>2.30%</td><td>≤2.2%</td><td>≥2.5%</td><td>중립</td></tr>
+<tr><td>절사평균 PCE</td><td>2.2%</td><td>≤2.4%</td><td>≥2.8%</td><td><strong>O</strong></td></tr>
+<tr><td>미시간 1년 기대</td><td>4.6% (6월)</td><td>≤4%</td><td>≥5%</td><td>중립</td></tr>
+<tr><td>NFCI</td><td>−0.549</td><td>조여짐</td><td>더 완화</td><td>중립</td></tr>
+<tr><td>하이일드 OAS</td><td>271bp</td><td>≥350bp</td><td>≤260bp</td><td>중립</td></tr>
+<tr><td><strong>1년물 − EFFR</strong></td><td><strong>+34bp</strong></td><td>≤20bp + 기대 안정</td><td>≥75bp</td><td>중립</td></tr>
+</tbody></table>
+<p><strong>집계: O 1 / X 0 / 중립 5 → 판정 유보</strong> (4개 이상 동일 방향 미달).</p>
+<p>🔴 <strong>핵심 판별</strong>: 1년물−EFFR 스프레드가 7/30 46bp → <strong>34bp</strong>로 3주간 12bp 축소됐고, 같은 기간 5y5y 기대는 2.28% → 2.30%로 <strong>2bp 상승</strong>했다. 규칙대로면 &quot;축소 + 기대 상승 = 대체 X&quot;의 초기 형태지만 기대 상승폭이 2bp로 미미해 아직 신호로 부르기 어렵다. 34bp ≈ 인상 1.4회분이 여전히 선반영돼 있다. <strong>2023년 하반기 사례</strong>(연준이 &quot;채권시장이 우리 일을 해준다&quot;며 멈추자 10년물이 5.0%→3.8%로 120bp 붕괴 → 금융여건 급완화 → 2024년 1분기 인플레 재가속)가 이 게이지를 매주 보는 이유다.</p>
+<hr>
+<h2>§5. 재무부</h2>
+<table><thead><tr><th>지표</th><th>값</th><th>판정</th></tr></thead><tbody>
+<tr><td>TGA (8/12)</td><td><strong>$959.4B</strong></td><td>🟠</td></tr>
+<tr><td>7월 월간 재정수지</td><td><strong>−$432.3B</strong></td><td>🔴</td></tr>
+<tr><td>역년 누적 (2026-01~07)</td><td><strong>−$1,196.5B</strong></td><td>🟠</td></tr>
+<tr><td>전년 동기 (2025-01~07)</td><td>−$917.9B</td><td>—</td></tr>
+<tr><td>YoY 변화</td><td><strong>+$278.6B (+30.4% 확대)</strong></td><td>🟠</td></tr>
+<tr><td>(참고) 회계연도 누적 (2025-10~2026-07)</td><td>−$1,798.8B</td><td>—</td></tr>
+<tr><td>TTM 적자 / GDP</td><td><strong>−5.99%</strong></td><td>🟢 (§13 관점)</td></tr>
+<tr><td>부채/GDP</td><td>122.59% (Q1)</td><td>🟠</td></tr>
+<tr><td>10년물 / 30년물</td><td>4.63% / 5.21% (8/13)</td><td>🟠</td></tr>
+</tbody></table>
+<p>역년 누적은 7개월 기준이며, 계절성이 극심하므로 <strong>연환산하지 않고 전년 동기와 직접 비교</strong>한다. 30.4% 확대는 §13 세계양동 관점에서는 민간 흑자를 키우는 방향이다.</p>
+<h3>5-1. 국채 입찰 결과 — 이번 주 3회차 전부 소화</h3>
+<table><thead><tr><th>날짜</th><th>종목</th><th>발행액</th><th><strong>응찰배수(Bid-to-Cover)</strong></th><th>낙찰금리</th></tr></thead><tbody>
+<tr><td>8/11</td><td>3년물</td><td>$58B</td><td><strong>2.71</strong></td><td>4.291%</td></tr>
+<tr><td>8/12</td><td>10년물</td><td>$42B</td><td><strong>2.53</strong></td><td>4.683%</td></tr>
+<tr><td>8/13</td><td>30년물</td><td>$25B</td><td><strong>2.39</strong></td><td>5.216%</td></tr>
+<tr><td>8/10~8/13</td><td>단기채(4·6·8·13·17·26주)</td><td>$359B</td><td><strong>2.77 ~ 3.16</strong></td><td>—</td></tr>
+</tbody></table>
+<p>🟢 <strong>단기채 응찰배수가 전 구간 2.77~3.16으로 견조</strong>하다(17주물 3.16이 최고). 성상현 &quot;브레이크 vs 기차&quot; 프레임의 조건 (B) *단기채 수요 유지(응찰배수 &gt;2.5)* 는 <strong>충족</strong>이다. 쿠폰물도 3년 2.71 → 10년 2.53 → 30년 2.39로 만기가 길어질수록 낮아지는 정상 패턴이며, 30년물 2.39는 낙찰금리 5.216%를 감안하면 무난한 소화다.</p>
+<p>🟡 조건 (A) *유가 안정(WTI &lt;$80)* 은 호르무즈 피격으로 $82.40이 되어 <strong>미충족</strong>. <strong>2조건 종합: 🟡</strong> (한쪽 충족·한쪽 미달 → 시기 지연).</p>
+<p><strong>SLR·바이백</strong>: 직전 회차의 분기 차환 발표(QRA, 8/3·8/5)에서 확인된 유동성 지원 바이백 최대 $38십억 + 현금관리 바이백 $25십억 체계에 이번 주 변경 없음. 보완적 레버리지 비율(SLR) 규제 완화 관련 신규 발표도 없음. <strong>변동 없음.</strong></p>
+<h3>이번 주 재무부 1차 발표</h3>
+<table><thead><tr><th>번호</th><th>제목</th><th>날짜</th><th>시사점</th></tr></thead><tbody>
+<tr><td>🔴 <a href="https://home.treasury.gov/news/press-releases/sb0603" target="_blank">sb0603</a></td><td>FinCEN, 수백만 소기업주에 대한 실소유주 보고 의무 영구 폐지</td><td>8/11</td><td>기업투명성법상 미국 법인·개인의 실소유주 정보 보고 의무를 <strong>최종 규정으로 영구 제거</strong>, <strong>8/14 발효</strong>. 게다가 <strong>이미 보고된 정보를 데이터베이스에서 삭제</strong>한다. 자금세탁 방지 인프라의 방향 전환이다.</td></tr>
+<tr><td>🔴 <a href="https://home.treasury.gov/news/press-releases/sb0602" target="_blank">sb0602</a></td><td>재무부, 트럼프 계좌에 대한 고용주 기여 발표</td><td>8/11</td><td>고용주 후원 기여 프로그램 가이던스 + <strong>피부양자 계좌에 대한 세전 기여</strong> 허용. §21 축5(가계의 자산화)의 실질 진척.</td></tr>
+<tr><td>🟡 <a href="https://home.treasury.gov/news/press-releases/sb0604" target="_blank">sb0604</a></td><td>베센트, 미국 메인스트리트·제조업 르네상스 강조</td><td>8/13</td><td>§13 생산-소비 구성 독트린 맥락.</td></tr>
+</tbody></table>
+<p><strong>미상환 국가부채가 사상 처음 $40조에 근접</strong>했다(MarketWatch 8/14). 이자비용 경로와 함께 다음 회차 확인 대상.</p>
+<hr>
+<h2>§6. 행정부 정책</h2>
+<h3>6-1. 🔴 232조가 드론으로 확장 (8/13)</h3>
+<p><a href="https://www.whitehouse.gov/presidential-actions/2026/08/adjusting-imports-of-unmanned-aircraft-systems-and-unmanned-aircraft-systems-components-into-the-united-states/" target="_blank">무인항공기 및 부품 수입 조정 포고</a> — 상무장관이 90일 이내 조사 보고서를 전달했고 대통령이 관세를 부과했다. 구조는 <strong>차등 계층</strong>이다:</p>
+<ul>
+<li><strong>최대이륙중량 25kg 초과 기체 → 고율</strong> (무기화 용이 + 정교한 감시 기술 탑재 가능성)</li>
+<li><strong>도킹스테이션 → 동일 고율</strong> (자율 시스템 제어에 쓰이므로)</li>
+<li><strong>25kg 이하 기체 → 저율</strong></li>
+<li><strong>일부 핵심 부품 → 저율 + 유예 후 발효</strong> (국내 생산 확대 시간을 주기 위해)</li>
+</ul>
+<p>시장 반응은 즉각적이었다 — *&quot;트럼프가 수입에 관세를 겨냥한 뒤 드론 주식 급등&quot;*(WSJ·MarketWatch 8/14).</p>
+<p>같은 날 <a href="https://www.whitehouse.gov/presidential-actions/2026/08/rebuilding-the-united-states-navy-and-americas-shipbuilding-industrial-base/" target="_blank">해군·조선 산업기반 재건</a> 대통령 행동 + 팩트시트가 나왔고, 국회도서관 NSP는 8/14 *&quot;미국 조선업 재건 위한 동맹국 협력 추진 — 한국 조선업 활용 가능성 논의&quot;* 를 최신 동향으로 올렸다. 8/12에는 초국가 사이버 범죄 대응 역량 확대 행동.</p>
+<h3>6-2. 🔴 관세의 법적 근거가 갈아탔다 — 예일 예산연구소 8/11</h3>
+<p><a href="https://budgetlab.yale.edu/research/state-us-tariffs" target="_blank">The State of U.S. Tariffs</a> (8/11 갱신) 핵심:</p>
+<table><thead><tr><th>항목</th><th>값</th></tr></thead><tbody>
+<tr><td>평균 법정 관세율</td><td><strong>11.0%</strong></td></tr>
+<tr><td>연말 예정치 (현행법 기준)</td><td><strong>11.8%</strong></td></tr>
+<tr><td>소비자물가 영향</td><td>약 <strong>+0.7%</strong></td></tr>
+<tr><td>가구당 연간 비용</td><td>약 <strong>$1,100</strong></td></tr>
+<tr><td>10년 세수</td><td>약 <strong>$1.9조</strong> (GDP 부정영향 감안 시 하향)</td></tr>
+</tbody></table>
+<p>🔴 원문 표현이 결정적이다 — *&quot;<strong>7월 24일 122조 관세가 만료되고 301조 신규 관세로 대체된 뒤</strong> 정착한 수준&quot;*. 122조는 국제수지 근거로 <strong>150일 법정 시한</strong>이 있어 항구적일 수 없는 도구였고, 행정부는 그 시한이 닿기 전에 301조로 옮겨 실효 세율을 유지했다. <strong>관세율은 안 바뀌었는데 그 관세를 떠받치는 법적 기둥이 바뀌었다</strong> — 이것이 §21 축1이 추적하는 바로 그 움직임이다.</p>
+<h3>6-3. 🔴 CFTC 긴급권한 발동 (8/11)</h3>
+<p><a href="https://www.cftc.gov/PressRoom/PressReleases/9281-26" target="_blank">Release 9281-26</a>: KalshiEX가 시장 비상사태를 통지하자 CFTC가 <strong>긴급권한을 행사해 거래소에 상품거래법 핵심원칙에 따른 운영 계속을 명령</strong>했다. 비상사태의 원인은 <strong>뉴욕주 법무장관 레티샤 제임스가 7/31 제기한 소송</strong>으로, 주는 KalshiEX의 <strong>전국 모든 이벤트 계약 제공 금지 가처분과 $360억 초과 손해배상</strong>을 구하고 있다. CFTC는 상품거래법이 파생상품의 <strong>통일된 전국 시장</strong>을 요구한다는 점을 근거로 들었다.</p>
+<p>8/12에는 이벤트 계약 인센티브 프로그램 자체인증(<a href="https://www.cftc.gov/PressRoom/PressReleases/9282-26" target="_blank">9282-26</a>)에 대한 권고를 별도로 냈다 — 40.6(a) 신청이 늘면서 절차·실체 하자가 증가했다는 이유다.</p>
+<p>🔴 <strong>이것은 §16 KPOW의 토대에 대한 실존적 리스크다.</strong> 본 보고서가 정치 권력 균형 게이지로 쓰는 지수의 데이터 원천 거래소가 주-연방 관할 충돌의 한복판에 있다. 아래 §16의 신뢰도 판정에 직접 반영한다.</p>
+<h3>6-4. 이관 5부서 라이트 커버</h3>
+<table><thead><tr><th>부서</th><th>이번 주</th><th>등급</th></tr></thead><tbody>
+<tr><td>FinCEN</td><td>실소유주 보고 최종 폐지(8/11) · 인신매매 의심 $50억 플래그 분석(8/13) · 카르텔 대응 민관 협력(8/13)</td><td>🔴</td></tr>
+<tr><td>CFTC</td><td>긴급권한(8/11) · 예측시장 인센티브 권고(8/12) · Goliath Ventures $4억 사기 기소(8/11)</td><td>🔴</td></tr>
+<tr><td>DOJ NSD</td><td>중국 국적자, 미 군사장비 취득 시도 유죄 인정(8/10)</td><td>🟡</td></tr>
+<tr><td>CISA</td><td>Gunra 랜섬웨어 다수 핵심 인프라 겨냥 경고(8/10) · K-12 사이버 자원(8/12)</td><td>🟡</td></tr>
+<tr><td>DHS</td><td>이민 단속 보도자료 위주 — 매크로 관련성 없음</td><td>⚪</td></tr>
+</tbody></table>
+<hr>
+<h2>§7. 미중 산업기술 패권</h2>
+<ul>
+<li>🔴 <strong>불법 환적 단속</strong>: 백악관이 8/13 *&quot;The Great Transshipment Scam&quot;* 을 내고 국회도서관 NSP가 8/14 *&quot;미국, 중국산 불법 환적 단속 강화와 공급망 관리 추진&quot;*(원산지 검증·대중 관세·반도체 공급망 태그)을 최신 동향으로 올렸다. 관세 회피 경로를 막는 것은 실효세율을 표에 적힌 11.0%에 가깝게 만드는 작업이다.</li>
+<li>🟡 <strong>DOJ</strong>: 8/10 중국 국적자가 미 군사장비 취득 시도로 유죄를 인정했다.</li>
+<li>🟡 <strong>대만</strong>: 최대 규모 연례 군사 훈련을 완료하고 중국 공격 시나리오에 대한 방어 준비태세를 시험했다(8/15).</li>
+<li>🟡 <strong>드론 232조</strong>(§6-1)는 중국 상용 드론 공급망을 정면으로 겨냥한다.</li>
+</ul>
+<p><strong>이번 주 DARPA 신규</strong>: 🟡 <a href="https://www.darpa.mil/news/2026/lift-challenge-awards" target="_blank">Lift Challenge results</a> (8/09) — 항공 기록 수립 및 군·민간용 신규 옵션 시연. 🔴 필독 없음.</p>
+<p><strong>이번 주 DeepMind 신규</strong>: 📄 논문 최신 8/05(7일 창 밖) → 창 내 신규 0건. 🔴 필독 없음.</p>
+<hr>
+<h2>§8. 금융패권 / 달러 방어</h2>
+<table><thead><tr><th>지표</th><th>값</th><th>전주</th><th>판정</th></tr></thead><tbody>
+<tr><td>DXY</td><td>99.636</td><td>2주 연속 하락</td><td>🟡</td></tr>
+<tr><td>스테이블코인 총 시총</td><td><strong>$300.74B</strong></td><td>7일 <strong>+0.05%</strong>(+$1.6억)</td><td>🟠</td></tr>
+<tr><td>USDT</td><td>$182.97B</td><td>7일 −0.22%</td><td>🟠</td></tr>
+<tr><td>USDC</td><td>$72.10B</td><td>7일 +0.16%</td><td>🟡</td></tr>
+<tr><td>USDT 도미넌스</td><td>60.84%</td><td>—</td><td>—</td></tr>
+<tr><td>금</td><td>$4,432/oz (+1.57%)</td><td>—</td><td>🟡</td></tr>
+</tbody></table>
+<p>🔴 <strong>스테이블코인이 정체했다.</strong> 7일 증가율 +0.05%는 사실상 0이고, 최대 발행분인 USDT는 오히려 줄었다. 달러 스테이블코인을 &quot;새로운 달러 수요 채널&quot;로 보는 프레임에서 이 정체는 채널 자체가 이번 주 확장을 멈췄다는 뜻이다. 같은 주 크립토 전반이 52주 범위 바닥권(BTC 6.6%·ETH 9.7%)이라는 사실과 분리해 읽기 어렵다.</p>
+<p>🟠 <strong>포지셔닝 과밀</strong>: 투기적 달러 롱 <strong>+$480억</strong>으로 2015년 이후 최고, 3개월간 4배 이상 증가(Kobeissi 8/14). 헤지 수요가 아니라 방향성 베팅이라는 점에서, DXY가 2주 연속 내려온 것과 어긋나는 조합이다. <strong>포지션과 가격이 반대로 가면 되돌림 위험이 커진다.</strong></p>
+<p><strong>이번 주 World Gold Council</strong>: ⚪ 소규모 채굴 파트너십 발표(8/12)뿐 — 분기 Gold Demand Trends 신규 없음.</p>
+<h3>8-1. 엔캐리 청산 리스크</h3>
+<table><thead><tr><th>지표</th><th>현재</th><th>2024-08 기준선</th><th>임계</th><th>신호</th></tr></thead><tbody>
+<tr><td>JP10Y</td><td><strong>2.88%</strong> (8/14)</td><td>0.90%</td><td>&gt;3.0% (시나리오 2)</td><td>🟡</td></tr>
+<tr><td>USDJPY</td><td>159.31</td><td>161</td><td>&lt;140 / &lt;130</td><td>🟢</td></tr>
+<tr><td>미10Y − 일10Y</td><td>1.75%p</td><td>3.50%p</td><td>&lt;1.0%</td><td>🟡</td></tr>
+<tr><td>(미10Y−일10Y)/USDJPY</td><td>0.0110</td><td>0.022</td><td>&lt;0.008</td><td>🟡</td></tr>
+</tbody></table>
+<p>JP10Y가 한 달간 +0.19%p 올라 <strong>2.88%</strong> 로 3.0% 임계에 근접했다(1년 전 대비 +1.31%p). 다만 엔은 오히려 약세(159.31)라 캐리 청산의 다른 다리는 조용하다. <strong>시나리오 1(점진적 unwind) 유지.</strong></p>
+<p><strong>5/16 3중 트리거</strong>: 엔캐리 청산 = 대기 / Warsh Cut+Tighten = 대기(인하 자체가 없음) / 유가+단기채 수요 실패 = 대기. <strong>발현 0/3 → 🟢 기준선.</strong></p>
+<h3>8-1b. 외환개입 달러 조달경로 (FIMA 4다리)</h3>
+<table><thead><tr><th>다리</th><th>값 (8/12)</th><th>판정</th></tr></thead><tbody>
+<tr><td>① FIMA 레포 (WORAL)</td><td><strong>$0M</strong></td><td>미사용</td></tr>
+<tr><td>② 중앙은행 스와프 (SWPT)</td><td>$132M</td><td>사실상 미사용</td></tr>
+<tr><td>③ 외국 공적기관 역레포 (WLRRAFOIAL)</td><td>$357.4B</td><td>증가 방향</td></tr>
+<tr><td>④ 외국 공적 커스터디 잔액</td><td>H.4.1 직접 확인 필요</td><td>—</td></tr>
+</tbody></table>
+<p>①② 잠잠 + ③ 감소 없음 → <strong>🟢</strong>. 국채 실매도 정황 없음. 🔴 세 지표 모두 총액이라 국가 귀속은 [추론]이며 단정하지 않는다.</p>
+<h3>8-2. 미 국채 안전자산 지위 추적 가설</h3>
+<table><thead><tr><th>신호</th><th>값</th><th>방향</th></tr></thead><tbody>
+<tr><td>주식-채권 60일 상관 (S&amp;P vs IEF)</td><td><strong>+0.458</strong></td><td>🔴 양(+) = 헤지 기능 훼손 방향</td></tr>
+<tr><td>(참고) vs TLT</td><td>+0.363</td><td>동일 방향</td></tr>
+<tr><td>위기 시 도피 검증</td><td>최근 10거래일 S&amp;P 최대 낙폭 −0.32% → <strong>검증 이벤트 없음</strong></td><td>—</td></tr>
+</tbody></table>
+<p>상관이 뚜렷한 양수다. 다만 <strong>주식이 사상 최고를 향해 오르고 금리도 오르는 국면에서는 상관이 기계적으로 양수가 되므로</strong>, 이 값 단독으로 &#x27;risky debt&#x27; 전환을 말할 수 없다. 진짜 검증은 S&amp;P −3% 이벤트에서 금리가 어느 쪽으로 가느냐인데 이번 주는 그 이벤트가 없었다. <strong>가설 상태: 진행(미확정).</strong> 6개월 추적 후 2026-12 재평가 유지.</p>
+<hr>
+<h2>§9. 지정학 — 호르무즈가 되돌았다</h2>
+<p>🔴 <strong>8/14 UAE 유조선 2척이 호르무즈 해협 통항 중 피격</strong>됐다(AP). 직전 회차가 &quot;미 관리가 이란·오만과 상업 해운 재개 합의 임박을 밝혔고 합의 시 이란 항구 봉쇄를 해제한다&quot;고 기록한 지 정확히 1주 만에 반대 방향 사건이 발생했다. 유가는 즉각 반응해 브렌트 +1.75%($88.59), WTI +1.42%($82.40).</p>
+<p>관련 정황 2건:</p>
+<ul>
+<li><strong>USS 에이브러햄 링컨의 장기 배치와 보급 문제</strong>가 이란 전쟁 초기 <strong>바레인 미 5함대 물류 허브 상실</strong>과 부분적으로 연관돼 있다는 보도(NYT 인용, 8/15). 대통령은 링컨의 기록적 해상 체류를 두고 *&quot;전혀 충분히 길지 않다&quot;* 고 했다(AP).</li>
+<li><strong>CENTCOM 대변인</strong>은 쿠퍼 사령관이 이스라엘 방문 중 이란 재개 공습을 추진했다는 보도를 *&quot;완전한 날조&quot;* 라고 부인했다(8/14).</li>
+</ul>
+<p>에너지 가격은 여전히 52주 범위 중단(WTI 47.0%·브렌트 49.9%)에 있어 절대 수준이 위협적이진 않다. 천연가스는 $2.715로 52주 범위 3.9%의 바닥권.</p>
+<hr>
+<h2>§10. 시장 심리 / 포지셔닝</h2>
+<table><thead><tr><th>지표</th><th>값</th><th>전주</th><th>판정</th></tr></thead><tbody>
+<tr><td>공포·탐욕 지수</td><td><strong>65 (Greed)</strong></td><td>64 (1개월 전 41)</td><td>🟠</td></tr>
+<tr><td>VIX</td><td>14.25</td><td>52주 4.4%ile</td><td>🟠</td></tr>
+<tr><td>S&amp;P 500</td><td>7,785.76</td><td>52주 99.1%ile · <strong>3주 연속 주간 상승</strong></td><td>🟠</td></tr>
+<tr><td>NASDAQ</td><td>26,729.16</td><td>94.2%ile</td><td>🟠</td></tr>
+<tr><td>비트코인</td><td>$62,935</td><td><strong>52주 6.6%ile</strong></td><td>🔴</td></tr>
+<tr><td>이더리움</td><td>$1,881</td><td>52주 9.7%ile</td><td>🔴</td></tr>
+</tbody></table>
+<h3>마진 부채 — 기록 경신 직후 −5.6%</h3>
+<table><thead><tr><th>월</th><th>증권 신용잔고(마진 부채)</th><th>전월 대비</th></tr></thead><tbody>
+<tr><td>2026-05</td><td>$1,415.6B</td><td>—</td></tr>
+<tr><td><strong>2026-06</strong></td><td><strong>$1,502.1B</strong> (사상 최대)</td><td>+6.1%</td></tr>
+<tr><td><strong>2026-07</strong></td><td><strong>$1,417.2B</strong></td><td><strong>−$84.8B (−5.6%)</strong></td></tr>
+</tbody></table>
+<p>🔴 <a href="https://www.finra.org/rules-guidance/key-topics/margin-accounts/margin-statistics" target="_blank">FINRA</a> 집계 기준, 6월 사상 최대치를 찍은 마진 부채가 <strong>7월에 −5.6% 되돌았다</strong>. 시타델증권 루브너가 8/11 노트에서 *&quot;레버리지 리셋이 대체로 끝났다&quot;* 고 한 진술이 이 데이터로 확인된다. 고객 현금 여유(자유 신용잔고)는 마진계좌 $217.3B·현금계좌 $205.1B로 큰 변화 없다.</p>
+<p><strong>해석의 갈림길</strong>: 레버리지 축소는 (a) 하락에 대비한 방어적 축소이거나 (b) 다음 상승분의 연료 확보다. 같은 주 지수가 사상 최고를 경신하며 3주 연속 올랐다는 점은 (b) 쪽 — 즉 <strong>레버리지 없이 오른 상승</strong>이라 질이 낫다는 해석을 지지한다. 다만 7월 한 달치이므로 8월분(9월 중순 발표)이 확인점이다.</p>
+<p>🔴 <strong>주식과 크립토가 정반대 극단에 있다.</strong> 같은 유동성 환경에서 S&amp;P가 52주 범위의 99.1%에, 비트코인이 6.6%에 있다. &quot;유동성이 위험자산을 밀어올린다&quot;는 단일 설명으로는 이 분기를 설명할 수 없다 — 이번 사이클의 위험선호가 <strong>실적이 나오는 자산에만</strong> 배분되고 있다는 쪽이 더 정합적이다.</p>
+<p>🔴 <strong>제인 스트리트 7월 약 −$150억</strong> (WSJ·FT, 8/14). 사상 최대 월간 손실이며 헤지펀드 <strong>Situational Awareness의 붕괴</strong>와 부분적으로 연관됐다. 회사는 <strong>$110억 규모 공공 부채를 사모 투자자에게 이전하는 거래의 일부로 대주단에 이 손실을 공개</strong>했다. 회사는 여전히 최고의 해를 보내는 중이라고 보도됐다. 시장조성 집중도와 사모 신용 연결점이 동시에 걸린 사건이라 §4-4의 연준 노트·§11의 Apollo 전망과 삼각으로 읽어야 한다.</p>
+<h3>주간 IPO</h3>
+<table><thead><tr><th>날짜</th><th>티커</th><th>기업</th><th>거래소</th><th>공모가</th><th>시총</th><th>매출</th><th>프레임워크</th></tr></thead><tbody>
+<tr><td>8/19</td><td>LYNX</td><td>Lyntris Inc.</td><td>NYSE</td><td>$19~22</td><td>$2.36B</td><td>$450.8M</td><td>🟡 확인 필요</td></tr>
+<tr><td>8/24</td><td>MOT</td><td>MetaOptics Ltd</td><td>NASDAQ</td><td>$5~7</td><td>$139.3M</td><td>$613.2K</td><td>🟡 광학·매출 극소</td></tr>
+</tbody></table>
+<h3>10-1. 13F 분기 시즌 진입 (2026 Q2)</h3>
+<p><strong>8/15~8/31 윈도우 개시.</strong> 제출 마감은 8/14였고, 추적 대상 17개 중 <strong>11개가 2026-06-30 기준 13F-HR을 8/14(렌테크는 8/13) 제출</strong>한 것을 SEC 제출 이력에서 확인했다.</p>
+<table><thead><tr><th>상태</th><th>펀드</th></tr></thead><tbody>
+<tr><td>Q2 제출 확인 (11)</td><td>Duquesne(드러켄밀러) · 버크셔 · 소로스 · 브리지워터 · 아팔루사(테퍼) · ARK · 타이거글로벌 · 코튜 · 론파인 · 시타델 · 르네상스</td></tr>
+<tr><td>미제출/이력 상이 (6)</td><td>사이언(버리, 최신 2025-09-30) · 퍼싱스퀘어(2026-03-31) · 뱅가드(2025-12-31) · 블랙록(2024-06-30) · D1 · 웨일록</td></tr>
+</tbody></table>
+<p>⚠️ <strong>CIK 검증 과제</strong>: 블랙록·뱅가드·D1·웨일록은 스킬에 기재된 CIK로 최근 13F가 조회되지 않는다. 스킬 문서가 &quot;CIK는 추정 기반이며 첫 실행 시 검증 의무&quot;라고 명시한 항목이며, <strong>&quot;제출하지 않았다&quot;가 아니라 &quot;이 CIK로는 안 잡힌다&quot;</strong> 로 기록한다. 다음 회차 우선 과제.</p>
+<p><strong>이번 주 확인된 움직임(뉴스 1차)</strong>: 버크셔가 알파벳·델타항공 지분을 늘리고 <strong>주택건설주에 신규 베팅</strong>, 컨스텔레이션을 청산했다(그레그 아벨이 현금 더미를 쓰기 시작). 보유 자료 자체의 전수 델타 분석은 다음 회차로 이월한다.</p>
+<p>🔴 13F는 45일 지연 + 롱온리 + 옵션·공매도 누락이라 방향성 오독 위험이 크다. 단독 신호로 쓰지 않는다.</p>
+<hr>
+<h2>§11. TFP / 생산성</h2>
+<table><thead><tr><th>지표</th><th>값</th></tr></thead><tbody>
+<tr><td>노동생산성 (OPHNFB, y/y)</td><td><strong>+2.24%</strong> (Q2)</td></tr>
+<tr><td>실질 비주거 고정투자 (q/q)</td><td>+2.04% (Q2)</td></tr>
+<tr><td>정보처리장비 투자 (q/q)</td><td>+5.79% (Q2)</td></tr>
+<tr><td>지식재산(SW·R&amp;D) 투자 (q/q)</td><td>+5.02% (Q2)</td></tr>
+<tr><td>민간 오피스 건설투자</td><td>$115.8B SAAR (6월, m/m +2.85%)</td></tr>
+<tr><td>10년물 − 명목 GDP 성장률 (r−g)</td><td>음수 유지</td></tr>
+</tbody></table>
+<h3>11-1. 🔴 AI 자본지출의 금융 채널 — Apollo 8/14</h3>
+<p><a href="https://www.apollo.com/wealth/insights-news/insights/daily-spark/the-ai-buildout-is-expanding-the-role-of-private-ig" target="_blank">The AI Buildout Is Expanding the Role of Private IG</a> (Torsten Slok):</p>
+<blockquote>AI 관련 발행이 이미 장기물 투자등급 회사채 공급의 <strong>거의 40%</strong> 를 차지하며, 자금 수요는 더 커지고 있다. AI 생태계는 근본적으로 <strong>$2조 이상의 추가 IG 부채</strong>를 지지할 수 있다고 본다. 반면 공개 IG 시장은 집중도와 신용등급 제약 때문에 2030년까지 그중 <strong>$1조 미만</strong>만 흡수할 수 있을 것이다. 그 격차가 사모 IG에 상당한 기회를 만든다 — <strong>$1조 이상의 자금조달이 사모 사모발행·인프라 부채·자산담보 시설·장비금융·프로젝트 구조로 이동</strong>할 수 있다.</blockquote>
+<p>🔴 <strong>§22의 GDP 산술이 측정하지 않는 축이 정확히 이것이다.</strong> AI 자본지출이 미국 GDP에 남기는 순증은 작지만(+0.18%p), <strong>신용 시장에 남기는 발자국은 장기 IG 공급의 40%</strong> 다. &quot;GDP 귀착이 작다&quot;는 명제와 &quot;시장 리스크가 작다&quot;는 명제는 별개이며, 이번 주 자료는 후자를 명백히 부정한다.</p>
+<p>여기에 세 조각을 나란히 놓으면 그림이 완성된다 — ① 연준 스태프(8/11): 사모 신용 투자심리가 악화됐고 중소 차입자는 대체 수단이 제한적이다 ② Apollo(8/14): $1조가 사모로 넘어올 것이다 ③ 제인 스트리트(8/14): $110억 공공 부채를 사모로 넘기는 거래 중 손실을 공개했다. <strong>공급은 사모로 밀려오는데 사모의 수용 여력에 대한 판단은 갈리고 있다.</strong></p>
+<h3>11-2. 🔴 데이터센터 빌드아웃의 노동 실측 — Indeed Hiring Lab 8/13</h3>
+<p><a href="https://hiringlab.indeed.com/2026/08/13/working-in-the-data-center-build-out/" target="_blank">Working in the Data Center Build-Out</a>:</p>
+<ul>
+<li>데이터센터 관련 검색이 <strong>연초 대비 2배</strong>, <strong>2022년 초 대비 8배</strong>. 올해 누적 100만 건 초과.</li>
+<li>지원자의 <strong>55%가 동일 대도시권 내 거주</strong> — 평균 구인 대비 약 10%p 낮지만 &quot;떠돌이 인력&quot; 이미지와는 다르다.</li>
+<li>🔴 <strong>임금 프리미엄</strong>: 시설관리자 <strong>+$5만/년(63%)</strong> · 건설관리자·현장감독 각 +$3만 · 네트워크 엔지니어 +$2.5만 · 네트워크 기술자 시급 +$10. 설치·정비직 시급 프리미엄은 앞선 보고서에서 <strong>+42%</strong>.</li>
+<li>복리후생도 우위 — 설치·정비 직군 구인의 <strong>90%가 401(k) 명시</strong>(비데이터센터 48%), 육아휴직 언급 4~8배.</li>
+<li>대가: IT 직군의 야간근무 확률 약 <strong>40배</strong>, 구인의 <strong>26%가 &quot;최대 50% 출장&quot;</strong>(비데이터센터 1% 미만).</li>
+<li>🔴 <strong>핵심 유보</strong>: *&quot;데이터센터를 짓는 데는 수천 명이 필요하지만 운영하는 데는 그 일부만 필요하다.&quot;* 임시직 표기는 1,000건당 2건(비데이터센터 10건)이지만, 보고서 자신이 <strong>지역 인센티브 협약이 &quot;영구직&quot; 표기를 유도한다</strong>는 편향을 지적한다.</li>
+</ul>
+<p>🔴 이것은 §11 CAPEX 인플레 렌즈의 <strong>숙련직 프리미엄 변수에 대한 첫 정량 실측</strong>이다. 전기공이 데이터센터 관련 최다 검색 직군 중 하나로 잡힌 것은 TS Lombard 프레임(*&quot;짓는 데 4,000명&quot;* 이 임금을 밀어올린다)과 정확히 같은 곳을 가리킨다.</p>
+<h3>11-3. CAPEX 인플레 렌즈</h3>
+<table><thead><tr><th>변수</th><th>값</th><th>방향</th></tr></thead><tbody>
+<tr><td>PPI 최종수요</td><td>+4.66% y/y</td><td>재가속 아님, 고위 유지</td></tr>
+<tr><td>PPI 전품목</td><td><strong>+8.27% y/y</strong></td><td>🔴 원가 압력 미해소</td></tr>
+<tr><td>건설 시급 vs 전체 시급</td><td>전체 +3.15% y/y</td><td>데이터센터 직군은 프리미엄 확대(§11-2)</td></tr>
+<tr><td>r*(중립금리)</td><td>추정치 상향 논쟁 지속</td><td>—</td></tr>
+<tr><td>ROI vs 자본비용</td><td>미관측</td><td>—</td></tr>
+</tbody></table>
+<p><strong>판정: 🟡 노동시장 과열 조짐(직군 한정).</strong> 전체 임금은 3%대로 얌전한데 데이터센터 관련 직군만 30~63% 프리미엄이 붙는다. 총량 지표로는 안 보이고 <strong>구성으로만 보이는 압력</strong>이다.</p>
+<hr>
+<h2>§12. 종합 매크로 레짐 판단</h2>
+<h3>🟢 골디락스 (유동성 단서부) — 직전 🟡 리플레이션에서 이동</h3>
+<table><thead><tr><th>축</th><th>판독</th><th>근거</th></tr></thead><tbody>
+<tr><td><strong>성장</strong></td><td>🟢 강함</td><td>GDPNow Q3 4.3% · ISM 제조 55.6(2022-05 이후 최고) · 생산성 +2.24% · 곡선 정상 · 신용 스프레드 하위 10~20%ile</td></tr>
+<tr><td><strong>인플레</strong></td><td>🟢 실현치 냉각</td><td><strong>근원 CPI 2.47%</strong> · CPI 3.4% · 절사평균 PCE 2.2% · 스티키 게이지 2.2~2.7% · GSCPI 0.79</td></tr>
+<tr><td><strong>유동성</strong></td><td>🟠 수축</td><td>순유동성 4주 −$150.6B · TGA $959.4B · <strong>RMP 종료</strong> · 준비금/은행자산 11.48% 신저</td></tr>
+</tbody></table>
+<p><strong>이동 사유</strong>: 직전 회차의 🟡은 &quot;유가 급락으로 인플레 축이 눌렸다&quot;는 *조건부* 판단이었고, 미체결 조건 두 개(호르무즈 합의·8/12 CPI) 위에 서 있었다. 이번 주 <strong>하나는 체결됐고(CPI가 근원 2.47%로 내려앉음) 하나는 깨졌다(호르무즈 유조선 피격)</strong>. 순수 물가 데이터로만 보면 리플레이션(인플레 상승) 라벨은 더 이상 데이터와 맞지 않는다.</p>
+<p><strong>단서를 다는 이유</strong> — 골디락스의 정의는 &quot;적당한 성장 + 낮은 인플레 + <strong>충분한 유동성</strong>&quot;인데 세 번째 조건이 이번 주 반대로 갔다. 그리고 인플레 냉각이 아직 소비자 단계에만 국한돼 있다(PPI 전품목 +8.27%·ISM 가격 70%대). 소매판매 −0.58%가 시사하듯, 지금의 물가 안정 일부는 <strong>가격 인하가 아니라 수요 소멸</strong>의 결과일 수 있다. 그 경우 다음 국면은 골디락스가 아니라 성장 둔화다.</p>
+<p><strong>레짐 전환 선행 지표 점검</strong></p>
+<ul>
+<li>ISM 방향 전환: 없음(다음 9/1·9/3)</li>
+<li>곡선 형태: 정상 유지, 변화 없음</li>
+<li>신용 스프레드: 급변 없음(HY 271bp 불변)</li>
+<li>유동성 방향: 🔴 <strong>수축으로 전환 확인</strong>(4주 연속)</li>
+<li>연준 기조: 동결 + 3인 인상 반대, 하지만 RMP 종료로 배관은 중립화</li>
+<li><strong>실질 제약도(§4-9)</strong>: 실질 정책금리 +0.34%p(근원) / −0.04%p(헤드라인) / +1.43%p(절사평균) · 판별표 1/6 → <strong>시장금리 상승의 정책금리 대체 = 판정 유보</strong>. 🔴 &quot;동결 = 스탠스 불변&quot;이 아니다 — 이번 주 선반영이 12bp 줄면서 시장이 배달하던 긴축이 조금씩 소멸했다.</li>
+</ul>
+<h3>🎯 해석 · 시사점 (포지션 시사점 — 산업·thesis 층)</h3>
+<ul>
+<li><strong>AI 인프라·데이터센터</strong>: 실물 축은 여전히 확장(오피스 건설 +2.85% m/m·구인 8배·임금 프리미엄 63%). 그러나 <strong>자금 축의 무게중심이 공개 IG에서 사모로 이동 중</strong>이고, 그 이동을 받는 쪽(사모 신용)의 심리는 연준 스태프 노트가 악화로 기록했다. 실물 진척과 금융 조건이 처음으로 다른 방향을 볼 수 있는 구간에 들어섰다.</li>
+<li><strong>원자력·전력</strong>: 이번 주 고유 이벤트 없음. 데이터센터 전력 수요는 §11-2가 간접 확인.</li>
+<li><strong>토큰화·스테이블코인</strong>: 총 시총 7일 +0.05% 정체. 성장 서사가 이번 주 데이터로는 뒷받침되지 않는다. FinCEN 실소유주 폐지·CFTC 예측시장 권고는 규제 지형이 여전히 빠르게 움직임을 보여준다.</li>
+<li><strong>우주·방산</strong>: 232조 드론 관세 + 해군·조선 재건 행동 + 예산 축(§6-1). Citrini 8/13 노트가 *&quot;병목이 컴퓨트에서 전장으로 이동&quot;* 을 주제로 잡은 것과 정책 방향이 같다.</li>
+<li><strong>금·안전자산</strong>: 금 $4,432(+1.57%)와 국채가 동시에 헤지 역할을 못 하는 구간(주식-채권 상관 +0.458)이라 분산의 질이 떨어져 있다.</li>
+</ul>
+<hr>
+<h2>📈 시장 스냅샷 (2026-08-14 종가)</h2>
+<table><thead><tr><th>자산</th><th>종가</th><th>일간</th><th>52주 범위 위치</th></tr></thead><tbody>
+<tr><td>S&amp;P 500</td><td>7,785.76</td><td>−0.17%</td><td>99.1%</td></tr>
+<tr><td>NASDAQ</td><td>26,729.16</td><td>−0.28%</td><td>94.2%</td></tr>
+<tr><td>다우</td><td>53,732.41</td><td>+0.20%</td><td>—</td></tr>
+<tr><td>달러지수(DXY)</td><td>99.636</td><td>−0.32%</td><td>63.4%</td></tr>
+<tr><td>VIX</td><td>14.25</td><td>−2.60%</td><td>4.4%</td></tr>
+<tr><td>미 10년물</td><td>4.696%</td><td>+1.19%</td><td>93.8%</td></tr>
+<tr><td>미 30년물</td><td>5.265%</td><td>+1.00%</td><td>98.6%</td></tr>
+<tr><td>WTI</td><td>$82.40</td><td>+1.42%</td><td>47.0%</td></tr>
+<tr><td>브렌트</td><td>$88.59</td><td>+1.75%</td><td>49.9%</td></tr>
+<tr><td>천연가스</td><td>$2.715</td><td>−0.44%</td><td>3.9%</td></tr>
+<tr><td>금</td><td>$4,432.0</td><td>+1.57%</td><td>55.8%</td></tr>
+<tr><td>비트코인</td><td>$62,935</td><td>−0.74%</td><td>6.6%</td></tr>
+<tr><td>이더리움</td><td>$1,881</td><td>−0.17%</td><td>9.7%</td></tr>
+<tr><td>달러/엔</td><td>159.31</td><td>−0.08%</td><td>73.9%</td></tr>
+</tbody></table>
+<hr>
+<h2>§20. 증시 내부 · 어닝 · 월가</h2>
+<p><strong>섹터 폭</strong>: 11개 SPDR 섹터 중 <strong>10개가 50일선 위</strong>(유틸리티만 아래). 주간 수익률은 <strong>에너지 +7.7%</strong> 가 압도적 1위 — 호르무즈 피격이 그대로 반영됐다. 이어 유틸리티 +1.6% · 커뮤니케이션 +1.5% · 필수소비 +1.1% · 기술 +1.1%. 하위는 소재 −0.6% · 임의소비 −1.4%(소매판매 부진 직격).</p>
+<p><strong>심리 ↔ 폭 괴리 점검</strong>: 이번 주는 <strong>괴리가 없다</strong>. 공포·탐욕 65(Greed)와 섹터 폭 10/11이 같은 방향을 가리킨다. 직전 회차가 잡아낸 &quot;설문 공포 ↔ 사상 최대 레버리지&quot; 괴리는 심리가 따라 올라오면서 해소됐다. 🔴 괴리 해소는 안심 신호가 아니라 <strong>후발 자금이 들어왔다는 뜻</strong>이며, §11 성상현 EXIT 트리거 2번(FOMO 극대화 + 비관론자 항복)의 관측 대상이다.</p>
+<p><strong>월가 하우스뷰</strong> — 시타델증권 <a href="https://www.citadelsecurities.com/news-and-insights/global-market-intelligence/august-checklist/" target="_blank">August Checklist</a> (Scott Rubner, 8/11):</p>
+<blockquote>S&amp;P 500은 매크로 우려의 벽에도 올해 <strong>26번의 사상 최고</strong>를 기록했다. 표면의 소음 아래에서 자금 흐름의 균형이 바뀌기 시작했기 때문이다. (…) 8월의 더 흥미로운 질문은 &quot;누가 더 높은 가격에 매수자가 되는가&quot;다. <strong>실적은 beat하는데 멀티플은 압축되고 있다. 레버리지 리셋은 대체로 끝나 변동성이 낮아지면 시스템 전략이 익스포저를 늘릴 여지가 생겼다. 리테일이 다시 사고 있고 패시브 수요는 여전히 집요하다.</strong></blockquote>
+<p>🔴 sell-side는 book-talking 유인이 있다. 참고·교차검증 대상이며 매매 판단 소스가 아니다.</p>
+<p><strong>어닝</strong>: WSJ이 같은 주 *&quot;빅테크의 이익 성장은 대체로 투자 이익(investment gains)을 반영한다&quot;* 를 지적했다 — 영업이 아니라 보유 지분 평가에서 나온 이익 비중이 커졌다는 뜻이며, &quot;실적 beat&quot;의 질을 다음 회차에서 확인할 항목으로 등록한다.</p>
+<p><strong>M&amp;A 파이프라인</strong>: 스트라이프·어드벤트가 <strong>PayPal을 $530억 초과에 인수 협상 중</strong>(WSJ·FirstSquawk 8/15). 결제 인프라의 대형 재편이며 스테이블코인 결제 경로와 인접하다.</p>
+<hr>
+<h2>§21. 행정부 의도 추적 (5축)</h2>
+<table><thead><tr><th>축</th><th>이번 주 델타</th><th>누적 상태</th><th>가설 판정</th><th>신호</th></tr></thead><tbody>
+<tr><td><strong>1 관세 법적 근거</strong></td><td>🔴 [관측] <strong>122조 만료(7/24) → 301조 대체</strong> 확인(예일 8/11) + <strong>UAS 232조 포고</strong>(8/13)</td><td>232조: 철강·알루미늄·구리·폴리실리콘·의약품·<strong>UAS</strong> / 301조: 122조 승계</td><td>✅</td><td>🔴</td></tr>
+<tr><td><strong>2 동맹 차등 요금표</strong></td><td>변동 없음</td><td>한·일 12.5% 상한 유지 여부 미확인</td><td>⏸</td><td>🟡</td></tr>
+<tr><td><strong>3 핵심광물 국가화</strong></td><td>변동 없음 (S&amp;P Global 기준가격은 8/7로 창 밖)</td><td>완화계획 승인 추이 미공개</td><td>⏸</td><td>🟡</td></tr>
+<tr><td><strong>4 유가의 선거 시계</strong></td><td>🔴 [관측] 호르무즈 유조선 피격 → 브렌트 +1.75%</td><td>브렌트 $88.59(52주 49.9%) · 중간선거 D-약80</td><td>❌ 이번 주 역방향</td><td>🔴</td></tr>
+<tr><td><strong>5 가계의 자산화</strong></td><td>🔴 [관측] <strong>트럼프 계좌 고용주 기여 가이던스</strong>(8/11) + 피부양자 세전 기여 허용 · 언론 보도 &quot;부모 $2,500 세액공제 가능&quot;(MarketWatch)</td><td>제도 골격이 세제 인센티브까지 확장</td><td>✅</td><td>🔴</td></tr>
+</tbody></table>
+<h3>관전지표 7개 채점표</h3>
+<table><thead><tr><th>#</th><th>지표</th><th>무엇을 가르는가</th><th>현재값</th><th>판정</th><th>🔴 반증</th></tr></thead><tbody>
+<tr><td>1</td><td>FOMC 결과</td><td>행정부가 통화 축을 통제하는가</td><td>7/29 동결 <strong>9–3</strong>, 반대 3인 전부 <strong>인상</strong> 선호</td><td>❌ 통제 아님</td><td>인상 = 축5 기각 방향 → <strong>이번 주 인상 압력이 위원회 내부에 실재함이 1차 확인</strong></td></tr>
+<tr><td>2</td><td>301조 면제·TRQ 승인 건수</td><td>요금표 vs 재량적 딜</td><td>미공개</td><td>⏸</td><td>대량 승인 = 요금표 해석 기각</td></tr>
+<tr><td>3</td><td>국방부 완화계획 승인 추이</td><td>2027 기한이 실효인가</td><td>미공개</td><td>⏸</td><td>대량 승인 = &quot;절벽&quot; 기각</td></tr>
+<tr><td>4</td><td>Project Vault 실제 집행</td><td>문서인가 현금인가</td><td>집행 확인 0</td><td>⏸</td><td>집행 0 = &quot;국가 대차대조표 이동&quot; 기각</td></tr>
+<tr><td>5</td><td>이란 합의 + 브렌트&lt;$80 지속</td><td>선거 시계 가설</td><td>브렌트 $88.59, 합의 후퇴</td><td>❌</td><td>유가↑ + 군사강도↑ = 반증 / <strong>이번 주 반증 방향</strong></td></tr>
+<tr><td>6</td><td>호르무즈 통항량</td><td>물류 회복</td><td><strong>미확인</strong>(정량 소스 없음)</td><td>—</td><td>—</td></tr>
+<tr><td>7</td><td>한·일 12.5% 상한 유지</td><td>안정적 지위 vs 재협상 카드</td><td>미확인</td><td>⏸</td><td>—</td></tr>
+</tbody></table>
+<h3>표현 강도 대장 (재상향 금지)</h3>
+<table><thead><tr><th>대상</th><th>이전 표현</th><th>현재 표현</th><th>조정일</th><th>사유</th></tr></thead><tbody>
+<tr><td>축1~3 통합</td><td><del>&quot;되돌릴 수 없는 구조물을 세웠다&quot;</del></td><td><strong>&quot;되돌리는 데 드는 비용을 크게 올려놨다&quot;</strong></td><td>2026-07-28</td><td>반박③ — 301조 면제·TRQ, EO 14415 완화계획 예외가 실질 유효</td></tr>
+<tr><td>전체 프레임</td><td><del>&quot;설계된 대전략&quot;</del></td><td><strong>&quot;수렴하는 설계 서명&quot;</strong></td><td>2026-07-28</td><td>반박② 부분 수용</td></tr>
+<tr><td>반박①(법적 기회주의)</td><td>—</td><td><strong>기각하지 않고 병기</strong></td><td>2026-07-28</td><td>기회주의와 전략적 재기초는 배타적이지 않음</td></tr>
+<tr><td>축1 (신규 기록)</td><td>—</td><td><strong>표현 유지</strong> — 122조→301조 이전은 *지속성 확보*의 증거이지 *불가역성*의 증거가 아니다</td><td>2026-08-15</td><td>반증지표 미통과 상태이므로 재상향하지 않음</td></tr>
+</tbody></table>
+<p><strong>한국 함의</strong> (정책·산업 층): 해군·조선 산업기반 재건 대통령 행동(8/13)과 NSP의 &quot;한국 조선업 활용 가능성 논의&quot;(8/14)가 같은 주에 나왔다. UAS 232조는 중국 상용 드론 의존도가 높은 국내 산업에 직·간접 영향이 있으며, 평균 관세율 11.0% 정착은 대미 수출 원가 기준선이 두 자릿수로 고정됐음을 뜻한다.</p>
+<p>🔴 [관측]/[추론] 라벨 분리 · <strong>관찰 전용 · 매수신호 0 · 종목 티커 없음.</strong></p>
+<hr>
+<h2>§22. AI capex GDP 귀착 · 되감김 속도</h2>
+<table><thead><tr><th>블록</th><th>값</th></tr></thead><tbody>
+<tr><td>Ⓐ Slok 지표 (5사 연결 글로벌 capex / GDP)</td><td>0.55%(CY2023) → <strong>2.24%</strong> · Δ+1.68%p · <strong>+0.61%p/년</strong></td></tr>
+<tr><td>Ⓑ 미국 소재분만 (×0.745)</td><td>0.41% → 1.67%</td></tr>
+<tr><td>Ⓑ 채널별 국내 순증</td><td>구조물 <strong>−$4.3B</strong>(−0.01%p) · 장비(수입 차감 후) <strong>−$106.6B</strong>(−0.33%p) · 소프트웨어 <strong>+$169.9B</strong>(+0.52%p) → <strong>합계 +$59.0B (+0.18%p)</strong></td></tr>
+<tr><td>Ⓒ 속도</td><td>Slok <strong>+0.61%p/년</strong> vs <strong>국내 순증 +0.07%p/년</strong> (경과 2.75년)</td></tr>
+<tr><td>Ⓒ BEA 실측 성장기여 (정보처리장비+SW)</td><td>2023 +0.00 / 2024 +0.11 / 2025 <strong>+0.44</strong> / 2026 +0.27%p</td></tr>
+<tr><td>Ⓒ 대조군 (주거투자)</td><td>붐 2002~05 +0.44%p → 되감김 2006~08 <strong>−1.06%p</strong></td></tr>
+<tr><td>Ⓓ 트리거</td><td>T1 capex 롤오버 ⚪ · T2 데이터센터 건설 롤오버 ⚪ · T3 수입 되돌림 착시 ⚪ · T4 국내 귀착률 반전 ⚪ → <strong>0/4</strong></td></tr>
+</tbody></table>
+<p><strong>as-of</strong>: BEA 2026Q2 · Census 2026-06 · capex 2026Q2.</p>
+<p>🔴 <strong>이번 주 델타가 크다.</strong> 5사 2분기 capex가 반영되며 Slok 지표가 1.83% → <strong>2.24%</strong> 로 점프했고 속도도 0.46 → <strong>0.61%p/년</strong>으로 올라갔다. 반면 국내 순증은 +0.18%p로 불변이라 <strong>괴리가 약 6.6배 → 약 8.7배로 벌어졌다.</strong> 글로벌 회계 장부에서는 가속하는데 미국 국민계정에서는 안 보이는 격차가 커졌다는 뜻이다.</p>
+<p>구조물 채널은 <strong>데이터센터 건설 + 그 외 비주거 건설 합산으로 −$4.3B</strong> 다. 데이터센터만 보면 붐이지만 그 외 비주거 건설이 동시에 줄어 총합이 순감이다(실물 구축효과). 장비 채널의 −$106.6B는 컴퓨터·부품 <strong>수입</strong>이 국내 정보처리장비 투자 증가를 초과하기 때문이다.</p>
+<p>🔴🔴 <strong>&quot;GDP 귀착이 작다 ≠ 리스크가 작다.&quot;</strong> 주식·크레딧 노출은 §20·§10이 owner이고 본 산술은 그것을 전혀 측정하지 않는다. 이번 주 Apollo 자료(AI가 장기 IG 공급의 ~40%·§11-1)가 그 사각지대의 크기를 처음 정량으로 보여줬다.</p>
+<p>🔴 수입 차감은 <strong>채널 단위 방향성 추정</strong>이며 정밀 귀착 계산이 아니다(컴퓨터 수입 일부는 소비·재고·재수출로, 장비투자 일부는 국산). 2027~29 3.1% 경로는 <strong>[전망]</strong> 이다. 🔴 레짐 판단 전용 · 매수신호 0 · 매도신호 0.</p>
+<hr>
+<h2>워치 섹션 (§13~§19)</h2>
+<p><strong>§13 세계 양동 워치</strong>: 9개 트리거 중 변동 1건. 미국 TTM 재정적자/GDP <strong>−5.99%</strong> 로 5% 유지 → 🟢(민간 흑자 지지). 역년 누적 적자가 전년 동기 대비 +30.4% 확대되어 &quot;적자 축소 = 위험자산 우호 훼손&quot; 경계 신호는 이번 주 <strong>후퇴</strong>했다. 나머지 8개 트리거 기준선 유지. 한국 원/달러는 별도 확인 없음.</p>
+<p><strong>§14 GDP 정의 확장 + 비가격 민감 수요</strong>: (A) BEA 신규 없음 (B) IMF SNA 변동 없음 (C) 신규 없음 (D) 신규 없음 (E) <strong>스테이블코인 준비금 채널이 7일 +0.05%로 정체</strong> — 비가격 민감 수요의 성장 다리 하나가 이번 주 멈췄다. 종합 🟡.</p>
+<p><strong>§15 화이트칼라 Displacement + 모기지 취약성</strong></p>
+<ul>
+<li>(A) 화이트칼라 4종 7월: 정보 2,780(+11) · S/W 2,366.4(−2.8) · 블루칼라: 건설 8,343(+22) · 제조 12,611(+5) · 레저 16,931(−40). 뚜렷한 화이트칼라 편중 수축 없음.</li>
+<li>(B) 🟡 <strong>대졸 실업률 2.7%</strong> — 기준선 2.0~2.4% 위, 🟡 임계(2.7%)에 <strong>도달</strong>.</li>
+<li>(C) 30년 모기지 6.67% · 🟡 <strong>모기지 연체율 1.89%</strong>(1.8% 임계 초과) · Zillow 대도시권 HVI는 월간 갱신일(8/16) 대기 · ⚠️ Fannie Mae HPSI 랜딩에 최신 수치 미노출(미추출).</li>
+<li>(D) 🔴 <strong>학생대출 심각 연체율 2026 Q2 10.6%</strong>(+0.3%p, 2020 Q1 이후 최고, 3분기 연속 상승 누적 +1.2%p·Kobeissi 8/14).</li>
+<li>(E) 초기청구 209K · Challenger 7월 보고서(8/6): 해고 감소·채용 증가, <strong>AI가 5개월 연속 해고 사유 1위</strong>.</li>
+<li>(F) 🟡 <strong>청년(20-24) 실업 7.1% vs prime 3.6% → 갭 3.5%p</strong>(기준선 3.4%p서 확대) · 20-24 참가율 <strong>70.2%</strong>(6월 70.6%서 하락) · 채용 5,348천(6월).</li>
+</ul>
+<p><strong>종합 신호: 🟡 화이트칼라 약화 시작 (부분 신호)</strong> — 대졸 실업·청년 갭·학생대출 연체 3개가 동시에 임계 방향이다. 다만 화이트칼라 고용 자체의 편중 수축은 아직 없고, 모기지 취약성 축도 연체율 1.89%로 🔴(2.5%)와는 거리가 있다. 시간 압축 평가: <strong>느림</strong> — Citrini 2년 가정 대비 실제 진행은 여전히 완만하다.</p>
+<p><strong>§16 KPOW 정치 권력 균형</strong>: 2028 대선 민주당 승리 확률 <strong>57%</strong>(2026-05 기준선 60%서 −3%p). ⚠️ 합성 지수값·Future 6 컴포넌트·셧다운 하위지표는 <strong>차트가 캔버스로 렌더돼 추출 실패</strong> — 이번 회차 미확보. 🔴🔴 <strong>더 중요한 것은 지수의 토대다</strong> — §6-3의 CFTC 긴급권한 발동은 KalshiEX가 뉴욕주로부터 <strong>전국 이벤트 계약 전면 금지 가처분 + $360억 손배</strong> 청구를 받고 있음을 뜻한다. 본 게이지의 데이터 원천 자체가 존립 리스크에 있으므로, <strong>이번 회차부터 KPOW는 방향성 참고로도 신뢰도를 한 단계 낮춰 다룬다.</strong></p>
+<p><strong>§17 기후·원자재</strong>: 5개 트리거 미발동. 천연가스 $2.715(52주 3.9%·바닥권)로 엘니뇨 난방수요 사슬은 조용하고, 유가 상승은 기후가 아니라 §9 지정학 소관. 요소 PPI 급등 신호 없음. <strong>변동 없음.</strong></p>
+<p><strong>§18 인구·노동공급</strong>: 구조 동인 변동 없음(분기 갱신 대기). 단 §15-F의 청년 참가율 하락(70.6% → 70.2%)은 다음 분기 점검 항목으로 이월.</p>
+<p><strong>§19 보건·생물</strong>: 신규 트리거 없음.</p>
+<hr>
+<h2>🚨 핵심 리스크</h2>
+<p>1. <strong>준비금 완충과 정책 방향의 불일치</strong> — 연준이 RMP를 끝낸 주에 준비금/은행자산이 11.48% 신저를 찍었다. 배관 스트레스 지표는 전부 조용하지만 그것은 재고가 바닥날 때까지 침묵하는 후행 신호다. 임계 11%까지 0.48%p이고 최근 낙폭이 주당 0.19%p다.</p>
+<p>2. <strong>사모 신용의 수용 여력</strong> — AI 자본조달 $1조+가 사모로 밀려온다는 전망(Apollo)과 사모 신용 투자심리 악화 경고(연준 스태프)가 같은 주에 나왔고, 그 사이에서 제인 스트리트가 $110억 공공 부채를 사모로 넘기며 사상 최대 월간 손실을 공개했다. 세 조각이 같은 배관을 가리킨다.</p>
+<p>3. <strong>호르무즈 재봉쇄</strong> — 유조선 피격으로 직전 주의 합의 기대가 반전됐다. 유가가 다시 $100을 향하면 §11 CAPEX 인플레 렌즈와 §3 물가 냉각이 정면 충돌한다.</p>
+<p>4. <strong>인플레 냉각의 정체</strong> — 근원 CPI 2.47%가 가격 인하 때문인지 수요 소멸 때문인지 아직 못 가린다. 소매판매 −0.58%와 PPI 전품목 +8.27%의 조합은 후자 쪽 가능성을 열어둔다.</p>
+<p>5. <strong>선반영의 자기소멸</strong> — 실질 10년 금리 상승의 68%가 기대 정책경로에서 왔다. 연준이 &quot;시장이 긴축을 배달한다&quot;며 멈추면 그 배달분이 사라진다(2023년 하반기 사례).</p>
+<hr>
+<h2>⏭️ 다음 주 주요 일정</h2>
+<table><thead><tr><th>날짜</th><th>이벤트</th><th>예상 영향</th></tr></thead><tbody>
+<tr><td>8/16</td><td>Zillow 월간 주택가치지수 갱신</td><td>§15 (C) 대도시권 HVI</td></tr>
+<tr><td>8/18</td><td>Atlanta Fed GDPNow 갱신</td><td>Q3 4.3% 수정 방향</td></tr>
+<tr><td>8/20</td><td>주간 실업수당 청구 · CFTC 혁신자문위 첫 회의</td><td>초기청구 21만 상회 여부 · 예측시장 규제</td></tr>
+<tr><td>8/20~22 (추정)</td><td><strong>잭슨홀 심포지엄</strong></td><td>🔴 워시 T/F 중간 점검 여부 = §4-8 최대 관측 지점</td></tr>
+<tr><td>8/26</td><td>Dallas 절사평균 PCE + 7월 PCE(BEA)</td><td>🔴 Warsh 프레임 3분모 동시 갱신</td></tr>
+<tr><td>8/31</td><td>13F 시즌 종료</td><td>§10-1 전수 델타 마감</td></tr>
+<tr><td>9/1 · 9/3</td><td>ISM 제조 · 서비스 (8월)</td><td>가격지수 70%대 해소 여부</td></tr>
+<tr><td>9/4</td><td>8월 고용상황</td><td>청년 갭·참가율</td></tr>
+<tr><td>9/14</td><td>현 RMP 기간 종료 → 다음 스케줄</td><td>🔴 RMP 0 유지 vs 재개</td></tr>
+</tbody></table>
+<hr>
+<h2>🔮 전망 (향후 1~3개월)</h2>
+<h3>단기 비관·현실주의</h3>
+<p>유동성 축이 4주째 빠지고 있고 그 원인이 일회성이 아니다 — 재무부가 TGA를 $959십억까지 쌓았고 계절적으로 10월 말까지 더 쌓는다. 여기에 연준이 준비금 보충을 멈췄다. 준비금/은행자산이 11%를 깨는 국면이 오면 그때는 이미 늦은 신호다. 물가는 소비자 단계에서만 식었고 생산자 단계(+8.27%)와 ISM 가격(70%대)이 남아 있어, 유가가 호르무즈로 다시 오르면 냉각은 한 분기짜리 착시로 끝날 수 있다. 시장은 그 사이 공포·탐욕 65에 VIX 4%ile로 서 있고, 달러 롱은 2015년 이후 최대로 몰려 있다. 위험은 어느 한 사건이 아니라 <strong>완충이 전부 얇아진 상태</strong>다.</p>
+<h3>장기 낙관·이상주의</h3>
+<p>생산성이 2.24%로 오르고 있고 그것이 자본투자(정보처리장비 +5.79% q/q·지식재산 +5.02% q/q)와 함께 온다는 사실은 7월 FOMC 성명이 이례적으로 명시적으로 인정한 부분이다. 데이터센터 빌드아웃은 이제 통계에 잡히는 노동시장 사건이 됐다 — 시설관리자에게 63% 임금 프리미엄이 붙고, 설치·정비직 구인의 90%가 퇴직연금을 명시한다. 이것은 자본이 노동을 대체하는 이야기가 아니라 <strong>자본이 특정 숙련 노동의 가격을 끌어올리는</strong> 이야기이며, 40년간 압축돼 온 블루칼라 숙련직 임금 곡선이 처음으로 반대로 휘는 지점일 수 있다. 관세율 11%와 232조 확장은 그 수요를 국내에 묶어두는 방향으로 작동한다. 근원 인플레가 2.5%로 내려온 지금, 이 조합이 유지되면 실질 임금이 회복되는 창이 열린다.</p>
+<hr>
+<h2>⚠️ 수집 상태 (실패·불완전 항목만)</h2>
+<ul>
+<li>⚠️ <strong>Kalshi KPOW</strong>: 합성 지수값·Future 6 컴포넌트·셧다운 하위지표가 캔버스 차트로 렌더돼 텍스트 추출 실패. 2028 대선 확률(57%)만 확보.</li>
+<li>⚠️ <strong>Fannie Mae HPSI</strong>: 랜딩 페이지에 지수 설명만 렌더되고 최신 수치 미노출.</li>
+<li>⚠️ <strong>Zillow 대도시권 HVI</strong>: 월간 데이터 갱신일이 8/16이라 이번 회차 신규 없음.</li>
+<li>⚠️ <strong>13F CIK 4건</strong>(블랙록·뱅가드·D1·웨일록): 스킬 기재 CIK로 최근 13F 미조회 — 미제출이 아니라 CIK 검증 과제로 기록.</li>
+<li>⚠️ <strong>DeepMind 블로그</strong>: 목록 추출이 내비게이션 요소를 반환. 논문 페이지(창 내 신규 0건)로 판정.</li>
+<li>⚠️ <strong>FRED 9계열</strong>: 초기 배치에서 레이트리밋(429)으로 실패 → 지연 재시도로 9/9 전부 회수 완료.</li>
+</ul>
+<hr>
+<p>출처: FRED(세인트루이스 연준) · yfinance · <a href="https://www.ici.org/research/stats/mmf" target="_blank">ICI</a> · <a href="https://www.federalreserve.gov" target="_blank">연준 이사회</a> · <a href="https://www.newyorkfed.org" target="_blank">뉴욕 연준</a> · <a href="https://www.dallasfed.org/research/pce" target="_blank">댈러스 연준</a> · <a href="https://www.clevelandfed.org/indicators-and-data/median-cpi" target="_blank">클리블랜드 연준</a> · <a href="https://www.atlantafed.org/research-and-data/data/gdpnow" target="_blank">애틀랜타 연준</a> · <a href="https://home.treasury.gov/news/press-releases" target="_blank">미 재무부</a> · <a href="https://www.whitehouse.gov/news/" target="_blank">백악관</a> · <a href="https://www.cftc.gov/PressRoom/PressReleases" target="_blank">CFTC</a> · <a href="https://www.fincen.gov/news-room" target="_blank">FinCEN</a> · <a href="https://www.justice.gov/nsd" target="_blank">DOJ NSD</a> · <a href="https://www.cisa.gov/news-events/news" target="_blank">CISA</a> · <a href="https://budgetlab.yale.edu/topic/trade" target="_blank">예일 예산연구소</a> · <a href="https://www.apollo.com/wealth/insights-news/insights/daily-spark" target="_blank">Apollo</a> · <a href="https://www.citriniresearch.com/" target="_blank">Citrini Research</a> · <a href="https://www.citadelsecurities.com/news-and-insights/category/market-insights/" target="_blank">시타델증권</a> · <a href="https://www.kkr.com/insights" target="_blank">KKR</a> · <a href="https://www.carlyle.com/global-insights" target="_blank">Carlyle</a> · <a href="https://www.hoover.org/publications/daily-report" target="_blank">Hoover Institution</a> · <a href="https://www.darpa.mil/news" target="_blank">DARPA</a> · <a href="https://deepmind.google/research/publications/" target="_blank">Google DeepMind</a> · <a href="https://www.gold.org/news" target="_blank">World Gold Council</a> · <a href="https://www.hiringlab.org/" target="_blank">Indeed Hiring Lab</a> · <a href="https://www.challengergray.com/blog/category/job-cuts-report/" target="_blank">Challenger, Gray &amp; Christmas</a> · <a href="https://truflation.com/dashboard" target="_blank">Truflation</a> · <a href="https://defillama.com/stablecoins" target="_blank">DefiLlama</a> · <a href="https://edition.cnn.com/markets/fear-and-greed" target="_blank">CNN</a> · <a href="https://kalshi.com/indices/kpow" target="_blank">Kalshi</a> · <a href="https://nsp.nanet.go.kr/" target="_blank">국회도서관 국가전략포털</a> · Bloomberg/WSJ/MarketWatch/AP(news-headlines) · X(@SecScottBessent·@USTreasury·@KobeissiLetter·@sentdefender·@FirstSquawk·@WhiteHouse)</p>
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다. 2026-08-15 기준.</p>
+<div class="foot">macro-weekly · Chrome MCP 전용 · validate PASS · 브라우저 피드 49/49</div>
+</div></body></html>
