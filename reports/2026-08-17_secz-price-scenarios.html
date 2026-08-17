@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SECZ 주가 미래 시나리오 심층 분석 — 현재가가 가정하는 미래·네 갈래 경로·수급의 진폭 | 2026-08-17</title>
+<meta name="vault-stage" content="Analysis">
+<meta name="vault-topic" content="SECZ">
+<meta name="vault-date" content="2026-08-17">
+<meta name="description" content="Securitize(SECZ) 주가의 미래를 네 갈래 시나리오(Bear·Base·Bull·Tail)로 나눠 확률·목표 밴드·기댓값을 산출하고, 역-DCF·동종·부분합으로 현재가 $5.61이 어떤 미래를 가정하는지 해부하며, 12/28 락업·어닝아웃·3Q GAAP 노이즈 등 수급·이벤트가 12개월 경로에 주는 진폭을 정리 — 판사 종합 판단 포함(낮은 신뢰도 참고·매매 판단 아님)">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#EBE4D3; color:#1f2328; font-family:'Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif; line-height:1.75; padding:24px 12px; font-size:15.5px; }
+  .card { max-width:960px; margin:0 auto; background:#FDF6E3; border:1px solid #e0d7bf; border-radius:14px; padding:44px 46px; box-shadow:0 2px 14px rgba(90,75,40,.08); }
+  @media (max-width:640px){ .card{ padding:26px 16px; } body{ padding:10px 4px; } }
+  h1 { font-size:1.55em; line-height:1.35; margin-bottom:6px; color:#173A2E; }
+  h2 { font-size:1.26em; margin:46px 0 14px; padding:8px 0 8px 14px; border-left:5px solid #1F6F8B; color:#173A2E; background:#F5EDD8; border-radius:0 8px 8px 0; }
+  h3 { font-size:1.07em; margin:28px 0 10px; color:#28495c; }
+  h4 { font-size:.98em; margin:20px 0 8px; color:#3d5a4c; }
+  p { margin:10px 0; }
+  a { color:#1F6F8B; }
+  ul, ol { margin-left:20px; } li { margin:6px 0; }
+  .meta { color:#6b6250; font-size:.9em; margin-bottom:4px; }
+  .tag { display:inline-block; background:#173A2E; color:#FDF6E3; border-radius:6px; padding:1px 10px; font-size:.82em; margin-right:6px; }
+  .summary { background:#F3E9CF; border:1.5px solid #d9c98f; border-radius:10px; padding:18px 22px; margin:22px 0; }
+  .summary li { margin:8px 0 8px 20px; }
+  .judge { background:#EEF0F6; border:2px solid #7f8bb5; border-radius:12px; padding:18px 22px; margin:24px 0; }
+  .judge .jt { font-weight:700; color:#2f3a66; font-size:1.05em; }
+  .judge .verdict { font-size:1.35em; font-weight:800; }
+  .judge table { font-size:.88em; }
+  .explain { background:#EAF1EC; border:1px solid #bfd3c5; border-radius:10px; padding:12px 16px; margin:14px 0; font-size:.93em; }
+  .explain .t { font-weight:700; color:#1d5c3f; }
+  .caution { background:#F7EDE4; border:1px solid #dcc3ad; border-radius:10px; padding:12px 16px; margin:14px 0; font-size:.93em; }
+  .caution .t { font-weight:700; color:#8a4a22; }
+  .quote { border-left:4px solid #b7a86f; background:#F8F1DC; padding:11px 16px; margin:14px 0; border-radius:0 8px 8px 0; font-size:.95em; }
+  .tablewrap { overflow-x:auto; background:#fff; border:1px solid #e8e1cf; border-radius:8px; margin:14px 0; }
+  table { border-collapse:collapse; width:100%; font-size:.86em; min-width:560px; }
+  th { background:#173A2E; color:#FDF6E3; padding:7px 9px; text-align:left; white-space:nowrap; font-weight:600; }
+  td { padding:6px 9px; border-bottom:1px solid #efe9d8; vertical-align:top; }
+  tr:last-child td { border-bottom:none; }
+  td.num, th.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .neg { color:#a3392c; } .pos { color:#1d6d43; }
+  .totalrow td { font-weight:700; background:#F5EDD8; }
+  .small { font-size:.87em; color:#6b6250; }
+  .divider { border:none; border-top:1.5px dashed #cfc3a2; margin:40px 0; }
+  figure.chart { background:#fff; border:1px solid #e8e1cf; border-radius:8px; padding:14px 10px 6px; margin:18px 0; }
+  figure.chart svg { width:100%; height:auto; display:block; font-family:inherit; }
+  figure.chart figcaption { font-size:.84em; color:#6b6250; padding:6px 10px 6px; line-height:1.55; }
+  .charttitle { font-size:.95em; font-weight:700; color:#173A2E; padding:2px 10px 4px; }
+  .legend { display:flex; gap:16px; font-size:.85em; color:#52514e; padding:4px 10px 8px; flex-wrap:wrap; }
+  .legend .sw { display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:5px; vertical-align:-1px; }
+  .layers { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin:16px 0; }
+  .layer { background:#fff; border:1px solid #e8e1cf; border-radius:8px; padding:12px 14px; font-size:.9em; }
+  .layer .lt { font-weight:700; color:#173A2E; margin-bottom:4px; }
+  .kv { font-size:.86em; color:#6b6250; }
+  footer { margin-top:46px; padding-top:16px; border-top:1px solid #ded4b8; font-size:.85em; color:#6b6250; }
+  @media print { body{ background:#ffffff; } .card{ box-shadow:none; border:none; } }
+</style>
+</head>
+<body>
+<div class="card">
+
+<p class="meta">2026-08-17 · 기준가 8/14 종가 $5.61 · 자매 보고서: <a href="2026-08-17_secz-tokenized-stock-role-revenue.html">역할·수익원·낙관 로드맵</a> · <a href="2026-08-13_secz-q2-earnings-presentation.html">Q2 프레젠테이션 완역</a> · <a href="2026-08-13_secz-q2-2026-earnings-call.html">Q2 어닝콜 해부</a> · <a href="2026-08-14_securitize-q2-2026-10q.html">10-Q 판독</a> · <a href="2026-08-13_secz-aum-revenue-deep.html">AUM·매출 심층</a></p>
+
+<h1>SECZ 주가 미래 시나리오 심층 분석 — 현재가가 가정하는 미래, 네 갈래 경로, 수급의 진폭</h1>
+<p class="meta"><span class="tag">SECZ</span><span class="tag">시나리오 트리</span><span class="tag">역-DCF</span><span class="tag">수급·락업</span><span class="tag">판사 종합 판단</span> 다중 에이전트 분석(추출 206건 · 분석 3편 · 적대 검증 95건 · 완결성 비평 · 판사) 후 종합 · Deep-Dive §H.1/§H.7 골격 준용</p>
+
+<div class="caution">
+<span class="t">읽기 전 — 이 보고서의 성격</span><br>
+가격에 관한 모든 수치는 <b>낮은 신뢰도 참고</b>다(밸류·타이밍 콜은 문서화된 약점 — 강점은 구조 분석). 목표 밴드·확률·기댓값은 전부 [추정]이며 매수·매도·비중 판단을 담지 않는다. 라벨: <b>[공시]</b> SEC 문서 / <b>[회사]</b> IR·콜 / <b>[제3자]</b> 시장 데이터·상대측 / <b>[추정]</b> 우리 계산. yfinance의 발행주식·EV 필드는 합병 전 값이라 전부 배제하고 10-Q 확정치(발행주식 163,265,685 · 순현금 $352.6M)로 재계산했다.
+</div>
+
+<h2>한 장 요약</h2>
+<div class="summary">
+<ul>
+<li>🔴🔴 <b>$5.61은 "낙관 A(FY2028 매출 $140~150M)"를 거의 전액 가격에 넣은 값이다.</b> 순현금 주당 $2.16을 빼면 사업가치 $3.45(EV $563M) — 이 값이 성립하려면 FY26 $75M에서 <b>5년간 매출 연 25~34% 성장 + 영업마진 −14% → 25% 수렴 + 초과성장 10년</b>이 동시에 필요하다. 가이던스(+20%) 단순 연장의 정합가는 <b>$4.3</b>, 낙관 A 정합가는 <b>$5.1~5.8</b> — 현재가는 그 위쪽 끝에 있다.</li>
+<li>🔴 <b>네 갈래 시나리오의 확률가중 기댓값 = 12개월 0.92배 · 2년 1.02배 · 5년 1.37배</b>(Bear 30 / Base 40 / Bull 20 / Tail 10). 5년 1.5배 룰 미달이지만 확률 5%p만 움직여도 통과·미달이 갈리는 <b>경계값</b>이고, 근시점 기대수익은 사실상 0이다. 확률가중 5년 가격 $7.7을 자본비용 11.5%로 할인하면 <b>$4.45 — 현재가보다 21% 낮다.</b></li>
+<li>🔴 <b>판사 종합 판단 = 🔴</b> — "현재가가 요구하는 가정이 무리하고 위험 이벤트(11월 3Q·12/28 락업)가 상방 확인점(2027 상반기 첫 발행사)보다 먼저 온다." 신뢰도 중간. 판정을 바꿀 사건은 5개, 첫 번째가 11월 3Q26의 토큰화 매출 ≥$9.2M.</li>
+<li>🟠 <b>수급은 방향이 아니라 진폭을 정한다.</b> 지금 실제로 도는 물량은 자유유통 23%(37.5M주)뿐이고 12/28에 77%(125.7M주)가 한 번에 풀린다 — "팔릴 양"이 아니라 <b>"오르려면 흡수해야 할 양이 4.4배로 커지는 날"</b>이다. 위로는 $7~10 손실 코호트(PIPE 원가 $10)와 $12.50~25 트리거 사다리, 아래로는 확인된 매수 주체 0(8/13 −27.5% 후 회사·내부자 신호 없음).</li>
+<li>🟠 <b>3분기 GAAP 헤드라인은 정보를 잃는다</b> — 어닝아웃 부채 $82.9M은 주가가 내리면 평가익이 나고(부호 +·수십 $M), 합병 거래비용 ~$25.6M이 일시 비용으로 반대편에 실린다. 채점은 영업 실질(토큰화 ≥$9.2M · 매출 ≥$16M · 조정 EBITDA −$3M 이내)로만.</li>
+<li>🟠 5년 기댓값을 실제로 가르는 변수는 확률도 배수도 아니라 <b>"2031년 이후에도 시장이 성장을 지불하는가(exit 배수)"</b>와 <b>순현금 $352.6M의 사용 규율(M&amp;A)</b>이다. 시나리오 표의 exit 배수(EV/S 5.5~13배)를 DCF 내재값(2.9~5.9배)으로 바꾸면 5년 기댓값은 1.37 → 약 0.78배로 떨어진다.</li>
+<li>⚪ 이 보고서는 사업·가격 구조 분석이며 <b>매매·비중 판단을 다루지 않는다.</b> 상장 6주짜리 종목이라 자기 역사 배수는 없고, 회사 가이던스는 SEC 문서에 없으며, 애널리스트 4명의 목표가($10~16)는 실적 이후 조정 여부가 미확인이다.</li>
+</ul>
+</div>
+
+<div class="judge">
+<div class="jt">🧑‍⚖️ 종합 판단 (판사 — 신선한 컨텍스트에서 3개 분석 + 검증 결과를 읽고 내린 통합 판단 · 재계산 없음 · 원문 그대로)</div>
+<p><span class="verdict">🔴</span> &nbsp;<b>$5.61은 낙관 A(FY28 $140~150M)를 거의 전액 선반영한 값 — 12개월 기댓값 0.92x·2년 1.0x, 확인점은 2027H1까지 늦고 위험 이벤트가 먼저 온다.</b> <span class="small">(신뢰도: 중간)</span></p>
+<div class="tablewrap"><table>
+<tr><th>축</th><th>근거</th></tr>
+<tr><td><b>밸류</b></td><td>EV $563M(순현금 $2.16/주 차감)은 FY26 $75M 기점 5Y CAGR 25~34%·마진 25%를 요구. 검증 후 낙관 A 정합가 $5.31~5.84 ≈ 현재가</td></tr>
+<tr><td><b>구조</b></td><td>토큰화 6분기 무성장(11.3→7.8)·AUM 연동 매출 not material·흑자 시한 미제시·가이던스 SEC 문서 부재</td></tr>
+<tr><td><b>시간</b></td><td>3Q26(11월)·12/28 락업 77%는 6개월 안, 상방 전용 확인점(Tier-1 발행사)은 2027-06 반증 시한 — 위험이 먼저 도착</td></tr>
+<tr><td><b>리스크</b></td><td>8/13 −27.5%·ADV 5.8배 후 확인된 매수 주체 없음, 8/14 SEC 규칙회의 취소로 회사 지목 촉매 무산, 가이던스 3차 훼손 경고</td></tr>
+</table></div>
+<p><b>가격 맥락</b> — 현재가는 순현금 $2.16 위에 사업가치 $3.45를 얹은 값으로, 배수 6.5x면 Base FY27 매출($87M)을, 역-DCF로는 낙관 A 경로를 대부분 가격화한 지점. 시나리오 기댓값 12개월 0.92x·2년 1.02x·5년 1.37x(가정 밴드 ≈1.2~1.5x·1.5x 룰 미달). 달러 비대칭은 Bull +224% vs Bear −43%/Tail −72%로 상방이 크지만 Bull 20%·Bear+Tail 40%이고 근시점 기대수익 ≈0. 하방은 순현금·8년 런웨이가 받치나 자유현금 미확정.</p>
+<p><b>판정을 바꿀 사건</b></p>
+<ol>
+<li>2026-11 3Q26 실적: 토큰화 ≥$9.2M + 매출 ≥$16M + 조정 EBITDA −$3M 이내(GAAP 노이즈 공제 후) 통과 → Bear 확률 하향, ⚪로 상향 검토</li>
+<li>2026-11 3Q 10-Q: 매출 3분해(AUM 연동·계약 고정·건별) 자발 공시 + RPO $9.6M 지속 증가 → 반복매출 판정 가능 → 밸류 프레임 자체 재설정</li>
+<li>2026Q4~2027-03: NYSE 디지털 ATS 실런칭 + 기록딜러 요율 공개(무런칭·재연기 시 신호 #9 악화 → 🔴 강화)</li>
+<li>2026Q4~2027-06: Tier-1 명부급 발행사 1곳의 SECZ 채널 귀속이 8-K/PR로 확인 → Bull 확률 상향·🟢 검토 (2027-06까지 0건이면 낙관 A 이연 확정)</li>
+<li>2026-12-28 락업 해제 ±2주: 거래량 ADV 2배 이하·13D 수정 0·Form 4 처분 0 + Q3 13F(11월 중순) 신규 롱온리 등장 → 수급 진폭 우려 해소</li>
+</ol>
+<p><b>Steelman (판정을 뒤집을 수 있는 반박)</b></p>
+<ul>
+<li><b>데이터</b> — 확률 30/40/20/10은 R·#8 발동 직후의 recency 가중이다. 3Q26 토큰화 ≥$9.2M 하나만 통과해도 25/45/25/5 → 5년 EV 1.55x로 룰을 넘고, 순현금 경로 재산출만으로도 +0.1x다. 또 EV/S TTM 8.4x는 인프라 중앙값 9.9x·상장 고가 28x 대비 이미 압축된 값이라 '요구 가정 무리'의 상당분은 6주 만에 기실현됐을 수 있다 — 코호트(CRCL·BLSH·FIGR·GEMI) 12개월 중앙 0.68x를 SECZ는 0.46x로 이미 하회한다.</li>
+<li><b>구조</b> — 역-DCF·SOTP는 매끄러운 CAGR을 전제하지만 SECZ의 다음 엔진(Tier-1 발행사 채널 귀속·NYSE ATS·GENIUS 준비금)은 이항·계단식 payoff다. 2024년 토큰화 국채가 BlackRock 한 곳 진입으로 22배가 된 실증처럼, 현재가는 '낮은 확률 × 큰 계단'의 기댓값일 수 있어 'CAGR 요구치가 envelope 상단'이라는 프레임 자체가 오도일 수 있다. 12/28도 '팔 수 있는 양≠팔릴 양'이라 하방 우세의 시간 논거는 약하다.</li>
+<li><b>시간지평</b> — 12개월·2년 기댓값 ≈1.0x는 '근시점 기대수익 0'이지 하방 우세가 아니다. 순현금 $2.16·이자수익 분기 $3.5M이 소진을 상쇄해 현금 하한이 유지되는 반면 5년 Bull은 3.2x — 시간 차익을 감내하는 지평에서는 같은 가격이 '유보(⚪)'로 읽히며, 🔴는 12개월 지평에만 성립하는 판정일 수 있다.</li>
+</ul>
+<p class="small"><b>한계</b> — 가격 밴드·기댓값은 전부 추정(낮은 신뢰도 참고) — 순현금 경로·Bull FY31 정의·WACC 밴드에 따라 5년 EV ≈1.2~1.5x로 흔들리는 '경계' 수치이며 확률 5%p 이동에 룰 통과 여부가 갈림 · FY26 가이던스 $70~80M은 SEC 문서에 없는 회사 구두 전망 — 역산 출발점을 Q2 run-rate $57.7M으로 바꾸면 요구 CAGR +4~5%p · peer 배수는 yfinance 8/17 TTM 단일 소스(SEC 미교차) · SECZ 자체 역사 멀티플 N/A(상장 31거래일) · de-SPAC 1년차 base rate 로컬 자료 없음 · 크립토 IPO 코호트 n=4 · 애널리스트 4명 $10~16은 8/13 이후 리비전 미확인 · 순현금 $352.6M의 자유 현금 규모 미확정 · 하반기 M&amp;A는 시나리오 축에 미계상 · 3Q GAAP은 거래비용 ~$25.6M·어닝아웃 FV 평가익으로 헤드라인 정보 상실 · <b>본 판정은 12~24개월 지평의 가격 위치 판단이며 5년 thesis 자체의 성패 판정이 아님</b>.</p>
+</div>
+
+<hr class="divider">
+
+<h2>1. 출발점 — 지금 가격의 해부</h2>
+
+<figure class="chart">
+<div class="charttitle">상장 후 31거래일 종가 — 고가 $13.70(7/2)에서 저가 $5.17(8/14)까지</div>
+<svg viewBox="0 0 680 262" role="img" aria-label="SECZ 상장 후 일별 종가 선 차트">
+  <g stroke="#e1e0d9" stroke-width="1">
+    <line x1="56" y1="20" x2="650" y2="20"/><line x1="56" y1="56" x2="650" y2="56"/><line x1="56" y1="92" x2="650" y2="92"/><line x1="56" y1="128" x2="650" y2="128"/><line x1="56" y1="164" x2="650" y2="164"/><line x1="56" y1="200" x2="650" y2="200"/>
+  </g>
+  <g fill="#898781" font-size="11" text-anchor="end">
+    <text x="48" y="24">$14</text><text x="48" y="60">$12</text><text x="48" y="96">$10</text><text x="48" y="132">$8</text><text x="48" y="168">$6</text><text x="48" y="204">$4</text>
+  </g>
+  <line x1="56" y1="92" x2="650" y2="92" stroke="#c3c2b7" stroke-width="1" stroke-dasharray="4 4"/>
+  <text x="600" y="88" fill="#898781" font-size="10">PIPE 원가 $10</text>
+  <line x1="56" y1="130.9" x2="650" y2="130.9" stroke="#e8e1cf" stroke-width="1"/>
+  <polyline points="56.0,50.6 75.8,76.2 95.6,126.9 115.4,138.6 135.2,137.9 155.0,129.8 174.8,129.1 194.6,137.2 214.4,120.1 234.2,130.3 254.0,142.8 273.8,152.8 293.6,136.3 313.4,133.9 333.2,140.6 353.0,137.5 372.8,148.2 392.6,144.6 412.4,153.2 432.2,144.7 452.0,151.9 471.8,147.1 491.6,138.4 511.4,139.0 531.2,142.6 551.0,133.2 570.8,147.4 590.6,139.0 610.4,130.5 630.2,169.4 650.0,171.0" fill="none" stroke="#2a78d6" stroke-width="2"/>
+  <g fill="#2a78d6"><circle cx="56" cy="50.6" r="4"/><circle cx="95.6" cy="126.9" r="4"/><circle cx="551" cy="133.2" r="4"/><circle cx="630.2" cy="169.4" r="4"/><circle cx="650" cy="171" r="5.5" stroke="#fff" stroke-width="2"/></g>
+  <g fill="#52514e" font-size="10.5" font-weight="600">
+    <text x="62" y="44">7/2 $12.30 (고가 13.70)</text>
+    <text x="102" y="122">7/7 −25.9%</text>
+    <text x="500" y="128">8/7 S-1 효력·PIPE 개통 $7.71</text>
+    <text x="520" y="190">8/13 실적 −27.5% · 6.49M주</text>
+    <text x="596" y="215">8/14 $5.61</text>
+  </g>
+  <g fill="#898781" font-size="11" text-anchor="middle">
+    <text x="56" y="235">7/2</text><text x="214" y="235">7/15</text><text x="373" y="235">7/27</text><text x="531" y="235">8/6</text><text x="650" y="235">8/14</text>
+  </g>
+  <text x="56" y="256" fill="#898781" font-size="10.5">출처: 일별 종가(제3자) · 첫 종가 대비 −54% · 장중 고가 대비 −62% · 31일 중 20일이 ±5% 이상</text>
+</svg>
+<figcaption>두 번의 −25% 급락(7/7·8/13) 사이에 5주 횡보($6.6~8.4)가 있다. 8/13~14 이틀 거래량 9.8M주는 자유유통의 26%. 실현 변동성은 연환산 164%(8/13 제외 140%) — 회사가 어닝아웃 부채 평가에 쓴 변동성 가정(65%)의 2배 이상이다.</figcaption>
+</figure>
+
+<div class="tablewrap">
+<table>
+<tr><th>항목</th><th class="num">값</th><th>비고 · 라벨</th></tr>
+<tr><td>8/14 종가 · 발행주식</td><td class="num">$5.61 · 163,265,685주</td><td>10-Q 표지·XBRL [공시] — yfinance 148.06M은 합병 전 값(배제)</td></tr>
+<tr><td>시총 · 순현금 · EV</td><td class="num">$916M · $352.6M(주당 $2.16) · <b>$563M(주당 $3.45)</b></td><td>순현금 = 프로포마 검산치 [공시] · 자유현금 여부 미확정(규제 자회사 순자본 미공시) → 액면 90~100% 밴드</td></tr>
+<tr><td>매출 분모</td><td class="num">TTM $66.8~67.3M · 가이던스 중간 $75M · Q2 run-rate $57.7M</td><td>가이던스는 IR·콜에만 있고 SEC 문서에 없음 [회사] · 4Q25 슬라이드 16.7 vs 구성합 16.1 잔차</td></tr>
+<tr><td>배수</td><td class="num">EV/S 7.5x(가이던스)·8.4x(TTM) · P/S 13.7x · EV/매출총이익 ~11x · EV/AUM 11.4%</td><td>상장 고가 $13.70 시점 EV/S 25x → 6주 만에 −70% 압축 · 자기 역사 percentile N/A</td></tr>
+<tr><td>완전희석</td><td class="num">193.2M(+18.4%) + evergreen 연 5%</td><td>워런트 3.71M(@$3.375·깊은 내가격) · 옵션/RSU 3.68M · 어닝아웃 6.25M(VWAP $15/$20/$25 조건부) · 인센티브 16.32M(S-8 미제출) [공시]</td></tr>
+<tr><td>애널리스트</td><td class="num">4명 · 평균 $13 · $10~16</td><td>실적 이후 조정 여부 미확인 — 평균 $13은 가이던스 EV/S 23.6배를 함의(인프라 중앙값 9.9배의 2.4배) → <b>방향만 참고, 레벨 신뢰 ❌</b></td></tr>
+<tr><td>동시대 코호트(첫 종가 대비 12개월)</td><td class="num">CRCL 0.96x · BLSH 0.40x · FIGR 1.01x · GEMI 0.12x → 중앙 0.68x</td><td>SECZ는 6주 만에 0.46x(SPAC $10 기준 0.56x)로 <b>이미 하회</b> [제3자] · de-SPAC 첫 종가 ≠ IPO 첫 종가</td></tr>
+</table>
+</div>
+
+<hr class="divider">
+
+<h2>2. 현재가는 어떤 미래를 가정하고 있는가 — 역-DCF · 동종 · 부분합</h2>
+
+<h3>2-1. 역-DCF: EV $563M이 성립하려면 무엇이 참이어야 하나</h3>
+<p>임계값으로 "비싸다/싸다"를 선언하지 않는다. 대신 현재 EV가 <b>암묵적으로 요구하는</b> 매출 성장률·터미널 마진·지속기간을 역산해, 독립적으로 도출한 현실 범위(envelope)와의 거리만 잰다.</p>
+<div class="tablewrap">
+<table>
+<tr><th>터미널 영업마진 가정</th><th class="num">WACC 10% / g 3.5%</th><th class="num">WACC 11.5% / g 3%</th><th class="num">WACC 13% / g 2.5%</th><th>비고</th></tr>
+<tr><td>20% (매출총이익률 하락 연장)</td><td class="num">27%</td><td class="num">33%</td><td class="num">38%</td><td>낙관 A 상단~밖</td></tr>
+<tr class="totalrow"><td><b>25% (배관 peer BR/CPU급)</b></td><td class="num"><b>23%</b></td><td class="num"><b>29%</b></td><td class="num"><b>34%</b></td><td>FY31 매출 $211~321M</td></tr>
+<tr><td>30% (CPU 30%급)</td><td class="num">20%</td><td class="num">25%</td><td class="num">30%</td><td>가이던스 연장 안쪽 진입</td></tr>
+<tr><td>35~40% (거래소형)</td><td class="num">15~17%</td><td class="num">20~22%</td><td class="num">24~27%</td><td>ATS·거래소 매출이 주력일 때만</td></tr>
+<tr><td class="small">WACC 15% (실현 변동성 164% 반영 시)</td><td class="num small" colspan="3">tm 25% → <b>39%</b> = envelope 밖</td><td class="small">할인율 민감도가 마진 민감도의 2배</td></tr>
+</table>
+</div>
+<p class="small">모형: FY26 = 가이던스 중간 $75M → 5년 등속 성장 → 6~10년 터미널 g까지 선형 fade → 영업마진 −12%(H1 조정 EBITDA 마진 근사)에서 5년에 걸쳐 터미널 마진으로 ramp → FCF 전환 90%·세율 21% → 10년 말 Gordon 터미널. 출발점을 Q2 run-rate $57.7M으로 바꾸면 요구치 +4~5%p. [추정]</p>
+
+<p><b>현실 범위(독립 도출)</b>: 매출 성장 — 가이던스 경로 +20%(기저) / 낙관 A(FY28 $140~150M) 도달 시 5년 CAGR ≈26~31%(천장) / 낙관 B는 확률 낮음(꼬리 45%). 터미널 마진 — 달성 이력은 FY25 조정 EBITDA 5.5%뿐, 철회된 계획이 29%, 낙관 A 밴드 18~25%, 배관 peer 25~30%(중심 20~25%·천장 30%). 지속기간 — 90일 통지 해지·비배타 계약, BNY·Ondo·DTCC·Bullish×Equiniti의 진입, 은행 RFQ 개시를 감안하면 해자가 초과수익을 지키는 연수 ≈5~7년(10년+는 가시 범위 밖).</p>
+
+<div class="explain">
+<span class="t">거리 판정 = "상단 의존" (범위 밖은 아님)</span><br>
+요구 성장률(25~34%)은 낙관 A 천장에 근접하고, 요구 지속기간(≈10년)은 해자 추정(5~7년)을 넘는다. 마진 25%는 배관 peer 실측 범위 안이다. 즉 <b>세 가정 중 둘이 동시에 상한에 걸려 있는 "복수 낙관 가정의 곱"</b>이다. 다만 판정은 fragile — 터미널 마진을 30~35%로 두면 요구 성장률이 20~25%로 내려와 가이던스 범위 안으로 들어오고, 20%로 두면 밖으로 나간다. <b>핵심 swing 변수 = 터미널 마진과 할인율(공동 1위)</b>.
+</div>
+
+<figure class="chart">
+<div class="charttitle">현재가 vs 시나리오 정합가 사다리 (주당 · 현재 PV 기준 · 낮은 신뢰도 참고)</div>
+<svg viewBox="0 0 690 268" role="img" aria-label="정합가 사다리 가로 막대 차트">
+  <g stroke="#e1e0d9" stroke-width="1">
+    <line x1="150" y1="18" x2="150" y2="228"/><line x1="220" y1="18" x2="220" y2="228"/><line x1="290" y1="18" x2="290" y2="228"/><line x1="360" y1="18" x2="360" y2="228"/><line x1="430" y1="18" x2="430" y2="228"/><line x1="500" y1="18" x2="500" y2="228"/><line x1="570" y1="18" x2="570" y2="228"/><line x1="640" y1="18" x2="640" y2="228"/>
+  </g>
+  <g fill="#898781" font-size="10.5" text-anchor="middle">
+    <text x="150" y="243">$0</text><text x="220" y="243">$2</text><text x="290" y="243">$4</text><text x="360" y="243">$6</text><text x="430" y="243">$8</text><text x="500" y="243">$10</text><text x="570" y="243">$12</text><text x="640" y="243">$14</text>
+  </g>
+  <g fill="#52514e" font-size="11.5">
+    <text x="12" y="38">Bear (정체·8% 성장)</text>
+    <text x="12" y="70">가이던스 +20% 연장</text>
+    <text x="12" y="102">부분합(SOTP) 하/중/상</text>
+    <text x="12" y="134">낙관 A (FY28 $140~150M)</text>
+    <text x="12" y="166">5년 확률가중 가격의 PV</text>
+    <text x="12" y="198">낙관 B (확률 낮음)</text>
+  </g>
+  <rect x="242" y="27" width="7" height="16" fill="#2a78d6" rx="3"/>
+  <rect x="298" y="59" width="6" height="16" fill="#2a78d6" rx="3"/>
+  <rect x="261" y="91" width="106" height="16" fill="#9ec5f4" rx="3"/><rect x="305" y="91" width="4" height="16" fill="#2a78d6"/>
+  <rect x="327" y="123" width="27" height="16" fill="#2a78d6" rx="3"/><rect x="366" y="123" width="4" height="16" fill="#9ec5f4"/>
+  <rect x="304" y="155" width="6" height="16" fill="#2a78d6" rx="3"/><rect x="418" y="155" width="4" height="16" fill="#9ec5f4"/>
+  <rect x="530" y="187" width="54" height="16" fill="#2a78d6" rx="3"/>
+  <line x1="346" y1="18" x2="346" y2="228" stroke="#a3392c" stroke-width="2" stroke-dasharray="5 3"/>
+  <text x="350" y="222" fill="#a3392c" font-size="11" font-weight="700">현재가 $5.61</text>
+  <g fill="#0b0b0b" font-size="10.5">
+    <text x="254" y="39">$2.6~2.8</text><text x="309" y="71">$4.30</text><text x="372" y="103">$3.2 / $4.5 / $6.2</text><text x="376" y="135">$5.1~5.8 (조건부 $6.2)</text><text x="312" y="167">PV $4.45 (명목 $7.7 →)</text><text x="588" y="199">$10.9~12.4</text>
+  </g>
+  <text x="12" y="260" fill="#898781" font-size="10.5">역-DCF 정합 EV + 순현금 $352.6M ÷ 163.27M주 · WACC 11.5% 기준(낙관 B 상단은 10.5%) · 연한 색 = 조건부/명목</text>
+</svg>
+<figcaption>현재가는 가이던스 단순 연장(+30%)과 낙관 A 정합가(안쪽 상단) 사이, 5년 확률가중 가격의 현재가치(−21%)보다 위에 있다. 부분합으로 읽어도 Bull 값 근처다.</figcaption>
+</figure>
+
+<h3>2-2. 동종 비교 — 성장 프리미엄과 마진 디스카운트가 상쇄된 자리</h3>
+<div class="tablewrap">
+<table>
+<tr><th>군</th><th>종목(EV/S · 성장 · 영업마진)</th><th class="num">EV/S 중앙값</th><th>SECZ 대비</th></tr>
+<tr><td>크립토 금융</td><td>CRCL 5.7x·+7%·5% / COIN 6.1x·−17%·−14% / HOOD 17.2x·+32%·44% / BLSH 13.1x·+69%·적자 / FIGR 11.5x·+121%·36%</td><td class="num">11.4x</td><td>SECZ 7.5~8.4x → 하회 (단 CRCL·COIN 5.7~6.1x 대비 +40%)</td></tr>
+<tr><td>거래소·시장 인프라</td><td>ICE 10.1x·+5%·53% / CME 14.6x·+1%·65% / NDAQ 11.2x·+15%·49% / CBOE 6.0x·+23%·35% / MKTX 6.4x·−1%·42% / TW 9.6x·+9%·44%</td><td class="num">9.9x (EV/EBITDA 15.9x · 마진 47%)</td><td>−15~25% · 성장은 +20% vs +7%로 우위, 마진은 적자 vs 47%로 열위</td></tr>
+<tr><td>배관·명부</td><td>Broadridge 3.0x·+7%·25% / Computershare 7.35x·30%</td><td class="num">5.2x</td><td>상회 — thesis 종착이 이쪽이면 배수 압축 방향</td></tr>
+</table>
+</div>
+<p>EV/매출총이익(약 11x)은 거래소·인프라 실측 비교군(TW 10.3·MKTX 10.4·CBOE 11.0·BR 9.5)과 같은 수준이다 — 즉 <b>매출총이익 1달러에 인프라와 같은 값을 치르면서 영업마진은 −14% vs +47%</b>다. "마진 수렴"이 이미 가격에 들어 있다는 뜻이고, Rule of 40은 6.4(성장 20 + 마진 −13.6)로 컴파운더 기준에는 크게 미달한다. 판정: <b>근거 없는 프리미엄도, 저평가 후보도 아니다</b> — 성장 프리미엄과 마진 디스카운트가 상쇄된 인프라 중앙값 근처. [제3자 8/17 실측 · SEC 미교차]</p>
+
+<h3>2-3. 부분합(SOTP)과 EV/AUM 교차</h3>
+<ul>
+<li><b>순현금</b> $352.6M(주당 $2.16 = 현재가의 38%) + <b>자산 서비스</b>(연 $26~30M × 2.5~5x) + <b>토큰화 라인</b>(연 $31~38M × 4~12x) + <b>토큰화 주식 옵션가치</b>($0~100M) − 기타(미지급·소진 등) = <b>주당 $3.2 / $4.5 / $6.2</b>(Bear/Base/Bull). 현재가는 Bull 근처.</li>
+<li>거꾸로 읽으면: 시총에서 순현금·자산 서비스(Base)·옵션(Base)을 빼면 토큰화 라인에 남는 값이 $438M = <b>6분기 무성장 라인에 EV/S 약 13배</b>(FIGR·NDAQ급 재가속 배수)를 매기는 것과 같다.</li>
+<li><b>EV/AUM 11.4%</b>는 우연히 Coinbase 벤치마크(12%)와 맞아 주당 ≈$5.8를 가리키지만, AUM 연동 매출이 "중대하지 않다"(CFO)고 확인된 회사에서 이 지표는 <b>오해 유발</b>이다 — 정황(시장이 아직 "AUM 곡괭이" 서사로 값을 매긴다는 것) 확인용일 뿐 적정가 근거가 아니다.</li>
+<li>어닝아웃 부채 $82.9M을 현재가에서 그대로 빼면 이중 페널티(주가가 내리면 부채도 준다) — 경제적 처리는 Bull에서만 6.25M주 조건부 희석. 특허 소송(tZERO 5건)은 정량 불가·0 + flag($25~50M 가정 시 주당 −$0.15~0.31).</li>
+</ul>
+
+<hr class="divider">
+
+<h2>3. 시나리오 트리 — 네 갈래 경로·확률·목표 밴드·기댓값</h2>
+<p class="small">Deep-Dive §H.1 형식. 목표가 = (해당 연도 매출 × EV/S 밴드 + 순현금 경로) ÷ 가정 주식수 — <b>호라이즌 시점의 명목가</b>(현재 PV가 아님). 12개월 = FY27 선행 · 2년 = FY28 · 5년 = FY31. 확률은 base rate가 아니라 SECZ 고유 신호(토큰화 2연속 역성장·EBITDA·가이던스 하향)로 정한 것. 전부 [추정·낮은 신뢰도].</p>
+
+<div class="tablewrap">
+<table>
+<tr><th>시나리오</th><th class="num">확률</th><th>핵심 가정</th><th>매출 FY26 / 27 / 28 / 31</th><th class="num">EV/S 배수</th><th class="num">12개월</th><th class="num">2년</th><th class="num">5년(FY31)</th><th>확증 · 기각 관측점</th></tr>
+<tr><td><b>🔴 Bear</b><br><span class="small">"딜 타이밍"이 아니라 구조적 정체</span></td><td class="num">30%</td><td>3Q 토큰화 &lt;$9.2M(3연속 역성장) · AUA 정체 대비 −31% 지속 · NYSE ATS 2027-03까지 무런칭·발행사 0 · 2027 내내 적자 · 경쟁 잠식(BNY·Ondo·DTCC·Bullish)</td><td>$68~72 / 70~78 / 76~86 / <b>92~108M</b> (CAGR ~7%)</td><td class="num">2.5~4.0x<br><span class="small">BR 3.0x~CRCL 5.7x 하단</span></td><td class="num">$3.0~3.8<br><span class="small">0.53~0.67x</span></td><td class="num">$2.9~3.8</td><td class="num">$2.75~3.76<br><span class="small">mid 0.57x</span></td><td>확증: 11월 토큰화 &lt;$9.2M·매출 &lt;$16M / 10월 DTCC 명단 배제+상장주식 전면 / 2027-03 NYSE 무런칭. 기각: 3Q 토큰화 ≥$9.2M</td></tr>
+<tr><td><b>🟡 Base</b><br><span class="small">하단 가이던스 후 완만한 이중엔진</span></td><td class="num">40%</td><td>3Q 토큰화 ≥$9.2M · FY26 $73~78M · NYSE ATS 4Q26~1Q27(소액) · 2027 비용 안정 → 2H27 분기 흑자 · BRSRV 점진 · BUIDL 계약 유지·Arc 발행층 유지</td><td>$73~78 / 84~94 / 98~115 / <b>145~185M</b> (CAGR ~17%)</td><td class="num">5.5~7.5x<br><span class="small">CRCL/COIN~인프라 중앙</span></td><td class="num"><b>$4.7~6.1</b><br><span class="small">현재가를 감쌈</span></td><td class="num">$4.9~6.8<br><span class="small">mid 1.03x</span></td><td class="num">$5.9~8.8<br><span class="small">mid 1.29x</span></td><td>확증: 3Q 임계값 통과·4Q NYSE 런칭·10-Q 3분해·RPO 증가·2H27 EBITDA ≥$2M. 기각: Bear 세트 or Bull 세트</td></tr>
+<tr><td><b>🟢 Bull</b><br><span class="small">낙관 A 본선 + 5년은 낙관 B 2년 이연</span></td><td class="num">20%</td><td>Tier-1 발행사 1곳 SECZ 채널 귀속(2026Q4~27H1) · NYSE 실거래+요율 공개 → 2027 거래 매출 별도 라인 · BRSRV가 BUIDL보다 빠르게 성장 · 2027 흑자·FY28 마진 18~25%</td><td>$78~82 / 100~118 / 140~150 / <b>250~350M</b> (CAGR ~30%·낙관 B 의존)</td><td class="num">9~13x<br><span class="small">플랫폼 중앙·NDAQ·FIGR</span></td><td class="num">$7.2~10.9<br><span class="small">1.3~1.9x</span></td><td class="num">$9.1~13.0<br><span class="small">mid 1.96x</span></td><td class="num">$13.1~24.3<br><span class="small">mid 3.24x</span></td><td>확증: 발행사 8-K/PR·10-Q 매출 새 축·통로 수수료 첫 유입·FY27 ≥$100M. 기각: 2027-06 발행사 0 → Base로 강등</td></tr>
+<tr><td><b>⚫ Tail</b><br><span class="small">규제 사고·BlackRock 이탈·크립토 붕괴·현금 소모형 M&amp;A</span></td><td class="num">10%</td><td>BUIDL(AUM 54.5%) 90일 통지 해지 또는 이전 · tZERO 특허 불리 판결 · SEC/FINRA 집행 or OCC 20% cap · 크립토 &lt;$1.5T·AUM &lt;$3B · 순현금 $150M+ 인수 후 효과 미분리</td><td>$60~68 / 48~60 / 45~58 / <b>45~65M</b></td><td class="num">1~2x<br><span class="small">사업가치 ≈ 옵션</span></td><td class="num">$2.1~2.6<br><span class="small">0.38~0.46x</span></td><td class="num">$1.9~2.3</td><td class="num">$1.4~1.8<br><span class="small">0.25~0.32x</span></td><td>확증: 8-K 계약 해지·법원 docket·규제 조치·going concern 문구(현재 "의문 없음")</td></tr>
+</table>
+</div>
+
+<figure class="chart">
+<div class="charttitle">5년 배수의 비대칭 — 상방은 크지만 확률이 낮고, 근시점 기대수익은 0에 가깝다</div>
+<div class="legend"><span><span class="sw" style="background:#4a3aa7"></span>Tail 10%</span><span><span class="sw" style="background:#eb6834"></span>Bear 30%</span><span><span class="sw" style="background:#2a78d6"></span>Base 40%</span><span><span class="sw" style="background:#1baf7a"></span>Bull 20%</span></div>
+<svg viewBox="0 0 690 220" role="img" aria-label="시나리오별 5년 배수 범위 가로 막대 차트">
+  <g stroke="#e1e0d9" stroke-width="1">
+    <line x1="150" y1="18" x2="150" y2="180"/><line x1="255" y1="18" x2="255" y2="180"/><line x1="360" y1="18" x2="360" y2="180"/><line x1="465" y1="18" x2="465" y2="180"/><line x1="570" y1="18" x2="570" y2="180"/>
+  </g>
+  <g fill="#898781" font-size="10.5" text-anchor="middle">
+    <text x="150" y="196">0x</text><text x="255" y="196">1x</text><text x="360" y="196">2x</text><text x="465" y="196">3x</text><text x="570" y="196">4x</text>
+  </g>
+  <line x1="255" y1="14" x2="255" y2="182" stroke="#0b0b0b" stroke-width="1.5"/>
+  <text x="259" y="14" fill="#0b0b0b" font-size="10.5" font-weight="700">본전 1.0x</text>
+  <line x1="294" y1="14" x2="294" y2="182" stroke="#a3392c" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="298" y="26" fill="#a3392c" font-size="10.5" font-weight="700">기댓값 1.37x</text>
+  <g fill="#52514e" font-size="11.5">
+    <text x="12" y="52">⚫ Tail</text><text x="12" y="88">🔴 Bear</text><text x="12" y="124">🟡 Base</text><text x="12" y="160">🟢 Bull</text>
+  </g>
+  <rect x="176" y="40" width="8" height="18" fill="#4a3aa7" rx="3"/>
+  <rect x="201" y="76" width="19" height="18" fill="#eb6834" rx="3"/>
+  <rect x="260" y="112" width="56" height="18" fill="#2a78d6" rx="3"/>
+  <rect x="396" y="148" width="209" height="18" fill="#1baf7a" rx="3"/>
+  <rect x="186" y="43" width="128" height="14" fill="#ffffff" opacity=".9"/>
+  <rect x="222" y="79" width="140" height="14" fill="#ffffff" opacity=".9"/>
+  <g fill="#0b0b0b" font-size="10.5" paint-order="stroke" stroke="#ffffff" stroke-width="3.5" stroke-linejoin="round">
+    <text x="188" y="54">0.25~0.32x → $1.4~1.8</text>
+    <text x="224" y="90">0.49~0.67x → $2.75~3.76</text>
+    <text x="320" y="126">1.05~1.58x → $5.9~8.8</text>
+    <text x="609" y="162">2.34~4.33x</text>
+    <text x="400" y="145">$13.1~24.3</text>
+  </g>
+  <text x="12" y="214" fill="#898781" font-size="10.5">기댓값(mid 배수 확률가중): 12개월 0.92x · 2년 1.02x · 3년 1.12x · 5년 1.37x(밴드 1.06~1.73x) · 확률 25/45/25/5면 1.55x · 35/35/15/15면 1.18x</text>
+</svg>
+<figcaption>달러 비대칭은 Bull 단독 +224% vs Bear −43%·Tail −72%(약 2:1)이지만, Bull 20% 대 Bear+Tail 40%이고 2년 기댓값이 1.0x라 근시점 비대칭은 사실상 없다.</figcaption>
+</figure>
+
+<h3>3-1. 기댓값 읽는 법 — 세 가지 브리지</h3>
+<ol>
+<li><b>명목 → 현재가치</b>: 5년 확률가중 가격 mid ≈ $7.7. 자본비용 11.5%로 할인하면 <b>$4.45(현재가 −21%)</b>. 5년 1.37배는 연 6.5%로 자본비용(변동성 164%면 15%+)에 미달한다 — 즉 "5년 경계"와 "PV 기준 약함"은 같은 사실의 두 표현이다.</li>
+<li><b>과거 산출과의 비교</b>: 6/10 5년 기댓값 1.8x(@$12.12) → 7/13 1.52x(@$8) → 지금 1.37x(@$5.61). 분해하면 가격 −30%가 EV를 <b>+0.64x</b> 끌어올렸지만, 목표가 하향(낙관 종착 $700M~1B → 낙관 A/B · 가이던스 $110M → $70~80M · 배수 앵커 11.3x → 실측 5.5~7.5x)이 <b>−0.56x</b>, 확률 이동(Bull 25→20 · Bear+Tail 25→40)이 <b>−0.24x</b>. <b>"싸졌다"가 "기대값이 좋아졌다"로 번역되지 않은 구간</b>이다.</li>
+<li><b>암묵 exit 배수와 자기참조</b>: Base 5년 목표는 EV/S 5.5~7.5x(현재 8.4x 이하 → 매출 2.2~2.8배 성장만으로 도달 = 재평가 의존 낮음), Bull은 9~13x(성장 3.7~5.2배 + 완만한 재평가 = 의존 중간). 단 이 배수는 입력값이라 사후 검증으로는 자기참조다. 독립 경로인 DCF의 FY31 내재 EV/S는 <b>가이던스 연장 2.9x·낙관 A 3.4~3.7x·낙관 B 5.9x</b> — 시나리오 표보다 2배 낮다. <b>그 값을 대입하면 5년 기댓값은 1.37 → 약 0.78배(Base $4.3·Bull $9.2)</b>. 격차의 정체 = "2031년에도 시장이 15%+ 성장을 지불하는가"라는 해자 지속기간의 문제.</li>
+</ol>
+<div class="caution">
+<span class="t">숨은 결정 변수 두 개</span><br>
+① <b>2031년 이후 성장 지속기간(exit 배수)</b> — 90일 통지 해지 계약·은행 RFQ·예탁결제 원가 유틸리티(처리액 대비 매출 극소)가 있는 시장에서 배수 유지 가정은 확률·마진보다 EV를 더 크게 흔든다. ② <b>순현금 $352.6M의 사용 규율</b> — MG Stover 선례(대가 $21.1M·매출 +$12.8M)대로 현금 인수만으로 Base 매출을 FY27 +$15~30M 올릴 수 있어 확률 조정 없이 Base가 1.5x를 넘고, 반대로 주식 대가·효과 미분리면 Tail이 커진다. <b>첫 M&amp;A 공시 시 트리 전체 재산정</b>.
+</div>
+
+<h3>3-2. 경로의 모양 (형태 진단용 · 가격 정밀도 신뢰도 낮음)</h3>
+<ul>
+<li><b>Bear = 저점 재시험 → 장기 횡보</b>: 11월 미스 → 8/14 저가 재시험 → 12/28 전후 진폭 확대 → 2027-03 NYSE 무런칭이 두 번째 다리 → 순현금 위 $3~4대 횡보. 급락보다 <b>저변동 하향 횡보</b>가 정합(팔 수 있는 양 ≠ 팔릴 양 · 8/7 PIPE 개통일 +7%는 "공급=투매" 등식을 이미 한 번 반박).</li>
+<li><b>Base = 이벤트 계단식</b>: 3Q 통과 → 실적 전 횡보 밴드($6.6~8.4) 하단 복귀 → 4Q NYSE 발표 → 12/28 되돌림 → 2027 상반기 발행사 소식. 계단 하나가 빠지면 Bear로 이행.</li>
+<li><b>Bull = 첫 발행사 + NYSE 실거래로 재분류</b>: 크립토 베타 → 배관 인프라로 다시 분류되면 12~18개월 2배권. 그다음 12/28 전이라면 조기해제 트리거(구 Securitize $15/$17.50/$20 · 스폰서 $12.50~17.50), 12/28 후라면 어닝아웃 신주(6.25M·$15/$20/$25)와 손실 코호트가 상단을 누르는 <b>"급등 → 공급 흡수 정체 → 재상승"</b>.</li>
+<li><b>Tail = 갭다운</b>: 8-K·법원 docket·규제 조치는 예고 없는 사건 → 8/13형 갭 → 순현금 주당 $2.0~2.5 부근 1차 정지 → 현금 소진·M&amp;A 사용 시 하한 자체가 내려감.</li>
+</ul>
+<p class="small">공통: 31거래일 중 20일이 ±5%, 두 번의 −25%. 8/13 하루는 고유 요인(실적·가이던스 + 같은 날 SEC 혁신 면제 연기 보도)이 지배했지만, 6주 전체 일간 수익률은 크립토 금융주·소형주와 동행(CRCL 0.67·IWM 0.62·COIN 0.59·BTC β 1.9 — 표본 소). "매크로 무관"은 8/13 하루에만 참이다.</p>
+
+<hr class="divider">
+
+<h2>4. 수급·물량 — 12개월 경로의 진폭을 정하는 것들</h2>
+
+<h3>4-1. 물량 지도</h3>
+<div class="tablewrap">
+<table>
+<tr><th>항목</th><th class="num">규모(주)</th><th class="num">비중</th><th>언제 · 어느 가격</th><th>성격</th></tr>
+<tr><td><b>자유유통</b> = 공모주 17.16M + PIPE 19.78M + 스폰서 Class A 0.58M</td><td class="num">37,472,492</td><td class="num">23.0%</td><td>지금</td><td>실제 회전 물량의 전부. 8/13 하루 17.3%·8/13~14 26.2% 회전</td></tr>
+<tr><td>├ PIPE</td><td class="num">19,782,000</td><td class="num">12.1%</td><td>8/7 개통 · 원가 $10 → −44%</td><td>등록 재판매가 사실상 유일 출구. $10 부근은 손실 회복 매도가 몰릴 수 있는 심리적 공급대(행동적 가설)</td></tr>
+<tr><td><b>12/28 일괄 해제</b> = 구 Securitize 119.75M + 스폰서 파운더 6.0M</td><td class="num">125,746,191</td><td class="num">77.0%</td><td>2026-12-28(D−133) · 가격 무관</td><td>"팔 수 있게 되는 양". 5%+ 보유자: Blockchain Capital 9.83M(6.0%·펀드라 분배 의무 구조) · CEO 9.02M(5.4%·신탁 5개) · Hanwha 15.69M(9.6%·락업 여부 미확인) · 임원 합 11.7%</td></tr>
+<tr><td>조기해제 옵션</td><td class="num">39.9M×3 / 2.0M×3</td><td class="num">—</td><td>9/29~12/28 창(63거래일) · VWAP $15/$17.50/$20(구 Securitize) · $12.50/$15/$17.50(스폰서)</td><td>현재가 대비 +123~257% → 전부 비활성 · 12/28 이후 의미 소멸</td></tr>
+<tr><td>어닝아웃 신주</td><td class="num">6,250,000</td><td class="num">+3.8%</td><td>~2031-07-01 · VWAP $15/$20/$25 각 ⅓</td><td>상승 국면에서만 나오는 공급(+2.08M씩). 스폰서 어닝아웃 1.8M은 기발행 몰수형(신주 아님)</td></tr>
+<tr><td>워런트 · 옵션/RSU · 인센티브 예약</td><td class="num">3.71M · 3.68M · 16.32M</td><td class="num">+2.3 · +2.3 · +10.0%</td><td>워런트 @$3.375 즉시(상한 0.93M) · 인센티브는 S-8 미제출·수년 분산 · evergreen 연 5% 예약</td><td>희석 최대 항목은 인센티브. 예약 ≠ 발행</td></tr>
+<tr><td>공매도</td><td class="num">2.80M(7/15) → 4.13M(8/13·미갱신)</td><td class="num">자유유통의 7.5→11%</td><td>차입료 12.7→15% · 대차 가능 5,000주로 고갈</td><td>8/13~14 폭락 구간의 숏 행동은 미반영. PIPE 참여 헤지펀드의 헤지일 가능성(12/28 전 되감김 또는 재판매와 동시 커버) — 자료 없음·가설</td></tr>
+<tr><td>Tokenized SECZ(온체인)</td><td class="num">25.9M</td><td class="num">15.9%</td><td>순차 발행 중 · 활성 거래는 Solana 149,000주뿐</td><td>동일 CUSIP·가역 → 거래소 유통물량에 영향 없음(상한 &lt;1%)</td></tr>
+</table>
+</div>
+
+<h3>4-2. 12/28 락업 — 세 갈래와 그 조건</h3>
+<div class="layers">
+<div class="layer"><div class="lt">흡수</div>3Q 임계값 통과 + 12/28 전 주가 회복($7.5~8·ADV 2M+) + 10-Q에 임원 10b5-1 채택 등장 + 대형 보유자가 등록 블록/2차공모로 처분 + 해제 첫 2주 거래량 ≤ ADV 3~4배·낙폭 −10% 이내 + Q3 13F 롱온리 신규.<br><span class="kv">→ 12/28은 "사건 없음"으로 지나가고 자유유통 100%가 기관 접근성을 높인다.</span></div>
+<div class="layer"><div class="lt">유예</div>주가 $5~6 저가권 + 3Q 중립 → 처분 유인 약해 당일 무반응. 오버행이 사라진 게 아니라 "언제든 팔 수 있는 상태"로 이월 → 이후 모든 반등 구간에 뚜껑.<br><span class="kv">관측: ±2주 거래량 ADV 2배 이하 + Form 4 0 + 차입료 급락.</span></div>
+<div class="layer"><div class="lt">오버행 (양방향)</div>(i) 3Q 미달 + 12/28 → 손실 확정형 매도·갭 하락. (ii) 반대로 12/28 전 반등($8~10)이 오히려 매도 유인(PIPE 손익분기·딜가 $10). (iii) 숏: 12/28 후 대차 공급 급증 → 차입료 붕괴 → 신규 숏 장벽 소멸, 또는 선제 누적 숏의 되감김.<br><span class="kv">해제 블록의 5%(6.3M)만 팔려도 상장 후 최대 거래일 규모, 10%면 ADV 11일분.</span></div>
+</div>
+<p><b>정리</b>: 12/28은 <b>방향 사건이 아니라 진폭 사건</b>이다. 방향은 11월 3Q 임계값·Q3 13F·10b5-1·Form 4가 정하고, 12/28은 그 결과의 진폭을 키운다. 흡수량 "4.4배"는 상한이며 계열·전략 보유(≈34.5M)를 빼면 실효 3.2~3.4배. 해제 주주 119.7M의 내부 배분·원가는 공시가 없어 "장기 보유자라 안 판다"도 검증되지 않은 가정이다.</p>
+
+<h3>4-3. 상승이 공급을 부르는 사다리 (12/28 전 63거래일 한정)</h3>
+<div class="tablewrap">
+<table>
+<tr><th class="num">VWAP 레벨</th><th class="num">현재가 대비</th><th>12/28 전 도달 시 추가로 "팔 수 있게 되는" 물량</th><th class="num">누적 자유유통</th></tr>
+<tr><td class="num">$10.00</td><td class="num">+78%</td><td>트리거 없음 — PIPE 19.78M 손익분기(심리적 공급대)</td><td class="num">37.5M</td></tr>
+<tr><td class="num">$12.50</td><td class="num">+123%</td><td>스폰서 파운더 ⅓ 2.0M</td><td class="num">39.5M</td></tr>
+<tr><td class="num">$15.00</td><td class="num">+167%</td><td>구 Securitize ⅓ 39.9M + 스폰서 ⅓ 2.0M + <b>어닝아웃 신주 2.08M</b></td><td class="num"><b>83.5M (2.2배)</b></td></tr>
+<tr><td class="num">$17.50</td><td class="num">+212%</td><td>구 Securitize ⅓ 39.9M + 스폰서 ⅓ 2.0M</td><td class="num">125.4M</td></tr>
+<tr><td class="num">$20.00</td><td class="num">+257%</td><td>구 Securitize ⅓ 39.9M + 어닝아웃 신주 2.08M</td><td class="num">167.4M (≈전량+신주)</td></tr>
+<tr><td class="num">$25.00</td><td class="num">+346%</td><td>어닝아웃 신주 2.08M</td><td class="num">+2.08M</td></tr>
+</table>
+</div>
+<p class="small">12/28 이후에는 사다리가 소멸하고(전량 해제) 남는 것은 어닝아웃 신주 최대 6.25M(+3.8%)뿐이다. 2027년의 상방 저항은 트리거가 아니라 <b>손실 보유 코호트</b>다 — 상장 후 거래량의 69%가 $7 이상에서 손 바뀜(중복 회전 포함·상한 근사·행동적 가설), PIPE 19.78M은 $10. 실현 변동성 164%를 감안하면 "사다리 도달 확률이 낮다"고 단정하기도 어렵다(VWAP 지속 조건이 완충).</p>
+
+<h3>4-4. 3분기 GAAP 헤드라인은 정보를 잃는다</h3>
+<p>어닝아웃 부채 $82.9M(주가 $10 가정·변동성 65% 몬테카를로)은 매 분기 재측정된다 — 9/30 종가가 저가권이면 <b>대규모 평가익(부호 +·수십 $M·기준선은 7/1 취득일 공정가치라 크기 미정)</b>, 반대편에 합병 거래비용 ~$25.6M 일시 비용화. 영업손실이 2Q 수준(−$9.7M)이어도 GAAP 순손익은 "손실 급감" 또는 흑자 근처로 나올 수 있고, 9/30까지 반등하면 "손실 확대"로 나온다. <b>어느 쪽도 사업 정보가 아니다.</b> 채점 규약: 두 항목 공제 후 영업 실질만 · 조정 EBITDA 정의 동결(신용손실 가산 포함 — 제외 시 2Q −$6.77M) · 영업권 $26.4M 손상 검토(가이던스 하향·주가 급락 후)가 반대 방향 노이즈로 겹칠 수 있음.</p>
+
+<hr class="divider">
+
+<h2>5. 이벤트 캘린더 — 양방향 함의 · 채점선 · 선반영</h2>
+<div class="tablewrap">
+<table>
+<tr><th>시점</th><th>이벤트</th><th>양방향 함의</th><th>채점선</th><th>선반영(추정)</th></tr>
+<tr><td>8/14 (실현)</td><td><b>SEC 공개회의 취소 · 혁신 면제 재연기</b>(CLARITY 협상 사유)</td><td>회사가 콜에서 지목한 촉매("이르면 금요일")가 불리하게 실현 · 8/13 −27.5%의 제2 동인 후보</td><td>규제 프레임 방향 = 로드맵 도달 체인 #1</td><td>—</td></tr>
+<tr><td>8/18~19</td><td>Form 4 관측 창(실적 후 블랙아웃 해제·2영업일)</td><td>내부자 매수 등장 = 가격 앵커 / 0건 지속 = 앵커 부재 확정</td><td>매수 ≥1건</td><td>낮음</td></tr>
+<tr><td>9/16</td><td>Circle Arc 메인넷</td><td>BUIDL Arc 배포의 발행·명부 주체 = Securitize면 순풍 / 우회면 신호 #6 강화</td><td>3Q 임계값 ⑥</td><td>중간(8/5 발표일 무반응)</td></tr>
+<tr><td>9/25</td><td>FINRA 26-15 의견 마감</td><td>토큰화 전용 최선집행 지침 채택 = 순풍 / 확정 규제 아님</td><td>—</td><td>높음</td></tr>
+<tr><td>9/29</td><td>조기해제·어닝아웃 VWAP 측정 개시(근사)</td><td>트리거 전부 비활성 → 실질 무이벤트 · 이날부터 63거래일 사다리 창</td><td>도달 시 ⅓ 해제·신주</td><td>높음</td></tr>
+<tr><td>9/30</td><td>3Q 어닝아웃 FV 측정일</td><td>저가 유지 = 대규모 평가익(노이즈)</td><td>⑨ 공제 채점</td><td>—</td></tr>
+<tr><td><b>10월</b></td><td><b>예탁결제 토큰화 서비스 정식 출시·명단</b></td><td>명단 포함 = 병존 / 부재 = 멀티플 천장 고착 — 손익이 아니라 배수에 작용</td><td>배제+상장주식 전면 = 반증</td><td>중간</td></tr>
+<tr><td><b>11월</b></td><td><b>3Q 실적·10-Q</b></td><td>임계값 통과 = 서사 회복·Bear 확률↓ / 3연속 역성장 = 기각·재평가</td><td>토큰화 ≥$9.2M · 매출 ≥$16M · 조정 EBITDA −$3M 이내 · DSO ≤60일 · 매출 3분해 · GAAP 노이즈 공제 · 정의 동결</td><td>낮음(애널 목표 미조정 가능)</td></tr>
+<tr><td>11월 중순</td><td>Q3 13F</td><td>첫 신뢰 기관 판독 — 롱온리 신규 = 흡수 조건 / 부재 = 12/28 흡수 주체 부재</td><td>신규 13G/13D</td><td>낮음</td></tr>
+<tr><td>4Q(회사 시계)</td><td>NYSE 디지털 ATS 런칭</td><td>Q4 초 = 올해 매출·상단 / 무런칭·연기 = 신호 #9 악화</td><td>2027-03까지 무런칭 = 반증</td><td>중간(계약 실체·요율 미공개)</td></tr>
+<tr><td>하반기 수시</td><td>M&amp;A(코프데브 헤드 채용·"활발")</td><td>현금 인수·효과 분리 공시 = 중립~순풍 / 주식 대가·미분리 = 희석 우려</td><td>3Q 임계값 ⑦ · 트리 재산정</td><td>낮음</td></tr>
+<tr><td><b>12/28</b></td><td><b>락업 만기(125.75M·77%)</b></td><td>§4-2 세 갈래 — 가격과 thesis가 분리되는 구간</td><td>±2주 거래량/ADV·Form 4·13D 수정·차입료</td><td>높음(널리 알려짐) — 단 "알려짐" ≠ "흡수됨"</td></tr>
+<tr><td>2027-01-18</td><td>GENIUS Act 효력</td><td>BRSRV 수요 실측 개시 = 순풍 / OCC 20% cap = TAM 차단</td><td>OCC 최종룰</td><td>중간</td></tr>
+<tr><td>2027-01</td><td>Bullish×Equiniti 클로징</td><td>발행사 2,910곳 토큰화 옵션 = 풀스택 복제 가동</td><td>—</td><td>중간</td></tr>
+<tr><td>~2027-03</td><td>신호 #9 시한 · FY26 10-K</td><td>NYSE 계약·매출 0 확정 = 촉매 소멸 / 중대약점 구제·미공시 6종</td><td>—</td><td>낮음</td></tr>
+<tr><td>H1'27</td><td>예탁결제×Stellar Russell 1000 트윈</td><td>BlackRock이 이 채널 사용 = 신호 #6 최종 판정</td><td>#6</td><td>낮음</td></tr>
+<tr><td>~2027-06</td><td>Tier-1 발행사 채널 귀속 반증 시한</td><td>1건 = 낙관 A 유지 / 0건 = 이연</td><td>단일 최대 레버</td><td>낮음</td></tr>
+</table>
+</div>
+
+<hr class="divider">
+
+<h2>6. ⚠️ Thesis 리스크 신호 — 현황과 시나리오 분기 매핑</h2>
+<div class="tablewrap">
+<table>
+<tr><th>신호</th><th>상태</th><th>켜지면 어느 시나리오로</th><th>관측점</th></tr>
+<tr><td>#1 BlackRock 계약 해지 / BUIDL 이전</td><td>미발동</td><td>→ Tail</td><td>8-K · Arc 9/16 · H1'27 Stellar</td></tr>
+<tr><td>#2 규제(tZERO 특허 반소 5건 관찰)</td><td>🟡 관찰</td><td>불리 판결 → Tail</td><td>법원 docket</td></tr>
+<tr><td>#4 AUM 2분기 연속 감소</td><td>🟢 해소(3Q $5B 돌파)</td><td>재발 → Bear</td><td>분기 AUM</td></tr>
+<tr><td>#6 BlackRock 경쟁 채널 상실</td><td>🟡 (BSTBL은 BNY · Arc 검증 중)</td><td>BUIDL 발행층 이탈 → Tail / 부분 → Bear</td><td>9/16 · 10월 명단</td></tr>
+<tr><td>#8 조정 EBITDA 분기 $2M 이하</td><td>🔴 (2Q −$5.5M)</td><td>2027 지속 → Bear</td><td>11월 3Q(−$3M 이내 보조선)</td></tr>
+<tr><td>#9 NYSE 실체 부재</td><td>🟡 (Q4 런칭 시계)</td><td>2027-03 무런칭 → Bear</td><td>4Q</td></tr>
+<tr><td>R 토큰화 2연속 역성장</td><td>🔴</td><td>3연속 → Bear 확증 / ≥$9.2M → Base 회복</td><td>11월 3Q</td></tr>
+<tr><td>보조 B 반복매출 압축</td><td>판정 불가(2분해)</td><td>3분해 후 판정</td><td>3Q 10-Q</td></tr>
+</table>
+</div>
+<p class="small">신호는 조기경보 체크리스트이지 자동 행동이 아니다. 매매 행동은 이 보고서의 범위 밖.</p>
+
+<hr class="divider">
+
+<h2>7. 미계상 축과 한계 — 이 분석이 서 있는 자리</h2>
+<ul>
+<li><b>인덱스 편입</b> — 로컬 자료 근거 0. Russell 재구성(2027-06·순위일 4월말)·자유유통 23%→100%(12/28 후) 취급·테마 ETF 보유 여부 = 확인 과제. 방향 단정 금지.</li>
+<li><b>M&amp;A 주식 대가</b> — S-3 자격 전(~2027-07)이라 자본조달·주식 대가는 S-1 경로. 12/28 후 주식 대가 M&amp;A = 락업 해제와 겹치는 2차 공급. 첫 건 공시 시 트리 재산정.</li>
+<li><b>크립토 β·금리</b> — 6주 일간 상관 CRCL 0.67·BTC β 1.9(표본 소). 이자수익 가정 4%(분기 ~$3.5M = 조정 EBITDA 적자의 64%) — 100bp = 연 $3.5M · 금리 하락 = 순현금 하한 약화 + 토큰화 국채 매력 하락 두 채널.</li>
+<li><b>순현금의 자유현금 여부</b> — 규제 자회사(BD·ATS·TA·RIA) 순자본·배당 제한 미공시, 관계사 대여 한도 합 $25M, 스폰서 관계사 수수료 선례(~$29.7M) → 액면 90~100% 밴드. 12개월 순현금 경로 $326~348M(주당 $2.0~2.1).</li>
+<li><b>세금·NOL</b> — 이연법인세 전액 평가충당·Section 382 미공시. 시나리오 표는 세금 미고려, 역-DCF는 21% 전액 과세 — 두 처리가 다르다.</li>
+<li><b>요율 벤치마크·base rate 부재</b> — 이전대리료·ATS 수수료·기록딜러 몫·인수 스프레드는 어느 공개 문서에도 없고, de-SPAC 1년차 수익률 통계는 로컬 자료에 없다. 확률 세트는 base rate 없이 SECZ 고유 신호로만 정한 것.</li>
+<li><b>데이터 잔차</b> — 4Q25 매출 16.7 vs 16.1 · 발행주식 8-K 163,218,683 vs 10-Q 163,265,685(PIPE +47,000) · 완전희석 193.18M(S-1) vs 193.23M(확정 분모) · 자유유통 37,472,492 vs 구성합 37,519,492 · 공매도 두 값 병존 · 애널 목표가 시점 미확인.</li>
+</ul>
+
+<h2>출처</h2>
+<ul>
+<li>가격·거래량·동종 배수: yfinance 8/17 판독(제3자·TTM·SEC 미교차) · 코호트 CRCL/BLSH/FIGR/GEMI 종가 시계열(제3자)</li>
+<li>발행주식·순현금·어닝아웃 부채·RPO·특허 소송·중대약점: <a href="2026-08-14_securitize-q2-2026-10q.html">첫 10-Q 정밀 판독</a>(10-Q·8-K/A·XBRL 1차)</li>
+<li>락업·희석·조기해제 트리거·5%+ 보유자: 8-K(2026-07-08)·S-1(2026-07-31)·424B3(2026-08-07)·13D 1차 판독 기록</li>
+<li>가이던스·6분기 시계열·경영진 발언: <a href="2026-08-13_secz-q2-earnings-presentation.html">Q2 프레젠테이션 완역</a> · <a href="2026-08-13_secz-q2-2026-earnings-call.html">Q2 어닝콜 해부</a> · <a href="2026-08-13_secz-aum-revenue-deep.html">AUM·매출 심층</a></li>
+<li>수익원·낙관 로드맵·단일 레버·관측 캘린더: <a href="2026-08-17_secz-tokenized-stock-role-revenue.html">역할·수익원·낙관 로드맵 보고서</a>(2026-08-17)</li>
+<li>방법론: Deep-Dive 스킬 §H.1(시나리오·암묵 exit 배수 역산·다호라이즌) · §H.7(역-DCF·envelope·동종·신뢰도 라벨) 골격 준용</li>
+</ul>
+
+<footer>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다. 가격 밴드·확률·기댓값은 명시된 가정 위의 추정치(낮은 신뢰도 참고)이며 매수·매도·비중 판단을 포함하지 않습니다.</footer>
+
+</div>
+</body>
+</html>
