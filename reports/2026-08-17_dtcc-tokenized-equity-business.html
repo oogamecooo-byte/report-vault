@@ -1,0 +1,675 @@
+<title>DTCC 토큰화 주식 사업 해부 — 기술 스택과 고객 명단 | 2026-08-17</title>
+<meta name="vault-stage" content="Analysis">
+<meta name="vault-topic" content="SECZ">
+<meta name="vault-date" content="2026-08-17">
+<meta name="description" content="DTCC를 주어로 놓고 토큰화 주식 사업의 기술 스택(ComposerX·AppChain·디지털 트윈)과 고객 명단(5월 57곳·7월 38곳)을 1차 자료로 해부하고, 세큐리타이즈와 층위별로 대조한다. at-cost 유틸리티 전제의 증거 검증, 요율 파생계산 정정, 명단 집합 산술 재현 포함.">
+
+<style>
+:root { color-scheme: light; }
+body {
+  background: #EBE4D3;
+  color: #1f2328;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  line-height: 1.75;
+  margin: 0;
+  padding: 28px 14px 80px;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+.wrap { max-width: 1000px; margin: 0 auto; }
+.card {
+  background: #FDF6E3;
+  border: 1px solid #e0d8c3;
+  border-radius: 14px;
+  padding: 30px 34px;
+  margin-bottom: 22px;
+  box-shadow: 0 1px 3px rgba(90,74,40,.07);
+}
+h1 { font-size: 1.72em; line-height: 1.35; margin: 0 0 10px; letter-spacing: -.01em; }
+h2 { font-size: 1.28em; margin: 40px 0 14px; padding-bottom: 9px; border-bottom: 2px solid #d9d0b8; letter-spacing: -.01em; }
+h2:first-child { margin-top: 0; }
+h3 { font-size: 1.07em; margin: 28px 0 9px; color: #3d3526; }
+h4 { font-size: .99em; margin: 18px 0 6px; color: #5c4a00; }
+p { margin: 0 0 12px; }
+.meta { color: #6b6250; font-size: .88em; margin-bottom: 4px; }
+.lede { font-size: 1.02em; background:#f6eed6; border-left:4px solid #8a7a4e; padding:14px 18px; border-radius:0 8px 8px 0; margin: 16px 0 0; }
+.lede ul { margin: 8px 0 0; }
+table { width: 100%; border-collapse: collapse; margin: 14px 0 8px; font-size: .88em; }
+th, td { border: 1px solid #ded5bd; padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f0e7cd; font-weight: 600; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+blockquote { margin: 14px 0; padding: 13px 18px; background: #f7f0da; border-left: 4px solid #a8955f; border-radius: 0 8px 8px 0; }
+blockquote p { margin: 0 0 6px; }
+blockquote p:last-child { margin: 0; }
+code { background: #f0e7cd; padding: 1px 5px; border-radius: 4px; font-size: .89em; }
+.lab { font-size: .82em; color: #5f5847; background:#efe6cc; border:1px solid #ddd2b4; border-radius:4px; padding:0 5px; white-space:nowrap; }
+ul, ol { margin: 0 0 14px; padding-left: 22px; }
+li { margin-bottom: 6px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 11px; margin: 16px 0 20px; }
+.kpi { background: #f6eed6; border: 1px solid #e0d8c3; border-radius: 10px; padding: 12px 14px; }
+.kpi .k { font-size: .78em; color: #6b6250; margin-bottom: 3px; }
+.kpi .v { font-size: 1.28em; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.kpi .s { font-size: .77em; color: #6b6250; margin-top: 2px; }
+figure { margin: 20px 0; }
+figure svg { display: block; width: 100%; height: auto; background: #ffffff; border: 1px solid #e8e1cf; border-radius: 8px; }
+figcaption { font-size: .82em; color: #6b6250; margin-top: 7px; }
+.read { font-size: .93em; background:#f2ead3; border-left:3px solid #a8955f; padding:9px 14px; border-radius:0 6px 6px 0; margin: 4px 0 18px; }
+.note { font-size: .88em; color: #554d3c; background: #f2ead3; border: 1px dashed #cfc4a5; border-radius: 8px; padding: 11px 14px; margin: 14px 0; }
+.flip { font-size: .88em; background:#fdeee9; border:1px solid #f0c0ad; border-left:4px solid #c0392b; border-radius:0 6px 6px 0; padding:10px 14px; margin:12px 0 18px; }
+.hi { color: #8a2b2b; font-weight: 600; }
+.ok { color: #2f6b3f; font-weight: 600; }
+a { color: #6b5a1f; }
+hr { border: none; border-top: 1px solid #ded5bd; margin: 30px 0; }
+footer { text-align: center; color: #6b6250; font-size: .84em; padding: 18px 0 0; }
+.toc { font-size: .92em; }
+.toc a { text-decoration: none; }
+.toc li { margin-bottom: 3px; }
+@media print { body { background: #ffffff; } .card { box-shadow: none; border-color: #ccc; } }
+@media (max-width: 640px) {
+  body { padding: 16px 9px 60px; font-size: 15px; }
+  .card { padding: 20px 17px; border-radius: 11px; }
+  h1 { font-size: 1.4em; }
+  table { font-size: .82em; }
+}
+</style>
+
+<div class="wrap">
+
+<div class="card">
+<div class="meta">산업 구조 심층 분석 · 2026년 8월 17일</div>
+<h1>DTCC 토큰화 주식 사업 해부<br>— 기술 스택과 고객 명단이 말하는 것</h1>
+<div class="meta">
+대상: The Depository Trust &amp; Clearing Corporation (비상장) · 대조군: Securitize Corp. (NYSE:SECZ)<br>
+1차 자료: DTCC 보도자료 5건 전문 · 공식 제품 페이지 8종 · 2025·2024 연차보고서 임베디드 데이터 · 임원 프로필 (전부 2026-08-17 자사 원문 직접 열람)<br>
+방법: 분석 렌즈 4개(기술·고객·경제학·주식전선) → 렌즈별 적대 검증 4건 → 종합 → 완결성 비평 (10개 병렬 에이전트)
+</div>
+
+<div class="lede">
+<strong>한 장 요약</strong>
+<ul>
+<li>🔴 <span class="hi">DTCC의 토큰화 기술은 자체 개발이 아니라 <strong>2023년 10월 인수한 Securrency</strong>에서 왔고, 그 회사의 전 CEO가 지금 사업부를 총괄한다</span> — 자사 임원 프로필 원문이 <em>"digital asset technology (<strong>formerly Securrency</strong>)"</em>라고 적는다 <span class="lab">회사</span>. 다만 ComposerX가 그 코드의 리브랜딩인지를 잇는 문장은 확인되지 않았다.</li>
+<li>🔴 <span class="hi">10월에 나오는 것은 "프로그래머블 증권"이 아니라 <strong>게이트가 달린, 이동 가능한 예탁 표시</strong>다</span> — 제품 페이지가 발행부터 기업행위까지의 자동화를 <em>"in subsequent releases"</em>로 명시 연기했다 <span class="lab">회사</span>. 단 같은 자료 묶음이 Factory의 "기업행위 자동화"와 Stellar 통합의 "전체 라이프사이클"을 병기하므로, 정확한 서술은 "자동화 부재"가 아니라 <strong>문서 간 정합성 미확인</strong>이다.</li>
+<li>🔴 <span class="hi">7월 15일 실행된 7종 거래 중 자산군이 <strong>주식으로 명시된 것은 2종</strong></span>(주식 DVP·DVD)이고, 담보·대차·CCP 증거금 3종은 자산군 무명시다 <span class="lab">회사</span>. 공개된 담보 실증의 확인 가능한 기초자산은 <strong>일본국채와 wrapped Bitcoin</strong>이다 — "주식 담보 수요를 트윈이 이미 채웠다"는 성립하지 않는다.</li>
+<li>🔴 <span class="hi">두 고객 명단은 축소가 아니라 <strong>모집단이 다른 두 표본</strong>이다</span> — 5월 협의체 57곳, 7월 실거래 38곳, 교집합 23곳(40.4%) <span class="lab">추정·재현</span>. 그리고 워킹그룹 100곳 이상 중 공개된 것은 이 둘뿐이라 <strong>명단이 전수라는 보장이 없다</strong>.</li>
+<li>🔴 <span class="hi">본 보고서는 자체 수집분의 요율 계산 <strong>2건을 정정</strong>한다</span> — 매출÷보관자산은 2.54bps가 아니라 <strong>0.254bps</strong>(10배 오기), 처리액 기준 괄호 표현은 <strong>0.00616bps</strong>(약 100배 오기)다 <span class="lab">추정·재계산</span>. 보관자산 $1M당 연 매출 <strong>$25.40</strong>, 연 영업이익 <strong>$5.53</strong>이다.</li>
+<li>🔴 <span class="hi">"DTCC는 회원 소유 원가(at-cost) 유틸리티"라는 업계 통념은 <strong>이번 1차 자료에 DTCC 자기 진술이 0건</strong>이다</span> <span class="lab">미확인</span>. 반대로 같은 자료가 매출 증가율 <strong>+3.8% → +10.7% → +16.5% 가속</strong>과 자기자본 $4,855M을 보여준다 <span class="lab">회사</span>. 요율표가 공개되기 전까지 어느 쪽도 확정할 수 없다.</li>
+<li>🟠 <span class="hi">"발행사 동의 없이 성립한다"도 <strong>판정 불가</strong>다</span> — 동일 CUSIP·기보관 자산 구조상 그렇게 읽히지만 <span class="lab">추정</span>, 조건을 규정할 문서(SEC 무조치 의견서 본문·DTC 규정)를 열람하지 않았다. 우리가 가진 것은 보도자료 요약 문구뿐이다.</li>
+<li>🟠 <span class="hi">"DTC가 보관하지 않는 자산에는 구조적으로 못 온다"는 방어선도 흔들린다</span> — DTCC는 이미 사모시장에서 <strong>고객 3,131곳·고유 펀드 13,949개</strong>를 운영하고 <span class="lab">회사</span>, Digital Launchpad 4축에 <em>"토큰화 사모자산의 <strong>발행</strong>·거래·관리"</em>가 명시돼 있다 <span class="lab">회사</span>.</li>
+<li>🟠 <span class="hi">명부 층에서 지금까지 실제로 일어난 변동은 DTCC가 아니라 <strong>BNY</strong>다</span> — ComposerX의 이전대리 기능은 제품 문구는 확정이나 <strong>고객·요율·채택 전부 0건 확인</strong>이다. 반면 BNY는 7월 29일 디지털 이전대리 출시 후 실제 수임 사례가 있다 <span class="lab">제3자</span>.</li>
+</ul>
+</div>
+</div>
+
+<div class="card toc">
+<strong>목차</strong>
+<ol>
+<li><a href="#s1">DTCC가 실제로 만들고 있는 것 — 제품 스택 해부</a></li>
+<li><a href="#s2">기술 — 두 아키텍처의 층위별 대조</a></li>
+<li><a href="#s3">고객 — 두 명단이 말하는 것과 말하지 않는 것</a></li>
+<li><a href="#s4">경제학 — 렌트가 걷히는 자리</a></li>
+<li><a href="#s5">토큰화 주식이라는 전선</a></li>
+<li><a href="#s6">세 개의 빠진 축 — 공급자·비토큰 경로·국제</a></li>
+<li><a href="#s7">무엇이 확정되고 무엇이 열려 있나</a></li>
+<li><a href="#s8">이 분석의 한계 · 자료 규칙</a></li>
+</ol>
+<p style="margin:10px 0 0;font-size:.93em;color:#6b6250">본문의 사실은 네 종류로 라벨한다 — <span class="lab">공시</span> 규제·법정 문서 / <span class="lab">회사</span> DTCC 또는 세큐리타이즈의 자기 진술(미검증) / <span class="lab">제3자</span> / <span class="lab">추정</span> 본 보고서의 계산·구조 추론. 확인 불가는 <span class="lab">미공시</span>.</p>
+</div>
+
+<!-- ===================== 1 ===================== -->
+<div class="card" id="s1">
+<h2>1. DTCC가 실제로 만들고 있는 것 — 제품 스택 해부</h2>
+
+<p>DTCC의 디지털자산 사업을 "10월에 나오는 토큰화 서비스 하나"로 읽으면 절반을 놓친다. 자사 사이트가 문서화한 것은 <strong>여섯 개의 구성요소</strong>이고, 층·사용자·규제 근거·상업화 시제가 각각 다르다.</p>
+
+<h3>1-1. 제품 스택 여섯 구성요소</h3>
+<div class="tw">
+<table>
+<tr><th>구성요소</th><th>무엇인가</th><th>문서상 사용자</th><th>규제 근거</th><th>시제</th><th>요율·고객</th></tr>
+<tr><td><strong>DTC 토큰화 서비스</strong></td><td>DTC 보관 자산의 온체인 표시(디지털 트윈) 발행·인도</td><td><strong>DTC 참가자</strong> — <em>"DTC Participant wallets of choice"</em></td><td>SEC 무조치 의견서 2025-12 <span class="lab">회사·요약 인용</span></td><td><strong>2026-10 출시 예정</strong></td><td>전부 <span class="lab">미공시</span></td></tr>
+<tr><td><strong>ComposerX Factory</strong></td><td>토큰 발행·관리 엔진. <em>"any protocol"</em> 개방 프레임워크 · <strong>ERC-3643 + ERC-20</strong> · 노코드 GUI</td><td><em>"financial institutions"</em></td><td>명시 없음</td><td>2025-02-04 발표</td><td>전부 <span class="lab">미공시</span></td></tr>
+<tr><td><strong>ComposerX Capital Markets Platform</strong></td><td>라이프사이클 관리. <em>"comprehensive <strong>transfer agent functions</strong> — order management, corporate actions, investor communications, cap table management, reporting"</em></td><td>문구의 주어가 <em>"allows <strong>Transfer Agents</strong> to manage…"</em> = <strong>이전대리인이 사용자</strong></td><td>명시 없음</td><td>2025-02-04 발표</td><td>전부 <span class="lab">미공시</span></td></tr>
+<tr><td><strong>ComposerX LedgerScan</strong></td><td><em>"data and analytics <strong>SaaS</strong>"</em> — 온·오프체인 통합·정규화·실시간 대사·가격관리·디지털 서브원장·규제 리포팅</td><td>회계·수탁·포트폴리오 시스템 운영자</td><td>명시 없음</td><td>2025-02-04 발표</td><td>전부 <span class="lab">미공시</span></td></tr>
+<tr><td><strong>Collateral AppChain</strong></td><td>담보 이동 전용 체인. <em>"any network, whether public or private"</em></td><td>중앙청산소·딜러</td><td>명시 없음</td><td>2025-04-02 발표</td><td>전부 <span class="lab">미공시</span></td></tr>
+<tr><td><strong>Digital Launchpad</strong></td><td>협업 생태계. 4축 = Data / Funds / Liquidity / <strong>Private Assets</strong>. 참여 등급 4단(Scout·Explorer·Scaler·Tech Partner)</td><td>핀테크·기술 파트너</td><td>해당 없음</td><td>가동 중</td><td>과금 여부 자체 <span class="lab">미공시</span></td></tr>
+</table>
+</div>
+<div class="read"><strong>읽기:</strong> 여섯 중 <strong>규제 인가에 걸린 것은 첫 줄 하나뿐</strong>이고, 자산군 제약(DTC 보관 자산)이 걸리는 것도 첫 줄 하나뿐이다. 즉 "규제 근거가 곧 확장 한계를 겸한다"는 구조는 <strong>트윈 서비스에만</strong> 적용되고 ComposerX 3종과 Launchpad에는 적용되지 않는다. 다만 이것을 "별개 사업 두 개"로 읽으면 과하다 — LedgerScan은 토큰화 서비스 제품 페이지 안에서 그 서비스의 구성요소로 등장한다. 정확한 표현은 <strong>단일 스택의 두 노출면</strong>(자사 운영용 + 선언된 외부 접근 경로)이다.</div>
+
+<h3>1-2. 기술 계보 — 사들인 것이고, 파는 사람이 판 사람이다</h3>
+<blockquote>
+<p><em>"Nadine Chakar serves as Managing Director, Global Head of DTCC Digital Assets where she oversees the firm's digital asset technology (<strong>formerly Securrency</strong>) …"</em></p>
+<p><em>"Prior to DTCC, Nadine was <strong>Chief Executive Officer at Securrency</strong>, a provider of institutional-grade digital asset technology that was <strong>acquired by DTCC in October 2023</strong>."</em></p>
+<p class="meta">— DTCC 공식 임원 프로필 <span class="lab">회사</span></p>
+</blockquote>
+<p>Securrency는 기관용 컴플라이언스 토큰 인프라 벤더였다. 즉 DTCC는 토큰화 기술을 <strong>직접 만든 것이 아니라, 세큐리타이즈와 같은 범주의 회사를 사서</strong> 그 위에 예탁·청산 인프라를 얹었다. 같은 인물이 현재 <strong>CFTC 글로벌시장자문위원회 디지털자산 소위의 "토큰화 인프라" 워크스트림 공동의장</strong>을 겸한다 <span class="lab">회사</span> — 기술 총괄과 규범 형성 자리가 한 사람에게 겹쳐 있다.</p>
+
+<p>그런데 이것으로 DTCC의 <strong>개방표준 전략</strong>(뒤 §2-2)을 설명하려는 두 가설은 모두 근거가 얇다.</p>
+<div class="tw">
+<table>
+<tr><th>가설</th><th>근거</th><th>확정도</th></tr>
+<tr><td><strong>(가) 인수한 벤더 혈통의 잔여물</strong> — 벤더는 고객사 스택에 얹혀야 하므로 표준 불가지론이 기본값</td><td>임원 프로필 2문장 <span class="lab">회사</span>. 단 <strong>ComposerX ↔ Securrency 코드 계보를 잇는 문장은 자료에 없다</strong></td><td><strong>낮음</strong></td></tr>
+<tr><td><strong>(나) 지배구조에서 도출</strong> — 주주가 곧 고객인 조직은 고객사에 독점 표준을 부과할 이유가 없다</td><td><strong>"회원 소유"라는 DTCC 자기 진술도 이번 자료에 0건</strong></td><td><strong>낮음</strong> <span class="lab">미공시</span></td></tr>
+</table>
+</div>
+<div class="read"><strong>읽기:</strong> 확정된 것은 세 가지뿐이다 — 인수 사실(2023-10), 총괄 인물, 규범 형성 자리 겸임. 표준 전략의 <em>동기</em>는 자료로 판정할 수 없다.<br><span style="color:#6b6250">※ 최고기술책임자 Dan Doney의 Securrency 연관은 이번 자료로 확인되지 않아 주장하지 않는다.</span></div>
+
+<h3>1-3. 시제 분리 — 이미 한 것 / 하겠다고 한 것 / 미룬 것</h3>
+<div class="tw">
+<table>
+<tr><th>이미 실행 <span class="lab">회사</span></th><th>하겠다고 한 것</th><th>후속 릴리스로 미룬 것</th></tr>
+<tr><td>7/15 프로덕션 거래 7종(주식 DVP·DVD 포함) · Besu와 Canton 두 체인에서 전환 실행 · 워킹그룹 100곳 이상 확대 · Great Collateral Experiment 완료</td><td>10월 서비스 출시 · Stellar 연결(2027 상반기) · <em>"전체 자산 라이프사이클(기업행위·리포팅 포함)"</em> 지원</td><td>🔴 <em>"We <strong>plan to</strong> enable automation throughout the entire trade lifecycle, ranging from issuance to corporate actions, <strong>in subsequent releases</strong>"</em> — 초기 스마트컨트랙트는 <strong>컴플라이언스·배포 통제 + 온체인 참조데이터 연결</strong>까지</td></tr>
+</table>
+</div>
+<div class="read"><strong>읽기:</strong> 10월에 켜지는 것의 정확한 이름은 <strong>"통제권이 내장되고 사전승인 네트워크 안에서 24시간 이동하는 예탁 표시"</strong>다. 프로그래머블 자산의 본론(라이프사이클 자동화)은 명시적으로 다음 순번이다. 단 Factory 페이지가 "기업행위 자동화"를, Stellar 발표가 "전체 라이프사이클"을 병기하므로 이를 "자동화가 없다"로 읽으면 과하다 — <strong>문서들이 서로 다른 시제를 말하고 있고, 어느 쪽이 10월 범위인지는 미공시</strong>다.</div>
+</div>
+
+<!-- ===================== 2 ===================== -->
+<div class="card" id="s2">
+<h2>2. 기술 — 두 아키텍처의 층위별 대조</h2>
+
+<h3>2-1. 아홉 개 층위</h3>
+<div class="tw">
+<table>
+<tr><th>층위</th><th>DTCC 스택</th><th>세큐리타이즈 스택</th></tr>
+<tr><td><strong>① 발행·토큰 표준</strong></td><td>ComposerX Factory — <em>"any protocol"</em> 개방 프레임워크, <strong>ERC-3643 + ERC-20 통합</strong>, 업그레이드 가능 토큰, 노코드 GUI <span class="lab">회사</span></td><td><strong>DS Protocol</strong> — ERC-20 상위집합. 통제는 단독이나 라이선스는 GPL-3.0 공개 <span class="lab">제3자</span></td></tr>
+<tr><td><strong>② 컴플라이언스 집행</strong></td><td>토큰 내장 <strong>Mint / Burn / Force Transfer / Clawback / Pause·Unpause / Freeze·Unfreeze</strong> + <strong>네트워크 경계 게이트</strong>(사전승인 생태계·등록 참가자 지갑·리스크 기반 네트워크 평가) <span class="lab">회사</span>. ⚠️ 같은 페이지가 <em>"minting/burning/clawback 역할 <strong>위임</strong>"</em>을 병기 — 최종 통제권 보유자는 <span class="lab">미공시</span></td><td>Compliance Service가 모든 전송에 자동 개입, 미충족 시 되돌림. 게이트는 토큰 안 <span class="lab">제3자</span></td></tr>
+<tr><td><strong>③ 신원</strong></td><td>🔴 미공시. 도달 종점 = <strong>참가자 지갑</strong> — 구조적으로 <strong>최종 투자자를 모른다</strong></td><td><strong>Securitize iD</strong> — 리테일 계좌 50만+·기관 1,000+·전 상품 투자자 1.7만+ <span class="lab">회사</span>. 도달 단위 = <strong>최종 투자자</strong></td></tr>
+<tr><td><strong>④ 명부·주주명부</strong></td><td>트윈은 예탁 포지션의 표시 → 발행사 명부 미변경 <span class="lab">추정</span> / 별도로 CMP가 이전대리인에게 <strong>멀티체인 명부 집계</strong> 기능 제공 <span class="lab">회사</span></td><td>SEC 등록 이전대리인(2019) — 펀드의 <em>"official record of ownership"</em> <span class="lab">공시</span> + 자회사 경유 <strong>주식 발행사 3,280곳</strong>(자체 디지털 TA 23 + Pacific Stock Transfer 3,257) <span class="lab">공시</span></td></tr>
+<tr><td><strong>⑤ 수탁</strong></td><td>DTC 자체 보관 <strong>1.46M 종목 · $114조</strong> <span class="lab">회사</span>. 최종 투자자 수탁은 참가자 소관</td><td>자기수탁 지원 + FINRA 사업범위 확대 승인(토큰화 증권 수탁) <span class="lab">회사</span></td></tr>
+<tr><td><strong>⑥ 결제·현금레그</strong></td><td>7/15에 국채·레포 DVP, 주식 DVP·DVD 포함 <span class="lab">회사</span>. CMP는 펀드 토큰 ↔ <strong>스테이블코인·예금토큰</strong> 원자 결제. 🔴 현금레그 발행사 <span class="lab">미공시</span> — 단 Circle이 양 명단 참가사</td><td>원자적 교환 + 자체 대체거래소 <span class="lab">회사</span></td></tr>
+<tr><td><strong>⑦ 데이터·대사</strong></td><td><strong>LedgerScan</strong> — 통합·정규화·실시간 대사·서브원장·규제 리포팅을 <strong>외부 판매 SaaS</strong>로 <span class="lab">회사</span></td><td>동급 외부 판매 SaaS는 확인되지 않음. 단 자산 서비스 라인 정의(<em>recordkeeping · transfer processing · fund accounting · compliance support</em>)로 <strong>기능 범주는 겹친다</strong> <span class="lab">공시</span></td></tr>
+<tr><td><strong>⑧ 기업행위</strong></td><td>처리 제공 <span class="lab">회사</span>. 온체인 자동화는 <em>"subsequent releases"</em> 연기 — 단 문서 간 정합성 미확인(§1-3)</td><td>실시간 리베이싱 가동 확인 · 홀더 순회 <span class="lab">제3자·3월 시점</span></td></tr>
+<tr><td><strong>⑨ 체인 전략</strong></td><td>Current Networks <strong>3개</strong>: AppChain(Besu 기반·<em>"Ethereum-compatible"</em>) · Canton · Stellar(2027 상반기). <strong>Arc 미표기</strong> <span class="lab">회사·8/17 열람</span>. Factory 호환 = <em>"Besu, Avalanche, Ethereum Mainnet, testnet"</em></td><td>23개 체인 통합 <strong>주장</strong> — 비EVM(Solana·Aptos) 실배포 포함 <span class="lab">회사</span>. ⚠️ 로컬 판독은 3월·8월 두 시점 모두 14개로, 차이의 근거가 확인되지 않는다</td></tr>
+</table>
+</div>
+<div class="read"><strong>읽기:</strong> 근본 분기는 <strong>게이트의 위치</strong>다. 세큐리타이즈는 게이트를 토큰 안에 두고 체인을 열며, DTCC는 토큰 안에 두고 <strong>네트워크 경계에 한 번 더</strong> 둔다. 다만 이는 <strong>정도의 차이지 종류의 차이가 아니다</strong> — 세큐리타이즈도 레지스트라를 자사가 제어하고 통합 대상이 큐레이팅된 화이트리스트이며, 펀드 서류 문구 자체가 <em>"허가형 시스템이 무허가 블록체인과 연결되어 작동한다"</em>이다 <span class="lab">공시</span>.</div>
+<div class="flip">🔧 <strong>반박으로 뒤집힘</strong> — 초안의 "두 스택의 체인 교집합 = 0, 물리적 비접촉"은 삭제했다. Factory 호환 목록에 Ethereum Mainnet과 Avalanche가 있고 세큐리타이즈 지원 체인에도 둘 다 있다.</div>
+
+<h3>2-2. 표준 전략의 정면 대립 — 그리고 그것이 바꾸지 않는 것</h3>
+<p>Factory 페이지는 마케팅 문구로 <em>"multiple blockchains and financial networks에 걸쳐 토큰을 관리·발행할 수 있게 하되 <strong>독점 표준을 강요하지 않는다</strong>"</em>고 적고, 채택 표준으로 <strong>ERC-3643</strong>(Tokeny가 개발해 협회 거버넌스로 넘긴 개방형 허가토큰 표준)과 ERC-20을 명시한다 <span class="lab">회사</span>. 반대편에서 세큐리타이즈의 DS Protocol은 자사가 설계·통제하는 독점 프로토콜이고, <strong>그 프로토콜이 현재 특허 소송의 표적</strong>이다 <span class="lab">공시</span>.</p>
+<p><strong>이 비대칭이 실제로 바꾸는 것:</strong> ① 발행사·기관이 "누구의 표준에 종속되는가"를 물을 때 DTCC 쪽 답이 더 쉽다. ② 표준 협회 거버넌스에 DTCC가 참여해 있어 규범 형성에서 유리하다. ③ 소송 리스크의 표면적이 다르다 — 개방표준은 특정 회사의 특허 주장 대상이 되기 어렵다.</p>
+<p><strong>바꾸지 않는 것(과대해석 차단):</strong> ① 토큰 표준은 <strong>가치 포획 지점이 아니다</strong> — ERC-20이 표준이 됐다고 그것을 만든 쪽이 돈을 벌지 않았다. ② 세큐리타이즈의 실제 전환비용은 프로토콜 코드가 아니라 <strong>기록의 위치와 라이선스 조합</strong>에서 나온다. ③ DS Protocol은 GPL-3.0으로 공개돼 있어 "폐쇄"라는 서술 자체가 부분적으로만 맞다.</p>
+
+<figure>
+<svg viewBox="0 0 940 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="토큰화 밸류체인 6층 × 3모델에서 DTCC와 세큐리타이즈의 위치">
+<style>
+.t{font:12px -apple-system,"Apple SD Gothic Neo",sans-serif;fill:#1a1a1a}
+.ts{font:10.5px -apple-system,"Apple SD Gothic Neo",sans-serif;fill:#5f5847}
+.th{font:bold 12px -apple-system,"Apple SD Gothic Neo",sans-serif;fill:#1a1a1a}
+.tt{font:bold 13.5px -apple-system,"Apple SD Gothic Neo",sans-serif;fill:#1a1a1a}
+</style>
+<defs>
+<pattern id="hd" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+<rect width="6" height="6" fill="#fff"/><line x1="0" y1="0" x2="0" y2="6" stroke="#1F6F8B" stroke-width="3"/>
+</pattern>
+<pattern id="hs" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+<rect width="6" height="6" fill="#fff"/><line x1="0" y1="0" x2="0" y2="6" stroke="#C0563A" stroke-width="3"/>
+</pattern>
+</defs>
+<text x="20" y="26" class="tt">밸류체인 6층 × 토큰화 주식 3모델 — 누가 어디에 서 있나</text>
+<text x="20" y="44" class="ts">좌측 원 = DTCC · 우측 원 = 세큐리타이즈 · 채움 = 실가동 / 사선 = 인가·제품만(고객·요율 0건) / 점선 = 부재</text>
+
+<!-- column headers -->
+<rect x="300" y="56" width="200" height="26" fill="#f0e7cd" stroke="#ded5bd"/>
+<rect x="500" y="56" width="200" height="26" fill="#f0e7cd" stroke="#ded5bd"/>
+<rect x="700" y="56" width="220" height="26" fill="#eeeeee" stroke="#ded5bd"/>
+<text x="400" y="74" class="th" text-anchor="middle">① 네이티브</text>
+<text x="600" y="74" class="th" text-anchor="middle">② 커스터디형 트윈</text>
+<text x="810" y="74" class="th" text-anchor="middle">③ 합성형 (자료 0건)</text>
+
+<!-- rows -->
+<g>
+<rect x="20" y="82" width="280" height="52" fill="#fdf9ee" stroke="#ded5bd"/><text x="30" y="105" class="t">① 발행·명부(이전대리)</text><text x="30" y="122" class="ts">주주명부가 어디에 있는가</text>
+<rect x="300" y="82" width="200" height="52" fill="#fff" stroke="#ded5bd"/>
+<circle cx="370" cy="108" r="13" fill="url(#hd)" stroke="#1F6F8B" stroke-width="1.5"/>
+<circle cx="430" cy="108" r="13" fill="#C0563A"/>
+<rect x="500" y="82" width="200" height="52" fill="#fff" stroke="#ded5bd"/>
+<circle cx="570" cy="108" r="13" fill="none" stroke="#1F6F8B" stroke-width="1.5" stroke-dasharray="3 3"/>
+<circle cx="630" cy="108" r="13" fill="none" stroke="#C0563A" stroke-width="1.5" stroke-dasharray="3 3"/>
+<rect x="700" y="82" width="220" height="52" fill="#f7f7f7" stroke="#ded5bd"/>
+<text x="810" y="113" class="ts" text-anchor="middle">실측 자료 없음</text>
+</g>
+<g>
+<rect x="20" y="134" width="280" height="52" fill="#fdf9ee" stroke="#ded5bd"/><text x="30" y="157" class="t">② 수탁·예탁결제</text><text x="30" y="174" class="ts">누가 원본 자산을 보관하는가</text>
+<rect x="300" y="134" width="200" height="52" fill="#fff" stroke="#ded5bd"/>
+<circle cx="370" cy="160" r="13" fill="none" stroke="#1F6F8B" stroke-width="1.5" stroke-dasharray="3 3"/>
+<circle cx="430" cy="160" r="13" fill="url(#hs)" stroke="#C0563A" stroke-width="1.5"/>
+<rect x="500" y="134" width="200" height="52" fill="#fff5f0" stroke="#C0563A" stroke-width="1.5"/>
+<circle cx="570" cy="160" r="13" fill="#1F6F8B"/>
+<circle cx="630" cy="160" r="13" fill="none" stroke="#C0563A" stroke-width="1.5" stroke-dasharray="3 3"/>
+<text x="660" y="151" class="ts">$114조</text>
+<rect x="700" y="134" width="220" height="52" fill="#f7f7f7" stroke="#ded5bd"/>
+</g>
+<g>
+<rect x="20" y="186" width="280" height="52" fill="#fdf9ee" stroke="#ded5bd"/><text x="30" y="209" class="t">③ 거래·유통</text><text x="30" y="226" class="ts">어디서 체결되는가</text>
+<rect x="300" y="186" width="200" height="52" fill="#fff" stroke="#ded5bd"/>
+<circle cx="370" cy="212" r="13" fill="none" stroke="#1F6F8B" stroke-width="1.5" stroke-dasharray="3 3"/>
+<circle cx="430" cy="212" r="13" fill="url(#hs)" stroke="#C0563A" stroke-width="1.5"/>
+<rect x="500" y="186" width="200" height="52" fill="#fff" stroke="#ded5bd"/>
+<circle cx="570" cy="212" r="13" fill="#1F6F8B"/>
+<circle cx="630" cy="212" r="13" fill="none" stroke="#C0563A" stroke-width="1.5" stroke-dasharray="3 3"/>
+<text x="660" y="203" class="ts">DVP·DVD</text>
+<rect x="700" y="186" width="220" height="52" fill="#f7f7f7" stroke="#ded5bd"/>
+</g>
+<g>
+<rect x="20" y="238" width="280" height="52" fill="#fdf9ee" stroke="#ded5bd"/><text x="30" y="261" class="t">④ 투자자 온보딩·신원</text><text x="30" y="278" class="ts">최종 투자자를 누가 아는가</text>
+<rect x="300" y="238" width="200" height="52" fill="#fff" stroke="#ded5bd"/>
+<circle cx="370" cy="264" r="13" fill="none" stroke="#1F6F8B" stroke-width="1.5" stroke-dasharray="3 3"/>
+<circle cx="430" cy="264" r="13" fill="#C0563A"/>
+<rect x="500" y="238" width="200" height="52" fill="#fff" stroke="#ded5bd"/>
+<circle cx="570" cy="264" r="13" fill="none" stroke="#1F6F8B" stroke-width="1.5" stroke-dasharray="3 3"/>
+<circle cx="630" cy="264" r="13" fill="none" stroke="#C0563A" stroke-width="1.5" stroke-dasharray="3 3"/>
+<text x="510" y="284" class="ts">참가자에 위임</text>
+<rect x="700" y="238" width="220" height="52" fill="#f7f7f7" stroke="#ded5bd"/>
+</g>
+<g>
+<rect x="20" y="290" width="280" height="52" fill="#fdf9ee" stroke="#ded5bd"/><text x="30" y="313" class="t">⑤ 온체인 효용(담보·디파이)</text><text x="30" y="330" class="ts">토큰이 실제로 무슨 일을 하는가</text>
+<rect x="300" y="290" width="200" height="52" fill="#fff" stroke="#ded5bd"/>
+<circle cx="370" cy="316" r="13" fill="none" stroke="#1F6F8B" stroke-width="1.5" stroke-dasharray="3 3"/>
+<circle cx="430" cy="316" r="13" fill="#C0563A"/>
+<text x="446" y="337" class="ts">국채·펀드만 (주식 0)</text>
+<rect x="500" y="290" width="200" height="52" fill="#fff" stroke="#ded5bd"/>
+<circle cx="570" cy="316" r="13" fill="url(#hd)" stroke="#1F6F8B" stroke-width="1.5"/>
+<circle cx="630" cy="316" r="13" fill="none" stroke="#C0563A" stroke-width="1.5" stroke-dasharray="3 3"/>
+<text x="590" y="337" class="ts">자산군 무명시</text>
+<rect x="700" y="290" width="220" height="52" fill="#f7f7f7" stroke="#ded5bd"/>
+</g>
+<g>
+<rect x="20" y="342" width="280" height="52" fill="#fdf9ee" stroke="#ded5bd"/><text x="30" y="365" class="t">⑥ 규제·표준</text><text x="30" y="382" class="ts">규범을 누가 쓰는가</text>
+<rect x="300" y="342" width="400" height="52" fill="#fff" stroke="#ded5bd"/>
+<circle cx="330" cy="368" r="13" fill="url(#hd)" stroke="#1F6F8B" stroke-width="1.5"/>
+<circle cx="362" cy="368" r="13" fill="url(#hs)" stroke="#C0563A" stroke-width="1.5"/>
+<text x="382" y="364" class="ts">DTCC = 개방표준 채택 · 자문위 워크스트림 공동의장</text>
+<text x="382" y="378" class="ts">SECZ = 독점 프로토콜(특허 소송 표적) · 규제 의견서 서명</text>
+<rect x="700" y="342" width="220" height="52" fill="#f7f7f7" stroke="#ded5bd"/>
+</g>
+
+<!-- legend -->
+<line x1="20" y1="410" x2="920" y2="410" stroke="#e0d8c3"/>
+<circle cx="32" cy="428" r="8" fill="#1F6F8B"/><text x="46" y="432" class="ts">DTCC 실가동</text>
+<circle cx="140" cy="428" r="8" fill="url(#hd)" stroke="#1F6F8B" stroke-width="1.2"/><text x="154" y="432" class="ts">DTCC 인가·제품만</text>
+<circle cx="290" cy="428" r="8" fill="#C0563A"/><text x="304" y="432" class="ts">SECZ 실가동</text>
+<circle cx="398" cy="428" r="8" fill="url(#hs)" stroke="#C0563A" stroke-width="1.2"/><text x="412" y="432" class="ts">SECZ 인가·제품만</text>
+<circle cx="548" cy="428" r="8" fill="none" stroke="#777" stroke-width="1.5" stroke-dasharray="3 3"/><text x="562" y="432" class="ts">부재</text>
+<text x="20" y="452" class="ts">③열 = 회사 슬라이드의 "서드파티 파생 88%"에 커스터디형과 함께 합산돼 있어 분해되지 않는다 — 두 열의 경계는 실측 미확인.</text>
+<text x="20" y="466" class="ts">양쪽 모두 요율·확보 고객은 전부 미공시이므로, 이 지도는 "누가 서 있나"이지 "누가 벌고 있나"가 아니다.</text>
+</svg>
+<figcaption>그림 1 — 밸류체인 6층 × 3모델 소유 지도. 정면으로 겹치는 칸은 ①·⑤·⑥이고, ②·③에서는 DTCC가 트윈 열에 단독으로 서 있다.</figcaption>
+</figure>
+</div>
+
+<!-- ===================== 3 ===================== -->
+<div class="card" id="s3">
+<h2>3. 고객 — 두 명단이 말하는 것과 말하지 않는 것</h2>
+
+<h3>3-1. 명단 집합 산술</h3>
+<div class="grid">
+<div class="kpi"><div class="k">5월 협의체</div><div class="v">57곳</div><div class="s">워킹그룹 공개분</div></div>
+<div class="kpi"><div class="k">7월 실거래</div><div class="v">38곳</div><div class="s">프로덕션 참가</div></div>
+<div class="kpi"><div class="k">교집합</div><div class="v">23곳</div><div class="s">지속률 40.4%</div></div>
+<div class="kpi"><div class="k">합집합</div><div class="v">72곳</div><div class="s">워킹그룹 대비 ≤38%</div></div>
+</div>
+<p class="meta">법인 정규화 적용(BNP Paribas ↔ BNP Paribas Securities Corp, State Street ↔ State Street Investment Management, Digital Asset ↔ Digital Asset Holdings, NYSE Group ↔ New York Stock Exchange). Velocity Clearing과 Velocity Capital을 동일 법인으로 보면 교집합 24·지속률 42.1%로 ±1곳 변동한다. <span class="lab">추정·재현 가능</span></p>
+
+<figure>
+<svg viewBox="0 0 940 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="5월 명단 57곳과 7월 명단 38곳의 차집합 흐름">
+<style>
+.t2{font:12px -apple-system,"Apple SD Gothic Neo",sans-serif;fill:#1a1a1a}
+.s2{font:10.5px -apple-system,"Apple SD Gothic Neo",sans-serif;fill:#5f5847}
+.h2t{font:bold 13.5px -apple-system,"Apple SD Gothic Neo",sans-serif;fill:#1a1a1a}
+.b2{font:bold 12px -apple-system,"Apple SD Gothic Neo",sans-serif;fill:#fff}
+</style>
+<text x="20" y="26" class="h2t">두 명단은 축소가 아니라 모집단이 다른 두 표본이다</text>
+<text x="20" y="44" class="s2">좌 = 5월 4일 워킹그룹 협의체(57) · 우 = 7월 15일 프로덕션 실거래(38) · 굵기는 곳 수에 비례</text>
+
+<!-- unknown band -->
+<rect x="20" y="58" width="900" height="26" fill="#ececec" stroke="#bbb" stroke-dasharray="5 4"/>
+<text x="470" y="76" class="s2" text-anchor="middle">DTCC 자기 진술 워킹그룹 "100곳 이상" — 최소 28곳은 어느 명단에도 공개되지 않았다 (명단은 전수가 아니다)</text>
+
+<!-- left bar -->
+<rect x="60" y="100" width="86" height="228" fill="#1F6F8B" rx="4"/>
+<text x="103" y="150" class="b2" text-anchor="middle">5월</text>
+<text x="103" y="172" class="b2" text-anchor="middle">57곳</text>
+<!-- right bar -->
+<rect x="794" y="100" width="86" height="152" fill="#2E7D93" rx="4"/>
+<text x="837" y="150" class="b2" text-anchor="middle">7월</text>
+<text x="837" y="172" class="b2" text-anchor="middle">38곳</text>
+
+<!-- flows -->
+<path d="M146 100 C 400 100, 540 100, 794 100 L 794 192 C 540 192, 400 192, 146 192 Z" fill="#1F6F8B" opacity="0.5"/>
+<text x="470" y="152" class="t2" text-anchor="middle" fill="#0d3f52">잔류 23곳 (40.4%)</text>
+
+<path d="M146 192 C 380 192, 420 300, 660 318 L 660 348 C 420 330, 380 250, 146 328 Z" fill="#9aa0a6" opacity="0.55"/>
+<text x="420" y="300" class="t2" fill="#4a4a4a">5월 전용 34곳</text>
+
+<path d="M600 286 C 700 286, 750 240, 794 192 L 794 252 C 750 290, 700 312, 600 312 Z" fill="#4F8A5B" opacity="0.5"/>
+<rect x="440" y="278" width="160" height="26" fill="#4F8A5B" opacity="0.55" rx="4"/>
+<text x="520" y="296" class="t2" text-anchor="middle" fill="#173d1e">7월 신규 15곳</text>
+
+<!-- tags -->
+<text x="20" y="352" class="s2"><tspan font-weight="bold">양 명단 동시 등재 7곳</tspan> — Alpaca · DriveWealth · Ondo Finance · Circle · NYSE · Nasdaq · Fireblocks  →  "진영"은 성립하지 않는다</text>
+<text x="20" y="370" class="s2"><tspan font-weight="bold">5월 전용 34곳의 구성</tspan> — 대형 은행 11 · 리테일 브로커 5 · 청산 5 · 크립토 5 · 운용·리테일은행 3 · 벤더 3 · 거래장소 2</text>
+<text x="20" y="388" class="s2"><tspan font-weight="bold">7월 신규 15곳의 구성</tspan> — 체인·미들웨어 7 · 데이터·지수 2 · 디지털증권 브로커딜러 1(Prometheum) · 청산소·시장조성·운용·은행 4 · 판별불가 1</text>
+</svg>
+<figcaption>그림 2 — 5월은 협의 소집, 7월은 7종 도매 워크플로 실행 참가다. 두 명단의 성격이 달라 "이탈"로 읽으면 안 된다.</figcaption>
+</figure>
+
+<h3>3-2. 무엇을 읽고, 무엇을 읽으면 안 되는가</h3>
+<div class="tw">
+<table>
+<tr><th>관찰</th><th>읽을 수 있는 것</th><th>읽으면 안 되는 것</th></tr>
+<tr><td>5월 전용 34곳에 <strong>대형 은행 11곳·리테일 브로커 5곳</strong>이 몰려 있다</td><td>7월 실거래는 <strong>도매 워크플로 검증</strong>이었고 참가 유형이 그에 맞게 좁혀졌다</td><td>🔴 "은행들이 빠졌다·거부했다" — 협의체 참여와 실거래 참여는 다른 행위다</td></tr>
+<tr><td>7월 신규 15곳의 47%가 <strong>체인·미들웨어</strong>(Blockdaemon·Chainlink·Kaleido·LFDT·Microsoft·HIFI·Temple Digital)</td><td>실행 단계에서 <strong>기술 공급자</strong>가 대거 들어왔다 (§6-1 참조)</td><td>🔴 "고객이 늘었다" — 이들 상당수는 고객이 아니라 <strong>공급자</strong>일 수 있다</td></tr>
+<tr><td><strong>Prometheum Capital</strong>(디지털자산 증권 전용 브로커딜러·대체거래소·수탁)이 7월 신규 진입</td><td>구조상 세큐리타이즈에 가장 가까운 유형이 <strong>DTCC 쪽에 붙었다</strong></td><td>단일 사례이며 계약·요율 <span class="lab">미공시</span></td></tr>
+<tr><td>양 명단 모두에 <strong>세큐리타이즈 부재</strong></td><td>DTC 결제층에 발판이 없다는 기존 관찰의 재확인</td><td>🔴 <strong>부재 ≠ 배제</strong> — 대상이 DTC 보관 자산이라 참여할 자산이 애초에 없었을 수 있고, 명단이 전수도 아니다</td></tr>
+<tr><td>양 명단 모두에 <strong>Ondo Finance</strong> 포함, <strong>NYSE</strong> 포함</td><td>같은 회사가 양쪽 문서에 동시에 등장 — <strong>진영전은 허구</strong></td><td>🔴 "NYSE가 DTCC 편" 또는 "Ondo가 배신" — 인프라 참여는 배타적 선택이 아니다</td></tr>
+</table>
+</div>
+
+<h3>3-3. "고객"이라는 말이 두 회사에서 다르다</h3>
+<div class="tw">
+<table>
+<tr><th>축</th><th>DTCC</th><th>세큐리타이즈</th></tr>
+<tr><td>고객의 정체</td><td><strong>DTC 참가자</strong> — 브로커딜러·수탁은행. 이미 연결돼 있고 신규 영업이 아니다</td><td><strong>발행사·운용사</strong> — 건별로 따내야 한다</td></tr>
+<tr><td>도달 종점</td><td><strong>참가자 지갑</strong> — 최종 투자자는 구조적으로 모른다</td><td><strong>최종 투자자</strong> — 리테일 계좌 50만 <span class="lab">회사</span></td></tr>
+<tr><td>영업 사이클</td><td>규정 변경·인가가 곧 전 참가자 적용</td><td>발행사 1곳씩 설득 — 상장주는 발행사 동의가 필수</td></tr>
+<tr><td>이탈 가능성</td><td>결제 인프라 소속이라 이탈 개념이 약하다</td><td>최대 자산 단일 집중 <strong>54~55%</strong>, 계약은 1년 자동갱신·90일 통지 해지·자체 토큰화 금지 조항 없음 <span class="lab">공시</span></td></tr>
+<tr><td>사모시장 기존 기반</td><td>고객 <strong>3,131곳</strong> · 고유 펀드 <strong>13,949개</strong> <span class="lab">회사·2025 연차</span></td><td>수탁고 $24.3B, 자산 서비스 라인 <span class="lab">회사</span></td></tr>
+</table>
+</div>
+<div class="read"><strong>읽기:</strong> 마지막 줄이 이번 분석의 가장 불편한 숫자다. DTCC의 사모시장 프랜차이즈는 <strong>이미 존재</strong>하고 규모가 크다. 다만 <strong>이 지표의 서비스 성격은 확인되지 않았다</strong> — 연차보고서에서 토큰화 서술과 분리돼 제시되므로 전통 대체투자 처리 서비스일 개연성이 높다. "겹친다"까지가 확정이고 "대체한다"는 비약이다. 그럼에도 <em>"DTC가 보관하지 않는 자산에는 구조적으로 못 온다"</em>는 방어선은 <strong>DTCC 자신의 포트폴리오 안에서는 성립하지 않을 수 있다</strong>는 점이 새로 등록된다.</div>
+<div class="flip">🔧 <strong>반박으로 뒤집힘</strong> — 초안의 "두 명단이 상보적 구조를 이루고 빈칸이 세큐리타이즈의 본진"은 철회했다. DTCC 명단의 발행사 칸이 0인 것은 <strong>트윈 모델의 구조적 귀결이지 관측 결과가 아니고</strong>(깨질 수 없는 값), 세큐리타이즈의 발행사 3,280곳도 토큰화 실적이 아니라 파이프라인이다(외부 토큰화 발행사 2곳·가동 0).</div>
+</div>
+
+<!-- ===================== 4 ===================== -->
+<div class="card" id="s4">
+<h2>4. 경제학 — 렌트가 걷히는 자리</h2>
+
+<div class="note">🔴 <strong>자체 수집분 파생계산 2건 정정.</strong> ① 매출 ÷ 보관자산을 <strong>2.54bps로 적은 것은 10배 오기</strong> — 2,896e6 ÷ 114e12 = 2.5404e-5 = <strong>0.254bps</strong>. ② 처리액 기준을 <em>"0.06bp의 1/1000 수준"</em>으로 적은 것도 <strong>약 100배 오기</strong> — 실제 <strong>0.00616bps</strong>. 백분율 표기 0.0000616%는 정확하다. <span class="lab">추정·재계산</span></div>
+
+<h3>4-1. 규모·요율 대조 (정정판)</h3>
+<div class="tw">
+<table>
+<tr><th>지표</th><th>DTCC (2025)</th><th>세큐리타이즈 (2Q26·FY26)</th></tr>
+<tr><td>매출</td><td class="n"><strong>$2,896M</strong> <span class="lab">회사</span></td><td class="n">FY26 가이던스 <strong>$70~80M</strong> <span class="lab">회사</span></td></tr>
+<tr><td>매출 증가율</td><td><strong>+3.8% → +10.7% → +16.5%</strong> (3년 가속) <span class="lab">회사</span></td><td>가이던스 하향 재설정 ($85M → $70~80M) <span class="lab">회사</span></td></tr>
+<tr><td>영업이익</td><td class="n"><strong>$629.9M · 21.7%</strong> (2025 단년) <span class="lab">회사</span></td><td>조정 EBITDA 6개 분기 중 <strong>3개 분기 적자</strong> <span class="lab">회사</span></td></tr>
+<tr><td>자본</td><td class="n">자기자본 <strong>$4,855M</strong> <span class="lab">회사</span></td><td class="n">순현금 $352.6M <span class="lab">회사</span></td></tr>
+<tr><td>자산 기반</td><td>처리액 <strong>$4.7 quadrillion</strong> / DTC 보관 <strong>$114조</strong>(1.46M 종목) <span class="lab">회사</span></td><td>운용자산 <strong>$4.3B</strong> / 수탁고 <strong>$24.3B</strong> <span class="lab">회사</span></td></tr>
+<tr><td>매출 ÷ 처리액</td><td class="n"><strong>0.00616bps</strong> <span class="lab">추정·정정</span></td><td class="n">—</td></tr>
+<tr><td>매출 ÷ 보관자산</td><td class="n"><strong>0.254bps</strong> <span class="lab">추정·정정</span></td><td class="n">—</td></tr>
+<tr><td>매출 ÷ 운용자산</td><td class="n">—</td><td class="n">혼합 <strong>134bps</strong> · 토큰화 라인만 <strong>73bps</strong>(96bps→) <span class="lab">회사</span></td></tr>
+<tr><td><strong>자산 $1M당 연 매출</strong></td><td class="n"><strong>$25.40</strong> (보관자산 분모) <span class="lab">추정</span></td><td class="n"><strong>$13,400</strong> (운용자산 분모) <span class="lab">추정</span></td></tr>
+<tr><td><strong>자산 $1M당 연 이익</strong></td><td class="n"><strong>+$5.53</strong> <span class="lab">추정</span></td><td class="n">EBITDA/운용자산 −51bps ≈ <strong>−$5,100</strong> <span class="lab">추정</span></td></tr>
+</table>
+</div>
+<div class="read"><strong>읽기:</strong> 🔴 <strong>분모 함정을 먼저 못 박는다.</strong> DTCC의 분자는 청산·결제·자산서비스·거래정보저장소를 포함한 <strong>전사 매출</strong>이고 분모는 <strong>수동 보관 잔고</strong>다. 세큐리타이즈의 134bps는 자산가치 연동 과금에 가깝다. <strong>같은 서비스의 가격이 아니므로 나란히 놓을 수 없고, 분모를 병기하지 않은 배수 인용은 전부 오도다.</strong> 어떤 분모 조합에서도 무너지지 않는 유일한 대조는 <strong>부호</strong>다 — 한쪽은 자산 $1M당 연 $5.53 흑자, 다른 쪽은 적자다. 그리고 <strong>요율이 높은 것은 과금 능력이지 렌트 포획이 아니다.</strong></div>
+
+<figure>
+<svg viewBox="0 0 940 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="자산 규모와 요율의 로그스케일 이중 대조">
+<style>
+.t3{font:11.5px -apple-system,"Apple SD Gothic Neo",sans-serif;fill:#1a1a1a}
+.s3{font:10px -apple-system,"Apple SD Gothic Neo",sans-serif;fill:#5f5847}
+.h3t{font:bold 13px -apple-system,"Apple SD Gothic Neo",sans-serif;fill:#1a1a1a}
+</style>
+<text x="20" y="24" class="h3t">규모와 요율 — 로그축 이중 대조 (막대마다 분모를 병기한다)</text>
+
+<!-- top: asset scale -->
+<text x="20" y="48" class="t3" font-weight="bold">① 자산 규모 (로그스케일)</text>
+<line x1="200" y1="58" x2="200" y2="248" stroke="#ccc"/>
+<line x1="200" y1="248" x2="900" y2="248" stroke="#888"/>
+<!-- ticks 1e8 .. 1e16 : x = 200 + (log10(v)-8)*87.5 -->
+<g class="s3" fill="#8a8a8a">
+<text x="200" y="262" text-anchor="middle">$100M</text>
+<text x="375" y="262" text-anchor="middle">$10B</text>
+<text x="550" y="262" text-anchor="middle">$1T</text>
+<text x="725" y="262" text-anchor="middle">$100T</text>
+<text x="890" y="262" text-anchor="middle">$4.7Q</text>
+</g>
+<!-- bars -->
+<rect x="200" y="66" width="2" height="14" fill="#C0563A"/>
+<text x="196" y="77" class="s3" text-anchor="end">외부 발행사 네이티브 $95M (1곳)</text>
+
+<rect x="200" y="86" width="42" height="14" fill="#C0563A"/>
+<text x="196" y="97" class="s3" text-anchor="end">네이티브 전체 $285M (2/3이 자사 주식)</text>
+
+<rect x="200" y="106" width="119" height="14" fill="#C0563A"/>
+<text x="196" y="117" class="s3" text-anchor="end">토큰화 주식 시장 $2.3B</text>
+
+<rect x="200" y="126" width="143" height="14" fill="#C0563A"/>
+<text x="196" y="137" class="s3" text-anchor="end">SECZ 운용자산 $4.3B</text>
+
+<rect x="200" y="146" width="209" height="14" fill="#C0563A"/>
+<text x="196" y="157" class="s3" text-anchor="end">SECZ 수탁고 $24.3B</text>
+
+<rect x="200" y="176" width="530" height="14" fill="#1F6F8B"/>
+<text x="196" y="187" class="s3" text-anchor="end">DTC 보관 $114T</text>
+
+<rect x="200" y="196" width="670" height="14" fill="#1F6F8B"/>
+<text x="196" y="207" class="s3" text-anchor="end">DTCC 처리액 $4.7Q</text>
+
+<rect x="200" y="220" width="700" height="20" fill="#fdeee9" stroke="#f0c0ad"/>
+<text x="550" y="234" class="s3" text-anchor="middle" fill="#8a2b2b">⚠️ 자산 성격·지역·자산군이 전부 다르다 — 이 막대들끼리 나눗셈 금지</text>
+
+<!-- bottom: rate -->
+<text x="20" y="300" class="t3" font-weight="bold">② 요율 (로그스케일 · 분모 병기)</text>
+<line x1="240" y1="310" x2="240" y2="500" stroke="#ccc"/>
+<line x1="240" y1="500" x2="900" y2="500" stroke="#888"/>
+<g class="s3" fill="#8a8a8a">
+<text x="240" y="514" text-anchor="middle">0.001bps</text>
+<text x="372" y="514" text-anchor="middle">0.1bps</text>
+<text x="504" y="514" text-anchor="middle">10bps</text>
+<text x="636" y="514" text-anchor="middle">1,000bps</text>
+</g>
+<!-- x = 240 + (log10(v)+3)*66 -->
+<rect x="240" y="320" width="87" height="15" fill="#1F6F8B"/>
+<text x="333" y="332" class="s3">0.00616bps ÷ <tspan font-weight="bold">처리액</tspan></text>
+<rect x="240" y="344" width="195" height="15" fill="#1F6F8B"/>
+<text x="441" y="356" class="s3">0.254bps ÷ <tspan font-weight="bold">보관자산</tspan> — 자체 수집분 2.54bps는 10배 오기</text>
+<rect x="240" y="368" width="264" height="15" fill="#8a7a4e"/>
+<text x="510" y="380" class="s3">10bps — 온체인 발행·상환 요율 설정치 (실징수 미확인)</text>
+<rect x="240" y="392" width="266" height="15" fill="#C0563A"/>
+<text x="512" y="404" class="s3">10.9bps 자산서비스 ÷ <tspan font-weight="bold">수탁고</tspan></text>
+<rect x="240" y="416" width="288" height="15" fill="#C0563A"/>
+<text x="534" y="428" class="s3">23.8bps 혼합 ÷ <tspan font-weight="bold">수탁고</tspan> (동일 분자)</text>
+<rect x="240" y="440" width="321" height="15" fill="#C0563A"/>
+<text x="567" y="452" class="s3">73bps 토큰화 라인 ÷ <tspan font-weight="bold">운용자산</tspan> (96bps에서 압축)</text>
+<rect x="240" y="464" width="338" height="15" fill="#C0563A"/>
+<text x="584" y="476" class="s3">134bps 혼합 ÷ <tspan font-weight="bold">운용자산</tspan></text>
+
+<rect x="640" y="316" width="260" height="88" fill="#f6eed6" stroke="#e0d8c3" rx="6"/>
+<text x="654" y="336" class="t3" font-weight="bold">자산 $1M당 연 이익</text>
+<text x="654" y="358" class="t3" fill="#1F6F8B">DTCC　　　+$5.53</text>
+<text x="654" y="378" class="t3" fill="#C0563A">SECZ　　　약 −$5,100</text>
+<text x="654" y="396" class="s3">요율이 높은 쪽이 적자다</text>
+<text x="240" y="536" class="s3">읽기 — 두 축 모두 로그스케일이고, 요율 막대는 분모가 서로 다르다. 배수 인용 시 반드시 분모를 함께 쓸 것.</text>
+</svg>
+<figcaption>그림 3 — 규모 축과 요율 축의 이중 대조. 요율 차이는 "누가 더 많이 걷는가"를 보여줄 뿐 "누가 더 많이 남기는가"를 보여주지 않는다.</figcaption>
+</figure>
+
+<h3>4-2. "원가 유틸리티"라는 전제를 실제로 검증하면</h3>
+<div class="tw">
+<table>
+<tr><th>검증 항목</th><th>결과</th></tr>
+<tr><td>DTCC 자기 진술 <em>"at-cost"</em></td><td>🔴 <strong>이번 1차 자료에 0건</strong> <span class="lab">미공시</span></td></tr>
+<tr><td>DTCC 자기 진술 <em>"user-owned / 회원 소유"</em></td><td>🔴 <strong>이번 1차 자료에 0건</strong> <span class="lab">미공시</span></td></tr>
+<tr><td>회계 영업이익률 21.7% (2025 단년)</td><td>✅ <span class="lab">회사</span> — 원가주의와 직접 모순되지는 않는다(잔여이익의 <em>귀속처</em> 문제)</td></tr>
+<tr><td>이익의 귀속 경로 — 리베이트 / 요율인하 / 자본적립</td><td>🔴 <strong>세 경로 전부 관측 불가</strong> (2024 영업이익·자기자본 시계열 미확보)</td></tr>
+<tr><td>단위 요율 시계열</td><td>2024 → 2025 매출÷처리액 −5.81% <span class="lab">추정</span>. 🔴 <strong>판정 불가</strong> — 처리액은 가격×수량이라 자산가격 상승만으로 자동 하락하고, 2024 결제 건수 미확보로 분리 불가</td></tr>
+<tr><td>반대 방향 증거</td><td>🔴 매출 증가율 <strong>3년 연속 가속</strong> · 자기자본 $4,855M · <strong>2025년 매출 증분 $410M 하나가 세큐리타이즈 FY26 가이던스 중간값 $75M의 5.5배</strong>(범위 기준 5.1~5.9배) <span class="lab">추정</span></td></tr>
+</table>
+</div>
+<div class="read"><strong>읽기:</strong> "DTCC는 원가 유틸리티니까 그 층에서는 렌트가 걷히지 않는다"는 문장은 이 업계에서 널리 쓰이지만, <strong>이번 1차 자료로는 검증되지 않았다</strong>. 본 보고서는 이를 <span class="lab">미확인·업계 통용 프레임</span>으로 격하하고, 요율에 관한 모든 결론을 조건부로 둔다. 이는 지난 두 보고서의 결론을 떠받치던 전제이므로 <strong>최우선 검증 항목</strong>으로 등록한다.</div>
+
+<h3>4-3. 렌트 귀착 — 층별 분기</h3>
+<div class="tw">
+<table>
+<tr><th>층</th><th>DTCC 자산</th><th>이 층의 고객</th><th>원가 논리 적용</th><th>관측 상태</th></tr>
+<tr><td>예탁 토큰화</td><td>DTC 토큰화 서비스</td><td>DTC 참가자</td><td>개연(전제 미검증)</td><td>요율 <span class="lab">미공시</span></td></tr>
+<tr><td>결제·담보</td><td>AppChain · Canton · Stellar · Collateral AppChain</td><td>중앙청산소·딜러</td><td>동상</td><td>요율 <span class="lab">미공시</span></td></tr>
+<tr><td><strong>발행 엔진</strong></td><td>ComposerX Factory</td><td>금융기관 일반</td><td>🔴 <strong>자동 적용 불가</strong> — 구매자가 소유주가 아닐 수 있다</td><td>요율·고객 <span class="lab">미공시</span></td></tr>
+<tr><td><strong>라이프사이클·명부 기능</strong></td><td>ComposerX CMP</td><td><strong>이전대리인</strong></td><td>동상</td><td>요율·고객 <span class="lab">미공시</span></td></tr>
+<tr><td><strong>데이터·대사</strong></td><td>LedgerScan (SaaS)</td><td>회계·수탁·포트폴리오 운영자</td><td>동상</td><td>요율·고객 <span class="lab">미공시</span></td></tr>
+<tr><td>생태계</td><td>Digital Launchpad 4등급</td><td>핀테크·기술 파트너</td><td>—</td><td>과금 여부 자체 <span class="lab">미공시</span></td></tr>
+</table>
+</div>
+<div class="read"><strong>읽기:</strong> 본 보고서는 이 층들에 대해 <strong>"판다·상품화한다"는 서술어를 쓰지 않는다</strong> — 요율표·과금 구조·확보 고객이 전부 0건 확인이기 때문이다. 확정된 것은 <strong>"기능으로 노출한다"</strong>까지다. 동시에 <strong>"원가라서 안전하다"는 위안도 이 층들에서는 자동으로 성립하지 않는다.</strong> 두 서사가 같은 미공시 위에 나란히 서 있다.</div>
+<div class="flip">🔧 <strong>반박으로 뒤집힘</strong> — 초안의 "원가 유틸리티는 점유를 늘려도 렌트가 안 늘어 확장의 사적 유인이 없다"는 기각했다. 원가가 사실이더라도 확장 유인은 소멸하지 않고 <strong>한 층 위(참가자 유통층)로 이전</strong>하며, 매출 3년 가속과도 긴장 관계다.</div>
+
+<h3>4-4. 세큐리타이즈 요율 압축(96 → 73bps)을 DTCC 탓으로 돌릴 수 있는가</h3>
+<p><strong>기각 근거 3개.</strong> ① <strong>시점</strong> — 압축은 무조치 의견서(2025-12) 이전 구간에도 이미 진행 중이었다. ② <strong>자산군</strong> — 압축이 일어난 자산(사모펀드·토큰화 국채펀드)은 DTC 비보관이라 트윈의 대체재가 아니다. ③ <strong>산술</strong> — 압축의 53.5%는 분모(운용자산 +15.8%) 증가분이고, <strong>분모 증가는 정의상 경쟁자에게 귀속될 수 없다</strong> <span class="lab">추정</span>.</p>
+<p><strong>그러나 0도 아니다</strong> — 계약 갱신 협상에서 대안은 행사되지 않아도 값을 매긴다. 최대 고객 계약은 <strong>1년 자동갱신·90일 통지 해지이고 자체 토큰화를 금지하는 조항이 없다</strong> <span class="lab">공시</span>.</p>
+<div class="read"><strong>판정:</strong> DTCC 기여도는 <strong>0 초과·비지배적이며 정량 귀속 불가</strong>(반복/비반복 매출 미분해). 지배 요인은 회사 내부(발행 수수료 사이클 + 저요율 잔고 믹스 + 단일 고객 집중)에 있을 개연성이 더 높다 <span class="lab">추정</span>.</div>
+</div>
+
+<!-- ===================== 5 ===================== -->
+<div class="card" id="s5">
+<h2>5. 토큰화 주식이라는 전선</h2>
+
+<div class="note">🔧 <strong>용어 정정 — "88%"를 정확히 읽는다.</strong> 회사 슬라이드의 구성비는 <strong>발행사 주도형(네이티브) 12% vs 서드파티 파생 88%</strong>이고, 이 88%는 <strong>커스터디형 트윈과 합성형 오프쇼어를 합산한 값으로 회사가 분해해 공개하지 않았다</strong> <span class="lab">회사</span>. 따라서 88%를 "합성형"으로 부르면 <strong>DTCC의 트윈이 들어 있는 바구니를 트윈의 경쟁자로 세우는 자기모순</strong>이 된다. 이 숫자가 실제로 가리키는 것은 <strong>트윈의 몫이 얼마인지 알 수 없다</strong>는 사실 자체이며, 그 분해가 이 분석 최대의 공백이다.</div>
+
+<h3>5-1. 수요별로 무엇이 충분한가</h3>
+<div class="tw">
+<table>
+<tr><th>용도</th><th>수요자</th><th>트윈으로 충분?</th><th>네이티브가 필요?</th><th>지금 이 수요를 먹는 것</th></tr>
+<tr><td><strong>담보 이동성</strong></td><td>기관</td><td>🟠 <strong>판정 불가</strong> — 담보 3종의 자산군 무명시, 공개 실증 기초자산은 일본국채·wrapped Bitcoin</td><td>❌ 불필요 — 담보 수요자는 명부상 직접 소유가 아니라 적격성·재사용성을 원한다 <span class="lab">추정</span></td><td><strong>미확정</strong></td></tr>
+<tr><td><strong>온체인 결제</strong></td><td>기관</td><td>✅ 주식 DVP·DVD 실행 확정 (규모 <span class="lab">미공시</span>)</td><td>❌</td><td>DTCC — 단 현금레그 발행사 <span class="lab">미공시</span></td></tr>
+<tr><td><strong>24시간 거래</strong></td><td>기관+리테일</td><td>🟠 절반 — 트윈은 24시간 <em>이전</em>이지 가격발견 장소가 아니다. <strong>게다가 DTCC는 토큰 없이 이미 청산시간을 주 5일 24시간으로 늘렸다</strong>(§6-2)</td><td>🟠 절반 — 대체거래소는 있으나 체결량 미공시</td><td>둘 다 아님</td></tr>
+<tr><td><strong>리테일 접근</strong></td><td>개인</td><td>🟠 <strong>경유 요구</strong>(배제 아님) — 참가자 게이트를 통과해야 한다</td><td>❌ 불충분 — 계좌 50만은 리테일 브로커 채널과 자릿수가 다르다</td><td><strong>미확정</strong> — 아래 정정 참조</td></tr>
+<tr><td><strong>국제 접근</strong></td><td>미국 밖</td><td>🟠 판정 불가 (§6-3)</td><td>🟠 EU 파일럿 보유하나 미국 라이선스 상품은 동일 제약</td><td>서드파티 파생 88% 안 — 분해 불가</td></tr>
+</table>
+</div>
+<div class="flip">🔧 <strong>반박으로 뒤집힘 (가장 중요한 정정)</strong> — 초안 다수가 <em>"7월 15일 당일 Ondo가 트윈 기반 상품을 <strong>Alpaca 경유로 DTC 참가자망에 출시해 리테일로 나갔다</strong>"</em>를 근거로 "리테일 채널 부재" 서사를 뒤집었으나, <strong>방향이 반대였다</strong>. 로컬 1차 기록에서 Alpaca는 Ondo가 <strong>DTC 안으로 들어가는 외부 수탁 의존 경로</strong>(조달)이지 리테일로 나가는 유통 경로가 아니다. Ondo의 확인 가능한 유통면은 크립토 네이티브 채널이고, 미국 등록 소매 판매 자격은 7월 23일 별도 인가 이후 사안이다 <span class="lab">제3자</span>.<br><strong>정확한 서술 = "리테일 대면 브로커가 명단에 남아 있다"까지이고, "트윈이 리테일에 도달했다"는 미확인이다.</strong></div>
+
+<h3>5-2. 네이티브 모델의 존재 이유 — 재채점</h3>
+<p>DTCC의 트윈이 <strong>발행사 동의 없이</strong> 성립한다면(구조상 그렇게 읽히나 규정 문서 미열람 <span class="lab">추정</span>), 네이티브 모델의 최대 병목인 닭-달걀 교착을 우회한다. 그렇다면 네이티브가 남는 이유는 무엇인가.</p>
+<div class="tw">
+<table>
+<tr><th>#</th><th>논거</th><th>구조적 배타성</th><th>실측</th><th>판정</th></tr>
+<tr><td><strong>R2</strong></td><td><strong>DTC가 보관하지 않는 자산</strong>(사모·비상장·비미국)</td><td><strong>3/5</strong> ↓ — 무조치 의견서는 <strong>허용 서술이지 금지가 아니고</strong> 원문 미열람이며, DTCC 사모시장 3,131고객·13,949펀드와 Launchpad의 "사모자산 <strong>발행</strong>"이 반대 방향</td><td><strong>4/5</strong> — 현재 매출의 몸통</td><td><strong>최강(단 하향)</strong></td></tr>
+<tr><td><strong>R3</strong></td><td>참가자 게이트 밖 접근</td><td>3/5 — 게이트는 배제가 아니라 <strong>경유 요구</strong></td><td><strong>3/5</strong> ↑ — 우회 실증 근거를 철회했으므로 상향</td><td>중</td></tr>
+<tr><td><strong>R1</strong></td><td>1차 발행(플로우)</td><td><strong>2/5</strong> ↓ — 🔴 DTCC 자신이 서비스를 <em>"<strong>enables the issuance of</strong> tokenized representations"</em>로 규정. "증권의 발행"과 "토큰 표현의 발행"이 구분되는지는 <span class="lab">미공시</span></td><td>1/5 — 온체인 공모 실적 0</td><td>중</td></tr>
+<tr><td><strong>R5</strong></td><td>자산군 상한</td><td>3/5 — 10월 범위 자체가 미공시</td><td>2/5</td><td>중하</td></tr>
+<tr><td><strong>R4</strong></td><td>명부 소유권 그 자체</td><td>2/5 — DTCC가 <em>"identical legal and ownership rights"</em> + 기업행위 처리로 상당 부분 무력화</td><td>1/5</td><td><strong>최약</strong></td></tr>
+</table>
+</div>
+<div class="read"><strong>읽기:</strong> 네이티브 모델의 존재 이유는 살아 있으나 <strong>무게 중심이 "주식" 밖(사모·비상장)에 있다.</strong> 주식 특화 논거는 전부 "구조적으로는 배타적인데 실측이 0"이라는 같은 형태다. 그리고 진영이 가장 크게 말하는 R4(명부 소유권)가 가장 약하다.</div>
+
+<h3>5-3. 명부 층에서 실제로 일어난 일</h3>
+<ul>
+<li><strong>CMP는 명부를 가져가지 않는다</strong> — 문구의 주어가 <em>"allows <strong>Transfer Agents</strong> to manage…"</em>이고, DTCC가 SEC 등록 이전대리인이 된다는 지지 증거는 <strong>자료에 0건</strong>이며, 트윈 설계상 필요하지도 않다 <span class="lab">추정</span>.</li>
+<li><strong>자산군이 어긋난다</strong> — 세큐리타이즈의 <em>"공식 소유권 기록"</em>은 <strong>펀드</strong> 서류 문구이고, CMP의 명부 기능도 펀드·사모 라이프사이클 맥락(1차 발행 주문관리·펀드 토큰 결제)에 붙어 있다.</li>
+<li><strong>상장주 명부 배관은 세큐리타이즈도 갖고 있지 않다</strong> — 자사 상장주를 토큰화할 때조차 전통 이전대리인 레일 위에서, 개별 주주 동의와 서류 회수를 거쳐 <strong>제때 서류를 낸 소수 부분집합</strong>에만 수행했다 <span class="lab">회사</span>. 명부 층의 구속 조건은 소프트웨어가 아니라 <strong>현직 이전대리인과의 관계</strong>다.</li>
+<li>🔴 <strong>지금까지 실현된 유일한 명부 층 변동은 BNY다</strong> — 7월 29일 디지털 이전대리 출시 후 대형 운용사 펀드의 이전대리 수임 <span class="lab">제3자</span>. 다만 <strong>주식 발행사 수로는 세큐리타이즈가 3,280 대 66으로 크게 앞선다</strong> <span class="lab">공시</span>.</li>
+</ul>
+<div class="flip">🔧 <strong>반박으로 뒤집힘</strong> — 초안의 "CMP = 명부 해자 직접 침식"은 철회했다. 자산군 불일치 + 과금 근거 0건 + 상장주 명부를 세큐리타이즈도 보유하지 않는다는 3중 반박이 성립했다.</div>
+</div>
+
+<!-- ===================== 6 ===================== -->
+<div class="card" id="s6">
+<h2>6. 세 개의 빠진 축</h2>
+<p class="meta">완결성 비평이 지적한, 기술·고객 두 축만으로는 잡히지 않는 축들이다. 직전 두 보고서에서도 다루지 않았다.</p>
+
+<h3>6-1. DTCC는 그 스택을 스스로 만들지 않았다 — 공급자 층에서 렌트가 걷힌다</h3>
+<p>Current Networks 3개 중 자사 소유는 AppChain 하나뿐이고 그것도 <strong>오픈소스 Hyperledger Besu 기반</strong>이다. Canton은 Digital Asset의 것, Stellar는 Stellar 개발재단의 것이다 <span class="lab">회사</span>. 담보 층은 5월 12일 <strong>Chainlink 협업</strong>으로 24시간 관리를 붙였고, 7월 신규 15곳 중 7곳(47%)이 <strong>Blockdaemon·Chainlink·Kaleido·LFDT·Microsoft·HIFI·Temple Digital</strong> — 즉 <strong>고객 명단으로 읽은 것의 절반이 실은 공급자 명단일 수 있다</strong>.</p>
+<div class="read"><strong>읽기:</strong> 이것이 경제학으로 번역되는 지점은 §4-3의 렌트 귀착표다 — 그 표에는 <strong>스택을 받치는 "체인·미들웨어 공급자 층"이 없다</strong>. DTCC가 원가로 운영하더라도 그 원가 안에는 라이선스료·노드 운영비·통합 비용이 들어가고 그것은 공급자의 매출이다. <strong>"DTCC가 이기면 그 자리의 렌트가 소멸한다"는 명제는 이 층에서는 성립하지 않는다 — 소멸이 아니라 아래로 한 칸 더 이동한다.</strong> 계약·요율·배타성은 전부 <span class="lab">미공시</span>이므로 크기는 추정 불가. <strong>관측 항목으로 승격</strong>: 10월 출시 자료에 Chainlink·Kaleido·Digital Asset 중 하나라도 유상 벤더로 명기되는가.</div>
+
+<h3>6-2. 비토큰 경로가 토큰화의 잉여가치를 먼저 잠식한다</h3>
+<p>같은 뉴스룸 목록의 <strong>2026년 6월 29일 항목 — "NSCC 청산시간을 주 5일 24시간 모델로 확대, 가동 개시"</strong> — 는 토큰화 서사에서 흔히 누락된다 <span class="lab">회사</span>. 토큰화가 파는 편익 목록의 맨 앞이 24시간 접근인데, <strong>DTCC는 토큰 없이 이미 그것의 상당 부분을 켰다.</strong></p>
+<div class="read"><strong>읽기:</strong> 트윈이 <em>독점적으로</em> 제공하는 편익의 범위는 "24시간 대 영업시간"이 아니라 <strong>"주말 이틀 + 지갑 간 직접 이동"</strong>으로 좁아진다. 같은 목록의 7월 27일(국채 현금청산 마감 준수 설문)과 5월 19일(옵션형 ETF 중앙청산) 항목도 같은 방향을 가리킨다 — <strong>DTCC의 비토큰 로드맵이 토큰 로드맵과 병렬로 달리고 있고, 앞의 것이 먼저 도착한다.</strong> 이 축은 양방향으로 작용한다: 10월이 늦어져도 DTCC는 잃을 게 적고, 동시에 토큰화의 증분 편익이 자사 비토큰 개선분만큼 깎인다. 24시간 모델의 커버 범위(자산군·참가자·실제 주말 처리)는 <span class="lab">미공시</span>.</div>
+
+<h3>6-3. 지리·국제 축 — "미국 참가자망 한정"이라는 단정에 근거가 없다</h3>
+<p>1차 자료는 반대 방향의 사실을 여러 개 준다 — 예탁 자회사 보관 대상이 <strong>150개국 이상에서 발행된 증권 $114조</strong>, 운영 <strong>20개 지역</strong>, <strong>일본증권클리어링기구와 중앙청산소 담보 예치 실증 공동 수행</strong>, Launchpad의 포부 문구 <em>"디지털자산에 대해 <strong>글로벌하게</strong> 같은 수준의 지원을 제공"</em> <span class="lab">회사</span>. 고객 명단도 미국 일색이 아니다 — 합집합에 <strong>HSBC · RBC · TD Securities · Lloyds · Societe Generale · BNP Paribas · Marex · Mirae Asset Securities (USA) · 텔아비브증권거래소</strong>가 있고, 담보 실증의 기초자산이 <strong>일본국채</strong>라는 사실 자체가 이미 국제 축이다.</p>
+<div class="read"><strong>읽기:</strong> 동시에 이 축은 양방향으로 열려 있다 — 참가 자격은 여전히 <strong>DTC 참가자</strong>라는 미국 결제 시스템 소속이고, 일본 실증은 실증이며, 유럽 예탁결제기관과의 관계는 자료에 0건이다. <strong>판정 = "국제 접근 DTCC ❌"는 지탱되지 않으며 "판정 불가 — 참가 자격은 미국 결제 인프라 소속이나 보관 대상·실증·참가사 국적은 이미 다국적"으로 교체한다.</strong> 관측 항목: 10월 명단의 비미국 법인 비율, 일본 실증의 상용 전환 여부.</div>
+
+<div class="note">📌 <strong>보너스 — 세그먼트 분해의 미사용분.</strong> 2025 연차보고서는 NSCC 일평균 $3.01조·3억 570만 건, 결제 $608.21조·12.46억 건, 정부증권 순액 $3.284조, <strong>Fund/SERV $12.00조·2억 6,500만 건</strong>, 거래정보저장소 연 250억 메시지를 모두 공개한다. 특히 <strong>Fund/SERV</strong>는 세큐리타이즈 매출의 몸통이 서 있는 <strong>펀드 유통 층의 기존 배관</strong>이므로, "DTC가 보관하지 않는 자산" 방어선에 사모시장 지표보다 더 직접적인 반대 근거다.</div>
+</div>
+
+<!-- ===================== 7 ===================== -->
+<div class="card" id="s7">
+<h2>7. 무엇이 확정되고 무엇이 열려 있나</h2>
+
+<h3>7-1. 균형 — 각자가 앞선 곳</h3>
+<div class="tw">
+<table>
+<tr><th>축</th><th>DTCC가 앞선 곳</th><th>세큐리타이즈가 앞선 곳</th></tr>
+<tr><td>자산·연결</td><td>DTC 보관 1.46M 종목 · $114조 · 참가자망 기연결 · 신규 라이선스 0장</td><td>—</td></tr>
+<tr><td>속도의 원천</td><td>현직 지위 — 무조치 의견서에서 상용까지 10개월, 소집에서 실거래까지 72일</td><td>—</td></tr>
+<tr><td>데이터·대사</td><td><strong>LedgerScan</strong> — 외부 판매 SaaS 형태</td><td>기능 범주는 자산 서비스 라인과 겹치나 <strong>외부 판매 제품 형태는 아님</strong></td></tr>
+<tr><td>발행 툴체인</td><td>노코드 GUI — 대응 서술 없음</td><td>비EVM 포함 멀티체인 실배포(Solana·Aptos)</td></tr>
+<tr><td>신원</td><td><span class="lab">미공시</span> — 구조적으로 <strong>최종 투자자를 모른다</strong></td><td><strong>투자자 단위 온체인 신원</strong> — 단 계좌 50만 대비 실투자자 1.7만(전환율 3.4%) <span class="lab">추정</span></td></tr>
+<tr><td>온체인 권리 실행</td><td>후속 릴리스로 연기(문서 간 정합성 미확인)</td><td>실시간 리베이싱 가동 확인 <span class="lab">제3자</span></td></tr>
+<tr><td>디파이 접속</td><td>사전승인 네트워크 밖으로 못 나감</td><td>큐레이팅된 프로토콜에 연결 — <strong>정도의 차이</strong></td></tr>
+<tr><td>라이선스 조합</td><td>무조치 의견서 1장 — 복제 불가, 단 확장도 신규 인가 필요</td><td>이전대리 + 브로커딜러 + 대체거래소 + 투자자문 + 펀드행정 + EU 파일럿 — <strong>넓으나 조각별 복제 가능</strong></td></tr>
+<tr><td>자산군 커버리지</td><td>DTC 보관 자산 + 사모시장 기존 프랜차이즈</td><td>DTC 비보관(사모·펀드·비미국)</td></tr>
+</table>
+</div>
+<div class="read"><strong>읽기:</strong> 어느 쪽도 상대의 층을 통째로 가져가지 못한다. 그리고 <strong>기술 우위를 경제적 결론으로 번역하는 다리는 이 보고서에 없다</strong> — 양쪽 모두 요율과 실제 채택이 미공시이기 때문이다. 재무 대조는 §4-1을 참조하되, 분모가 달라 우열 비교 대상이 아니다.</div>
+
+<h3>7-2. 판정 캘린더</h3>
+<div class="tw">
+<table>
+<tr><th>시점</th><th>관측 대상</th><th>구체적 신호</th><th>확정되는 것</th></tr>
+<tr><td><strong>2026-09-16</strong>(예정)</td><td>Arc 메인넷</td><td>① 제품 페이지 Current Networks에 <strong>Arc 추가 여부</strong> ② DTCC 자체 Arc 보도자료 첫 발행 여부</td><td>추가되면 순서 전제 재역전 / 3개 유지면 10월 우선이 미반증</td></tr>
+<tr><td><strong>2026-10</strong> ⭐</td><td>토큰화 서비스 출시</td><td>(a) 참가사 명단 구성 (b) <strong>자산군 문구의 시제</strong> — 예시인가 확정 목록인가 (c) 사용 체인 (d) 워킹그룹 회원 수 (e) <strong>"발행"이 증권 자체의 1차 발행을 지칭하는가</strong></td><td>(e)가 결정적 — 모델 경계 이동 여부</td></tr>
+<tr><td><strong>2026-10</strong></td><td>공급자 관계 (§6-1)</td><td>Chainlink·Kaleido·Digital Asset 중 하나라도 <strong>유상 벤더로 명기</strong>되는가</td><td>공급자 층 렌트의 실재</td></tr>
+<tr><td><strong>2026-10</strong></td><td>리테일 유통 채널</td><td>리테일 브로커(Robinhood·Schwab·TradeStation)의 명단 복귀 여부</td><td>도매 고착 대 채널 확산</td></tr>
+<tr><td><strong>2026-Q4</strong></td><td>네이티브 거래 베뉴</td><td>① 대체거래소 정식 서류 제출 ② 보도자료의 기록 딜러 명기 ③ 자사 물량 외 제3자 토큰 거래</td><td>네이티브 첫 거래 베뉴 가동</td></tr>
+<tr><td>분기마다</td><td>ComposerX 상업화</td><td>① 이전대리인 고객 <strong>첫 실명</strong> ② 사모자산 이니셔티브 <strong>첫 발행 사례</strong></td><td>하나라도 나오면 "제품 존재"에서 "실재 경쟁"으로 격상</td></tr>
+<tr><td><strong>2027-H1</strong></td><td>Stellar 자산 가용</td><td>가용 목록에 <strong>개별 주식 종목</strong>이 들어가는가 (ETF·국채만인가)</td><td>트윈의 퍼블릭 체인 주식 진입</td></tr>
+</table>
+</div>
+
+<h3>7-3. 🔴 관측 자격이 없는 것 — 판정 항목에서 제외</h3>
+<div class="tw">
+<table>
+<tr><th>항목</th><th>제외 사유</th></tr>
+<tr><td>"DTCC 명단의 발행사 칸이 0에서 깨지는가"</td><td>트윈 모델에서 <strong>구조상 깨질 수 없는 값</strong> — 반증 불가능</td></tr>
+<tr><td>"ComposerX 요율표 공개 여부"</td><td>비상장이라 정기공시 의무가 없다 — <strong>공개 유인 부재</strong></td></tr>
+<tr><td>"출시 자료에 '발행'이라는 단어가 등장하는가"</td><td><strong>7월 15일 자료에서 이미 충족</strong>(서비스 정의 원문) — 무효 반증선</td></tr>
+<tr><td>"7월 15일 이후 33일 침묵 = 지연 신호"</td><td>부재의 관측이다. 기저율은 5건/72일이나 표본이 5건뿐이고, <strong>5월 27일 → 7월 15일에 49일 공백 뒤 최대 발표</strong>가 나온 전례가 있다. <strong>증거력 1/5</strong></td></tr>
+</table>
+</div>
+<div class="read"><strong>읽기:</strong> 판정 전체를 10월 명단에 걸어 두는 것 자체가 위험하다. 8월 17일 현재 뉴스룸 최신은 7월 27일이고 <strong>10월 출시 관련 신규 발표는 0건</strong>이며, 상용 출시가 파일럿형 참가사 명단을 동반한다는 보장도 없다 — <strong>관측 불발이 유력한 시나리오 중 하나</strong>다.</div>
+
+<h3>7-4. 종합</h3>
+<p>DTCC의 토큰화 사업을 <strong>주어로 놓고</strong> 보면, 흔한 두 서사가 모두 조정된다.</p>
+<p><strong>"느린 현직자가 뒤늦게 따라온다"</strong>는 틀렸다 — 기술은 사서 왔고(2023-10), 규제 인가에서 상용까지 10개월이며, 매출은 3년 연속 가속 중이다. <strong>그러나 "DTCC가 토큰화 주식을 가져간다"도 아직 아니다</strong> — 10월에 켜지는 것은 라이프사이클 자동화가 빠진 이동 가능한 예탁 표시이고, 주식으로 자산군이 명시된 실행은 2종뿐이며, 요율·고객은 전부 미공시다.</p>
+<p>가장 정확한 요약은 이렇다. <strong>DTCC는 토큰화 주식 시장의 "아래층"을 자기 규모로 덮으면서, 그 위층에 쓰이는 도구(발행 엔진·명부 소프트웨어·데이터 대사)를 동시에 기능으로 노출했다.</strong> 아래층에서 렌트가 걷히는지는 원가 전제가 검증되지 않아 열려 있고, 위층 도구가 실제로 팔리는지는 고객 0건 확인이라 열려 있다. <strong>두 개의 열린 질문이 같은 미공시 위에 서 있고, 어느 쪽으로 닫히느냐가 이 층의 경제학을 가른다.</strong></p>
+</div>
+
+<!-- ===================== 8 ===================== -->
+<div class="card" id="s8">
+<h2>8. 이 분석의 한계</h2>
+<ol>
+<li><strong>DTCC는 비상장이다</strong> → 사업부 매출·토큰화 요율·손익 <strong>전부 미공시</strong>. DTCC 측 정량은 자사 연차보고서·보도자료뿐이며 감사 대상 세그먼트 분해가 아니다.</li>
+<li>🔴 <strong>"원가·회원 소유" 진술이 1차 자료에 0건</strong> — 지난 두 보고서의 결론을 떠받치던 전제이며 이번에 <span class="lab">미확인</span>으로 격하했다. <strong>최우선 검증 항목.</strong></li>
+<li><strong>SEC 무조치 의견서 원문 미열람</strong> — 대상 자산 범위·조건·기한이 전부 보도자료 요약 인용에 의존한다. §5-2 R2 채점의 최대 약점이다.</li>
+<li><strong>7월 15일 실거래의 금액·건수 미공시</strong> — <em>"가장 큰 토큰화 프로덕션 이니셔티브"</em>는 검증 불가한 자기 진술이다.</li>
+<li><strong>워킹그룹 100곳 이상의 전체 명단 미공개</strong>(공개는 57 + 38뿐). 명단이 전수라는 보장이 없어 <strong>부재 추론의 강도에 상한</strong>이 있다.</li>
+<li><strong>DTCC 2024년 영업이익·자기자본 시계열 미확보</strong> → 이익 귀속 경로 3개 전부 관측 불가. 2024년 결제 건수 미확보로 단위 요율 하락에서 가격효과를 분리할 수 없다.</li>
+<li><strong>사모시장 3,131·13,949의 서비스 성격 미확인</strong> — 연차보고서에서 토큰화 서술과 분리 제시된 별도 운영 지표다. §5-2 R2 재채점의 검증에 필요하며, <strong>미확인 지표 위에서 채점을 내렸다는 순환</strong>을 스스로 기록해 둔다. 확인되면 복원 가능하다.</li>
+<li><strong>서드파티 파생 88%의 분해 자료 0건</strong> — 이 분석 최대의 공백이다. 트윈과 합성형의 몫을 알지 못한다.</li>
+<li><strong>세큐리타이즈 측 수치는 이번 세션 재수집이 아니라 기존 1차 판독물 재사용</strong>(2026-08-17 기준). 기술 서술의 근거 문서는 3월자로 5개월 경과했다.</li>
+<li><strong>제품 페이지의 시점 불일치 징후</strong> — 워킹그룹 규모를 "50곳 이상"으로 적어 7월 보도자료의 "100곳 이상"과 어긋나고, Arc가 미표기다. 페이지 기반 결론은 시점 리스크를 안는다.</li>
+</ol>
+
+<hr>
+<h3>출처 (전부 2026-08-17 자사 원문 직접 열람)</h3>
+<ul style="font-size:.9em">
+<li><a href="https://www.dtcc.com/news/2026/july/15/dtcc-turns-tokenization-into-reality">DTCC 보도자료 2026-07-15 — DTCC Turns Tokenization into Reality</a> (참가사 38곳·거래 7종·10월 출시·무조치 의견서·워킹그룹 100+)</li>
+<li><a href="https://www.dtcc.com/news/2026/may/04/dtcc-advances-development-of-new-tokenization-service">DTCC 보도자료 2026-05-04 — 워킹그룹 57곳 명단 + 타임라인</a></li>
+<li><a href="https://www.dtcc.com/news/2026/may/27/tokenization-service-to-connect-with-stellar-public-blockchain-as-dtc-advances-multi-chain-strategy">DTCC 보도자료 2026-05-27 — Stellar 연결(2027 상반기)·대상 자산군</a></li>
+<li><a href="https://www.dtcc.com/news/2026/may/13/tokenized-collateral-could-unlock-billions-in-capital-and-transform-liquidity-management">DTCC 보도자료 2026-05-13 — 토큰화 담보 백서</a> · <a href="https://www.dtcc.com/news/2026/may/12/dtcc-collaborates-with-chainlink-to-advance-24-7-collateral-management">2026-05-12 — Chainlink 협업</a> · <a href="https://www.dtcc.com/news/2026/june/29/nscc-now-live-with-clearing-hours-extended">2026-06-29 — NSCC 24x5 가동</a></li>
+<li><a href="https://www.dtcc.com/digital-assets/tokenization">제품 페이지 — Tokenization</a> (편익 4·토큰 통제권·Current Networks 3) · <a href="https://www.dtcc.com/digital-assets/composerx/factory">ComposerX Factory</a> (ERC-3643·개방표준·호환 체인) · <a href="https://www.dtcc.com/digital-assets/composerx/capital-markets-platform">Capital Markets Platform</a> (이전대리 기능) · <a href="https://www.dtcc.com/digital-assets/composerx/ledgerscan">LedgerScan</a> · <a href="https://www.dtcc.com/digital-assets/collateral-appchain">Collateral AppChain</a> · <a href="https://www.dtcc.com/digital-assets/launchpad">Digital Launchpad</a> (4축·참여 등급)</li>
+<li><a href="https://annuals.dtcc.com/2025">DTCC 2025 연차보고서</a> (매출 $2,896M·영업이익 $629.9M·자기자본 $4,855M·보관 $114조·사모시장 3,131/13,949) · <a href="https://www.dtcc.com/annuals/2024/">2024 연차보고서</a> (매출 3년 시계열)</li>
+<li><a href="https://www.dtcc.com/about/leadership/executive-committee/nadine-chakar">DTCC 임원 프로필 — Nadine Chakar</a> (Securrency 인수 2023-10·기술 계보)</li>
+<li>세큐리타이즈 측 수치 — 기존 1차 판독물(2026 2분기 실적자료·컨퍼런스콜·규제 서류) 재사용, 2026-08-17 기준</li>
+</ul>
+<p style="font-size:.88em;color:#6b6250">직전 관련 보고서 — <a href="2026-08-06_dtcc-vs-secz-competition.html">DTCC × 세큐리타이즈 경쟁의 실제 구조 (8/6)</a> · <a href="2026-08-07_tokenization-five-way-layers.html">토큰화 인프라 5파전 (8/7)</a> · <a href="2026-08-17_secz-tokenized-stock-role-revenue.html">세큐리타이즈의 역할·수익원 (8/17)</a></p>
+
+<footer>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</footer>
+</div>
+
+</div>
