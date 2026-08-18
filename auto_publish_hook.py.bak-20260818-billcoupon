@@ -1,0 +1,352 @@
+#!/usr/bin/env python3
+# Report Vault 자동 발행 훅 (2026-07-22 · 사용자 선택 = 훅 방식)
+# Stop 훅으로 호출 → 정기 모니터링 스킬이 새로 만든 보고서를 감지 → 메타 주입 → 안전 게이트 → vault push.
+# 안전 설계: ① 허용목록(allowlist)만 대상(매핑에 없으면 발행 안 함) ② 개인정보 패턴 발견 시 그 파일만 차단
+#           ③ manifest로 기존 보고서는 seed 처리(과거분 자동 발행 안 됨) ④ 항상 exit 0(세션 종료 방해 금지)
+import fnmatch, json, os, re, shutil, subprocess, sys, datetime, pathlib
+
+HOME = pathlib.Path.home()
+DOC = HOME / "Documents/Claude"
+VAULT = DOC / "Vault_Public"
+REPORTS = VAULT / "reports"
+MANIFEST = VAULT / ".vault_manifest.json"
+LOG = VAULT / "auto_publish.log"
+
+# ── 허용목록: (소스 dir, glob, stage, topic) — 정기 모니터링 스킬만. 🔒 port-review·chart-dive는 애초에 여기 없음.
+#    새 스킬을 자동발행에 넣으려면 여기 한 줄 추가. 단일 Deep-Dive/R-Dive 등 one-off는 의도적으로 제외(수동 발행).
+ALLOWLIST = [
+    ("Screening_Reports",              "Screening_*.html",  "Monitoring", "스크리닝"),
+    ("Macro_Reports",                  "*.html",            "Monitoring",     "매크로"),
+    ("Macro_Reports/macro-daily",      "*.html",            "Monitoring",     "매크로"),
+    ("Macro_Reports/macro-weekly",     "*.html",            "Monitoring",     "매크로"),
+    # 🆕 2026-08-01 — tfp-monitor(생산성 7-고리 진단) 월간. 과거 3건(6/1·6/6·6/29)은 manifest seed 등록 → 백필 안 됨.
+    ("Macro_Reports/tfp-monitor",      "*.html",            "Monitoring",     "생산성"),
+    # 🆕 2026-08-04 — YC-monthly(엔캐리 청산 risk 진단) 월간. 과거 2건(6/9·6/29)은 manifest seed 등록 → 백필 안 됨.
+    ("Macro_Reports/YC-monthly",       "*.html",            "Monitoring",     "엔캐리"),
+    ("Kgap_Reports",                   "*.html",            "Monitoring",     "K-shape"),
+    ("Kgap_Reports/Weekly",            "*.html",            "Monitoring",     "K-shape"),
+    ("GOV_Reports",                    "*.html",            "Monitoring",     "정책"),
+    ("POL_Reports",                    "*.html",            "Monitoring",  "정치"),
+    ("Arctic_Reports",                 "*.html",            "Monitoring",  "북극"),
+    ("Opt_Reports",                    "*.html",            "Monitoring",  "광통신"),
+    ("Optics_Reports",                 "*.html",            "Research",    "광학"),   # 🆕 2026-07-24 광학 학습·원문 쉬운 풀이 자료 → [광학] 폴더 자동 등재
+    # 🔴 2026-08-13 경로 정정 — 구 배선 "AAX_Weekly"(평면 glob)는 실제 저장 위치인
+    #    AAX_Weekly/Reports/ 를 못 봐서 신설 이후 단 한 건도 자동 발행되지 않았다(manifest AAX 키 0건).
+    #    GFS/Reports 정정과 같은 취지. 과거분 24건은 manifest에 seed_backfill_excluded로 등록해 백필 차단.
+    ("AAX_Weekly/Reports",             "*.html",            "Monitoring",  "AI 구조"),   # 🔴 2026-08-13 topic 정정: 기존 발행분 10건이 "AI 구조" — "방산·AI"로 두면 그룹이 갈린다
+    ("PAI/Reports",                    "*.html",            "Monitoring",  "Physical AI"),
+    ("IREN/Reports",                   "*.html",            "Monitoring",  "IREN"),
+    ("SECZ/Reports",                   "*.html",            "Monitoring",  "SECZ"),
+    ("CRCL/Reports",                   "*.html",            "Monitoring",  "CRCL"),
+    ("RKLB/Reports",                   "*.html",            "Monitoring",  "RKLB"),
+    # 🆕 2026-08-08 — SPCX-daily / SPCX-weekly 신설(AAX-weekly에서 SpaceX 분리) 동반 배선.
+    #    🔴 패턴을 "SPCX_*.html"로 좁힌 이유 = 같은 폴더의 기존 one-off 분석 3건(SpaceX_Lockup_*·SpaceX_Funding_*)은
+    #    포트폴리오·매수 매트릭스가 들어 있어 발행 대상이 아니다(GFS/Reports 오발행 방지와 같은 취지).
+    ("SpaceX/Reports",                  "SPCX_*.html",       "Monitoring",  "SPCX"),
+    ("DeepDive_Reports/GFS/Daily",     "*.html",            "Monitoring",  "GFS"),   # 🔴 GFS daily 실제 저장 위치(구 GFS/Reports는 one-off 분석용·오발행 방지 제거)
+    ("DeepDive_Reports/GFS/Weekly",    "*.html",            "Monitoring",  "GFS"),
+    ("LEU/Reports",                    "*.html",            "Monitoring",  "LEU"),
+    ("PLTR/Reports",                   "*.html",            "Monitoring",  "PLTR"),
+    ("DRAM/Daily",                     "*.html",            "Monitoring",  "메모리"),
+    ("DRAM/Weekly",                    "*.html",            "Monitoring",  "메모리"),
+    ("quantum-memory/INFQ/Reports",    "*.html",            "Monitoring",  "INFQ"),
+    # 🆕 2026-08-08 사용자 지시 — IONQ-weekly 신설 편입. 🔵 0주 관찰 종목이나 SkyWater 편입으로
+    #    결합 매출의 2/3가 파운드리가 된 정체성 전환 추적 대상 → 다른 종목 weekly와 동일 규약.
+    ("IONQ/Reports",                   "*.html",            "Monitoring",  "IONQ"),
+    ("INTC_Reports",                   "INTC_weekly_*.html","Monitoring",  "INTC"),
+    # 🆕 2026-07-30 사용자 지시 — 연준·재무부 보고서 전용 폴더 → [FED·재무부] 탭.
+    #    기본 topic=연준. 재무부/국채 보고서는 파일 head에 vault-topic을 직접 넣으면 그 값이 유지된다(inject_meta는 기존 메타 보존).
+    ("Fed_Treasury_Reports",           "*.html",            "Research",    "연준"),
+]
+
+# 🔴 2026-08-08 사용자 지시 — macro-daily / macro-weekly 보고서는 [FED·재무부] 폴더에 들어가면 안 된다.
+#   inject_meta는 "파일이 이미 달고 온 메타는 보존"이라, 스킬이 head에 vault-topic=유동성(또는 연준·금리…)을
+#   직접 써 오면 그 값이 살아남아 FED·재무부 폴더의 topics OR-매칭에 걸린다(2026-08-07 daily·08-08 weekly 실사고).
+#   → 아래 파일명 패턴에 걸리는 산출물은 파일이 뭘 달고 오든 훅이 canonical topic으로 강제 교체한다.
+#   경로가 아니라 파일명 기준인 이유 = 같은 Macro_Reports 안에 Bill_Coupon 같은 진짜 재무부 one-off가 섞여 있어
+#   (그건 topic=재무부로 FED 폴더에 남아야 한다) 폴더 단위 강제는 과잉이기 때문.
+#   🆕 stage도 같이 강제(2026-08-08 사용자 "Monitoring으로 통일") — 루틴 매크로가 stage=Macro로 오면
+#   날짜 묶음의 '루틴 기록 N건' 접힘(ROUTINE_STAGE=Monitoring)에서 빠져 목록을 덮는다.
+FORCE_META = [
+    ("Macro_Daily_*.html",  "매크로", "Monitoring"),
+    ("Macro_Weekly_*.html", "매크로", "Monitoring"),
+]
+
+# ⚠️🔴 의도적 제외 — `EarningsCall_Reports` (구 BigTech_Reports · 2026-08-06 개명)
+#    여기에 추가하지 말 것. 추가하면 훅이 stage="Monitoring"·topic={폴더명}을 자동 주입해
+#    어닝콜 보고서가 build_vault 의 [Earning Call] 고정 탭(매칭 = topic="어닝콜")에서 빠지고,
+#    Call-Dive 의 수동 발행분과 중복 등재된다.
+#    → 어닝콜은 stage="Research" + topic="어닝콜" 메타를 보고서에 직접 넣고 publish.sh 로 수동 발행한다.
+#    규약 owner = ~/Documents/Claude/.claude/skills/Call-Dive/SKILL.md §저장·발행 규약
+
+# ── Dive 계열 자동발행 (2026-07-23, 사용자 지시) — {경로}/{티커}/*.html 구조(1단계 하위폴더).
+#    stage="Dive" · topic=폴더명(티커) · <meta name="vault-skill"> 주입 → build_vault 고정탭(Deep-Dive) 매칭.
+#    🔒 제외: chart-dive(Chart_Reports)·port-review = 비공개 전용이라 애초에 미포함.
+#    🔒 one-page-thesis = OnePager/{ticker}_{date}.html 평면구조 → layout="flat"(폴더 아닌 파일명서 티커 추출).
+#    ⚠️ 과거분(신설 시점 이전 분)은 seed_backfill_excluded 로 manifest 등록 → 자동발행 안 됨(백필 금지 정책).
+#    layout: "nested" = {티커}/*.html (topic=폴더명) · "flat" = {티커}_{date}.html (topic=파일명 앞토큰)
+DIVE_ALLOWLIST = [
+    ("DeepDive_Reports",   "Deep-Dive",       "nested"),
+    ("RDive_Reports",      "R-Dive",          "nested"),
+    ("PeopleDive_Reports", "People-Dive",     "nested"),
+    ("HistoryDive_Reports","History-Dive",    "nested"),
+    ("OnePager",           "one-page-thesis", "flat"),
+]
+DIVE_TOPIC_SKIP = {"Compare", "compare", "비교", "raw_data", "Daily", "Weekly", "_index"}  # 비교분석·원자료·(GFS)daily/weekly·인덱스 제외
+DRY = bool(os.environ.get("VAULT_DRY"))          # VAULT_DRY=1 → 실제 write/push 없이 발행 대상만 로그(검증용)
+
+# 개인정보·포트폴리오 차단 패턴 = check_publication_safety.py의 BANNED를 단일 출처로 재사용(드리프트 방지).
+# (게이트를 수정하면 훅도 자동 반영. import 시 스캔 미실행 — 게이트는 __main__ 가드됨.)
+try:
+    sys.path.insert(0, str(VAULT))
+    from check_publication_safety import BANNED
+except Exception:
+    BANNED = [(r"함희정", "실명"), (r"heejeongham", "로컬 계정"), (r"oogamecooo", "이메일/계정"), (r"/Users/", "로컬 경로")]  # fallback
+
+
+def log(msg):
+    ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(LOG, "a", encoding="utf-8") as f:
+        f.write(f"[{ts}] {msg}\n")
+
+
+def load_manifest():
+    if MANIFEST.exists():
+        try:
+            return json.loads(MANIFEST.read_text(encoding="utf-8"))
+        except Exception:
+            return {}
+    return {}
+
+
+def slugify(name):
+    s = re.sub(r"\.html?$", "", name)
+    s = re.sub(r"20\d\d[-_]\d\d[-_]\d\d", "", s).lower()   # 날짜 제거(파일명 앞에 별도 부착)
+    s = re.sub(r"[^0-9a-z가-힣]+", "-", s).strip("-")       # 언더스코어 포함 비영숫자 → 하이픈
+    return s or "report"
+
+
+def find_date(name):
+    m = re.search(r"(20\d\d)[-_](\d\d)[-_](\d\d)", name)
+    if m:
+        return f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
+    return datetime.date.today().isoformat()
+
+
+def has_meta(txt, name):
+    return re.search(rf'<meta\s+name=["\']{name}["\']', txt, re.I) is not None
+
+
+def inject_meta(txt, stage, topic, date, title, skill=None):
+    """vault 메타가 없으면 <head>(또는 최상단)에 주입. 이미 있으면 그 값 유지."""
+    add = []
+    if not has_meta(txt, "vault-stage"):
+        add.append(f'<meta name="vault-stage" content="{stage}">')
+    if not has_meta(txt, "vault-topic"):
+        add.append(f'<meta name="vault-topic" content="{topic}">')
+    if skill and not has_meta(txt, "vault-skill"):
+        add.append(f'<meta name="vault-skill" content="{skill}">')
+    if not has_meta(txt, "vault-date"):
+        add.append(f'<meta name="vault-date" content="{date}">')
+    # 발행일(= 이 훅이 도는 날). vault-date는 '보고서 기준일'이라 둘이 어긋날 수 있고
+    # (예: 7/30에 만든 7/29 FOMC 회견 완역), 카드에 '발행 M/D'로 병기해 어긋남을 보이게 한다.
+    if not has_meta(txt, "vault-published"):
+        add.append(f'<meta name="vault-published" content="{datetime.date.today().isoformat()}">')
+    if not has_meta(txt, "description"):
+        desc = re.sub(r'["\']', "", title)[:120]
+        add.append(f'<meta name="description" content="{desc}">')
+    if not has_meta(txt, "robots"):
+        add.append('<meta name="robots" content="noindex, nofollow">')
+    if not add:
+        return txt
+    block = "\n".join(add) + "\n"
+    if re.search(r"</head>", txt, re.I):
+        return re.sub(r"</head>", block + "</head>", txt, count=1, flags=re.I)
+    if re.search(r"</title>", txt, re.I):
+        return re.sub(r"(</title>)", r"\1\n" + block, txt, count=1, flags=re.I)
+    return block + txt          # <head> 없는 조각 HTML → 최상단
+
+
+def check_banned(txt):
+    for pat, why in BANNED:
+        if re.search(pat, txt):
+            return why
+    return None
+
+
+def _clean_title(s):
+    s = re.sub(r"<[^>]+>", "", s)                          # 내부 태그(<strong> 등) 제거
+    s = re.sub(r"[*_`]+", "", s)                            # 마크다운 잔재
+    s = re.sub(r"^[\s←-⯿️\U0001F000-\U0001FAFF]+", "", s)  # 선두 이모지/기호/공백
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def get_title(txt, fallback):
+    # 🔴 2026-07-22 — H1 우선. 변환기가 남긴 stale <title>(예: SECZ "주간 심층 분석 — 6/06")보다
+    #   보고서 본문 <h1>이 항상 정확·날짜 포함. 이모지·태그·마크다운 제거 후 사용. (없으면 <title>→파일명)
+    h = re.search(r"<h1[^>]*>(.*?)</h1>", txt, re.I | re.S)
+    if h:
+        t = _clean_title(h.group(1))
+        if len(t) >= 4:
+            return t
+    m = re.search(r"<title>([^<]*)</title>", txt, re.I)
+    return (m.group(1).strip() if m else "") or fallback
+
+
+def restore_collapsible(txt):
+    # 🔴 2026-07-22 — 여러 md2html 변환기가 html.escape로 raw <details>/<summary>를 이스케이프해
+    #   접이식 "배경" 섹션이 리터럴 텍스트로 표시되는 버그 복원. 정확히 이 4개 태그만 안전 복원(+ <p> 래퍼 제거).
+    txt = re.sub(r'<p>\s*(&lt;details&gt;.*?&lt;/summary&gt;)\s*</p>', r'\1', txt, flags=re.S)
+    txt = re.sub(r'<p>\s*(&lt;/details&gt;)\s*</p>', r'\1', txt)
+    for a, b in (('&lt;details&gt;', '<details>'), ('&lt;summary&gt;', '<summary>'),
+                 ('&lt;/summary&gt;', '</summary>'), ('&lt;/details&gt;', '</details>')):
+        txt = txt.replace(a, b)
+    return txt
+
+
+def set_title(txt, title):
+    # 게시본 <title>을 H1 도출 제목으로 정규화(stale <title> 교체) → build_vault 카드·브라우저 탭 일치.
+    esc = title.replace("<", "").replace(">", "")
+    if re.search(r"<title>.*?</title>", txt, re.I | re.S):
+        return re.sub(r"<title>.*?</title>", f"<title>{esc}</title>", txt, count=1, flags=re.I | re.S)
+    if re.search(r"</head>", txt, re.I):
+        return re.sub(r"</head>", f"<title>{esc}</title></head>", txt, count=1, flags=re.I)
+    return f"<title>{esc}</title>\n" + txt
+
+
+def force_meta(txt, name):
+    """FORCE_META 대상이면 파일이 달고 온 vault-topic·vault-stage 메타를 제거하고 canonical 값을 돌려준다
+    (제거만 하면 뒤이은 inject_meta가 canonical 값으로 새로 넣는다). 대상 아니면 (원문, None, None)."""
+    for pat, topic, stage in FORCE_META:
+        if fnmatch.fnmatch(name, pat):
+            for key in ("vault-topic", "vault-stage"):
+                txt = re.sub(rf'\s*<meta\s+[^>]*name=["\']{key}["\'][^>]*>', "", txt, flags=re.I)
+            return txt, topic, stage
+    return txt, None, None
+
+
+def main():
+    manifest = load_manifest()
+    published, blocked = [], []
+
+    for rel, glob, stage, topic in ALLOWLIST:
+        d = DOC / rel
+        if not d.is_dir():
+            continue
+        for src in sorted(d.glob(glob)):
+            key = str(src)
+            mtime = src.stat().st_mtime
+            if manifest.get(key, {}).get("mtime") == mtime:
+                continue                                   # 변화 없음 → skip
+            txt = src.read_text(encoding="utf-8", errors="ignore")
+            why = check_banned(txt)
+            if why:
+                manifest[key] = {"mtime": mtime, "status": "blocked", "why": why}
+                blocked.append(f"{rel}/{src.name} ({why})")
+                continue
+            date = find_date(src.name)
+            title = get_title(txt, src.stem)
+            # 특례: IREN 인프라 현황 = evergreen → 전용 topic + 고정 이름(날짜 없음·항상 같은 URL)
+            if "Infrastructure_Status" in src.name:
+                topic_use, stage_use, destname = "IREN 인프라", "Analysis", "iren-infrastructure"
+            else:
+                topic_use, stage_use, destname = topic, stage, f"{date}_{slugify(src.name)}"
+                if date not in title:            # H1이 날짜를 빠뜨렸으면 파일명 날짜 부착(카드 제목 날짜 보장)
+                    title = f"{title} — {date}"
+            # 🔴 macro daily/weekly 등 = 파일이 선언한 topic·stage보다 canonical 값 우선
+            txt, f_topic, f_stage = force_meta(txt, src.name)
+            if f_topic:
+                topic_use, stage_use = f_topic, f_stage
+            out = inject_meta(txt, stage_use, topic_use, date, title)
+            out = set_title(out, title)          # 🔴 게시본 <title> 정규화(H1 도출·stale 교체)
+            out = restore_collapsible(out)       # 🔴 이스케이프된 <details>/<summary> 접이식 복원
+            dest = REPORTS / f"{destname}.html"
+            if not DRY:
+                dest.write_text(out, encoding="utf-8")
+                manifest[key] = {"mtime": mtime, "status": "published", "dest": dest.name}
+            published.append(dest.name)
+
+    # ── Dive 계열 (stage=Dive · vault-skill 주입 · nested=티커폴더 / flat=평면 파일명)
+    for rel, skill, layout in DIVE_ALLOWLIST:
+        base = DOC / rel
+        if not base.is_dir():
+            continue
+        srcs = base.glob("*/*.html") if layout == "nested" else base.glob("*.html")
+        for src in sorted(srcs):
+            if layout == "nested":
+                topic = src.parent.name                                    # 폴더명 = 티커
+            else:                                                          # flat: {티커}_{date} → 앞토큰
+                topic = re.split(r"_?20\d\d[-_]\d\d[-_]\d\d", src.stem)[0].strip("_") or src.stem.split("_")[0]
+            if topic in DIVE_TOPIC_SKIP or src.stem in DIVE_TOPIC_SKIP:
+                continue
+            key = str(src)
+            mtime = src.stat().st_mtime
+            if manifest.get(key, {}).get("mtime") == mtime:
+                continue                            # seed 포함 — 변화 없으면 skip(과거분 자동 차단)
+            txt = src.read_text(encoding="utf-8", errors="ignore")
+            why = check_banned(txt)
+            if why:
+                if not DRY:
+                    manifest[key] = {"mtime": mtime, "status": "blocked", "why": why}
+                blocked.append(f"{rel}/{topic}/{src.name} ({why})")
+                continue
+            date = find_date(src.name)
+            title = get_title(txt, src.stem)
+            if date not in title:
+                title = f"{title} — {date}"
+            out = inject_meta(txt, "Dive", topic, date, title, skill=skill)
+            out = set_title(out, title)
+            out = restore_collapsible(out)
+            dest = REPORTS / f"{date}_{slugify(src.name)}.html"
+            if not DRY:
+                dest.write_text(out, encoding="utf-8")
+                manifest[key] = {"mtime": mtime, "status": "published", "dest": dest.name}
+            published.append(f"[{skill}/{topic}] {dest.name}")
+
+    if DRY:
+        log("DRY-RUN 발행대상 %d건: %s | 차단 %d건: %s"
+            % (len(published), ", ".join(published) or "(없음)", len(blocked), ", ".join(blocked) or "(없음)"))
+        print("DRY-RUN 발행대상 %d건:" % len(published))
+        for x in published:
+            print("  +", x)
+        print("DRY-RUN 차단 %d건:" % len(blocked))
+        for x in blocked:
+            print("  ✗", x)
+        return
+
+    MANIFEST.write_text(json.dumps(manifest, ensure_ascii=False, indent=1), encoding="utf-8")
+
+    if blocked:
+        log("차단(개인정보 패턴): " + " / ".join(blocked))
+    if not published:
+        return
+
+    # 안전 게이트(하드 백스톱) → 실패 시 발행 중단(원인 로그)
+    gate = subprocess.run([sys.executable, str(VAULT / "check_publication_safety.py")],
+                          capture_output=True, text=True)
+    if gate.returncode != 0:
+        log("안전 게이트 실패 — 발행 중단:\n" + gate.stdout[-1500:])
+        return
+
+    subprocess.run([sys.executable, str(VAULT / "build_vault.py")], capture_output=True, text=True)
+    try:
+        subprocess.run(["git", "-C", str(VAULT), "add", "-A"], check=True, capture_output=True)
+        subprocess.run(["git", "-C", str(VAULT), "commit", "-m",
+                        f"자동 발행 {len(published)}건: {', '.join(published[:4])}"],
+                       check=True, capture_output=True)
+        subprocess.run(["git", "-C", str(VAULT), "push", "origin", "main"],
+                       check=True, capture_output=True, timeout=120)
+        log(f"발행 성공 {len(published)}건: {', '.join(published)}")
+    except Exception as e:
+        log(f"git push 실패: {e}")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as e:
+        try:
+            log(f"훅 예외: {e}")
+        except Exception:
+            pass
+    sys.exit(0)          # 세션 종료를 절대 막지 않음

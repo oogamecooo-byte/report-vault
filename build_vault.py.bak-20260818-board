@@ -1,0 +1,396 @@
+#!/usr/bin/env python3
+# Report Vault 인덱서 — reports/ 를 매번 새로 스캔해 index.html 재생성 (등록 방식 ❌ · 스캔 방식 ⭕ → stale 인덱스가 구조적으로 불가능)
+# 테마: 세이지 라이트(A안)
+# 레이아웃 v4 (2026-07-26) — ① 본문 날짜별 묶음(sticky 날짜 헤더 + 그날 루틴은 접이식 한 줄로 압축)
+#                              ② 사이드바 아코디언(폴더=종목/테마/형식 3그룹 · 주제=자동 생성 · 분류=단계) — 단일 선택[라디오] 유지
+import re, html, pathlib, datetime
+
+ROOT = pathlib.Path(__file__).parent
+REPORTS = ROOT / "reports"
+STAGES = ["Monitoring", "Macro", "Discovery", "Research", "Analysis", "Dive", "Thesis"]
+BADGE = {"Monitoring": "MO", "Macro": "MA", "Discovery": "DS", "Research": "RS", "Analysis": "AN", "Dive": "DV", "Thesis": "TH"}
+BADGE_COLOR = {"Monitoring": "#2f9e8f", "Macro": "#4da3d8", "Discovery": "#4fc08d", "Research": "#a98ee0", "Analysis": "#e06c5f", "Dive": "#1F6F8B", "Thesis": "#d4af5a"}
+# Dive 단계 (2026-07-23) — Dive 계열 스킬(Deep-Dive·R-Dive·People-Dive·History-Dive·chart-dive·one-page-thesis)
+#   보고서 전용. 어느 스킬 산출물인지는 <meta name="vault-skill">로 구분(예: Deep-Dive).
+
+# 루틴(정기 모니터링) 단계 — 날짜 묶음 안에서 접이식 한 줄로 압축된다. 매일 쌓이는 daily/weekly가 목록을 덮는 것 방지.
+ROUTINE_STAGE = "Monitoring"
+DAY_GROUP_WINDOW = 45      # 최근 N일 = 날짜(일)별 묶음 / 그보다 오래된 것 = 월별 묶음
+AUTO_TOPIC_MIN = 2         # 사이드바 "주제" 자동 생성 최소 건수(1건짜리는 검색으로)
+WD = "월화수목금토일"
+
+# 폴더 섹션 — topic/topics/skill + (선택)stage 조건 복합 필터. 추가/교체는 여기만.
+#   group: 사이드바 소제목(종목/테마/형식) · topic: 그 주제만 / topics: 여러 주제 중 하나(OR)
+#   skill_is: 그 스킬 산출물만 · stage_is·stage_not: 단계 조건 (미지정 조건은 전체 통과)
+PINNED = [
+    {"group": "종목", "label": "IREN 인프라", "badge": "IREN", "color": "#1E5F45", "topic": "IREN 인프라"},
+    {"group": "종목", "label": "IREN 중요",  "badge": "IREN", "color": "#2F7D5B", "topic": "IREN", "stage_not": "Monitoring"},
+    {"group": "종목", "label": "IREN 루틴",  "badge": "IREN", "color": "#6FA98C", "topic": "IREN", "stage_is": "Monitoring"},
+    {"group": "종목", "label": "SECZ 중요",  "badge": "SECZ", "color": "#8A6D2F", "topic": "SECZ", "stage_not": "Monitoring"},
+    {"group": "종목", "label": "SECZ 루틴",  "badge": "SECZ", "color": "#B79A5E", "topic": "SECZ", "stage_is": "Monitoring"},
+    # 테마 폴더 — 양자(2026-07-23)·광학(2026-07-24). 순수 주제 + 관련 종목/산업 topic OR-매칭.
+    {"group": "테마", "label": "양자", "badge": "Q", "color": "#7A3FBF", "topics": ["양자", "INFQ", "IONQ", "LAES"]},
+    {"group": "테마", "label": "광학", "badge": "光", "color": "#0E8FA3", "topics": ["광학", "광통신"]},
+    # FED·재무부(2026-07-30 사용자 지시) — 연준/재무부 관련 보고서 모음. 통화정책·국채·유동성·재정 topic OR-매칭.
+    {"group": "테마", "label": "FED·재무부", "badge": "FED", "color": "#1D3A5F",
+     "topics": ["연준", "재무부", "국채", "금리", "유동성", "재정"]},
+    {"group": "형식", "label": "Daily Screening", "badge": "SCAN", "color": "#3E5C8A", "topic": "스크리닝"},
+    {"group": "형식", "label": "Earning Call", "badge": "CALL", "color": "#6B4E8A", "topic": "어닝콜"},
+    {"group": "형식", "label": "Deep-Dive", "badge": "DIVE", "color": "#1F6F8B", "skill_is": "Deep-Dive"},
+]
+PIN_GROUPS = ["종목", "테마", "형식"]
+
+
+def pin_match(i, p):
+    ts = i.get("topics") or [i["topic"]]          # 보조 주제(vault-topics) 포함 — 한 보고서가 두 폴더에 동시 소속 가능
+    if p.get("topic") and p["topic"] not in ts:
+        return False
+    if p.get("topics") and not (set(p["topics"]) & set(ts)):
+        return False
+    if p.get("skill_is") and i.get("skill") != p["skill_is"]:
+        return False
+    if p.get("stage_is") and i["stage"] != p["stage_is"]:
+        return False
+    if p.get("stage_not") and i["stage"] == p["stage_not"]:
+        return False
+    return True
+
+
+def get_meta(txt: str, name: str) -> str:
+    m = re.search(rf'<meta\s+name=["\']{name}["\']\s+content=["\']([^"\']*)["\']', txt, re.I)
+    if not m:
+        m = re.search(rf'<meta\s+content=["\']([^"\']*)["\']\s+name=["\']{name}["\']', txt, re.I)
+    return m.group(1).strip() if m else ""
+
+
+def collect():
+    items = []
+    if not REPORTS.exists():
+        return items
+    for p in sorted(REPORTS.glob("*.html")):
+        txt = p.read_text(encoding="utf-8", errors="ignore")[:30000]
+        tm = re.search(r"<title>([^<]*)</title>", txt, re.I)
+        title = (tm.group(1).strip() if tm else "") or p.stem
+        title = re.sub(r"\s*\|\s*20\d{2}-\d{2}-\d{2}\s*$", "", title)
+        stage = get_meta(txt, "vault-stage").capitalize()
+        if stage not in STAGES:
+            stage = "Research"
+        date = get_meta(txt, "vault-date")
+        if not date:
+            dm = re.search(r"(20\d{2}-\d{2}-\d{2})", p.name)
+            date = dm.group(1) if dm else ""
+        summary = get_meta(txt, "description") or "요약 없음"
+        topic = get_meta(txt, "vault-topic") or get_meta(txt, "vault-series") or "기타"
+        # 🆕 2026-08-16 보조 주제(vault-topics, 쉼표/| 구분) — 형식 폴더(어닝콜 등)에 있으면서
+        #    종목 폴더([SECZ 중요] 등)에도 같이 걸려야 하는 보고서용. 카드 표시·정렬은 주 topic 기준 그대로.
+        extra = [t.strip() for t in re.split(r"[,|]", get_meta(txt, "vault-topics")) if t.strip()]
+        topics = [topic] + [t for t in extra if t != topic]
+        skill = get_meta(txt, "vault-skill")
+        # 발행일이 기준일(vault-date)과 다를 때만 카드에 병기 — 같은 날이면 노이즈라 비운다.
+        pub = get_meta(txt, "vault-published")
+        if pub == date:
+            pub = ""
+        items.append({"file": p.name, "title": title, "stage": stage, "date": date, "summary": summary,
+                      "topic": topic, "topics": topics, "skill": skill, "pub": pub})
+    items.sort(key=lambda x: (x["date"], x["file"]), reverse=True)
+    return items
+
+
+# ── 날짜 묶음 ────────────────────────────────────────────────────────────────
+def group_of(ds, today):
+    """(묶음키, 라벨, 종류) — 최근 DAY_GROUP_WINDOW일은 일별, 그 이전은 월별, 날짜 없으면 별도 묶음."""
+    try:
+        d = datetime.date.fromisoformat(ds)
+    except ValueError:
+        return ("nodate", "날짜 미상", "none")
+    if (today - d).days <= DAY_GROUP_WINDOW:
+        return (ds, f"{d.month}월 {d.day}일 ({WD[d.weekday()]})", "day")
+    return (ds[:7], f"{d.year}년 {d.month}월", "month")
+
+
+def build_groups(items, today):
+    order, idx = [], {}
+    for i in items:                       # items 는 이미 날짜 내림차순 → 묶음 순서도 자연히 최신순
+        k, lab, kind = group_of(i["date"], today)
+        if k not in idx:
+            idx[k] = {"key": k, "label": lab, "kind": kind, "main": [], "routine": []}
+            order.append(idx[k])
+        idx[k]["routine" if i["stage"] == ROUTINE_STAGE else "main"].append(i)
+    return order
+
+
+def pub_html(ds):
+    """발행일 병기 — '발행 M/D'. 기준일과 다를 때만 collect()가 값을 채운다."""
+    if not ds:
+        return ""
+    try:
+        d = datetime.date.fromisoformat(ds)
+    except ValueError:
+        return ""
+    return f'<span class="pub" title="vault 발행일 {ds} (카드 날짜는 보고서 기준일)">발행 {d.month}/{d.day}</span>'
+
+
+def card_html(i):
+    return (f'<a class="card" data-stage="{i["stage"]}" data-topic="{html.escape(i["topic"])}"'
+            f' data-topics="{html.escape("|".join(i.get("topics") or [i["topic"]]))}"'
+            f' data-skill="{html.escape(i.get("skill", ""))}" href="reports/{html.escape(i["file"])}">\n'
+            f'  <div class="row"><span class="bd sm" style="background:{BADGE_COLOR[i["stage"]]}">{BADGE[i["stage"]]}</span>\n'
+            f'  <span class="meta">{i["stage"]}{" · " + html.escape(i["skill"]) if i.get("skill") else ""} · {html.escape(i["topic"])}</span>'
+            f'<span class="date">{i["date"]}</span>{pub_html(i.get("pub", ""))}</div>\n'
+            f'  <div class="title">{html.escape(i["title"])}</div>\n'
+            f'  <div class="sum">{html.escape(i["summary"])}</div>\n</a>')
+
+
+def render(items):
+    counts = {s: sum(1 for i in items if i["stage"] == s) for s in STAGES}
+    today = datetime.date.today()
+
+    # ── 사이드바: 단일 선택(라디오) · 아코디언 3섹션 ──
+    nav = [f'<button class="nav all active" data-kind="all"><span class="nm">전체</span><span class="ct">{len(items)}</span></button>']
+
+    # 폴더는 기본 펼침(2026-07-30 사용자 지시 — "폴더 항목은 기본적으로 열려있게"),
+    # 주제·분류는 접힘 유지(2026-07-26 지시) — 첫 화면 = 전체 + 펼친 폴더 + 접힌 2줄 + 날짜 줄
+    nav.append(f'<details class="sec" open><summary class="grp">폴더<span class="gc">{len(PINNED)}</span></summary>')
+    for g in PIN_GROUPS:
+        pins = [p for p in PINNED if p.get("group", "종목") == g]
+        if not pins:
+            continue
+        nav.append(f'<div class="ssub">{g}</div>')
+        for p in pins:
+            c = sum(1 for i in items if pin_match(i, p))
+            nav.append(f'<button class="nav pin" data-kind="pin" data-topic="{html.escape(p.get("topic", ""))}"'
+                       f' data-topics="{html.escape("|".join(p.get("topics", [])))}"'
+                       f' data-skill-is="{html.escape(p.get("skill_is", ""))}"'
+                       f' data-stage-is="{p.get("stage_is", "")}" data-stage-not="{p.get("stage_not", "")}">'
+                       f'<span class="bd" style="background:{p["color"]}">{p["badge"]}</span>'
+                       f'<span class="nm">{p["label"]}</span><span class="ct">{c}</span></button>')
+    nav.append('</details>')
+
+    # 주제 — PINNED 가 이미 흡수한 topic 을 뺀 나머지를 건수순 자동 생성(손으로 탭 추가할 필요 없음)
+    pinned_topics = set()
+    for p in PINNED:
+        if p.get("topic"):
+            pinned_topics.add(p["topic"])
+        pinned_topics.update(p.get("topics", []))
+    tc = {}
+    for i in items:
+        for t in (i.get("topics") or [i["topic"]]):     # 보조 주제도 같은 자격으로 계수(폴더/탭 카운트 일치)
+            tc[t] = tc.get(t, 0) + 1
+    autos = sorted(((t, n) for t, n in tc.items() if t not in pinned_topics and n >= AUTO_TOPIC_MIN),
+                   key=lambda x: (-x[1], x[0]))
+    if autos:
+        nav.append(f'<details class="sec"><summary class="grp">주제<span class="gc">{len(autos)}</span></summary>')
+        for t, n in autos:
+            nav.append(f'<button class="nav" data-kind="topic" data-value="{html.escape(t)}">'
+                       f'<span class="nm">{html.escape(t)}</span><span class="ct">{n}</span></button>')
+        nav.append(f'<div class="note">{AUTO_TOPIC_MIN}건 이상인 주제만 표시 — 나머지는 검색으로</div></details>')
+
+    nav.append(f'<details class="sec"><summary class="grp">분류<span class="gc">{len(STAGES)}</span></summary>')
+    for s in STAGES:                    # 0건 단계도 항상 표시 — 분류 기준은 고정 노출 (2026-07-23 사용자 지적)
+        nav.append(f'<button class="nav" data-kind="stage" data-value="{s}">'
+                   f'<span class="bd" style="background:{BADGE_COLOR[s]}">{BADGE[s]}</span>'
+                   f'<span class="nm">{s}</span><span class="ct">{counts[s]}</span></button>')
+    nav.append('</details>')
+    navbar = "\n".join(nav)
+
+    # ── 본문: 날짜 묶음 → (읽을거리 카드) + (그날 루틴 접이식) ──
+    if items:
+        blocks = []
+        for g in build_groups(items, today):
+            body = "".join(card_html(i) for i in g["main"])
+            if g["routine"]:
+                body += ('<details class="rt"><summary><span class="rl">루틴 기록</span>'
+                         f'<span class="rc">{len(g["routine"])}건</span></summary><div class="rb">'
+                         + "".join(card_html(i) for i in g["routine"]) + '</div></details>')
+            n = len(g["main"]) + len(g["routine"])
+            # 날짜 묶음도 접이식 — 전체 목록에서는 기본 접힘(날짜 줄만 보임), 클릭해 펼침.
+            #   걸러 본 상태(폴더·분류·주제·검색)에서는 apply()가 자동으로 펼친다.
+            blocks.append(f'<details class="dg" data-date="{g["key"]}" data-kind="{g["kind"]}">'
+                          f'<summary class="dh"><span class="dl">{g["label"]}</span><span class="dc">{n}건</span></summary>'
+                          f'<div class="db">{body}</div></details>')
+        cards = "".join(blocks)
+    else:
+        cards = '<div class="empty">아직 등재된 보고서가 없습니다 — 첫 보고서가 곧 올라옵니다.</div>'
+    built = datetime.date.today().isoformat()
+    return f'''<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Report Vault</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1E3D32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Vault">
+<style>
+*{{box-sizing:border-box}}
+body{{margin:0;background:#EEF1EA;color:#1E3D32;font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif}}
+.wrap{{max-width:1080px;margin:0 auto;padding:34px 22px 70px}}
+.hd{{margin-bottom:26px}} .hd .kicker{{color:#1E5748;font-weight:700;letter-spacing:.16em;font-size:12.5px}}
+.hd h1{{margin:5px 0 8px;font-size:42px;color:#132018;letter-spacing:-.01em}} .hd p{{margin:0;color:#5C6B60;font-size:15.5px}}
+.layout{{display:flex;gap:24px;align-items:flex-start}}
+aside{{width:250px;flex:none;position:sticky;top:22px;max-height:calc(100vh - 44px);overflow-y:auto}}
+main{{flex:1;min-width:0}}
+/* 사이드바 아코디언 */
+.sec{{margin:16px 0 2px}}
+.sec>summary{{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:7px 5px;margin:0 0 7px;
+  font-size:11.5px;font-weight:800;letter-spacing:.13em;color:#7A867C}}
+.sec>summary::-webkit-details-marker{{display:none}}
+.sec>summary::after{{content:'▾';margin-left:auto;font-size:10px}}
+.sec:not([open])>summary::after{{content:'▸'}}
+.sec>summary:hover{{color:#1E3D32}}
+.gc{{background:#DCE3D8;color:#5C6B60;border-radius:7px;padding:1px 6px;font-size:10.5px;letter-spacing:0}}
+.ssub{{margin:9px 5px 6px;font-size:10.5px;font-weight:700;color:#9AA69C;letter-spacing:.09em}}
+.note{{margin:7px 5px 2px;font-size:11px;color:#9AA69C;line-height:1.5}}
+.nav{{display:flex;align-items:center;gap:11px;width:100%;padding:12px 15px;margin-bottom:7px;background:#FFFFFF;border:1px solid #DCE3D8;border-radius:12px;cursor:pointer;color:#1E3D32;font-size:15px;font-weight:700;text-align:left}}
+.nav:hover{{border-color:#9DB4A4}}
+.nav.active{{background:#1E3D32;color:#F4F7F2;border-color:#1E3D32}}
+.nav.all{{font-size:15.5px}}
+.nav .ct{{margin-left:auto;font-weight:800;font-size:13.5px}}
+.bd{{display:inline-flex;align-items:center;justify-content:center;flex:none;color:#EEF1EA;font-size:11px;font-weight:800;border-radius:8px;width:auto;height:26px;padding:0 9px;letter-spacing:.03em}}
+.bd.sm{{height:auto;padding:2px 7px;font-size:10.5px;border-radius:6px}}
+#q{{width:100%;border:1px solid #DCE3D8;background:#FFFFFF;border-radius:12px;padding:13px 16px;font-size:15px;margin:0 0 8px;color:#1E3D32}}
+#q::placeholder{{color:#7A867C}}
+.bar{{display:flex;align-items:baseline;gap:10px;margin:6px 2px 16px}}
+.bar .now{{font-size:18px;font-weight:800;color:#132018}} .bar .cnt{{font-size:13px;color:#7A867C}}
+/* 날짜 묶음(접이식) */
+.dg{{margin:0 0 9px}}
+.dg[open]{{margin-bottom:20px}}
+.dg>summary{{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:9px;position:sticky;top:0;z-index:5;
+  background:#EEF1EA;padding:11px 2px 10px;border-bottom:1px solid #D5DED1}}
+.dg>summary::-webkit-details-marker{{display:none}}
+.dg>summary::before{{content:'▸';font-size:11px;color:#9AA69C}}
+.dg[open]>summary::before{{content:'▾'}}
+.dg>summary:hover .dl{{color:#132018}}
+.db{{padding-top:12px}}
+.dl{{font-size:14.5px;font-weight:800;color:#2A4A3B;letter-spacing:-.01em}}
+.dc{{font-size:12px;color:#8A968C}}
+.card{{display:block;background:#FFFFFF;border:1px solid #DCE3D8;border-radius:14px;padding:18px 22px;margin-bottom:12px;text-decoration:none;color:inherit}}
+.card:hover{{border-color:#9DB4A4}}
+.row{{display:flex;align-items:center;gap:9px;font-size:12.5px;color:#6B7A6F}}
+.row .date{{margin-left:auto}}
+.row .pub{{font-size:11px;color:#8A968C;background:#F1F4EF;border:1px solid #DCE3D8;
+  border-radius:999px;padding:1px 7px;white-space:nowrap}}
+.title{{font-size:18px;font-weight:800;margin:8px 0 5px;color:#182420;line-height:1.35}}
+.sum{{font-size:14px;color:#55625A;line-height:1.55}}
+/* 루틴(정기 모니터링) 접이식 */
+.rt{{margin:0 0 12px}}
+.rt>summary{{list-style:none;cursor:pointer;display:flex;align-items:center;gap:9px;background:#FFFFFF;
+  border:1px dashed #C6D3C8;border-radius:13px;padding:12px 20px;font-size:13.5px;font-weight:700;color:#6B7A6F}}
+.rt>summary::-webkit-details-marker{{display:none}}
+.rt>summary::before{{content:'▸';font-size:11px;color:#9AA69C}}
+.rt[open]>summary::before{{content:'▾'}}
+.rt>summary:hover{{border-color:#9DB4A4;color:#2A4A3B}}
+.rt .rc{{margin-left:auto;font-weight:800;color:#8A968C}}
+.rt[open]>summary{{margin-bottom:11px}}
+.empty{{background:#FFFFFF;border:1px dashed #B9C6BC;border-radius:14px;padding:44px;text-align:center;color:#6B7A6F}}
+footer{{margin-top:34px;font-size:12px;color:#7A867C;text-align:center;line-height:1.7}}
+@media (max-width:820px){{ .layout{{flex-direction:column}} aside{{width:100%;position:static;max-height:none;overflow:visible}} .hd h1{{font-size:34px}} .card{{padding:16px 18px}} }}
+</style></head>
+<body><div class="wrap">
+<div class="hd"><div class="kicker">STRUCTURE &amp; BOTTLENECKS</div><h1>Report Vault</h1>
+<p>매크로·산업·기업 분석 기록을 모아 읽는 보고서 자료실.</p></div>
+<div class="layout">
+<aside id="nav">{navbar}</aside>
+<main>
+<input id="q" placeholder="검색 (제목 · 요약 · 티커)">
+<div class="bar"><span class="now" id="now">전체</span><span class="cnt" id="cnt"></span></div>
+<div id="list">{cards}</div>
+<footer>본 자료실의 모든 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.<br>index built {built} · read-only</footer>
+</main>
+</div>
+</div>
+<script>
+const navs=[...document.querySelectorAll('.nav')],cards=[...document.querySelectorAll('.card')],
+      dgs=[...document.querySelectorAll('.dg')],q=document.getElementById('q'),
+      now=document.getElementById('now'),cnt=document.getElementById('cnt');
+let sel={{kind:'all',label:'전체'}};
+
+// 오늘/어제는 열람 시점 기준으로 다시 붙인다(빌드 시점에 굳히면 며칠 뒤 열 때 틀림)
+(function(){{
+  const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const t=new Date(), y=new Date(); y.setDate(y.getDate()-1);
+  const map={{[iso(t)]:'오늘',[iso(y)]:'어제'}};
+  dgs.forEach(g=>{{
+    if(g.dataset.kind!=='day') return;
+    const w=map[g.dataset.date]; if(!w) return;
+    const el=g.querySelector('.dl'); el.textContent=w+' · '+el.textContent;
+  }});
+}})();
+
+// 카드의 주제 목록 — 주 topic + 보조(vault-topics). 폴더·주제 선택은 이 목록 안에 있으면 통과.
+const tps=c=>(c.dataset.topics||c.dataset.topic||'').split('|');
+function okSel(c){{
+  if(sel.kind==='all') return true;
+  if(sel.kind==='stage') return c.dataset.stage===sel.value;
+  if(sel.kind==='topic') return tps(c).includes(sel.value);
+  if(sel.kind==='pin'){{
+    if(sel.topic && !tps(c).includes(sel.topic)) return false;
+    if(sel.topics && !sel.topics.split('|').some(t=>tps(c).includes(t))) return false;
+    if(sel.skillIs && c.dataset.skill!==sel.skillIs) return false;
+    if(sel.stageIs && c.dataset.stage!==sel.stageIs) return false;
+    if(sel.stageNot && c.dataset.stage===sel.stageNot) return false;
+    return true;
+  }}
+  return true;
+}}
+function apply(){{
+  const t=q.value.trim().toLowerCase();let n=0;
+  cards.forEach(c=>{{
+    const okT = !t || c.textContent.toLowerCase().includes(t) || (c.dataset.topics||c.dataset.topic||'').toLowerCase().includes(t);
+    const show = okSel(c) && okT; c.style.display = show?'':'none'; if(show)n++;
+  }});
+  const narrowed = !!t || sel.kind!=='all';
+  dgs.forEach(g=>{{
+    const rt=g.querySelector('.rt');
+    if(rt){{
+      let rv=0; rt.querySelectorAll('.card').forEach(c=>{{if(c.style.display!=='none')rv++;}});
+      rt.style.display=rv?'':'none'; rt.querySelector('.rc').textContent=rv+'건';
+      rt.open=narrowed;                     // 걸러 본 상태면 루틴도 펼침 · 전체로 돌아오면 다시 접힘
+    }}
+    let v=0; g.querySelectorAll('.card').forEach(c=>{{if(c.style.display!=='none')v++;}});
+    g.style.display=v?'':'none'; g.querySelector('.dc').textContent=v+'건';
+    g.open=narrowed;                        // 전체 목록=접힘(기본) · 걸러 본 상태=펼침
+  }});
+  now.textContent = sel.label; cnt.textContent = n+'건';
+}}
+navs.forEach(b=>b.onclick=()=>{{
+  navs.forEach(x=>x.classList.remove('active')); b.classList.add('active');
+  sel={{kind:b.dataset.kind, value:b.dataset.value||null,
+        topic:b.dataset.topic||null, topics:b.dataset.topics||null, skillIs:b.dataset.skillIs||null,
+        stageIs:b.dataset.stageIs||null, stageNot:b.dataset.stageNot||null,
+        label:(b.querySelector('.nm')?.textContent||'전체')}};
+  apply();
+}});
+q.oninput=apply;
+apply();
+if('serviceWorker' in navigator){{navigator.serviceWorker.register('sw.js').catch(function(){{}});}}
+</script></body></html>'''
+
+
+def _restore_collapsible(t):
+    t = re.sub(r'<p>\s*(&lt;details&gt;.*?&lt;/summary&gt;)\s*</p>', r'\1', t, flags=re.S)
+    t = re.sub(r'<p>\s*(&lt;/details&gt;)\s*</p>', r'\1', t)
+    for a, b in (('&lt;details&gt;', '<details>'), ('&lt;summary&gt;', '<summary>'),
+                 ('&lt;/summary&gt;', '</summary>'), ('&lt;/details&gt;', '</details>')):
+        t = t.replace(a, b)
+    return t
+
+
+def normalize_reports():
+    # 🔴 2026-07-22 발행 경로 무관 최종 백스톱 — 빌드 시(=모든 발행 시) reports/ 전수 정규화.
+    #   변환기/스킬/즉석코드 어디서 이스케이프됐든 vault 반영 전 접이식 <details> 복원(재발 원천 차단).
+    n = 0
+    for p in REPORTS.glob("*.html"):
+        t = p.read_text(encoding="utf-8", errors="ignore")
+        if "&lt;details&gt;" in t or "&lt;summary&gt;" in t:
+            p.write_text(_restore_collapsible(t), encoding="utf-8"); n += 1
+    if n:
+        print(f"  🔧 접이식 정규화: {n}편 복원")
+
+
+if __name__ == "__main__":
+    normalize_reports()
+    items = collect()
+    (ROOT / "index.html").write_text(render(items), encoding="utf-8")
+    print(f"index.html 생성 완료 — 보고서 {len(items)}건")
