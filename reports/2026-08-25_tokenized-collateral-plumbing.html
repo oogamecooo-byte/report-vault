@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>토큰화 담보 배관 — 24시간 시장의 진짜 병목은 거래가 아니라 담보다 — 2026-08-25</title>
+<meta name="vault-published" content="2026-08-25">
+<meta name="robots" content="noindex, nofollow">
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="토큰화">
+<meta name="vault-topics" content="온체인,RWA">
+<meta name="vault-date" content="2026-08-25">
+<meta name="description" content="담보 자산이 온체인으로 옮겨져 24시간 마진·정산에 쓰이기까지의 배관 전체를 10개 장으로 해부한 산업 구조 보고서. 담보·마진콜·레포를 일상 비유로 먼저 깔고, 자산 난이도 사다리·원장 계층·관리 소프트웨어·현금 레그·DeFi 트랙·지역 지형을 지나 '값은 어디에 걷히는가'로 수렴한다. 8구간 병렬 리서치 + 사실검증 비평(정정 22건·보완 5축) 반영.">
+<style>
+:root{
+  --bg:#FDF6E3; --bg2:#FBF1DA; --card:#FFFDF7; --line:#E6DCC2;
+  --ink:#073642; --ink2:#586E75; --muted:#93876B;
+  --blue:#268BD2; --green:#859900; --cyan:#2AA198; --orange:#CB4B16;
+  --violet:#6C71C4; --magenta:#D33682; --amber:#B58900; --red:#DC322F; --chip:#F3E9CE;
+  --soft:#859900; --semi:#B58900; --hard:#DC322F; /* 병목 색 */
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic",sans-serif;
+  line-height:1.7;font-size:16px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 28px 80px}
+header.top{border-bottom:3px solid var(--ink);padding-bottom:22px;margin-bottom:8px}
+.eyebrow{font-size:13px;letter-spacing:.16em;color:var(--orange);font-weight:700;text-transform:uppercase}
+h1{font-size:33px;line-height:1.25;margin:10px 0 8px;letter-spacing:-.01em}
+.sub{color:var(--ink2);font-size:16px;max-width:800px}
+.meta{margin-top:14px;font-size:13px;color:var(--muted)} .meta b{color:var(--ink2)}
+h2{font-size:25px;margin:54px 0 6px;padding-top:14px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+h2 .num{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:38px;border-radius:10px;color:#fff;font-size:16px;font-weight:800}
+h3{font-size:19px;margin:26px 0 4px}
+.lead{color:var(--ink2);font-size:15.5px;margin:6px 0 18px;padding-left:14px;border-left:4px solid var(--line)}
+p{margin:10px 0} strong{color:var(--ink);font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:16px 0}
+.item{background:var(--card);border:1px solid var(--line);border-left-width:5px;border-radius:12px;padding:18px 20px;margin:14px 0}
+.item .nm{font-size:18px;font-weight:800;margin:0 0 2px;color:var(--ink)}
+.item .one{font-size:14px;color:var(--ink2);font-style:italic;margin:0 0 12px}
+.item .body p{font-size:15px}
+.players{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 4px}
+.players .lbl{font-size:12px;color:var(--muted);align-self:center;margin-right:4px;font-weight:700}
+.chip{display:inline-block;background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:3px 11px;font-size:12.5px;color:var(--ink2)}
+.korea{margin-top:12px;background:var(--bg2);border:1px dashed var(--line);border-radius:10px;padding:11px 14px;font-size:13.5px;color:var(--ink2)}
+.korea b{color:var(--orange)}
+.take{margin-top:18px;background:#0736420a;border-radius:12px;padding:16px 20px;font-size:14.5px;color:var(--ink2);border:1px solid var(--line)}
+.take .t{font-weight:800;color:var(--ink);font-size:13px;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:6px}
+.steel{background:#DC322F0d;border:1px solid #DC322F33;border-radius:12px;padding:16px 20px;margin:18px 0}
+.steel .t{font-weight:800;color:var(--red);font-size:13px;letter-spacing:.03em;margin-bottom:6px;display:block}
+.steel p{font-size:14.5px;margin:6px 0}
+.callout{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:14px 0;font-size:14px;color:var(--ink2)}
+ul.toc{list-style:none;padding:0;margin:18px 0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ul.toc li a{display:block;padding:10px 14px;background:var(--card);border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--ink);font-size:14.5px;font-weight:600}
+ul.toc li a:hover{border-color:var(--ink2)}
+.fig{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:22px 0}
+.fig svg{width:100%;height:auto;display:block}
+.figcap{font-size:12.5px;color:var(--muted);margin-top:10px;text-align:center}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi .v{font-size:20px;font-weight:800;color:var(--blue)} .kpi .k{font-size:12.5px;color:var(--ink2);margin-top:2px}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;background:var(--card);border-radius:10px;overflow:hidden}
+th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+th{background:var(--bg2);color:var(--ink);font-weight:700}
+footer{margin-top:60px;border-top:2px solid var(--line);padding-top:20px;font-size:12.5px;color:var(--muted)}
+@media (max-width:720px){.kpis{grid-template-columns:repeat(2,1fr)}ul.toc{grid-template-columns:1fr}h1{font-size:26px}}
+@media print{body{background:#fff}.wrap{max-width:none}.card,.item,.fig,.kpi{box-shadow:none}:root{--bg:#fff;--bg2:#f7f7f7;--card:#fff}}
+/* ===== v0.2 카드·칩·요약띠·Steelman 압축 (시각화 우선) ===== */
+.item-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.badges{display:flex;gap:5px;flex-wrap:wrap;flex-shrink:0}
+ul.bul{margin:8px 0 4px;padding-left:18px} ul.bul li{font-size:14.5px;margin:4px 0;color:var(--ink2)}
+ul.bul li strong{color:var(--ink)}
+.metrics{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 8px}
+.metric{font-size:11.5px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:2px 8px;color:var(--ink2)}
+.metric b{color:var(--ink);font-weight:700}
+.pq-a{background:#85990018;border-color:var(--green);color:#5b6e00;font-weight:700}
+.pq-b{background:#B5890018;border-color:var(--amber);color:#7a5c00;font-weight:700}
+.bn-soft{background:var(--soft,#859900);color:#fff;border-color:var(--soft,#859900);font-weight:600}
+.bn-semi{background:var(--semi,#B58900);color:#fff;border-color:var(--semi,#B58900);font-weight:600}
+.bn-hard{background:var(--hard,#DC322F);color:#fff;border-color:var(--hard,#DC322F);font-weight:600}
+.stripe{display:flex;flex-wrap:wrap;gap:10px;background:var(--bg2,#FBF1DA);border:1px solid var(--line,#E6DCC2);border-left:4px solid var(--amber,#B58900);border-radius:8px;padding:8px 14px;margin:6px 0 16px;font-size:12.5px;color:var(--ink2,#586E75);font-weight:600}
+.pickwhy{font-size:12px;color:var(--muted);margin-top:6px}
+.steel.compact{padding:13px 17px;margin:12px 0 0} .steel.compact p{margin:5px 0;font-size:14px} .steel.compact b{color:var(--red)}
+
+
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">CHAIN-DIVE · TOKENIZED COLLATERAL PLUMBING</div>
+  <h1>토큰화 담보 배관 — 24시간 시장의 진짜 병목은 거래가 아니라 담보다</h1>
+  <p class="sub">담보는 이미 넘치게 있다. 못 움직일 뿐이다. 이 보고서는 담보 한 덩어리가 A에서 B로 가는 배관을 10개 장으로 펼치고, <b>누가 그 배관을 쥐고 값은 어디에 걷히는가</b>를 묻는다. 일관 렌즈 넷 — <b>곡괭이 질</b>(A 자가조달 / B 자본갈증 / P 정책렌트) · <b>병목 3분류</b>(소프트·준-하드·하드) · <b>귀착</b>(표시 통화 ≠ 가치 귀착) · <b>비대칭</b>(기관 트랙 vs 리테일 트랙을 뭉뚱그리지 않는다).</p>
+  <div class="meta">작성일 <b>2026-08-25</b> · 기준 시점 <b>2026년 8월(추정·근사)</b> · 8구간 병렬 리서치 + 사실검증 비평 반영(정정 22건·보완 5축) · <b>특정 종목 매수·매도 신호가 아니다(산업 구조 이해 목적)</b></div>
+</header>
+
+<div class="callout"><b>읽는 법.</b> 급하면 <b>그림 1(5층 지도)</b>과 <b>10장 표 10</b>만 봐도 결론이 잡힌다. 처음 보는 낱말이 나오면 1장(개념 다섯 개)과 맨 아래 용어 풀이를 참고. 각 장은 <b>표·그림 → 카드</b> 순서이고, 카드의 초록 <span class="chip pq-a">A형 곡괭이</span> 칩은 "담보가 늘면 이 층 매출도 는다"가 확인된 자리만 붙였다. 🔴 표시는 <b>사실검증에서 정정된 대목</b>이다.</div>
+
+<div class="kpis"><div class="kpi"><div class="v">3개 층</div><div class="k">토큰화가 늘 때 매출이 함께 느는 층(건수·잔액·물량)</div></div><div class="kpi"><div class="v">0.15%</div><div class="k">퍼블릭 체인 정산에 남는 몫(실측 귀착률)</div></div><div class="kpi"><div class="v">22건</div><div class="k">사실검증 비평이 잡아 반영한 정정</div></div><div class="kpi"><div class="v">5가지</div><div class="k">이 판단이 틀렸음을 알려줄 반증 조건</div></div></div>
+<ul class="toc"><li><a href="#s1">1. 쉬운 출발</a></li><li><a href="#s2">2. 오늘의 배관</a></li><li><a href="#s3">3. 무엇을 먼저 토큰화하나</a></li><li><a href="#s4">4. 원장 계층</a></li><li><a href="#s5">5. 관리 계층</a></li><li><a href="#s6">6. 현금 레그</a></li><li><a href="#s7">7. 또 하나의 배관</a></li><li><a href="#s8">8. 지형</a></li><li><a href="#s9">9. 보완</a></li><li><a href="#s10">10. 해석</a></li><li><a href="#gloss">＋ 핵심 용어 풀이</a></li></ul>
+<div class="fig"><svg viewBox="0 0 760 452" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto"><path d="M0,0 L7,3.2 L0,6.4 Z" fill="#93876B"/></marker></defs>
+<text x="12" y="20" font-size="13.5" font-weight="800" fill="#073642">담보 배관 5층 — 24시간이 되려면 다섯이 같은 속도로 움직여야 한다</text>
+<g font-size="11.5">
+<rect x="12" y="34" width="560" height="62" rx="9" fill="#f2efe6" stroke="#DC322F" stroke-width="2"/>
+<text x="26" y="55" font-size="13" font-weight="800" fill="#073642">⑤ 규제·법 <tspan font-size="10.5" fill="#DC322F" font-weight="700">하드</tspan></text>
+<text x="26" y="74" fill="#586E75">자본·유동성 규제(회전율 천장) · 담보 적격 판정 · 소유권 이전 법리 · 결제 최종성</text>
+<text x="26" y="90" fill="#93876B" font-size="10.5">여기가 정하는 것: 무엇이 담보가 되고, 얼마나 깎이고, 얼마나 자주 돌 수 있는가</text>
+
+<rect x="12" y="104" width="560" height="70" rx="9" fill="#fdf6e3" stroke="#B58900" stroke-width="2"/>
+<text x="26" y="125" font-size="13" font-weight="800" fill="#073642">④ 관리 계층 <tspan font-size="10.5" fill="#B58900" font-weight="700">준-하드</tspan> <tspan font-size="11" fill="#CB4B16">★ 통행세가 실제로 걷히는 곳</tspan></text>
+<text x="26" y="144" fill="#586E75">★ 가격 평가 · ★ 마진콜 메시징 · ★ 트라이파티 담보 · 담보관리 플랫폼 · 최적화 엔진</text>
+<text x="26" y="162" fill="#93876B" font-size="10.5">★ = 건수·잔액에 비례해 걷는 층(체인 중립) / 나머지는 연 계약이라 담보가 늘어도 매출이 안 는다</text>
+
+<rect x="12" y="182" width="560" height="70" rx="9" fill="#fdf6e3" stroke="#6C71C4" stroke-width="2"/>
+<text x="26" y="203" font-size="13" font-weight="800" fill="#073642">③ 원장 계층 <tspan font-size="10.5" fill="#B58900" font-weight="700">준-하드</tspan></text>
+<text x="26" y="222" fill="#586E75">허가형 체인 · 예탁기관 내부 원장 · 담보 기록 전용 원장 · 퍼블릭 체인</text>
+<text x="26" y="240" fill="#93876B" font-size="10.5">퍼블릭에 남는 몫 실측 <tspan font-weight="700" fill="#DC322F">0.15%</tspan> · 최대 길목(미국 예탁기관)은 이용자 소유라 렌트를 안 걷는다</text>
+
+<rect x="12" y="260" width="560" height="70" rx="9" fill="#fdf6e3" stroke="#859900" stroke-width="2"/>
+<text x="26" y="281" font-size="13" font-weight="800" fill="#073642">② 자산 계층 <tspan font-size="10.5" fill="#859900" font-weight="700">소프트→하드</tspan></text>
+<text x="26" y="300" fill="#586E75">MMF 지분 → 단기 국채 → 국채 → 회사채 → 주식 → 사모·부동산</text>
+<text x="26" y="318" fill="#93876B" font-size="10.5">왼쪽일수록 쉬움 = 값이 하나이고 따라갈 사건이 없음 · 실제 확산은 앞 두 칸에만</text>
+
+<rect x="12" y="338" width="560" height="70" rx="9" fill="#f2efe6" stroke="#DC322F" stroke-width="2"/>
+<text x="26" y="359" font-size="13" font-weight="800" fill="#073642">① 현금 레그 <tspan font-size="10.5" fill="#DC322F" font-weight="700">하드</tspan> <tspan font-size="11" fill="#CB4B16">★ 이자가 앉는 장부</tspan></text>
+<text x="26" y="378" fill="#586E75">중앙은행 창구 · 토큰화 예금 · 은행 컨소시엄 결제 · 스테이블코인</text>
+<text x="26" y="396" fill="#93876B" font-size="10.5">24/7 결제망은 이미 있다 — 못 쓰는 이유는 시간이 아니라 <tspan font-weight="700">도매 증권 동시결제 부재</tspan></text>
+
+<line x1="292" y1="96" x2="292" y2="104" stroke="#93876B" stroke-width="1.4" marker-end="url(#ar)"/>
+<line x1="292" y1="174" x2="292" y2="182" stroke="#93876B" stroke-width="1.4" marker-end="url(#ar)"/>
+<line x1="292" y1="252" x2="292" y2="260" stroke="#93876B" stroke-width="1.4" marker-end="url(#ar)"/>
+<line x1="292" y1="330" x2="292" y2="338" stroke="#93876B" stroke-width="1.4" marker-end="url(#ar)"/>
+
+<rect x="586" y="34" width="162" height="374" rx="9" fill="#FBF1DA" stroke="#E6DCC2"/>
+<text x="598" y="55" font-size="12" font-weight="800" fill="#073642">가로지르는 질문</text>
+<text x="598" y="78" font-size="10.8" fill="#586E75">이 층은 담보가 늘면</text>
+<text x="598" y="93" font-size="10.8" fill="#586E75">매출이 <tspan font-weight="700">함께</tspan> 느는가?</text>
+<text x="598" y="120" font-size="10.8" fill="#859900" font-weight="700">✅ 건수·잔액·물량</text>
+<text x="598" y="136" font-size="10.5" fill="#586E75">평가 / 메시징</text>
+<text x="598" y="151" font-size="10.5" fill="#586E75">트라이파티</text>
+<text x="598" y="166" font-size="10.5" fill="#586E75">분산원장 레포</text>
+<text x="598" y="181" font-size="10.5" fill="#586E75">발행자 준비금 이자</text>
+<text x="598" y="208" font-size="10.8" fill="#DC322F" font-weight="700">❌ 안 는다</text>
+<text x="598" y="224" font-size="10.5" fill="#586E75">연 계약형 소프트웨어</text>
+<text x="598" y="239" font-size="10.5" fill="#586E75">규정이 정하는 판정층</text>
+<text x="598" y="254" font-size="10.5" fill="#586E75">퍼블릭 체인 정산</text>
+<text x="598" y="281" font-size="10.8" fill="#93876B" font-weight="700">❓ 미확인</text>
+<text x="598" y="297" font-size="10.5" fill="#586E75">허가형 원장 운영사</text>
+<text x="598" y="312" font-size="10.5" fill="#586E75">(수익 미공개·실패율↑)</text>
+<line x1="598" y1="330" x2="736" y2="330" stroke="#E6DCC2"/>
+<text x="598" y="352" font-size="10.8" fill="#CB4B16" font-weight="700">🔴 병목 ≠ 곡괭이</text>
+<text x="598" y="368" font-size="10.3" fill="#586E75">부족이 실재해도 그 렌트를</text>
+<text x="598" y="382" font-size="10.3" fill="#586E75">걷는 층이 없으면</text>
+<text x="598" y="396" font-size="10.3" fill="#586E75">그건 관찰 항목이다</text>
+</g>
+<text x="12" y="432" font-size="10.5" fill="#93876B">색: 🟢소프트(빨리 녹음) · 🟡준-하드(제도·천천히) · 🔴하드(법·물리·안 녹음) — 위아래 두 층이 하드다</text>
+</svg><div class="figcap"><b>그림 1.</b> 담보 배관 5층 지도. 위아래(규제·현금)가 하드 병목이고, 값은 가운데 관리 계층의 ★ 세 자리에서 걷힌다.</div></div>
+<div id="report"></div>
+
+<footer>
+  <p><b>방법론.</b> 8개 구간 병렬 리서치 → 사실검증 비평 1건 → 정정 22건 본문 inline 반영 + 누락 5축을 9장(보완)으로 신설 → 곡괭이·병목·귀착 렌즈로 재판정. 비평이 지적한 <b>기관 역할 오분류·법 귀인 오류·이해당사자 추정치 반복 인용</b>은 해당 카드에서 직접 고쳤고, 고친 자리에는 🔴를 달았다.</p>
+  <p><b>한계 &amp; 면책.</b> 정량 수치는 1차 검증되지 않은 2026년 8월 시점 추정·근사이며, 특히 "유휴 적격담보" 류 시장규모 추정치는 <b>그 인프라를 파는 쪽의 발화</b>다(정의·모집단 미공개). 기업명은 산업 구조 설명에 필요한 범위에서만 적었고 보유·비중·매매 판단은 담지 않았다. <b>산업 구조 이해 목적이며 특정 종목 매수·매도 신호가 아니다.</b></p>
+  <p style="margin-top:14px;color:var(--muted)">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p>
+</footer>
+</div>
+
+<script>
+function fmt(t){ if(!t) return ''; return t.split('\n\n').map(function(p){ return '<p>'+p.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')+'</p>'; }).join(''); }
+function chips(arr){ if(!arr||!arr.length) return ''; return '<div class="players"><span class="lbl">주요 플레이어</span>'+arr.map(function(c){return '<span class="chip">'+c+'</span>';}).join('')+'</div>'; }
+function bullets(arr){ if(!arr||!arr.length) return ''; return '<ul class="bul">'+arr.map(function(p){ return '<li>'+p.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')+'</li>'; }).join('')+'</ul>'; }
+function pickChip(pick,why){ if(!pick||pick==='-') return ''; var c=pick==='A'?'pq-a':'pq-b'; return '<span class="chip '+c+'" title="'+(why||'').replace(/"/g,'&quot;')+'">'+pick+'형 곡괭이</span>'; }
+function bnChip(bn){ var m={soft:['bn-soft','소프트'],semi:['bn-semi','준-하드'],hard:['bn-hard','하드']}; if(!bn||!m[bn]) return ''; return '<span class="chip '+m[bn][0]+'">'+m[bn][1]+' 병목</span>'; }
+function metricChips(arr){ if(!arr||!arr.length) return ''; return '<div class="metrics">'+arr.map(function(x){return '<span class="metric"><b>'+x.k+'</b> '+x.v+'</span>';}).join('')+'</div>'; }
+function stripe(s){ return s? '<div class="stripe">'+s+'</div>' : ''; }
+const DATA = [];
+function renderReport(){
+  var host=document.getElementById('report'), html='';
+  DATA.forEach(function(sec){
+    html += '<h2 id="'+sec.id+'"><span class="num" style="background:'+sec.color+'">'+sec.no+'</span>'+sec.title+'</h2>';
+    if(sec.intro){ html += '<p class="lead">'+sec.intro+'</p>'; }
+    html += stripe(sec.stripe);
+    if(sec.figHTML){ html += sec.figHTML; }
+    sec.items.forEach(function(it){
+      html += '<div class="item" style="border-left-color:'+sec.color+'">';
+      html += '<div class="item-head"><div class="nm">'+it.name+'</div><div class="badges">'+pickChip(it.pick,it.pickWhy)+bnChip(it.bn)+'</div></div>';
+      html += '<div class="one">'+it.one+'</div>'+metricChips(it.metrics);
+      html += bullets(it.points);
+      if(it.detail){ html += '<div class="body">'+fmt(it.detail)+'</div>'; }
+      if(it.pick && it.pick!=='-' && it.pickWhy){ html += '<div class="pickwhy">곡괭이 질 근거 · '+it.pickWhy+'</div>'; }
+      html += chips(it.players);
+      if(it.korea){ html += '<div class="korea"><b>🇰🇷 한국 관점</b> &nbsp;'+it.korea+'</div>'; }
+      html += '</div>';
+    });
+    if(sec.take){ html += '<div class="take"><span class="t">▸ 이 장의 핵심</span>'+fmt(sec.take)+'</div>'; }
+  });
+  host.innerHTML = html;
+}
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+
+<script>
+DATA.push({"id": "s1", "no": "1", "color": "var(--blue)", "title": "쉬운 출발 — 담보가 뭐고, 왜 지금 문제가 됐나", "intro": "담보는 이미 넘치게 있다. 못 움직일 뿐이다. 이 장은 앞으로 계속 나올 다섯 낱말을 일상 비유로 먼저 깔아둔다.", "stripe": "개념 5종 · 병목 하드 3 · 준-하드 2 · 이 장의 곡괭이 판정 0(개념 장) · 정정 반영 3건", "figHTML": "<div class=\"fig\"><table><thead><tr><th>개념</th><th>한 줄 뜻</th><th>일상 비유</th><th>왜 배관 문제가 되나</th></tr></thead><tbody><tr><td>① 담보</td><td>못 갚으면 대신 가져가라고 맡기는 재산</td><td>전세보증금 / 전당포에 맡긴 물건</td><td>맡기는 방식이 두 갈래고, 어느 쪽이냐에 따라 소유권이 넘어가기도 안 넘어가기도 한다</td></tr><tr><td>② 마진콜</td><td>값이 흔들리니 담보를 더 넣으라는 시한부 요구</td><td>전당포가 시세 하락을 이유로 더 요구</td><td>통지는 이미 전자화됐다. 남은 벽은 <b>마감 시각</b>과 <b>돈이 진짜 넘어갔는지</b></td></tr><tr><td>③ 레포</td><td>채권 맡기고 현금을 하루 빌리는 거래</td><td>전당포 하루 이용권</td><td>담보와 현금이 <b>동시에</b> 가야 성립 — 24시간화의 첫 병목이 여기</td></tr><tr><td>④ 담보 재사용</td><td>받아둔 담보를 내가 또 담보로 쓰기</td><td>맡아둔 우산을 옆집에 다시 빌려주기</td><td>같은 채권 한 장이 여러 거래를 받친다. 빠를수록 <b>유효 담보량</b>이 는다</td></tr><tr><td>⑤ 24/7 미스매치</td><td>거래는 24시간, 정산은 영업일</td><td>밤에 산 물건 값을 은행 문 열어야 치르는 꼴</td><td>벽은 \"중앙은행이 밤에 닫는다\"가 아니다 — 아래 ⑤ 카드에서 정정</td></tr></tbody></table><div class=\"cap\" style=\"font-size:12.5px;color:var(--muted);margin-top:8px\">표 1. 이 보고서를 읽는 데 필요한 낱말 다섯 개.</div></div>", "items": [{"name": "① 담보(collateral) — 맡기는 방식이 두 갈래다", "one": "맡긴다고 다 소유권이 넘어가는 게 아니다", "points": ["전세보증금처럼 <b>소유권까지 넘기는</b> 방식(레포·GMRA)", "전당포처럼 <b>권리만 걸어두는</b> 방식(질권·미국 UCC 9편)", "파생거래 개시증거금은 대개 소유권을 안 넘기고 <b>분리 보관</b>", "어느 쪽이냐가 도산 때 누가 가져가느냐를 가른다", "값이 잘 안 흔들리는 현금·국채가 1순위 담보"], "detail": "첫 갈래(소유권 이전형)는 받은 쪽이 그 자산을 자유롭게 다시 쓸 수 있고, 둘째 갈래(담보권 설정형)는 원칙적으로 못 쓴다. 토큰화가 \"담보 회전을 늘린다\"고 말할 때 실제로 늘릴 수 있는 건 앞쪽이다. 뒤쪽은 규제가 재사용을 막아둔 자리라 기술로 안 풀린다.", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "두 갈래", "v": "소유권 이전형 / 담보권 설정형"}, {"k": "근거 법제", "v": "영국법 TTCA · 미국 UCC 9편"}], "players": ["수탁은행", "예탁결제기관", "청산소"], "korea": "같은 자리를 예탁결제원이 쥔다. 국내 토큰화 담보 상용 사례는 확인되지 않는다."}, {"name": "② 마진콜 — 이미 전자화됐다, 벽은 다른 데 있다", "one": "전화가 문제가 아니라 마감 시각과 최종성이 문제", "points": ["값이 흔들리면 정해진 시각까지 담보를 더 넣어야 한다", "못 채우면 강제 청산 — 급락장엔 연쇄로 번진다", "🔴 통지·조정은 이미 전자 표준이 있다(Acadia·DTCC MTU·Pirum)", "진짜 벽 = <b>마감 시각(cut-off)</b>과 <b>돈·증권의 최종성</b>", "'26.8.24 뱅가드·웰링턴이 토큰화 MMF로 시험"], "detail": "초안은 이 단계를 \"아직 메일·전화\"라고 적었으나 사실이 아니다. 메시징 층은 이미 소수 사업자가 과점하고 있고, 남은 병목은 통지 속도가 아니라 <b>그 시각 안에 실제 자산이 넘어갔느냐</b>다. 이 구분이 중요한 이유는 값이 걷히는 자리가 달라지기 때문이다 — 메시징 과점은 이미 돈을 걷고 있다.", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "메시징 과점", "v": "Acadia(LSEG)·DTCC MTU·Pirum"}, {"k": "최근 시험", "v": "뱅가드·웰링턴('26.8.24)"}], "players": ["Acadia(LSEG)", "DTCC", "Pirum", "CloudMargin"], "korea": ""}, {"name": "③ 레포(repo) — 하루짜리 현금의 본진", "one": "채권 맡기고 현금을 하루 빌리는 초단기 거래", "points": ["금융기관의 하루치 현금 대부분이 여기서 나온다", "담보와 현금이 동시에 안 가면 거래 자체가 안 선다", "그래서 24시간화의 첫 병목은 매매창구가 아니라 레포", "🔴 이 배관을 실제로 뒤흔드는 건 토큰화가 아니라 규제", "미국은 국채 현물·레포 <b>중앙청산 의무화</b>가 진행 중"], "detail": "Tradeweb 임원이 \"레포 시장 때문에 블록체인이 필요하다\"고 말한 그 레포다. 다만 2026~27년 미국 레포 배관을 실제로 재편하는 최대 변수는 중앙청산 의무화이지 토큰화가 아니다 — 원인을 바꿔 짚으면 수혜자를 잘못 지목하게 된다(§9-①).", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "분산원장 레포 처리", "v": "약 $8조(Broadridge·'26.7 한 달)"}, {"k": "구조 변수", "v": "미 국채 중앙청산 의무화"}], "players": ["Broadridge", "DTCC/FICC", "Tradeweb"], "korea": ""}, {"name": "④ 담보 재사용 — 늘리는 건 담보량이 아니라 회전", "one": "같은 채권 한 장이 여러 거래를 받친다", "points": ["맡아둔 우산을 옆집에 다시 빌려주는 셈", "빠를수록 회전 횟수↑ = 쓸 수 있는 담보가 늘어난다", "사슬이 길면 한 곳 사고가 전체로 번진다", "🔴 좁은 뜻의 re-hypothecation과는 다른 말이다", "측정 지표는 잔고가 아니라 <b>회전 속도</b>여야 한다"], "detail": "토큰화가 노리는 건 담보를 더 만드는 게 아니라 같은 담보를 더 자주 돌리는 것이다. 그래서 성과 판정도 잔고가 아니라 회전이어야 한다 — 다만 이 지표에는 기존 추정(담보 회전속도 연구·EU 보고 데이터)이 이미 있으므로 \"측정 불가\"라고 넘길 수 없다(§10 반증 조건).", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "용어 구분", "v": "재사용(re-use) ≠ 재담보(re-hypothecation)"}, {"k": "기존 지표", "v": "담보 회전속도 추정 시계열 존재"}], "players": ["프라임브로커", "트라이파티 에이전트"], "korea": ""}, {"name": "⑤ 24/7 미스매치 — 벽은 \"영업시간\"이 아니다", "one": "이미 24시간 도는 중앙은행 결제망은 있다", "points": ["거래는 24시간인데 최종 정산이 못 따라오는 건 사실", "🔴 그러나 24/7 중앙은행 결제망은 이미 존재한다", "유로존 TIPS · 미국 FedNow가 실제로 밤낮없이 돈다", "진짜 벽 = 소액 결제 용도·건당 한도·<b>증권 연계 부재</b>", "도매 규모의 증권-대금 동시결제를 아직 못 받는다"], "detail": "이 정정이 보고서 전체에서 가장 중요하다. \"중앙은행이 밤에 닫는다\"가 벽이면 해법은 운영시간 연장이고, \"도매 증권 연계가 없다\"가 벽이면 해법은 완전히 다른 인프라다. 뒤쪽이 맞다 — 그래서 유럽은 운영시간을 늘리는 대신 <b>Pontes</b> 같은 별도 창구를 만든다(§6).", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "이미 24/7", "v": "TIPS(유로존) · FedNow(미국)"}, {"k": "실제 제약", "v": "용도·한도·증권 동시결제 미지원"}], "players": ["ECB", "미 연준", "각국 중앙은행"], "korea": "원화도 같은 구조 — 한국은행 예금토큰 실거래 테스트가 있었고, 담보 연계는 확인되지 않는다."}], "take": "담보는 \"있느냐\"가 아니라 \"몇 시간에 움직이느냐\"의 문제다. 토큰화가 늘리는 건 담보량이 아니라 회전율이고, 그래서 값도 자산이 아니라 회전을 점검·기록하는 층에 붙는다."});
+DATA.push({"id": "s2", "no": "2", "color": "var(--cyan)", "title": "오늘의 배관 — 담보 한 덩어리가 A에서 B로 가는 여섯 단계", "intro": "하루~며칠이 걸리는 건 기술이 느려서가 아니다. 금고·장부·법·중앙은행 시계가 서로 다른 속도로 돌기 때문이다.", "stripe": "6단계 · 값이 실제로 걷히는 자리 3곳(보관·트라이파티·현금정산) · 병목 하드 3·준-하드 2·소프트 1 · 정정 반영 4건", "figHTML": "<div class=\"dd-fig\"><div id=\"vc_s2\"></div><div class=\"cap\"><b>그림 2.</b> 담보가 거치는 6단계 — 막대=값이 걷히는 정도, 오른쪽 뱃지=그 자리의 위험. 🎯 표시가 곡괭이 자리 후보.</div></div>", "items": [{"name": "① 보관 — 어느 금고에 잠겨 있나", "one": "같은 자산이 관할·기관별 칸막이 장부에 나뉘어 있다", "points": ["분명히 내 자산인데 지금 저기서는 못 쓴다", "도쿄 장부로 뉴욕 거래를 대면 아침 전 복귀 불가", "🔴 일본 국채 원장은 예탁기관이 아니라 <b>중앙은행</b>이 쥔다", "느린 이유: 같은 자산이 서로 다른 장부에 적혀 있어서", "이 층은 잔액에 비례해 수수료를 걷는다"], "detail": "초안은 일본 청산소를 예탁기관과 같은 칸에 놓았는데 오류다. 일본은 국채는 중앙은행 시스템, 주식·사채는 별도 예탁기관, 청산은 청산소로 <b>셋이 나뉘어</b> 있다. 그래서 \"일본 국채 토큰화\"의 진짜 문지기는 은행 3사가 아니라 중앙은행이다.", "pick": "A", "pickWhy": "과점·잔액 비례 수수료·물량이 늘어도 설비 추가가 거의 없다", "bn": "hard", "metrics": [{"k": "수탁 잔액 예시", "v": "약 €22조(Clearstream·'26.8)"}, {"k": "🔴 주의", "v": "수탁잔액 ≠ 담보로 쓸 수 있는 잔액"}], "players": ["Euroclear", "Clearstream", "DTC", "BNY", "JASDEC", "BOJ-NET"], "korea": "예탁결제원이 원장 중심축. 담보 서비스 축은 형성 전(§8-⑥)."}, {"name": "② 적격성·헤어컷 판정 — \"이거 담보로 받아주나\"", "one": "받아주는지, 얼마나 깎는지를 정하는 단계", "points": ["헤어컷 = 1억짜리를 9천만으로 쳐주는 그 할인폭", "🔴 판정 주체는 소프트웨어 회사가 아니다", "청산 거래는 <b>청산소 + 감독규정</b>이 상·하한을 정한다", "양자 거래는 <b>계약(CSA)</b>과 규제 담보 목록이 정한다", "그래서 이 층엔 민간이 렌트를 붙이기 어렵다"], "detail": "이 정정이 곡괭이 판정을 바꾼다. 초안은 적격성 판정을 병목으로 짚고도 \"누가 정하는가\"를 비워뒀다. 답은 <b>청산소+감독당국+양자 계약 3중</b>이다. 규정이 정하는 자리에는 통행세가 안 붙는다 — 붙는 건 그 판정을 <b>대신 계산해주는</b> 소프트웨어 쪽이고, 그건 다음 층이다.", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "판정 3중", "v": "청산소 리스크위 · 감독규정 · 양자 CSA"}, {"k": "민간 렌트", "v": "제한적"}], "players": ["CCP 리스크위원회", "감독당국", "양자 계약 당사자"], "korea": ""}, {"name": "③ 소유권 이전 — 여기가 진짜 하드 병목", "one": "이전은 기술이 아니라 법률 행위다", "points": ["버튼을 눌러도 법이 인정해야 넘어간 것이 된다", "결제 마감시각과 시차가 겹치면 하루가 통째로 밀린다", "🔴 미국은 법이 일부 풀렸다(UCC 12편 = 통제 기반 담보권)", "유럽은 결제완결성 요건이 원장 선택을 좁힌다", "기술로 안 녹는 자리 — 여기가 \"안 녹는 하드\""], "detail": "\"관할마다 법이 달라 어렵다\"는 말은 흔한데, 어떤 법인지 짚으면 그림이 달라진다. 미국은 2022년 개정 상법전 12편이 <b>전자기록에 대한 통제</b>로 담보권을 인정해 실제로 문을 일부 열었다. 즉 하드 병목은 균일하지 않고 <b>법역별로 이미 뚫린 곳이 있다</b>.", "pick": "B", "pickWhy": "원장 운영사는 대체로 비상장·컨소시엄·적자 단계 — 외부 자본으로 큰다", "bn": "hard", "metrics": [{"k": "미국", "v": "UCC 12편(2022) 통제 기반"}, {"k": "유럽", "v": "결제완결성지침 요건"}], "players": ["Digital Asset(Canton)", "Besu", "Cashlink", "SWIAT", "Axiology"], "korea": ""}, {"name": "④ 재사용·트라이파티 배분 — 가운데 앉은 자리", "one": "맡기는 쪽과 받는 쪽 사이에 끼어 담보를 잡아주는 제3자", "points": ["트라이파티 = 둘 대신 담보를 잡아주고 배분하는 중개", "과금이 <b>맡긴 잔액에 비례</b>해 담보가 늘면 매출이 는다", "🔴 미국 트라이파티 청산은행은 사실상 <b>한 곳</b>이다", "유럽은 두 국제예탁기관이 나눠 갖는 구조", "배분 계산이 야간 배치라 교체 때마다 왕복이 생긴다"], "detail": "초안은 이 자리를 \"4곳 과점\"으로 적었는데, 미국 트라이파티 레포 청산은행은 한 은행이 2016~17년 철수한 뒤 남은 한 곳의 사실상 독점이고 별도 축으로 청산기관의 담보 프로그램이 있다. 독점과 과점은 렌트 크기가 다르다.", "pick": "A", "pickWhy": "잔액 비례 과금 + 사실상 독점/복점 + 자체현금 운영", "bn": "semi", "metrics": [{"k": "미국", "v": "사실상 1곳(+청산기관 별도 축)"}, {"k": "유럽", "v": "국제예탁기관 2곳"}, {"k": "과금", "v": "담보 잔액 bp + 건당"}], "players": ["BNY", "Euroclear", "Clearstream", "FICC"], "korea": ""}, {"name": "⑤ 마진콜 통지·이행 — 이미 자동화된 구간", "one": "느린 건 통지가 아니라 마감 시각과 최종성", "points": ["통지·조정 표준은 이미 소수 사업자가 과점", "토큰화 시험의 셀링포인트도 새 체인이 아니었다", "\"기존 담보 화면 안에서 그대로\" — 그게 핵심이었다", "🔴 남은 벽은 마감 시각을 넘기면 다음 날이 된다는 것", "그 마감 시각을 정하는 건 결국 아래 ⑥ 현금 정산"], "detail": "", "pick": "-", "pickWhy": "", "bn": "soft", "metrics": [{"k": "전자화 정도", "v": "표준 메시징 이미 존재"}, {"k": "토큰화 시험", "v": "뱅가드·웰링턴 → Nasdaq Calypso 경유('26.8)"}], "players": ["Acadia(LSEG)", "DTCC MTU", "Pirum", "Nasdaq Calypso"], "korea": ""}, {"name": "⑥ 현금 정산 — 마지막이자 가장 단단한 칸", "one": "담보가 넘어가도 대금이 안 끝나면 거래는 안 끝난다", "points": ["최종성 = \"이제 못 되돌린다\"가 성립하는 순간", "도매 규모의 증권-대금 동시결제가 아직 24/7이 아니다", "유럽은 별도 창구(Pontes)를 9/21 열어 이 칸을 겨눈다", "이자가 앉는 장부가 어디냐가 곧 값이 걷히는 자리", "🔴 소액 즉시결제망은 24/7이지만 이 용도로는 못 쓴다"], "detail": "", "pick": "A", "pickWhy": "이자가 앉는 장부(중앙은행·은행·발행자)에 걷힌다 — 단 중앙은행 몫은 민간 렌트가 아니다", "bn": "hard", "metrics": [{"k": "유럽 신규 창구", "v": "Pontes '26.9.21 출범"}, {"k": "이미 24/7", "v": "TIPS · FedNow(소액 용도)"}], "players": ["ECB(T2)", "미 연준", "Fnality", "토큰화 예금 은행"], "korea": "원화 도매 24/7 현금 레그는 확인되지 않는다."}], "take": "값이 실제로 걷히는 칸은 ①보관 ④트라이파티 ⑥현금정산 셋이고, 셋 다 체인이 무엇이든 상관없이 걷는다. ②적격성 판정은 병목이지만 규정이 정하는 자리라 통행세가 안 붙는다."});
+DATA.push({"id": "s3", "no": "3", "color": "var(--green)", "title": "무엇을 먼저 토큰화하나 — 자산별 난이도 사다리", "intro": "쉬운 순서는 곧 \"값이 하나이고 중간에 사건이 안 생기는\" 순서다. 사다리를 오를수록 늘어나는 건 새 수익이 아니라 새 위험이다.", "stripe": "자산 6종 · 병목 소프트 1·준-하드 3·하드 2 · 담보 적격 인정 확대 = 아래 두 칸에 집중 · 정정 반영 3건", "figHTML": "<div class=\"fig\"><table><thead><tr><th>난이도</th><th>자산</th><th>왜 쉬운가 / 어려운가</th><th>현재 어디까지</th></tr></thead><tbody><tr><td>1</td><td>현금성 MMF 지분</td><td>값이 거의 안 흔들리고 따라갈 사건이 배당뿐</td><td>기관 시험 단계 — 🔴 최초는 아니고 <b>확산</b></td></tr><tr><td>2</td><td>단기 국채</td><td>만기가 짧아 값 계산이 단순, 헤어컷 최소</td><td>레포 배관에서 이미 대량 처리 중</td></tr><tr><td>3</td><td>일반 국채·정부채</td><td>이표·듀레이션은 참을 만, 문제는 <b>법역</b></td><td>국가별 프로젝트 단계(일본 국채 등)</td></tr><tr><td>4</td><td>회사채</td><td>값에 신용 판단이 들어가 헤어컷이 커진다</td><td>원장에서 태어난 채권 발행이 막 시작</td></tr><tr><td>5</td><td>주식</td><td>배당·분할·합병·의결권 — 사건이 끝이 없다</td><td>대형 예탁기관 둘이 <b>정반대 순서</b>를 골랐다</td></tr><tr><td>6</td><td>사모·부동산</td><td>시가가 없어 \"값을 누가 정하나\"부터 다툼</td><td>온체인 실험만, 규제 담보 적격은 0건</td></tr></tbody></table><div class=\"cap\" style=\"font-size:12.5px;color:var(--muted);margin-top:8px\">표 3. 담보로 쓰기 쉬운 순서 = 값이 하나이고 사건이 없는 순서.</div></div>", "items": [{"name": "① 현금성 MMF 지분 — 사다리 첫 칸", "one": "환매해서 현금 만드는 단계를 통째로 건너뛴다", "points": ["🔴 값이 고정된 건 <b>일부 유형</b>이다 — 정부형·유럽 일부", "미국 기관형 일반 MMF는 값이 움직이고 수수료도 붙는다", "배당 외에 토큰이 따라갈 사건이 거의 없다", "🔴 2023년에 이미 선행 사례가 있었다(대형 은행 담보망)", "이번 건은 \"최초\"가 아니라 <b>보수적 대형 운용사로 확산</b>"], "detail": "초안은 이 칸을 \"값이 사실상 1로 고정\"이라 뭉뚱그렸는데, 안정 가치가 보장되는 건 정부형과 유럽 일부 유형뿐이다. 그리고 토큰화 MMF를 담보로 낸 사례는 2023년 대형 은행 담보 네트워크에서 이미 나왔다. 뉴스 가치는 \"처음\"이 아니라 <b>가장 보수적인 운용사가 들어왔다</b>는 데 있다.", "pick": "-", "pickWhy": "", "bn": "soft", "metrics": [{"k": "최근 시험", "v": "뱅가드·웰링턴('26.8.24)"}, {"k": "선행 사례", "v": "'23.10 대형 은행 담보망"}, {"k": "경로", "v": "담보관리 플랫폼 → 허가형 체인 발행"}], "players": ["뱅가드", "웰링턴", "Nasdaq", "Digital Asset", "Ant International"], "korea": ""}, {"name": "② 단기 국채 — 유휴 담보의 본진", "one": "이미 최고 담보다, 문제는 자산이 아니라 못 움직인다는 것", "points": ["만기가 짧아 값 계산이 단순하고 깎는 폭도 최소", "업계가 \"가장 확장 가능한 담보\"로 지목한 자산", "지목된 건 하이일드도 사모도 주식도 아니다", "파는 건 새 자산이 아니라 <b>같은 자산의 회전율</b>", "레포 배관은 실험이 아니라 이미 대량 처리 중"], "detail": "", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "업계 지목", "v": "단기 채권 담보('26.8)"}, {"k": "레포 처리", "v": "약 $8조(분산원장·'26.7 한 달)"}], "players": ["DTCC/FICC", "Broadridge", "Tradeweb"], "korea": ""}, {"name": "③ 일반 국채 — 국경이 붙는 순간 어려워진다", "one": "이표는 참을 만하다, 어려운 건 법역이다", "points": ["쿠폰 지급 = 토큰이 따라가야 할 사건이 생긴다", "결제 관행·세제·법이 나라마다 달라 자동화가 끊긴다", "🔴 일본 국채는 원장 자체를 중앙은행이 쥐고 있다", "그래서 은행 컨소시엄만으로는 완결이 안 된다", "유럽은 국가별 예탁기관이 갈려 한 풀로 못 묶인다"], "detail": "", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "일본", "v": "국채 원장 = 중앙은행 시스템"}, {"k": "유럽", "v": "Pontes '26.9.21 · 운영자 4곳"}], "players": ["DTCC", "Clearstream", "Euroclear", "ECB", "미즈호·MUFG·JSCC"], "korea": ""}, {"name": "④ 회사채 — 담보보다 발행이 먼저 열렸다", "one": "신용을 매겨야 해서 깎는 폭이 크다", "points": ["가격에 신용 판단이 들어가 헤어컷이 커진다", "조기상환 조항이 붙어 자동 처리가 까다롭다", "원장에서 <b>태어난</b> 채권 발행이 최근 시작됐다", "🔴 \"대형은행 최초\"는 특정 플랫폼 안에서만 성립한다", "담보로 쓰이려면 유통·가격 고시가 먼저 자라야 한다"], "detail": "한 대형은행이 유럽 국제예탁기관 플랫폼에서 3년물 $200M을 원장 발행한 것이 8/20 사건이다. 다만 대형은행의 디지털 발행 자체는 2019~20년 퍼블릭 체인 사례가 앞서므로, \"그 플랫폼에서의 첫 대형은행 발행\"으로 한정해야 한다 — 이 보고서 작성 과정에서 정정된 항목이다.", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "발행 규모", "v": "$200M·3년 변동금리('26.8.20)"}, {"k": "상장 신청", "v": "런던 국제증권시장"}], "players": ["Standard Chartered", "Euroclear", "Clearstream"], "korea": ""}, {"name": "⑤ 주식 — 두 대형 예탁기관이 정반대를 골랐다", "one": "배당·분할·합병·의결권, 따라갈 사건이 끝이 없다", "points": ["유럽 쪽은 <b>1차에서 주식을 뺐다</b> — 기업행위 관리난", "미국 쪽은 반대로 시총 상위 1,000부터 포함했다", "같은 자산인데 순서가 정반대라는 게 이 칸의 사실", "퍼블릭 체인에서는 이미 토큰화 주식이 나왔다", "🔴 \"살 수 있다\"와 \"담보로 인정된다\"는 완전히 다른 문제"], "detail": "이 대비가 이 장의 핵심이다. 기업행위(배당·분할·합병)를 원장이 끝까지 책임지려면 경우의 수가 사실상 무한해진다. 유럽 쪽은 그 책임을 지는 구조라 뺐고, 미국 쪽은 다른 책임 배분이라 넣었다. 기술 차이가 아니라 <b>누가 사고 책임을 지느냐</b>의 차이다.", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "유럽", "v": "1차 제외(채권·MMF·구조화 먼저)"}, {"k": "미국", "v": "상위 1,000 주식·국채·일부 ETF"}, {"k": "퍼블릭", "v": "코인베이스 Base('26.8.24)"}], "players": ["DTCC", "Clearstream", "Coinbase", "Securitize"], "korea": ""}, {"name": "⑥ 사모·부동산 — 값 합의부터 안 된다", "one": "시가가 없어 평가 자체가 분쟁의 씨앗", "points": ["시가가 없으니 \"얼마짜리 담보냐\"에서 막힌다", "환금이 느려 분 단위 마진콜에 못 맞춘다", "펀드 순자산가치를 원장에 못 고치게 박는 시도가 있다", "🔴 오라클을 쓰면 안전성이 \"오라클 신뢰\"로 옮겨간다", "규제 담보로 인정된 사례는 확인되지 않는다"], "detail": "", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "NAV 온체인 기록", "v": "Securitize×RedStone TSSO"}, {"k": "규제 담보 인정", "v": "확인 0건"}], "players": ["Securitize", "RedStone", "Aave", "Loopscale"], "korea": ""}], "take": "담보 적격 확대가 실제로 일어나는 칸은 위 두 칸(MMF·단기국채)뿐이다. 아래로 갈수록 늘어나는 건 시장이 아니라 분쟁 가능성이고, 그래서 사다리는 천천히 올라간다."});
+DATA.push({"id": "s4", "no": "4", "color": "var(--violet)", "title": "원장 계층 — 어디에 기록하나 (허가형 · 예탁기관 · 퍼블릭)", "intro": "원장 선택은 기술 취향이 아니라 노출과 법의 문제다. 다만 \"법이 막아서\"라는 흔한 설명은 절반만 맞다.", "stripe": "원장 6종 · 곡괭이 A 1·B 3·관찰 2 · 퍼블릭 실측 귀착률 0.15% · 정정 반영 2건(CSDR·최초 표기)", "figHTML": "<div class=\"fig\"><table><thead><tr><th>원장</th><th>성격</th><th>왜 고르나</th><th>약점</th></tr></thead><tbody><tr><td>Canton</td><td>허가형·프라이버시 기본</td><td>남의 마진콜 규모가 안 보인다</td><td>체인 밖 검증 불가 · 벤더 종속 · 수익 미공개</td></tr><tr><td>예탁기관 내부 원장(Besu 등)</td><td>허가형·기존 기관이 운영</td><td>규제·기존 연결성 그대로</td><td>자기 장부 안에서만 이동</td></tr><tr><td>국제예탁기관 발행 플랫폼</td><td>허가형·발행 특화</td><td>원장에서 태어난 증권을 담는다</td><td>아직 낱개 발행 — 매일 도는 담보 단계 아님</td></tr><tr><td>미국 예탁기관 토큰화</td><td>허가형 + 퍼블릭 연결</td><td>실거래 처리 성공·24x5 청산</td><td>🔴 이용자 소유 유틸리티 = 길목은 쥐되 렌트는 안 걷음</td></tr><tr><td>퍼블릭 체인</td><td>완전 개방</td><td>누구나 붙고 유통이 빠르다</td><td>프라이버시 0 · 규제 적격 불확실 · <b>귀착률 0.15%</b></td></tr><tr><td>담보 기록 전용 원장(HQLAx형)</td><td>허가형·기록만 이전</td><td>🔴 원자산을 안 옮기고 <b>기록만</b> 넘긴다</td><td>참여 기관 밖으로는 못 나간다</td></tr></tbody></table><div class=\"cap\" style=\"font-size:12.5px;color:var(--muted);margin-top:8px\">표 4. 원장 6종 — 마지막 줄이 \"소유권 이전이 하드 병목\"이라는 진단을 실제로 우회한 설계다.</div></div>", "items": [{"name": "Canton — 칸막이가 기본인 장부", "one": "거래마다 볼 사람만 보이는 허가형 원장", "points": ["프라이버시가 기본값 — 남의 담보·마진 규모가 안 보임", "뱅가드·웰링턴 토큰화 MMF 담보 시험의 무대", "기존 담보관리 화면 안에서 그대로 돌린다는 게 강점", "🔴 시공사가 과거 대형 원장 교체 실패를 겪은 곳이다", "수익·거래 규모는 공개되지 않는다"], "detail": "이 원장을 만든 회사는 한 해외 거래소의 기간 시스템 교체 프로젝트가 중단되며 대규모 상각으로 끝난 이력이 있다(§9-④). 이번 담보 시험의 가중치를 매길 때 그 기저율을 빼면 안 된다 — 파일럿이 상시 운영으로 넘어간 비율이 이 산업에서 높지 않다.", "pick": "B", "pickWhy": "비상장·컨소시엄형, 자체 현금흐름이 아니라 출자·계약으로 성장", "bn": "semi", "metrics": [{"k": "담보 시험", "v": "뱅가드·웰링턴('26.8.24)"}, {"k": "수익·규모", "v": "미공개"}], "players": ["Digital Asset", "Nasdaq", "뱅가드", "웰링턴"], "korea": ""}, {"name": "예탁기관 내부 원장 — \"법이 막아서\"는 절반만 맞다", "one": "기존 예탁기관이 자기 장부를 원장으로 바꾼 쪽", "points": ["수탁 자산 일부부터 토큰화, 연내 발행 예정", "발행을 넘어 결제·수탁·담보까지 확장 선언(8/20)", "🔴 매체는 \"유럽 결제규정 때문에 허가형만\"이라 전했다", "🔴 그 규정 자체는 기술 종류를 정하지 않는다", "실제 제약은 파일럿 제도·결제완결성 요건·자본규제 조합"], "detail": "이 정정은 원인 진단을 바꾼다. \"규정이 퍼블릭을 금지한다\"면 규정 개정이 해법이고, \"여러 제도의 조합이 사실상 좁힌다\"면 해법은 훨씬 느리고 분산돼 있다. 뒤쪽이 정확하며, 특히 퍼블릭 체인 위 자산에 붙는 <b>은행 자본 페널티</b>가 실무에서 가장 큰 억제력이다(§9-②).", "pick": "A", "pickWhy": "기존 과점 예탁기관의 잔액 비례 수수료 위에 얹는 구조 · 자체현금", "bn": "hard", "metrics": [{"k": "수탁 잔액", "v": "약 €22조('26.8)"}, {"k": "🔴 주의", "v": "수탁잔액 ≠ 담보 동원 가능액"}, {"k": "1차 제외", "v": "주식"}], "players": ["Clearstream", "Deutsche Börse"], "korea": ""}, {"name": "국제예탁기관 발행 플랫폼 — 원장에서 태어난 증권", "one": "종이 원본 없이 처음부터 원장에 찍히는 채권", "points": ["대형은행이 3년물 $200M을 이 플랫폼에서 발행(8/20)", "거래소 국제증권시장 상장을 신청해 유통을 노린다", "🔴 \"대형은행 최초\"는 이 플랫폼 안에서만 성립", "대형은행 디지털 발행 자체는 2019~20년이 앞선다", "아직 낱개 발행 — 매일 도는 담보 단계는 아니다"], "detail": "", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "발행", "v": "$200M·3년 변동('26.8.20)"}, {"k": "선행", "v": "2019~20 퍼블릭 체인 대형은행 발행"}], "players": ["Euroclear", "Standard Chartered"], "korea": ""}, {"name": "미국 예탁기관 토큰화 — 길목은 쥐되 렌트는 안 걷는다", "one": "이용자가 소유한 유틸리티라 초과이익을 못 남긴다", "points": ["'26.7.15 토큰화 자산으로 미국 거래 실처리 성공", "'26.6.29 밤에도 도는 24x5 청산 가동", "'26.5.27 퍼블릭 체인 연결(멀티체인 전략)", "확장 방향 = 토큰화 레포·담보이동성·기업행위·증권대차", "🔴 <b>참가자 소유·원가회수형</b>이라 수수료가 규제된다"], "detail": "이 항목이 \"병목 = 곡괭이\"라는 등식이 깨지는 대표 사례다. 이 기관은 미국 담보 배관의 최대 길목이지만 참가자가 소유하고 수수료율이 규제 신고 대상이며 초과분은 되돌려준다. 길목을 쥐는 것과 렌트를 걷는 것은 다르다.", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "실거래", "v": "'26.7.15 성공"}, {"k": "청산", "v": "24x5 '26.6.29"}, {"k": "소유구조", "v": "참가자 소유 유틸리티"}], "players": ["DTCC / DTC", "NSCC", "FICC"], "korea": ""}, {"name": "퍼블릭 체인 — 가장 열려 있고 가장 안 걷힌다", "one": "활동이 늘어도 체인에 남는 몫은 0.15%였다", "points": ["실측: 사용자 수수료 약 $843,000 → 체인 정산 약 $1,600", "토큰화 주식·국채가 실제로 담보로 쓰이기 시작했다", "유통 속도와 접근성은 허가형이 못 따라온다", "🔴 프라이버시 0 — 기관 후선 배관으로는 결정적 약점", "규제 담보 적격 인정은 아직 0건"], "detail": "\"체인은 거래 장소가 아니라 후선 배관\"이라는 기관 측 규정과 정면으로 어긋나는 사건이 같은 주에 있었다(대형 거래소의 퍼블릭 체인 토큰화 주식 출시). 두 트랙은 수렴 중이 아니라 <b>갈라지는 중</b>으로 읽는 편이 사실에 가깝다.", "pick": "B", "pickWhy": "체인 자체 수취가 얇고, 생태계는 토큰 발행·외부 자본에 의존", "bn": "soft", "metrics": [{"k": "귀착률(실측)", "v": "0.15%"}, {"k": "담보 라이브", "v": "토큰화 국채·펀드·상장주식"}], "players": ["Ethereum", "Solana", "Base", "Aave", "Loopscale"], "korea": ""}, {"name": "담보 기록 전용 원장 — 하드 병목을 우회한 설계", "one": "원자산은 그대로 두고 \"기록\"만 넘긴다", "points": ["🔴 증권을 실제로 옮기지 않는다 — 소유 기록만 이전", "그래서 법역 간 이동 지연을 통째로 건너뛴다", "2019년부터 이미 가동돼 온 현직 사업자다", "수탁·예탁기관들이 참여해 담보 이동성을 만든다", "한계: 참여 기관 울타리 밖으로는 못 나간다"], "detail": "이 설계가 중요한 이유는 이 보고서가 \"하드 병목\"이라 부른 §2-③ 소유권 이전을 <b>법을 안 건드리고</b> 우회했기 때문이다. 즉 하드 병목이라고 다 못 푸는 게 아니라, 문제를 옮겨서 푸는 길이 있다. 다만 우회는 참여자 합의 범위 안에서만 성립한다.", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "가동", "v": "2019~ (현직)"}, {"k": "설계", "v": "원자산 미이동 · 담보 기록만 이전"}], "players": ["HQLAx", "Deutsche Börse", "참여 수탁·예탁기관"], "korea": ""}], "take": "허가형을 고르면 수수료가 퍼블릭 체인으로 새지 않는다. 다만 미국 최대 길목은 이용자 소유 유틸리티라 렌트를 안 걷는다 — 병목의 실재와 렌트 포획이 갈리는 대표 자리다."});
+DATA.push({"id": "s5", "no": "5", "color": "var(--orange)", "title": "관리 계층 — 담보를 실제로 굴리는 소프트웨어 (통행세는 여기 있다)", "intro": "값은 토큰이 태어날 때가 아니라 담보가 굴러가는 내내 걷힌다. 다만 \"이 테마 덕에\" 걷히는 층과, 원래도 걷고 있던 층은 구분해야 한다.", "stripe": "6개 층 · 잔액에 붙는 곳 2 · 계약 수에만 붙는 곳 2 · 규제로 눌린 곳 1 · 🔴 이미 걷고 있는 과점 1 · 정정 반영 4건", "figHTML": "<div class=\"fig\"><table><thead><tr><th>층</th><th>무슨 일을 하나</th><th>과금이 무엇에 비례하나</th><th>토큰화로 매출이 느나</th></tr></thead><tbody><tr><td>담보관리 플랫폼</td><td>마진콜·적격성 점검을 한 화면에서 처리</td><td>연 이용계약·모듈 (담보 잔액과 거의 무관)</td><td>🔴 미확인 — 계약 수만큼만</td></tr><tr><td>트라이파티 담보 서비스</td><td>둘 대신 담보를 잡아주고 배분</td><td><b>맡긴 담보 잔액</b>에 bp</td><td>늘 가능성 있음(잔액 연동)</td></tr><tr><td>청산소 마진</td><td>상대방 부도를 떠안고 증거금을 걷음</td><td>건당 청산료 (🔴 예치 이자는 회원 배분)</td><td>제한적 — 원가회수형 구조</td></tr><tr><td>분산원장 레포</td><td>레포를 원장 위에서 처리</td><td>이용계약 + 처리량</td><td>처리량 연동</td></tr><tr><td>담보 최적화 엔진</td><td>가장 싼 담보를 골라준다</td><td>이용계약·모듈</td><td>🔴 벤더는 실재, 증분 마진은 미확인</td></tr><tr><td>🔴 가격 평가 + 마진콜 메시징</td><td>담보값을 매기고 호출을 주고받음</td><td>건수·구독 (이미 고마진 과점)</td><td><b>호출 건수가 늘면 그대로 는다</b></td></tr></tbody></table><div class=\"cap\" style=\"font-size:12.5px;color:var(--muted);margin-top:8px\">표 5. 여섯 층 중 \"토큰화가 늘면 매출이 늘어나는\" 곳은 잔액·건수에 붙은 세 곳뿐이다.</div></div>", "items": [{"name": "담보관리 플랫폼 — 관제탑", "one": "토큰이든 채권이든 같은 화면에서 굴린다", "points": ["마진콜·적격성 점검이 기존 화면 안에서 그대로 처리", "토큰화 MMF 담보 시험도 이 플랫폼을 경유했다", "체인이 바뀌어도 관제탑은 안 바뀐다 = 체인 중립", "담보 장부를 갈아끼우는 일이라 전환비용이 크다", "🔴 과금이 연 이용계약이라 담보가 늘어도 매출이 안 는다"], "detail": "초안은 이 층을 곡괭이 A로 올렸는데, 자기 본문에 \"잔액 연동 약함·토큰화發 증분 마진 미확인\"이라 써놓고 A를 준 모순이었다. 좋은 사업인 것과 <b>이 테마의 곡괭이</b>인 것은 다르다. 곡괭이 A는 \"토큰화가 퍼지면 마진이 확장된다\"가 확인될 때만 붙일 수 있다.", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "과금", "v": "연 이용계약·모듈"}, {"k": "잔액 연동", "v": "약함"}, {"k": "증분 마진", "v": "미확인"}], "players": ["Nasdaq(Calypso)", "FIS", "Murex"], "korea": ""}, {"name": "트라이파티 담보 서비스 — 잔액에 붙는 자리", "one": "맡긴 담보 잔액에 비례해 걷는 몇 안 되는 층", "points": ["거래 당사자 둘 대신 담보를 잡아주고 배분하는 제3자", "과금이 <b>잔액에 bp</b> — 담보가 늘면 매출이 는다", "🔴 미국은 사실상 한 곳 독점(다른 은행은 철수)", "유럽은 국제예탁기관 두 곳이 나눠 갖는다", "별도 축으로 청산기관의 담보 프로그램이 있다"], "detail": "독점과 과점은 렌트 크기가 다르다. 미국 쪽은 사실상 단독이라 가격 결정력이 크고, 유럽 쪽은 두 곳이 나눠 상대적으로 낮다. 다만 이 층은 대부분 <b>비상장이거나 대형 그룹의 일부</b>라 개인이 이 자리를 직접 담기 어렵다(§10 표).", "pick": "A", "pickWhy": "잔액 비례 과금 + 사실상 독점/복점 + 자체현금 운영", "bn": "semi", "metrics": [{"k": "미국", "v": "사실상 1곳"}, {"k": "유럽", "v": "국제예탁기관 2곳"}, {"k": "과금", "v": "잔액 bp + 건당"}], "players": ["BNY", "Euroclear", "Clearstream"], "korea": ""}, {"name": "청산소 마진 — 법이 자리를 정한 층", "one": "대체 불가하지만, 초과이익도 못 남기게 돼 있다", "points": ["상대방 부도를 대신 떠안고 증거금을 걷는 곳", "밤에도 도는 24x5 청산이 이미 가동 중이다", "🔴 예치된 마진 이자는 대체로 <b>회원에게 배분</b>된다", "🔴 주요 기관은 참가자 소유·원가회수형이다", "\"마진 이자 = 청산소 이익\"은 부정확한 서술이다"], "detail": "초안은 \"24/7의 값은 청산소에서 두 번 걷힌다\"고 썼는데 과장이다. 수수료율이 규제 신고 대상이고 초과분이 리베이트로 환원되는 구조에서는, 담보 회전이 늘어도 그만큼 이익이 커지지 않는다. 정확한 배분율은 미확인이므로 단정하지 않는다.", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "청산 시간", "v": "24x5 가동('26.6.29)"}, {"k": "구조", "v": "참가자 소유·원가회수형"}, {"k": "배분율", "v": "미확인"}], "players": ["DTCC(DTC·NSCC·FICC)", "JSCC", "LCH"], "korea": ""}, {"name": "분산원장 레포 — 이미 돈이 도는 유일한 실물", "one": "체인은 뒤에 숨고 사용자는 기존 레포 화면 그대로", "points": ["'26.7 한 달 거래량 약 $8조을 처리했다고 보도됐다", "과금 = 이용계약 + 처리량 — 잔액이 아니라 물량", "🔴 월 $8조은 거래 회전액이지 이 층의 매출이 아니다", "실험 단계가 아니라 상시 운영이라는 게 차별점", "레포 중앙청산 의무화가 물량을 더 밀어 올릴 수 있다"], "detail": "", "pick": "A", "pickWhy": "처리량 연동 + 상장사 + 기존 후선 사업의 현금흐름 위에서 증설", "bn": "semi", "metrics": [{"k": "처리량", "v": "약 $8조('26.7 한 달)"}, {"k": "매출 귀착 분해", "v": "미확인"}], "players": ["Broadridge", "Tradeweb"], "korea": ""}, {"name": "담보 최적화 엔진 — 얇지만 목", "one": "가장 싼 담보를 골라주는 계산기", "points": ["적격성 = 받아주나 / 최적화 = 어느 걸 내주나", "판단은 여기서 나고 실제 이동은 아래층이 한다", "🔴 독립 벤더는 실재한다 — \"없다\"가 아니다", "다만 토큰화로 매출이 느는지는 확인되지 않았다", "규칙이 표준화되면 대형 플랫폼 기능으로 흡수된다"], "detail": "", "pick": "-", "pickWhy": "", "bn": "soft", "metrics": [{"k": "벤더", "v": "Cassini · Pirum · CloudMargin · Transcend · FIS · Murex"}, {"k": "증분 마진", "v": "미확인"}], "players": ["Cassini Systems", "Pirum", "CloudMargin", "Transcend(S&P Global)"], "korea": ""}, {"name": "🔴 가격 평가 + 마진콜 메시징 — 진짜 통행세 자리", "one": "담보값을 매기고 호출을 주고받는 두 과점", "points": ["담보를 평가하려면 매일 값을 매겨줄 곳이 필요하다", "그 평가는 소수 데이터 업체가 과점하고 있다", "마진콜 통지·조정 표준도 소수 사업자 과점이다", "🔴 둘 다 <b>체인 중립</b>이고 <b>건수에 비례</b>해 걷는다", "담보 회전이 늘면 호출 건수가 늘고 매출도 는다"], "detail": "이 보고서의 결론(\"값은 자산이 아니라 기록·점검 층에 걷힌다\")이 옳다면 정답은 정확히 이 두 층인데, 초안 8개 장 어디에도 없었다. 사실검증 비평이 잡아낸 최대 누락이다. 게다가 이 층은 <b>이미</b> 고마진으로 걷고 있어서, \"앞으로 걷을 것 같다\"가 아니라 \"이미 걷는다\"가 판정이다.", "pick": "A", "pickWhy": "건수 연동 + 이미 확인된 고마진 과점 + 체인 중립 + 대체로 상장 그룹 소속", "bn": "semi", "metrics": [{"k": "평가 과점", "v": "Bloomberg BVAL · ICE · LSEG · S&P Global"}, {"k": "메시징 과점", "v": "Acadia(LSEG) · DTCC MTU · Pirum"}, {"k": "연동", "v": "호출·평가 건수"}], "players": ["Bloomberg", "ICE Data Services", "LSEG", "S&P Global", "DTCC", "Pirum"], "korea": "국내에도 채권평가 3사 구조가 같은 자리를 차지한다 — 토큰화와 무관하게 이미 존재하는 층."}], "take": "\"토큰화가 퍼지면 매출이 느는가\"로 거르면 여섯 층 중 셋만 남는다 — 트라이파티(잔액)·분산원장 레포(물량)·평가와 메시징(건수). 관제탑 소프트웨어는 좋은 사업이지만 이 테마의 곡괭이는 아니다."});
+DATA.push({"id": "s6", "no": "6", "color": "var(--magenta)", "title": "현금 레그 — 담보만 빨라도 소용없다", "intro": "담보가 넘어가도 대금이 안 끝나면 거래는 안 끝난다. 그리고 이자가 앉는 장부가 어디냐가 곧 값이 걷히는 자리다.", "stripe": "4갈래 + 제약 1 · 이자 귀착 = 중앙은행 1 · 은행 2 · 발행자 1(단독 아님) · 정정 반영 3건", "figHTML": "<div class=\"fig\"><table><thead><tr><th>갈래</th><th>돈이 어느 장부에 있나</th><th>이자는 누가 갖나</th><th>24/7 되나</th><th>한계</th></tr></thead><tbody><tr><td>도매 CBDC형 창구</td><td>중앙은행</td><td>중앙은행</td><td>창구 열리는 만큼</td><td>새 돈이 아니라 기존 준비금의 그림자</td></tr><tr><td>토큰화 예금</td><td>발행 은행</td><td>발행 은행</td><td>은행 간 원장에서 가능</td><td>배관이 사내·컨소시엄이라 렌트 층이 얇다</td></tr><tr><td>은행 컨소시엄 결제(Fnality형)</td><td>중앙은행 예치 준비금</td><td>참가 은행 (조건 미확인)</td><td>설계상 가능</td><td>주주가 곧 고객 → 값을 높게 못 매김</td></tr><tr><td>스테이블코인</td><td>발행자 준비자산</td><td>🔴 발행자 + <b>유통 파트너 배분</b></td><td>원래부터 24/7</td><td>금리 내려가면 마진도 같이 내려앉음</td></tr><tr><td>🔴 기존 즉시결제망</td><td>중앙은행</td><td>중앙은행</td><td><b>이미 24/7</b></td><td>소액 용도·건당 한도·증권 동시결제 미지원</td></tr></tbody></table><div class=\"cap\" style=\"font-size:12.5px;color:var(--muted);margin-top:8px\">표 6. 마지막 줄이 흔한 오해를 깬다 — 24시간 중앙은행 결제망은 이미 있다, 도매 증권용이 아닐 뿐.</div></div>", "items": [{"name": "도매 CBDC형 창구 — 유럽이 먼저 답을 정했다", "one": "중앙은행 돈을 원장 위로 비추는 별도 창구", "points": ["9/21 출범 — 기존 결제망을 부르는 방식과 원장 위 표현 2종", "어느 쪽이든 돈은 여전히 중앙은행 장부에 남는다", "초기 연결 통로는 지정된 원장 운영자 4곳뿐 — 문이 좁다", "새 돈이 아니라 기존 준비금의 그림자다", "공공 인프라라 마진 자체가 목표가 아니다"], "detail": "유럽이 이 갈래를 고른 함의는 크다. 병행 협의체 61곳 명단에 <b>스테이블코인 발행자가 단 2곳</b>이다. 현금 레그를 민간 발행자에게 안 넘기겠다는 뜻이고, 그러면 준비금 이자라는 가장 두꺼운 수취 자리가 유로존에서는 민간으로 안 간다.", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "출범", "v": "'26.9.21"}, {"k": "원장 운영자", "v": "4곳"}, {"k": "협의체", "v": "61곳 중 발행자 2곳"}], "players": ["ECB", "Clearstream", "Cashlink", "SWIAT", "Axiology"], "korea": ""}, {"name": "토큰화 예금 — 돈은 은행에 두고 속도만 바꾼다", "one": "예금이 은행 장부를 안 떠나므로 이자도 은행이 갖는다", "points": ["대형은행 두 곳이 공유 원장에서 첫 실거래 이전(8/19)", "거대 결제기업이 이걸 자기 자금관리에 붙여 24/7로 옮긴다", "그 기업은 은행 9곳 토큰화예금의 첫 고객이었다", "은행엔 신규 마진이 아니라 <b>예금 이탈 방어</b> 수단", "🔴 국제 메시징 표준은 결제·최종성 제공자가 아니다"], "detail": "수요 쪽이 극단적으로 집중돼 있다는 게 이 갈래의 특징이다. 은행 여러 곳이 레일을 깔았는데 그 위를 도는 물량의 상당 부분이 소수 초대형 이용자에게서 나온다. 레일을 깐 쪽이 반드시 값을 걷는 건 아니다 — 협상력이 이용자 쪽으로 기운다.", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "첫 실거래", "v": "'26.8.19"}, {"k": "수요 앵커", "v": "은행 9곳의 첫 고객 1곳"}], "players": ["HSBC", "Standard Chartered", "JP모건 Kinexys", "Ant International"], "korea": ""}, {"name": "은행 컨소시엄 결제 — 주주가 곧 고객", "one": "중앙은행 준비금이 뒷받침하는 민간 결제 레일", "points": ["중앙은행 계좌에 잠긴 준비금이 최종성을 받쳐준다", "이자는 그 준비금 계좌에 앉는다(배분 조건 미확인)", "주주가 곧 고객이라 가격을 높게 못 매긴다", "자체 현금이 아니라 출자·증자로 성장한다", "유럽 협의체 명단에도 포함돼 있다"], "detail": "", "pick": "B", "pickWhy": "컨소시엄 출자로 성장 · 주주=고객 구조라 가격 결정력이 낮다", "bn": "semi", "metrics": [{"k": "뒷받침", "v": "중앙은행 예치 준비금"}, {"k": "자본", "v": "은행 컨소시엄 출자"}], "players": ["Fnality", "참가 은행"], "korea": ""}, {"name": "스테이블코인 — 이자가 민간으로 가는 유일한 갈래", "one": "맡기면 이자는 맡은 쪽이 갖는 구조", "points": ["준비자산 이자는 실제로 확장 중인 마진이고 체인 중립", "보유자에게 이자를 주는 건 규제로 막혀 있다", "🔴 그렇다고 발행자가 전액을 갖는 것도 아니다", "유통 파트너에게 상당 부분이 배분된다", "유럽 도매 테이블에선 소수파(61곳 중 2곳)"], "detail": "초안은 \"이자 귀착 = 발행자 사실상 전액\"이라 적었는데 부정확하다. 유통 채널에 지급하는 배분이 크고, 보유자 이자 금지는 <b>발행자</b>에 대한 규제라 거래소·제휴사가 리워드를 주는 경로는 남아 있다. 즉 이 자리의 마진은 발행자 단독 몫이 아니라 <b>발행자와 유통의 협상 결과</b>다.", "pick": "A", "pickWhy": "준비금 이자 = 확인된 확장 마진 · 체인 중립 — 단 유통 배분으로 실질 몫은 축소", "bn": "semi", "metrics": [{"k": "이자 귀착", "v": "발행자 + 유통 파트너 배분"}, {"k": "유럽 도매", "v": "61곳 중 2곳"}, {"k": "금리 민감도", "v": "높음"}], "players": ["달러 스테이블코인 발행자", "Qivalis", "Societe Generale Forge"], "korea": ""}, {"name": "🔴 기존 즉시결제망 — 흔한 오해를 깨는 칸", "one": "24시간 중앙은행 결제망은 이미 있다", "points": ["유로존·미국 모두 24/7로 도는 즉시결제망을 운영 중", "그런데 이 담보 배관에는 못 쓴다", "이유 ① 소액 결제 용도라 건당 한도가 있다", "이유 ② 증권과 대금을 <b>동시에</b> 주고받는 연결이 없다", "이유 ③ 도매 규모의 자금 이동을 상정하지 않았다"], "detail": "\"중앙은행이 밤에 닫아서 24/7이 안 된다\"는 설명은 널리 퍼져 있지만 정확하지 않다. 벽은 시간이 아니라 <b>용도와 연결</b>이다. 이 구분이 중요한 건, 시간 문제라면 운영시간 연장이 해법이지만 용도 문제라면 별도 인프라를 새로 지어야 하기 때문이다 — 그래서 유럽은 별도 창구를 만든 것이다.", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "이미 24/7", "v": "유로존 TIPS · 미국 FedNow"}, {"k": "막는 것", "v": "용도·한도·증권 동시결제 부재"}], "players": ["ECB", "미 연준"], "korea": "원화도 같은 구조 — 도매 24/7 증권 동시결제 경로는 확인되지 않는다."}], "take": "이자가 앉는 장부를 유럽은 중앙은행·은행에 묶고, 달러·역외는 발행자에게 넘기는 쪽으로 갈렸다. 24/7의 마지막 자물쇠는 중앙은행 영업시간이 아니라 도매 증권-대금 동시결제의 부재다."});
+DATA.push({"id": "s7", "no": "7", "color": "var(--amber)", "title": "또 하나의 배관 — DeFi 쪽은 무엇이 다른가", "intro": "같은 담보를 다루지만 설계 철학이 반대다. 신용심사를 초과담보와 자동청산으로 바꾼 별개 배관이다.", "stripe": "담보 자산 3종 · 규제 담보 적격 인정 0건 · 곡괭이 A 0 · 24시간 작동은 여기만 · 정정 반영 1건", "figHTML": "<div class=\"fig\"><table><thead><tr><th>항목</th><th>기관 트랙</th><th>DeFi 트랙</th></tr></thead><tbody><tr><td>상대방을 어떻게 믿나</td><td>신용심사 + 계약</td><td><b>초과담보</b> — 더 많이 맡기게 한다</td></tr><tr><td>값이 떨어지면</td><td>사람이 마진콜 → 협의 → 유예</td><td>코드가 <b>즉시</b> 자동 매각, 유예 없음</td></tr><tr><td>작동 시간</td><td>영업시간 + 마감 시각</td><td>24시간 상시</td></tr><tr><td>담보값은 누가 매기나</td><td>평가 데이터 과점 + 청산소 종가</td><td>🔴 오라클 — 기관도 사실상 같은 구조를 쓴다</td></tr><tr><td>장부 공개</td><td>비공개(칸막이)</td><td>공개 — 사슬 길이가 보인다</td></tr><tr><td>규제 담보 적격</td><td>인정됨(규정 목록)</td><td><b>인정 0건</b></td></tr><tr><td>최악의 실패 모드</td><td>마감 시각 초과 · 이전 지연</td><td>오라클 오류 → 연쇄 청산</td></tr></tbody></table><div class=\"cap\" style=\"font-size:12.5px;color:var(--muted);margin-top:8px\">표 7. 두 트랙은 수렴 중이 아니라 서로 다른 문제를 푼다.</div></div>", "items": [{"name": "온체인 담보 대출 시장", "one": "토큰화 국채·펀드를 맡기고 스테이블코인을 빌린다", "points": ["전당포 구조 — 값진 물건 맡기고 그보다 적게 빌린다", "담보는 토큰화 국채·펀드, 나가는 건 스테이블코인", "허용된 지갑만 들어오게 반쯤 닫아둔 시장도 있다", "🔴 규제 마진 요건을 채우는 적격담보로는 미인정", "값은 프로토콜보다 원자산 발행·운용 수수료로 간다"], "detail": "", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "담보 등재", "v": "토큰화 국채·펀드('26.8)"}, {"k": "예치 규모", "v": "미확인"}, {"k": "규제 적격", "v": "0건"}], "players": ["Aave Horizon", "Morpho"], "korea": "국내 토큰증권을 담보로 올리는 경로는 제도·인프라 모두 미개통."}, {"name": "토큰화 상장주식 담보 — 국채에서 주식으로", "one": "변동성이 다른 자산을 온체인 담보로 잡는 실전 라인", "points": ["담보 축이 국채에서 주식으로 옮겨간 첫 실전", "가격을 적어주는 오라클이 끊기면 청산도 멈춘다", "배당·분할 등 기업행위 처리가 최대 난관", "🔴 유럽 예탁기관이 주식을 뺀 이유와 정확히 같은 벽", "규모는 공개되지 않아 수요 확인이 안 된다"], "detail": "", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "체인", "v": "퍼블릭"}, {"k": "담보", "v": "토큰화 상장주식"}, {"k": "규모", "v": "미확인"}], "players": ["Loopscale", "Securitize", "RedStone"], "korea": "국내 주식은 전자증권·예탁 체계 밖으로 못 나가 온체인 담보화 경로가 없다."}, {"name": "오라클 — 담보값을 체인에 적어 넣는 통로", "one": "기관에도 사실상 같은 층이 이미 있다", "points": ["체인은 바깥 시세를 스스로 못 봐 누가 적어줘야 한다", "펀드는 시세가 없으니 순자산가치를 원장에 박는다", "오라클 하나 틀리면 멀쩡한 담보가 강제 매각된다", "발행자가 자기 값을 쓰면 심판=선수 문제가 생긴다", "🔴 기관판 대응물은 \"없는 것\"이 아니라 이미 과점이다"], "detail": "초안은 \"기관 트랙엔 이 층이 없다, 수탁사 장부가 곧 진실\"이라 썼는데 오류다. 기관 담보 평가도 소수 데이터 업체와 청산소 종가에 의존한다. 즉 두 트랙 모두 <b>값을 정해주는 제3자</b>가 급소이고, 차이는 그 제3자가 규제받는 데이터 업체냐 코드냐일 뿐이다.", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "DeFi", "v": "RedStone · Chainlink · TSSO"}, {"k": "기관", "v": "평가 데이터 과점 + 청산소 종가"}], "players": ["RedStone", "Chainlink", "Securitize"], "korea": ""}, {"name": "자동청산 엔진 — 빠르지만 함께 판다", "one": "사람 대신 코드가 담보를 파는 장치", "points": ["마진콜 전화 대신 코드가 즉시 담보를 매각한다", "24시간 작동 = 기관이 못 하는 야간·주말을 덮는다", "유예가 없어 신용을 모르는 상대와도 거래가 된다", "🔴 같은 오라클을 보면 모두 동시에 판다 — 연쇄 청산", "청산인 경쟁이 치열해 보상 마진은 계속 얇아진다"], "detail": "", "pick": "-", "pickWhy": "", "bn": "soft", "metrics": [{"k": "작동", "v": "24/7 · 유예 없음"}, {"k": "실패 모드", "v": "오라클 오류 → 연쇄 청산"}], "players": ["온체인 대출 프로토콜", "청산 봇"], "korea": ""}], "take": "DeFi 배관은 속도에선 이기지만 규제 담보로 인정받지 못해 본류를 못 먹는다. 값도 프로토콜이 아니라 원자산 발행·순자산 평가·현금 레그로 샌다."});
+DATA.push({"id": "s8", "no": "8", "color": "var(--red)", "title": "지형 — 미국·유럽·아시아, 그리고 한국", "intro": "새 이름이 이기는 게 아니라 이미 배관을 쥔 기존 기관이 체인을 자기 밑에 깔았다. 아시아는 담보가 아니라 현금 레그부터 열렸다.", "stripe": "6개 축 · 실거래 단계 = 미국·유럽 2곳 · 나머지는 프로젝트·샌드박스 · 한국 담보 축 = 0 · 정정 반영 3건", "figHTML": "<div class=\"fig\"><table><thead><tr><th>지역</th><th>원장</th><th>현금 레그</th><th>담보 서비스</th><th>한 줄 평</th></tr></thead><tbody><tr><td>미국</td><td>예탁기관 토큰화 + 퍼블릭 연결</td><td>즉시결제망(소액)·기존 결제망</td><td>🔴 <b>시험 단계</b>(파일럿→실거래 진행 중)</td><td>청산·레포는 실거래, 담보는 아직 시험</td></tr><tr><td>유럽</td><td>예탁기관 내부 허가형 원장</td><td>전용 창구 9/21 출범</td><td>발행→결제·수탁·담보로 확장 선언</td><td>법이 원장 선택을 좁혀 느리지만 확실</td></tr><tr><td>일본</td><td>🔴 국채=중앙은행 / 주식·사채=예탁기관</td><td>기존 결제망</td><td>국채 담보 프로젝트 단계</td><td>🔴 신탁 구조로 소유권 이전 문제를 <b>우회</b></td></tr><tr><td>중화권</td><td>홍콩 중심 샌드박스</td><td>24/7 국경간 결제 활발</td><td>채권 담보 활용 개방 논의</td><td>본토는 허가형만 · 목적함수가 다르다</td></tr><tr><td>싱가포르</td><td>규제기관 주최 파일럿</td><td>토큰화 결제 실험</td><td>상용 매출은 확인 어려움</td><td>환승 공항형 — 남의 자산을 불러온다</td></tr><tr><td>한국</td><td>예탁기관 원장 독점</td><td>원화 도매 24/7 경로 없음</td><td><b>0</b></td><td>🔴 국제 논의엔 참여, 담보 축은 미형성</td></tr></tbody></table><div class=\"cap\" style=\"font-size:12.5px;color:var(--muted);margin-top:8px\">표 8. \"담보 서비스\" 열이 실제 성숙도다 — 어느 곳도 아직 상시 운영 + 규모 공개 단계가 아니다.</div></div>", "items": [{"name": "① 미국 — 청산은 실거래, 담보는 아직 시험", "one": "체인은 지하 배관일 뿐 간판은 그대로다", "points": ["토큰화 자산으로 미국 거래 실처리 성공('26.7)", "밤에도 도는 24x5 청산 가동('26.6)", "분산원장 레포는 월 단위로 조 단위를 처리 중", "🔴 담보 쪽은 아직 <b>시험</b>이다 — 상시 운영 아님", "최대 구조 변수는 토큰화가 아니라 국채 중앙청산 의무화"], "detail": "초안은 미국 담보 성숙도를 최고 등급으로 매겼는데, 근거가 \"뱅가드·웰링턴 시험\"이면 자체 정의상 시험 단계를 넘을 수 없다. 최고 등급은 <b>반복적 상시 운영 + 규모 공개</b>가 확인될 때만 줄 수 있다.", "pick": "A", "pickWhy": "길목 과점 + 처리량·잔액 연동 — 단 최대 길목은 이용자 소유라 렌트가 제한", "bn": "semi", "metrics": [{"k": "실거래", "v": "'26.7.15"}, {"k": "청산", "v": "24x5 '26.6.29"}, {"k": "담보 성숙도", "v": "시험"}], "players": ["DTCC", "Nasdaq", "Broadridge", "Tradeweb"], "korea": ""}, {"name": "② 유럽 — 법이 원장을 좁힌 유일한 지역", "one": "느리지만 방향이 확실하고 되돌리기 어렵다", "points": ["기존 예탁기관이 허가형 원장으로 담보까지 확장", "현금 레그를 민간이 아니라 중앙은행 장부에 묶는다", "주식은 1차에서 뺐다 — 기업행위 책임 때문", "협의체 61곳 중 스테이블코인 발행자는 2곳뿐", "신규 진입자가 들어올 틈이 구조적으로 좁다"], "detail": "", "pick": "A", "pickWhy": "기존 과점 예탁기관의 잔액 수수료 위에 얹는 구조 · 상장 그룹 소속", "bn": "hard", "metrics": [{"k": "전용 창구", "v": "'26.9.21 출범"}, {"k": "협의체", "v": "61곳(발행자 2)"}, {"k": "수탁", "v": "약 €22조"}], "players": ["Clearstream", "Euroclear", "ECB", "LCH", "Deutsche Börse"], "korea": "공표 61곳에 한국 기관은 없다 — 유럽 표준 논의 테이블에 자리가 없다."}, {"name": "③ 일본 — 법을 안 건드리고 우회한 쪽", "one": "시차가 만든 담보 낭비를 국채로 푸는 실험장", "points": ["은행 두 곳과 청산소가 국채 토큰화 담보를 추진 중", "🔴 국채 원장은 <b>중앙은행</b>, 주식·사채는 별도 예탁기관", "🔴 발행 플랫폼은 신탁회사가 분사한 별도 회사가 쥔다", "🔴 신탁수익권 구조로 소유권 이전 문제를 우회했다", "유통은 전용 디지털 거래소가 맡는 3층 구조"], "detail": "일본이 중요한 이유는 이 보고서가 \"하드 병목\"이라 부른 소유권 이전 문제를 <b>법 개정 없이</b> 신탁 구조로 우회했기 때문이다. 자산을 신탁에 넣고 그 수익권을 토큰으로 만들면, 토큰이 오가도 원자산 소유권 이전 문제가 안 생긴다. §4의 담보 기록 전용 원장과 같은 계열의 해법이다.", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "원장 3분", "v": "중앙은행(국채)·예탁기관(주식·사채)·청산소"}, {"k": "구조", "v": "신탁수익권 = 이전 문제 우회"}], "players": ["미즈호", "MUFG", "JSCC", "Progmat", "ODX", "SBI"], "korea": "한국 국채도 같은 시차 문제를 겪지만 대응 프로젝트는 확인되지 않는다."}, {"name": "④ 중화권 — 목적함수가 다르다", "one": "홍콩은 24/7 현금 레그, 본토는 허가형만", "points": ["거대 결제기업과 대형은행의 국경간 결제 제휴(8/21)", "그 기업이 은행 9곳 토큰화예금의 첫 고객이었다", "홍콩은 채권 담보 활용 개방과 샌드박스가 축", "🔴 본토 목적은 효율이 아니라 <b>달러 의존 축소</b>다", "본토는 암호자산 금지 하의 허가형 노선이 유지된다"], "detail": "서방 트랙이 \"담보 회전율을 높여 자본 효율을 올린다\"를 목표로 한다면, 본토 트랙은 위안화 결제·담보 경로를 넓혀 달러 의존을 줄이는 쪽이다. 같은 기술을 쓰지만 성공 기준이 달라서, 서방 지표로 진척을 재면 오독한다.", "pick": "P", "pickWhy": "정책 목적이 마진보다 앞서는 구조 — 렌트가 아니라 정책 렌트", "bn": "hard", "metrics": [{"k": "제휴", "v": "'26.8.21"}, {"k": "수요 앵커", "v": "은행 9곳의 첫 고객 1곳"}, {"k": "본토", "v": "허가형 노선 유지"}], "players": ["Ant International", "중국은행(홍콩)", "HKMA"], "korea": "원화는 이 24/7 현금 레그에 다리가 없다 — 역외 원화 제약이 그대로 벽이다."}, {"name": "⑤ 싱가포르 — 규칙을 먼저 깔아 자산을 부른다", "one": "환승 공항형 — 자기 승객보다 환승객으로 번다", "points": ["규제기관이 직접 자산군별 파일럿을 주최한다", "체인 난립을 막으려는 공용 원장 구상을 병행", "아시아 트레저리 자금의 결절점 역할", "국내 발행이 막힌 곳들의 대체 착지점이 된다", "담보 서비스 상용 매출은 공개 확인이 어렵다"], "detail": "", "pick": "-", "pickWhy": "", "bn": "soft", "metrics": [{"k": "성격", "v": "규제기관 주최 파일럿"}, {"k": "상용 매출", "v": "미확인"}], "players": ["MAS", "현지 은행·운용사"], "korea": "국내 발행이 막히면 다음 목적지가 여기다 — 역외 유출의 실제 착지점."}, {"name": "⑥ 한국 — 배관은 깔렸는데 밸브가 안 열렸다", "one": "담보 축이 0인 이유는 관심 부족이 아니라 구조다", "points": ["토큰증권 법제 개정이 아직 마무리되지 않았다", "예탁기관이 원장을 독점해 병렬 원장이 서기 어렵다", "🔴 국제 논의엔 참여하고 있다 — 다자 프로젝트 참가", "🔴 예금토큰 실거래 테스트도 수행한 이력이 있다", "즉 \"관심 없다\"가 아니라 <b>원장 독점 + 입법 미완</b>이다"], "detail": "초안은 \"국제 표준 테이블에 부재\"라고만 적었는데 절반만 맞다. 중앙은행은 다자 도매 결제 프로젝트에 참가했고 예금토큰 실거래 테스트도 했다. 정확한 서술은 \"현금 레그 논의에는 있고, <b>담보 축은 0</b>\"이다. 두 명제를 분리해야 무엇이 열려야 하는지가 보인다.", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "담보 서비스", "v": "0"}, {"k": "현금 레그 논의", "v": "참여 이력 있음"}, {"k": "법제", "v": "미완"}], "players": ["예탁결제원", "증권사 컨소시엄", "한국은행"], "korea": "지연 자체보다 무서운 건 표준이 밖에서 굳는 것 — 늦게 열려도 남의 규격에 붙어야 한다."}], "take": "승자는 이미 배관을 쥔 기존 기관이다. 일본은 법을 안 건드리고 신탁으로 우회했고, 한국은 현금 레그 논의엔 있으나 담보 축은 0이다."});
+DATA.push({"id": "s9", "no": "9", "color": "var(--ink2)", "title": "보완 — 사실검증이 잡아낸 다섯 개의 빈칸", "intro": "이 장은 1차 리서치가 통째로 빠뜨린 축을 메운다. 넷은 \"토큰화 아닌 것이 배관을 더 크게 바꾼다\"는 내용이고, 하나는 이 산업의 실패율이다.", "stripe": "빈칸 5 · 이 중 3개가 앞 장의 곡괭이 판정을 실제로 하향시켰다 · 반증 조건의 절반이 여기서 나온다", "figHTML": "<div class=\"fig\"><table><thead><tr><th>빈칸</th><th>무엇이 빠졌나</th><th>앞 장 결론을 어떻게 바꾸나</th></tr></thead><tbody><tr><td>① 국채 중앙청산 의무화</td><td>레포 배관을 실제로 재편하는 규제 이벤트</td><td>\"레포가 첫 병목\"의 원인이 토큰화가 아니게 된다</td></tr><tr><td>② 규제 자본 천장</td><td>은행 대차대조표 제약(자본·유동성 비율)</td><td>\"회전율↑ = 유효담보↑\"에 <b>천장</b>이 씌워진다</td></tr><tr><td>③ 헤어컷 판정 주체</td><td>청산소 + 감독규정 + 양자 계약 3중</td><td>적격성 판정 층에 <b>민간 렌트가 안 붙는다</b></td></tr><tr><td>④ 실패 기저율</td><td>접힌 원장 프로젝트들의 목록</td><td>파일럿 뉴스의 가중치를 낮춰야 한다</td></tr><tr><td>⑤ 회전율의 역효과</td><td>빠른 마진 요구가 위기를 증폭시킨 사례</td><td>규제가 회전 가속을 <b>억제</b>하는 방향으로 움직일 수 있다</td></tr></tbody></table><div class=\"cap\" style=\"font-size:12.5px;color:var(--muted);margin-top:8px\">표 9. 다섯 빈칸 — 셋은 곡괭이 판정을, 둘은 방향 자체를 흔든다.</div></div>", "items": [{"name": "① 미국 국채 중앙청산 의무화 — 진짜 동인", "one": "2026~27년 미국 담보 배관 최대 변수는 토큰화가 아니다", "points": ["국채 현물·레포를 중앙청산소로 몰아넣는 규제가 진행 중", "청산 대상이 늘면 증거금 수요와 담보 이동이 급증한다", "즉 담보 회전이 느는 진짜 이유가 규제 쪽에 있다", "🔴 원인을 바꿔 짚으면 수혜자를 잘못 지목하게 된다", "청산기관 물량 증가를 토큰화 성과로 오독할 위험"], "detail": "이 보고서가 \"레포가 24/7의 첫 병목\"이라고 말할 때, 그 레포를 실제로 재편하는 건 원장 기술이 아니라 청산 의무화다. 앞으로 나올 \"담보 이동 급증\" 통계를 볼 때 두 원인을 반드시 분리해야 한다.", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "성격", "v": "규제 이벤트(토큰화와 별개)"}, {"k": "경로", "v": "청산 대상 확대 → 증거금·담보 이동 증가"}], "players": ["SEC", "FICC/DTCC", "딜러·헤지펀드"], "korea": ""}, {"name": "② 규제 자본 천장 — 회전율에 씌워진 뚜껑", "one": "담보가 빨라져도 은행 대차대조표가 안 늘면 회전도 안 는다", "points": ["은행 자본·레버리지 비율이 중개 능력을 제한한다", "딜러가 못 끼면 담보는 빨라도 안 돈다", "🔴 퍼블릭 체인 위 자산엔 무거운 자본 페널티가 붙는다", "그래서 기관이 허가형을 고르는 진짜 이유가 여기 있다", "토큰화 자산이 고유동성 자산으로 인정되는지도 별개 관문"], "detail": "\"회전율이 오르면 유효 담보가 는다\"는 이 보고서의 핵심 논리다. 그런데 그 회전은 은행 대차대조표를 통과해야 일어나고, 그 폭은 자본규제가 정한다. <b>이 명제 하나가 보고서 전체 논리의 천장</b>이며, §4에서 기관이 허가형 원장을 고르는 이유도 취향이 아니라 이 페널티다.", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "축", "v": "자본·레버리지·유동성 비율"}, {"k": "퍼블릭 체인", "v": "자본 페널티 무거움"}], "players": ["바젤위원회", "각국 감독당국", "딜러 은행"], "korea": ""}, {"name": "③ 헤어컷·적격성 판정 주체 — 렌트가 안 붙는 자리", "one": "\"이건 담보로 받아준다\"를 정하는 건 벤더가 아니다", "points": ["청산 거래는 청산소 리스크위원회가 정하고", "그 위에 감독규정이 상·하한을 씌운다", "양자 거래는 규제 담보 목록과 계약이 정한다", "🔴 규정이 정하는 자리엔 통행세를 못 붙인다", "민간이 파는 건 판정 자체가 아니라 <b>계산 대행</b>이다"], "detail": "§2-②를 병목으로 지목하고도 \"누가 정하나\"를 비우면, 그 층을 곡괭이로 오인하게 된다. 답은 3중 구조(청산소+감독+계약)이고, 그래서 이 층의 등급을 관찰로 낮췄다. 벤더가 파는 건 규칙을 만드는 권한이 아니라 <b>규칙대로 빨리 계산해주는 편의</b>다.", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "판정 3중", "v": "청산소 · 감독규정 · 양자 계약"}, {"k": "민간 몫", "v": "계산 대행(소프트웨어)"}], "players": ["CCP 리스크위원회", "감독당국", "계약 당사자"], "korea": ""}, {"name": "④ 실패 기저율 — 접힌 원장 프로젝트들", "one": "파일럿이 상시 운영으로 넘어간 비율은 높지 않다", "points": ["한 해외 거래소의 기간 시스템 교체가 중단·대규모 상각", "🔴 그 프로젝트 시공사가 오늘 담보 시험의 원장 제공사다", "무역금융 원장 컨소시엄 여럿이 청산·종료됐다", "대형 원장 소프트웨어 회사도 사업을 축소했다", "거래소 디지털 부문 일부는 거래량이 저조하다"], "detail": "이 기저율을 빼면 \"뱅가드·웰링턴이 시험했다\"는 뉴스의 가중치를 정할 수 없다. 이 산업에서 대형 파일럿이 상시 운영으로 넘어간 사례보다 조용히 접힌 사례가 더 많았다. 그래서 §10의 반증 조건 1번이 \"시험이 상시로 넘어가는가\"다.", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "대표 사례", "v": "거래소 기간시스템 교체 중단"}, {"k": "함의", "v": "파일럿 뉴스 가중치 하향"}], "players": ["—"], "korea": ""}, {"name": "⑤ 회전율의 역효과 — 규제가 브레이크를 밟을 수 있다", "one": "빠른 마진 요구는 위기 때 불을 키운다", "points": ["담보가 빨리 돌면 평상시엔 유동성이 늘어난다", "🔴 위기 때는 같은 속도로 마진 요구가 몰린다", "레포 시장 발작·현금 확보 쇄도가 실제 사례다", "연기금 마진콜 연쇄로 국채시장이 흔들린 사례도 있다", "감독기구는 마진 모델의 예측가능성을 요구해 왔다"], "detail": "이 보고서는 회전율 상승을 일관되게 이익으로만 계산했다. 감독당국이 최근 몇 년간 문제 삼은 것은 정확히 반대편이다. 회전 가속이 규제의 <b>목표</b>가 아니라 <b>관리 대상</b>이라면, 담보 배관 사업자의 성장 곡선도 규제가 정하는 상한 안에 갇힌다.", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "방향", "v": "감독은 마진 예측가능성·완충 요구"}, {"k": "함의", "v": "회전 가속에 정책 상한"}], "players": ["BIS", "FSB", "각국 감독당국"], "korea": ""}], "take": "다섯 빈칸 중 셋(①②③)이 앞 장의 곡괭이 판정을 실제로 낮췄다. 담보가 도는 이유의 상당 부분이 토큰화가 아니라 규제이고, 그 규제는 브레이크도 함께 쥐고 있다."});
+DATA.push({"id": "s10", "no": "10", "color": "var(--orange)", "title": "해석 — 값은 어디에 걷히나, 그리고 무엇이 나오면 이 판단이 틀린 것인가", "intro": "병목이 있다고 곡괭이는 아니다. 부족이 실재해도 그 렌트를 걷는 상장 층이 없으면 그건 관찰 항목이다.", "stripe": "곡괭이 A 후보 3 · 관찰 5 · 정책렌트 1 · 🔴 A 중 개인이 직접 담을 수 있는 상장 경로는 일부뿐 · 반증 조건 5", "figHTML": "<div class=\"fig\"><table><thead><tr><th>층</th><th>토큰화가 늘면 매출이 느나</th><th>과금 기준</th><th>투자 가능성</th><th>판정</th></tr></thead><tbody><tr><td>가격 평가 + 마진콜 메시징</td><td>✅ 호출·평가 건수에 직결</td><td>건수·구독</td><td>대체로 <b>상장</b> 그룹 소속</td><td>🟢 <b>A</b> — 이미 걷고 있다</td></tr><tr><td>트라이파티 담보 서비스</td><td>✅ 담보 잔액 연동</td><td>잔액 bp</td><td>미국 쪽은 상장은행, 유럽 쪽은 상장 그룹/비상장 혼재</td><td>🟢 <b>A</b></td></tr><tr><td>분산원장 레포</td><td>✅ 처리량 연동</td><td>이용계약+물량</td><td><b>상장</b></td><td>🟢 A — 단 매출 귀착 분해 미확인</td></tr><tr><td>현금 레그(발행자 이자)</td><td>✅ 준비자산 이자</td><td>잔액 이자</td><td>상장/비상장 혼재</td><td>🟢 A — 🔴 유통 배분으로 실질 몫 축소</td></tr><tr><td>예탁·수탁 보관</td><td>△ 이미 걷지만 토큰화 증분은 별개</td><td>잔액 수수료</td><td>미국 최대 길목은 <b>참가자 소유·비상장</b></td><td>⚪ 관찰 — 길목≠렌트</td></tr><tr><td>담보관리 플랫폼</td><td>❌ 계약 수만큼만</td><td>연 이용계약</td><td><b>상장</b></td><td>⚪ 관찰 — 좋은 사업이나 이 테마 곡괭이 아님</td></tr><tr><td>적격성·헤어컷 판정</td><td>❌ 규정이 정한다</td><td>—</td><td>—</td><td>⚪ 관찰 — 민간 렌트 자리 아님</td></tr><tr><td>원장 운영(허가형)</td><td>❓ 수익 미공개</td><td>계약</td><td>대부분 <b>비상장</b></td><td>⚪ 관찰 — 실패 기저율 높음</td></tr><tr><td>퍼블릭 체인 정산</td><td>❌ 실측 귀착률 0.15%</td><td>가스</td><td>토큰</td><td>⚪ 관찰</td></tr><tr><td>본토 위안화 트랙</td><td>—</td><td>—</td><td>—</td><td>🟡 <b>P</b> — 정책 목적이 마진보다 앞선다</td></tr></tbody></table><div class=\"cap\" style=\"font-size:12.5px;color:var(--muted);margin-top:8px\">표 10. \"부족이 실재하는가\"가 아니라 \"그 렌트를 누가 걷는가\"로 거른 결과. 종목명은 적지 않는다 — 층으로만 본다.</div></div>", "items": [{"name": "결론 ① — 값은 자산도 체인도 아닌 \"건수와 잔액\"에 붙는다", "one": "토큰화가 늘 때 매출이 함께 느는 층은 셋뿐", "points": ["호출·평가 <b>건수</b>에 붙은 층 — 평가·메시징 과점", "담보 <b>잔액</b>에 붙은 층 — 트라이파티", "처리 <b>물량</b>에 붙은 층 — 분산원장 레포", "나머지는 계약 수만큼만 늘거나 규정에 눌려 있다", "체인 자체에 남는 몫은 실측 0.15%였다"], "detail": "이 결론은 \"토큰화 인프라를 사면 된다\"와 정반대다. 인프라를 <b>만드는</b> 쪽(원장 운영사)은 대부분 비상장이고 수익도 미공개이며 실패율이 높다. 반면 그 위에서 <b>세는</b> 쪽은 이미 고마진으로 걷고 있고 체인이 무엇이든 상관없다.", "pick": "A", "pickWhy": "건수·잔액·물량 연동이 확인된 층만 A. 계약형·규정형은 관찰로 내렸다", "bn": "semi", "metrics": [{"k": "A 후보", "v": "3개 층"}, {"k": "체인 귀착", "v": "0.15%(실측)"}], "players": ["—"], "korea": ""}, {"name": "결론 ② — 병목의 절반은 토큰화가 만든 게 아니다", "one": "담보가 더 도는 이유의 상당 부분이 규제다", "points": ["국채 중앙청산 의무화가 담보 이동을 직접 늘린다", "자본·유동성 규제가 회전율에 천장을 씌운다", "적격성 판정은 규정이 정해 민간 렌트가 없다", "🔴 그래서 \"토큰화 성과\" 통계는 원인 분리가 필요하다", "감독은 회전 가속의 브레이크도 함께 쥐고 있다"], "detail": "", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "원인 분리", "v": "규제 이벤트 vs 토큰화"}, {"k": "상한", "v": "자본규제"}], "players": ["—"], "korea": ""}, {"name": "결론 ③ — 두 트랙은 수렴하지 않고 갈라진다", "one": "기관은 체인을 배관으로 좁히고, 리테일은 거래 장소로 넓힌다", "points": ["기관 트랙: 허가형·프라이버시·후선 배관·규제 적격", "리테일·역외 트랙: 퍼블릭·개방·거래 장소·적격 미인정", "같은 주에 정반대 사건이 동시에 일어났다", "한 덩어리로 묶어 읽으면 귀착 지도를 잘못 그린다", "🔴 어느 쪽이 이기느냐가 아니라 <b>둘이 병존</b>한다"], "detail": "이 지점이 자기반박으로 판단이 뒤집힌 자리다. 초안은 \"블록체인은 후선 배관\"이라는 업계 발언을 산업 전체 명제로 받았는데, 그 발언자는 전통 채권 플랫폼과 허가형 체인 벤더 — 즉 퍼블릭 체인이 거래 장소가 되면 손해 보는 위치다. <b>기관 담보 트랙에 한정된 명제</b>로 좁혔다.", "pick": "-", "pickWhy": "", "bn": "semi", "metrics": [{"k": "기관", "v": "허가형 · 규제 적격"}, {"k": "리테일·역외", "v": "퍼블릭 · 적격 0건"}], "players": ["—"], "korea": ""}, {"name": "🇰🇷 한국 — 무엇이 열려야 0에서 1이 되나", "one": "관심의 문제가 아니라 원장 독점 + 입법 미완의 문제", "points": ["① 토큰증권 법제가 마무리돼야 발행이 국내에서 선다", "② 예탁기관 원장과 병렬 원장의 관계가 정리돼야 한다", "③ 원화 도매 24/7 현금 레그가 있어야 담보가 돈다", "④ 국내 자산의 담보 적격 판정 주체가 정해져야 한다", "🔴 현금 레그 논의엔 이미 참여 중 — 담보 축만 0이다"], "detail": "지연 자체보다 무서운 건 표준이 밖에서 굳는 것이다. 유럽 협의체 61곳에 한국 기관이 없고 발행 수요는 역외로 나간다. 늦게 열려도 남의 규격에 붙어야 하는 상황이 되면, 국내에 남는 건 운용 보수뿐이고 판매·수탁·평가 수수료는 국경 밖에 걷힌다.", "pick": "-", "pickWhy": "", "bn": "hard", "metrics": [{"k": "담보 축", "v": "0"}, {"k": "현금 레그 논의", "v": "참여 이력 있음"}, {"k": "열려야 할 관문", "v": "4개"}], "players": ["예탁결제원", "한국은행", "증권사 컨소시엄"], "korea": ""}, {"name": "⚠️ 이 판단이 틀렸다는 신호 — 반증 조건 5", "one": "아래 중 하나라도 나오면 위 결론을 고쳐야 한다", "points": ["① 담보 시험이 <b>상시 운영 + 규모 공개</b>로 넘어가지 않는다", "② 평가·메시징 과점의 마진이 확장되지 않는다", "③ 담보 회전 속도 지표가 토큰화 이후에도 안 오른다", "④ 기관 담보·정산 물량이 <b>퍼블릭 체인 거래 장소</b>로 이동", "⑤ 자본규제가 완화돼 회전 천장이 사라진다"], "detail": "①②③이 나오면 \"곡괭이 A\" 판정이 무너지고, ④가 나오면 \"두 트랙 병존\" 대신 퍼블릭 우세로 귀착 지도를 다시 그려야 하며, ⑤가 나오면 회전율 논리의 천장이 사라져 오히려 이 산업의 상단이 커진다. 다섯 중 셋 이상은 6~12개월 안에 관측 가능하다.", "pick": "-", "pickWhy": "", "bn": "-", "metrics": [{"k": "관측 시한", "v": "6~12개월(3개 이상)"}, {"k": "가장 빠른 확인", "v": "유럽 전용 창구 9/21 이후 물량"}], "players": ["—"], "korea": ""}], "take": "\"토큰화가 오는가\"는 이 보고서의 질문이 아니다. 질문은 \"그때 누가 돈을 세느냐\"이고, 답은 체인도 원장도 아닌 건수·잔액·물량에 붙은 세 층이다."});
+</script>
+
+<script>
+renderReport();
+try{ DDViz.renderValueChain('vc_s2', {"label": "담보 6단계", "stages": [{"name": "① 보관", "sectors": "수탁·예탁기관", "company": "금고에 잠김", "vc": 3, "risk": 1}, {"name": "② 적격성 판정", "sectors": "헤어컷·담보 목록", "company": "규정이 정한다", "vc": 1, "risk": 2}, {"name": "③ 소유권 이전", "sectors": "법률 행위", "company": "법역·마감시각", "vc": 1, "risk": 3}, {"name": "④ 트라이파티 배분", "sectors": "재사용·배분", "company": "잔액에 과금", "vc": 3, "risk": 1}, {"name": "⑤ 마진콜 이행", "sectors": "통지·조정", "company": "이미 전자화", "vc": 2, "risk": 1}, {"name": "⑥ 현금 정산", "sectors": "최종성·이자", "company": "이자가 앉는 곳", "vc": 3, "risk": 2}]}); }catch(e){}
+(function(){
+  document.getElementById('report').insertAdjacentHTML('beforeend',
+    '<h2 id="gloss"><span class="num" style="background:var(--cyan)">＋</span>핵심 용어 풀이</h2>'
+    + '<p class="lead">본문에 처음 나온 순서대로. 한 번 푼 말은 본문에서 다시 설명하지 않는다.</p>'
+    + '<div class="card"><table><tbody><tr><th style="white-space:nowrap">담보(collateral)</th><td>못 갚을 때 대신 가져가라고 미리 맡겨두는 재산. 값이 잘 안 흔들리는 현금·국채가 1순위다.</td></tr><tr><th style="white-space:nowrap">헤어컷(haircut)</th><td>담보를 실제 값보다 깎아서 쳐주는 비율. 1억짜리를 9천만으로 인정하면 헤어컷 10%다.</td></tr><tr><th style="white-space:nowrap">마진콜(margin call)</th><td>값이 흔들려 담보가 모자라지면 정해진 시각까지 더 채우라고 하는 요구.</td></tr><tr><th style="white-space:nowrap">레포(repo)</th><td>채권을 잠깐 맡기고 현금을 빌린 뒤 곧 되사는 초단기 자금 거래. 금융기관 하루치 현금의 본진.</td></tr><tr><th style="white-space:nowrap">담보 재사용(re-use)</th><td>받아둔 담보를 다시 담보로 내주는 것. 같은 자산이 여러 거래를 받쳐 유효 담보량이 는다.</td></tr><tr><th style="white-space:nowrap">담보 회전 속도</th><td>같은 담보가 일정 기간에 몇 번 다시 쓰였는지. 잔고가 아니라 이 지표가 성과를 잰다.</td></tr><tr><th style="white-space:nowrap">트라이파티(tri-party)</th><td>거래 당사자 둘 대신 제3자가 담보를 잡아주고 배분해주는 서비스. 잔액에 비례해 수수료를 걷는다.</td></tr><tr><th style="white-space:nowrap">청산소(CCP)</th><td>거래 상대방의 부도를 대신 떠안고 증거금을 걷는 기관. 자리가 법으로 정해져 있어 대체가 어렵다.</td></tr><tr><th style="white-space:nowrap">예탁결제기관(CSD)</th><td>증권의 최종 장부를 쥐고 소유권 이전을 확정해주는 기관. 한국은 예탁결제원.</td></tr><tr><th style="white-space:nowrap">최종성(settlement finality)</th><td>"이제 못 되돌린다"가 법적으로 성립하는 순간. 24/7 거래의 마지막 관문이다.</td></tr><tr><th style="white-space:nowrap">DvP(동시결제)</th><td>증권과 대금을 동시에 주고받아 한쪽만 넘어가는 사고를 막는 방식.</td></tr><tr><th style="white-space:nowrap">허가형 원장 / 퍼블릭 체인</th><td>허가받은 참가자만 쓰는 장부 vs 누구나 쓰는 공개 장부. 기관은 프라이버시·규제 때문에 앞쪽을 고른다.</td></tr><tr><th style="white-space:nowrap">오라클(oracle)</th><td>바깥 세상의 가격을 블록체인 안에 적어 넣어주는 통로. 틀리면 멀쩡한 담보가 강제 매각된다.</td></tr><tr><th style="white-space:nowrap">순자산가치(NAV)</th><td>펀드 1좌의 값어치. 시세가 없는 자산은 이 값이 곧 담보 평가액이 된다.</td></tr><tr><th style="white-space:nowrap">초과담보</th><td>빌리는 돈보다 더 많이 맡기게 하는 방식. 신용심사 대신 쓰는 DeFi의 기본 안전장치.</td></tr><tr><th style="white-space:nowrap">프로시클리컬리티</th><td>평상시엔 유동성을 키우고 위기 때는 더 세게 조이는 성질. 마진 요구가 대표적이다.</td></tr></tbody></table></div>');
+})();
+</script>
+</body>
+</html>
