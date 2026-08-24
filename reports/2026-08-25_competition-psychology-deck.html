@@ -1,0 +1,560 @@
+<title>이겨야 한다는 마음의 세 얼굴</title>
+<meta charset="utf-8">
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="심리">
+<meta name="vault-date" content="2026-08-25">
+<meta name="description" content="승리강박·패배공포·경쟁기피를 성취동기 심리학과 PISA·GEM 데이터로 해부한 발표 덱 — 공포는 사람이 아니라 무대에 붙는다">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@600;700;900&display=swap">
+<style>
+/* ── 단일 시각 세계: 투사되는 발표 화면. 뷰어 테마와 무관하게 어두운 남색으로 고정한다. ── */
+:root{
+  --ink-900:#061423;   /* 바탕 */
+  --ink-850:#08192B;
+  --ink-800:#0B2138;   /* 패널 */
+  --ink-700:#16456B;
+  --rule:#1B3A5A;      /* 괘선 */
+  --rule-soft:#102B45;
+  --paper:#E6EDF5;     /* 본문 */
+  --paper-dim:#B7C7D8;
+  --muted:#7E97AE;     /* 청회색 — 중립색을 파랑 쪽으로 기울여 선택 */
+  --legacy:#E0A33E;    /* 호박 — 결과의 무대 (성취=자기가치, 기질론) */
+  --token:#4FD1E8;     /* 청록 — 무대의 재설계 (구조론) */
+  --token-lt:#8FE6F4;
+  --warn:#F2857B;      /* 산호 — 주의 */
+  --s:1;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--ink-900);color:var(--paper);
+  font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  -webkit-font-smoothing:antialiased;}
+
+.deck{position:relative;width:100%;height:100dvh;overflow:hidden;background:var(--ink-900);}
+.stage{position:absolute;top:50%;left:50%;width:1600px;height:900px;
+  transform:translate(-50%,-50%) scale(var(--s));transform-origin:center center;}
+
+/* 장부 괘선 — 배경 질감 */
+.stage::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,transparent 0 63px,var(--rule-soft) 63px 64px);
+  opacity:.5;}
+
+.slide{position:absolute;inset:0;padding:74px 96px 92px;opacity:0;visibility:hidden;
+  transition:opacity .5s ease,visibility .5s;}
+.slide.active{opacity:1;visibility:visible;}
+
+/* 요소 등장 — 슬라이드 진입 시 순차 상승 */
+.rv{opacity:0;transform:translateY(26px);
+  transition:opacity .62s cubic-bezier(.2,.7,.3,1),transform .62s cubic-bezier(.2,.7,.3,1);
+  transition-delay:calc(var(--i,0) * 95ms);}
+.slide.active .rv{opacity:1;transform:none;}
+
+/* 머리말 */
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:15px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--token);display:flex;align-items:center;gap:14px;}
+.eyebrow::after{content:"";height:1px;flex:1;max-width:190px;background:linear-gradient(90deg,var(--token),transparent);}
+h1{font-family:"Noto Serif KR",serif;font-weight:900;font-size:88px;line-height:1.16;margin:26px 0 0;
+  letter-spacing:-.02em;text-wrap:balance;}
+h2{font-family:"Noto Serif KR",serif;font-weight:700;font-size:52px;line-height:1.25;margin:20px 0 0;
+  letter-spacing:-.015em;text-wrap:balance;}
+.lede{font-size:25px;line-height:1.62;color:var(--paper-dim);font-weight:300;max-width:1080px;margin-top:26px;}
+.note{font-size:19px;line-height:1.6;color:var(--muted);font-weight:300;max-width:1120px;}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;}
+strong{font-weight:700;color:#fff;}
+em{font-style:normal;color:var(--token);font-weight:500;}
+.amber{color:var(--legacy);}
+.cyan{color:var(--token);}
+.coral{color:var(--warn);}
+
+/* 하단 레일 */
+.rail{position:absolute;left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;
+  gap:20px;padding:0 96px;border-top:1px solid var(--rule);background:var(--ink-850);}
+.bar{flex:1;height:2px;background:var(--rule);position:relative;overflow:hidden;}
+.bar span{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--token),#8FE6F4);
+  transition:width .5s cubic-bezier(.2,.7,.3,1);}
+.count{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.1em;color:var(--muted);}
+.deckname{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.1em;color:var(--muted);}
+
+/* 표지 */
+.cover{display:flex;flex-direction:column;justify-content:center;height:100%;}
+.cover h1{font-size:104px;}
+.cover .sub{font-size:27px;color:var(--paper-dim);font-weight:300;margin-top:34px;line-height:1.6;}
+.meta{margin-top:56px;padding-top:26px;border-top:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:15px;color:var(--muted);line-height:2;}
+
+/* 큰 진술 */
+.statement{display:flex;flex-direction:column;justify-content:center;height:100%;}
+.statement .l1{font-family:"Noto Serif KR",serif;font-size:66px;font-weight:600;color:var(--muted);line-height:1.3;}
+.statement .l2{font-family:"Noto Serif KR",serif;font-size:104px;font-weight:900;line-height:1.22;margin-top:12px;letter-spacing:-.025em;}
+
+/* 카드 격자 */
+.grid{display:grid;gap:24px;margin-top:44px;}
+.g2{grid-template-columns:repeat(2,1fr);} .g3{grid-template-columns:repeat(3,1fr);} .g4{grid-template-columns:repeat(4,1fr);}
+.card{background:var(--ink-800);border:1px solid var(--rule);padding:30px 30px 32px;position:relative;}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent,var(--token));}
+.card h3{font-size:24px;font-weight:700;margin:0 0 12px;line-height:1.35;}
+.card p{font-size:18px;line-height:1.62;color:var(--paper-dim);font-weight:300;margin:0;}
+.card .tag{font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.12em;color:var(--muted);
+  text-transform:uppercase;display:block;margin-bottom:14px;}
+
+/* 수치 */
+.figs{display:flex;gap:70px;margin-top:46px;align-items:flex-end;}
+.fig .n{font-family:"IBM Plex Mono",monospace;font-size:86px;font-weight:600;line-height:1;
+  color:var(--token);font-variant-numeric:tabular-nums;letter-spacing:-.03em;}
+.fig .n.sm{font-size:56px;color:var(--paper);}
+.fig .k{font-size:18px;color:var(--muted);margin-top:14px;font-weight:300;}
+
+/* 막대 */
+.bars{margin-top:40px;display:flex;flex-direction:column;gap:17px;}
+.brow{display:grid;grid-template-columns:210px 1fr 132px;align-items:center;gap:22px;}
+.brow .lb{font-size:20px;font-weight:500;text-align:right;color:var(--paper-dim);}
+.brow .tr{height:26px;background:var(--rule-soft);position:relative;overflow:hidden;}
+.brow .fl{position:absolute;inset:0 auto 0 0;width:0;background:var(--c,var(--token));
+  transition:width 1.05s cubic-bezier(.2,.7,.3,1);transition-delay:calc(var(--i,0) * 95ms + 180ms);}
+.slide.active .brow .fl{width:var(--w);}
+.brow .vl{font-family:"IBM Plex Mono",monospace;font-size:20px;color:var(--paper);font-variant-numeric:tabular-nums;}
+.brow .lb.coral{color:var(--warn);}
+.brow .vl.coral{color:var(--warn);}
+.brow .lb.amber{color:var(--legacy);}
+.brow .vl.amber{color:var(--legacy);}
+
+/* 도해 */
+svg .draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+  transition:stroke-dashoffset 1.15s cubic-bezier(.3,.6,.3,1);transition-delay:calc(var(--i,0) * 95ms + 200ms);}
+.slide.active svg .draw{stroke-dashoffset:0;}
+svg text{font-family:"Noto Sans KR",sans-serif;}
+svg .lbl{font-size:17px;fill:var(--paper-dim);font-weight:400;}
+svg .lbl-s{font-family:"IBM Plex Mono",monospace;font-size:13px;fill:var(--muted);letter-spacing:.08em;}
+svg .nd{fill:var(--ink-800);stroke-width:1.5;}
+
+/* 목록 */
+.list{margin-top:40px;display:flex;flex-direction:column;gap:26px;}
+.li{display:grid;grid-template-columns:52px 1fr;gap:24px;align-items:start;}
+.li .num{font-family:"IBM Plex Mono",monospace;font-size:17px;color:var(--token);
+  padding-top:7px;border-top:2px solid var(--token);}
+.li .num.w{color:var(--warn);border-color:var(--warn);}
+.li h3{font-size:27px;font-weight:700;margin:0 0 9px;line-height:1.35;}
+.li p{font-size:19px;line-height:1.62;color:var(--paper-dim);font-weight:300;margin:0;}
+
+/* 인용 강조 박스 */
+.callout{margin-top:40px;border:1px solid var(--warn);background:rgba(242,133,123,.07);padding:30px 34px;}
+.callout p{margin:0;font-size:22px;line-height:1.6;color:var(--paper);font-weight:300;}
+.callout .hd{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.14em;
+  color:var(--warn);text-transform:uppercase;margin-bottom:14px;}
+
+.src{position:absolute;left:96px;bottom:64px;font-family:"IBM Plex Mono",monospace;
+  font-size:13.5px;color:var(--muted);letter-spacing:.03em;}
+
+/* 조작 */
+.nav{position:absolute;bottom:56px;right:96px;display:flex;gap:10px;z-index:5;}
+.nav button{width:44px;height:36px;background:var(--ink-800);border:1px solid var(--rule);
+  color:var(--paper-dim);cursor:pointer;font-size:16px;line-height:1;transition:.18s;}
+.nav button:hover{background:var(--rule-soft);color:#fff;border-color:var(--token);}
+.nav button:focus-visible{outline:2px solid var(--token);outline-offset:2px;}
+.hint{position:absolute;bottom:58px;left:96px;font-family:"IBM Plex Mono",monospace;
+  font-size:13px;color:var(--muted);opacity:.75;}
+
+@media (prefers-reduced-motion:reduce){
+  .rv,.brow .fl,svg .draw,.bar span{transition:none !important;}
+  .rv{opacity:1;transform:none;}
+  svg .draw{stroke-dashoffset:0;}
+  .slide{transition:none;}
+}
+</style>
+
+<div class="deck">
+<div class="stage" id="stage">
+
+<!-- 01 표지 -->
+<section class="slide active">
+  <div class="cover">
+    <div class="eyebrow rv" style="--i:0">심리학 문헌 검토 · 2026-08-25</div>
+    <h1 class="rv" style="--i:1">이겨야 한다는<br>마음의 세 얼굴</h1>
+    <div class="sub rv" style="--i:2">승리강박 · 패배공포 · 경쟁기피 — 세 가지 병처럼 보이는 것이<br>실은 <em>하나의 엔진</em>에서 나온다는 이야기.</div>
+    <div class="meta rv" style="--i:3">
+      데이터 · OECD PISA 2018 Vol.III · GEM 일반성인조사 · 통계청·복지부·보사연 발표<br>
+      문헌 · Covington 자기가치 이론 · Conroy PFAI · Curran-Hill(2019) · 국내 실증 연구군<br>
+      심리학 교양 해설이며 의학적 진단·치료를 대체하지 않습니다
+    </div>
+  </div>
+</section>
+
+<!-- 02 한 문장 -->
+<section class="slide">
+  <div class="statement">
+    <div class="eyebrow rv" style="--i:0">한 문장으로</div>
+    <div class="l1 rv" style="--i:1">겁 많은 국민이 있는 게 아니다.</div>
+    <div class="l2 rv" style="--i:2">겁을 만드는 <em>무대</em>가 있다.</div>
+    <p class="lede rv" style="--i:3">같은 한국인이 <strong>학교 평가 무대에서는 세계 최상위권의 실패공포</strong>를 보고하고,<br>
+      <strong>창업 설문에서는 세계에서 가장 낮은 실패 두려움</strong>을 보고한다. 이 역설이 오늘의 주제다.</p>
+  </div>
+</section>
+
+<!-- 03 세 가지 구분 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">먼저 구분할 것</div>
+  <h2 class="rv" style="--i:1">신조어 셋, 심리학의 대응물 셋</h2>
+  <div class="grid g3">
+    <div class="card rv" style="--i:2;--accent:var(--legacy)">
+      <span class="tag">① 승리강박</span>
+      <h3>이기는 동안만 안전하다</h3>
+      <p>수행접근목표 + <strong>사회부과 완벽주의</strong> — 「타인이 내게 완벽을 요구한다」는 지각. 이겨도 안도일 뿐, 다음 서열이 곧 불안.</p>
+    </div>
+    <div class="card rv" style="--i:3;--accent:var(--warn)">
+      <span class="tag">② 패배공포</span>
+      <h3>지는 모습이 목격되는 게 무섭다</h3>
+      <p><strong>실패공포(fear of failure)</strong> — 실패 시 수치·평가절하를 예상하는 평가 위협. 성취동기 연구 70년의 중심 개념.</p>
+    </div>
+    <div class="card rv" style="--i:4;--accent:var(--muted)">
+      <span class="tag">③ 경쟁기피</span>
+      <h3>경기장 밖으로 나간다</h3>
+      <p>실패수용·<strong>방어적 철수</strong> — 추구도 방어도 멈춘 이탈. 학습된 무기력과 같은 계보.</p>
+    </div>
+  </div>
+  <p class="note rv" style="--i:5;margin-top:40px">셋 다 정신의학의 공식 진단명이 아니다. 하지만 각각은 <strong>수십 년 연구된 구성개념과 정확히 겹친다</strong> — 그리고 그 개념들은 전부 「평가 불안」의 어휘다.</p>
+</section>
+
+<!-- 04 엔진 (호박 도해) -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0;color:var(--legacy)">엔진</div>
+  <h2 class="rv" style="--i:1">「성취 = 나」라는 등식이 켜지면</h2>
+  <svg viewBox="0 0 1408 330" style="width:100%;height:330px;margin-top:36px" aria-label="성취 조건부 자기가치 엔진과 세 출구">
+    <rect class="nd" x="40" y="115" width="330" height="110" stroke="var(--legacy)" stroke-width="2"/>
+    <text class="lbl" x="205" y="160" text-anchor="middle" fill="var(--legacy)" style="font-size:26px;font-weight:700">성취 = 자기가치</text>
+    <text class="lbl" x="205" y="196" text-anchor="middle" style="font-size:17px">모든 평가가 「나에 대한 재판」이 된다</text>
+    <g stroke="var(--legacy)" fill="none" stroke-width="2">
+      <path class="draw" style="--len:430;--i:2" d="M370 140 C 560 70, 700 60, 860 60"/>
+      <path class="draw" style="--len:400;--i:3" d="M370 170 H 860"/>
+      <path class="draw" style="--len:430;--i:4" d="M370 200 C 560 280, 700 288, 860 288"/>
+    </g>
+    <rect class="nd" x="868" y="26" width="500" height="72" stroke="var(--legacy)"/>
+    <text class="lbl" x="892" y="56" fill="var(--paper)" style="font-size:20px;font-weight:700">① 과잉보상 → 승리강박</text>
+    <text class="lbl" x="892" y="84" style="font-size:15px">완벽주의 · 과잉분투 · 번아웃 — 이겨도 회복되지 않는다</text>
+    <rect class="nd" x="868" y="134" width="500" height="72" stroke="var(--warn)"/>
+    <text class="lbl" x="892" y="164" fill="var(--paper)" style="font-size:20px;font-weight:700">② 방어 → 패배공포</text>
+    <text class="lbl" x="892" y="192" style="font-size:15px">지연행동 · 핑계 만들기 · 숨기기 — 판정을 미루는 기술들</text>
+    <rect class="nd" x="868" y="252" width="500" height="72" stroke="var(--muted)"/>
+    <text class="lbl" x="892" y="282" fill="var(--paper)" style="font-size:20px;font-weight:700">③ 철수 → 경쟁기피</text>
+    <text class="lbl" x="892" y="310" style="font-size:15px">시도하지 않으면 지지도 않는다 — 경기장 밖으로</text>
+  </svg>
+  <p class="note rv" style="--i:6;margin-top:24px">Covington의 자기가치 이론: 공부를 하는 이유도, 공부를 미루는 이유도 같다 — <strong>능력 있어 보이는 것이 자기가치의 방어선</strong>이기 때문. 세 얼굴은 성격 결함 목록이 아니라 <strong>같은 압력에 대한 세 가지 방어 전략</strong>이다.</p>
+</section>
+
+<!-- 05 4유형 지도 (청록 도해) -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">지도</div>
+  <h2 class="rv" style="--i:1">두 축을 긋면 네 자리가 보인다</h2>
+  <svg viewBox="0 0 1408 470" style="width:100%;height:470px;margin-top:26px" aria-label="성취동기 4유형 지도">
+    <g stroke="var(--rule)" stroke-width="1.5">
+      <path class="draw" style="--len:1200;--i:2" d="M104 235 H1304"/>
+      <path class="draw" style="--len:400;--i:2" d="M704 35 V435"/>
+    </g>
+    <text class="lbl-s" x="704" y="20" text-anchor="middle" fill="var(--warn)">실패회피 높음</text>
+    <text class="lbl-s" x="704" y="462" text-anchor="middle">실패회피 낮음</text>
+    <text class="lbl-s" x="84" y="240" text-anchor="end">성공추구 낮음</text>
+    <text class="lbl-s" x="1324" y="240" text-anchor="start" fill="var(--token)">성공추구 높음</text>
+    <rect class="nd" x="744" y="48" width="520" height="160" stroke="var(--legacy)" stroke-width="2"/>
+    <text class="lbl" x="1004" y="86" text-anchor="middle" fill="var(--legacy)" style="font-size:23px;font-weight:700">과잉분투형 — 승리강박</text>
+    <text class="lbl" x="1004" y="122" text-anchor="middle" style="font-size:16px">이기고 싶어서가 아니라, 지면 무너지므로 달린다</text>
+    <text class="lbl" x="1004" y="150" text-anchor="middle" style="font-size:16px">고성취 + 고불안 + 완벽주의 — 상위권의 전형</text>
+    <text class="lbl-s" x="1004" y="184" text-anchor="middle">OVERSTRIVER</text>
+    <rect class="nd" x="144" y="48" width="520" height="160" stroke="var(--warn)" stroke-width="2"/>
+    <text class="lbl" x="404" y="86" text-anchor="middle" fill="var(--warn)" style="font-size:23px;font-weight:700">실패회피형 — 패배공포</text>
+    <text class="lbl" x="404" y="122" text-anchor="middle" style="font-size:16px">일부러 늦게 시작하고, 안 한 척하고, 핑계를 만든다</text>
+    <text class="lbl" x="404" y="150" text-anchor="middle" style="font-size:16px">「최선을 다하지 않았으니 진 게 아니다」</text>
+    <text class="lbl-s" x="404" y="184" text-anchor="middle">SELF-PROTECTOR</text>
+    <rect class="nd" x="144" y="262" width="520" height="160" stroke="var(--muted)" stroke-width="2"/>
+    <text class="lbl" x="404" y="300" text-anchor="middle" fill="var(--paper-dim)" style="font-size:23px;font-weight:700">실패수용형 — 경쟁기피</text>
+    <text class="lbl" x="404" y="336" text-anchor="middle" style="font-size:16px">추구도 방어도 멈춘 이탈 — 반복 패배 뒤 「해도 안 된다」</text>
+    <text class="lbl" x="404" y="364" text-anchor="middle" style="font-size:16px">무기력해 보이지만, 기원은 실패의 아픔이다</text>
+    <text class="lbl-s" x="404" y="398" text-anchor="middle">FAILURE-ACCEPTER</text>
+    <rect class="nd" x="744" y="262" width="520" height="160" stroke="var(--token)" stroke-width="2"/>
+    <text class="lbl" x="1004" y="300" text-anchor="middle" fill="var(--token)" style="font-size:23px;font-weight:700">성공지향형 — 개입의 목표 지점</text>
+    <text class="lbl" x="1004" y="336" text-anchor="middle" style="font-size:16px">실패를 「재능 판정」이 아니라 「전략 정보」로 처리</text>
+    <text class="lbl" x="1004" y="364" text-anchor="middle" style="font-size:16px">배움 자체가 목적 — 도전이 위협이 아니다</text>
+    <text class="lbl-s" x="1004" y="398" text-anchor="middle">SUCCESS-ORIENTED</text>
+  </svg>
+  <p class="note rv" style="--i:7;margin-top:18px">Atkinson(1957) 이래의 고전 틀을 Covington이 4유형으로 정리했고, 호주·일본 비교(De Castella 외, 2013 · 피인용 510)로 검증됐다. <strong>승리강박과 패배공포는 축 하나 차이</strong>이고, 경쟁기피는 그 게임에서 내려온 상태다.</p>
+</section>
+
+<!-- 06 무엇이 무서운가 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">해부</div>
+  <h2 class="rv" style="--i:1">실패의 무엇이 무서운가 — 다섯 중 셋이 「타인」이다</h2>
+  <div class="list" style="margin-top:34px;gap:20px">
+    <div class="li rv" style="--i:2"><div class="num w">01</div><div>
+      <h3>수치와 당혹 <span class="coral" style="font-weight:400;font-size:19px">— 타인</span></h3><p>실패가 창피함으로 이어질 것이라는 예상. 체면 문화에서 최대로 증폭된다.</p></div></div>
+    <div class="li rv" style="--i:3"><div class="num">02</div><div>
+      <h3>자기평가 절하</h3><p>「실패하면 나는 무능한 사람」 — 성취 조건부 자기가치와 직결.</p></div></div>
+    <div class="li rv" style="--i:4"><div class="num">03</div><div>
+      <h3>불확실한 미래</h3><p>한 번의 실패가 인생 계획 전체를 무너뜨릴 것이라는 예상 — 단일 트랙 사회에서 증폭.</p></div></div>
+    <div class="li rv" style="--i:5"><div class="num w">04</div><div>
+      <h3>중요한 타인의 실망 <span class="coral" style="font-weight:400;font-size:19px">— 타인</span></h3><p>부모·선생님을 실망시킬 것이라는 공포 — 가족 단위 성취 문화에서 증폭.</p></div></div>
+    <div class="li rv" style="--i:6"><div class="num w">05</div><div>
+      <h3>중요한 타인의 관심 상실 <span class="coral" style="font-weight:400;font-size:19px">— 타인</span></h3><p>실패하면 나를 떠날 것이라는 공포 — 조건부 수용의 학습.</p></div></div>
+  </div>
+  <p class="note rv" style="--i:7;margin-top:30px">Conroy의 수행실패평가척도(PFAI, 2002). PISA의 실패공포 문항 3개도 같은 구조다 — <strong>「남들이 나를 어떻게 볼지」 · 「재능이 없는 게 아닐까」 · 「장래 계획이 흔들린다」.</strong> 한국형 패배공포의 표적은 실패 자체가 아니라 <em>실패의 목격</em>이다.</p>
+</section>
+
+<!-- 07 데이터 큰 수치 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">데이터</div>
+  <h2 class="rv" style="--i:1">한국의 「평가 밀도」 — 네 개의 숫자</h2>
+  <div class="figs">
+    <div class="fig rv" style="--i:2"><div class="n mono" data-count="1.0" data-dec="1" data-pre="-">-0.0</div><div class="k">실패공포 1단위당 삶의 만족도 하락<br>(한국 여학생 · 0~10점 · 세계 최강 그룹)</div></div>
+    <div class="fig rv" style="--i:3"><div class="n sm mono" data-count="22" data-dec="0" data-suf="/22">0</div><div class="k">아동·청소년 「주관적 행복」 순위<br>(교육 영역은 최상위권)</div></div>
+    <div class="fig rv" style="--i:4"><div class="n sm mono" data-count="80.0" data-dec="1" data-suf="%">0%</div><div class="k">초중고 사교육 참여율 (2024)<br>총액 29.2조 원 · 4년 연속 역대 최대</div></div>
+    <div class="fig rv" style="--i:5"><div class="n sm mono" data-count="14" data-dec="0" data-suf="년">0</div><div class="k">청소년 사망원인 1위가 자살인 기간<br>(2011~2024 연속)</div></div>
+  </div>
+  <p class="lede rv" style="--i:6">교육 성취와 물질 지표는 최상위권, 주관적 행복은 최하위권 — <strong>모순적 동거</strong>가 이 나라 데이터의 서명이다.</p>
+  <div class="src rv" style="--i:7">OECD PISA 2018 Vol.III · 방정환재단-연세대 행복지수 · 교육부-통계청 2024 사교육비조사 · 여성가족부 2026 청소년통계</div>
+</section>
+
+<!-- 08 정직하게 볼 것 ① 양날의 검 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">정직하게 볼 것 ①</div>
+  <h2 class="rv" style="--i:1">실패공포는 성적을 <span class="cyan">올린다</span>, 그리고 행복을 <span class="coral">깎는다</span></h2>
+  <div class="bars" style="margin-top:48px">
+    <div class="brow rv" style="--i:2"><div class="lb">읽기 성적과의 관계</div><div class="tr"><div class="fl" style="--w:54%;--c:var(--token)"></div></div><div class="vl">37/68개국 +</div></div>
+    <div class="brow rv" style="--i:3"><div class="lb coral">삶의 만족과의 관계</div><div class="tr"><div class="fl" style="--w:97%;--c:var(--warn)"></div></div><div class="vl coral">69/71개국 -</div></div>
+  </div>
+  <p class="lede rv" style="--i:4">PISA 2018: 37/68개국에서 실패공포가 높은 학생의 <strong>성적이 더 높았고</strong>,
+    69/71개국에서 <strong>삶의 만족도는 더 낮았다.</strong> 한국은 이 음(-)의 결합이 가장 강한 국가군이다.</p>
+  <div class="callout rv" style="--i:5">
+    <div class="hd">동아시아 동기 역설</div>
+    <p>실패공포는 성취를 밀어 올리는 연료이자 행복을 태우는 연료다. 고성취·저행복의 공존 — 최신 리뷰(Bong 외, 2026)는 이 「동기 역설」의 핵심 동력으로 실패공포를 지목한다. <strong>한국은 이 트레이드오프를 가장 극단적으로 선택한 나라에 가깝다.</strong></p>
+  </div>
+  <div class="src rv" style="--i:6">OECD PISA 2018 Vol.III Ch.13 · Bong et al. (2026) Educational Psychology Review</div>
+</section>
+
+<!-- 09 경로 (실증) -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">국내 실증</div>
+  <h2 class="rv" style="--i:1">공포가 만들어지는 경로 — 반복 확인된 사슬</h2>
+  <svg viewBox="0 0 1408 300" style="width:100%;height:300px;margin-top:40px" aria-label="실패공포 발생 경로">
+    <rect class="nd" x="30" y="100" width="290" height="90" stroke="var(--legacy)" stroke-width="2"/>
+    <text class="lbl" x="175" y="138" text-anchor="middle" fill="var(--paper)" style="font-size:20px;font-weight:700">부모의 심리적 통제</text>
+    <text class="lbl" x="175" y="168" text-anchor="middle" style="font-size:14px">조건부 애정 · 죄책감 유발</text>
+    <g stroke="var(--legacy)" fill="none" stroke-width="2.5">
+      <path class="draw" style="--len:120;--i:2" d="M320 145 H440"/>
+      <path class="draw" style="--len:120;--i:3" d="M770 145 H890"/>
+    </g>
+    <rect class="nd" x="440" y="100" width="330" height="90" stroke="var(--legacy)" stroke-width="2"/>
+    <text class="lbl" x="605" y="138" text-anchor="middle" fill="var(--paper)" style="font-size:20px;font-weight:700">사회부과 완벽주의</text>
+    <text class="lbl" x="605" y="168" text-anchor="middle" style="font-size:14px">「완벽할 때만 수용된다」의 내면화</text>
+    <rect class="nd" x="890" y="100" width="220" height="90" stroke="var(--warn)" stroke-width="2.5"/>
+    <text class="lbl" x="1000" y="138" text-anchor="middle" fill="var(--warn)" style="font-size:21px;font-weight:700">실패공포</text>
+    <text class="lbl" x="1000" y="168" text-anchor="middle" style="font-size:14px">평가 위협의 상시화</text>
+    <g stroke="var(--warn)" fill="none" stroke-width="2">
+      <path class="draw" style="--len:180;--i:4" d="M1110 120 C 1200 90, 1240 70, 1290 60"/>
+      <path class="draw" style="--len:150;--i:5" d="M1110 145 H1290"/>
+      <path class="draw" style="--len:180;--i:6" d="M1110 170 C 1200 200, 1240 220, 1290 232"/>
+    </g>
+    <text class="lbl" x="1300" y="58" style="font-size:17px" fill="var(--paper)">학업지연</text>
+    <text class="lbl" x="1300" y="150" style="font-size:17px" fill="var(--paper)">자기구실 만들기</text>
+    <text class="lbl" x="1300" y="238" style="font-size:17px" fill="var(--paper)">자기은폐</text>
+  </svg>
+  <p class="note rv" style="--i:7;margin-top:18px">중학생(백지은-이승연 2016) · 대학생(한영숙 2011) · 의대생(2022 · 피인용 75) · 청소년 운동선수(Won 외 2026) · 헬리콥터 양육-진로결정(Park 외 2025)에서 같은 사슬이 재현됐다. 극단에서는 사회부과 완벽주의가 자기비난을 거쳐 <strong class="coral">자살사고</strong>까지 이어진다(고은영 외 2013).</p>
+  <p class="note rv" style="--i:8;margin-top:14px"><strong>경로의 최상류가 「기질」이 아니라 「관계와 기대」</strong>라는 것 — 이것이 개입 가능성의 근거다.</p>
+</section>
+
+<!-- 10 경쟁기피의 실체 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">철수의 데이터</div>
+  <h2 class="rv" style="--i:1">경기장을 떠난 54만 명</h2>
+  <div class="figs">
+    <div class="fig rv" style="--i:2"><div class="n mono" data-count="54" data-dec="0" data-suf="만">0</div><div class="k">고립·은둔 청년 추정 규모<br>(19~34세의 5.2% · 2024)</div></div>
+    <div class="fig rv" style="--i:3"><div class="n sm mono" data-count="3.7" data-dec="1">0</div><div class="k">이들의 삶의 만족도 (10점 만점)</div></div>
+    <div class="fig rv" style="--i:4"><div class="n sm mono" data-count="6.7" data-dec="1">0</div><div class="k">청년 전체 평균</div></div>
+  </div>
+  <p class="lede rv" style="--i:5">주된 진입 계기는 <strong>취업 실패와 대인관계</strong> — 둘 다 평가 무대다.
+    철수는 공포를 잠시 줄이지만 만족을 회복시키지 못한다. 회피의 단기 보상·장기 비용 구조 그대로다.</p>
+  <div class="callout rv" style="--i:6">
+    <div class="hd">재해석</div>
+    <p>트랙이 하나뿐이고, 보상 격차가 크고, 패자부활 비용이 높다면 — 「참가하지 않음」은 나약함이 아니라 <strong>기대값 계산의 결과</strong>다. 경쟁기피를 개인의 문제로만 치료하려는 접근이 실패하는 이유다.</p>
+  </div>
+  <div class="src rv" style="--i:7">보건복지부·한국보건사회연구원 고립·은둔 청년 실태조사 (2023 조사·2024 기준 추정)</div>
+</section>
+
+<!-- 11 반전 -->
+<section class="slide">
+  <div class="statement">
+    <div class="eyebrow rv" style="--i:0;color:var(--warn)">정직하게 볼 것 ② — 반전</div>
+    <div class="l1 rv" style="--i:1;word-break:keep-all">그런데 창업 설문에서, 한국인의 실패 두려움은</div>
+    <div class="l2 rv" style="--i:2"><span class="cyan">53개국 중 최저</span></div>
+    <p class="lede rv" style="--i:3">GEM 일반성인조사: 「창업 기회가 보여도 실패가 두려워 망설인다」 응답 <strong class="mono">27.0%</strong> — 조사 참여국 중 가장 낮다(2021년 조사에서도 47개국 중 두 번째로 낮은 14.7%).<br>
+      15세의 실패공포가 세계 최상위권인 나라의 성인이, <strong>창업 설문에서는 세계에서 실패를 가장 덜 두려워한다.</strong></p>
+    <div class="src rv" style="--i:4">GEM 2025 한국 조사 (2026-02 발표) · GEM 2021 (2022-02 발표) — 창업진흥원 수행</div>
+  </div>
+</section>
+
+<!-- 12 해석: 무대 (대비) -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">역설의 해소</div>
+  <h2 class="rv" style="--i:1">공포는 사람이 아니라 <em>무대</em>에 붙는다</h2>
+  <div class="grid g2">
+    <div class="card rv" style="--i:2;--accent:var(--legacy)">
+      <span class="tag amber">공포가 켜지는 무대</span>
+      <h3 class="amber">평가 · 서열 · 체면의 무대</h3>
+      <p>입시·취업 관문·조직 서열 — 실패가 <strong>목격되고, 기록되고, 관계에 연루되는</strong> 곳.
+      단일 트랙이라 한 번의 패배가 정체성 전체의 판정처럼 경험된다. 여기서 한국인의 실패공포는 세계 최상위권이다.</p>
+    </div>
+    <div class="card rv" style="--i:3;--accent:var(--token)">
+      <span class="tag cyan">공포가 꺼지는 무대</span>
+      <h3 class="cyan">재도전 비용이 낮아진 무대</h3>
+      <p>창업 설문의 가상 시나리오 — 지원·재도전 제도가 확충되고 <strong>체면의 청중이 없는</strong> 곳.
+      같은 국민의 실패 두려움이 세계 최저로 측정된다. <strong>제도가 공포를 낮출 수 있다는 실측 증거.</strong></p>
+    </div>
+  </div>
+  <p class="lede rv" style="--i:4;margin-top:40px">따라서 「한국인 = 겁 많은 기질」은 <strong>기각</strong>된다. 남는 결론은 더 구조적이다 —
+    개입의 지렛대는 개인의 담력이 아니라 <em>무대의 설계</em>에 있다.</p>
+  <p class="note rv" style="--i:5;margin-top:20px">단, 두 조사는 표본(15세 vs 성인)과 문항 프레임이 다르다 — 직접 비교가 아니라 「무대가 다르면 결과가 뒤집힌다」는 구조 논증으로만 쓴다.</p>
+</section>
+
+<!-- 13 오해 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">오해</div>
+  <h2 class="rv" style="--i:1">흔히 틀리는 네 가지</h2>
+  <div class="grid g2">
+    <div class="card rv" style="--i:2;--accent:var(--warn)"><span class="tag">오해 ①</span><h3>「한국인은 원래 겁이 많다」</h3><p>기질론은 GEM 데이터가 반증한다. 무대를 바꾸면 같은 국민이 세계에서 가장 대담해진다.</p></div>
+    <div class="card rv" style="--i:3;--accent:var(--warn)"><span class="tag">오해 ②</span><h3>「실패공포는 무조건 나쁘다」</h3><p>37/68개국에서 성적과는 정(+)의 관계였다. 적정 각성은 수행을 돕는다 — 문제는 공포의 존재가 아니라 삶을 잠식하는 강도다.</p></div>
+    <div class="card rv" style="--i:4;--accent:var(--warn)"><span class="tag">오해 ③</span><h3>「경쟁기피는 게으름이다」</h3><p>실패수용형의 기원은 나태가 아니라 반복된 패배의 아픔이다. 은둔 청년의 진입 계기 1순위가 취업 실패라는 데이터와 정합.</p></div>
+    <div class="card rv" style="--i:5;--accent:var(--warn)"><span class="tag">오해 ④</span><h3>「마인드셋 교육이면 해결된다」</h3><p>성장 마인드셋 개입의 평균 효과크기는 대규모 메타분석에서 작게 보고됐다(Sisk 외 2018). 만능 처방으로 과대포장하면 안 된다.</p></div>
+  </div>
+</section>
+
+<!-- 14 개입 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">무엇이 듣는가</div>
+  <h2 class="rv" style="--i:1">세 층위의 개입 — 아래로 갈수록 상류다</h2>
+  <div class="list">
+    <div class="li rv" style="--i:2"><div class="num">01</div><div>
+      <h3>개인 — 공포의 이자율 낮추기</h3><p><strong>자기자비</strong>(실패 후 자기비난 대신 보편성·친절의 프레임) · 실패를 「재능 판정」이 아니라 「전략 정보」로 재귀인. 공통 기전은 성취 조건부 자기가치의 해체다.</p></div></div>
+    <div class="li rv" style="--i:3"><div class="num">02</div><div>
+      <h3>관계 — 경로의 최상류 끊기</h3><p>부모의 심리적 통제·조건부 수용 감소. 결과 칭찬 대신 과정 피드백, <strong>실패 시 애정 철회 신호의 제거</strong> — 국내 실증 경로의 맨 앞단을 끊는 개입.</p></div></div>
+    <div class="li rv" style="--i:4"><div class="num">03</div><div>
+      <h3>구조 — 무대의 재설계</h3><p>평가 트랙의 다원화 · 패자부활 비용 인하 · 서열 공개 관행 축소. <strong>GEM 반전이 곧 증거다</strong> — 재도전 비용이 낮아진 영역에서 한국인의 실패공포는 세계 최저까지 내려갔다.</p></div></div>
+  </div>
+  <p class="note rv" style="--i:5;margin-top:36px">만성 지연·은둔·자살사고 등 기능 손상 신호가 있다면 신조어의 문제가 아니라 치료 가능한 상태일 수 있다 — 전문가 평가가 우선한다. 자살 위기 상담 109 (24시간).</p>
+</section>
+
+<!-- 15 정리 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">정리</div>
+  <h2 class="rv" style="--i:1">세 문장으로</h2>
+  <div class="list">
+    <div class="li rv" style="--i:2"><div class="num">01</div><div>
+      <h3>세 얼굴, 한 엔진</h3><p>승리강박·패배공포·경쟁기피는 별개의 병이 아니라 <strong>「성취 = 자기가치」 등식</strong>이 만드는 세 가지 방어 전략이다.</p></div></div>
+    <div class="li rv" style="--i:3"><div class="num">02</div><div>
+      <h3>연료이자 독</h3><p>실패공포는 성적을 올리고 행복을 깎는다 — 한국은 이 트레이드오프의 <strong>세계적 극단</strong>에 있다.</p></div></div>
+    <div class="li rv" style="--i:4"><div class="num">03</div><div>
+      <h3>겁은 무대의 속성이다</h3><p>같은 국민이 평가 무대에선 세계 최고의 공포를, 재도전 비용이 낮은 무대에선 <strong>세계 최저의 공포</strong>를 보고한다. 지렛대는 담력이 아니라 무대 설계다.</p></div></div>
+  </div>
+</section>
+
+<!-- 16 닫기 -->
+<section class="slide">
+  <div class="cover">
+    <div class="eyebrow rv" style="--i:0">끝</div>
+    <h1 class="rv" style="--i:1;font-size:76px">무대를 바꾸면,<br>겁은 통계에서 사라진다.</h1>
+    <div class="meta rv" style="--i:2">
+      데이터 · OECD PISA 2018 Results Vol.III (Ch.8 경쟁 · Ch.13 실패공포) · GEM 일반성인조사 2021-2025<br>
+      통계 · 교육부-통계청 2024 사교육비조사 · 여성가족부 2026 청소년통계 · 복지부-보사연 고립은둔청년 실태조사<br>
+      문헌 · Atkinson 1957 · Covington 자기가치 이론 · Conroy 2002 PFAI · Hewitt-Flett 1991 · Curran-Hill 2019<br>
+      국내 · 한영숙 2011 · 고은영 외 2013 · 백지은-이승연 2016 · Bong 외 2026 등<br><br>
+      심리학 교양 해설이며 의학적 진단·치료를 대체하지 않습니다 · 자살 위기 상담 109
+    </div>
+  </div>
+</section>
+
+</div><!-- /stage -->
+
+<div class="rail">
+  <span class="deckname">이겨야 한다는 마음의 세 얼굴</span>
+  <div class="bar"><span id="prog" style="width:6%"></span></div>
+  <span class="count" id="cnt">01 / 16</span>
+</div>
+<div class="hint">← → 또는 화면 클릭으로 이동</div>
+<div class="nav">
+  <button id="prev" aria-label="이전 슬라이드">◀</button>
+  <button id="next" aria-label="다음 슬라이드">▶</button>
+</div>
+</div>
+
+<script>
+(function(){
+  var stage=document.getElementById('stage');
+  var slides=Array.prototype.slice.call(stage.querySelectorAll('.slide'));
+  var n=slides.length,i=0;
+  var cnt=document.getElementById('cnt'),prog=document.getElementById('prog');
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function pad(x){return (x<10?'0':'')+x;}
+
+  function counters(sl){
+    sl.querySelectorAll('[data-count]').forEach(function(el){
+      var target=parseFloat(el.dataset.count),dec=parseInt(el.dataset.dec||'0',10);
+      var pre=el.dataset.pre||'',suf=el.dataset.suf||'',comma=el.dataset.comma==='1';
+      var dur=reduce?0:900,t0=null;
+      function fmt(v){var s=comma?v.toLocaleString('en-US',{maximumFractionDigits:dec}):v.toFixed(dec);return pre+s+suf;}
+      if(dur===0){el.textContent=fmt(target);return;}
+      function step(ts){
+        if(t0===null)t0=ts;
+        var p=Math.min((ts-t0)/dur,1),e=1-Math.pow(1-p,3);
+        el.textContent=fmt(target*e);
+        if(p<1)requestAnimationFrame(step);
+      }
+      el.textContent=fmt(0);
+      setTimeout(function(){requestAnimationFrame(step);},260);
+    });
+  }
+
+  function go(k){
+    k=Math.max(0,Math.min(n-1,k));
+    if(k===i&&slides[i].classList.contains('active'))return;
+    slides[i].classList.remove('active');
+    i=k;
+    slides[i].classList.add('active');
+    cnt.textContent=pad(i+1)+' / '+n;
+    prog.style.width=(((i+1)/n)*100).toFixed(1)+'%';
+    counters(slides[i]);
+  }
+
+  document.getElementById('next').addEventListener('click',function(e){e.stopPropagation();go(i+1);});
+  document.getElementById('prev').addEventListener('click',function(e){e.stopPropagation();go(i-1);});
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1);}
+    else if(e.key==='Home'){e.preventDefault();go(0);}
+    else if(e.key==='End'){e.preventDefault();go(n-1);}
+  });
+
+  var deck=document.querySelector('.deck');
+  deck.addEventListener('click',function(e){
+    if(e.target.closest('.nav'))return;
+    var r=deck.getBoundingClientRect();
+    go(((e.clientX-r.left)/r.width < 0.28) ? i-1 : i+1);
+  });
+
+  var tx=null;
+  deck.addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;},{passive:true});
+  deck.addEventListener('touchend',function(e){
+    if(tx===null)return;
+    var d=e.changedTouches[0].clientX-tx;
+    if(Math.abs(d)>50)go(d<0?i+1:i-1);
+    tx=null;
+  },{passive:true});
+
+  function fit(){
+    var d=deck.getBoundingClientRect();
+    var s=Math.min(d.width/1600,d.height/900);
+    document.documentElement.style.setProperty('--s',s);
+  }
+  window.addEventListener('resize',fit);
+  fit();
+  cnt.textContent='01 / '+n;
+  prog.style.width=((1/n)*100).toFixed(1)+'%';
+  counters(slides[0]);
+})();
+</script>
