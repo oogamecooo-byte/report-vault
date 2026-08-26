@@ -1,0 +1,602 @@
+<title>토큰화증권, 판을 읽는 법 — 정의·방식·5파전 (2026-08-26)</title>
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="토큰화">
+<meta name="vault-date" content="2026-08-26">
+<meta name="description" content="토큰화증권 리뷰 덱 18장 — 정의·자산군·세 가지 방식(네이티브·트윈·합성)과 5개 플레이어(Securitize·Ondo·DTCC·BNY·Bullish×Equiniti)의 차이를 비유로 정리">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@600;700;900&display=swap">
+<style>
+/* ── 단일 시각 세계: 투사되는 발표 화면. 뷰어 테마와 무관하게 어두운 남색으로 고정한다. ── */
+:root{
+  --ink-900:#061423;   /* 바탕 */
+  --ink-850:#08192B;
+  --ink-800:#0B2138;   /* 패널 */
+  --ink-700:#16456B;
+  --rule:#1B3A5A;      /* 괘선 */
+  --rule-soft:#102B45;
+  --paper:#E6EDF5;     /* 본문 */
+  --paper-dim:#B7C7D8;
+  --muted:#7E97AE;     /* 청회색 — 중립색을 파랑 쪽으로 기울여 선택 */
+  --legacy:#E0A33E;    /* 호박 — 기존 결제 레일 */
+  --token:#4FD1E8;     /* 청록 — 토큰화 레일 */
+  --warn:#F2857B;      /* 산호 — 주의 */
+  --s:1;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--ink-900);color:var(--paper);
+  font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  -webkit-font-smoothing:antialiased;}
+
+.deck{position:relative;width:100%;height:100dvh;overflow:hidden;background:var(--ink-900);}
+.stage{position:absolute;top:50%;left:50%;width:1600px;height:900px;
+  transform:translate(-50%,-50%) scale(var(--s));transform-origin:center center;}
+
+/* 장부 괘선 — 배경 질감 */
+.stage::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,transparent 0 63px,var(--rule-soft) 63px 64px);
+  opacity:.5;}
+
+.slide{position:absolute;inset:0;padding:74px 96px 92px;opacity:0;visibility:hidden;
+  transition:opacity .5s ease,visibility .5s;}
+.slide.active{opacity:1;visibility:visible;}
+
+/* 요소 등장 — 슬라이드 진입 시 순차 상승 */
+.rv{opacity:0;transform:translateY(26px);
+  transition:opacity .62s cubic-bezier(.2,.7,.3,1),transform .62s cubic-bezier(.2,.7,.3,1);
+  transition-delay:calc(var(--i,0) * 95ms);}
+.slide.active .rv{opacity:1;transform:none;}
+
+/* 머리말 */
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:15px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--token);display:flex;align-items:center;gap:14px;}
+.eyebrow::after{content:"";height:1px;flex:1;max-width:190px;background:linear-gradient(90deg,var(--token),transparent);}
+h1{font-family:"Noto Serif KR",serif;font-weight:900;font-size:88px;line-height:1.16;margin:26px 0 0;
+  letter-spacing:-.02em;text-wrap:balance;}
+h2{font-family:"Noto Serif KR",serif;font-weight:700;font-size:52px;line-height:1.25;margin:20px 0 0;
+  letter-spacing:-.015em;text-wrap:balance;}
+.lede{font-size:25px;line-height:1.62;color:var(--paper-dim);font-weight:300;max-width:1080px;margin-top:26px;}
+.note{font-size:19px;line-height:1.6;color:var(--muted);font-weight:300;max-width:1120px;}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;}
+strong{font-weight:700;color:#fff;}
+em{font-style:normal;color:var(--token);font-weight:500;}
+.amber{color:var(--legacy);}
+.cyan{color:var(--token);}
+.coral{color:var(--warn);}
+
+/* 하단 레일 */
+.rail{position:absolute;left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;
+  gap:20px;padding:0 96px;border-top:1px solid var(--rule);background:var(--ink-850);}
+.bar{flex:1;height:2px;background:var(--rule);position:relative;overflow:hidden;}
+.bar span{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--token),#8FE6F4);
+  transition:width .5s cubic-bezier(.2,.7,.3,1);}
+.count{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.1em;color:var(--muted);}
+.deckname{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.1em;color:var(--muted);}
+
+/* 표지 */
+.cover{display:flex;flex-direction:column;justify-content:center;height:100%;}
+.cover h1{font-size:104px;}
+.cover .sub{font-size:27px;color:var(--paper-dim);font-weight:300;margin-top:34px;line-height:1.6;}
+.meta{margin-top:56px;padding-top:26px;border-top:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:15px;color:var(--muted);line-height:2;}
+
+/* 큰 진술 */
+.statement{display:flex;flex-direction:column;justify-content:center;height:100%;}
+.statement .l1{font-family:"Noto Serif KR",serif;font-size:66px;font-weight:600;color:var(--muted);line-height:1.3;}
+.statement .l2{font-family:"Noto Serif KR",serif;font-size:104px;font-weight:900;line-height:1.22;margin-top:12px;letter-spacing:-.025em;}
+
+/* 카드 격자 */
+.grid{display:grid;gap:24px;margin-top:44px;}
+.g2{grid-template-columns:repeat(2,1fr);} .g3{grid-template-columns:repeat(3,1fr);} .g4{grid-template-columns:repeat(4,1fr);}
+.card{background:var(--ink-800);border:1px solid var(--rule);padding:30px 30px 32px;position:relative;}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent,var(--token));}
+.card h3{font-size:24px;font-weight:700;margin:0 0 12px;line-height:1.35;}
+.card p{font-size:18px;line-height:1.62;color:var(--paper-dim);font-weight:300;margin:0;}
+.card .tag{font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.12em;color:var(--muted);
+  text-transform:uppercase;display:block;margin-bottom:14px;}
+
+/* 수치 */
+.figs{display:flex;gap:70px;margin-top:46px;align-items:flex-end;}
+.fig .n{font-family:"IBM Plex Mono",monospace;font-size:86px;font-weight:600;line-height:1;
+  color:var(--token);font-variant-numeric:tabular-nums;letter-spacing:-.03em;}
+.fig .n.sm{font-size:56px;color:var(--paper);}
+.fig .k{font-size:18px;color:var(--muted);margin-top:14px;font-weight:300;}
+
+/* 막대 */
+.bars{margin-top:40px;display:flex;flex-direction:column;gap:17px;}
+.brow{display:grid;grid-template-columns:210px 1fr 132px;align-items:center;gap:22px;}
+.brow .lb{font-size:20px;font-weight:500;text-align:right;color:var(--paper-dim);}
+.brow .tr{height:26px;background:var(--rule-soft);position:relative;overflow:hidden;}
+.brow .fl{position:absolute;inset:0 auto 0 0;width:0;background:var(--c,var(--token));
+  transition:width 1.05s cubic-bezier(.2,.7,.3,1);transition-delay:calc(var(--i,0) * 95ms + 180ms);}
+.slide.active .brow .fl{width:var(--w);}
+.brow .vl{font-family:"IBM Plex Mono",monospace;font-size:20px;color:var(--paper);font-variant-numeric:tabular-nums;}
+.brow .lb.coral{color:var(--warn);}
+.brow .vl.coral{color:var(--warn);}
+
+/* 도해 */
+svg .draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+  transition:stroke-dashoffset 1.15s cubic-bezier(.3,.6,.3,1);transition-delay:calc(var(--i,0) * 95ms + 200ms);}
+.slide.active svg .draw{stroke-dashoffset:0;}
+svg text{font-family:"Noto Sans KR",sans-serif;}
+svg .lbl{font-size:17px;fill:var(--paper-dim);font-weight:400;}
+svg .lbl-s{font-family:"IBM Plex Mono",monospace;font-size:13px;fill:var(--muted);letter-spacing:.08em;}
+svg .nd{fill:var(--ink-800);stroke-width:1.5;}
+
+/* 목록 */
+.list{margin-top:40px;display:flex;flex-direction:column;gap:26px;}
+.li{display:grid;grid-template-columns:52px 1fr;gap:24px;align-items:start;}
+.li .num{font-family:"IBM Plex Mono",monospace;font-size:17px;color:var(--token);
+  padding-top:7px;border-top:2px solid var(--token);}
+.li .num.w{color:var(--warn);border-color:var(--warn);}
+.li h3{font-size:27px;font-weight:700;margin:0 0 9px;line-height:1.35;}
+.li p{font-size:19px;line-height:1.62;color:var(--paper-dim);font-weight:300;margin:0;}
+
+/* 인용 강조 박스 */
+.callout{margin-top:40px;border:1px solid var(--warn);background:rgba(242,133,123,.07);padding:30px 34px;}
+.callout p{margin:0;font-size:22px;line-height:1.6;color:var(--paper);font-weight:300;}
+.callout .hd{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.14em;
+  color:var(--warn);text-transform:uppercase;margin-bottom:14px;}
+
+.src{position:absolute;left:96px;bottom:64px;font-family:"IBM Plex Mono",monospace;
+  font-size:13.5px;color:var(--muted);letter-spacing:.03em;}
+
+/* 조작 */
+.nav{position:absolute;bottom:56px;right:96px;display:flex;gap:10px;z-index:5;}
+.nav button{width:44px;height:36px;background:var(--ink-800);border:1px solid var(--rule);
+  color:var(--paper-dim);cursor:pointer;font-size:16px;line-height:1;transition:.18s;}
+.nav button:hover{background:var(--rule-soft);color:#fff;border-color:var(--token);}
+.nav button:focus-visible{outline:2px solid var(--token);outline-offset:2px;}
+.hint{position:absolute;bottom:58px;left:96px;font-family:"IBM Plex Mono",monospace;
+  font-size:13px;color:var(--muted);opacity:.75;}
+
+@media (prefers-reduced-motion:reduce){
+  .rv,.brow .fl,svg .draw,.bar span{transition:none !important;}
+  .rv{opacity:1;transform:none;}
+  svg .draw{stroke-dashoffset:0;}
+  .slide{transition:none;}
+}
+</style>
+
+<div class="deck">
+<div class="stage" id="stage">
+
+<!-- 01 표지 -->
+<section class="slide active">
+  <div class="cover">
+    <div class="eyebrow rv" style="--i:0">공부용 리뷰 · 2026-08-26</div>
+    <h1 class="rv" style="--i:1">토큰화증권,<br>판을 읽는 법</h1>
+    <div class="sub rv" style="--i:2">정의 · 종류 · 세 가지 방식 —<br>그리고 다섯 플레이어는 서로 <em>무엇이 다른가</em>.</div>
+    <div class="meta rv" style="--i:3">
+      데이터 · rwa.xyz 2026-08-17/23 직접 판독 · SEC EDGAR · 각사 보도자료 1차<br>
+      산업·구조 설명이며 투자 권유가 아닙니다
+    </div>
+  </div>
+</section>
+
+<!-- 02 한 문장 -->
+<section class="slide">
+  <div class="statement">
+    <div class="eyebrow rv" style="--i:0">정의 · 한 문장으로</div>
+    <div class="l1 rv" style="--i:1">자산이 바뀌는 게 아니다.</div>
+    <div class="l2 rv" style="--i:2"><em>장부</em>가 바뀐다.</div>
+    <p class="lede rv" style="--i:3">토큰화증권 = 주식·채권·펀드의 <strong>소유권 기록을 블록체인 원장으로 옮긴 것</strong>.<br>
+      아파트 등기부를 디지털로 바꿔도 아파트 가치는 그대로다 —
+      다만 <strong>이전 · 쪼개기 · 담보 걸기</strong>가 쉬워진다.</p>
+  </div>
+</section>
+
+<!-- 03 구분할 것 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">먼저 구분할 것</div>
+  <h2 class="rv" style="--i:1">한 단어로 뭉뚱그려지는 세 가지</h2>
+  <div class="grid g3">
+    <div class="card rv" style="--i:2;--accent:var(--token)">
+      <span class="tag">토큰화증권</span>
+      <h3>토큰화된 자산</h3>
+      <p>기초 증권이 반드시 존재한다. 증권법이 <strong>그대로</strong> 적용된다. 이 발표의 주인공.</p>
+    </div>
+    <div class="card rv" style="--i:3;--accent:var(--legacy)">
+      <span class="tag">스테이블코인</span>
+      <h3>토큰화된 돈</h3>
+      <p>같은 기술의 형제 — 단 증권이 아니라 <strong>결제 수단</strong>이다. 토큰화증권 거래의 현금 레그를 맡는다.</p>
+    </div>
+    <div class="card rv" style="--i:4;--accent:var(--warn)">
+      <span class="tag">거버넌스 토큰</span>
+      <h3>회사 지분이 아닌 것</h3>
+      <p>ONDO 토큰은 Ondo라는 회사의 <strong>지분 청구권이 없다</strong>. 회사가 이겨도 토큰 보유자가 받는지는 별개 질문.</p>
+    </div>
+  </div>
+  <p class="note rv" style="--i:5;margin-top:40px">여기에 하나 더 — <strong>주식 선물</strong>(CME, 2026-08 출시)은 현금결제라 주식이 한 주도 안 움직인다.
+    가격 노출만 팔 뿐, 명부·의결권·배당이 없다.</p>
+</section>
+
+<!-- 04 방식 A: 트윈 (기존 인프라 위) -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">방식 ① — 금은방 보관증</div>
+  <h2 class="rv" style="--i:1">커스터디 트윈 — 실물은 금고에, 보관증만 토큰으로</h2>
+  <svg viewBox="0 0 1408 260" style="width:100%;height:260px;margin-top:40px" aria-label="커스터디 트윈 구조">
+    <g stroke="var(--legacy)" fill="none" stroke-width="2">
+      <path class="draw" style="--len:420;--i:2" d="M240 100 H450 M660 100 H870"/>
+      <path class="draw" style="--len:230;--i:4" d="M1080 100 H1300"/>
+    </g>
+    <rect class="nd" x="60" y="66" width="180" height="68" stroke="var(--legacy)"/>
+    <rect class="nd" x="450" y="66" width="210" height="68" stroke="var(--legacy)" stroke-width="2.5"/>
+    <rect class="nd" x="870" y="66" width="210" height="68" stroke="var(--legacy)"/>
+    <rect class="nd" x="1300" y="66" width="80" height="68" stroke="var(--legacy)"/>
+    <g class="lbl" text-anchor="middle" fill="var(--paper)">
+      <text x="150" y="106">실물 주식</text>
+      <text x="555" y="106">수탁 금고</text>
+      <text x="975" y="106">쌍둥이 토큰</text>
+      <text x="1340" y="106">거래</text>
+    </g>
+    <g class="lbl-s" text-anchor="middle">
+      <text x="555" y="156">DTC · 커스터디안</text>
+      <text x="975" y="156">보관증 = 수익권 표현</text>
+    </g>
+    <g stroke="var(--rule)" stroke-width="1"><path class="draw" style="--len:1320;--i:6" d="M60 210 H1380"/></g>
+    <text class="lbl-s" x="60" y="242" fill="var(--legacy)">법적 정본 명부는 여전히 기존 인프라 안에 있다</text>
+  </svg>
+  <p class="note rv" style="--i:7;margin-top:22px">금은방에 금을 맡기고 <strong>보관증을 거래</strong>하는 구조.
+    기존 인프라와 충돌 없이 얹을 수 있어 기관 친화적이다 — <strong>DTCC의 토큰화 서비스, Ondo의 커스터디얼 주식 토큰</strong>이 이 방식.</p>
+</section>
+
+<!-- 05 방식 B: 네이티브 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">방식 ② — 디지털 등기소</div>
+  <h2 class="rv" style="--i:1">발행사 주도 네이티브 — 블록체인 자체가 공식 명부</h2>
+  <svg viewBox="0 0 1408 260" style="width:100%;height:260px;margin-top:40px" aria-label="네이티브 발행 구조">
+    <rect class="nd" x="500" y="40" width="408" height="150" stroke="var(--token)" stroke-width="2.5"/>
+    <text class="lbl" x="704" y="86" text-anchor="middle" fill="var(--paper)" style="font-size:21px;font-weight:700">블록체인 = 공식 주주명부</text>
+    <text class="lbl-s" x="704" y="116" text-anchor="middle">SEC 등록 이전대리인이 관리</text>
+    <text class="lbl-s" x="704" y="166" text-anchor="middle" fill="var(--token)">종목당 정본 토큰 하나 · 의결권 · 배당 온전</text>
+    <g stroke="var(--token)" fill="none" stroke-width="2">
+      <path class="draw" style="--len:230;--i:3" d="M270 115 H500"/>
+      <path class="draw" style="--len:230;--i:4" d="M908 115 H1138"/>
+    </g>
+    <rect class="nd" x="90" y="80" width="180" height="70" stroke="var(--token)"/>
+    <rect class="nd" x="1138" y="80" width="180" height="70" stroke="var(--token)"/>
+    <g class="lbl" text-anchor="middle" fill="var(--paper)">
+      <text x="180" y="122">발행사</text>
+      <text x="1228" y="122">주주</text>
+    </g>
+    <g class="lbl-s" text-anchor="middle">
+      <text x="180" y="170">처음부터 토큰으로 발행</text>
+      <text x="1228" y="170">명부에 직접 오른다</text>
+    </g>
+    <text class="lbl-s" x="90" y="242" fill="var(--token)">보관증이 아니라 등기 자체가 체인 위에 있다</text>
+  </svg>
+  <p class="note rv" style="--i:6;margin-top:22px">규제상 가장 유리한 분류(보유자가 기초 증권에 <strong>직접 권리</strong>) —
+    대신 브로커-딜러 + 대체거래소 + 명의개서대리인 <strong>라이선스 풀스택</strong>이 필요해 가장 무겁다. <strong>Securitize 모델</strong>.</p>
+</section>
+
+<!-- 06 3아키타입 정리 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">방식 정리</div>
+  <h2 class="rv" style="--i:1">같은 「토큰화 주식」, 법적 실체는 세 가지</h2>
+  <div class="grid g3">
+    <div class="card rv" style="--i:2;--accent:var(--token)">
+      <span class="tag">네이티브</span>
+      <h3>디지털 등기소</h3>
+      <p>체인이 곧 공식 명부. 주주권 온전. 규제 검증 <strong>가장 약함</strong>. 라이선스 부담 최대.</p>
+    </div>
+    <div class="card rv" style="--i:3;--accent:var(--legacy)">
+      <span class="tag">트윈</span>
+      <h3>금은방 보관증</h3>
+      <p>실물은 금고에, 수익권만 토큰. 기존 인프라와 공존. 제3자 스폰서라 수탁·공시 검증 강화.</p>
+    </div>
+    <div class="card rv" style="--i:4;--accent:var(--warn)">
+      <span class="tag">합성</span>
+      <h3>가격 연동 쿠폰</h3>
+      <p>주식 소유 없이 가격만 추종하는 역외 래퍼. 주주권 없음. 규제 검증 <strong>가장 강함</strong>.</p>
+    </div>
+  </div>
+  <div class="callout rv" style="--i:5">
+    <div class="hd">뉴스를 읽을 때 첫 질문</div>
+    <p>「테슬라 토큰 출시」 헤드라인의 태반은 트윈이나 합성이다. <strong>어느 구조인지 안 가리면</strong>
+      권리와 규제 리스크가 전부 뭉개진다.</p>
+  </div>
+</section>
+
+<!-- 07 종류(자산군) -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">종류 — 자산군별 실측</div>
+  <h2 class="rv" style="--i:1">「모든 자산」이라지만, 실제로는 이렇게 쏠려 있다</h2>
+  <div class="bars">
+    <div class="brow rv" style="--i:2"><div class="lb">국채 · MMF</div><div class="tr"><div class="fl" style="--w:100%;--c:var(--token)"></div></div><div class="vl">$15.6B</div></div>
+    <div class="brow rv" style="--i:3"><div class="lb">금 · 상품</div><div class="tr"><div class="fl" style="--w:31%;--c:var(--token-lt)"></div></div><div class="vl">$4.8B</div></div>
+    <div class="brow rv" style="--i:4"><div class="lb">주식 (역외 중심)</div><div class="tr"><div class="fl" style="--w:15.4%;--c:var(--legacy)"></div></div><div class="vl">$2.4B</div></div>
+    <div class="brow rv" style="--i:5"><div class="lb">사모 신용</div><div class="tr"><div class="fl" style="--w:15%;--c:var(--muted)"></div></div><div class="vl">$2.4B</div></div>
+    <div class="brow rv" style="--i:6"><div class="lb">사모펀드 · VC</div><div class="tr"><div class="fl" style="--w:13.5%;--c:var(--muted)"></div></div><div class="vl">$2.1B</div></div>
+    <div class="brow rv" style="--i:7"><div class="lb coral">부동산</div><div class="tr"><div class="fl" style="--w:1.1%;--c:var(--warn)"></div></div><div class="vl coral">$0.17B</div></div>
+  </div>
+  <p class="note rv" style="--i:8;margin-top:30px">신도시에 처음 들어서는 가게는 편의점(국채·MMF)이지 갤러리(부동산)가 아니다 —
+    크립토 세계에 이미 돌던 현금(스테이블코인 약 $300B)이 <strong>이자를 찾아 들어오는 관문</strong>이 국채였다.
+    주식 토큰은 가장 빠르게 크지만(보유자 30일 +127%) <strong>대부분 역외 · 미국 규제 레일 밖</strong>이다.</p>
+  <div class="src rv" style="--i:9">rwa.xyz 2026-08-17/23 직접 판독 · 주식은 리그테이블 합계 8/18 기준 · 사모·부동산은 상위 10개 합계라 과소 집계</div>
+</section>
+
+<!-- 08 24시간의 3층 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">정직하게 볼 것 ①</div>
+  <h2 class="rv" style="--i:1">「24시간 거래」는 한 단어가 아니라 세 개의 층이다</h2>
+  <div class="list">
+    <div class="li rv" style="--i:2"><div class="num">23/5</div><div>
+      <h3>주식 선물 (CME)</h3><p>하루 23시간 · 주 5일. 현금결제 — 주식 소유가 아니라 <strong>가격 내기</strong>다.</p></div></div>
+    <div class="li rv" style="--i:3"><div class="num">24/5</div><div>
+      <h3>토큰의 발행 · 상환</h3><p>발행사들 스스로 공시하는 진짜 한계 — 주말엔 담보인 미국 주식 <strong>현물시장이 닫혀 있어</strong> 새 토큰을 만들지도, 되팔지도 못한다.</p></div></div>
+    <div class="li rv" style="--i:4"><div class="num">24/7</div><div>
+      <h3>이미 발행된 토큰의 이전만</h3><p>주말에도 넘길 수는 있다 — 단 <strong>가격 앵커(발행·상환) 없이</strong> 떠 있는 구간이다.</p></div></div>
+  </div>
+  <div class="callout rv" style="--i:5">
+    <div class="hd">주말 24/7의 역설</div>
+    <p>토큰의 마지막 독점 구간(주말)과 그 구간의 품질 결함(앵커 부재)은 <strong>같은 원인</strong>에서 나온다.
+      미국 현물시장이 주말을 여는 순간 이 해자는 사라진다 — 장기 차별점으로 계산하면 안 되는 이유.</p>
+  </div>
+</section>
+
+<!-- 09 스택 5층 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">구조 — 어디서 값이 걷히나</div>
+  <h2 class="rv" style="--i:1">증권 한 주가 지나가는 다섯 개의 층</h2>
+  <div class="list">
+    <div class="li rv" style="--i:2"><div class="num">01</div><div>
+      <h3>발행</h3><p>증권을 만들어 파는 층 — 브로커-딜러.</p></div></div>
+    <div class="li rv" style="--i:3"><div class="num">02</div><div>
+      <h3>명부</h3><p>「누가 주주인가」의 공식 기록 — 명의개서대리인. <strong>토큰화 싸움의 심장부: 어느 장부가 정본인가.</strong></p></div></div>
+    <div class="li rv" style="--i:4"><div class="num">03</div><div>
+      <h3>유통</h3><p>사고파는 장터 — 거래소 · 대체거래시스템.</p></div></div>
+    <div class="li rv" style="--i:5"><div class="num">04</div><div>
+      <h3>청산 · 결제</h3><p>돈과 증권을 실제로 맞바꾸는 배관 — 온체인에선 스테이블코인이 현금 레그.</p></div></div>
+    <div class="li rv" style="--i:6"><div class="num">05</div><div>
+      <h3>보관</h3><p>자산을 들고 있는 금고 — 미국 예탁결제기관이 <strong>$114조</strong>를 보관한다.</p></div></div>
+  </div>
+  <p class="note rv" style="--i:7;margin-top:30px">이 구분이 중요한 이유는 하나 — <strong>돈이 다섯 층에 고르게 걷히지 않기 때문</strong>이다.</p>
+</section>
+
+<!-- 10 수도국 statement -->
+<section class="slide">
+  <div class="statement">
+    <div class="eyebrow rv" style="--i:0">경쟁의 실체</div>
+    <div class="l1 rv" style="--i:1">경쟁의 단위는 회사가 아니라</div>
+    <div class="l2 rv" style="--i:2"><em>층</em>이다.</div>
+    <p class="lede rv" style="--i:3">DTCC는 <strong>수도국</strong>이다 — 배관($114조)은 다 깔았지만 회원사 소유 유틸리티라 이윤을 극대화하지 않는다.
+      수도국이 덮은 층에서는 <strong>승자가 생기는 게 아니라 렌트가 사라진다</strong>.<br>
+      벤처가 파는 것은 수돗물이 아니라 <strong>수도관이 안 닿는 곳의 생수</strong> — 지금 그 자리는 토큰화 국채와 사모다.</p>
+  </div>
+</section>
+
+<!-- 11 도전자 정면 비교 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">플레이어 ① — 도전자 두 회사</div>
+  <h2 class="rv" style="--i:1">규모의 Ondo vs 진짜성의 Securitize</h2>
+  <div class="grid g2">
+    <div class="card rv" style="--i:2;--accent:var(--legacy)">
+      <span class="tag">Ondo — 만능 열쇠공</span>
+      <h3>모든 경로를 동시에</h3>
+      <p>네이티브·트윈·역외 래퍼를 <strong>전부 병행</strong>. 토큰화 주식 8개월 만에 $1B — 단 <strong>미국 밖 전용</strong>이고,
+        미국 문은 CLARITY 법안이 열쇠다. 비상장 + 거버넌스 토큰(지분 아님).</p>
+    </div>
+    <div class="card rv" style="--i:3;--accent:var(--token)">
+      <span class="tag">Securitize — 풀스택 등기소</span>
+      <h3>한 모델에 올인</h3>
+      <p>네이티브 <strong>단일 모델 올인은 5사 중 유일</strong> — 발행+명부+유통 라이선스 풀스택, 미국+EU 동시 인가,
+        블랙록 펀드의 명부 담당. 유일한 <strong>상장</strong> 순수 토큰화 인프라. 희소성이자 리스크 집중.</p>
+    </div>
+  </div>
+  <div class="callout rv" style="--i:4">
+    <div class="hd">심판은 CLARITY다</div>
+    <p>법안이 통과되면 Ondo가 <strong>규모를 그대로 들고 미국에 진입</strong>하고, 부결되면
+      「미국에서 합법적으로 진짜 주식을 토큰화한 유일한 스택」이라는 Securitize의 자리가 더 오래 유지된다.
+      어느 쪽에게도 단순 호재가 아니다.</p>
+  </div>
+</section>
+
+<!-- 12 기존 세력 3 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">플레이어 ② — 기존 세력의 진입</div>
+  <h2 class="rv" style="--i:1">수도국 · 은행 · 백화점</h2>
+  <div class="grid g3">
+    <div class="card rv" style="--i:2;--accent:var(--legacy)">
+      <span class="tag">DTCC — 수도국</span>
+      <h3>2026년 10월 정식 출시</h3>
+      <p>$114조 보관 유틸리티가 <strong>직접 트윈 토큰화</strong>를 시작. 2026-07-15 실거래 성공(참가 38사 — 블랙록·Ondo·NYSE 포함,
+        <strong>Securitize는 명단에 없음</strong>).</p>
+    </div>
+    <div class="card rv" style="--i:3;--accent:var(--legacy)">
+      <span class="tag">BNY — 은행 내재화</span>
+      <h3>금고 은행이 생수도 판다</h3>
+      <p>수탁은행이 토큰화를 내부 서비스로 흡수. 지금까지 벤처에 <strong>실현 손실을 준 유일한 상대</strong>(자체 상품으로 고객 대체).</p>
+    </div>
+    <div class="card rv" style="--i:4;--accent:var(--legacy)">
+      <span class="tag">Bullish × Equiniti</span>
+      <h3>백화점이 등기소를 인수</h3>
+      <p>크립토 거래소가 발행사 2,910곳 · 계좌 1,350만의 명의개서 대기업을 인수(2027-01 클로징 예정) —
+        풀스택의 <strong>영리 복제 설계도</strong>. 아직 실물 0.</p>
+    </div>
+  </div>
+  <p class="note rv" style="--i:5;margin-top:36px">참고로 <strong>Circle(USDC)</strong>은 경쟁자가 아니라 결제 층의 이웃이다 —
+    토큰화증권 거래의 현금 레그를 맡고, 자체 체인 Arc를 9/16 가동한다.</p>
+</section>
+
+<!-- 13 규모 곡선 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">정직하게 볼 것 ②</div>
+  <h2 class="rv" style="--i:1">$1B까지 걸린 시간 — 채택 곡선은 가팔라진다</h2>
+  <div class="bars">
+    <div class="brow rv" style="--i:2"><div class="lb">스테이블코인</div><div class="tr"><div class="fl" style="--w:100%;--c:var(--legacy)"></div></div><div class="vl">36개월</div></div>
+    <div class="brow rv" style="--i:3"><div class="lb">토큰화 국채</div><div class="tr"><div class="fl" style="--w:50%;--c:var(--token-lt)"></div></div><div class="vl">18개월</div></div>
+    <div class="brow rv" style="--i:4"><div class="lb">토큰화 주식</div><div class="tr"><div class="fl" style="--w:22%;--c:var(--token)"></div></div><div class="vl">8개월</div></div>
+  </div>
+  <div class="callout rv" style="--i:5">
+    <div class="hd">단, 화자의 이해관계를 같이 볼 것</div>
+    <p>이 곡선은 <strong>Ondo 임원의 자기 서사</strong>다(2026-08-20). 그리고 그 성장의 몸통은
+      역외 — 즉 <strong>미국 규제 레일 밖</strong>에서 실증되는 중이다. 곡선의 방향은 참이어도,
+      「누구의 레일에서」가 빠지면 절반만 읽은 것이다.</p>
+  </div>
+  <div class="src rv" style="--i:6">The Block 2026-08-20 · Ondo Global Markets 자기 공시</div>
+</section>
+
+<!-- 14 공리와 포획 -->
+<section class="slide">
+  <div class="statement">
+    <div class="eyebrow rv" style="--i:0">정직하게 볼 것 ③</div>
+    <div class="l1 rv" style="--i:1">「토큰화는 온다」가 참이어도</div>
+    <div class="l2 rv" style="--i:2">포획은 <span class="coral">별개 증명</span>이다.</div>
+    <p class="lede rv" style="--i:3">인터넷은 모든 정보를 디지털화했지만, 돈은 디지털화를 <em>수행한</em> 인프라(호스팅·백본)가 아니라
+      그 위 특정 층(검색·소셜)이 벌었다.<br>
+      토큰화 자산이 10배가 되어도 — <strong>그 자산에 걸린 요율이 실증·방어되지 않으면 매출로 번역되지 않는다.</strong>
+      자산 전망과 매출 전망은 분리해서 읽을 것.</p>
+  </div>
+</section>
+
+<!-- 15 오해 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">오해</div>
+  <h2 class="rv" style="--i:1">흔히 틀리는 네 가지</h2>
+  <div class="grid g2">
+    <div class="card rv" style="--i:2;--accent:var(--warn)"><span class="tag">오해 ①</span><h3>토큰화 주식 = 다 주주</h3><p>구조가 세 가지다. 합성은 주주가 아니고, 트윈은 보관증 소유자이며, 네이티브만 명부에 직접 오른다.</p></div>
+    <div class="card rv" style="--i:3;--accent:var(--warn)"><span class="tag">오해 ②</span><h3>ONDO 오르면 Ondo가 잘되는 것</h3><p>방향은 겹칠 수 있어도 ONDO 토큰엔 지분 청구권이 없다. 회사의 성공이 토큰 보유자에게 흐르는 장치는 확인된 적 없다.</p></div>
+    <div class="card rv" style="--i:4;--accent:var(--warn)"><span class="tag">오해 ③</span><h3>토큰은 완전한 24/7</h3><p>이전만 24/7이다. 발행·상환은 24/5 — 주말엔 가격 앵커가 없다. 발행사들 스스로 문서에 그렇게 쓴다.</p></div>
+    <div class="card rv" style="--i:5;--accent:var(--warn)"><span class="tag">오해 ④</span><h3>DTCC가 하면 벤처는 끝</h3><p>정확한 번역은 「DTCC가 덮은 층에선 렌트가 안 걷힌다」다. 수도관이 안 닿는 자산(사모·비예탁)은 별개의 판이다.</p></div>
+  </div>
+</section>
+
+<!-- 16 캘린더 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">관전 캘린더</div>
+  <h2 class="rv" style="--i:1">판정이 나오는 날짜들</h2>
+  <div class="list">
+    <div class="li rv" style="--i:2"><div class="num">09/16</div><div>
+      <h3>Circle Arc 메인넷</h3><p>결제 층의 새 표준 후보 가동 — 누가 타고 누가 빠지는가.</p></div></div>
+    <div class="li rv" style="--i:3"><div class="num">OCT</div><div>
+      <h3>10월 — DTCC 토큰화 서비스 정식 출시</h3><p><strong>파트너 명단</strong>이 판정문이다 — 분업 공존인가, 구조적 배제인가.</p></div></div>
+    <div class="li rv" style="--i:4"><div class="num">2026</div><div>
+      <h3>CLARITY 법안 (상원 정체 중)</h3><p>역외 규모의 미국 진입 티켓 — 통과·부결 모두 판을 다시 짠다.</p></div></div>
+    <div class="li rv" style="--i:5"><div class="num">2027</div><div>
+      <h3>1월 Bullish×Equiniti 클로징 → 상반기 DTCC×Stellar → 하반기 DTCC×Arc</h3><p>설계도들이 실물이 되는 해.</p></div></div>
+  </div>
+</section>
+
+<!-- 17 정리 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">정리</div>
+  <h2 class="rv" style="--i:1">세 문장으로</h2>
+  <div class="list">
+    <div class="li rv" style="--i:2"><div class="num">01</div><div>
+      <h3>정의 — 자산이 아니라 장부가 바뀐다</h3><p>등기부의 디지털화다. 국채는 여전히 국채고, 규제도 그대로다.</p></div></div>
+    <div class="li rv" style="--i:3"><div class="num">02</div><div>
+      <h3>방식 — 등기소 · 보관증 · 쿠폰</h3><p>네이티브 / 트윈 / 합성. 같은 헤드라인이라도 권리와 규제 리스크가 완전히 다르다.</p></div></div>
+    <div class="li rv" style="--i:4"><div class="num">03</div><div>
+      <h3>경쟁 — 회사가 아니라 층의 싸움</h3><p>수도국(DTCC)이 덮은 층은 렌트가 사라지고, 벤처의 판은 수도관 밖 자산 —
+        그리고 그 판의 심판은 규제 캘린더다.</p></div></div>
+  </div>
+  <p class="note rv" style="--i:5;margin-top:40px">「토큰화는 온다」는 나침반이고, 「누가 그 층의 표준이 되나」는 지도다 —
+    <strong>나침반으로 지도를 대신하지 않는 것</strong>이 이 주제에서 가장 중요한 규율이다.</p>
+</section>
+
+<!-- 18 닫기 -->
+<section class="slide">
+  <div class="cover">
+    <div class="eyebrow rv" style="--i:0">끝</div>
+    <h1 class="rv" style="--i:1;font-size:76px">방향은 나침반,<br>포획은 지도.</h1>
+    <div class="meta rv" style="--i:2">
+      데이터 · rwa.xyz 2026-08-17/23 직접 판독 (자산군 규모·플랫폼 순위)<br>
+      1차 · SEC EDGAR · DTCC 보도자료 2026-07-15 · CME 제품 문서 · Ondo·xStocks 자기 공시 · The Block 2026-08-20<br>
+      전망 · Citi GPS · Keyrock (분모 정의 상이 — 본문 주의 표기)<br><br>
+      산업·구조 설명이며 투자 권유가 아닙니다. 특정 종목의 매수·매도 신호를 포함하지 않습니다.
+    </div>
+  </div>
+</section>
+
+</div><!-- /stage -->
+
+<div class="rail">
+  <span class="deckname">토큰화증권, 판을 읽는 법</span>
+  <div class="bar"><span id="prog" style="width:6%"></span></div>
+  <span class="count" id="cnt">01 / 18</span>
+</div>
+<div class="hint">← → 또는 화면 클릭으로 이동</div>
+<div class="nav">
+  <button id="prev" aria-label="이전 슬라이드">◀</button>
+  <button id="next" aria-label="다음 슬라이드">▶</button>
+</div>
+</div>
+
+<script>
+(function(){
+  var stage=document.getElementById('stage');
+  var slides=Array.prototype.slice.call(stage.querySelectorAll('.slide'));
+  var n=slides.length,i=0;
+  var cnt=document.getElementById('cnt'),prog=document.getElementById('prog');
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function pad(x){return (x<10?'0':'')+x;}
+
+  function counters(sl){
+    sl.querySelectorAll('[data-count]').forEach(function(el){
+      var target=parseFloat(el.dataset.count),dec=parseInt(el.dataset.dec||'0',10);
+      var pre=el.dataset.pre||'',suf=el.dataset.suf||'',comma=el.dataset.comma==='1';
+      var dur=reduce?0:900,t0=null;
+      function fmt(v){var s=comma?v.toLocaleString('en-US',{maximumFractionDigits:dec}):v.toFixed(dec);return pre+s+suf;}
+      if(dur===0){el.textContent=fmt(target);return;}
+      function step(ts){
+        if(t0===null)t0=ts;
+        var p=Math.min((ts-t0)/dur,1),e=1-Math.pow(1-p,3);
+        el.textContent=fmt(target*e);
+        if(p<1)requestAnimationFrame(step);
+      }
+      el.textContent=fmt(0);
+      setTimeout(function(){requestAnimationFrame(step);},260);
+    });
+  }
+
+  function go(k){
+    k=Math.max(0,Math.min(n-1,k));
+    if(k===i&&slides[i].classList.contains('active'))return;
+    slides[i].classList.remove('active');
+    i=k;
+    slides[i].classList.add('active');
+    cnt.textContent=pad(i+1)+' / '+n;
+    prog.style.width=(((i+1)/n)*100).toFixed(1)+'%';
+    counters(slides[i]);
+  }
+
+  document.getElementById('next').addEventListener('click',function(e){e.stopPropagation();go(i+1);});
+  document.getElementById('prev').addEventListener('click',function(e){e.stopPropagation();go(i-1);});
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1);}
+    else if(e.key==='Home'){e.preventDefault();go(0);}
+    else if(e.key==='End'){e.preventDefault();go(n-1);}
+  });
+
+  var deck=document.querySelector('.deck');
+  deck.addEventListener('click',function(e){
+    if(e.target.closest('.nav'))return;
+    var r=deck.getBoundingClientRect();
+    go(((e.clientX-r.left)/r.width < 0.28) ? i-1 : i+1);
+  });
+
+  var tx=null;
+  deck.addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;},{passive:true});
+  deck.addEventListener('touchend',function(e){
+    if(tx===null)return;
+    var d=e.changedTouches[0].clientX-tx;
+    if(Math.abs(d)>50)go(d<0?i+1:i-1);
+    tx=null;
+  },{passive:true});
+
+  function fit(){
+    var d=deck.getBoundingClientRect();
+    var s=Math.min(d.width/1600,d.height/900);
+    document.documentElement.style.setProperty('--s',s);
+  }
+  window.addEventListener('resize',fit);
+  fit();
+  cnt.textContent='01 / '+n;
+  prog.style.width=((1/n)*100).toFixed(1)+'%';
+  counters(slides[0]);
+})();
+</script>
