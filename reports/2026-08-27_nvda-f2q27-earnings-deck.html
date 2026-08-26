@@ -1,0 +1,554 @@
+<title>NVIDIA F2Q27 어닝콜 해부 — 발표 덱</title>
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="어닝콜">
+<meta name="vault-topics" content="NVDA">
+<meta name="vault-date" content="2026-08-27">
+<meta name="description" content="NVIDIA F2Q27 어닝콜 Call-Dive 발표 덱 — 매출 $96B 반도체 회사와 보증 $108.5B 금융 플랫폼, 같은 회사의 두 얼굴 (16장 애니메이션 HTML 덱)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@600;700;900&display=swap">
+<style>
+/* ── 단일 시각 세계: 투사되는 발표 화면. 뷰어 테마와 무관하게 어두운 남색으로 고정한다. ── */
+:root{
+  --ink-900:#061423;   /* 바탕 */
+  --ink-850:#08192B;
+  --ink-800:#0B2138;   /* 패널 */
+  --ink-700:#16456B;
+  --rule:#1B3A5A;      /* 괘선 */
+  --rule-soft:#102B45;
+  --paper:#E6EDF5;     /* 본문 */
+  --paper-dim:#B7C7D8;
+  --muted:#7E97AE;     /* 청회색 — 중립색을 파랑 쪽으로 기울여 선택 */
+  --legacy:#E0A33E;    /* 호박 — 기존 결제 레일 */
+  --token:#4FD1E8;     /* 청록 — 토큰화 레일 */
+  --warn:#F2857B;      /* 산호 — 주의 */
+  --s:1;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--ink-900);color:var(--paper);
+  font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  -webkit-font-smoothing:antialiased;}
+
+.deck{position:relative;width:100%;height:100dvh;overflow:hidden;background:var(--ink-900);}
+.stage{position:absolute;top:50%;left:50%;width:1600px;height:900px;
+  transform:translate(-50%,-50%) scale(var(--s));transform-origin:center center;}
+
+/* 장부 괘선 — 배경 질감 */
+.stage::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,transparent 0 63px,var(--rule-soft) 63px 64px);
+  opacity:.5;}
+
+.slide{position:absolute;inset:0;padding:74px 96px 92px;opacity:0;visibility:hidden;
+  transition:opacity .5s ease,visibility .5s;}
+.slide.active{opacity:1;visibility:visible;}
+
+/* 요소 등장 — 슬라이드 진입 시 순차 상승 */
+.rv{opacity:0;transform:translateY(26px);
+  transition:opacity .62s cubic-bezier(.2,.7,.3,1),transform .62s cubic-bezier(.2,.7,.3,1);
+  transition-delay:calc(var(--i,0) * 95ms);}
+.slide.active .rv{opacity:1;transform:none;}
+
+/* 머리말 */
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:15px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--token);display:flex;align-items:center;gap:14px;}
+.eyebrow::after{content:"";height:1px;flex:1;max-width:190px;background:linear-gradient(90deg,var(--token),transparent);}
+h1{font-family:"Noto Serif KR",serif;font-weight:900;font-size:88px;line-height:1.16;margin:26px 0 0;
+  letter-spacing:-.02em;text-wrap:balance;}
+h2{font-family:"Noto Serif KR",serif;font-weight:700;font-size:52px;line-height:1.25;margin:20px 0 0;
+  letter-spacing:-.015em;text-wrap:balance;}
+.lede{font-size:25px;line-height:1.62;color:var(--paper-dim);font-weight:300;max-width:1080px;margin-top:26px;}
+.note{font-size:19px;line-height:1.6;color:var(--muted);font-weight:300;max-width:1120px;}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;}
+strong{font-weight:700;color:#fff;}
+em{font-style:normal;color:var(--token);font-weight:500;}
+.amber{color:var(--legacy);}
+.cyan{color:var(--token);}
+.coral{color:var(--warn);}
+
+/* 하단 레일 */
+.rail{position:absolute;left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;
+  gap:20px;padding:0 96px;border-top:1px solid var(--rule);background:var(--ink-850);}
+.bar{flex:1;height:2px;background:var(--rule);position:relative;overflow:hidden;}
+.bar span{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--token),#8FE6F4);
+  transition:width .5s cubic-bezier(.2,.7,.3,1);}
+.count{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.1em;color:var(--muted);}
+.deckname{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.1em;color:var(--muted);}
+
+/* 표지 */
+.cover{display:flex;flex-direction:column;justify-content:center;height:100%;}
+.cover h1{font-size:104px;}
+.cover .sub{font-size:27px;color:var(--paper-dim);font-weight:300;margin-top:34px;line-height:1.6;}
+.meta{margin-top:56px;padding-top:26px;border-top:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:15px;color:var(--muted);line-height:2;}
+
+/* 큰 진술 */
+.statement{display:flex;flex-direction:column;justify-content:center;height:100%;}
+.statement .l1{font-family:"Noto Serif KR",serif;font-size:66px;font-weight:600;color:var(--muted);line-height:1.3;}
+.statement .l2{font-family:"Noto Serif KR",serif;font-size:104px;font-weight:900;line-height:1.22;margin-top:12px;letter-spacing:-.025em;}
+
+/* 카드 격자 */
+.grid{display:grid;gap:24px;margin-top:44px;}
+.g2{grid-template-columns:repeat(2,1fr);} .g3{grid-template-columns:repeat(3,1fr);} .g4{grid-template-columns:repeat(4,1fr);}
+.card{background:var(--ink-800);border:1px solid var(--rule);padding:30px 30px 32px;position:relative;}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent,var(--token));}
+.card h3{font-size:24px;font-weight:700;margin:0 0 12px;line-height:1.35;}
+.card p{font-size:18px;line-height:1.62;color:var(--paper-dim);font-weight:300;margin:0;}
+.card .tag{font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.12em;color:var(--muted);
+  text-transform:uppercase;display:block;margin-bottom:14px;}
+
+/* 수치 */
+.figs{display:flex;gap:70px;margin-top:46px;align-items:flex-end;}
+.fig .n{font-family:"IBM Plex Mono",monospace;font-size:86px;font-weight:600;line-height:1;
+  color:var(--token);font-variant-numeric:tabular-nums;letter-spacing:-.03em;}
+.fig .n.sm{font-size:56px;color:var(--paper);}
+.fig .k{font-size:18px;color:var(--muted);margin-top:14px;font-weight:300;}
+
+/* 막대 */
+.bars{margin-top:40px;display:flex;flex-direction:column;gap:17px;}
+.brow{display:grid;grid-template-columns:210px 1fr 132px;align-items:center;gap:22px;}
+.brow .lb{font-size:20px;font-weight:500;text-align:right;color:var(--paper-dim);}
+.brow .tr{height:26px;background:var(--rule-soft);position:relative;overflow:hidden;}
+.brow .fl{position:absolute;inset:0 auto 0 0;width:0;background:var(--c,var(--token));
+  transition:width 1.05s cubic-bezier(.2,.7,.3,1);transition-delay:calc(var(--i,0) * 95ms + 180ms);}
+.slide.active .brow .fl{width:var(--w);}
+.brow .vl{font-family:"IBM Plex Mono",monospace;font-size:20px;color:var(--paper);font-variant-numeric:tabular-nums;}
+.brow .lb.coral{color:var(--warn);}
+.brow .vl.coral{color:var(--warn);}
+
+/* 도해 */
+svg .draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+  transition:stroke-dashoffset 1.15s cubic-bezier(.3,.6,.3,1);transition-delay:calc(var(--i,0) * 95ms + 200ms);}
+.slide.active svg .draw{stroke-dashoffset:0;}
+svg text{font-family:"Noto Sans KR",sans-serif;}
+svg .lbl{font-size:17px;fill:var(--paper-dim);font-weight:400;}
+svg .lbl-s{font-family:"IBM Plex Mono",monospace;font-size:13px;fill:var(--muted);letter-spacing:.08em;}
+svg .nd{fill:var(--ink-800);stroke-width:1.5;}
+
+/* 목록 */
+.list{margin-top:40px;display:flex;flex-direction:column;gap:26px;}
+.li{display:grid;grid-template-columns:52px 1fr;gap:24px;align-items:start;}
+.li .num{font-family:"IBM Plex Mono",monospace;font-size:17px;color:var(--token);
+  padding-top:7px;border-top:2px solid var(--token);}
+.li .num.w{color:var(--warn);border-color:var(--warn);}
+.li h3{font-size:27px;font-weight:700;margin:0 0 9px;line-height:1.35;}
+.li p{font-size:19px;line-height:1.62;color:var(--paper-dim);font-weight:300;margin:0;}
+
+/* 인용 강조 박스 */
+.callout{margin-top:40px;border:1px solid var(--warn);background:rgba(242,133,123,.07);padding:30px 34px;}
+.callout p{margin:0;font-size:22px;line-height:1.6;color:var(--paper);font-weight:300;}
+.callout .hd{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.14em;
+  color:var(--warn);text-transform:uppercase;margin-bottom:14px;}
+
+.src{position:absolute;left:96px;bottom:64px;font-family:"IBM Plex Mono",monospace;
+  font-size:13.5px;color:var(--muted);letter-spacing:.03em;}
+
+/* 조작 */
+.nav{position:absolute;bottom:56px;right:96px;display:flex;gap:10px;z-index:5;}
+.nav button{width:44px;height:36px;background:var(--ink-800);border:1px solid var(--rule);
+  color:var(--paper-dim);cursor:pointer;font-size:16px;line-height:1;transition:.18s;}
+.nav button:hover{background:var(--rule-soft);color:#fff;border-color:var(--token);}
+.nav button:focus-visible{outline:2px solid var(--token);outline-offset:2px;}
+.hint{position:absolute;bottom:58px;left:96px;font-family:"IBM Plex Mono",monospace;
+  font-size:13px;color:var(--muted);opacity:.75;}
+
+@media (prefers-reduced-motion:reduce){
+  .rv,.brow .fl,svg .draw,.bar span{transition:none !important;}
+  .rv{opacity:1;transform:none;}
+  svg .draw{stroke-dashoffset:0;}
+  .slide{transition:none;}
+}
+</style>
+
+<div class="deck">
+<div class="stage" id="stage">
+
+<!-- 01 표지 -->
+<section class="slide active">
+  <div class="cover">
+    <div class="eyebrow rv" style="--i:0">어닝콜 해부 · 2026-08-27</div>
+    <h1 class="rv" style="--i:1">NVIDIA F2Q27<br>어닝콜 해부</h1>
+    <div class="sub rv" style="--i:2">매출 <em>$96B</em>의 반도체 회사와, 보증 <em>$108.5B</em>의 금융 플랫폼 —<br>같은 분기에 공시된 같은 회사의 두 얼굴.</div>
+    <div class="meta rv" style="--i:3">
+      1차 자료 · NVIDIA 보도자료 + CFO 코멘터리 + IR 프레젠테이션 (2026-08-26)<br>
+      발언 · 실적 컨퍼런스콜 전사 (정량은 전부 1차 자료로 재검증)<br>
+      정보 정리·분석이며 투자 권유가 아닙니다
+    </div>
+  </div>
+</section>
+
+<!-- 02 한 문장 -->
+<section class="slide">
+  <div class="statement">
+    <div class="eyebrow rv" style="--i:0">한 문장으로</div>
+    <div class="l1 rv" style="--i:1">매출은 실적이 증명했다.</div>
+    <div class="l2 rv" style="--i:2">남은 논쟁은 <em>대차대조표</em>다.</div>
+    <p class="lede rv" style="--i:3">성장률이 4분기 연속 가속하며 매출이 전년의 두 배가 됐다. 같은 문서에서 회사는<br>
+      고객 지분 <strong>$94B</strong>, 보증 상한 <strong>$108.5B</strong>, 미래 약정 <strong>$422B</strong>, 첫 대규모 차입 <strong>$25B</strong>도 공시했다.</p>
+  </div>
+</section>
+
+<!-- 03 세 숫자 구분 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">먼저 구분할 것</div>
+  <h2 class="rv" style="--i:1">헤드라인에 섞여 나오는 세 개의 숫자</h2>
+  <div class="grid g3">
+    <div class="card rv" style="--i:2;--accent:var(--token)">
+      <span class="tag">① +70%</span>
+      <h3>회사의 공급 커밋</h3>
+      <p>FY28 매출 예비 가이던스. 수요 전망이 아니라 <strong>"공급망이 뒷받침하는 만큼"</strong>의 약속이다.</p>
+    </div>
+    <div class="card rv" style="--i:3;--accent:var(--legacy)">
+      <span class="tag">② +100%</span>
+      <h3>CEO의 수요 주장</h3>
+      <p>"제약이 없다면"의 수요. 주문서가 아니라 파이프라인 개념 — <strong>검증 가능한 형태로 제시되지 않았다.</strong></p>
+    </div>
+    <div class="card rv" style="--i:4;--accent:var(--muted)">
+      <span class="tag">③ $2조</span>
+      <h3>고객들의 백로그</h3>
+      <p>NVIDIA의 수주잔고가 아니다. <strong>클라우드 산업(고객)의 백로그</strong>다. 주체를 바꿔 인용하면 틀린다.</p>
+    </div>
+  </div>
+  <p class="note rv" style="--i:5;margin-top:40px">셋 중 회사가 책임지는 숫자는 <strong>①뿐이다.</strong> 이 덱은 ①이 서 있는 구조와, 그 구조의 비용을 본다.</p>
+</section>
+
+<!-- 04 기존 모델 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">지금까지의 NVIDIA</div>
+  <h2 class="rv" style="--i:1">칩 판매자 — 관계는 인도에서 끝났다</h2>
+  <svg viewBox="0 0 1408 250" style="width:100%;height:250px;margin-top:44px" aria-label="기존 판매 모델">
+    <g stroke="var(--legacy)" fill="none" stroke-width="2">
+      <path class="draw" style="--len:1160;--i:2" d="M170 78 H360 M530 78 H720 M890 78 H1080 M1250 78 H1268"/>
+    </g>
+    <g>
+      <rect class="nd" x="20" y="48" width="150" height="60" stroke="var(--legacy)"/>
+      <rect class="nd" x="360" y="48" width="170" height="60" stroke="var(--legacy)"/>
+      <rect class="nd" x="720" y="48" width="170" height="60" stroke="var(--legacy)"/>
+      <rect class="nd" x="1080" y="48" width="180" height="60" stroke="var(--legacy)"/>
+    </g>
+    <g class="lbl" text-anchor="middle" fill="var(--paper)">
+      <text x="95" y="84">고객 주문</text>
+      <text x="445" y="84">칩 · 시스템 출하</text>
+      <text x="805" y="84">대금 회수</text>
+      <text x="1170" y="84">관계 종료</text>
+    </g>
+    <g class="lbl-s" text-anchor="middle">
+      <text x="445" y="132">일회성 판매</text>
+      <text x="805" y="132">현금 · 단기 채권</text>
+      <text x="1170" y="132">다음 세대에 재경쟁</text>
+    </g>
+    <g stroke="var(--rule)" stroke-width="1"><path class="draw" style="--len:1370;--i:6" d="M20 190 H1388"/></g>
+    <text class="lbl-s" x="20" y="222" fill="var(--legacy)">위험 노출 — 출하 시점에 종료</text>
+  </svg>
+  <p class="note rv" style="--i:7;margin-top:26px">이 모델의 미덕은 <strong>깨끗함</strong>이다. 팔면 끝이고, 고객이 어떻게 되든
+    NVIDIA의 대차대조표와는 무관했다. 총이익률 75%는 이 모델의 숫자다.</p>
+</section>
+
+<!-- 05 새 모델 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">이번 분기에 공시된 NVIDIA</div>
+  <h2 class="rv" style="--i:1">같은 고객을 네 번 만난다</h2>
+  <svg viewBox="0 0 1408 300" style="width:100%;height:300px;margin-top:30px" aria-label="생태계 금융 모델">
+    <rect class="nd" x="540" y="100" width="328" height="110" stroke="var(--token)" stroke-width="2"/>
+    <text class="lbl" x="704" y="147" text-anchor="middle" fill="var(--paper)" style="font-size:21px;font-weight:700">고객</text>
+    <text class="lbl-s" x="704" y="178" text-anchor="middle">AI 랩 · 네오클라우드</text>
+    <g stroke="var(--token)" fill="none" stroke-width="2">
+      <path class="draw" style="--len:250;--i:2" d="M290 130 H540"/>
+      <path class="draw" style="--len:250;--i:3" d="M290 185 H540"/>
+      <path class="draw" style="--len:250;--i:4" d="M1118 130 H868"/>
+      <path class="draw" style="--len:250;--i:5" d="M1118 185 H868"/>
+    </g>
+    <rect class="nd" x="60" y="100" width="230" height="55" stroke="var(--token)"/>
+    <rect class="nd" x="60" y="160" width="230" height="55" stroke="var(--token)"/>
+    <rect class="nd" x="1118" y="100" width="230" height="55" stroke="var(--token)"/>
+    <rect class="nd" x="1118" y="160" width="230" height="55" stroke="var(--token)"/>
+    <g class="lbl" text-anchor="middle" fill="var(--paper)" style="font-size:18px">
+      <text x="175" y="133">① 장비를 판다</text>
+      <text x="175" y="193">② 지분을 산다</text>
+      <text x="1233" y="133">③ 신용을 보증한다</text>
+      <text x="1233" y="193">④ 임대 매출을 나눈다</text>
+    </g>
+    <g class="lbl-s" text-anchor="middle">
+      <text x="175" y="246">매출 $96B · 총이익률 75%</text>
+      <text x="704" y="246">지분 $94B · 평가익이 GAAP 이익의 11%</text>
+      <text x="1233" y="246">보증 상한 $108.5B · 매출 공유는 신모델</text>
+    </g>
+  </svg>
+  <p class="note rv" style="--i:7;margin-top:22px">CFO의 표현으로 <strong>"두 번 수금한다"</strong> — 하드웨어 판매에서 한 번, 임대 매출 지분에서 또 한 번.
+    단 ③의 보증은 평시엔 0원이고 <strong>고객이 무너질 때만 작동하는 꼬리 위험</strong>이다.</p>
+</section>
+
+<!-- 06 무엇이 달라졌나 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">이번 콜에서 처음 나온 것</div>
+  <h2 class="rv" style="--i:1">네 가지가 새로 공식화됐다</h2>
+  <div class="grid g4">
+    <div class="card rv" style="--i:2"><span class="tag">가이던스</span><h3>첫 연간 예비 전망</h3><p>FY28 매출 +70%. 창사 이래 분기 가이던스만 내던 회사의 방침 전환 — "모두가 같은 악보를 보게".</p></div>
+    <div class="card rv" style="--i:3"><span class="tag">성장 엔진</span><h3>ACIE가 순증의 56%</h3><p>네오클라우드·소버린·엔터프라이즈. "누구에게도 보이지 않는 절반"이 하이퍼스케일러를 앞질렀다.</p></div>
+    <div class="card rv" style="--i:4"><span class="tag">마진</span><h3>골짜기 경로 공개</h3><p>메모리 가격 급등 → 75%에서 Q4 71~72% 바닥까지 하락을 회사가 먼저 리셋. 가격 인상은 FY28 Q1부터.</p></div>
+    <div class="card rv" style="--i:5"><span class="tag">신제품 축</span><h3>Groq 3 LPX 양산</h3><p>저지연 추론 가속기. 현금흐름표에 "Groq, Inc. −$2.9B" — 콜의 '그록'은 xAI가 아니라 Groq였다.</p></div>
+  </div>
+</section>
+
+<!-- 07 실적 수치 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">분기 실적</div>
+  <h2 class="rv" style="--i:1">이 규모에서, 이 속도</h2>
+  <div class="figs">
+    <div class="fig rv" style="--i:2"><div class="n mono" data-count="96.2" data-dec="1" data-pre="$" data-suf="B">$0.0B</div><div class="k">분기 매출 (+18% QoQ)</div></div>
+    <div class="fig rv" style="--i:3"><div class="n sm mono" data-count="106" data-dec="0" data-pre="+" data-suf="%">+0%</div><div class="k">전년 대비</div></div>
+    <div class="fig rv" style="--i:4"><div class="n sm mono" data-count="89.0" data-dec="1" data-pre="$" data-suf="B">$0.0B</div><div class="k">데이터센터 (비중 92.5%)</div></div>
+    <div class="fig rv" style="--i:5"><div class="n sm mono" data-count="21.3" data-dec="1" data-pre="$" data-suf="B">$0.0B</div><div class="k">잉여현금흐름</div></div>
+  </div>
+  <p class="lede rv" style="--i:6">분기 <strong>순증</strong>만 $14.6B — 5년 전 NVIDIA의 <em>연간</em> 매출 절반이 한 분기 만에 새로 생겼다.
+    주주환원 $25.8B(자사주 $19.7B + 배당 $6.0B)도 분기 사상 최대.</p>
+  <div class="src rv" style="--i:7">출처 · NVIDIA 보도자료 + CFO 코멘터리 2026-08-26 (전 수치 검산 완료)</div>
+</section>
+
+<!-- 08 가속 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">성장의 형태</div>
+  <h2 class="rv" style="--i:1">전년 대비 성장률 — 4분기 연속 가속</h2>
+  <div class="bars">
+    <div class="brow rv" style="--i:2"><div class="lb">FY26 Q2</div><div class="tr"><div class="fl" style="--w:52.5%;--c:var(--muted)"></div></div><div class="vl">+55.6%</div></div>
+    <div class="brow rv" style="--i:3"><div class="lb">FY26 Q3</div><div class="tr"><div class="fl" style="--w:59%;--c:var(--muted)"></div></div><div class="vl">+62.5%</div></div>
+    <div class="brow rv" style="--i:4"><div class="lb">FY26 Q4</div><div class="tr"><div class="fl" style="--w:69%;--c:var(--token-lt)"></div></div><div class="vl">+73.2%</div></div>
+    <div class="brow rv" style="--i:5"><div class="lb">FY27 Q1</div><div class="tr"><div class="fl" style="--w:80.5%;--c:var(--token-lt)"></div></div><div class="vl">+85.2%</div></div>
+    <div class="brow rv" style="--i:6"><div class="lb">FY27 Q2</div><div class="tr"><div class="fl" style="--w:100%;--c:var(--token)"></div></div><div class="vl">+105.9%</div></div>
+  </div>
+  <div class="callout rv" style="--i:7">
+    <div class="hd">기저효과가 아니다</div>
+    <p>비교 대상인 전년 동기도 <strong>+55.6% 고성장</strong>이었다. 높은 기준 위에서 다시 두 배가 된 것 —
+      절대 순증($14.6B)도 사상 최대라 분모 착시로 설명되지 않는다.</p>
+  </div>
+</section>
+
+<!-- 09 ACIE -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">성장은 어디서 왔나</div>
+  <h2 class="rv" style="--i:1">분기 순증 $14.6B의 해부</h2>
+  <div class="bars">
+    <div class="brow rv" style="--i:2"><div class="lb">ACIE</div><div class="tr"><div class="fl" style="--w:100%;--c:var(--token)"></div></div><div class="vl">+$8.1B · 56%</div></div>
+    <div class="brow rv" style="--i:3"><div class="lb">하이퍼스케일</div><div class="tr"><div class="fl" style="--w:70%;--c:var(--token-lt)"></div></div><div class="vl">+$5.7B · 39%</div></div>
+    <div class="brow rv" style="--i:4"><div class="lb">엣지 컴퓨팅</div><div class="tr"><div class="fl" style="--w:10%;--c:var(--muted)"></div></div><div class="vl">+$0.8B · 6%</div></div>
+  </div>
+  <p class="lede rv" style="--i:5">ACIE(네오클라우드·소버린·엔터프라이즈)는 FY26 내내 $16~20B 박스권이었다가
+    <strong>두 분기 만에 2배</strong>($20.1B→$40.3B)가 됐다. 젠슨의 표현 — <em>"이 절반은 누구에게도 보이지 않는다."</em></p>
+  <p class="note rv" style="--i:6;margin-top:20px"><span class="coral">단서 하나</span> — 2분기에 한 기업이 ACIE→하이퍼스케일로 재분류되고 과거치가 재작성됐다.
+    어느 회사인지 미공시라 <strong>ACIE +138%의 순수 유기성은 10-Q 확인 전까지 단정 금지.</strong></p>
+</section>
+
+<!-- 10 정직 ① 이익 품질 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">정직하게 볼 것 ①</div>
+  <h2 class="rv" style="--i:1">이익의 품질 — AI 붐이 손익계산서에 두 번 잡힌다</h2>
+  <div class="figs">
+    <div class="fig rv" style="--i:2"><div class="n sm mono" data-count="10.9" data-dec="1" data-suf="%">0%</div><div class="k">세전이익 중 지분 평가익</div></div>
+    <div class="fig rv" style="--i:3"><div class="n sm mono" data-count="40" data-dec="0" data-suf="%">0%</div><div class="k">순이익 → 영업현금 전환율</div></div>
+    <div class="fig rv" style="--i:4"><div class="n sm mono" data-count="60" data-dec="0" data-suf="일">0일</div><div class="k">매출채권 회수일수 (45일→)</div></div>
+  </div>
+  <div class="callout rv" style="--i:5">
+    <div class="hd">두 번 잡히는 구조</div>
+    <p>고객에게 <strong>판매</strong>해서 한 번(매출), 그 고객의 <strong>기업가치 상승</strong>으로 또 한 번(평가익 $7.8B).
+      GAAP EPS $2.46 중 $0.32가 후자다. 매출채권은 한 분기에 <strong>+$22.3B</strong> — 컴퓨트는 매출이 됐지만, 아직 전부 현금은 아니다.</p>
+  </div>
+  <p class="note rv" style="--i:6;margin-top:24px"><span class="cyan">반대편</span> — 전환율 40%은 다분기 계약의 회수 타이밍 문제일 수 있다.
+    상반기 합산 전환율은 63%, 상반기 FCF $69.9B는 절대 규모 사상 최대다. '악화'가 아니라 <strong>'복잡화'</strong>가 정확한 명칭.</p>
+</section>
+
+<!-- 11 정직 ② 마진 골짜기 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">정직하게 볼 것 ②</div>
+  <h2 class="rv" style="--i:1">마진 골짜기 — 메모리가 원가의 주전장</h2>
+  <div class="bars">
+    <div class="brow rv" style="--i:2"><div class="lb">Q2 실적</div><div class="tr"><div class="fl" style="--w:100%;--c:var(--token)"></div></div><div class="vl">75.0%</div></div>
+    <div class="brow rv" style="--i:3"><div class="lb">Q3 가이던스</div><div class="tr"><div class="fl" style="--w:80%;--c:var(--token-lt)"></div></div><div class="vl">74.0%</div></div>
+    <div class="brow rv" style="--i:4"><div class="lb coral">Q4 바닥 전망</div><div class="tr"><div class="fl" style="--w:35%;--c:var(--warn)"></div></div><div class="vl coral">71~72%</div></div>
+    <div class="brow rv" style="--i:5"><div class="lb">FY28 안정화</div><div class="tr"><div class="fl" style="--w:55%;--c:var(--token-lt)"></div></div><div class="vl">72~73%</div></div>
+  </div>
+  <div class="callout rv" style="--i:6">
+    <div class="hd">프레임과 실질을 분리하라</div>
+    <p>회사: <em>"메모리 부족은 우리 성장을 견인하는 수요 급증의 징후."</em> 사실이지만 —
+      3~4pt 하락은 현 매출 규모에서 <strong>분기 이익 $3~4B의 실질 감소</strong>다. 공급 약정을 한 분기에
+      <strong>$119B→$279B(+$160B, 메모리 선확보)</strong>로 늘린 것이 대응의 실체.</p>
+  </div>
+  <div class="src rv" style="--i:7">막대 길이 = 70% 기준선 초과분(시각 강조) · 출처: CFO 코멘터리 가이던스</div>
+</section>
+
+<!-- 12 정직 ③ 순환 금융 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">정직하게 볼 것 ③</div>
+  <h2 class="rv" style="--i:1">"순환 금융" 논쟁 — CFO가 먼저 꺼냈다</h2>
+  <div class="grid g2">
+    <div class="card rv" style="--i:2;--accent:var(--token)">
+      <span class="tag">회사의 반박</span>
+      <h3>"우리는 다르게 본다"</h3>
+      <p>① 플랫폼은 <strong>대체 가능·내구적·재배치 가능</strong> ② 출하 컴퓨트는 <strong>투자등급 고객</strong>이 소비
+        ③ 투자 자본의 수익률은 우수, 리스크는 제한적 ④ 한 세대에 한 번 나오는 기업들.</p>
+    </div>
+    <div class="card rv" style="--i:3;--accent:var(--warn)">
+      <span class="tag">남는 질문</span>
+      <h3>반박이 닿지 않는 곳</h3>
+      <p>① "투자등급 고객, <strong>또는 그 지원을 받는</strong> 고객" — 그 지원이 곧 NVIDIA 보증이다
+        ② 보증은 평시 0원, <strong>디폴트 때만 작동</strong> ③ $500B 금융 플랫폼은 여전히 <strong>"최종계약 전제"</strong>(MOU)
+        ④ 수요가 그렇게 강하면 왜 판매자의 보증이 필요한가.</p>
+    </div>
+  </div>
+  <p class="note rv" style="--i:4;margin-top:36px">균형을 위해 — 이 수치들은 전부 <strong>회사가 자발 공시</strong>했다(보증 총괄표 신설·마진 경로·연간 전망).
+    숨긴 게 아니라 프레임을 고른 것이고, 공시 투명성 자체는 이번 분기에 <strong>개선</strong>됐다.</p>
+</section>
+
+<!-- 13 목표의 산술 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">목표의 산술</div>
+  <h2 class="rv" style="--i:1">70%와 100% 사이 — $121B</h2>
+  <div class="figs">
+    <div class="fig rv" style="--i:2"><div class="n sm mono" data-count="687" data-dec="0" data-pre="≈$" data-suf="B">≈$0B</div><div class="k">FY28 가이던스 (공급 제약)</div></div>
+    <div class="fig rv" style="--i:3"><div class="n sm mono" data-count="808" data-dec="0" data-pre="≈$" data-suf="B">≈$0B</div><div class="k">수요 100% 시나리오</div></div>
+    <div class="fig rv" style="--i:4"><div class="n mono coral" data-count="121" data-dec="0" data-pre="≈$" data-suf="B">≈$0B</div><div class="k">격차 = 공급이 포기한 매출</div></div>
+  </div>
+  <p class="lede rv" style="--i:5">격차 $121B는 <strong>NVIDIA의 FY25 연간 매출($130B)과 맞먹는다.</strong>
+    $687B ÷ 기가와트당 $40B ≈ <strong>연 17GW</strong>의 베라 루빈급 인프라 — 병목이 칩이 아니라
+    전력·부지·메모리라는 회사 주장과 자기정합적이다.</p>
+  <p class="note rv" style="--i:6;margin-top:20px">단위경제의 근거: GW당 NVIDIA 매출 기회 — 호퍼 <span class="mono">$18B</span> → 그레이스 블랙웰 <span class="mono">$25B</span> → 베라 루빈 <span class="mono">$40B</span> (젠슨, 콜에서 재확인).</p>
+</section>
+
+<!-- 14 무응답 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">기록해 둘 것</div>
+  <h2 class="rv" style="--i:1">직접 질문에 답하지 않은 두 가지</h2>
+  <div class="list">
+    <div class="li rv" style="--i:2"><div class="num">01</div><div>
+      <h3>공급 제약 요인의 순위</h3>
+      <p>골드만삭스: "DRAM·웨이퍼·파운드리·전력·셸 중 무엇이 가장 심각한가?" → 젠슨: "전체 공급망이 압박, 모두 풀가동."
+        <strong>순위는 끝내 특정하지 않았다.</strong> 최대 병목의 위치는 공급망 각 층의 협상력을 좌우하는 정보다.</p></div></div>
+    <div class="li rv" style="--i:3"><div class="num">02</div><div>
+      <h3>FY28의 현금 집행 규모</h3>
+      <p>BoA: "약정 합산 ≈$500B 중 FY28에 현금으로 나가는 규모는?" → CFO: "최대 비중이 첫 3년에 집중"까지만.
+        <strong>숫자는 나오지 않았다.</strong> 1차 자료로 복원하면 약정 $366B 중 FY27잔여~FY29에 $318B(87%)가 몰려 있다.</p></div></div>
+  </div>
+  <div class="callout rv" style="--i:4">
+    <div class="hd">무응답도 결과다</div>
+    <p>애널리스트가 물었고 경영진이 답하지 않은 항목은 "확인 불가"가 아니라 <strong>"직접 질문에 무응답"</strong>으로
+      기록한다. 다음 콜(11/17)의 재확인 과제다.</p>
+  </div>
+</section>
+
+<!-- 15 정리 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">정리</div>
+  <h2 class="rv" style="--i:1">세 문장으로</h2>
+  <div class="list">
+    <div class="li rv" style="--i:2"><div class="num">01</div><div>
+      <h3>실적과 가속은 실물이다</h3><p>4분기 연속 YoY 가속, 순증 $14.6B, ACIE 변곡 — 전부 <strong>1차 수치로 검증</strong>된다. 기저효과 아니다.</p></div></div>
+    <div class="li rv" style="--i:3"><div class="num">02</div><div>
+      <h3>정체성은 이동 중이다</h3><p>손익계산서는 반도체 회사(총이익률 75%)지만, 대차대조표는 <strong>생태계 금융 플랫폼</strong>(지분 $94B·보증 $108.5B·약정 $422B·차입 $25B)이 되어 간다. 매출의 미래가 자본 배치에 의존하는 정도가 분기마다 커진다.</p></div></div>
+    <div class="li rv" style="--i:4"><div class="num">03</div><div>
+      <h3>남은 논쟁은 숫자 두 개다</h3><p><strong>FY28 +70%</strong>(공급 실행의 문제)와 <strong>Q4 71~72% 마진 바닥</strong>(메모리 협상의 문제). 둘 다 두 분기 안에 1차 수치로 채점된다 — 다음 채점일 11월 17일.</p></div></div>
+  </div>
+</section>
+
+<!-- 16 닫기 -->
+<section class="slide">
+  <div class="cover">
+    <div class="eyebrow rv" style="--i:0">끝</div>
+    <h1 class="rv" style="--i:1;font-size:72px">컴퓨트는 매출이 됐다.<br>이제 시장은 대차대조표를 읽는다.</h1>
+    <div class="meta rv" style="--i:2">
+      1차 자료 · NVIDIA 보도자료 「Financial Results for Q2 FY2027」 + CFO Commentary + IR 프레젠테이션 (2026-08-26)<br>
+      발언 · F2Q27 실적 컨퍼런스콜 (전사 정량은 전부 1차 자료로 재검증 · Groq/Nemotron 등 전사 오기 교정)<br>
+      시장 데이터 · 2026-08-26 종가 $209.66 → 시간외 +4.0% (yfinance)<br><br>
+      본 자료는 정보 정리·분석 목적이며 투자 권유가 아닙니다. 특정 종목의 매수·매도 신호를 포함하지 않습니다.
+    </div>
+  </div>
+</section>
+
+</div><!-- /stage -->
+
+<div class="rail">
+  <span class="deckname">NVIDIA F2Q27 어닝콜 해부</span>
+  <div class="bar"><span id="prog" style="width:6%"></span></div>
+  <span class="count" id="cnt">01 / 16</span>
+</div>
+<div class="hint">← → 또는 화면 클릭으로 이동</div>
+<div class="nav">
+  <button id="prev" aria-label="이전 슬라이드">◀</button>
+  <button id="next" aria-label="다음 슬라이드">▶</button>
+</div>
+</div>
+
+<script>
+(function(){
+  var stage=document.getElementById('stage');
+  var slides=Array.prototype.slice.call(stage.querySelectorAll('.slide'));
+  var n=slides.length,i=0;
+  var cnt=document.getElementById('cnt'),prog=document.getElementById('prog');
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function pad(x){return (x<10?'0':'')+x;}
+
+  function counters(sl){
+    sl.querySelectorAll('[data-count]').forEach(function(el){
+      var target=parseFloat(el.dataset.count),dec=parseInt(el.dataset.dec||'0',10);
+      var pre=el.dataset.pre||'',suf=el.dataset.suf||'',comma=el.dataset.comma==='1';
+      var dur=reduce?0:900,t0=null;
+      function fmt(v){var s=comma?v.toLocaleString('en-US',{maximumFractionDigits:dec}):v.toFixed(dec);return pre+s+suf;}
+      if(dur===0){el.textContent=fmt(target);return;}
+      function step(ts){
+        if(t0===null)t0=ts;
+        var p=Math.min((ts-t0)/dur,1),e=1-Math.pow(1-p,3);
+        el.textContent=fmt(target*e);
+        if(p<1)requestAnimationFrame(step);
+      }
+      el.textContent=fmt(0);
+      setTimeout(function(){requestAnimationFrame(step);},260);
+    });
+  }
+
+  function go(k){
+    k=Math.max(0,Math.min(n-1,k));
+    if(k===i&&slides[i].classList.contains('active'))return;
+    slides[i].classList.remove('active');
+    i=k;
+    slides[i].classList.add('active');
+    cnt.textContent=pad(i+1)+' / '+n;
+    prog.style.width=(((i+1)/n)*100).toFixed(1)+'%';
+    counters(slides[i]);
+  }
+
+  document.getElementById('next').addEventListener('click',function(e){e.stopPropagation();go(i+1);});
+  document.getElementById('prev').addEventListener('click',function(e){e.stopPropagation();go(i-1);});
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1);}
+    else if(e.key==='Home'){e.preventDefault();go(0);}
+    else if(e.key==='End'){e.preventDefault();go(n-1);}
+  });
+
+  var deck=document.querySelector('.deck');
+  deck.addEventListener('click',function(e){
+    if(e.target.closest('.nav'))return;
+    var r=deck.getBoundingClientRect();
+    go(((e.clientX-r.left)/r.width < 0.28) ? i-1 : i+1);
+  });
+
+  var tx=null;
+  deck.addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;},{passive:true});
+  deck.addEventListener('touchend',function(e){
+    if(tx===null)return;
+    var d=e.changedTouches[0].clientX-tx;
+    if(Math.abs(d)>50)go(d<0?i+1:i-1);
+    tx=null;
+  },{passive:true});
+
+  function fit(){
+    var d=deck.getBoundingClientRect();
+    var s=Math.min(d.width/1600,d.height/900);
+    document.documentElement.style.setProperty('--s',s);
+  }
+  window.addEventListener('resize',fit);
+  fit();
+  cnt.textContent='01 / '+n;
+  prog.style.width=((1/n)*100).toFixed(1)+'%';
+  counters(slides[0]);
+})();
+</script>
