@@ -1,0 +1,556 @@
+<title>IREN FY26 실적 프리뷰 덱</title>
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="IREN">
+<meta name="vault-topics" content="어닝콜">
+<meta name="vault-date" content="2026-08-27">
+<meta name="description" content="IREN FY26 연간 실적(8/27 발표) 프리뷰 발표 덱 — 매출 삼각측량, 진짜 판정점 4개, 발표 직후·다음 주 주가 시나리오">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@600;700;900&display=swap">
+<style>
+/* ── 단일 시각 세계: 투사되는 발표 화면. 뷰어 테마와 무관하게 어두운 남색으로 고정한다. ── */
+:root{
+  --ink-900:#061423;   /* 바탕 */
+  --ink-850:#08192B;
+  --ink-800:#0B2138;   /* 패널 */
+  --ink-700:#16456B;
+  --rule:#1B3A5A;      /* 괘선 */
+  --rule-soft:#102B45;
+  --paper:#E6EDF5;     /* 본문 */
+  --paper-dim:#B7C7D8;
+  --muted:#7E97AE;     /* 청회색 — 중립색을 파랑 쪽으로 기울여 선택 */
+  --legacy:#E0A33E;    /* 호박 — 기존 결제 레일 */
+  --token:#4FD1E8;     /* 청록 — 토큰화 레일 */
+  --warn:#F2857B;      /* 산호 — 주의 */
+  --s:1;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--ink-900);color:var(--paper);
+  font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  -webkit-font-smoothing:antialiased;}
+
+.deck{position:relative;width:100%;height:100dvh;overflow:hidden;background:var(--ink-900);}
+.stage{position:absolute;top:50%;left:50%;width:1600px;height:900px;
+  transform:translate(-50%,-50%) scale(var(--s));transform-origin:center center;}
+
+/* 장부 괘선 — 배경 질감 */
+.stage::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,transparent 0 63px,var(--rule-soft) 63px 64px);
+  opacity:.5;}
+
+.slide{position:absolute;inset:0;padding:74px 96px 92px;opacity:0;visibility:hidden;
+  transition:opacity .5s ease,visibility .5s;}
+.slide.active{opacity:1;visibility:visible;}
+
+/* 요소 등장 — 슬라이드 진입 시 순차 상승 */
+.rv{opacity:0;transform:translateY(26px);
+  transition:opacity .62s cubic-bezier(.2,.7,.3,1),transform .62s cubic-bezier(.2,.7,.3,1);
+  transition-delay:calc(var(--i,0) * 95ms);}
+.slide.active .rv{opacity:1;transform:none;}
+
+/* 머리말 */
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:15px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--token);display:flex;align-items:center;gap:14px;}
+.eyebrow::after{content:"";height:1px;flex:1;max-width:190px;background:linear-gradient(90deg,var(--token),transparent);}
+h1{font-family:"Noto Serif KR",serif;font-weight:900;font-size:88px;line-height:1.16;margin:26px 0 0;
+  letter-spacing:-.02em;text-wrap:balance;}
+h2{font-family:"Noto Serif KR",serif;font-weight:700;font-size:52px;line-height:1.25;margin:20px 0 0;
+  letter-spacing:-.015em;text-wrap:balance;}
+.lede{font-size:25px;line-height:1.62;color:var(--paper-dim);font-weight:300;max-width:1080px;margin-top:26px;}
+.note{font-size:19px;line-height:1.6;color:var(--muted);font-weight:300;max-width:1120px;}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;}
+strong{font-weight:700;color:#fff;}
+em{font-style:normal;color:var(--token);font-weight:500;}
+.amber{color:var(--legacy);}
+.cyan{color:var(--token);}
+.coral{color:var(--warn);}
+
+/* 하단 레일 */
+.rail{position:absolute;left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;
+  gap:20px;padding:0 96px;border-top:1px solid var(--rule);background:var(--ink-850);}
+.bar{flex:1;height:2px;background:var(--rule);position:relative;overflow:hidden;}
+.bar span{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--token),#8FE6F4);
+  transition:width .5s cubic-bezier(.2,.7,.3,1);}
+.count{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.1em;color:var(--muted);}
+.deckname{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.1em;color:var(--muted);}
+
+/* 표지 */
+.cover{display:flex;flex-direction:column;justify-content:center;height:100%;}
+.cover h1{font-size:104px;}
+.cover .sub{font-size:27px;color:var(--paper-dim);font-weight:300;margin-top:34px;line-height:1.6;}
+.meta{margin-top:56px;padding-top:26px;border-top:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:15px;color:var(--muted);line-height:2;}
+
+/* 큰 진술 */
+.statement{display:flex;flex-direction:column;justify-content:center;height:100%;}
+.statement .l1{font-family:"Noto Serif KR",serif;font-size:66px;font-weight:600;color:var(--muted);line-height:1.3;}
+.statement .l2{font-family:"Noto Serif KR",serif;font-size:104px;font-weight:900;line-height:1.22;margin-top:12px;letter-spacing:-.025em;}
+
+/* 카드 격자 */
+.grid{display:grid;gap:24px;margin-top:44px;}
+.g2{grid-template-columns:repeat(2,1fr);} .g3{grid-template-columns:repeat(3,1fr);} .g4{grid-template-columns:repeat(4,1fr);}
+.card{background:var(--ink-800);border:1px solid var(--rule);padding:30px 30px 32px;position:relative;}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent,var(--token));}
+.card h3{font-size:24px;font-weight:700;margin:0 0 12px;line-height:1.35;}
+.card p{font-size:18px;line-height:1.62;color:var(--paper-dim);font-weight:300;margin:0;}
+.card .tag{font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.12em;color:var(--muted);
+  text-transform:uppercase;display:block;margin-bottom:14px;}
+
+/* 수치 */
+.figs{display:flex;gap:70px;margin-top:46px;align-items:flex-end;}
+.fig .n{font-family:"IBM Plex Mono",monospace;font-size:86px;font-weight:600;line-height:1;
+  color:var(--token);font-variant-numeric:tabular-nums;letter-spacing:-.03em;}
+.fig .n.sm{font-size:56px;color:var(--paper);}
+.fig .k{font-size:18px;color:var(--muted);margin-top:14px;font-weight:300;}
+
+/* 막대 */
+.bars{margin-top:40px;display:flex;flex-direction:column;gap:17px;}
+.brow{display:grid;grid-template-columns:210px 1fr 132px;align-items:center;gap:22px;}
+.brow .lb{font-size:20px;font-weight:500;text-align:right;color:var(--paper-dim);}
+.brow .tr{height:26px;background:var(--rule-soft);position:relative;overflow:hidden;}
+.brow .fl{position:absolute;inset:0 auto 0 0;width:0;background:var(--c,var(--token));
+  transition:width 1.05s cubic-bezier(.2,.7,.3,1);transition-delay:calc(var(--i,0) * 95ms + 180ms);}
+.slide.active .brow .fl{width:var(--w);}
+.brow .vl{font-family:"IBM Plex Mono",monospace;font-size:20px;color:var(--paper);font-variant-numeric:tabular-nums;}
+.brow .lb.coral{color:var(--warn);}
+.brow .vl.coral{color:var(--warn);}
+
+/* 도해 */
+svg .draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+  transition:stroke-dashoffset 1.15s cubic-bezier(.3,.6,.3,1);transition-delay:calc(var(--i,0) * 95ms + 200ms);}
+.slide.active svg .draw{stroke-dashoffset:0;}
+svg text{font-family:"Noto Sans KR",sans-serif;}
+svg .lbl{font-size:17px;fill:var(--paper-dim);font-weight:400;}
+svg .lbl-s{font-family:"IBM Plex Mono",monospace;font-size:13px;fill:var(--muted);letter-spacing:.08em;}
+svg .nd{fill:var(--ink-800);stroke-width:1.5;}
+
+/* 목록 */
+.list{margin-top:40px;display:flex;flex-direction:column;gap:26px;}
+.li{display:grid;grid-template-columns:52px 1fr;gap:24px;align-items:start;}
+.li .num{font-family:"IBM Plex Mono",monospace;font-size:17px;color:var(--token);
+  padding-top:7px;border-top:2px solid var(--token);}
+.li .num.w{color:var(--warn);border-color:var(--warn);}
+.li h3{font-size:27px;font-weight:700;margin:0 0 9px;line-height:1.35;}
+.li p{font-size:19px;line-height:1.62;color:var(--paper-dim);font-weight:300;margin:0;}
+
+/* 인용 강조 박스 */
+.callout{margin-top:40px;border:1px solid var(--warn);background:rgba(242,133,123,.07);padding:30px 34px;}
+.callout p{margin:0;font-size:22px;line-height:1.6;color:var(--paper);font-weight:300;}
+.callout .hd{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.14em;
+  color:var(--warn);text-transform:uppercase;margin-bottom:14px;}
+
+.src{position:absolute;left:96px;bottom:64px;font-family:"IBM Plex Mono",monospace;
+  font-size:13.5px;color:var(--muted);letter-spacing:.03em;}
+
+/* 조작 */
+.nav{position:absolute;bottom:56px;right:96px;display:flex;gap:10px;z-index:5;}
+.nav button{width:44px;height:36px;background:var(--ink-800);border:1px solid var(--rule);
+  color:var(--paper-dim);cursor:pointer;font-size:16px;line-height:1;transition:.18s;}
+.nav button:hover{background:var(--rule-soft);color:#fff;border-color:var(--token);}
+.nav button:focus-visible{outline:2px solid var(--token);outline-offset:2px;}
+.hint{position:absolute;bottom:58px;left:96px;font-family:"IBM Plex Mono",monospace;
+  font-size:13px;color:var(--muted);opacity:.75;}
+
+@media (prefers-reduced-motion:reduce){
+  .rv,.brow .fl,svg .draw,.bar span{transition:none !important;}
+  .rv{opacity:1;transform:none;}
+  svg .draw{stroke-dashoffset:0;}
+  .slide{transition:none;}
+}
+</style>
+
+<div class="deck">
+<div class="stage" id="stage">
+
+<!-- 01 표지 -->
+<section class="slide active">
+  <div class="cover">
+    <div class="eyebrow rv" style="--i:0">실적 프리뷰 · 발표 전일 작성 2026-08-27</div>
+    <h1 class="rv" style="--i:1">IREN FY26 실적,<br>무엇을 볼 것인가</h1>
+    <div class="sub rv" style="--i:2">숫자는 나쁘게 나온다 — 그것은 이미 알려진 결말이다.<br>판정은 <em>처음 공개되는 네 개의 숫자</em>에서 난다.</div>
+    <div class="meta rv" style="--i:3">
+      발표 · 미국 2026-08-27(목) 16:00 ET 장 마감 후 + 컨퍼런스콜 = 한국시간 8/28(금) 새벽<br>
+      근거 · SEC 공시 원문 · 회사 공식 PR · 옵션·시세·컨센서스(yfinance 8/27 조회) · 외부 프리뷰 3건<br>
+      분석·예상이며 투자 권유가 아닙니다 · 시나리오 확률은 관측 우선순위 표기입니다
+    </div>
+  </div>
+</section>
+
+<!-- 02 한 문장 -->
+<section class="slide">
+  <div class="statement">
+    <div class="eyebrow rv" style="--i:0">한 문장으로</div>
+    <div class="l1 rv" style="--i:1">손익계산서는 이미 알려진 결말이고,</div>
+    <div class="l2 rv" style="--i:2">정보는 <em>첫 공개 숫자</em>에 있다.</div>
+    <p class="lede rv" style="--i:3">적자 확대는 모두가 예상한다. 이번 발표의 진짜 내용물은
+      <strong>발행주식수 · 세그먼트 분해 · 수주잔고 · ARR 기준선</strong> —
+      넉 달째 갱신이 멈춰 있던 네 칸이 처음 채워지는 것이다.</p>
+  </div>
+</section>
+
+<!-- 03 구분 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">먼저 구분할 것</div>
+  <h2 class="rv" style="--i:1">이번 발표가 무엇이고, 무엇이 아닌가</h2>
+  <div class="grid g3">
+    <div class="card rv" style="--i:2;--accent:var(--token)">
+      <span class="tag">① 이번 숫자</span>
+      <h3>FY26 연간 + 4~6월 분기</h3>
+      <p>IREN은 <strong>6월 결산</strong>이다. 이번은 분기 발표가 아니라 <strong>연간 실적 + 10-K</strong> 회차 — 4분기 단독 수치는 회사가 따로 안 줄 수도 있다.</p>
+    </div>
+    <div class="card rv" style="--i:3;--accent:var(--legacy)">
+      <span class="tag">② 이번 숫자에 없는 것</span>
+      <h3>올여름 호재 전부</h3>
+      <p>7/20 신규 계약 $2.8bn · 8/13 Microsoft Horizon 1 인도·수락 — 전부 <strong>FY27 1분기(7~9월) 사건</strong>이라 이번 매출·수주잔고에 반영이 없다.</p>
+    </div>
+    <div class="card rv" style="--i:4;--accent:var(--muted)">
+      <span class="tag">③ 섞으면 안 되는 네 층</span>
+      <h3>계약총액 ≠ ARR ≠ RPO ≠ 매출</h3>
+      <p>계약총액 $13.1bn · ARR 목표 &gt;$4bn · 수주잔고 $710M · 분기매출 $145M — <strong>전부 다른 지표</strong>다. 한 문장에 나란히 쓰지 않는다.</p>
+    </div>
+  </div>
+  <p class="note rv" style="--i:5;margin-top:40px">텍사스(Microsoft) 매출이 이번에 안 보여도 <strong>정상</strong>이다 — 회계 기간이 다르기 때문이다. 첫 등장 1순위는 11월(FY27 1분기)이다.</p>
+</section>
+
+<!-- 04 대비 도해 1: 매출 구조 전환 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">이 회사의 한 해</div>
+  <h2 class="rv" style="--i:1">채굴은 접고 있고, AI는 아직 작다</h2>
+  <svg viewBox="0 0 1408 330" style="width:100%;height:330px;margin-top:36px" aria-label="분기별 세그먼트 매출">
+    <!-- scale: $250M = 1080px, x0=240 -->
+    <g class="lbl-s"><text x="20" y="66">Q1 FY26</text><text x="20" y="140">Q2 FY26</text><text x="20" y="214">Q3 FY26</text><text x="20" y="288" fill="var(--paper)">Q4 예상</text></g>
+    <g>
+      <rect x="240" y="42" width="1007" height="34" stroke="none" style="fill:var(--legacy);opacity:.85"/>
+      <rect x="1247" y="42" width="32" height="34" stroke="none" style="fill:var(--token)"/>
+      <rect x="240" y="116" width="723" height="34" stroke="none" style="fill:var(--legacy);opacity:.85"/>
+      <rect x="963" y="116" width="75" height="34" stroke="none" style="fill:var(--token)"/>
+      <rect x="240" y="190" width="480" height="34" stroke="none" style="fill:var(--legacy);opacity:.85"/>
+      <rect x="720" y="190" width="145" height="34" stroke="none" style="fill:var(--token)"/>
+      <rect x="240" y="264" width="281" height="34" stroke="none" style="fill:var(--legacy);opacity:.45"/>
+      <rect x="521" y="264" width="354" height="34" stroke="none" style="fill:var(--token);opacity:.55"/>
+      <rect x="240" y="264" width="635" height="34" fill="none" stroke="var(--paper-dim)" stroke-dasharray="6 5" stroke-width="1.5"/>
+    </g>
+    <g class="lbl-s" fill="var(--paper-dim)">
+      <text x="1290" y="66">$240.3M · AI 3%</text>
+      <text x="1050" y="140">$184.7M · AI 9%</text>
+      <text x="878" y="214">$144.8M · AI 23%</text>
+      <text x="888" y="288" fill="var(--paper)">~$147M · AI ~56% (예상)</text>
+    </g>
+  </svg>
+  <p class="note rv" style="--i:5;margin-top:18px"><span style="color:var(--legacy)">■ 비트코인 채굴</span>은 의도적 축소 + 가격 하락으로 세 분기 만에 반토막 났고,
+    <span class="cyan">■ AI Cloud</span>는 $7M → $17M → $34M로 컸지만 아직 그 구멍을 못 메웠다.
+    <strong>이번 4분기가 AI 비중이 처음 절반을 넘는 분기인가</strong> — 세그먼트 주석이 답한다. (Q4 막대는 예상치·회사 수치 아님)</p>
+</section>
+
+<!-- 05 대비 도해 2: 계약 vs 인식 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">이 종목의 핵심 긴장</div>
+  <h2 class="rv" style="--i:1">계약은 쌓이는데, 인식은 제자리다</h2>
+  <svg viewBox="0 0 1408 330" style="width:100%;height:330px;margin-top:36px" aria-label="수주잔고 대 인식 매출">
+    <!-- scale: $750M = 1080px, x0=250 -->
+    <g class="lbl-s"><text x="20" y="60">Q1 FY26</text><text x="20" y="164">Q2 FY26</text><text x="20" y="268">Q3 FY26</text></g>
+    <g>
+      <rect x="250" y="36" width="281" height="30" stroke="none" style="fill:var(--token)"/>
+      <rect x="250" y="70" width="346" height="18" stroke="none" style="fill:var(--legacy);opacity:.8"/>
+      <rect x="250" y="140" width="417" height="30" stroke="none" style="fill:var(--token)"/>
+      <rect x="250" y="174" width="266" height="18" stroke="none" style="fill:var(--legacy);opacity:.8"/>
+      <rect x="250" y="244" width="1023" height="30" stroke="none" style="fill:var(--token)"/>
+      <rect x="250" y="278" width="209" height="18" stroke="none" style="fill:var(--legacy);opacity:.8"/>
+    </g>
+    <g class="lbl-s" fill="var(--paper-dim)">
+      <text x="542" y="57">수주잔고 $195M</text><text x="607" y="84">매출 $240M</text>
+      <text x="678" y="161">수주잔고 $289M</text><text x="527" y="188">매출 $185M</text>
+      <text x="1000" y="265" fill="var(--paper)" style="font-weight:700">수주잔고 $710M</text><text x="470" y="292">매출 $145M</text>
+    </g>
+  </svg>
+  <p class="note rv" style="--i:4;margin-top:18px">수주잔고/분기매출 = 1.6배 → <strong>4.9배</strong>. 게다가 이 $710M에는 <strong>Microsoft $9.7bn·NVIDIA $3.4bn이 전액 미포함</strong>이다.
+    이번에 수주잔고가 더 커지면 그것은 7/20 계약 묶음의 몫 — <span class="cyan">Microsoft 몫의 전환 확인은 11월</span>이다. 안 뛰어도 훼손이 아니다.</p>
+</section>
+
+<!-- 06 매출 추정 분포 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">숫자 예상 ① 매출</div>
+  <h2 class="rv" style="--i:1">누가 얼마를 부르나 — 4분기 매출</h2>
+  <div class="bars" style="margin-top:44px">
+    <div class="brow rv" style="--i:2"><div class="lb">야후 컨센 (11명)</div><div class="tr"><div class="fl" style="--w:79.8%;--c:var(--muted)"></div></div><div class="vl">$135.6M</div></div>
+    <div class="brow rv" style="--i:3"><div class="lb">블룸버그 컨센</div><div class="tr"><div class="fl" style="--w:81.5%;--c:var(--muted)"></div></div><div class="vl">$138.6M</div></div>
+    <div class="brow rv" style="--i:4"><div class="lb">가격 비율 앵커</div><div class="tr"><div class="fl" style="--w:79.4%;--c:var(--muted)"></div></div><div class="vl">~$135M</div></div>
+    <div class="brow rv" style="--i:5"><div class="lb">Jim Liu (8/13)</div><div class="tr"><div class="fl" style="--w:89.7%;--c:var(--token-lt)"></div></div><div class="vl">$135~170M</div></div>
+    <div class="brow rv" style="--i:6"><div class="lb">@_Sgr_A_Star</div><div class="tr"><div class="fl" style="--w:93.8%;--c:var(--token)"></div></div><div class="vl">$159.4M</div></div>
+    <div class="brow rv" style="--i:7"><div class="lb">이 프리뷰</div><div class="tr"><div class="fl" style="--w:86.8%;--c:var(--token)"></div></div><div class="vl">$140~155M</div></div>
+  </div>
+  <p class="note rv" style="--i:8;margin-top:38px">막대 = 각 추정의 상단. 흥미로운 지점 — 외부 추정의 AI Cloud 부분이 서로 다른 방법(지갑 추적·수주잔고 환산)으로
+    <strong>~$93M 부근에 수렴</strong>하는데 컨센서스 총액은 그보다 낮은 그림이다. <span class="cyan">컨센 부근~소폭 상회에 무게</span>,
+    단 세 방법 모두 <strong>비공식 대리지표</strong>라 범위로만 읽는다.</p>
+</section>
+
+<!-- 07 세그먼트·이익 예상 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">숫자 예상 ②</div>
+  <h2 class="rv" style="--i:1">분해하면 이렇게 예상한다</h2>
+  <div class="grid g4">
+    <div class="card rv" style="--i:2;--accent:var(--legacy)"><span class="tag">비트코인 채굴</span><h3>$60~70M</h3><p>직전 $111M에서 -40%. 분기평균 BTC -6.4% + 해시레이트 축소 + 난이도 상승. 지갑 추적치 $66.4M이 가장 구체적 근거.</p></div>
+    <div class="card rv" style="--i:3;--accent:var(--token)"><span class="tag">AI Cloud</span><h3>$70~95M</h3><p>직전 $33.6M에서 2배+. 12개월 내 인식분 수주잔고 $308M의 분기 환산 ~$77M + Prince George 가동 시점에 따라 가산.</p></div>
+    <div class="card rv" style="--i:4;--accent:var(--warn)"><span class="tag">손상차손</span><h3>~$520M</h3><p>채굴장비 손상 — 회사가 이미 예비 평가로 예고. 확정 시 4분기 최대 단일 항목. <strong>비현금</strong>.</p></div>
+    <div class="card rv" style="--i:5;--accent:var(--warn)"><span class="tag">주당순이익</span><h3>-$0.45~-0.61</h3><p>컨센서스(집계마다 상이). 손상이 확정되면 헤드라인 순손실은 크게 불어난다 — 일회성 지배.</p></div>
+  </div>
+  <p class="note rv" style="--i:6;margin-top:38px">회사 입장에서는 FY27 성장률이 잘 보이도록 <strong>일회성을 이번에 한꺼번에 터는(kitchen-sink) 유인</strong>이 있는 회차다 —
+    나쁜 헤드라인이 설계된 결과일 수 있다는 뜻이다.</p>
+</section>
+
+<!-- 08 출발선 수치 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">출발선</div>
+  <h2 class="rv" style="--i:1">시장은 이미 이렇게 서 있다</h2>
+  <div class="figs">
+    <div class="fig rv" style="--i:2"><div class="n mono" data-count="39.58" data-dec="2" data-pre="$">$0.00</div><div class="k">8/26 종가</div></div>
+    <div class="fig rv" style="--i:3"><div class="n sm mono" data-count="48.5" data-dec="1" data-pre="-" data-suf="%">0%</div><div class="k">52주 고점 대비</div></div>
+    <div class="fig rv" style="--i:4"><div class="n sm mono" data-count="10.9" data-dec="1" data-pre="±" data-suf="%">0%</div><div class="k">옵션 내재 변동 (8/28 만기)</div></div>
+    <div class="fig rv" style="--i:5"><div class="n sm mono" data-count="28" data-dec="0" data-suf="%">0%</div><div class="k">유통주식 중 공매도</div></div>
+  </div>
+  <p class="lede rv" style="--i:6">옵션시장은 이번 이벤트에 <strong>한 주 ±11%</strong>를 미리 지불하고 있다.
+    코호트는 먼저 깨졌다 — 직전 주 네비우스 -21%·코어위브 -17%, 방아쇠는 <strong>증자·내부자 매도</strong>였고
+    같은 종류의 이벤트(ATM 공개)가 IREN은 이번 발표에 예약돼 있다.</p>
+  <div class="src rv" style="--i:7">yfinance 2026-08-27 조회 · 내재 변동 = ATM 스트래들 환산</div>
+</section>
+
+<!-- 09 진짜 판정점 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">이 발표의 본체</div>
+  <h2 class="rv" style="--i:1">처음 채워지는 네 칸</h2>
+  <div class="list">
+    <div class="li rv" style="--i:2"><div class="num">01</div><div>
+      <h3>발행주식수 + ATM 사용액</h3><p>공시 분모가 <strong>4월 30일(357.4M주)에 넉 달째 고착</strong>돼 있다. 5~7월 증자 공백이 처음 열린다 — <strong>"FY26 희석이 ARR 성장을 앞질렀는가"</strong>가 연간 단일 최대 질문.</p></div></div>
+    <div class="li rv" style="--i:3"><div class="num">02</div><div>
+      <h3>수주잔고 $710M의 이동</h3><p>7/20 계약 $2.8bn이 반영되기 시작하면 계약 축의 실측 강화. Microsoft 몫은 11월 확인 사항.</p></div></div>
+    <div class="li rv" style="--i:4"><div class="num">03</div><div>
+      <h3>세그먼트 첫 분해</h3><p>매출 3분기 연속 감소가 <strong>채굴 축소 때문인지 AI 지연 때문인지</strong> — 1년째 외부에서 분해 불가였던 물음의 첫 확정 답.</p></div></div>
+    <div class="li rv" style="--i:5"><div class="num">04</div><div>
+      <h3>ARR 기준선 정리 + 상향 여부</h3><p>$4.4bn(5/26)과 &gt;$4bn(7/20)이 정리 없이 병존 중. 상향($4.6bn+ 기대 견해 존재)·FY27 첫 가이드가 나오는지.</p></div></div>
+  </div>
+</section>
+
+<!-- 10 정직 ① 희석 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">정직하게 볼 것 ①</div>
+  <h2 class="rv" style="--i:1">이 성장의 값은 주식 수로 치러 왔다</h2>
+  <div class="bars" style="margin-top:40px">
+    <div class="brow rv" style="--i:2"><div class="lb">2025-06-30</div><div class="tr"><div class="fl" style="--w:72%;--c:var(--muted)"></div></div><div class="vl">257.2M주</div></div>
+    <div class="brow rv" style="--i:3"><div class="lb">2025-09-30</div><div class="tr"><div class="fl" style="--w:79.2%;--c:var(--muted)"></div></div><div class="vl">282.9M주</div></div>
+    <div class="brow rv" style="--i:4"><div class="lb">2025-12-31</div><div class="tr"><div class="fl" style="--w:92.8%;--c:var(--token-lt)"></div></div><div class="vl">331.8M주</div></div>
+    <div class="brow rv" style="--i:5"><div class="lb">2026-03-31</div><div class="tr"><div class="fl" style="--w:95.4%;--c:var(--token-lt)"></div></div><div class="vl">341.0M주</div></div>
+    <div class="brow rv" style="--i:6"><div class="lb coral">2026-04-30</div><div class="tr"><div class="fl" style="--w:100%;--c:var(--warn)"></div></div><div class="vl coral">357.4M주 — 이후 미공개</div></div>
+  </div>
+  <div class="callout rv" style="--i:7">
+    <div class="hd">이번에 열리는 공백</div>
+    <p>10개월 만에 <strong>+39%</strong>. 그리고 5월 이후는 깜깜하다. 한 관측자는 <strong>ATM $6bn 한도 중 $3~4bn 기사용</strong>을 추정한다(미확인) —
+      사실이면 주식수는 400M대다. 반대로 <strong>"한도를 다 썼다 = 당분간 증자 물량이 없다"</strong>로 읽는 시각도 있다. 어느 쪽이든 이 숫자가 이번 발표의 최대 스윙이다.</p>
+  </div>
+</section>
+
+<!-- 11 정직 ② base rate -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">정직하게 볼 것 ②</div>
+  <h2 class="rv" style="--i:1">최근 세 번, 발표일은 전부 하락이었다</h2>
+  <div class="bars" style="margin-top:40px">
+    <div class="brow rv" style="--i:2"><div class="lb">FY25 연간 (25.8)</div><div class="tr"><div class="fl" style="--w:25%;--c:var(--token)"></div></div><div class="vl cyan">+3.1% → 5일 뒤 +13.7%</div></div>
+    <div class="brow rv" style="--i:3"><div class="lb">Q1 (25.11)</div><div class="tr"><div class="fl" style="--w:100%;--c:var(--warn)"></div></div><div class="vl coral">-12.4% → 5일 뒤 -30.7%</div></div>
+    <div class="brow rv" style="--i:4"><div class="lb">Q2 (26.2)</div><div class="tr"><div class="fl" style="--w:92.7%;--c:var(--warn)"></div></div><div class="vl">-11.5% → 5일 뒤 +6.1%</div></div>
+    <div class="brow rv" style="--i:5"><div class="lb">Q3 (26.5)</div><div class="tr"><div class="fl" style="--w:54.8%;--c:var(--warn)"></div></div><div class="vl">-6.8% → 5일 뒤 -6.9%</div></div>
+  </div>
+  <div class="callout rv" style="--i:6">
+    <div class="hd">이 표의 두 가지 교훈</div>
+    <p>① 기대가 낮아도 발표일에는 떨어졌다 — "나쁜 숫자는 선반영됐다"는 가설의 반례.
+      ② 그 후 5일의 방향은 <strong>세 번 다 달랐다</strong>(-31% / +6% / -7%) — 발표일 반응은 다음 주를 예측하지 못한다.
+      유일하게 올랐던 발표는 1년 전 <strong>같은 회차(연간)</strong>였다.</p>
+  </div>
+</section>
+
+<!-- 12 관측자 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">남들은 어떻게 보나</div>
+  <h2 class="rv" style="--i:1">관측자 세 사람의 프리뷰</h2>
+  <div class="grid g3">
+    <div class="card rv" style="--i:2;--accent:var(--token)">
+      <span class="tag">@_Sgr_A_Star</span>
+      <h3>"매출 $159.4M — 컨센 +15%"</h3>
+      <p>비트코인 지갑 추적 $66.4M + 수주잔고 환산 $77M + 신규 가동 $16M. 상회 축의 대표. EPS는 손상으로 타격 인정.</p>
+    </div>
+    <div class="card rv" style="--i:3;--accent:var(--legacy)">
+      <span class="tag">Frans Bakker</span>
+      <h3>"초기 음봉, 오래 안 간다"</h3>
+      <p>매출 소폭 미달·EPS 대폭 미달 예상. ARR 상향 + FY27 첫 가이드 + 채굴 종료일 발표 기대. <strong>ATM $3~4bn 기사용 추정</strong>. 다음 주 인내 관찰 권고.</p>
+    </div>
+    <div class="card rv" style="--i:4;--accent:var(--muted)">
+      <span class="tag">한정수 (세상학개론)</span>
+      <h3>"숫자보다 단가를 본다"</h3>
+      <p>ARR $4.6~4.7bn 상향 여지 · 미계약 15%의 <strong>MW당 단가</strong>(업계 $10~12M → 최근 단기계약 $40~70M 사례) · ATM 소진이면 오히려 심리 회복 여지.</p>
+    </div>
+  </div>
+  <p class="note rv" style="--i:5;margin-top:38px">셋 다 3자 추정이다. 공통분모 — <strong>"손익 숫자는 나쁘다, 그러나 그게 논점이 아니다."</strong></p>
+</section>
+
+<!-- 13 직후 시나리오 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">예측 ① 발표 직후</div>
+  <h2 class="rv" style="--i:1">8/28(금) 미국 세션 — 세 갈래</h2>
+  <div class="bars" style="margin-top:40px">
+    <div class="brow rv" style="--i:2"><div class="lb coral">하락 출발</div><div class="tr"><div class="fl" style="--w:100%;--c:var(--warn)"></div></div><div class="vl coral">~55% · 중심 -5~-10%</div></div>
+    <div class="brow rv" style="--i:3"><div class="lb cyan">갭업 반전</div><div class="tr"><div class="fl" style="--w:54%;--c:var(--token)"></div></div><div class="vl cyan">~30% · +8~+15%</div></div>
+    <div class="brow rv" style="--i:4"><div class="lb">보합 소화</div><div class="tr"><div class="fl" style="--w:27%;--c:var(--muted)"></div></div><div class="vl">~15% · ±4% 이내</div></div>
+  </div>
+  <div class="grid g2" style="margin-top:40px">
+    <div class="card rv" style="--i:5;--accent:var(--warn)"><span class="tag">하락의 트리거</span><h3>헤드라인 3종</h3><p>순손실 확대(손상 ~$520M) + ATM 대량 사용 확인 + 발표일 3연속 하락의 관성. 알고리즘이 먼저 반응한다.</p></div>
+    <div class="card rv" style="--i:6;--accent:var(--token)"><span class="tag">반전의 조건</span><h3>둘 이상 겹치면</h3><p>ARR 상향(+FY27 첫 가이드) · 미스터리 고객 공개 · AI Cloud $80M+. 유통주식 28% 공매도가 연료다 — Q3 때도 당일 -6.8% 후 익일 +7.7%로 뒤집혔다.</p></div>
+  </div>
+</section>
+
+<!-- 14 다음 주 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">예측 ② 다음 주 (8/31~9/4)</div>
+  <h2 class="rv" style="--i:1">실적보다 세 가지 외부 변수가 크다</h2>
+  <div class="bars" style="margin-top:40px">
+    <div class="brow rv" style="--i:2"><div class="lb">B. 박스 정체</div><div class="tr"><div class="fl" style="--w:100%;--c:var(--legacy)"></div></div><div class="vl">~40% · $35~41 박스</div></div>
+    <div class="brow rv" style="--i:3"><div class="lb cyan">A. 소화 후 회복</div><div class="tr"><div class="fl" style="--w:87%;--c:var(--token)"></div></div><div class="vl cyan">~35% · 주 후반 $40 회복</div></div>
+    <div class="brow rv" style="--i:4"><div class="lb coral">C. 하향 이탈</div><div class="tr"><div class="fl" style="--w:62%;--c:var(--warn)"></div></div><div class="vl coral">~25% · $35 하회</div></div>
+  </div>
+  <div class="callout rv" style="--i:5">
+    <div class="hd">경로를 가르는 조건</div>
+    <p><strong>A로:</strong> ATM 사용이 우려보다 작거나 "한도 소진 = 당분간 증자 없음" 서사 + ARR 상향 + Horizon 2~4 연내 재확인.
+      <strong>B로:</strong> ATM $3~4bn 확인 + 가이드는 재확인 수준 — 호재·악재 상쇄.
+      <strong>C로:</strong> 손상 초과·AI Cloud $60M 미달·일정 지연 뉘앙스, 또는 <strong>잭슨홀 연설(8/28 밤)·코호트 악재</strong> — 베타 4.3이라 실적과 무관하게 밀릴 수 있다.</p>
+  </div>
+  <p class="note rv" style="--i:6;margin-top:30px">매수자들이 숫자를 계산하는 데 며칠이 걸린다 — 시간외와 금요일 초반 움직임은 대표성이 낮다는 관측에 동의한다. 비트코인 반등($78K대)은 <strong>다음 분기 몫</strong>이다.</p>
+</section>
+
+<!-- 15 오해 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">발표 당일 조심할 것</div>
+  <h2 class="rv" style="--i:1">헤드라인이 만들 네 가지 오독</h2>
+  <div class="grid g2">
+    <div class="card rv" style="--i:2;--accent:var(--warn)"><span class="tag">오독 ①</span><h3>"Horizon 1 인도 = 이번 실적 개선"</h3><p>아니다. 8/13 인도·수락은 FY27 1분기 사건이고, 인도·수락 ≠ 매출이다. 이번 보고서엔 후속사건 각주로만 등장한다.</p></div>
+    <div class="card rv" style="--i:3;--accent:var(--warn)"><span class="tag">오독 ②</span><h3>"수주잔고 안 뛰었다 = 훼손"</h3><p>아니다. $710M에는 MS·NVIDIA 계약이 원래 전액 미포함이다. 그 몫의 전환 확인은 11월이다.</p></div>
+    <div class="card rv" style="--i:4;--accent:var(--warn)"><span class="tag">오독 ③</span><h3>"비트코인 반등이 실적에 반영"</h3><p>아니다. 이번 분기(4~6월)의 평균은 $71.6K였다. 8월 반등($78K대)은 다음 분기 채굴 매출 몫이다.</p></div>
+    <div class="card rv" style="--i:5;--accent:var(--warn)"><span class="tag">오독 ④</span><h3>"순손실 확대 = 현금이 마른다"</h3><p>아니다. 손상 ~$520M은 비현금 장부 손실이다. 현금은 6/30 $7.6bn(제한 $1.7bn 포함·미감사) — 10-K가 구성을 확정한다.</p></div>
+  </div>
+</section>
+
+<!-- 16 정리 -->
+<section class="slide">
+  <div class="eyebrow rv" style="--i:0">정리</div>
+  <h2 class="rv" style="--i:1">세 문장으로</h2>
+  <div class="list">
+    <div class="li rv" style="--i:2"><div class="num">01</div><div>
+      <h3>나쁜 숫자는 예고된 결말이다</h3><p>매출 $130~160M(컨센 부근~소폭 상회 무게) · 손상 ~$520M · 큰 폭 적자 — 대부분 비현금이고, 일회성을 한꺼번에 터는 회차다.</p></div></div>
+    <div class="li rv" style="--i:3"><div class="num">02</div><div>
+      <h3>판정은 첫 공개 숫자 네 개가 한다</h3><p>발행주식수(ATM) · 수주잔고 · 세그먼트 분해 · ARR 기준선 — 특히 <strong>희석이 ARR 성장을 앞질렀는가</strong>가 연간 최대 질문.</p></div></div>
+    <div class="li rv" style="--i:4"><div class="num">03</div><div>
+      <h3>직후는 하락 우위, 다음 주는 조건부다</h3><p>발표일 하락 ~55%(base rate 3연속 + 헤드라인). 단 반전 조건이 둘 이상 겹치면 28% 공매도가 연료가 된다. 다음 주는 ATM 공개치·잭슨홀·코호트가 가른다.</p></div></div>
+  </div>
+</section>
+
+<!-- 17 닫기 -->
+<section class="slide">
+  <div class="cover">
+    <div class="eyebrow rv" style="--i:0">끝</div>
+    <h1 class="rv" style="--i:1;font-size:72px">나쁜 숫자는 예고됐다.<br>희석과 전환이 판정한다.</h1>
+    <div class="meta rv" style="--i:2">
+      1차 · SEC EDGAR (10-Q 0001878848-26-000026 · 8-K 0001140361-26-028871[7/20] · 0001140361-26-032638[8/13]) · 회사 공식 PR·IR<br>
+      시세·옵션·컨센서스 · yfinance 2026-08-27 조회 · 과거 발표일 반응 = 종가 기준 산출<br>
+      외부 프리뷰 · @_Sgr_A_Star (X 8/27) · Frans Bakker (X 8/27) · 한정수 세상학개론 (fanding 8/26) — 전부 미검증 3자 추정<br><br>
+      분석·예상이며 투자 권유가 아닙니다. 목표주가·매수·매도 신호를 포함하지 않으며, 시나리오 확률은 관측 우선순위 표기입니다.
+    </div>
+  </div>
+</section>
+
+</div><!-- /stage -->
+
+<div class="rail">
+  <span class="deckname">IREN FY26 실적 프리뷰</span>
+  <div class="bar"><span id="prog" style="width:6%"></span></div>
+  <span class="count" id="cnt">01 / 17</span>
+</div>
+<div class="hint">← → 또는 화면 클릭으로 이동</div>
+<div class="nav">
+  <button id="prev" aria-label="이전 슬라이드">◀</button>
+  <button id="next" aria-label="다음 슬라이드">▶</button>
+</div>
+</div>
+
+<script>
+(function(){
+  var stage=document.getElementById('stage');
+  var slides=Array.prototype.slice.call(stage.querySelectorAll('.slide'));
+  var n=slides.length,i=0;
+  var cnt=document.getElementById('cnt'),prog=document.getElementById('prog');
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function pad(x){return (x<10?'0':'')+x;}
+
+  function counters(sl){
+    sl.querySelectorAll('[data-count]').forEach(function(el){
+      var target=parseFloat(el.dataset.count),dec=parseInt(el.dataset.dec||'0',10);
+      var pre=el.dataset.pre||'',suf=el.dataset.suf||'',comma=el.dataset.comma==='1';
+      var dur=reduce?0:900,t0=null;
+      function fmt(v){var s=comma?v.toLocaleString('en-US',{maximumFractionDigits:dec}):v.toFixed(dec);return pre+s+suf;}
+      if(dur===0){el.textContent=fmt(target);return;}
+      function step(ts){
+        if(t0===null)t0=ts;
+        var p=Math.min((ts-t0)/dur,1),e=1-Math.pow(1-p,3);
+        el.textContent=fmt(target*e);
+        if(p<1)requestAnimationFrame(step);
+      }
+      el.textContent=fmt(0);
+      setTimeout(function(){requestAnimationFrame(step);},260);
+    });
+  }
+
+  function go(k){
+    k=Math.max(0,Math.min(n-1,k));
+    if(k===i&&slides[i].classList.contains('active'))return;
+    slides[i].classList.remove('active');
+    i=k;
+    slides[i].classList.add('active');
+    cnt.textContent=pad(i+1)+' / '+n;
+    prog.style.width=(((i+1)/n)*100).toFixed(1)+'%';
+    counters(slides[i]);
+  }
+
+  document.getElementById('next').addEventListener('click',function(e){e.stopPropagation();go(i+1);});
+  document.getElementById('prev').addEventListener('click',function(e){e.stopPropagation();go(i-1);});
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1);}
+    else if(e.key==='Home'){e.preventDefault();go(0);}
+    else if(e.key==='End'){e.preventDefault();go(n-1);}
+  });
+
+  var deck=document.querySelector('.deck');
+  deck.addEventListener('click',function(e){
+    if(e.target.closest('.nav'))return;
+    var r=deck.getBoundingClientRect();
+    go(((e.clientX-r.left)/r.width < 0.28) ? i-1 : i+1);
+  });
+
+  var tx=null;
+  deck.addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;},{passive:true});
+  deck.addEventListener('touchend',function(e){
+    if(tx===null)return;
+    var d=e.changedTouches[0].clientX-tx;
+    if(Math.abs(d)>50)go(d<0?i+1:i-1);
+    tx=null;
+  },{passive:true});
+
+  function fit(){
+    var d=deck.getBoundingClientRect();
+    var s=Math.min(d.width/1600,d.height/900);
+    document.documentElement.style.setProperty('--s',s);
+  }
+  window.addEventListener('resize',fit);
+  fit();
+  cnt.textContent='01 / '+n;
+  prog.style.width=((1/n)*100).toFixed(1)+'%';
+  counters(slides[0]);
+})();
+</script>
