@@ -1,0 +1,308 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>인트라데이 레포가 켜지면 — 2026-08-30</title>
+<meta name="robots" content="noindex, nofollow">
+
+<meta name="vault-stage" content="Analysis">
+<meta name="vault-topic" content="CRCL">
+<meta name="vault-topics" content="SECZ,토큰화">
+<meta name="vault-date" content="2026-08-30">
+<meta name="description" content="인트라데이 레포 활성화가 주식시장·토큰화 자산 시장·Circle(CRCL)·Securitize(SECZ)에 각각 어떤 경로로, 어떤 크기로 전파되는지를 경로별로 분해한 분석. 네 수신자에 같은 크기로 오지 않는다 — 주식시장은 사실상 0, 토큰화 국채에는 첫 '필수품' 수요원 후보, CRCL은 자격은 현재형이나 손익은 자릿수 미달, SECZ는 AUM 한 경로만 접점이다.">
+<style>
+:root{--sand:#EBE4D3;--cream:#FDF6E3;--ink:#1f2328;--muted:#5b6066;--line:#e8e1cf;--red:#b3261e;--org:#b35a00;--blue:#2b6cb0;--green:#2f6b3a;--yel:#5c4a00;--navy:#1D3A5F;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--sand);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.78;-webkit-font-smoothing:antialiased}
+.wrap{max-width:980px;margin:28px auto;background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:40px 48px 52px;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+h1{font-size:27px;line-height:1.34;margin:0 0 8px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13.5px;margin-bottom:24px;line-height:1.6}
+h2{font-size:20px;margin:40px 0 14px;padding-bottom:7px;border-bottom:2px solid var(--line)}
+h3{font-size:16.5px;margin:26px 0 8px}
+h4{font-size:15px;margin:18px 0 6px;color:#33383d}
+p{margin:9px 0}
+ul,ol{margin:8px 0 12px;padding-left:24px}
+li{margin:5px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0 18px;background:#fff;border:1px solid var(--line)}
+th{background:#f3ecd9;text-align:left;padding:9px 11px;border:1px solid #ddd;font-weight:600}
+td{padding:9px 11px;border:1px solid #ddd;vertical-align:top}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.summary{background:#fff;border:1px solid var(--line);border-left:5px solid var(--red);border-radius:8px;padding:18px 22px;margin:16px 0 10px}
+.summary ol{margin:8px 0 0;padding-left:20px}
+.summary li{margin:7px 0}
+.box{background:#fff;border:1px solid var(--line);border-radius:8px;padding:15px 19px;margin:16px 0}
+.why{border-left:5px solid var(--blue)}
+.next{border-left:5px solid var(--green)}
+.warn{border-left:5px solid var(--org)}
+.stop{border-left:5px solid var(--red)}
+.teach{border-left:5px solid #8A6D2F;background:#fffdf6}
+.teach h4{margin-top:0;color:#6b5420}
+.tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:10px;border:1px solid #ccc;background:#faf6ea;color:#444;margin-right:5px;vertical-align:middle;white-space:nowrap}
+.tag.obs{border-color:#7fa886;color:#2f6b3a}
+.tag.calc{border-color:#7f9ec4;color:#2b6cb0}
+.tag.est{border-color:#c9a227;color:var(--yel)}
+.tag.hyp{border-color:#c08a8a;color:#8a3a3a}
+.fig{border:1px solid var(--line);border-radius:8px;padding:18px 20px 14px;margin:18px 0 24px;background:#fff;page-break-inside:avoid}
+.fig .cap{font-size:12.5px;color:#666;margin:0 0 12px;line-height:1.6}
+.fig .cap b{color:#1a1a1a}
+.fig .note{font-size:11.5px;color:#8a8f93;margin-top:10px;line-height:1.55}
+.small{font-size:13px;color:var(--muted)}
+a{color:#2b6cb0;text-decoration:none;border-bottom:1px dotted #9db4d0}
+a:hover{border-bottom-style:solid}
+blockquote{margin:12px 0;padding:10px 16px;border-left:3px solid #c9a227;background:#fff;color:#333;font-size:14px}
+.lead{font-size:15.5px}
+.kicker{font-size:12px;letter-spacing:.08em;color:#8A6D2F;font-weight:600;text-transform:uppercase;margin-bottom:2px}
+hr{border:0;border-top:1px dashed var(--line);margin:30px 0}
+.toc{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 20px;margin:18px 0 6px;font-size:13.5px;columns:2;column-gap:34px}
+.toc a{display:block;padding:2px 0;border:0}
+.chan{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.chan .node{flex:1 1 200px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:11px 14px;font-size:13px;line-height:1.55}
+.chan .node b{display:block;font-size:13.5px;margin-bottom:3px}
+.chan .node.src{border-left:5px solid var(--navy)}
+.chan .node.g{border-left:5px solid var(--green)}
+.chan .node.o{border-left:5px solid var(--org)}
+.chan .node.n{border-left:5px solid #aaa}
+@media (max-width:680px){.wrap{padding:24px 17px;margin:8px}h1{font-size:21px}table{font-size:12.5px}.toc{columns:1}}
+@media print{body{background:#fff}.wrap{box-shadow:none;border:none;margin:0;max-width:none}}
+</style>
+<div class="wrap">
+
+<div class="kicker">공부용 심층 분석 · 자매편</div>
+<h1>인트라데이 레포가 켜지면</h1>
+<p class="sub">주식시장 · 토큰화 자산 시장 · Circle(CRCL) · Securitize(SECZ) — 활성화는 네 수신자에게 같은 크기로 오지 않는다<br>
+2026-08-30 작성 · 출발점 = <a href="2026-08-10_tbac-intraday-repo.html">TBAC 2026년 8월 「인트라데이 레포」 완역</a> + <a href="2026-08-21_intraday-repo-tokenization-treasury.html">「하루보다 짧은 돈」(3층 프레임)</a> · 함께 읽을 것 = <a href="2026-08-22_tga-repo-investment.html">TGA 레포 투자</a> · <a href="2026-08-27_feds-note-repo-markets-fed-balance-sheet.html">FEDS Note — 레포 시장과 연준 대차대조표</a> · 산업·정책 구조 분석이며 매수·매도 신호가 아님</p>
+
+<div class="summary">
+<b>📌 한 장 요약</b>
+<ol>
+<li><b>같은 사건이 네 수신자에게 전혀 다른 크기로 도착한다.</b> 주식시장 = 현시점 사실상 0(수년 시계의 배관 변화) · 토큰화 국채 = 처음으로 '있으면 좋은 것'이 아니라 '필수'가 되는 기관 수요원 후보 · CRCL = 참가 자격은 이미 현재형이나 손익 기여는 자릿수 미달 · SECZ = 현행 매출 구조와 닿는 접점이 AUM 한 경로뿐.</li>
+<li>🔴 <b>모든 논의의 전제 — 이 시장은 아직 없다.</b> 대체 대상인 연준 일중 당좌차월의 실측 피크는 $5.6B(잔차·하한)이고, TBAC 스스로 광범위한 채택까지 "수년"이라 적었다. 이하의 모든 영향은 <b>조건부 미래형</b>이다.</li>
+<li>🔴 <b>주식시장의 두 유행 서사는 둘 다 기각된다.</b> "연준 대차대조표 축소 → 유동성 악재"는 지준 절감의 1:1 대체가 미증명이고 순유동성→주가 자체가 허위상관·역인과 논란 위에 있다. "마찰 감소 → 유동성 호재"는 실재하나 bp 단위의 2차 효과다.</li>
+<li>🟠 <b>주식시장에 남는 실질 경로는 딜러의 중개·인수 여력이다.</b> 대형 신디케이트 딜(AI 설비투자 시대의 대형 IPO·회사채)의 일중 자금 공백을 시장이 메우면 발행시장 처리 용량이 늘어난다 — 방향은 순기능, 크기는 조용하다. 대신 위기 시에는 T+0가 당국의 대응 시간을 없애 <b>꼬리가 두꺼워진다</b>.</li>
+<li>🔴 <b>토큰화 자산 시장에는 이것이 첫 '필수품' 용례다.</b> 초 단위 이자 계산·프로그래머블 담보·즉시 결제는 오버나이트 시장에선 장식이지만 분 단위 시장에선 기능 요건이다. 시장이 $100~200B에 도달하고 담보의 10%만 토큰화 형태여도 현재 토큰화 국채 시장($16.2B) 전체와 맞먹는 수요가 생긴다.</li>
+<li>🔴 <b>단, 토큰화 진영이 이기는 구도가 아닐 수 있다.</b> TBAC는 "온체인일 필요는 없다"고 명시했고, 먼저 깔린 인프라는 공개 체인이 아니라 BNY 트라이파티와 JP모건·Broadridge의 사설 원장이다. 공리(토큰화는 온다)와 가치 포획(누가 걷나)은 별개 증명이다.</li>
+<li>🔴 <b>CRCL — 자격은 현재형, 손익은 아니다.</b> Circle 준비금 펀드는 이미 순자산의 86.8%를 국채담보 레포로 굴린다(TBAC가 지목한 대여자 후보의 현재형). 그러나 인트라데이 이자 풀은 준비금 이자 매출(분기 $668M) 대비 반올림 오차다. 유일하게 유의미한 경로는 <b>USYC·USDC 잔액이 이 생태계 덕에 늘어나는 것</b>이고, 그 고리는 아직 미증명이다.</li>
+<li>🟠 <b>CRCL의 신규 리스크가 편익보다 구체적이다.</b> 일중 대여 + 24시간 환매 창구의 결합은 스트레스 시 대응 시간을 0으로 만든다 — 사고가 나면 규제 역풍의 1순위 수신자는 발행사다.</li>
+<li>🔴 <b>SECZ — 회전이 아무리 빨라져도 현행 과금에는 접점이 없다.</b> 매출은 AUM bp·발행·명부(TA)에 물려 있고 거래 수수료는 회사 스스로 "미래형"이라 했다. 닿는 경로는 하나 — 단기 국채 토큰화 담보 수요가 커지면 이미 1위인 국채형 AUM이 큰다. 대신 레일의 주인은 BNY·JP모건·DTCC이고, <b>DTCC(Arc 검증자)는 토큰화 레포 확장을 명시</b>했다 — 2025년 매출 증분만 SECZ 연 가이던스 중간값의 5.5배인 회사가 같은 층으로 들어오는 중이다.</li>
+<li>🟠 <b>가장 흥미로운 접점 — 온체인 인트라데이 레포 한 건은 담보 레그(토큰화 국채)와 현금 레그(스테이블코인·토큰화 MMF)의 페어링이다.</b> 두 레그의 기관 버전 결합. 단 그 페어링을 지금 한 지붕 아래서 전부 하는 유일한 실체는 CRCL도 SECZ도 아닌 <b>JP모건 Kinexys</b>(플랫폼 + 자사 토큰화 MMF)다.</li>
+</ol>
+</div>
+
+<div class="toc">
+<a href="#s1">1. 전제 — '활성화'란 무엇이고 지금 어디인가</a>
+<a href="#s2">2. 전파 지도 — 한 사건, 네 수신자</a>
+<a href="#s3">3. 주식시장 — 세 채널, 두 기각, 한 잔류</a>
+<a href="#s4">4. 토큰화 자산 시장 — 첫 필수품 vs 레일 배제</a>
+<a href="#s5">5. CRCL — 자격은 현재형, 손익은 아니다</a>
+<a href="#s6">6. SECZ — 회전의 시대에 소유·명부로 버는 회사</a>
+<a href="#s7">7. 두 회사가 같은 거래에서 만나는 지점</a>
+<a href="#s8">8. 앞으로 볼 것 — 판별점 일곱</a>
+<a href="#s9">9. 한계 — 정직하게</a>
+</div>
+
+<h2 id="s1">1. 전제 — '활성화'란 무엇이고 지금 어디인가</h2>
+
+<p class="lead">인트라데이 레포<span class="small">(같은 거래일 안에서 시작하고 끝나는 국채담보 대출 — 몇 시간 또는 몇 분, 이자는 실사용 시간만큼)</span>는 미 재무부 차입자문위원회(TBAC)가 2026년 8월 보고서에서 다룬 '하루보다 짧은 자금시장'이다. 배관의 물리와 숫자의 검증은 <a href="2026-08-10_tbac-intraday-repo.html">완역본</a>과 <a href="2026-08-21_intraday-repo-tokenization-treasury.html">자매편</a>이 이미 했다. 이 보고서는 다음 질문 하나만 판다 — <b>이 시장이 실제로 커진다면, 그 영향은 어디로 어떤 크기로 전파되는가.</b></p>
+
+<p>먼저 "활성화"의 눈금을 고정한다. TBAC 자신이 발전 경로를 3단계로 그렸다:</p>
+
+<table>
+<tr><th style="width:14%">단계</th><th>내용</th><th style="width:30%">지금 위치</th></tr>
+<tr><td><b>1단계</b></td><td>딜러가 결제 타이밍 불일치용 당좌차월을 인트라데이 레포로 대체</td><td>🟡 <b>여기의 초입.</b> BNY·JP모건 Kinexys·Broadridge 플랫폼 가동 중이나 거래는 소수 참가자 집중</td></tr>
+<tr><td><b>2단계</b></td><td>은행이 지준 버퍼를 줄이고 유동성 관리 관행을 재편. 국채 입찰 낙찰분의 일중 조달 등 신규 응용</td><td>⚪ 미도래</td></tr>
+<tr><td><b>3단계</b></td><td>24시간 글로벌 일중 시장. 헤지펀드가 차입자로, 딜러가 일중 중개자로. <b>토큰화 담보가 여기서 중심</b></td><td>⚪ 미도래 — TBAC 표현으로 "수년(years away)"</td></tr>
+</table>
+
+<div class="box warn">
+<b>⚠️ 크기의 눈금 (자매편 §5 승계 · 재론 생략)</b>
+<ul>
+<li>실측 인접치: 연준 일중 당좌차월 피크 <b>$5,590M</b>(적립기간 종료 2025-12-24 · 기간 총수수료 $232) — 단 이것은 지준으로 미리 덮고 남은 <b>잔차라 하한</b>이다. 일중 유동성 총 필요액의 BIS 추정은 $630B.</li>
+<li>TBAC 추정 셋은 서로 다른 질문의 답: $385B(반사실 가정치) / <b>$100~200B(절감 가능액 — 이하 본 보고서의 기준 시나리오)</b> / $2.1조(담보 용량 천장).</li>
+<li>유인은 금리가 아니다 — SOFR−EFFR ≈ 0bp. 시장이 생긴다면 이유는 규제(일중 현금흐름 인식 요구)·대차대조표 여력·낙인 회피다.</li>
+</ul>
+</div>
+
+<p>따라서 이 보고서의 모든 문장에는 같은 조건절이 붙는다: <b>"1단계를 넘어 2~3단계로 간다면"</b>. 확률 질량이 가장 큰 경로는 여전히 '별일 없음'일 수 있다. 그 경우에도 어느 수신자가 무엇을 잃고 얻는지는 지금 정리해 둘 가치가 있다 — 판별점(§8)이 움직이는 순간 바로 읽기 위해서다.</p>
+
+<h2 id="s2">2. 전파 지도 — 한 사건, 네 수신자</h2>
+
+<div class="fig">
+<p class="cap"><b>그림 1. 전파 지도.</b> 인트라데이 레포 활성화(2~3단계 진입)가 네 수신자에게 도착하는 주요 채널. 초록 테두리 = 방향이 순기능이고 현행 사업·시장 구조와 접점이 있는 채널, 주황 = 리스크 또는 경쟁 벡터, 회색 = 접점 자체가 없거나 크기가 식별 불가한 채널.</p>
+<div class="chan">
+<div class="node src" style="flex-basis:100%"><b>인트라데이 레포 활성화 (조건부 미래형)</b>은행·딜러의 일중 유동성이 '지준 버퍼 + 중앙은행·결제은행 신용'에서 '시장 거래'로 이동. 오버나이트 아래에 새 금리 구간이 생기고, 같은 담보가 하루 여러 번 일한다.</div>
+</div>
+<div class="chan">
+<div class="node n"><b>주식시장</b>① 연준 B/S·순유동성 채널 — 방향 판정 불가 ② 딜러 중개·발행시장 — 완만한 순기능 ③ 꼬리 리스크 — 평시↓ 위기↑</div>
+<div class="node g"><b>토큰화 자산 시장</b>토큰화 국채의 첫 '필수품' 용례. 단 온체인 필수 아님 — 값이 걷히는 층은 별개 증명</div>
+<div class="node g"><b>CRCL</b>대여자 자격 현재형(준비금 86.8% 레포) · USYC/USDC 잔액 경로 · Arc 레일 후보 / 이자 풀은 자릿수 미달</div>
+<div class="node o"><b>SECZ</b>단기 국채 토큰화 담보 → AUM bp 한 경로 / 회전·레일 무접점 · DTCC 경쟁 벡터</div>
+</div>
+<p class="note">채널의 방향과 크기는 본문 §3~§6에서 하나씩 판정한다. 이 그림은 '어디로 가는가'의 지도이지 '얼마나 큰가'의 저울이 아니다.</p>
+</div>
+
+<h2 id="s3">3. 주식시장 — 세 채널, 두 기각, 한 잔류</h2>
+
+<h3>3-1. 채널 ① 연준 대차대조표·순유동성 — 유행 서사 두 개를 먼저 치운다 <span class="tag hyp">가설 검증</span></h3>
+
+<p>인트라데이 레포가 주식과 연결되는 가장 흔한 서사는 유동성 총량 경로다. TBAC의 편익 문장 — "은행의 예비적 지준 수요를 줄여 연준이 더 작은 대차대조표로 운영할 수 있게 한다" — 를 받아서, 한쪽은 "연준 B/S 축소 = 순유동성 감소 = 주식 악재"로, 반대쪽은 "유동성 배분 효율화 = 주식 호재"로 읽는다. <b>둘 다 두 번씩 끊긴다.</b></p>
+
+<ul>
+<li>🔴 <b>악재론의 첫 절단 — 지준 절감액은 시장 규모 추정과 같은 곱셈의 재사용이다.</b> TBAC가 편익으로 제시한 지준 절감 $100~200B는 시장 규모 추정 ②와 정확히 같은 계산(BIS $1.2조 × 벤더 절감률 8~17%)이고, 인트라데이 레포 잔액 X가 지준 수요를 X만큼 줄인다는 1:1 대체는 증명된 바 없다. 오히려 반대 방향 항등식이 있다 — 은행이 지준 버퍼를 이 수단으로 대체하려면 적격담보(국채)를 들고 있어야 하므로, 연준이 덜 사는 만큼 은행이 더 들면 순효과는 0에 가까울 수 있다.</li>
+<li>🔴 <b>악재론의 둘째 절단 — 순유동성→주가 자체가 법칙이 아니다.</b> 순유동성과 주가의 높은 상관(≈0.8대)은 공통 원인·역인과 논란 위에 있고, 이 계열의 레벨 변화를 주가 방향으로 직역하는 관행 자체가 본 자료실의 상시 경고 대상이다. 게다가 <b>필요 지준이 줄어서 B/S가 작아지는 것은 긴축이 아니다</b> — 수요 곡선과 공급 곡선이 함께 왼쪽으로 이동하는 것이라, 같은 결제 기능이 더 적은 지준으로 돌아갈 뿐이다.</li>
+<li>🟠 <b>호재론의 절단 — 실재하지만 bp 단위다.</b> TBAC가 꼽은 시장 편익은 "자금경색 위험 때문에 레포 금리에 얹혀 있던 유동성 프리미엄 축소"와 "더 매끄러운 국채 수익률 곡선"이다. 둘 다 방향은 순기능이나 자산가격을 움직이는 1차 변수(이익·정책금리·리스크 프리미엄)와는 자릿수가 다른 배관 효율 항목이다.</li>
+</ul>
+
+<div class="box why">
+<b>💡 대신 이렇게 읽어야 한다 — '완충의 얇아짐'</b>
+<p>연준 8월 FEDS Note(<a href="2026-08-27_feds-note-repo-markets-fed-balance-sheet.html">판독</a>)의 비선형 결과가 이 채널의 진짜 함의를 준다: 순쿠폰 발행 $500억의 레포금리 충격은 총유동성이 GDP의 12%를 넘으면 1bp 미만, <b>10% 아래면 거의 10bp</b>다(현재 9.01% = 고민감 구간). 인트라데이 레포가 성숙하면 은행 시스템은 <b>구조적으로 더 얇은 지준 완충 위에서 같은 결제를 처리</b>하게 된다 — 평시에는 아무 문제가 없지만, 이 임계 부근의 체류 시간이 길어진다는 뜻이다. 즉 이 채널이 주식에 남기는 것은 방향성 호악재가 아니라 <b>자금시장발 변동성 이벤트(2019년 9월형)의 발생 조건 변화</b>다.</p>
+</div>
+
+<h3>3-2. 채널 ② 딜러 중개·발행시장 — 남는 실질 경로 <span class="tag obs">TBAC 명시</span></h3>
+
+<p>기각을 통과하고 남는 경로는 이것이다. 딜러의 일중 자금 공백이 시장 거래로 메워지면 ⓐ 대차대조표 회전이 빨라지고 재고 보유 비용이 낮아져 <b>유통시장 중개 여력</b>이 늘고, ⓑ 대형 신디케이트 딜 인수 시 발행 대금과 투자자 결제 사이의 일중 공백을 은행 신용 없이 조달할 수 있어 <b>발행시장 처리 용량</b>이 커진다. TBAC는 활용사례 ②에서 이 배경을 명시했다 — "기록적인 밸류에이션과 지속되는 AI 관련 자본투자"로 딜 규모가 커졌고(회사채 발행 중간 조달금액이 2026년 1분기 표본 기간 최고), 딜이 커질수록 일중 신용 제공자들의 여력에 부담이 간다.</p>
+
+<p>주식시장 함의는 2차적이지만 실재한다: <b>AI 설비투자 사이클의 대형 자금조달(초대형 IPO·회사채)이 배관 제약 없이 소화되도록 돕는 보조 인프라</b>다. 발행이 막히는 시나리오의 꼬리를 깎아 주는 쪽이지, 지수를 밀어 올리는 쪽이 아니다.</p>
+
+<h3>3-3. 채널 ③ 꼬리 리스크 — 평시와 위기의 재분배 <span class="tag hyp">구조 추론</span></h3>
+
+<ul>
+<li><b>T+0는 당국의 대응 시간을 없앤다.</b> 2019년 9월 레포 발작과 2020년 3월 국채시장 혼란 때 당국은 하루 단위로 대응했다. 시스템이 분 단위로 돌면 그 여유가 사라진다 — TBAC 스스로 요약에 "규제당국의 대응 시간이 부족한 시장 스트레스 국면"을 명시했다.</li>
+<li><b>보이지 않는 레버리지.</b> 인트라데이 레포는 정의상 장 마감 전에 끝나 마감 시점 규제 지표에 잡히지 않고, 현행 중앙청산 의무 대상도 아니다. 단 이 주장은 자기봉인 구조(측정 안 되면 반증 데이터도 없음)라 크기를 못 단다.</li>
+<li><b>기준금리 산출 복잡화.</b> 일중 금리 구간이 생기면 SOFR 산출이 복잡해지고 EFFR 변동성이 커져 연준의 금리 통제가 어려워질 수 있다 — 통화정책 전달의 잡음이 늘어나는 방향.</li>
+</ul>
+
+<div class="box next">
+<b>🎯 §3 판정 — 주식시장</b>
+<p><b>현시점 영향 ≈ 0. 성숙 시(수년)에는 '평시 마찰 감소 + 꼬리 재분배'.</b> 유동성 총량 채널은 방향 판정 불가(악재론·호재론 모두 기각), 남는 실질 경로는 딜러 중개·발행시장의 완만한 순기능, 대가는 위기 시 대응 시간 소멸이다. 인트라데이 레포를 근거로 주식 방향 판단을 바꿀 일은 지금도, 활성화 후에도 거의 없다 — 바뀌는 것은 <b>자금시장발 이벤트의 모양</b>(드물고 급격)이다.</p>
+</div>
+
+<h2 id="s4">4. 토큰화 자산 시장 — 첫 필수품 vs 레일 배제</h2>
+
+<h3>4-1. 왜 이것이 토큰화 국채의 첫 '필수품' 용례인가 <span class="tag calc">구조+계산</span></h3>
+
+<p>토큰화 국채 시장($16.15B · 2026-08-21 조회)의 3년째 문제는 공급이 아니라 수요다 — 오버나이트 이상의 세계에서 토큰화 국채가 기존 국채 대비 갖는 우위는 '있으면 좋은 것'에 그쳤다. 인트라데이 레포는 다르다. <b>이 시장의 기능 요건 세 가지가 정확히 토큰화의 고유 기능이다:</b></p>
+
+<table>
+<tr><th>인트라데이 레포의 요건</th><th>기존 인프라</th><th>토큰화 담보</th></tr>
+<tr><td>초 단위 이자 발생·분 단위 만기</td><td>트라이파티로 가능하나 운영시간 창(08:30~15:30 ET) 안에서만</td><td>네이티브 — 프로그래머블 이자·임의 시각 만기</td></tr>
+<tr><td>거의 실시간 결제(T+0)</td><td>기존 결제 주기에 얹어 구현</td><td>네이티브 — DLT 즉시 결제</td></tr>
+<tr><td>같은 담보의 하루 다회 재사용</td><td>담보 반환 지연 시 도미노 위험</td><td>원장 위 이전이라 재사용 마찰 최소</td></tr>
+</table>
+
+<p>TBAC 선행연구(2024-11)도 토큰화 국채를 "미래 인트라데이 레포 거래의 자연스러운 토대"로, 토큰화 MMF를 "인트라데이 레포 생태계의 자연스러운 참가자"로 명시했다. 크기 감각: 기준 시나리오 $100~200B에서 <b>담보의 10%만 토큰화 형태여도 $10~20B — 현재 토큰화 국채 시장 전체와 맞먹는 수요</b>가 생긴다. 지금까지 이 시장의 자릿수를 바꿀 수 있는 수요원 후보는 스테이블코인 준비금 편입 정도뿐이었는데, 두 번째 후보가 생기는 것이다.</p>
+
+<p>시간대 축도 이쪽을 가리킨다. 트라이파티 창구는 하루의 29%만 열려 있고 도쿄 영업일 전체가 창 밖이다. "24시간 시장"(3단계)의 실체는 <b>아시아 영업시간에 미국 국채를 담보로 달러를 조달하는 것</b>이고, 그 시간대에 기존 창구는 물리적으로 닫혀 있으므로 — 3단계가 온다면 그 구간의 담보는 토큰화 형태일 개연성이 가장 높다.</p>
+
+<h3>4-2. 그러나 '토큰화 시장'이 이긴다는 뜻은 아니다 <span class="tag obs">TBAC 명시 + 실측</span></h3>
+
+<ul>
+<li>🔴 <b>온체인은 필수 부품이 아니다.</b> TBAC 명시 — "인트라데이 레포가 반드시 온체인일 필요는 없으며, 기존 트라이파티 인프라를 통해서도 작동할 수 있다." 1단계(당좌차월 대체)의 수요는 BNY 트라이파티가 기존 워크플로 그대로 처리한다. 토큰화가 기능적으로 필요한 것은 2~3단계부터다.</li>
+<li>🔴 <b>먼저 깔린 레일은 공개 체인이 아니다.</b> 가동 중인 3개 플랫폼(BNY·JP모건 Kinexys·Broadridge DLR) 중 DLT 방식 2개가 모두 <b>사설 원장</b>이다. 퍼블릭 체인 위의 토큰화 국채(BUIDL·USDY류)가 이 배관에 담보로 들어가려면 사설 원장·트라이파티와의 상호운용이라는 별도 관문이 있다.</li>
+<li>🔴 <b>공리 ≠ 가치 포획.</b> 활성화가 와도 값이 걷히는 자리는 이자(분 단위라 풀이 작다)나 레일(범용화 압력)이 아니라 <b>잔액·발행·명부</b>일 가능성이 크다 — 자매편 §7의 결론이 여기서도 그대로 선다. "인트라데이 레포가 켜진다 → 토큰화 관련주가 오른다"는 두 단계의 증명을 건너뛴 문장이다.</li>
+<li>⚪ <b>흡수 경로(c)의 그림자.</b> 연준이 스스로 운영시간을 늘리거나 상설 창구를 일중화하면 민간 인트라데이 레포 — 토큰화 버전 포함 — 가 잉여가 된다. 이 배관 전체가 "중앙은행이 자기 운영시간을 늘리지 않는다"에 거는 베팅임은 변하지 않았다.</li>
+</ul>
+
+<div class="box next">
+<b>🎯 §4 판정 — 토큰화 자산 시장</b>
+<p><b>토큰화 국채에는 조건부 순기능(자릿수를 바꿀 수 있는 둘째 수요원 후보), '토큰화 테마' 전반에는 판정 유보.</b> 이 사건이 증명하는 것은 토큰화 담보의 기능적 필요이지, 공개 체인·토큰화 인프라 기업의 매출이 아니다. 수요가 실제로 도착하는지는 §8 판별점 ②(발행사 준비금 만기 분해)·③(플랫폼 담보 목록)에서 관측된다.</p>
+</div>
+
+<h2 id="s5">5. CRCL — 자격은 현재형, 손익은 아니다</h2>
+
+<p class="small">이 절의 회사 수치는 Q2 2026 실적(<a href="https://www.sec.gov/Archives/edgar/data/1876042/000187604226000246/augustepr-circle_q22026f.htm">8-K EX-99.1, 2026-08-05</a> · <a href="2026-08-06_crcl-q2-2026-earnings-call.html">어닝콜 판독</a>)과 준비금 펀드 공시 기준이다.</p>
+
+<h3>5-1. 경로 ① 대여자 자격 — TBAC 명단의 현재형 <span class="tag obs">실측</span></h3>
+
+<p>TBAC는 인트라데이 레포의 대여자 후보로 "스테이블코인 발행사"와 "토큰화 MMF"를 명시했다. Circle은 <b>둘 다에 이미 이름을 올린 유일한 상장사다</b> — 준비금 펀드(Circle Reserve Fund)는 순자산의 86.8%를 국채담보 레포로 굴리고 있고(2026년 3월 37.5% → 7월 11.9%로 직접 보유를 줄이며 레포로 전환), USYC는 세계 최대 토큰화 MMF($3.0B, 전년 10배)다. TBAC가 미래형으로 쓴 참가 조건이 이 회사에서는 현재형이다.</p>
+
+<p>참여 시 얻는 것: ⓐ 유휴 현금의 일중 수익화(GENIUS법이 요구하는 적격 준비자산 운용의 촘촘화) ⓑ 환매 대응의 실시간성 — 24시간 환매 창구를 가진 발행사에게 '그날 늦게 갚아도 되는 돈'과 '지금 당장 회수 가능한 돈'의 차이는 크다. <b>단 인트라데이 참여의 실측은 0건</b>이다 — 레포 잔고의 만기 분해가 공표되지 않아, 그 86.8%가 하룻밤짜리인지 몇 시간짜리인지 알 수 없다.</p>
+
+<h3>5-2. 경로 ②③ 잔액 성장 — 유일하게 자릿수가 되는 경로 <span class="tag est">추정</span></h3>
+
+<p>이자 풀부터 치우자. 인트라데이 레포 시장 전체의 이자 풀이 가정에 따라 연 $6.3M~$1,382M(218배 폭)인데, Circle의 분기 준비금 수익은 $668M이다. Circle이 이 시장의 큰 대여자가 되어도 <b>이자 증분은 손익에 자릿수가 안 된다.</b> 값은 이자가 아니라 잔액에서 걷힌다 — 그래서 유의미한 경로는 두 가지 잔액이다:</p>
+
+<ul>
+<li><b>USYC 잔액.</b> 인트라데이 레포 생태계에서 토큰화 MMF가 현금 대기·담보 관리 수단으로 채택되면 USYC에 기관 수요층이 신설된다. USYC의 수익 모델은 잔액 × 보수이므로 이것은 실제 매출 경로다. 단 자매편 §8-1의 산술이 상한을 긋는다 — 시장이 $200B가 되고 현금의 10%를 토큰화 펀드가 대도 $20B로, 이는 현재 토큰화 국채 시장 전체($16B)보다 크다. 즉 이 경로가 실현되려면 USYC 자체가 지금의 몇 배로 커져야 하고, 그 성장이 곧 이 경로의 실현이다(순환이 아니라 동시 조건).</li>
+<li><b>USDC 잔액.</b> 온체인 인트라데이 레포의 현금 레그 후보. 다만 유통량($73.3B 기말, 점유율 27%·하락 중)의 성장 동인은 결제·거래소·에이전트 커머스 쪽이 훨씬 크고, 레포 현금 레그가 유통량을 유의미하게 늘린다는 증거는 없다.</li>
+</ul>
+
+<h3>5-3. 경로 ④ Arc — 레일 후보, 그러나 후발 <span class="tag hyp">가설</span></h3>
+
+<p>Arc 메인넷(9/16 예정)의 창립 검증자 11사에 <b>DTCC</b>가 있고, DTCC는 참여 발표에서 토큰화 레포·담보 이동성으로의 확장을 명시했다. BlackRock은 BUIDL의 Arc 배포와 USDC 네이티브 통합을 밝혔다. 조각을 이으면 'Arc 위의 기관 레포 워크플로'라는 그림이 나온다 — 온체인 인트라데이 레포의 결제 레일 후보다. 단 두 겹의 유보: ⓐ Kinexys는 이미 가동 중인 선행 사업자이고 Arc는 메인넷도 뜨기 전이다. ⓑ 레일 계층은 이 배관에서 값이 안 걷히는 자리일 가능성이 크다는 것이 자매편의 결론이었다 — Arc가 레포 레일이 되는 것과 Circle이 돈을 버는 것은 별개 증명이다.</p>
+
+<h3>5-4. 리스크 — 편익보다 구체적이다 <span class="tag hyp">시나리오</span></h3>
+
+<div class="box stop">
+<b>🔴 일중 대여 + 24시간 환매 = 대응 시간 0</b>
+<p>TBAC의 실패 경로를 발행사에 대입하면: 준비금을 일중 대여 → 차입자가 마감 전 미상환 → 의도치 않은 오버나이트 노출 + 현금 묶임 → 바로 그 시각 24시간 환매 청구 도착 → 담보 강제 매각 또는 공적 백스톱 요청. 이 구조 자체는 MMF 산업이 40년 해온 일이지만, MMF의 환매 창구는 영업시간에 묶여 있고 스테이블코인은 아니다 — <b>당국의 대응 시간이 짧아지는 게 아니라 없어진다.</b> 그리고 이 유형의 사고가 한 번이라도 나면, GENIUS 체제에서 준비자산 운용 범위를 다시 조이는 규제 역풍의 1순위 수신자는 발행사다. 참여의 편익(운용 유연성)은 bp 단위이고 이 리스크는 사업 모델 단위다 — 비대칭에 주의.</p>
+</div>
+
+<div class="box next">
+<b>🎯 §5 판정 — CRCL</b>
+<p><b>"자격 사건이지 손익 사건이 아니다."</b> TBAC가 지목한 대여자 후보 중 참가 조건을 현재형으로 갖춘 유일한 상장사(준비금 86.8% 레포 + 최대 토큰화 MMF + 현금 레그 스테이블코인 + 검증자에 DTCC를 태운 레일)라는 사실은 이 회사의 산업 내 위치를 재확인해 준다. 그러나 손익으로 넘어오는 경로는 USYC·USDC <b>잔액 성장 하나뿐</b>이고 그 고리는 미증명이며, 신규 리스크(대응 시간 0)는 편익보다 구체적이다. Q2 실적 판정("구조는 좋아졌고 손익은 아직 아니다")과 같은 문장이 이 주제에도 그대로 적용된다.</p>
+</div>
+
+<h2 id="s6">6. SECZ — 회전의 시대에 소유·명부로 버는 회사</h2>
+
+<p class="small">이 절의 회사 사실관계는 공시·회사 공개 진술(<a href="https://www.theblock.co/news/regulation/2026-08-20-securitizes-redfearn-sec-innovation-exemption-clarity-act-politics-412298">The Block 2026-08-20 Redfearn 인터뷰</a> 및 8/24 영상 전문) 기준이다.</p>
+
+<h3>6-1. 닿는 경로는 하나 — 단기 국채 토큰화 담보의 AUM <span class="tag obs">회사 구조 + 제3자 발언</span></h3>
+
+<p>Securitize의 매출 구조는 회사 스스로 이렇게 서술한다: 운용자산 기반 bp 수수료 + 명의개서대행(TA) + 발행·체인 온보딩(증권 토큰화 기준 20개 체인) — 그리고 <b>"거래 수수료 매출을 갖는 플랫폼도 기대하고 있다"(미래형)</b>. 이 구조에서 인트라데이 레포와 닿는 접점은 정확히 하나다:</p>
+
+<blockquote>인트라데이 레포 담보로 토큰화 국채 수요 발생 → BUIDL 등 관리 자산(AUM) 성장 → AUM bp 수수료 + TA·펀드서비스 매출 증가</blockquote>
+
+<p>이 경로의 질은 나쁘지 않다. GSR의 관측대로 "가장 확장 가능한 기관 용례는 단기 채권 토큰화 담보"라면, 그것은 회사가 하이일드(HINC)나 토큰화 주식(Loopscale 담보)으로 여는 신규 서사가 아니라 <b>이미 1위 사업자인 토큰화 국채형 그 자체</b>다. §4-1의 산술($10~20B 잠재 수요)이 실현되는 만큼이 이 경로의 크기다.</p>
+
+<h3>6-2. 닿지 않는 것 — 회전에는 과금 접점이 없다 <span class="tag obs">회사 자기 진술</span></h3>
+
+<p>인트라데이 레포 활성화의 본질은 <b>회전 계층의 사건</b>이다 — 같은 담보가 하루 여러 번 일하게 되는 것. 그런데 SECZ의 현행 과금은 <b>소유·발행·명부 계층</b>에 물려 있다. 담보가 하루 10번 회전해도 AUM은 그대로이고, 회전당 수수료를 걷는 상품은 아직 없다(거래 수수료 = 미래형). 따라서 "인트라데이 레포·담보 이동성 뉴스 = SECZ 매출 사건"이라는 등식은 현행 구조에서 성립하지 않는다 — 이 회사의 다른 담보 뉴스(HINC→Aave, 토큰화 SECZ→Loopscale)에 적용해 온 판독 규율("매출 사건이 아니라 자격 사건") 그대로다. 거래 수수료가 현재형으로 전환되는 시점이 이 판정의 유일한 변경 트리거다.</p>
+
+<h3>6-3. 경쟁 벡터 — 레일의 주인이 담보 층으로 내려온다 <span class="tag obs">공시·발표 실측</span></h3>
+
+<div class="box warn">
+<b>⚠️ DTCC가 같은 문장 안에 있다</b>
+<p>인트라데이 레포 인프라의 현직은 BNY(트라이파티)·JP모건(Kinexys)·Broadridge(DLR)이고, 여기에 DTCC가 들어온다 — DTC 보관자산 토큰화의 확장 방향으로 <b>토큰화 레포·담보 이동성·증권대차</b>를 명시했고, Arc의 창립 검증자로 참여하며, 2025년 7월에는 보관증권의 국채/레포 DVP·담보질권 워크플로 실운영 토큰화를 마쳤다. 인트라데이 레포가 커질수록 가치가 커지는 층(담보 이동성·명부 연동·기관 온보딩)은 SECZ가 서 있는 층과 겹치는데, 그 층을 <b>2025년 매출 증분($410M)만으로 SECZ 연간 가이던스 중간값($75M)의 5.5배</b>인 회사가 자기 규모로 덮으러 오는 중이다. 완충은 남아 있다 — SECZ의 무게중심은 명부(TA)·발행사 관계로 이동 중이고(회사 스스로 강조하는 축), 그 층은 규모보다 등록·관계가 지배한다. 판별점은 10월 DTCC 토큰화 서비스 명단에 Securitize가 파트너로 들어가는가, 경쟁자로 배제되는가다.</p>
+</div>
+
+<p>부수 경로 하나 <span class="tag hyp">사변적</span>: 3단계(아시아 낮 달러 조달)가 열리면 비미국 참가자의 KYC·제재 스크리닝·참여자 자격 관리라는 컴플라이언스 래퍼 수요가 생긴다 — SECZ의 규제 스택(등록 TA·BD·ATS)이 닿을 수 있는 지점이나, 현재로선 시장도 조문도 없는 가설이다.</p>
+
+<div class="box next">
+<b>🎯 §6 판정 — SECZ</b>
+<p><b>수혜 경로는 AUM 하나, 그마저 조건부. 대신 경쟁 벡터는 구체적이다.</b> 인트라데이 레포는 이 회사가 이미 1위인 세그먼트(토큰화 국채)에 둘째 수요원을 만들어 줄 수 있는 사건이지만, 회전 계층의 활성화 자체는 현행 과금과 무접점이고, 레일·담보 이동성 층의 주인(DTCC·BNY·JP모건)이 같은 기회를 향해 더 큰 규모로 움직이고 있다. 순효과의 부호는 10월 DTCC 명단과 혁신 면제 조문(§8 판별점 ⑤⑥)이 정한다.</p>
+</div>
+
+<h2 id="s7">7. 두 회사가 같은 거래에서 만나는 지점</h2>
+
+<p>온체인 인트라데이 레포 한 건을 분해하면 담보 레그(토큰화 국채 — 발행·명부 계층)와 현금 레그(스테이블코인·토큰화 MMF)가 원자적으로 교환된다. 이는 "USDC를 토큰화 증권 거래의 현금 레그로"라는 Circle 경영진의 공개 비전이 <b>자금시장으로 확장된 판</b>이고, 두 회사가 서로 다른 계층(발행·컴플라이언스 vs 현금 레그)에서 같은 거래에 물리는 구조다. 인트라데이 레포는 이 페어링이 소매 거래가 아니라 <b>기관 자금시장에서 반복 대량으로</b> 일어나는 첫 무대 후보라는 점에서 주목할 만하다.</p>
+
+<p>🔴 단, 두 가지가 이 그림의 크기를 제한한다. 첫째, <b>실측 0건</b> — 두 회사 모두 인트라데이 참여의 공시·데이터가 없다. 둘째, 이 페어링을 지금 한 지붕 아래서 전부 수행하는 유일한 실체는 <b>JP모건 Kinexys</b>다 — 인트라데이 레포 플랫폼(레일)과 자사 토큰화 MMF(JLTXX, 현금 레그)를 함께 보유한 수직 통합체. '계층 분리 협력' 모델의 가장 강한 반례가 이미 시장에서 가동 중이라는 사실은, 이 페어링 서사를 두 회사의 미래로 직역하는 것을 막는 가장 좋은 브레이크다.</p>
+
+<h2 id="s8">8. 앞으로 볼 것 — 판별점 일곱</h2>
+
+<table>
+<tr><th style="width:4%">#</th><th style="width:34%">무엇을 · 언제</th><th>어느 판정이 바뀌는가</th></tr>
+<tr><td>①</td><td><b>연준 일중 당좌차월 다음 공표</b> · 약 8개월 시차</td><td>피크가 연속 적립기간에 $50B를 넘으면 "십억 달러 잔차" 전제 폐기 = 1단계가 실제로 움직이기 시작했다는 신호(자매편 판별선 승계)</td></tr>
+<tr><td>②</td><td><b>발행사·토큰화 MMF 준비금의 만기 분해 공시</b> · 분기</td><td>당일 시작·종료 계약이 잡히면 §5-1 "인트라데이 참여 실측 0건"이 관측으로 승격 — CRCL 절에서 가장 크게 바뀌는 판정</td></tr>
+<tr><td>③</td><td><b>인트라데이 플랫폼의 적격담보 목록</b>(BNY·Kinexys·Broadridge) · 수시</td><td>퍼블릭 체인 토큰화 국채(BUIDL류)가 담보로 편입되면 §4-2 "사설 원장 우세" 유보 완화 + §6-1 AUM 경로 개통</td></tr>
+<tr><td>④</td><td><b>Arc 메인넷(9/16) 이후 레포·담보 워크플로 발표</b></td><td>DTCC·BlackRock 검증자 참여가 실제 워크플로로 이어지는지 — §5-3 레일 후보 가설의 1차 검증</td></tr>
+<tr><td>⑤</td><td><b>10월 DTCC 토큰화 서비스 명단</b></td><td>Securitize가 파트너인가 배제인가 — §6-3 경쟁 벡터의 부호 확정</td></tr>
+<tr><td>⑥</td><td><b>SEC 혁신 면제 실제 조문</b> · 회사 측 전망 10월 초(일정 아님)</td><td>venue의 참여자 자격·보고 의무 강도 — §6 컴플라이언스 래퍼 경로와 기존 인가 가치에 동시 작용</td></tr>
+<tr><td>⑦</td><td><b>연준의 운영시간·상설 창구 제도 변경</b> · 시점 미상</td><td>일중·24시간화 발표 시 민간 인트라데이 레포(토큰화 버전 포함)가 잉여 — 이 보고서 전체의 전제가 꺾이는 단일 사건</td></tr>
+</table>
+
+<h2 id="s9">9. 한계 — 정직하게</h2>
+
+<ul>
+<li><b>대상 자체가 미측정이다.</b> 인트라데이 레포 실거래량 직접 측정치는 여전히 0건이고, 이 보고서의 모든 영향 추정은 "시장이 $100~200B로 큰다면"이라는 조건절 위에 서 있다. 그 조건의 확률은 산출하지 못했고, TBAC의 "수년" 자기 판정대로 <b>아무 일도 일어나지 않는 경로의 확률 질량이 가장 클 수 있다.</b></li>
+<li><b>이해당사자 합창.</b> 시장 규모·해소 시간 분포·플랫폼 서사의 1차 자료가 전부 이 시장이 커져야 이익을 보는 주체(인프라 벤더·결제은행·딜러 자문위, 그리고 §5·§6의 두 회사 자신)에게서 나왔다. 편익 추정과 "수년" 판정을 같은 출처에서 방향 편하게 골라 쓰지 않도록 양쪽 다 할인했다.</li>
+<li><b>시점 혼합.</b> 회사 수치(8/5 실적·8/13 공시)와 시장 수치(8/20~21 조회)와 당좌차월 실측(2025-12-24 종료 기간)의 기준일이 다르다. 비율은 유효숫자 두 자리 이상으로 읽지 말 것.</li>
+<li><b>서사 접합부 경계 — 강건성 시험.</b> 인트라데이 레포를 지도에서 지워도 두 회사의 사업 명제(스테이블코인 유통·토큰화 발행 스택)는 성립도 실패도 하지 않는다. 즉 이 주제는 두 회사에게 <b>기둥이 아니라 옵션</b>이다. 역으로, 이 보고서가 두 회사를 이 주제에 연결한 것 자체가 '이야기가 다리를 지탱하는' 위험의 반복일 수 있다 — 판별점 ②③이 관측되기 전까지 이 연결은 가설로 취급해야 한다.</li>
+<li><b>정량 공백.</b> 플랫폼 요율표·레포 만기 분해·사설 원장의 담보 편입 기준·혁신 면제 조문 — 판정을 실제로 가를 1차 자료 네 가지가 전부 미공표다.</li>
+</ul>
+
+<hr>
+
+<p class="small">1차 출처 — <a href="2026-08-10_tbac-intraday-repo.html">TBAC 2026년 8월 「인트라데이 레포」 보고서 완역</a>(시장 구조·추정치·발전 단계·리스크의 원출처) · <a href="2026-08-21_intraday-repo-tokenization-treasury.html">「하루보다 짧은 돈」</a>(실측·자릿수·3층 프레임·이자 풀 산술) · <a href="2026-08-22_tga-repo-investment.html">「TGA 레포 투자」</a> · <a href="2026-08-27_feds-note-repo-markets-fed-balance-sheet.html">FEDS Note 판독(유동성/GDP 비선형)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1876042/000187604226000246/augustepr-circle_q22026f.htm">Circle Q2 2026 8-K EX-99.1</a> · <a href="2026-08-06_crcl-q2-2026-earnings-call.html">Circle Q2 어닝콜 판독</a> · <a href="2026-08-06_dtcc-arc-secz.html">DTCC × Arc 분석</a> · <a href="https://www.theblock.co/news/regulation/2026-08-20-securitizes-redfearn-sec-innovation-exemption-clarity-act-politics-412298">The Block — Redfearn 인터뷰(2026-08-20)</a> · <a href="2026-08-30_secz-redfearn-interview.html">동 영상 전문 판독</a> · rwa.xyz · DefiLlama.</p>
+
+<p class="small">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다. 회사별 절의 판정은 산업 구조 안에서의 위치 평가이지 종목 매수·매도 신호가 아니며, 수치는 각 기준일 시점 값입니다. 판단의 근거로 쓰기 전에 원문과 최신 값을 직접 확인하시기 바랍니다.</p>
+
+</div>
