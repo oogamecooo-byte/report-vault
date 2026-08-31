@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>미국 GDP 대비 정부부채 비율 — 2025·2026 직접 계산 — 2026-09-01</title>
+<meta name="vault-stage" content="Analysis">
+<meta name="vault-topic" content="재무부">
+<meta name="vault-date" content="2026-09-01">
+<meta name="description" content="재무부 Debt to the Penny 원천 데이터와 BEA 명목 GDP로 2025~2026년 미국 정부부채/GDP 비율을 직접 계산하고, 비율 변화를 분자(부채)와 분모(GDP) 기여도로 분해했다.">
+<style>
+  :root{ --bg:#EBE4D3; --card:#FDF6E3; --ink:#1f2328; --line:#e0d8c4; --muted:#6b6355;
+         --red:#a4262c; --org:#b5620a; --yel:#5c4a00; --grn:#20603f; --blu:#1F6F8B; }
+  *{box-sizing:border-box}
+  body{margin:0;padding:28px 16px 60px;background:var(--bg);color:var(--ink);
+       font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic",sans-serif;
+       line-height:1.72;font-size:16px;}
+  .wrap{max-width:940px;margin:0 auto}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:30px 34px;margin-bottom:22px;
+        box-shadow:0 1px 3px rgba(80,60,20,.07)}
+  h1{font-size:27px;line-height:1.35;margin:0 0 8px;letter-spacing:-.4px}
+  .sub{color:var(--muted);font-size:14px;margin-bottom:0}
+  h2{font-size:20px;margin:34px 0 12px;padding-bottom:7px;border-bottom:2px solid var(--line);letter-spacing:-.3px}
+  h2:first-child{margin-top:0}
+  h3{font-size:16.5px;margin:22px 0 8px;color:#2c2a24}
+  p{margin:10px 0} ul{margin:10px 0;padding-left:22px} li{margin:6px 0}
+  a{color:var(--blu);text-decoration:none;border-bottom:1px solid rgba(31,111,139,.32)}
+  a:hover{border-bottom-color:var(--blu)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f3ebd6;font-weight:600}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .num{font-variant-numeric:tabular-nums}
+  blockquote{margin:14px 0;padding:12px 16px;background:#f6efdc;border-left:3px solid #c9bda0;
+             border-radius:0 8px 8px 0;color:#3a3630;font-size:15px}
+  .lead{background:#f7f0dd;border:1px solid #ddd2b6;border-radius:12px;padding:18px 22px;margin:18px 0}
+  .lead ul{margin:0;padding-left:20px} .lead li{margin:7px 0;font-size:15.3px}
+  .r{color:var(--red);font-weight:600} .o{color:var(--org);font-weight:600}
+  .y{color:var(--yel);font-weight:600} .g{color:var(--grn);font-weight:600}
+  .tag{display:inline-block;font-size:12px;padding:1px 7px;border-radius:4px;border:1px solid var(--line);
+       background:#f3ebd6;color:var(--muted);margin-right:5px;white-space:nowrap}
+  .note{font-size:13.5px;color:var(--muted);margin-top:8px}
+  figure{margin:18px 0;background:#ffffff;border:1px solid #e8e1cf;border-radius:10px;padding:14px 14px 8px}
+  figure svg{display:block;width:100%;height:auto}
+  figcaption{font-size:13px;color:var(--muted);margin-top:8px;padding:0 4px 4px}
+  .scroll{overflow-x:auto}
+  footer{color:var(--muted);font-size:13px;text-align:center;margin-top:26px}
+  @media print{ body{background:#fff} .card{background:#fff;box-shadow:none} }
+  @media (max-width:640px){ .card{padding:22px 18px} h1{font-size:22px} body{font-size:15px} }
+</style>
+<meta name="vault-published" content="2026-09-01">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="wrap">
+
+<div class="card">
+  <h1>미국 GDP 대비 정부부채 비율 — 2025·2026 직접 계산</h1>
+  <p class="sub">2026-09-01 작성 · 원천 = 미 재무부 Debt to the Penny(일별 실측) ÷ BEA 명목 GDP(분기·연율) · 전 분기 자체 계산 후 FRED 공표치와 대조</p>
+
+  <div class="lead">
+    <ul>
+      <li><span class="r">🔴 현재 총 공공부채는 GDP의 약 123.4%</span> — 2026년 8월 28일 실측 부채 <span class="num">40조 1,041억 달러</span>를 최신 발표 GDP(2026 2분기)로 나눈 값. 공공 보유분 기준으로는 <span class="num">99.6%</span>. <b>단 분자와 분모의 시점이 다른 추정치</b>다(아래 §5).</li>
+      <li><span class="r">🔴 2025년의 비율 하락은 재정 개선이 아니었다.</span> 2025년 1~2분기에 비율이 121.44% → 118.78%로 떨어졌는데, 이 구간 부채는 <b>$36.21조에서 거의 한 푼도 안 움직였다</b>. 부채한도에 걸려 특별조치로 버틴 <b>회계적 동결</b>이다. 한도가 풀린 3분기에 <b>한 분기 만에 +$1조 4,261억</b>이 튀어나왔다.</li>
+      <li><span class="r">🔴 비율이 내려간 분기는 전부 분모가 만든 것이다.</span> 2025년 3분기 이후 <b>부채(분자) 기여도는 매 분기 플러스</b>였다. 2026년 2분기 비율이 −1.12%p 내렸지만 분해하면 <b>부채 +1.22%p, GDP −2.34%p</b> — 부채는 계속 밀어올렸고 명목 성장이 그보다 더 세게 눌렀을 뿐이다.</li>
+      <li><span class="o">🟠 연 단위 요약</span> — 2025년 연평균 <b>총 120.73% / 공공 96.68%</b>, 2026년 상반기 평균 <b>총 122.03% / 공공 98.08%</b>. 2026년은 아직 2개 분기만 확정이다.</li>
+      <li><span class="o">🟠 총부채 40조 달러 돌파는 2026년 8월 18일</b>(기록일 기준·보도는 8월 19일).</li>
+      <li><span class="o">🟠 코로나 최고치 132.66%(2020년 2분기)까지는 아직 여유가 있다.</span> 현재 수준은 그 정점보다 9%p 아래이나, 2023년 1분기 저점(115.59%) 대비로는 <b>+7.9%p</b> 올라온 자리다.</li>
+      <li><span class="y">⚠️ "공공 보유분이 GDP 100%를 넘었다"고 단정할 수 없다.</span> 3분기 명목 GDP가 <b>전분기 대비 +0.47%를 넘기만 하면</b> 100% 아래로 유지된다. 최근 분기 실적은 +1.91%였다.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <h2>1. 무엇을 어떻게 계산했나</h2>
+  <p>“GDP 대비 정부부채”는 한 숫자가 아니다. 분자·분모·시점을 어떻게 잡느냐로 값이 20%p 넘게 갈린다. 이 보고서가 쓴 정의를 먼저 못박는다.</p>
+  <div class="scroll">
+  <table>
+    <tr><th style="width:15%">요소</th><th style="width:32%">채택</th><th>이유·주의</th></tr>
+    <tr><td><b>분자 ①</b></td><td>총 공공부채<br>(Total Public Debt, gross)</td><td>정부간 보유분(사회보장신탁 등 약 <span class="num">$7.76조</span>)을 <b>포함</b>. “40조 달러 돌파” 헤드라인이 쓰는 수치다. 정부가 자기 자신에게 진 빚이 섞여 있어 경제적 부담을 과대평가한다.</td></tr>
+    <tr><td><b>분자 ②</b></td><td>공공 보유분<br>(Debt Held by the Public)</td><td>시장·외국인·연준이 실제로 들고 있는 부분. <b>경제적으로 의미 있는 쪽</b>이며 국제 비교와 이자 부담 분석에 쓰인다. 이 보고서는 둘 다 계산해 나란히 놓았다.</td></tr>
+    <tr><td><b>분모</b></td><td>명목 GDP<br>(분기·계절조정 연율)</td><td>부채는 특정 시점의 <b>잔액(stock)</b>이고 GDP는 기간의 <b>흐름(flow)</b>이다. 통상 관행대로 해당 분기 명목 GDP를 연율로 환산해 나눈다. 실질이 아니라 <b>명목</b>을 쓰는 것이 핵심 — 인플레가 분모를 부풀리면 비율은 저절로 내려간다.</td></tr>
+    <tr><td><b>시점</b></td><td>분기말 잔액 ÷ 해당 분기 GDP</td><td>달력 분기 기준(회계연도 아님). 미 회계연도는 9월 30일에 끝나므로 회계연도 기준 수치와는 다르게 나온다.</td></tr>
+  </table>
+  </div>
+  <h3>데이터 출처</h3>
+  <ul>
+    <li><b>부채</b> — 미 재무부 <a href="https://fiscaldata.treasury.gov/datasets/debt-to-the-penny/debt-to-the-penny">Debt to the Penny</a>(일별 실측, API 직접 호출). 분기말 영업일 값을 사용.</li>
+    <li><b>GDP</b> — BEA 명목 GDP, FRED 시리즈 <a href="https://fred.stlouisfed.org/series/GDP">GDP</a>.</li>
+    <li><b>대조군</b> — FRED <a href="https://fred.stlouisfed.org/series/GFDEGDQ188S">GFDEGDQ188S</a>(총부채/GDP)·<a href="https://fred.stlouisfed.org/series/FYGFGDQ188S">FYGFGDQ188S</a>(공공보유/GDP). 직접 계산값을 여기에 맞춰봤다.</li>
+  </ul>
+  <blockquote><b>검증 결과</b> — 총부채 기준 자체 계산값이 FRED 공표치와 2024 4분기~2026 1분기 <b>여섯 개 분기 모두 ±0.00%p로 일치</b>했다. 방법론이 표준과 같다는 뜻이며, 이 일치를 확인했기에 <b>FRED가 아직 발표하지 않은 2026년 2분기를 같은 방법으로 채워 넣을 수 있었다.</b></blockquote>
+</div>
+
+<div class="card">
+  <h2>2. 계산 결과 — 분기별 전수</h2>
+  <div class="scroll">
+  <table>
+    <tr>
+      <th rowspan="2">분기</th><th class="num" rowspan="2">명목 GDP<br>(연율, $10억)</th>
+      <th class="num" colspan="2">총 공공부채</th><th class="num" colspan="2">공공 보유분</th>
+      <th class="num" colspan="2">FRED 대조</th>
+    </tr>
+    <tr><th class="num">잔액($10억)</th><th class="num">/GDP %</th><th class="num">잔액($10억)</th><th class="num">/GDP %</th><th class="num">공표 %</th><th class="num">차이</th></tr>
+    <tr><td><b>2024 Q4</b></td><td class="num">29,825.2</td><td class="num">36,218.6</td><td class="num"><b>121.44</b></td><td class="num">28,837.0</td><td class="num"><b>96.69</b></td><td class="num">121.44</td><td class="num">+0.00</td></tr>
+<tr><td><b>2025 Q1</b></td><td class="num">30,042.1</td><td class="num">36,214.3</td><td class="num"><b>120.55</b></td><td class="num">28,909.5</td><td class="num"><b>96.23</b></td><td class="num">120.55</td><td class="num">+0.00</td></tr>
+<tr><td><b>2025 Q2</b></td><td class="num">30,485.7</td><td class="num">36,211.5</td><td class="num"><b>118.78</b></td><td class="num">28,953.5</td><td class="num"><b>94.97</b></td><td class="num">118.78</td><td class="num">+0.00</td></tr>
+<tr><td><b>2025 Q3</b></td><td class="num">31,098.0</td><td class="num">37,637.6</td><td class="num"><b>121.03</b></td><td class="num">30,277.8</td><td class="num"><b>97.36</b></td><td class="num">121.03</td><td class="num">+0.00</td></tr>
+<tr><td><b>2025 Q4</b></td><td class="num">31,422.5</td><td class="num">38,514.0</td><td class="num"><b>122.57</b></td><td class="num">30,846.7</td><td class="num"><b>98.17</b></td><td class="num">122.57</td><td class="num">+0.00</td></tr>
+<tr><td><b>2026 Q1</b></td><td class="num">31,865.7</td><td class="num">39,065.4</td><td class="num"><b>122.59</b></td><td class="num">31,431.2</td><td class="num"><b>98.64</b></td><td class="num">122.59</td><td class="num">+0.00</td></tr>
+<tr><td><b>2026 Q2</b></td><td class="num">32,486.1</td><td class="num">39,462.4</td><td class="num"><b>121.47</b></td><td class="num">31,681.3</td><td class="num"><b>97.52</b></td><td class="num">미발표</td><td class="num">—</td></tr>
+    <tr style="background:#f6efdc">
+      <td><b>현재 [추정]</b><br><span class="note">2026-08-28</span></td>
+      <td class="num">32,486.1<br><span class="note">2026 Q2</span></td>
+      <td class="num">40,104.1</td><td class="num"><b>123.45</b></td>
+      <td class="num">32,340.7</td><td class="num"><b>99.55</b></td>
+      <td class="num">미발표</td><td class="num">—</td>
+    </tr>
+  </table>
+  </div>
+  <p class="note">🔴 <b>마지막 행은 실측이 아니라 추정</b>이다 — 분자는 8월 28일 실측이지만 분모는 6월 30일로 끝나는 분기의 GDP다. 3분기 GDP가 나오면 이 값은 <b>내려간다</b>(§5).<br>
+  ⚠️ 공공 보유분의 자체 계산값은 FRED 공표치보다 매 분기 <b>0.07~0.08%p 낮게</b> 나온다. 재무부 일별 데이터와 FRED가 참조하는 Treasury Bulletin 집계 사이의 소폭 정의 차이이며, 방향·추세에는 영향이 없다.</p>
+
+  <figure>
+    <svg viewBox="0 0 860 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="2024 4분기부터 2026 2분기까지 미국 정부부채의 GDP 대비 비율">
+<rect x="0" y="0" width="860" height="420" fill="#ffffff"/>
+<rect x="64.0" y="26" width="220.0" height="330" fill="#e8ddc4" opacity="0.55"/>
+<text x="174.0" y="41" text-anchor="middle" font-size="11" fill="#7d6f52">부채한도 동결 구간</text>
+<line x1="64" y1="326.9" x2="834" y2="326.9" stroke="#ece7db" stroke-width="1"/>
+<text x="55" y="330.9" text-anchor="end" font-size="11" fill="#8b8375">95%</text>
+<line x1="64" y1="278.4" x2="834" y2="278.4" stroke="#ece7db" stroke-width="1"/>
+<text x="55" y="282.4" text-anchor="end" font-size="11" fill="#8b8375">100%</text>
+<line x1="64" y1="229.8" x2="834" y2="229.8" stroke="#ece7db" stroke-width="1"/>
+<text x="55" y="233.8" text-anchor="end" font-size="11" fill="#8b8375">105%</text>
+<line x1="64" y1="181.3" x2="834" y2="181.3" stroke="#ece7db" stroke-width="1"/>
+<text x="55" y="185.3" text-anchor="end" font-size="11" fill="#8b8375">110%</text>
+<line x1="64" y1="132.8" x2="834" y2="132.8" stroke="#ece7db" stroke-width="1"/>
+<text x="55" y="136.8" text-anchor="end" font-size="11" fill="#8b8375">115%</text>
+<line x1="64" y1="84.2" x2="834" y2="84.2" stroke="#ece7db" stroke-width="1"/>
+<text x="55" y="88.2" text-anchor="end" font-size="11" fill="#8b8375">120%</text>
+<line x1="64" y1="35.7" x2="834" y2="35.7" stroke="#ece7db" stroke-width="1"/>
+<text x="55" y="39.7" text-anchor="end" font-size="11" fill="#8b8375">125%</text>
+<line x1="64" y1="278.4" x2="834" y2="278.4" stroke="#b5620a" stroke-width="1.2" stroke-dasharray="5,4"/>
+<text x="830" y="272.4" text-anchor="end" font-size="10.5" fill="#b5620a">GDP의 100%</text>
+<path d="M64.0,70.3 L174.0,78.9 L284.0,96.1 L394.0,74.3 L504.0,59.3 L614.0,59.1 L724.0,69.9" fill="none" stroke="#a4262c" stroke-width="2.6" stroke-linejoin="round"/>
+<path d="M724.0,69.9 L834.0,50.7" fill="none" stroke="#a4262c" stroke-width="2.2" stroke-dasharray="6,4"/>
+<path d="M64.0,310.5 L174.0,314.9 L284.0,327.1 L394.0,304.0 L504.0,296.1 L614.0,291.6 L724.0,302.4" fill="none" stroke="#1F6F8B" stroke-width="2.6" stroke-linejoin="round"/>
+<path d="M724.0,302.4 L834.0,282.7" fill="none" stroke="#1F6F8B" stroke-width="2.2" stroke-dasharray="6,4"/>
+<circle cx="64.0" cy="70.3" r="3.9" fill="#a4262c" stroke="#a4262c" stroke-width="2.2"/>
+<circle cx="64.0" cy="310.5" r="3.9" fill="#1F6F8B" stroke="#1F6F8B" stroke-width="2.2"/>
+<text x="64.0" y="59.3" text-anchor="middle" font-size="11.5" font-weight="600" fill="#a4262c">121.44</text>
+<text x="64.0" y="329.5" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1F6F8B">96.69</text>
+<text x="64.0" y="376" text-anchor="middle" font-size="11" fill="#5c5548">2024 Q4</text>
+<circle cx="174.0" cy="78.9" r="3.9" fill="#a4262c" stroke="#a4262c" stroke-width="2.2"/>
+<circle cx="174.0" cy="314.9" r="3.9" fill="#1F6F8B" stroke="#1F6F8B" stroke-width="2.2"/>
+<text x="174.0" y="67.9" text-anchor="middle" font-size="11.5" font-weight="600" fill="#a4262c">120.55</text>
+<text x="174.0" y="333.9" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1F6F8B">96.23</text>
+<text x="174.0" y="376" text-anchor="middle" font-size="11" fill="#5c5548">2025 Q1</text>
+<circle cx="284.0" cy="96.1" r="3.9" fill="#a4262c" stroke="#a4262c" stroke-width="2.2"/>
+<circle cx="284.0" cy="327.1" r="3.9" fill="#1F6F8B" stroke="#1F6F8B" stroke-width="2.2"/>
+<text x="284.0" y="85.1" text-anchor="middle" font-size="11.5" font-weight="600" fill="#a4262c">118.78</text>
+<text x="284.0" y="346.1" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1F6F8B">94.97</text>
+<text x="284.0" y="376" text-anchor="middle" font-size="11" fill="#5c5548">2025 Q2</text>
+<circle cx="394.0" cy="74.3" r="3.9" fill="#a4262c" stroke="#a4262c" stroke-width="2.2"/>
+<circle cx="394.0" cy="304.0" r="3.9" fill="#1F6F8B" stroke="#1F6F8B" stroke-width="2.2"/>
+<text x="394.0" y="63.3" text-anchor="middle" font-size="11.5" font-weight="600" fill="#a4262c">121.03</text>
+<text x="394.0" y="323.0" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1F6F8B">97.36</text>
+<text x="394.0" y="376" text-anchor="middle" font-size="11" fill="#5c5548">2025 Q3</text>
+<circle cx="504.0" cy="59.3" r="3.9" fill="#a4262c" stroke="#a4262c" stroke-width="2.2"/>
+<circle cx="504.0" cy="296.1" r="3.9" fill="#1F6F8B" stroke="#1F6F8B" stroke-width="2.2"/>
+<text x="504.0" y="48.3" text-anchor="middle" font-size="11.5" font-weight="600" fill="#a4262c">122.57</text>
+<text x="504.0" y="315.1" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1F6F8B">98.17</text>
+<text x="504.0" y="376" text-anchor="middle" font-size="11" fill="#5c5548">2025 Q4</text>
+<circle cx="614.0" cy="59.1" r="3.9" fill="#a4262c" stroke="#a4262c" stroke-width="2.2"/>
+<circle cx="614.0" cy="291.6" r="3.9" fill="#1F6F8B" stroke="#1F6F8B" stroke-width="2.2"/>
+<text x="614.0" y="48.1" text-anchor="middle" font-size="11.5" font-weight="600" fill="#a4262c">122.59</text>
+<text x="614.0" y="310.6" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1F6F8B">98.64</text>
+<text x="614.0" y="376" text-anchor="middle" font-size="11" fill="#5c5548">2026 Q1</text>
+<circle cx="724.0" cy="69.9" r="3.9" fill="#a4262c" stroke="#a4262c" stroke-width="2.2"/>
+<circle cx="724.0" cy="302.4" r="3.9" fill="#1F6F8B" stroke="#1F6F8B" stroke-width="2.2"/>
+<text x="724.0" y="58.9" text-anchor="middle" font-size="11.5" font-weight="600" fill="#a4262c">121.47</text>
+<text x="724.0" y="321.4" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1F6F8B">97.52</text>
+<text x="724.0" y="376" text-anchor="middle" font-size="11" fill="#5c5548">2026 Q2</text>
+<circle cx="834.0" cy="50.7" r="4.6" fill="#ffffff" stroke="#a4262c" stroke-width="2.2"/>
+<circle cx="834.0" cy="282.7" r="4.6" fill="#ffffff" stroke="#1F6F8B" stroke-width="2.2"/>
+<text x="834.0" y="39.7" text-anchor="middle" font-size="11.5" font-weight="600" fill="#a4262c">123.45</text>
+<text x="834.0" y="301.7" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1F6F8B">99.55</text>
+<text x="834.0" y="376" text-anchor="middle" font-size="11" fill="#5c5548">현재</text>
+<text x="834.0" y="390" text-anchor="middle" font-size="10" fill="#8b8375">[추정]</text>
+<line x1="64" y1="26" x2="64" y2="356" stroke="#d9d2c2"/><line x1="64" y1="356" x2="834" y2="356" stroke="#d9d2c2"/>
+<g><line x1="70" y1="406" x2="98" y2="406" stroke="#a4262c" stroke-width="2.6"/><text x="104" y="410" font-size="11.5" fill="#3a352c">총 공공부채(gross)</text>
+<line x1="260" y1="406" x2="288" y2="406" stroke="#1F6F8B" stroke-width="2.6"/><text x="294" y="410" font-size="11.5" fill="#3a352c">공공 보유분(held by the public)</text>
+<text x="834" y="410" text-anchor="end" font-size="10.5" fill="#8b8375">점선 = 추정</text></g>
+</svg>
+    <figcaption><b>그림 1.</b> 분기별 GDP 대비 정부부채 비율(2024 4분기~2026 2분기) + 현재 추정치. 음영 구간은 부채한도로 부채 잔액이 사실상 동결됐던 기간이다. 이 구간의 비율 하락은 재정 개선이 아니다.</figcaption>
+  </figure>
+</div>
+
+<div class="card">
+  <h2>3. 부채한도가 2025년 데이터를 왜곡했다</h2>
+  <p>2025년 상반기 비율 하락(121.44% → 118.78%, −2.66%p)은 얼핏 재정이 좋아진 것처럼 보인다. 잔액을 보면 그렇지 않다.</p>
+  <div class="scroll">
+  <table>
+    <tr><th>시점</th><th class="num">총 공공부채</th><th class="num">직전 분기 대비</th><th>상태</th></tr>
+    <tr><td>2024-12-31</td><td class="num">$36조 2,186억</td><td class="num">—</td><td>한도 도달 직전</td></tr>
+    <tr><td>2025-03-31</td><td class="num">$36조 2,143억</td><td class="num g">−$43억</td><td>🔒 특별조치 운용 중</td></tr>
+    <tr><td>2025-06-30</td><td class="num">$36조 2,115억</td><td class="num g">−$28억</td><td>🔒 특별조치 운용 중</td></tr>
+    <tr><td>2025-09-30</td><td class="num">$37조 6,376억</td><td class="num r">+$1조 4,261억</td><td>🔓 한도 상향 후 반영</td></tr>
+  </table>
+  </div>
+  <p>182일 동안 총부채가 <b>$71억(0.02%) 줄었다</b>. 그 기간 정부가 지출을 멈춘 것이 아니라, 한도에 막혀 신규 발행 대신 특별조치로 버텼고 그만큼이 <b>장부에 늦게 잡혔을 뿐</b>이다. 그래서 2025년 상반기의 낮은 비율은 실제 부채 부담이 아니라 <b>측정의 공백</b>에 가깝고, 3분기의 +$1.43조 급증은 새로 생긴 부채가 아니라 <b>밀렸던 것이 한꺼번에 계상된 것</b>이다.</p>
+  <p class="note">🔴 <b>실무적 함의</b>: 2025년을 연평균 한 숫자(120.73%)로 요약하면 이 왜곡이 평균 안에 녹아 사라진다. 연도 비교를 할 때는 2025년 상반기가 인위적으로 눌려 있었다는 점을 함께 봐야 한다.</p>
+
+  <figure>
+    <svg viewBox="0 0 860 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="분기별 총 공공부채 증감액">
+<rect width="860" height="290" fill="#ffffff"/>
+<line x1="70" y1="242.0" x2="838" y2="242.0" stroke="#ece7db"/>
+<text x="62" y="246.0" text-anchor="end" font-size="10.5" fill="#8b8375">0</text>
+<line x1="70" y1="170.0" x2="838" y2="170.0" stroke="#ece7db"/>
+<text x="62" y="174.0" text-anchor="end" font-size="10.5" fill="#8b8375">500</text>
+<line x1="70" y1="98.0" x2="838" y2="98.0" stroke="#ece7db"/>
+<text x="62" y="102.0" text-anchor="end" font-size="10.5" fill="#8b8375">1,000</text>
+<line x1="70" y1="26.0" x2="838" y2="26.0" stroke="#ece7db"/>
+<text x="62" y="30.0" text-anchor="end" font-size="10.5" fill="#8b8375">1,500</text>
+<rect x="98.2" y="242.0" width="71.7" height="1.5" fill="#c9bda0" rx="2"/>
+<text x="134.0" y="235.0" text-anchor="middle" font-size="11.5" font-weight="600" fill="#3a352c">-4</text>
+<text x="134.0" y="260" text-anchor="middle" font-size="11" fill="#5c5548">2025 Q1</text>
+<rect x="226.2" y="242.0" width="71.7" height="1.5" fill="#c9bda0" rx="2"/>
+<text x="262.0" y="235.0" text-anchor="middle" font-size="11.5" font-weight="600" fill="#3a352c">-3</text>
+<text x="262.0" y="260" text-anchor="middle" font-size="11" fill="#5c5548">2025 Q2</text>
+<rect x="354.2" y="36.6" width="71.7" height="205.4" fill="#a4262c" rx="2"/>
+<text x="390.0" y="29.6" text-anchor="middle" font-size="11.5" font-weight="600" fill="#3a352c">+1,426</text>
+<text x="390.0" y="260" text-anchor="middle" font-size="11" fill="#5c5548">2025 Q3</text>
+<rect x="482.2" y="115.8" width="71.7" height="126.2" fill="#a4262c" rx="2"/>
+<text x="518.0" y="108.8" text-anchor="middle" font-size="11.5" font-weight="600" fill="#3a352c">+876</text>
+<text x="518.0" y="260" text-anchor="middle" font-size="11" fill="#5c5548">2025 Q4</text>
+<rect x="610.2" y="162.6" width="71.7" height="79.4" fill="#a4262c" rx="2"/>
+<text x="646.0" y="155.6" text-anchor="middle" font-size="11.5" font-weight="600" fill="#3a352c">+551</text>
+<text x="646.0" y="260" text-anchor="middle" font-size="11" fill="#5c5548">2026 Q1</text>
+<rect x="738.2" y="184.8" width="71.7" height="57.2" fill="#a4262c" rx="2"/>
+<text x="774.0" y="177.8" text-anchor="middle" font-size="11.5" font-weight="600" fill="#3a352c">+397</text>
+<text x="774.0" y="260" text-anchor="middle" font-size="11" fill="#5c5548">2026 Q2</text>
+<line x1="70" y1="242.0" x2="838" y2="242.0" stroke="#8b8375" stroke-width="1.2"/>
+<text x="70" y="282" font-size="11" fill="#8b8375">단위: 10억 달러 · 분기말 대비 분기말 총 공공부채 증감</text>
+</svg>
+    <figcaption><b>그림 2.</b> 분기별 총 공공부채 증감액. 2025년 1~2분기의 사실상 0에 가까운 막대가 부채한도 동결 구간이고, 3분기의 돌출이 그 반작용이다.</figcaption>
+  </figure>
+</div>
+
+<div class="card">
+  <h2>4. 비율을 움직인 것은 부채인가 GDP인가</h2>
+  <p>비율은 분자와 분모가 같이 움직인 결과다. 어느 쪽이 얼마나 밀었는지 분해했다. 부채를 직전 분기 값에 고정한 채 GDP만 갱신했을 때의 변화를 <b>분모 기여</b>, 나머지를 <b>분자 기여</b>로 본다(두 기여의 합은 실제 변화와 정확히 일치).</p>
+  <div class="scroll">
+  <table>
+    <tr><th>분기</th><th class="num">총부채/GDP %</th><th class="num">전분기 대비 Δ</th><th class="num">분자(부채) 기여</th><th class="num">분모(GDP) 기여</th></tr>
+    <tr><td><b>2025 Q1</b></td><td class="num">120.55</td><td class="num g">-0.89</td><td class="num ">-0.01</td><td class="num g">-0.88</td></tr>
+<tr><td><b>2025 Q2</b></td><td class="num">118.78</td><td class="num g">-1.76</td><td class="num ">-0.01</td><td class="num g">-1.75</td></tr>
+<tr><td><b>2025 Q3</b></td><td class="num">121.03</td><td class="num r">+2.25</td><td class="num r">+4.59</td><td class="num g">-2.34</td></tr>
+<tr><td><b>2025 Q4</b></td><td class="num">122.57</td><td class="num r">+1.54</td><td class="num r">+2.79</td><td class="num g">-1.25</td></tr>
+<tr><td><b>2026 Q1</b></td><td class="num">122.59</td><td class="num r">+0.03</td><td class="num r">+1.73</td><td class="num g">-1.70</td></tr>
+<tr><td><b>2026 Q2</b></td><td class="num">121.47</td><td class="num g">-1.12</td><td class="num r">+1.22</td><td class="num g">-2.34</td></tr>
+  </table>
+  </div>
+  <p>읽는 법은 단순하다.</p>
+  <ul>
+    <li><b>2025년 1~2분기</b> — 분자 기여가 <b>−0.01%p</b>, 사실상 0이다. 부채한도 동결이 숫자로 그대로 드러난다. 비율 하락은 100% 분모가 만들었다.</li>
+    <li><b>2025년 3분기 이후 전 분기</b> — <b>분자 기여가 한 번도 마이너스인 적이 없다</b>(+4.59 → +2.79 → +1.73 → +1.22%p). 부채는 계속, 예외 없이 비율을 밀어올렸다.</li>
+    <li><b>2026년 2분기</b> — 비율은 −1.12%p 내렸지만 그 안에서 부채는 <b>+1.22%p 밀어올렸고</b> 명목 GDP가 −2.34%p 끌어내렸다. <b>부채가 줄어서 비율이 내려간 분기는 이 표에 하나도 없다.</b></li>
+  </ul>
+  <blockquote>따라서 “2026년 2분기에 부채비율이 개선됐다”는 서술은 데이터가 지지하지 않는다. 정확한 서술은 <b>“명목 성장이 부채 증가를 앞질렀다”</b>이며, 이는 재정이 개선됐다는 뜻이 아니라 <b>인플레를 포함한 명목 GDP가 빠르게 커졌다</b>는 뜻이다. 분모가 커져서 좋아 보이는 비율은 분모가 식으면 곧바로 되돌아온다.</blockquote>
+</div>
+
+<div class="card">
+  <h2>5. 현재 수치를 어디까지 믿을 수 있나</h2>
+  <p>가장 최신 값(123.45%)은 <b>분자와 분모의 시점이 다르다</b>. 부채는 8월 28일 실측이고 GDP는 6월 30일로 끝난 분기 값이다. 3분기 GDP는 <b>아직 발표되지 않았다</b>. 그래서 이 값은 구조적으로 <b>과대</b>다.</p>
+  <p>3분기 말(9월 30일) 시점을 최근 부채 증가 속도(최근 91일간 총부채 <b>일평균 +$98.5억</b>, 공공 보유분 <b>일평균 +$90.7억</b>)로 선형 연장하고, 명목 GDP 성장률만 바꿔가며 계산하면 이렇게 된다.</p>
+  <div class="scroll">
+  <table>
+    <tr><th>3분기 명목 GDP 가정<br>(전분기 대비)</th><th class="num">GDP($10억)</th><th class="num">총부채/GDP</th><th class="num">공공보유/GDP</th><th>판정</th></tr>
+    <tr><td>0.00% (성장 정지)</td><td class="num">32,486.1</td><td class="num">124.45%</td><td class="num r">100.47%</td><td class="r">100% 돌파</td></tr>
+    <tr><td>+1.00%</td><td class="num">32,810.9</td><td class="num">123.22%</td><td class="num">99.48%</td><td>유지</td></tr>
+    <tr><td>+1.50%</td><td class="num">32,973.4</td><td class="num">122.61%</td><td class="num">98.99%</td><td>유지</td></tr>
+    <tr style="background:#f6efdc"><td><b>+1.91%</b> (직전 분기 실적)</td><td class="num">33,106.5</td><td class="num"><b>122.12%</b></td><td class="num"><b>98.59%</b></td><td>유지</td></tr>
+    <tr><td>+2.50%</td><td class="num">33,298.2</td><td class="num">121.42%</td><td class="num">98.02%</td><td>유지</td></tr>
+  </table>
+  </div>
+  <p>🔴 <b>공공 보유분이 GDP 100%를 넘는 분계선은 3분기 명목 GDP 성장률 +0.47%다.</b> 직전 분기 실적이 +1.91%였으므로, 통상적 성장이 이어지면 <b>3분기에는 100%를 넘지 않는다</b>. 지금 계산되는 99.55%를 “곧 100% 돌파”로 읽으면 안 되는 이유이며, 이것은 부채가 줄어서가 아니라 <b>분모가 아직 반영되지 않았기 때문</b>이다.</p>
+  <p class="note">확인 시점 — 3분기 GDP 속보치는 10월 말 발표된다. 그때 이 표의 어느 줄이 맞았는지 검증할 수 있다.</p>
+</div>
+
+<div class="card">
+  <h2>6. 장기 맥락</h2>
+  <figure>
+    <svg viewBox="0 0 860 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="2000년부터 2026년까지 미국 정부부채의 GDP 대비 비율 장기 추이">
+<rect width="860" height="360" fill="#ffffff"/>
+<line x1="58" y1="289.3" x2="838" y2="289.3" stroke="#ece7db"/>
+<text x="50" y="293.3" text-anchor="end" font-size="10.5" fill="#8b8375">40%</text>
+<line x1="58" y1="235.8" x2="838" y2="235.8" stroke="#ece7db"/>
+<text x="50" y="239.8" text-anchor="end" font-size="10.5" fill="#8b8375">60%</text>
+<line x1="58" y1="182.4" x2="838" y2="182.4" stroke="#ece7db"/>
+<text x="50" y="186.4" text-anchor="end" font-size="10.5" fill="#8b8375">80%</text>
+<line x1="58" y1="128.9" x2="838" y2="128.9" stroke="#ece7db"/>
+<text x="50" y="132.9" text-anchor="end" font-size="10.5" fill="#8b8375">100%</text>
+<line x1="58" y1="75.5" x2="838" y2="75.5" stroke="#ece7db"/>
+<text x="50" y="79.5" text-anchor="end" font-size="10.5" fill="#8b8375">120%</text>
+<line x1="58" y1="22.0" x2="838" y2="22.0" stroke="#ece7db"/>
+<text x="50" y="26.0" text-anchor="end" font-size="10.5" fill="#8b8375">140%</text>
+<line x1="58" y1="128.9" x2="838" y2="128.9" stroke="#b5620a" stroke-width="1.1" stroke-dasharray="5,4"/>
+<text x="58.0" y="334" text-anchor="middle" font-size="10.5" fill="#5c5548">2000</text>
+<text x="176.9" y="334" text-anchor="middle" font-size="10.5" fill="#5c5548">2004</text>
+<text x="295.7" y="334" text-anchor="middle" font-size="10.5" fill="#5c5548">2008</text>
+<text x="414.6" y="334" text-anchor="middle" font-size="10.5" fill="#5c5548">2012</text>
+<text x="533.4" y="334" text-anchor="middle" font-size="10.5" fill="#5c5548">2016</text>
+<text x="652.3" y="334" text-anchor="middle" font-size="10.5" fill="#5c5548">2020</text>
+<text x="771.1" y="334" text-anchor="middle" font-size="10.5" fill="#5c5548">2024</text>
+<path d="M58.0,241.9 L65.4,247.9 L72.9,249.2 L80.3,251.2 L87.7,248.8 L95.1,251.8 L102.6,249.7 L110.0,247.2 L117.4,247.3 L124.9,245.8 L132.3,244.6 L139.7,241.4 L147.1,241.6 L154.6,238.6 L162.0,239.4 L169.4,237.3 L176.9,236.3 L184.3,235.7 L191.7,235.9 L199.1,234.1 L206.6,233.4 L214.0,234.1 L221.4,234.9 L228.9,232.3 L236.3,231.7 L243.7,232.6 L251.1,232.3 L258.6,230.9 L266.0,229.8 L273.4,231.6 L280.9,230.9 L288.3,228.6 L295.7,224.7 L303.1,225.5 L310.6,216.3 L318.0,200.4 L325.4,190.1 L332.9,181.6 L340.3,175.9 L347.7,171.6 L355.1,165.0 L362.6,160.6 L370.0,156.8 L377.4,151.3 L384.9,147.7 L392.3,149.8 L399.7,143.6 L407.1,139.4 L414.6,136.6 L422.0,134.7 L429.4,133.1 L436.9,128.7 L444.3,126.9 L451.7,128.8 L459.1,132.3 L466.6,129.5 L474.0,122.6 L481.4,127.2 L488.9,128.6 L496.3,125.5 L503.7,127.6 L511.1,130.8 L518.6,132.6 L526.0,121.8 L533.4,118.2 L540.9,119.3 L548.3,119.3 L555.7,116.5 L563.1,121.1 L570.6,123.3 L578.0,121.4 L585.4,122.8 L592.9,118.9 L600.3,120.9 L607.7,119.7 L615.1,115.4 L622.6,117.3 L630.0,121.1 L637.4,116.6 L644.9,113.5 L652.3,110.8 L659.7,41.6 L667.1,64.4 L674.6,60.4 L682.0,64.7 L689.4,70.7 L696.9,79.4 L704.3,77.2 L711.7,74.4 L719.1,80.3 L726.6,82.3 L734.0,82.5 L741.4,87.3 L748.9,82.3 L756.3,80.4 L763.7,76.5 L771.1,74.2 L778.6,76.8 L786.0,75.0 L793.4,71.6 L800.9,74.0 L808.3,78.7 L815.7,72.7 L823.1,68.6 L830.6,68.5 L838.0,71.5" fill="none" stroke="#a4262c" stroke-width="2.2"/>
+<path d="M58.0,297.6 L65.4,305.0 L72.9,307.1 L80.3,308.8 L87.7,308.5 L95.1,313.6 L102.6,312.0 L110.0,311.1 L117.4,310.8 L124.9,311.2 L132.3,309.7 L139.7,308.1 L147.1,307.4 L154.6,306.0 L162.0,305.5 L169.4,304.4 L176.9,302.6 L184.3,303.1 L191.7,302.7 L199.1,302.2 L206.6,300.5 L214.0,302.5 L221.4,302.6 L228.9,301.6 L236.3,300.4 L243.7,303.0 L251.1,302.9 L258.6,302.9 L266.0,301.2 L273.4,304.4 L280.9,303.5 L288.3,302.9 L295.7,299.2 L303.1,301.2 L310.6,291.9 L318.0,279.6 L325.4,269.6 L332.9,262.8 L340.3,256.4 L347.7,253.6 L355.1,246.0 L362.6,242.0 L370.0,236.8 L377.4,232.2 L384.9,228.1 L392.3,228.7 L399.7,223.1 L407.1,219.8 L414.6,215.3 L422.0,214.0 L429.4,211.5 L436.9,207.6 L444.3,204.8 L451.7,206.0 L459.1,207.3 L466.6,204.1 L474.0,199.7 L481.4,204.4 L488.9,204.3 L496.3,201.8 L503.7,202.5 L511.1,205.0 L518.6,205.6 L526.0,197.6 L533.4,195.2 L540.9,197.1 L548.3,195.6 L555.7,194.0 L563.1,196.9 L570.6,198.6 L578.0,196.9 L585.4,198.5 L592.9,193.2 L600.3,195.1 L607.7,193.4 L615.1,190.2 L622.6,190.8 L630.0,193.8 L637.4,189.1 L644.9,186.7 L652.3,184.5 L659.7,121.0 L667.1,137.1 L674.6,134.2 L682.0,136.8 L689.4,141.1 L696.9,147.6 L704.3,146.6 L711.7,143.2 L719.1,148.8 L726.6,149.4 L734.0,151.2 L741.4,153.5 L748.9,148.8 L756.3,145.3 L763.7,142.7 L771.1,139.8 L778.6,142.8 L786.0,139.6 L793.4,137.6 L800.9,138.8 L808.3,142.1 L815.7,135.8 L823.1,133.6 L830.6,132.4 L838.0,135.5" fill="none" stroke="#1F6F8B" stroke-width="2.2"/>
+<circle cx="659.7" cy="41.6" r="4" fill="#fff" stroke="#a4262c" stroke-width="2"/>
+<text x="659.7" y="31.6" text-anchor="middle" font-size="10.5" fill="#a4262c">2020 Q2 최고 132.66%</text>
+<circle cx="838.0" cy="71.5" r="4" fill="#fff" stroke="#a4262c" stroke-width="2"/>
+<text x="834.0" y="61.5" text-anchor="end" font-size="10.5" fill="#a4262c">2026 Q2 121.47%</text>
+<line x1="58" y1="22" x2="58" y2="316" stroke="#d9d2c2"/><line x1="58" y1="316" x2="838" y2="316" stroke="#d9d2c2"/>
+<line x1="64" y1="348" x2="92" y2="348" stroke="#a4262c" stroke-width="2.4"/><text x="98" y="352" font-size="11" fill="#3a352c">총 공공부채</text>
+<line x1="208" y1="348" x2="236" y2="348" stroke="#1F6F8B" stroke-width="2.4"/><text x="242" y="352" font-size="11" fill="#3a352c">공공 보유분</text>
+</svg>
+    <figcaption><b>그림 3.</b> 2000년 이후 GDP 대비 정부부채 비율. 2008년 금융위기와 2020년 코로나에서 두 번의 계단식 상승이 있었고, 그 이후로는 내려온 적이 없다.</figcaption>
+  </figure>
+  <div class="scroll">
+  <table>
+    <tr><th>시점</th><th class="num">총부채/GDP</th><th class="num">공공보유/GDP</th><th>맥락</th></tr>
+    <tr><td>2007 Q4</td><td class="num">62.72%</td><td class="num">34.90%</td><td>금융위기 직전</td></tr>
+    <tr><td>2009 Q2</td><td class="num">80.28%</td><td class="num">49.90%</td><td>위기 대응 중</td></tr>
+    <tr><td>2019 Q4</td><td class="num">105.78%</td><td class="num">78.36%</td><td>코로나 직전</td></tr>
+    <tr><td>2020 Q2</td><td class="num r">132.66%</td><td class="num r">102.96%</td><td>🔴 <b>역대 최고</b></td></tr>
+    <tr><td>2023 Q1</td><td class="num">115.59%</td><td class="num">90.81%</td><td>코로나 이후 저점</td></tr>
+    <tr><td>2026 Q2</td><td class="num">121.47%</td><td class="num">97.52%</td><td>최근 확정치</td></tr>
+  </table>
+  </div>
+  <p>두 가지가 눈에 띈다. 첫째, <b>위기 때 올라간 비율이 위기가 끝나도 위기 이전으로 돌아가지 않는다.</b> 2007년 62.72%에서 시작해 두 번의 계단을 밟고 지금 121%대에 있다. 둘째, <b>2023년 1분기 저점(115.59%)에서 3년 만에 +5.9%p 올라왔다.</b> 코로나 같은 단일 충격이 없는 평시에 오른 폭이라는 점이 이전 두 계단과 다르다.</p>
+</div>
+
+<div class="card">
+  <h2>7. 해석·시사점</h2>
+
+  <h3>가. 이 비율은 재정 지표가 아니라 두 변수의 비율이다</h3>
+  <p>이번 계산에서 가장 실용적인 발견은 <b>2025년 3분기 이후 부채 기여도가 한 번도 마이너스가 아니었다</b>는 사실이다. 즉 최근 관측되는 모든 비율 하락은 분모발이다. 그래서 “부채비율이 안정됐다”는 진술은 두 가지 전혀 다른 상황을 같은 문장으로 덮을 수 있다 — 부채가 안 늘어난 상황과, 명목 성장이 빨라 부채 증가를 가린 상황. 지금은 <b>후자</b>다.</p>
+  <p>이 구분이 중요한 이유는 분모의 성질 때문이다. 명목 GDP는 실질 성장과 물가의 곱이므로, <b>인플레가 높을수록 부채비율은 자동으로 좋아 보인다.</b> 물가가 잡히면 그 도움도 함께 사라진다. 물가 안정과 부채비율 안정이 같은 방향이라고 가정하면 안 되는 지점이다.</p>
+
+  <h3>나. 두 개의 부채 숫자가 서로 다른 이야기를 한다</h3>
+  <p>총부채는 $40조를 넘어 상징적 헤드라인을 만들었지만, 그 안에는 정부간 보유분 $7.76조가 들어 있다. 시장이 실제로 흡수해야 하는 것은 공공 보유분 $32.3조이고, 국채금리와 이자 부담에 직결되는 것도 이쪽이다. <b>두 숫자의 격차가 계속 벌어지고 있는지</b>가 관찰 포인트다 — 최근 91일간 총부채가 $896억 늘 때 공공 보유분이 $825억 늘었다. 증가분의 <b>92%가 시장이 떠안는 쪽</b>이라는 뜻이다.</p>
+
+  <h3>다. 2025년 데이터를 인용할 때의 함정</h3>
+  <p>2025년 상반기 수치(118.78%)는 여러 자료에서 그대로 인용되지만, 그것이 부채한도 동결의 산물이라는 맥락 없이는 오독을 만든다. 특히 <b>“2025년에 부채비율이 내려갔다가 다시 올랐다”</b>는 서술은 데이터의 모양은 맞지만 원인은 틀렸다. 연도 비교나 추세 회귀를 할 때 이 두 분기는 별도 처리가 필요하다.</p>
+
+  <h3>라. 다음에 볼 것</h3>
+  <div class="scroll">
+  <table>
+    <tr><th style="width:22%">시점</th><th>무엇</th><th>왜</th></tr>
+    <tr><td><b>10월 말</b></td><td>2026 3분기 GDP 속보치</td><td>§5 시나리오 표의 검증. 공공보유 100% 돌파 여부가 여기서 갈린다</td></tr>
+    <tr><td>매 영업일</td><td>재무부 Debt to the Penny</td><td>분자는 일별로 확정된다 — 불확실한 쪽은 언제나 분모다</td></tr>
+    <tr><td>분기</td><td>부채 증가분 중 공공 보유분 비중</td><td>시장이 흡수해야 할 몫의 속도. 현재 약 92%</td></tr>
+  </table>
+  </div>
+</div>
+
+<div class="card">
+  <h2>수집·계산 상태</h2>
+  <ul>
+    <li>⚠️ <b>FRED 부채 시리즈는 2026년 1분기까지만 공표</b>됐다. 2026년 2분기는 재무부 원천 데이터로 <b>자체 계산해 채웠다</b>(방법론은 6개 분기 대조로 검증 완료).</li>
+    <li>⚠️ <b>2026년 3~4분기는 존재하지 않는다.</b> GDP가 발표되지 않았다. §5의 3분기 수치는 전부 가정 기반 시나리오이며 실측이 아니다.</li>
+    <li>⚠️ <b>공공 보유분 자체 계산값이 FRED 대비 0.07~0.08%p 낮다</b>(정의 차이). 총부채 기준은 ±0.00%p 일치.</li>
+    <li>⚠️ <b>선형 연장의 한계</b> — §5의 9월 30일 부채 추정은 최근 91일 평균 증가 속도를 그대로 연장한 것이다. 분기말 세수·국채 발행 일정에 따라 실제 경로는 매끄럽지 않다.</li>
+  </ul>
+</div>
+
+<footer>
+  본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.
+</footer>
+
+</div>
+</body>
+</html>
