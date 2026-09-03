@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Securitize × Socios — 프로스포츠 구단 소수지분 토큰화 제휴의 의의 — 2026-09-03</title>
+<meta name="vault-stage" content="Analysis">
+<meta name="vault-topic" content="SECZ">
+<meta name="vault-date" content="2026-09-03">
+<meta name="description" content="Securitize와 Socios.com이 프로스포츠 구단 소수지분을 규제 증권으로 토큰화하겠다고 발표했다. 1차 자료(보도자료 전문·Socios 상품 페이지·EU 규정 2022/858 제3조)로 그 의의를 해부한다. 핵심 발견은 EU DLT 파일럿 체제의 상한(주식 발행사 시총 5억 유로 미만·인프라 총량 60억 유로)과 보도자료가 내세운 대형 클럽 명단이 그대로는 양립하지 않는다는 점이며, 가능한 해석 네 가지를 각각의 검증·반증 방법과 함께 제시했다. 아울러 팬토큰과 지분토큰의 경계선, Chiliz 자체 의뢰 설문의 한계, 수수료가 실제로 걷히는 층, 리그·클럽·관할 3중 관문, 그리고 이 제휴의 실체를 가를 관측점 8개를 정리했다.">
+<style>
+:root{--bg:#EBE4D3;--card:#FDF6E3;--ink:#1f2328;--muted:#5b6472;--line:#e8e1cf;--accent:#1a56db;--accent2:#1a56db;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Noto Sans KR',sans-serif;line-height:1.66;font-size:15px}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 22px 80px}
+h1{font-size:25px;line-height:1.35;border-bottom:3px solid var(--accent);padding-bottom:12px;margin:8px 0 18px;color:#111827}
+h2{font-size:19.5px;margin:34px 0 12px;padding:8px 12px;background:linear-gradient(90deg,#F3ECD9,transparent);border-left:4px solid var(--accent);border-radius:4px;color:#1f2937}
+h3{font-size:16.5px;margin:22px 0 8px;color:#2b3242;padding-left:8px;border-left:4px solid #6366f1}
+h4{font-size:14.5px;margin:16px 0 6px;color:var(--muted)}
+p{margin:8px 0}
+a{color:var(--accent2);text-decoration:none;border-bottom:1px solid #c7d3f0}
+a:hover{border-bottom-color:var(--accent2)}
+code{background:#F3ECD9;padding:1px 6px;border-radius:4px;font-size:13px;font-family:'SF Mono',Menlo,monospace}
+del{color:#9aa3b2}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0}
+blockquote{margin:10px 0;padding:10px 16px;background:var(--card);border-left:4px solid #2bb3a3;border-radius:6px;color:#33404e;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.3px;background:var(--card);border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+th{background:#243042;color:#fff;text-align:left;padding:9px 11px;font-weight:600}
+td{padding:8px 11px;border-top:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:#F7F1DF}
+ul{margin:8px 0;padding-left:24px}
+li{margin:4px 0}
+strong{color:#11151d}
+.dd-fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:12px 14px;margin:16px 0}
+@media print{:root{--bg:#fff;--card:#fff;--line:#ddd}body{background:#fff}h2{background:none}tr:nth-child(even) td{background:#fff}}
+.foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+</style><meta name="vault-published" content="2026-09-03">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body><div class="wrap"><h1>Securitize × Socios — 프로스포츠 구단 소수지분 토큰화 제휴의 의의</h1>
+<blockquote><strong>사건</strong> 2026-09-02 · <strong>판독</strong> 2026-09-03 · 1차 자료 = <a href="https://securitize.io/learn/press/securitize-socios-tokenized-equity-sports-teams" target="_blank">Securitize 보도자료</a> · <a href="https://www.socios.com/socios-equity-token/" target="_blank">Socios 상품 페이지</a> · <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R0858" target="_blank">EU 규정 2022/858 제3조</a> · 보조 = <a href="https://www.theblock.co/news/ecosystems/2026-09-02-securitize-and-socios-team-up-to-tokenize-equity-in-pro-sports-teams-413378" target="_blank">The Block 9/2</a> · 회사·CEO 공식 X(9/2) · rwa.xyz 실측(9/3)</blockquote>
+<blockquote></blockquote>
+<blockquote>라벨 규약 — <strong>[관측]</strong> 1차 확인 사실 · <strong>[추론]</strong> 해석·가설 · <strong>[KNOW]</strong> 재료 밖 배경 · <strong>[미검증]</strong>·⏳ 확인 불가·미확정.</blockquote>
+<blockquote>본 문서는 산업·구조 분석이며 투자 권유가 아니다.</blockquote>
+<h2>📌 한 줄 요지</h2>
+<blockquote>[관측] 팬토큰(효용)과는 &quot;별개 상품&quot;으로, 프로구단 소수지분을 규제 증권으로 토큰화하겠다는 제휴이며 EU DLT 파일럿 체제의 첫 프로젝트로 예고됐다. [추론] 새로운 것은 상품이 아니라 <strong>70곳 넘는 구단과 이어진 소비자 유통망 + 규제 발행 레일의 접합</strong>이고, 구조적으로 막히는 것은 파일럿 체제의 <strong>€5억(발행사)·€60억(총량) 상한</strong>과 보도자료가 내세운 <strong>대형 클럽 명단</strong>의 불일치다. 참여 구단·조건·투자자 자격은 전부 ⏳ &quot;개별 공모가 승인되면&quot; 공개.</blockquote>
+<h2>1. 무엇이 새로운가 — 효용에서 증권으로 넘어가는 경계선</h2>
+<p>[관측] 보도자료는 FAN TOKEN®과 Socios Equity Token이 *&quot;remain separate products&quot;*라고 못 박았다 — 전자는 참여·효용, 후자는 &quot;적용 공모 문서에 따르는 규제 금융 이익&quot;이다(<a href="https://securitize.io/learn/press/securitize-socios-tokenized-equity-sports-teams" target="_blank">Securitize 보도자료</a>).</p>
+<p>[추론] 이 한 문장은 세 가지 일을 동시에 한다.</p>
+<ul>
+<li><strong>방화벽</strong>: 기존 팬토큰이 &quot;지분과 닮은 것&quot;으로 재분류될 위험을 차단한다. 70곳 넘는 발행 이력이 증권 규제에 통째로 노출되는 사태를 막는 문장이다. [KNOW] 팬토큰은 과거 여러 관할에서 광고·소비자보호 관점의 문제 제기를 받은 이력이 있다(구체 사건 기록은 이번 재료 밖).</li>
+<li><strong>책임 경계</strong>: Socios는 관계·팬 대면층, Securitize는 발행·온보딩·명부·이전통제·지속 서비스. 증권의 법적 책임은 규제 계열사(CNMV 등록번호 327 스페인 투자회사·SEC 등록 브로커딜러)에 귀속되고, Socios는 유통·마케팅 편에 선다.</li>
+<li><strong>팬이 사는 것의 성격 전환</strong>: &quot;투표권·특전&quot;이 아니라 &quot;지분의 경제적 이익&quot;이 된다. 그래서 공시·투자자 자격·이전 제한이 따라붙는다.</li>
+</ul>
+<p>무엇이 새롭지 않은가. [관측] Securitize는 이미 주식 $2.4억·사모주식 $1.6억을 토큰화해 운용 중이고(rwa.xyz 9-3 실측), 스포츠 팬 대상 블록체인 상품은 Socios가 수년째 해 왔다. [추론] 새로움은 *두 기존 역량의 접합*과 *파일럿 체제 첫 사용*이라는 규제 이정표에 있지, 상품 자체에 있지 않다. 그리고 [관측] 어떤 구단도, 어떤 조건도 확정되지 않았다 — 보도자료 마지막 문장이 *&quot;if and when individual offerings are approved&quot;*다.</p>
+<h2>2. 파일럿 체제 상한과 클럽 명단 — 그대로는 양립하지 않는다</h2>
+<table><thead><tr><th>항목</th><th><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R0858" target="_blank">Regulation (EU) 2022/858 Art.3</a></th><th>보도자료가 내세운 것</th></tr></thead><tbody>
+<tr><td>주식 발행사</td><td>시가총액(또는 잠정 시가총액) <strong>&lt; €5억</strong></td><td>Manchester City·PSG·FC Barcelona·Juventus 등 12개 구단 + 5개 대표팀</td></tr>
+<tr><td>채권·증권화 채무</td><td>발행 규모 &lt; €10억</td><td>언급 없음</td></tr>
+<tr><td>집합투자기구 units</td><td>운용자산 &lt; €5억</td><td>언급 없음</td></tr>
+<tr><td>인프라 총량</td><td>상장·기록 합계 <strong>≤ €60억</strong></td><td>&quot;$5,000억 규모&quot; 자산군</td></tr>
+</tbody></table>
+<p>[KNOW] 명시된 대형 클럽은 통상 수십억 유로 단위로 평가되는 구단들이다 — 개별 수치는 이번 재료 밖이라 [미검증]. [관측] €60억은 보도자료가 말한 $5,000억의 약 1% 남짓이다. [추론] 파일럿 체제는 &quot;$5,000억을 팬에게 가져오는&quot; 통로가 아니라 실험용 모래상자이고, CEO의 X 발언과 파일럿 첫 프로젝트 문장은 서로 다른 시간·다른 경로를 가리킨다. 가능한 해석은 최소 넷이다.</p>
+<h3>해석 A — 명단은 팬토큰 고객 목록이고, 지분 발행은 작은 클럽부터</h3>
+<p>[추론] 보도자료의 12개 구단 명단은 &quot;FAN TOKEN® 발행 실적&quot; 문단에 붙어 있지, 지분 발행 파이프라인 문단에 있지 않다. 첫 파일럿 프로젝트는 시총 €5억 미만 구단(하위 리그·중소 클럽)일 수 있다.</p>
+<ul>
+<li><strong>검증</strong>: 첫 공모 문서의 발행사 명칭과 그 구단의 최근 거래 평가액.</li>
+<li><strong>반증</strong>: 첫 공모의 발행사가 명단의 대형 클럽 본체이면서 파일럿 체제 인프라를 쓴다면 이 해석은 무너진다.</li>
+</ul>
+<h3>해석 B — 지분을 담는 별도 법인이 발행사가 되고 &quot;잠정 시가총액&quot;은 그 법인 기준</h3>
+<p>[추론] 대형 클럽의 소수지분(예: 수 %)을 별도 법인에 넣고 그 법인의 주식을 토큰화하면, 발행사의 &quot;잠정 시가총액&quot;은 담긴 지분의 가치가 된다. 규정 문언이 &quot;issuer&quot;의 시총을 기준으로 삼는다는 점을 이용하는 구조다. 다만 감독당국이 기초자산으로 들여다보는지(look-through)는 [미검증].</p>
+<ul>
+<li><strong>검증</strong>: 공모 문서에 발행사가 클럽이 아닌 별도 법인(SPV·지주회사)으로 적히는지, CNMV·ESMA의 DLT 시장인프라 등록 조건에 기초자산 기준이 명시되는지.</li>
+<li><strong>반증</strong>: 감독당국 인가 조건이 기초자산 기준 산정을 요구하거나, 공모 문서가 클럽 본체를 발행사로 적으면 기각.</li>
+</ul>
+<h3>해석 C — 대형 클럽은 파일럿 체제가 아닌 다른 경로</h3>
+<p>[추론] 보도자료 각주가 미국 경로(Securitize Markets, LLC의 ATS·1933년 증권법 미등록 증권)를 별도로 적어 둔 점이 단서다. 파일럿은 첫 프로젝트 하나에만 쓰고, 대형 클럽은 미국 ATS나 파일럿 밖 스페인 인가 경로로 갈 수 있다. 이 경우 &quot;팬 대상&quot;의 범위가 관할별로 크게 달라진다.</p>
+<ul>
+<li><strong>검증</strong>: 공모 문서의 발행 주체·적용 면제 조항·지원 블록체인 명시. 투자자 자격에 &quot;미국 적격투자자 한정&quot; 같은 문구가 붙는지.</li>
+<li><strong>반증</strong>: 대형 클럽 공모가 유럽 파일럿 인프라에서 소액 팬에게 열리면 기각.</li>
+</ul>
+<h3>해석 D — 주식이 아니라 집합투자 units로 포장</h3>
+<p>[추론] 여러 구단 지분을 한 기구에 담으면 규정 (c)항(운용자산 €5억 미만)이 적용된다. &quot;minority equity interests&quot;라는 표현은 이 포장과도 양립한다.</p>
+<ul>
+<li><strong>검증</strong>: 상품 유형이 주식인지 펀드 units인지(공모 문서·CNMV 등록 상품 분류).</li>
+<li><strong>반증</strong>: 첫 상품이 단일 구단 주식이면 기각.</li>
+</ul>
+<p>[추론] 현재 재료로는 어느 해석도 고를 수 없다. 첫 공모 문서의 <strong>발행사 명칭·상품 유형·규제 경로</strong> 세 칸이 채워져야 판정된다. 한 가지는 지금도 말할 수 있다 — 어느 해석이든 파일럿 체제 안에서는 총량 €60억이 천장이라, &quot;대형 클럽 다수의 소수지분을 팬에게&quot;라는 그림은 파일럿 밖 경로 없이는 성립하지 않는다.</p>
+<h2>3. 왜 하필 스포츠인가</h2>
+<p><strong>자산 성격.</strong> [관측] 보도자료 스스로 &quot;predominantly private · often difficult to access or trade&quot;라고 규정했다. [추론] 비유동·사적 자산은 토큰화가 *가격 발견*을 처음 제공한다는 서사가 가장 잘 먹히는 영역이다. 여기에 감정적 프리미엄이 얹힌다 — 팬은 기관보다 높은 값을 낼 가능성이 있다. 이는 파는 쪽(구단주)에게는 장점이고, 규제 증권으로서는 투자자 보호 논점이다(CEO 인용의 &quot;investor protections… that should come with a regulated security&quot;가 이 지점을 의식한 표현으로 읽힌다).</p>
+<p><strong>인프라 관점.</strong> [관측] 회사 플랫폼은 분산자산가치 $49.4억에 보유자 1,871명, 자사 상장주식 토큰은 보유자 57명·30일 활성 주소 6개·월 이전 61건이다. [추론] 이 플랫폼에 부족한 것은 자산 규모가 아니라 <strong>계좌 수·건수·회전</strong>이다. 스포츠 팬은 그 셋을 한 번에 시험할 수 있는 거의 유일한 소비자 집단이고, Socios는 이미 온보딩된 팬 기반을 갖고 있다. 즉 이 제휴는 회사 관점에서 &quot;자산군 확장&quot;이라기보다 &quot;소액 다건 온보딩의 시험대&quot;에 가깝다. Chiliz 관점에서는 CEO 인용 그대로 &quot;next stage of that evolution&quot; — 팬토큰의 다음 성장 서사가 필요했다.</p>
+<h2>4. 수요 근거의 품질 — 설문은 판정 재료가 아니다</h2>
+<table><thead><tr><th>지표</th><th>수치</th><th>읽을 때의 한계</th></tr></thead><tbody>
+<tr><td>구매 관심</td><td>72%(매우 관심 27%)</td><td>&quot;관심&quot;이지 청약이 아님. 가격·조건·락업 없이 물은 답</td></tr>
+<tr><td>시장별 관심</td><td>미국 85% · 스페인 78% · 이탈리아 76% · 한국 70% · 영국 49%</td><td>관할 제한 미확정 — 관심 상위 시장이 자격 시장과 일치한다는 보장 없음</td></tr>
+<tr><td>평균 희망 진입액</td><td>£913(한국 £1,090 1위)</td><td>평균은 상위 꼬리(£5,000 초과 5.5%)가 끌어올림. 누적 분포상 중앙값은 £251~500 구간</td></tr>
+<tr><td>동기</td><td>배당 51% · 자본이득 51% · 특전 46% · 유동성 36%</td><td>[KNOW] 사적 구단의 소수지분이 배당을 내는 경우는 드묾 — 51%의 기대와 상품 성격이 어긋날 수 있음</td></tr>
+<tr><td>우려</td><td>변동성 44% · 보안 43% · 이해 어려움 29% · 발언권 없음 26%</td><td>페이지 해설(&quot;규제 발행·수탁이 상위 둘을 해결&quot;)은 판매자 해석</td></tr>
+</tbody></table>
+<p>[관측] 설문은 Chiliz가 OnePoll에 의뢰한 온라인 조사(7/31~8/18, 5개국 각 1,000명, 18세 이상 축구 팬)이며 상품 페이지의 &quot;COMING SOON&quot; 배지 아래 게재됐다(<a href="https://www.socios.com/socios-equity-token/" target="_blank">Socios 상품 페이지</a>). [추론] 응답자가 &quot;축구 팬&quot;으로 사전 선별됐고 의뢰자가 판매자이므로, 이 수치는 수요의 *존재*를 가리키는 힌트이지 *크기*의 근거가 아니다. 페이지 결론(&quot;not collectors; retail investors who happen to be fans&quot;)도 판매자 해석이다.</p>
+<p>[추론] 티켓 크기가 뜻하는 것이 더 중요하다. 중앙값이 £300~400대라면 계좌당 매출은 매우 작고, 신원확인·적격성 심사·명부 유지 비용은 계좌마다 거의 고정으로 든다. <strong>건수는 많고 건당은 작다</strong> — 이 비용 구조가 §5의 핵심 제약이다.</p>
+<h2>5. 값은 어디에 쌓이는가</h2>
+<p>[관측] Securitize가 맡는 다섯 층 = 발행·투자자 온보딩·명부 관리·이전 통제·지속 서비스. [추론] 층별로 수수료의 성격이 다르다.</p>
+<table><thead><tr><th>층</th><th>누가 내는가(추론)</th><th>반복성</th><th>소액 다건에서의 문제</th></tr></thead><tbody>
+<tr><td>발행 구조화</td><td>발행사(구단·구단주)</td><td>1회</td><td>발행 건수가 곧 매출 — 첫 공모 승인이 없으면 0</td></tr>
+<tr><td>온보딩</td><td>발행사 또는 투자자</td><td>계좌당 1회</td><td>계좌당 비용 고정 vs 티켓 £913 — 마진이 남는지 [미검증]</td></tr>
+<tr><td>명부 관리</td><td>발행사</td><td>연간</td><td>소액이지만 안정적 — 다만 발행사 수에 비례</td></tr>
+<tr><td>이전 통제·2차 거래</td><td>거래 당사자</td><td>거래당</td><td>[관측] 자사 토큰조차 월 61건·$52만 — 회전이 없으면 0에 수렴</td></tr>
+<tr><td>지속 서비스(배당·의결)</td><td>발행사</td><td>사건당</td><td>[KNOW] 사적 구단은 배당 사건 자체가 드묾</td></tr>
+</tbody></table>
+<p>[추론] 이 표가 말하는 것은 &quot;토큰화가 온다&quot;와 &quot;이 회사에 값이 쌓인다&quot; 사이에 세 개의 독립 조건이 있다는 점이다 — (1) 실제 승인된 발행 건수, (2) 계좌당 온보딩 비용이 수수료 아래로 내려오는지, (3) 2차 회전이 발생하는지. [관측] 세 조건 중 현재 관측된 것은 없고, (3)은 토큰화 주식 시장 전체($25.3억, 1위 Ondo·2위 xStocks)에서도 회전 근거가 얇다. 값의 다른 부분 — 팬 관계·데이터·마케팅 — 은 Socios의 참여층에 쌓이고, 자본과 팬 락인은 구단에 쌓인다. 규제 레일은 그 사이에서 건당 수수료를 걷는 자리이지, 프리미엄을 가져가는 자리가 아니다.</p>
+<h2>6. 구조적 제약 — 3중 관문·구단주 동기·거버넌스</h2>
+<p><strong>3중 관문.</strong> [관측] 조건절은 &quot;증권법 · 리그 요건 · 클럽 승인 · 관할 제한&quot;을 나열한다. [추론] 이 중 리그 요건이 가장 무겁다 — [KNOW] 주요 리그는 구단 소유·지분 이전에 자체 심사 규정을 두며(세부는 이번 재료 밖), 토큰 소유자 수백~수천 명이 &quot;주주&quot;가 되는 구조를 리그가 어떻게 취급할지는 [미검증]. 관할 제한은 설문 상위 시장(미국·한국)의 소액 팬이 실제 자격을 갖는지를 좌우한다.</p>
+<p><strong>구단주 동기.</strong> [추론] 소수지분을 파는 이유는 둘 중 하나다 — (a) 자금조달: 지배권을 안 내주면서 프리미엄에 판다, (b) 팬 락인: 팬을 주주로 묶어 이탈 비용을 높인다. (a)라면 팬이 낸 프리미엄이 곧 구단주의 이익이라 투자자 보호 논점이 되고, (b)라면 지분은 팬토큰의 상위 버전이 되어 §1의 &quot;별개 상품&quot; 경계가 흐려진다. 어느 쪽인지는 첫 공모의 *매도 주체*(신주 발행인지 기존 구단주 구주 매출인지)로 드러난다.</p>
+<p><strong>거버넌스.</strong> [관측] &quot;실질 발언권 없음&quot; 우려 26%에 대해 Socios 페이지는 &quot;governance rights가 이를 다룬다&quot;고 답했다. [추론] 그러나 소수지분·이전통제·리그 승인이 겹치는 구조에서 팬 주주의 의결권은 다수 구단주와 리그 규정에 종속된다. 팬토큰 투표(유니폼 색 등)와 주주 의결권을 구분하지 않으면 다시 경계가 흐려진다. 또 &quot;transfer controls&quot;가 기능으로 명시된 점은 유동성이 *설계상* 제한된다는 뜻이라, 설문의 유동성 동기 36%·변동성 우려 44%와 정면으로 만난다. 이 긴장은 공모 문서의 의결권·정보권·이전 제한 조항에서만 해소된다.</p>
+<h2>7. 이 제휴가 진짜였는지 알 수 있는 관측점</h2>
+<p>[추론] 아래 항목이 채워지는 순서가 곧 이 제휴의 실체가 드러나는 순서다. 현재 상태는 전부 ⏳.</p>
+<table><thead><tr><th>#</th><th>관측점</th><th>확인 문서·수치</th><th>시점</th><th>판정 기준</th></tr></thead><tbody>
+<tr><td>1</td><td>첫 공모의 <strong>발행사 명칭·상품 유형·규제 경로</strong></td><td>공모 문서·CNMV 등록·ESMA DLT 시장인프라 목록</td><td>⏳ &quot;승인되면&quot;</td><td>§2 해석 A~D 중 어느 것이 남는지 결정</td></tr>
+<tr><td>2</td><td>발행사 시가총액 vs €5억</td><td>공모 문서의 평가액</td><td>1과 동시</td><td>파일럿 상한 준수 방식 확인</td></tr>
+<tr><td>3</td><td><strong>투자자 자격·허용 관할</strong></td><td>공모 문서·상품 페이지의 &quot;COMING SOON&quot; 해제</td><td>1과 동시</td><td>설문 상위 시장(미국·한국)이 포함되는지</td></tr>
+<tr><td>4</td><td>최소 청약액·<strong>계좌 수</strong></td><td>첫 청약 마감 공지·온체인 보유자 수(rwa.xyz)</td><td>마감 후</td><td>보유자 수가 자사 토큰 57명을 유의하게 넘는지</td></tr>
+<tr><td>5</td><td><strong>2차 회전</strong></td><td>파일럿 TSS 상의 월 이전 건수·금액</td><td>상장 후 90일</td><td>월 61건·$52만(자사 토큰) 대비</td></tr>
+<tr><td>6</td><td>의결권·정보권·이전 제한 조항</td><td>공모 문서 권리 조항</td><td>1과 동시</td><td>&quot;발언권 없음&quot; 26%에 대한 실제 답</td></tr>
+<tr><td>7</td><td>리그·구단 공식 승인</td><td>리그 성명·구단 공식 발표</td><td>1 이전</td><td>3중 관문 통과의 1차 증거</td></tr>
+<tr><td>8</td><td>Securitize 재무 보고에서의 <strong>매출 귀속</strong></td><td>다음 분기 보고서(10-Q)의 유럽 사업·프로젝트 언급</td><td>다음 분기 ⏳</td><td>§5 조건 (1)~(3) 중 무엇이 숫자로 잡히는지</td></tr>
+</tbody></table>
+<hr>
+<p>*본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.*</p>
+<div class="dd-fig"><p class="cap">5년 확률 가중 시나리오 손익비 — (SECZ-Memory 시나리오 + §9-3 적정가 calibration) <span class="ev-badge" id="ev-scn"></span></p><div id="fig-scn"></div></div>
+<div class="foot">secz-weekly ·  정기 시행 · Chrome MCP 전용(WebFetch/WebSearch 0건) · validate_report.py PASS · 7-Day Cover PASS · 크림 테마 자동 생성</div>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const VIZ={"scenario": {"horizonLabel": "5년", "threshold": 1.5, "cases": [{"label": "🟢 Bull", "tone": "bull", "prob": 0.25, "mult": 3.2, "note": "CLARITY 통과 + IST 발행 + AUM $25B"}, {"label": "🟡 Base", "tone": "base", "prob": 0.5, "mult": 1.3, "note": "GENIUS 시행 지연 + AUM 완만 성장"}, {"label": "🔴 Bear", "tone": "bear", "prob": 0.25, "mult": 0.27, "note": "규제 표류 + fee 압축 + 락업 매물"}]}};
+try{{ DDViz.renderScenario('fig-scn','ev-scn',VIZ.scenario); }}catch(e){{ console.error('viz render error', e); }}
+</script>
+</body></html>
