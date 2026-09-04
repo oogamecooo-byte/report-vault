@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macro Weekly Deep Dive — 2026-09-05</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; background: #EBE4D3; color: #1f2328; line-height: 1.72; padding: 24px; }
+  .container { max-width: 1080px; margin: 0 auto; background: #FDF6E3; border-radius: 14px; padding: 44px 50px; box-shadow: 0 3px 18px rgba(70,58,30,0.14); }
+  h1 { font-size: 1.8em; margin: 8px 0 18px; color: #2a2418; border-bottom: 3px solid #b58900; padding-bottom: 10px; }
+  h2 { font-size: 1.36em; margin: 30px 0 14px; color: #36301d; border-bottom: 1px solid #d8cfb8; padding-bottom: 6px; }
+  h3 { font-size: 1.14em; margin: 20px 0 10px; color: #473f26; }
+  h4 { font-size: 1.05em; margin: 14px 0 8px; color: #5c5237; }
+  p { margin: 8px 0; }
+  hr { border: none; border-top: 1px solid #d8cfb8; margin: 26px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13.5px; background: #fffdf6; border: 1px solid #e8e1cf; border-radius: 6px; overflow: hidden; }
+  th { background: #36301d; color: #f4ecd8; padding: 9px 11px; text-align: left; border-right: 1px solid #4a4230; }
+  th:last-child { border-right: none; }
+  td { padding: 9px 11px; border-top: 1px solid #ece4d0; border-right: 1px solid #f0e9d6; vertical-align: top; }
+  td:last-child { border-right: none; }
+  tr:nth-child(even) td { background: #faf4e4; }
+  tr:hover td { background: #f3ead2; }
+  code { background: #efe7d0; padding: 1px 6px; border-radius: 4px; font-size: 13px; font-family: 'SF Mono', Monaco, monospace; color: #a8341f; }
+  pre { background: #efe7d0; padding: 12px; border-radius: 6px; overflow-x: auto; margin: 12px 0; }
+  pre code { background: transparent; padding: 0; color: #36301d; }
+  a { color: #0a6f93; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  blockquote { border-left: 4px solid #b58900; padding: 10px 16px; background: #f6eed6; margin: 14px 0; color: #5c5237; border-radius: 0 8px 8px 0; }
+  ul { margin: 8px 0 8px 24px; }
+  li { margin: 4px 0; }
+  strong { font-weight: 700; color: #241f12; }
+  em { color: #5c5237; }
+  del { color: #9a8f70; }
+  .foot { margin-top: 40px; padding-top: 16px; border-top: 1px solid #d8cfb8; color: #5c5237; font-size: 12.5px; }
+  @media print { body { background: #fff; padding: 0; } .container { background: #fff; box-shadow: none; border-radius: 0; padding: 20px; } table { background: #fff; } }
+</style><meta name="vault-stage" content="Monitoring">
+<meta name="vault-topic" content="매크로">
+<meta name="vault-date" content="2026-09-05">
+<meta name="vault-published" content="2026-09-05">
+<meta name="description" content="Macro Weekly Deep Dive — 2026-09-05">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body><div class="container">
+<h1>🌐 Macro Weekly Deep Dive — 2026-09-05</h1>
+<p>주간 데이터 기준: FRED 134계열(~9/4)·yfinance 49심볼(9/4 종가)·Warsh 프레임 3종(Dallas 7월판 8/26 갱신·Cleveland 7월판 8/12 갱신)·1차 정부소스(<strong>8월 고용상황</strong>·<strong>월러 연설 전문</strong>·<strong>G20 애슈빌 의장성명</strong>·<strong>백악관 베네수엘라 발표</strong>·FEDS Notes 4건·재무부/OFAC/FinCEN·SEC 뉴스룸 3스트림·NY Fed 운영·CFTC·DOJ NSD·CISA·ISM)·뉴스(Bloomberg/WSJ RSS 8/29~9/4)·정책 X 6계정·외부 리서치 12종. 브라우저 필수 피드 <strong>53/53 수집 완료</strong>.</p>
+<p>직전 실행 2026-08-29 대비 1주 델타.</p>
+<h2>📌 한 장 요약</h2>
+<ul>
+<li><strong>종합 매크로 레짐: 🟡 리플레이션 — 유지 · 방향 ⬆️ (지난주 ⬇️에서 반전)</strong> — 지난주 깨졌던 <strong>인플레 다리가 에너지로 다시 붙었고</strong>(WTI 주간 <strong>+9.38%</strong>·GSCPI 8월 <strong>1.06</strong>·ISM 가격 제조 71.1/서비스 <strong>72.6</strong>), <strong>성장 다리는 강해졌다</strong>(8월 고용 <strong>+162K</strong>·ISM 서비스 55.4·GDPNow 4.7%). 유동성 다리만 여전히 끊겨 있다.</li>
+</ul>
+<ul>
+<li>🔴🔴 <strong>8월 고용 +162K — 컨센(+45~58K)의 3배.</strong> 실업률 4.1% 유지·참가율 61.6%(+0.2%p)·U-6 7.7%. 시장은 즉시 <strong>인상 쪽으로 재가격</strong>(주가 하락·단기금리 상승). 🔴 그런데 성장의 자리는 <strong>레저·접객 +62K·정부 +35K</strong>이고 <strong>정보 −23K·금융 −11K</strong>다 — 화이트칼라 4종 <strong>−25K</strong> vs 블루칼라 3종 <strong>+100K</strong>로 §15 이질화가 처음으로 부호까지 갈렸다.</li>
+</ul>
+<ul>
+<li>🔴🔴 <strong>연준 안에서 &quot;인상&quot;이 두 사람 입으로 나왔다.</strong> 월러(9/3): *&quot;8월 물가가 뜨겁게 나오면 인상을 고려하겠다 · 정책은 현재 총수요를 <strong>아주 약간만</strong> 제약한다.&quot;* 해맥(9/4): *&quot;인플레를 낮추기 위해 행동할 때.&quot;* 🔴 월러는 워시의 <strong>forward guidance 폐기에 동의</strong>한다고 명시하면서도 <strong>조건부 반응함수는 공개</strong>했다 — 폐기된 것은 *경로 약속*이지 *조건문*이 아니라는 선 긋기다.</li>
+</ul>
+<ul>
+<li>🔴🔴 <strong>유가가 둔감을 깼다.</strong> 지난주 &quot;봉쇄 86척에도 +0.45%&quot;였던 유가가 이번 주 <strong>WTI +9.38%($91.22)·Brent +7.30%($95.83)</strong>. 베센트(9/4): *&quot;봉쇄 재개 이후 이란산 원유가 호르무즈를 통과해 중국으로 가지 못했다 · 해협 안 선박에 쌓인다.&quot;* 같은 날 그는 *&quot;전쟁이 끝나면 유가 $40·금리도 내려간다&quot;*고 했다.</li>
+</ul>
+<ul>
+<li>🔴🔴 <strong>백악관: 베네수엘라 확인매장량 650억+ 배럴의 미국 과반 지배</strong>(9/2). 루비오·헤그세스 서명, &quot;납세자 비용 0&quot;, 대상 유전 다수가 이전에 <strong>러시아·중국 기업 또는 마두로/차베스 측근</strong> 지배. <strong>호르무즈를 조이면서 서반구를 여는</strong> 구도가 문서로 완성됐다.</li>
+</ul>
+<ul>
+<li>🔴 <strong>G20 애슈빌 의장성명(9/1) — 19 대 1.</strong> 각주1: *&quot;중국을 제외한 참석 전원 합의, 중국은 4·10·11·13항에 반대&quot;*. 본문에 <strong>&quot;중앙은행은 생산능력 이득과 수요 변화를 엄밀히 구분하겠다&quot;</strong> — 워시 독트린의 문장이 19개국 문서로 나갔다. <strong>Trump Accounts</strong>도 명기됐다.</li>
+</ul>
+<ul>
+<li>🔴 <strong>SEC가 이전대리인(transfer agent) 규칙을 40여 년 만에 뜯는다</strong>(9/1·Release 2026-81). 앳킨스: *&quot;증권 발행과 주식 이전에서 전자 통신과 <strong>블록체인 기술</strong> 사용을 반영&quot;*. 같은 날 WSJ — <strong>21개 금융사(메가뱅크 다수)가 스테이블코인 공동 발행사 설립</strong> 계획(*&quot;디지털자산과의 경쟁 방어&quot;*). 9/4 연준 FEDS Note는 <strong>「새 화폐 형태와 미국 통화총량」</strong>. 원장·정의·국경 셋을 같은 주에 만졌다.</li>
+</ul>
+<ul>
+<li>🟠 <strong>유동성은 배관 쪽에서 더 얇아졌다</strong> — 지준 <strong>−$30.4십억</strong>(2,894.5십억) · 지준/은행자산 <strong>11.40% → 11.29%</strong> · RRP <strong>$0.5십억</strong> · 유동성/GDP <strong>8.91%</strong>(FEDS Note 10배 증폭 구간). 반면 MMF는 <strong>사상 최고 $7,979.35십억</strong>(기관 정부형 주도)이고 순유동성은 주간 <strong>+$19.8십억</strong>으로 중립이다.</li>
+</ul>
+<ul>
+<li>🟠 <strong>엔은 강해졌고 원화는 52주 최강이다</strong> — USD/JPY <strong>156.22</strong>(주간 −1.95%)·JP10Y <strong>2.91%</strong>(3% 하회 복귀)·원/달러 <strong>1,346</strong>(주간 −2.5%·52주 위치 0.0%). DXY 주간 −0.54%. 🔴 그런데 같은 주 달러 현금(MMF)은 사상 최고 — 달러에서 나간 게 아니라 <strong>달러 안에서 자리를 옮겼다</strong>.</li>
+</ul>
+<ul>
+<li>🟠 <strong>결정 데이터는 이번 주가 아니라 다음 주다</strong> — <strong>9/11 8월 CPI</strong>(컨센 m/m <strong>+0.4%</strong> vs 7월 +0.1%)가 월러 조건문의 심판이고, 그 사흘 뒤가 <strong>9/15~16 FOMC</strong>다.</li>
+</ul>
+<hr>
+<h2>📊 §0 핵심 시계열 그래프 (최우선 · 매 실행 렌더)</h2>
+<p><strong>5패널 + 미분 서브 3</strong> — ① 순유동성 ② MMF 총자산 ③ Truflation ④ TGA 일간 ⑤ 부채 증가율 × 명목 GDPNow(+⑤-b 막대)</p>
+<div style="overflow-x:auto;margin:1.2em 0">
+<svg viewBox="0 0 940 3166.0" width="100%" style="max-width:940px;background:#ffffff;border:1px solid #e8e1cf;border-radius:8px" xmlns="http://www.w3.org/2000/svg">
+<text x="66" y="24" font-size="14.5" font-weight="700" fill="#3a3125">미국 순유동성 · MMF 총자산 · Truflation 인플레 · TGA 일간 · 부채증가율×명목GDPNow 추이 (최근 3개월)</text>
+<rect x="66" y="60" width="852" height="440" fill="#ffffff" stroke="#e8e1cf"/><line x1="66" y1="60.0" x2="918" y2="60.0" stroke="#f2ecdc"/><text x="58" y="64.0" font-size="11" fill="#6b6152" text-anchor="end">6.02</text><line x1="66" y1="115.0" x2="918" y2="115.0" stroke="#f2ecdc"/><text x="58" y="119.0" font-size="11" fill="#6b6152" text-anchor="end">5.99</text><line x1="66" y1="170.0" x2="918" y2="170.0" stroke="#f2ecdc"/><text x="58" y="174.0" font-size="11" fill="#6b6152" text-anchor="end">5.95</text><line x1="66" y1="225.0" x2="918" y2="225.0" stroke="#f2ecdc"/><text x="58" y="229.0" font-size="11" fill="#6b6152" text-anchor="end">5.91</text><line x1="66" y1="280.0" x2="918" y2="280.0" stroke="#f2ecdc"/><text x="58" y="284.0" font-size="11" fill="#6b6152" text-anchor="end">5.87</text><line x1="66" y1="335.0" x2="918" y2="335.0" stroke="#f2ecdc"/><text x="58" y="339.0" font-size="11" fill="#6b6152" text-anchor="end">5.84</text><line x1="66" y1="390.0" x2="918" y2="390.0" stroke="#f2ecdc"/><text x="58" y="394.0" font-size="11" fill="#6b6152" text-anchor="end">5.80</text><line x1="66" y1="445.0" x2="918" y2="445.0" stroke="#f2ecdc"/><text x="58" y="449.0" font-size="11" fill="#6b6152" text-anchor="end">5.76</text><line x1="66" y1="500.0" x2="918" y2="500.0" stroke="#f2ecdc"/><text x="58" y="504.0" font-size="11" fill="#6b6152" text-anchor="end">5.73</text><polyline fill="none" stroke="#b4553a" stroke-width="2.4" stroke-linejoin="round" points="121.6,206.0 186.4,430.0 251.2,346.5 316.0,217.5 380.9,118.2 445.7,171.9 510.5,224.3 575.3,441.8 640.2,363.9 705.0,390.4 769.8,376.7 834.7,433.4 899.5,401.5"/><circle cx="121.6" cy="206.0" r="3.4" fill="#b4553a" stroke="#b4553a" stroke-width="1"/><circle cx="186.4" cy="430.0" r="3.4" fill="#b4553a" stroke="#b4553a" stroke-width="1"/><circle cx="251.2" cy="346.5" r="3.4" fill="#b4553a" stroke="#b4553a" stroke-width="1"/><circle cx="316.0" cy="217.5" r="3.4" fill="#b4553a" stroke="#b4553a" stroke-width="1"/><circle cx="380.9" cy="118.2" r="3.4" fill="#b4553a" stroke="#b4553a" stroke-width="1"/><circle cx="445.7" cy="171.9" r="3.4" fill="#b4553a" stroke="#b4553a" stroke-width="1"/><circle cx="510.5" cy="224.3" r="3.4" fill="#b4553a" stroke="#b4553a" stroke-width="1"/><circle cx="575.3" cy="441.8" r="3.4" fill="#b4553a" stroke="#b4553a" stroke-width="1"/><circle cx="640.2" cy="363.9" r="3.4" fill="#b4553a" stroke="#b4553a" stroke-width="1"/><circle cx="705.0" cy="390.4" r="3.4" fill="#b4553a" stroke="#b4553a" stroke-width="1"/><circle cx="769.8" cy="376.7" r="3.4" fill="#b4553a" stroke="#b4553a" stroke-width="1"/><circle cx="834.7" cy="433.4" r="3.4" fill="#b4553a" stroke="#b4553a" stroke-width="1"/><circle cx="899.5" cy="401.5" r="3.4" fill="#b4553a" stroke="#b4553a" stroke-width="1"/><text x="66" y="51" font-size="13" font-weight="700" fill="#4a3d28">① 순유동성 (Fed B/S − TGA − RRP)</text><text x="918" y="51" font-size="12" fill="#b4553a" text-anchor="end" font-weight="700">최신 5.792T (2026-09-02)</text><circle cx="899.5" cy="401.5" r="5" fill="none" stroke="#b4553a" stroke-width="1.6" opacity=".55"/>
+<rect x="66" y="510" width="852" height="163" fill="#ffffff" stroke="#e8e1cf"/><text x="72" y="523" font-size="11" font-weight="700" fill="#4a3d28">①-b 순유동성 Δ주간 (전주 대비 $B · 1차 미분)</text><line x1="66" y1="573.8" x2="918" y2="573.8" stroke="#7a746a" stroke-width="0.9"/><text x="58" y="521" font-size="10" fill="#6b6152" text-anchor="end">+87</text><text x="58" y="671" font-size="10" fill="#6b6152" text-anchor="end">-151</text><rect x="181.9" y="573.8" width="9.0" height="83.4" fill="#3d7ea6"/><rect x="246.7" y="542.8" width="9.0" height="31.1" fill="#c96a3d"/><rect x="311.5" y="525.8" width="9.0" height="48.1" fill="#c96a3d"/><rect x="376.4" y="536.9" width="9.0" height="36.9" fill="#c96a3d"/><rect x="441.2" y="573.8" width="9.0" height="20.0" fill="#3d7ea6"/><rect x="506.0" y="573.8" width="9.0" height="19.5" fill="#3d7ea6"/><rect x="570.8" y="573.8" width="9.0" height="81.0" fill="#3d7ea6"/><rect x="635.7" y="544.9" width="9.0" height="29.0" fill="#c96a3d"/><rect x="700.5" y="573.8" width="9.0" height="9.8" fill="#3d7ea6"/><rect x="765.3" y="568.7" width="9.0" height="5.1" fill="#c96a3d"/><rect x="830.2" y="573.8" width="9.0" height="21.1" fill="#3d7ea6"/><rect x="895.0" y="561.9" width="9.0" height="11.9" fill="#c96a3d"/><text x="918" y="523" font-size="11" fill="#c96a3d" text-anchor="end" font-weight="700">최신 +21.5B (2026-09-02)</text>
+<rect x="66" y="735" width="852" height="440" fill="#ffffff" stroke="#e8e1cf"/><line x1="66" y1="735.0" x2="918" y2="735.0" stroke="#f2ecdc"/><text x="58" y="739.0" font-size="11" fill="#6b6152" text-anchor="end">8.00</text><line x1="66" y1="790.0" x2="918" y2="790.0" stroke="#f2ecdc"/><text x="58" y="794.0" font-size="11" fill="#6b6152" text-anchor="end">7.98</text><line x1="66" y1="845.0" x2="918" y2="845.0" stroke="#f2ecdc"/><text x="58" y="849.0" font-size="11" fill="#6b6152" text-anchor="end">7.96</text><line x1="66" y1="900.0" x2="918" y2="900.0" stroke="#f2ecdc"/><text x="58" y="904.0" font-size="11" fill="#6b6152" text-anchor="end">7.94</text><line x1="66" y1="955.0" x2="918" y2="955.0" stroke="#f2ecdc"/><text x="58" y="959.0" font-size="11" fill="#6b6152" text-anchor="end">7.92</text><line x1="66" y1="1010.0" x2="918" y2="1010.0" stroke="#f2ecdc"/><text x="58" y="1014.0" font-size="11" fill="#6b6152" text-anchor="end">7.90</text><line x1="66" y1="1065.0" x2="918" y2="1065.0" stroke="#f2ecdc"/><text x="58" y="1069.0" font-size="11" fill="#6b6152" text-anchor="end">7.87</text><line x1="66" y1="1120.0" x2="918" y2="1120.0" stroke="#f2ecdc"/><text x="58" y="1124.0" font-size="11" fill="#6b6152" text-anchor="end">7.85</text><line x1="66" y1="1175.0" x2="918" y2="1175.0" stroke="#f2ecdc"/><text x="58" y="1179.0" font-size="11" fill="#6b6152" text-anchor="end">7.83</text><polyline fill="none" stroke="#2f6f8f" stroke-width="2.4" stroke-linejoin="round" points="121.6,1075.3 186.4,964.4 251.2,997.9 316.0,946.4 380.9,869.0 445.7,1041.0 510.5,1099.0 575.3,1116.8 640.2,973.9 705.0,926.8 769.8,924.5 834.7,908.7 899.5,793.2"/><circle cx="121.6" cy="1075.3" r="3.4" fill="#2f6f8f" stroke="#2f6f8f" stroke-width="1"/><circle cx="186.4" cy="964.4" r="3.4" fill="#2f6f8f" stroke="#2f6f8f" stroke-width="1"/><circle cx="251.2" cy="997.9" r="3.4" fill="#2f6f8f" stroke="#2f6f8f" stroke-width="1"/><circle cx="316.0" cy="946.4" r="3.4" fill="#2f6f8f" stroke="#2f6f8f" stroke-width="1"/><circle cx="380.9" cy="869.0" r="3.4" fill="#2f6f8f" stroke="#2f6f8f" stroke-width="1"/><circle cx="445.7" cy="1041.0" r="3.4" fill="#2f6f8f" stroke="#2f6f8f" stroke-width="1"/><circle cx="510.5" cy="1099.0" r="3.4" fill="#2f6f8f" stroke="#2f6f8f" stroke-width="1"/><circle cx="575.3" cy="1116.8" r="3.4" fill="#2f6f8f" stroke="#2f6f8f" stroke-width="1"/><circle cx="640.2" cy="973.9" r="3.4" fill="#2f6f8f" stroke="#2f6f8f" stroke-width="1"/><circle cx="705.0" cy="926.8" r="3.4" fill="#2f6f8f" stroke="#2f6f8f" stroke-width="1"/><circle cx="769.8" cy="924.5" r="3.4" fill="#2f6f8f" stroke="#2f6f8f" stroke-width="1"/><circle cx="834.7" cy="908.7" r="3.4" fill="#2f6f8f" stroke="#2f6f8f" stroke-width="1"/><circle cx="899.5" cy="793.2" r="3.4" fill="#2f6f8f" stroke="#2f6f8f" stroke-width="1"/><text x="66" y="726" font-size="13" font-weight="700" fill="#4a3d28">② MMF 총자산 (ICI 주간)</text><text x="918" y="726" font-size="12" fill="#2f6f8f" text-anchor="end" font-weight="700">최신 7.979T (2026-09-02)</text><circle cx="899.5" cy="793.2" r="5" fill="none" stroke="#2f6f8f" stroke-width="1.6" opacity=".55"/>
+<rect x="66" y="1237" width="852" height="440" fill="#ffffff" stroke="#e8e1cf"/><line x1="66" y1="1237.0" x2="918" y2="1237.0" stroke="#f2ecdc"/><text x="58" y="1241.0" font-size="11" fill="#6b6152" text-anchor="end">4.80</text><line x1="66" y1="1292.0" x2="918" y2="1292.0" stroke="#f2ecdc"/><text x="58" y="1296.0" font-size="11" fill="#6b6152" text-anchor="end">4.40</text><line x1="66" y1="1347.0" x2="918" y2="1347.0" stroke="#f2ecdc"/><text x="58" y="1351.0" font-size="11" fill="#6b6152" text-anchor="end">4.00</text><line x1="66" y1="1402.0" x2="918" y2="1402.0" stroke="#f2ecdc"/><text x="58" y="1406.0" font-size="11" fill="#6b6152" text-anchor="end">3.60</text><line x1="66" y1="1457.0" x2="918" y2="1457.0" stroke="#f2ecdc"/><text x="58" y="1461.0" font-size="11" fill="#6b6152" text-anchor="end">3.20</text><line x1="66" y1="1512.0" x2="918" y2="1512.0" stroke="#f2ecdc"/><text x="58" y="1516.0" font-size="11" fill="#6b6152" text-anchor="end">2.80</text><line x1="66" y1="1567.0" x2="918" y2="1567.0" stroke="#f2ecdc"/><text x="58" y="1571.0" font-size="11" fill="#6b6152" text-anchor="end">2.40</text><line x1="66" y1="1622.0" x2="918" y2="1622.0" stroke="#f2ecdc"/><text x="58" y="1626.0" font-size="11" fill="#6b6152" text-anchor="end">2.00</text><line x1="66" y1="1677.0" x2="918" y2="1677.0" stroke="#f2ecdc"/><text x="58" y="1681.0" font-size="11" fill="#6b6152" text-anchor="end">1.60</text><polyline fill="none" stroke="#7b3fa0" stroke-width="2.2" stroke-linejoin="round" points="66.0,1636.3 75.3,1644.6 84.5,1649.2 93.8,1644.6 103.0,1646.5 112.3,1643.8 121.6,1646.2 130.8,1651.5 140.1,1639.1 149.3,1640.0 158.6,1644.5 167.9,1644.6 177.1,1650.1 186.4,1648.7 195.7,1651.5 204.9,1650.5 214.2,1640.5 223.4,1642.6 232.7,1644.6 242.0,1648.7 251.2,1643.2 260.5,1636.3 269.7,1632.2 279.0,1631.1 288.3,1634.4 297.5,1635.2 306.8,1634.8 316.0,1656.4 325.3,1650.1 334.6,1647.9 343.8,1649.2 353.1,1651.4 362.3,1652.9 371.6,1651.5 380.9,1637.7 390.1,1647.4 399.4,1644.9 408.7,1638.4 417.9,1632.4 427.2,1632.2 436.4,1633.6 445.7,1636.3 455.0,1629.4 464.2,1619.3 473.5,1624.8 482.7,1617.7 492.0,1614.3 501.3,1615.7 510.5,1606.0 519.8,1611.5 529.0,1607.2 538.3,1610.4 547.6,1608.9 556.8,1607.4 566.1,1608.8 575.3,1613.7 584.6,1606.0 593.9,1609.3 603.1,1591.2 612.4,1585.3 621.7,1582.6 630.9,1586.7 640.2,1583.6 649.4,1581.2 658.7,1577.9 668.0,1579.0 677.2,1582.8 686.5,1586.7 695.7,1588.1 705.0,1585.4 714.3,1595.0 723.5,1584.0 732.8,1580.0 742.0,1581.5 751.3,1582.6 760.6,1581.2 769.8,1577.1 779.1,1573.0 788.3,1579.9 797.6,1583.5 806.9,1582.7 816.1,1582.6 825.4,1585.4 834.7,1584.5 843.9,1584.0 853.2,1581.2 862.4,1580.5 871.7,1573.8 881.0,1585.4 890.2,1606.0 899.5,1584.0 908.7,1577.1 918.0,1578.5"/><circle cx="66.0" cy="1636.3" r="3.0" fill="#7b3fa0"/><circle cx="75.3" cy="1644.6" r="3.0" fill="#7b3fa0"/><circle cx="84.5" cy="1649.2" r="3.0" fill="#7b3fa0"/><circle cx="93.8" cy="1644.6" r="3.0" fill="#7b3fa0"/><circle cx="103.0" cy="1646.5" r="3.0" fill="#7b3fa0"/><circle cx="112.3" cy="1643.8" r="3.0" fill="#7b3fa0"/><circle cx="121.6" cy="1646.2" r="3.0" fill="#7b3fa0"/><circle cx="130.8" cy="1651.5" r="3.0" fill="#7b3fa0"/><circle cx="140.1" cy="1639.1" r="3.0" fill="#7b3fa0"/><circle cx="149.3" cy="1640.0" r="3.0" fill="#7b3fa0"/><circle cx="158.6" cy="1644.5" r="3.0" fill="#7b3fa0"/><circle cx="167.9" cy="1644.6" r="3.0" fill="#7b3fa0"/><circle cx="177.1" cy="1650.1" r="3.0" fill="#7b3fa0"/><circle cx="186.4" cy="1648.7" r="3.0" fill="#7b3fa0"/><circle cx="195.7" cy="1651.5" r="3.0" fill="#7b3fa0"/><circle cx="204.9" cy="1650.5" r="3.0" fill="#7b3fa0"/><circle cx="214.2" cy="1640.5" r="3.0" fill="#7b3fa0"/><circle cx="223.4" cy="1642.6" r="3.0" fill="#7b3fa0"/><circle cx="232.7" cy="1644.6" r="3.0" fill="#7b3fa0"/><circle cx="242.0" cy="1648.7" r="3.0" fill="#7b3fa0"/><circle cx="251.2" cy="1643.2" r="3.0" fill="#7b3fa0"/><circle cx="260.5" cy="1636.3" r="3.0" fill="#7b3fa0"/><circle cx="269.7" cy="1632.2" r="3.0" fill="#7b3fa0"/><circle cx="279.0" cy="1631.1" r="3.0" fill="#7b3fa0"/><circle cx="288.3" cy="1634.4" r="3.0" fill="#7b3fa0"/><circle cx="297.5" cy="1635.2" r="3.0" fill="#7b3fa0"/><circle cx="306.8" cy="1634.8" r="3.0" fill="#7b3fa0"/><circle cx="316.0" cy="1656.4" r="3.0" fill="#7b3fa0"/><circle cx="325.3" cy="1650.1" r="3.0" fill="#7b3fa0"/><circle cx="334.6" cy="1647.9" r="3.0" fill="#7b3fa0"/><circle cx="343.8" cy="1649.2" r="3.0" fill="#7b3fa0"/><circle cx="353.1" cy="1651.4" r="3.0" fill="#7b3fa0"/><circle cx="362.3" cy="1652.9" r="3.0" fill="#7b3fa0"/><circle cx="371.6" cy="1651.5" r="3.0" fill="#7b3fa0"/><circle cx="380.9" cy="1637.7" r="3.0" fill="#7b3fa0"/><circle cx="390.1" cy="1647.4" r="3.0" fill="#7b3fa0"/><circle cx="399.4" cy="1644.9" r="3.0" fill="#7b3fa0"/><circle cx="408.7" cy="1638.4" r="3.0" fill="#7b3fa0"/><circle cx="417.9" cy="1632.4" r="3.0" fill="#7b3fa0"/><circle cx="427.2" cy="1632.2" r="3.0" fill="#7b3fa0"/><circle cx="436.4" cy="1633.6" r="3.0" fill="#7b3fa0"/><circle cx="445.7" cy="1636.3" r="3.0" fill="#7b3fa0"/><circle cx="455.0" cy="1629.4" r="3.0" fill="#7b3fa0"/><circle cx="464.2" cy="1619.3" r="3.0" fill="#7b3fa0"/><circle cx="473.5" cy="1624.8" r="3.0" fill="#7b3fa0"/><circle cx="482.7" cy="1617.7" r="3.0" fill="#7b3fa0"/><circle cx="492.0" cy="1614.3" r="3.0" fill="#7b3fa0"/><circle cx="501.3" cy="1615.7" r="3.0" fill="#7b3fa0"/><circle cx="510.5" cy="1606.0" r="3.0" fill="#7b3fa0"/><circle cx="519.8" cy="1611.5" r="3.0" fill="#7b3fa0"/><circle cx="529.0" cy="1607.2" r="3.0" fill="#7b3fa0"/><circle cx="538.3" cy="1610.4" r="3.0" fill="#7b3fa0"/><circle cx="547.6" cy="1608.9" r="3.0" fill="#7b3fa0"/><circle cx="556.8" cy="1607.4" r="3.0" fill="#7b3fa0"/><circle cx="566.1" cy="1608.8" r="3.0" fill="#7b3fa0"/><circle cx="575.3" cy="1613.7" r="3.0" fill="#7b3fa0"/><circle cx="584.6" cy="1606.0" r="3.0" fill="#7b3fa0"/><circle cx="593.9" cy="1609.3" r="3.0" fill="#7b3fa0"/><circle cx="603.1" cy="1591.2" r="3.0" fill="#7b3fa0"/><circle cx="612.4" cy="1585.3" r="3.0" fill="#7b3fa0"/><circle cx="621.7" cy="1582.6" r="3.0" fill="#7b3fa0"/><circle cx="630.9" cy="1586.7" r="3.0" fill="#7b3fa0"/><circle cx="640.2" cy="1583.6" r="3.0" fill="#7b3fa0"/><circle cx="649.4" cy="1581.2" r="3.0" fill="#7b3fa0"/><circle cx="658.7" cy="1577.9" r="3.0" fill="#7b3fa0"/><circle cx="668.0" cy="1579.0" r="3.0" fill="#7b3fa0"/><circle cx="677.2" cy="1582.8" r="3.0" fill="#7b3fa0"/><circle cx="686.5" cy="1586.7" r="3.0" fill="#7b3fa0"/><circle cx="695.7" cy="1588.1" r="3.0" fill="#7b3fa0"/><circle cx="705.0" cy="1585.4" r="3.0" fill="#7b3fa0"/><circle cx="714.3" cy="1595.0" r="3.0" fill="#7b3fa0"/><circle cx="723.5" cy="1584.0" r="3.0" fill="#7b3fa0"/><circle cx="732.8" cy="1580.0" r="3.0" fill="#7b3fa0"/><circle cx="742.0" cy="1581.5" r="3.0" fill="#7b3fa0"/><circle cx="751.3" cy="1582.6" r="3.0" fill="#7b3fa0"/><circle cx="760.6" cy="1581.2" r="3.0" fill="#7b3fa0"/><circle cx="769.8" cy="1577.1" r="3.0" fill="#7b3fa0"/><circle cx="779.1" cy="1573.0" r="3.0" fill="#7b3fa0"/><circle cx="788.3" cy="1579.9" r="3.0" fill="#7b3fa0"/><circle cx="797.6" cy="1583.5" r="3.0" fill="#7b3fa0"/><circle cx="806.9" cy="1582.7" r="3.0" fill="#7b3fa0"/><circle cx="816.1" cy="1582.6" r="3.0" fill="#7b3fa0"/><circle cx="825.4" cy="1585.4" r="3.0" fill="#7b3fa0"/><circle cx="834.7" cy="1584.5" r="3.0" fill="#7b3fa0"/><circle cx="843.9" cy="1584.0" r="3.0" fill="#7b3fa0"/><circle cx="853.2" cy="1581.2" r="3.0" fill="#7b3fa0"/><circle cx="862.4" cy="1580.5" r="3.0" fill="#7b3fa0"/><circle cx="871.7" cy="1573.8" r="3.0" fill="#7b3fa0"/><circle cx="881.0" cy="1585.4" r="3.0" fill="#7b3fa0"/><circle cx="890.2" cy="1606.0" r="3.0" fill="#7b3fa0"/><circle cx="899.5" cy="1584.0" r="3.0" fill="#7b3fa0"/><circle cx="908.7" cy="1577.1" r="3.0" fill="#7b3fa0"/><circle cx="918.0" cy="1578.5" r="3.0" fill="#7b3fa0"/><rect x="74" y="1245" width="9" height="9" fill="#7b3fa0" rx="2"/><text x="87" y="1253.5" font-size="10.5" fill="#5c5237">Truflation CPI 2.32%</text><polyline fill="none" stroke="#c0392b" stroke-width="2.2" stroke-linejoin="round" points="66.0,1374.6 75.3,1374.6 84.5,1373.2 93.8,1373.2 103.0,1373.2 112.3,1373.2 121.6,1373.2 130.8,1319.5 140.1,1319.5 149.3,1312.6 158.6,1312.6 167.9,1319.5 177.1,1319.5 186.4,1319.5 195.7,1319.5 204.9,1312.6 214.2,1319.5 223.4,1312.6 232.7,1319.5 242.0,1319.5 251.2,1319.5 260.5,1319.5 269.7,1319.5 279.0,1312.6 288.3,1312.6 297.5,1312.6 306.8,1312.6 316.0,1312.6 325.3,1319.5 334.6,1312.6 343.8,1312.6 353.1,1312.6 362.3,1319.5 371.6,1319.5 380.9,1319.5 390.1,1319.5 399.4,1312.6 408.7,1312.6 417.9,1312.6 427.2,1319.5 436.4,1319.5 445.7,1411.8 455.0,1415.9 464.2,1411.8 473.5,1411.8 482.7,1411.8 492.0,1415.9 501.3,1415.9 510.5,1411.8 519.8,1415.9 529.0,1411.8 538.3,1411.8 547.6,1411.8 556.8,1415.9 566.1,1411.8 575.3,1411.8 584.6,1411.8 593.9,1411.8 603.1,1411.8 612.4,1411.8 621.7,1411.8 630.9,1415.9 640.2,1411.8 649.4,1415.9 658.7,1411.8 668.0,1411.8 677.2,1411.8 686.5,1415.9 695.7,1415.9 705.0,1429.7 714.3,1429.7 723.5,1429.7 732.8,1435.2 742.0,1435.2 751.3,1429.7 760.6,1429.7 769.8,1429.7 779.1,1429.7 788.3,1429.7 797.6,1435.2 806.9,1435.2 816.1,1429.7 825.4,1429.7 834.7,1435.2 843.9,1429.7 853.2,1429.7 862.4,1435.2 871.7,1435.2 881.0,1429.7 890.2,1429.7 899.5,1429.7 908.7,1429.7 918.0,1429.7"/><circle cx="66.0" cy="1374.6" r="3.0" fill="#c0392b"/><circle cx="75.3" cy="1374.6" r="3.0" fill="#c0392b"/><circle cx="84.5" cy="1373.2" r="3.0" fill="#c0392b"/><circle cx="93.8" cy="1373.2" r="3.0" fill="#c0392b"/><circle cx="103.0" cy="1373.2" r="3.0" fill="#c0392b"/><circle cx="112.3" cy="1373.2" r="3.0" fill="#c0392b"/><circle cx="121.6" cy="1373.2" r="3.0" fill="#c0392b"/><circle cx="130.8" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="140.1" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="149.3" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="158.6" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="167.9" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="177.1" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="186.4" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="195.7" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="204.9" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="214.2" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="223.4" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="232.7" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="242.0" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="251.2" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="260.5" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="269.7" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="279.0" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="288.3" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="297.5" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="306.8" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="316.0" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="325.3" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="334.6" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="343.8" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="353.1" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="362.3" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="371.6" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="380.9" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="390.1" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="399.4" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="408.7" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="417.9" cy="1312.6" r="3.0" fill="#c0392b"/><circle cx="427.2" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="436.4" cy="1319.5" r="3.0" fill="#c0392b"/><circle cx="445.7" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="455.0" cy="1415.9" r="3.0" fill="#c0392b"/><circle cx="464.2" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="473.5" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="482.7" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="492.0" cy="1415.9" r="3.0" fill="#c0392b"/><circle cx="501.3" cy="1415.9" r="3.0" fill="#c0392b"/><circle cx="510.5" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="519.8" cy="1415.9" r="3.0" fill="#c0392b"/><circle cx="529.0" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="538.3" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="547.6" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="556.8" cy="1415.9" r="3.0" fill="#c0392b"/><circle cx="566.1" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="575.3" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="584.6" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="593.9" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="603.1" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="612.4" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="621.7" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="630.9" cy="1415.9" r="3.0" fill="#c0392b"/><circle cx="640.2" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="649.4" cy="1415.9" r="3.0" fill="#c0392b"/><circle cx="658.7" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="668.0" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="677.2" cy="1411.8" r="3.0" fill="#c0392b"/><circle cx="686.5" cy="1415.9" r="3.0" fill="#c0392b"/><circle cx="695.7" cy="1415.9" r="3.0" fill="#c0392b"/><circle cx="705.0" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="714.3" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="723.5" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="732.8" cy="1435.2" r="3.0" fill="#c0392b"/><circle cx="742.0" cy="1435.2" r="3.0" fill="#c0392b"/><circle cx="751.3" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="760.6" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="769.8" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="779.1" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="788.3" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="797.6" cy="1435.2" r="3.0" fill="#c0392b"/><circle cx="806.9" cy="1435.2" r="3.0" fill="#c0392b"/><circle cx="816.1" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="825.4" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="834.7" cy="1435.2" r="3.0" fill="#c0392b"/><circle cx="843.9" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="853.2" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="862.4" cy="1435.2" r="3.0" fill="#c0392b"/><circle cx="871.7" cy="1435.2" r="3.0" fill="#c0392b"/><circle cx="881.0" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="890.2" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="899.5" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="908.7" cy="1429.7" r="3.0" fill="#c0392b"/><circle cx="918.0" cy="1429.7" r="3.0" fill="#c0392b"/><rect x="222.39999999999998" y="1245" width="9" height="9" fill="#c0392b" rx="2"/><text x="235.39999999999998" y="1253.5" font-size="10.5" fill="#5c5237">공식 CPI 3.40%</text><polyline fill="none" stroke="#2f8f7a" stroke-width="2.2" stroke-linejoin="round" points="705.0,1544.0 723.5,1537.2 751.3,1535.8 760.6,1534.4 769.8,1531.6 779.1,1531.6 788.3,1542.7 816.1,1544.0 825.4,1545.4 843.9,1542.7 853.2,1531.6 881.0,1533.0 890.2,1566.1 899.5,1550.9 908.7,1542.7 918.0,1544.0"/><circle cx="705.0" cy="1544.0" r="3.0" fill="#2f8f7a"/><circle cx="723.5" cy="1537.2" r="3.0" fill="#2f8f7a"/><circle cx="751.3" cy="1535.8" r="3.0" fill="#2f8f7a"/><circle cx="760.6" cy="1534.4" r="3.0" fill="#2f8f7a"/><circle cx="769.8" cy="1531.6" r="3.0" fill="#2f8f7a"/><circle cx="779.1" cy="1531.6" r="3.0" fill="#2f8f7a"/><circle cx="788.3" cy="1542.7" r="3.0" fill="#2f8f7a"/><circle cx="816.1" cy="1544.0" r="3.0" fill="#2f8f7a"/><circle cx="825.4" cy="1545.4" r="3.0" fill="#2f8f7a"/><circle cx="843.9" cy="1542.7" r="3.0" fill="#2f8f7a"/><circle cx="853.2" cy="1531.6" r="3.0" fill="#2f8f7a"/><circle cx="881.0" cy="1533.0" r="3.0" fill="#2f8f7a"/><circle cx="890.2" cy="1566.1" r="3.0" fill="#2f8f7a"/><circle cx="899.5" cy="1550.9" r="3.0" fill="#2f8f7a"/><circle cx="908.7" cy="1542.7" r="3.0" fill="#2f8f7a"/><circle cx="918.0" cy="1544.0" r="3.0" fill="#2f8f7a"/><rect x="318.0" y="1245" width="9" height="9" fill="#2f8f7a" rx="2"/><text x="331.0" y="1253.5" font-size="10.5" fill="#5c5237">Truflation PCE 2.57%</text><polyline fill="none" stroke="#c8862b" stroke-width="2.2" stroke-linejoin="round" points="66.0,1374.6 75.3,1374.6 84.5,1374.6 93.8,1374.6 103.0,1374.6 112.3,1374.6 121.6,1374.6 130.8,1374.6 140.1,1374.6 149.3,1374.6 158.6,1374.6 167.9,1331.9 177.1,1331.9 186.4,1331.9 195.7,1331.9 204.9,1331.9 214.2,1331.9 223.4,1331.9 232.7,1331.9 242.0,1331.9 251.2,1331.9 260.5,1331.9 269.7,1331.9 279.0,1331.9 288.3,1331.9 297.5,1331.9 306.8,1331.9 316.0,1331.9 325.3,1331.9 334.6,1331.9 343.8,1331.9 353.1,1331.9 362.3,1331.9 371.6,1331.9 380.9,1331.9 390.1,1331.9 399.4,1331.9 408.7,1331.9 417.9,1331.9 427.2,1331.9 436.4,1331.9 445.7,1331.9 455.0,1385.6 464.2,1385.6 473.5,1385.6 482.7,1385.6 492.0,1385.6 501.3,1385.6 510.5,1385.6 519.8,1385.6 529.0,1385.6 538.3,1385.6 547.6,1385.6 556.8,1385.6 566.1,1385.6 575.3,1385.6 584.6,1385.6 593.9,1385.6 603.1,1385.6 612.4,1385.6 621.7,1385.6 630.9,1385.6 640.2,1385.6 649.4,1385.6 658.7,1385.6 668.0,1385.6 677.2,1385.6 686.5,1385.6 695.7,1385.6 705.0,1392.5 714.3,1385.6 723.5,1392.5 732.8,1388.4 742.0,1388.4 751.3,1392.5 760.6,1392.5 769.8,1392.5 779.1,1392.5 788.3,1392.5 797.6,1388.4 806.9,1388.4 816.1,1392.5 825.4,1392.5 834.7,1388.4 843.9,1388.4 853.2,1388.4 862.4,1388.4 871.7,1388.4 881.0,1388.4 890.2,1388.4 899.5,1388.4 908.7,1388.4 918.0,1388.4"/><circle cx="66.0" cy="1374.6" r="3.0" fill="#c8862b"/><circle cx="75.3" cy="1374.6" r="3.0" fill="#c8862b"/><circle cx="84.5" cy="1374.6" r="3.0" fill="#c8862b"/><circle cx="93.8" cy="1374.6" r="3.0" fill="#c8862b"/><circle cx="103.0" cy="1374.6" r="3.0" fill="#c8862b"/><circle cx="112.3" cy="1374.6" r="3.0" fill="#c8862b"/><circle cx="121.6" cy="1374.6" r="3.0" fill="#c8862b"/><circle cx="130.8" cy="1374.6" r="3.0" fill="#c8862b"/><circle cx="140.1" cy="1374.6" r="3.0" fill="#c8862b"/><circle cx="149.3" cy="1374.6" r="3.0" fill="#c8862b"/><circle cx="158.6" cy="1374.6" r="3.0" fill="#c8862b"/><circle cx="167.9" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="177.1" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="186.4" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="195.7" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="204.9" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="214.2" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="223.4" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="232.7" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="242.0" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="251.2" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="260.5" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="269.7" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="279.0" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="288.3" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="297.5" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="306.8" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="316.0" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="325.3" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="334.6" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="343.8" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="353.1" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="362.3" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="371.6" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="380.9" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="390.1" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="399.4" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="408.7" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="417.9" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="427.2" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="436.4" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="445.7" cy="1331.9" r="3.0" fill="#c8862b"/><circle cx="455.0" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="464.2" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="473.5" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="482.7" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="492.0" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="501.3" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="510.5" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="519.8" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="529.0" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="538.3" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="547.6" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="556.8" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="566.1" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="575.3" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="584.6" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="593.9" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="603.1" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="612.4" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="621.7" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="630.9" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="640.2" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="649.4" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="658.7" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="668.0" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="677.2" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="686.5" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="695.7" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="705.0" cy="1392.5" r="3.0" fill="#c8862b"/><circle cx="714.3" cy="1385.6" r="3.0" fill="#c8862b"/><circle cx="723.5" cy="1392.5" r="3.0" fill="#c8862b"/><circle cx="732.8" cy="1388.4" r="3.0" fill="#c8862b"/><circle cx="742.0" cy="1388.4" r="3.0" fill="#c8862b"/><circle cx="751.3" cy="1392.5" r="3.0" fill="#c8862b"/><circle cx="760.6" cy="1392.5" r="3.0" fill="#c8862b"/><circle cx="769.8" cy="1392.5" r="3.0" fill="#c8862b"/><circle cx="779.1" cy="1392.5" r="3.0" fill="#c8862b"/><circle cx="788.3" cy="1392.5" r="3.0" fill="#c8862b"/><circle cx="797.6" cy="1388.4" r="3.0" fill="#c8862b"/><circle cx="806.9" cy="1388.4" r="3.0" fill="#c8862b"/><circle cx="816.1" cy="1392.5" r="3.0" fill="#c8862b"/><circle cx="825.4" cy="1392.5" r="3.0" fill="#c8862b"/><circle cx="834.7" cy="1388.4" r="3.0" fill="#c8862b"/><circle cx="843.9" cy="1388.4" r="3.0" fill="#c8862b"/><circle cx="853.2" cy="1388.4" r="3.0" fill="#c8862b"/><circle cx="862.4" cy="1388.4" r="3.0" fill="#c8862b"/><circle cx="871.7" cy="1388.4" r="3.0" fill="#c8862b"/><circle cx="881.0" cy="1388.4" r="3.0" fill="#c8862b"/><circle cx="890.2" cy="1388.4" r="3.0" fill="#c8862b"/><circle cx="899.5" cy="1388.4" r="3.0" fill="#c8862b"/><circle cx="908.7" cy="1388.4" r="3.0" fill="#c8862b"/><circle cx="918.0" cy="1388.4" r="3.0" fill="#c8862b"/><rect x="466.4" y="1245" width="9" height="9" fill="#c8862b" rx="2"/><text x="479.4" y="1253.5" font-size="10.5" fill="#5c5237">공식 PCE 3.70%</text><text x="66" y="1228" font-size="13" font-weight="700" fill="#4a3d28">③ Truflation 실시간 인플레 vs 공식 (YoY · 대시보드 2쌍)</text><text x="918" y="1228" font-size="12" fill="#8a5a2b" text-anchor="end" font-weight="700">n=295점 축적 · 최신 2026-09-04</text>
+<rect x="66" y="1687" width="852" height="163" fill="#ffffff" stroke="#e8e1cf"/><text x="72" y="1700" font-size="11" font-weight="700" fill="#4a3d28">③-b Truflation CPI Δ30일 (pp · 나우캐스트의 가속도)</text><line x1="66" y1="1804.2" x2="918" y2="1804.2" stroke="#7a746a" stroke-width="0.9"/><text x="58" y="1698" font-size="10" fill="#6b6152" text-anchor="end">+0.51</text><text x="58" y="1848" font-size="10" fill="#6b6152" text-anchor="end">-0.15</text><rect x="340.1" y="1804.2" width="7.4" height="18.7" fill="#3d7ea6"/><rect x="349.4" y="1804.2" width="7.4" height="9.9" fill="#3d7ea6"/><rect x="358.6" y="1804.2" width="7.4" height="5.2" fill="#3d7ea6"/><rect x="367.9" y="1804.2" width="7.4" height="9.9" fill="#3d7ea6"/><rect x="377.2" y="1791.5" width="7.4" height="12.7" fill="#c96a3d"/><rect x="386.4" y="1804.2" width="7.4" height="5.2" fill="#3d7ea6"/><rect x="395.7" y="1802.2" width="7.4" height="2.0" fill="#c96a3d"/><rect x="404.9" y="1785.3" width="7.4" height="18.9" fill="#c96a3d"/><rect x="414.2" y="1794.7" width="7.4" height="9.5" fill="#c96a3d"/><rect x="423.5" y="1792.9" width="7.4" height="11.3" fill="#c96a3d"/><rect x="432.7" y="1788.5" width="7.4" height="15.7" fill="#c96a3d"/><rect x="442.0" y="1792.3" width="7.4" height="11.9" fill="#c96a3d"/><rect x="451.2" y="1774.4" width="7.4" height="29.8" fill="#c96a3d"/><rect x="460.5" y="1761.6" width="7.4" height="42.6" fill="#c96a3d"/><rect x="469.8" y="1765.6" width="7.4" height="38.6" fill="#c96a3d"/><rect x="479.0" y="1756.9" width="7.4" height="47.3" fill="#c96a3d"/><rect x="488.3" y="1766.4" width="7.4" height="37.8" fill="#c96a3d"/><rect x="497.5" y="1765.4" width="7.4" height="38.8" fill="#c96a3d"/><rect x="506.8" y="1748.5" width="7.4" height="55.7" fill="#c96a3d"/><rect x="516.1" y="1750.5" width="7.4" height="53.7" fill="#c96a3d"/><rect x="525.3" y="1752.1" width="7.4" height="52.1" fill="#c96a3d"/><rect x="534.6" y="1766.8" width="7.4" height="37.4" fill="#c96a3d"/><rect x="543.8" y="1770.6" width="7.4" height="33.6" fill="#c96a3d"/><rect x="553.1" y="1770.0" width="7.4" height="34.2" fill="#c96a3d"/><rect x="562.4" y="1767.2" width="7.4" height="37.0" fill="#c96a3d"/><rect x="571.6" y="1773.2" width="7.4" height="31.0" fill="#c96a3d"/><rect x="580.9" y="1762.6" width="7.4" height="41.6" fill="#c96a3d"/><rect x="590.2" y="1736.2" width="7.4" height="68.0" fill="#c96a3d"/><rect x="599.4" y="1719.1" width="7.4" height="85.1" fill="#c96a3d"/><rect x="608.7" y="1713.9" width="7.4" height="90.3" fill="#c96a3d"/><rect x="617.9" y="1707.9" width="7.4" height="96.3" fill="#c96a3d"/><rect x="627.2" y="1710.7" width="7.4" height="93.5" fill="#c96a3d"/><rect x="636.5" y="1704.2" width="7.4" height="100.0" fill="#c96a3d"/><rect x="645.7" y="1702.8" width="7.4" height="101.4" fill="#c96a3d"/><rect x="655.0" y="1717.9" width="7.4" height="86.3" fill="#c96a3d"/><rect x="664.2" y="1705.6" width="7.4" height="98.6" fill="#c96a3d"/><rect x="673.5" y="1714.5" width="7.4" height="89.7" fill="#c96a3d"/><rect x="682.8" y="1729.6" width="7.4" height="74.6" fill="#c96a3d"/><rect x="692.0" y="1740.2" width="7.4" height="64.0" fill="#c96a3d"/><rect x="701.3" y="1736.6" width="7.4" height="67.6" fill="#c96a3d"/><rect x="710.5" y="1748.5" width="7.4" height="55.7" fill="#c96a3d"/><rect x="719.8" y="1728.6" width="7.4" height="75.6" fill="#c96a3d"/><rect x="729.1" y="1732.8" width="7.4" height="71.4" fill="#c96a3d"/><rect x="738.3" y="1749.7" width="7.4" height="54.5" fill="#c96a3d"/><rect x="747.6" y="1743.3" width="7.4" height="60.9" fill="#c96a3d"/><rect x="756.8" y="1751.5" width="7.4" height="52.7" fill="#c96a3d"/><rect x="766.1" y="1750.5" width="7.4" height="53.7" fill="#c96a3d"/><rect x="775.4" y="1742.5" width="7.4" height="61.6" fill="#c96a3d"/><rect x="784.6" y="1766.4" width="7.4" height="37.8" fill="#c96a3d"/><rect x="793.9" y="1763.6" width="7.4" height="40.6" fill="#c96a3d"/><rect x="803.2" y="1768.8" width="7.4" height="35.4" fill="#c96a3d"/><rect x="812.4" y="1764.0" width="7.4" height="40.2" fill="#c96a3d"/><rect x="821.7" y="1770.2" width="7.4" height="34.0" fill="#c96a3d"/><rect x="830.9" y="1771.2" width="7.4" height="33.0" fill="#c96a3d"/><rect x="840.2" y="1768.4" width="7.4" height="35.8" fill="#c96a3d"/><rect x="849.5" y="1757.5" width="7.4" height="46.7" fill="#c96a3d"/><rect x="858.7" y="1767.4" width="7.4" height="36.8" fill="#c96a3d"/><rect x="868.0" y="1753.1" width="7.4" height="51.1" fill="#c96a3d"/><rect x="877.2" y="1795.8" width="7.4" height="8.4" fill="#c96a3d"/><rect x="886.5" y="1804.2" width="7.4" height="30.0" fill="#3d7ea6"/><rect x="895.8" y="1804.2" width="7.4" height="2.0" fill="#3d7ea6"/><rect x="905.0" y="1790.3" width="7.4" height="13.9" fill="#c96a3d"/><rect x="914.3" y="1796.8" width="7.4" height="7.4" fill="#c96a3d"/><text x="918" y="1700" font-size="11" fill="#c96a3d" text-anchor="end" font-weight="700">최신 +0.0pp (2026-09-04)</text>
+<rect x="66" y="1912" width="852" height="440" fill="#ffffff" stroke="#e8e1cf"/><line x1="66" y1="1912.0" x2="918" y2="1912.0" stroke="#f2ecdc"/><text x="58" y="1916.0" font-size="11" fill="#6b6152" text-anchor="end">1.07</text><line x1="66" y1="1967.0" x2="918" y2="1967.0" stroke="#f2ecdc"/><text x="58" y="1971.0" font-size="11" fill="#6b6152" text-anchor="end">1.03</text><line x1="66" y1="2022.0" x2="918" y2="2022.0" stroke="#f2ecdc"/><text x="58" y="2026.0" font-size="11" fill="#6b6152" text-anchor="end">0.98</text><line x1="66" y1="2077.0" x2="918" y2="2077.0" stroke="#f2ecdc"/><text x="58" y="2081.0" font-size="11" fill="#6b6152" text-anchor="end">0.93</text><line x1="66" y1="2132.0" x2="918" y2="2132.0" stroke="#f2ecdc"/><text x="58" y="2136.0" font-size="11" fill="#6b6152" text-anchor="end">0.88</text><line x1="66" y1="2187.0" x2="918" y2="2187.0" stroke="#f2ecdc"/><text x="58" y="2191.0" font-size="11" fill="#6b6152" text-anchor="end">0.83</text><line x1="66" y1="2242.0" x2="918" y2="2242.0" stroke="#f2ecdc"/><text x="58" y="2246.0" font-size="11" fill="#6b6152" text-anchor="end">0.78</text><line x1="66" y1="2297.0" x2="918" y2="2297.0" stroke="#f2ecdc"/><text x="58" y="2301.0" font-size="11" fill="#6b6152" text-anchor="end">0.74</text><line x1="66" y1="2352.0" x2="918" y2="2352.0" stroke="#f2ecdc"/><text x="58" y="2356.0" font-size="11" fill="#6b6152" text-anchor="end">0.69</text><polyline fill="none" stroke="#6b7f3a" stroke-width="2.4" stroke-linejoin="round" points="66.0,2173.3 75.3,2194.8 103.0,2173.6 112.3,2189.3 121.6,2222.5 130.8,2224.3 140.1,2205.6 167.9,2019.9 177.1,2018.4 186.4,2046.3 195.7,2093.2 232.7,2061.8 242.0,2081.0 251.2,2108.3 260.5,2142.7 269.7,2115.4 297.5,2136.5 306.8,2088.6 316.0,2215.4 325.3,2257.1 334.6,2250.0 362.3,2242.9 371.6,2240.8 380.9,2281.3 390.1,2286.5 399.4,2293.8 427.2,2280.1 436.4,2237.6 445.7,2228.3 455.0,2198.2 464.2,2206.3 492.0,2191.8 501.3,2138.7 510.5,2183.6 519.8,2136.2 529.0,2125.9 556.8,2107.2 566.1,2035.3 575.3,2030.5 584.6,1999.3 593.9,2136.9 621.7,2144.3 630.9,2082.9 640.2,2077.1 649.4,2040.3 658.7,2049.0 686.5,2034.5 695.7,2000.0 705.0,2043.0 714.3,2034.8 723.5,2043.2 751.3,2073.2 760.6,2040.1 769.8,2069.1 779.1,2070.6 788.3,2072.7 816.1,2034.5 825.4,2003.6 834.7,2043.0 843.9,2052.7 853.2,2029.4 881.0,1970.2 890.2,2061.8 899.5,2060.0 908.7,2105.9"/><circle cx="908.7" cy="2105.9" r="3.4" fill="#6b7f3a" stroke="#6b7f3a" stroke-width="1"/><text x="66" y="1903" font-size="13" font-weight="700" fill="#4a3d28">④ TGA 잔고 (재무부 DTS · 일간)</text><text x="918" y="1903" font-size="12" fill="#6b7f3a" text-anchor="end" font-weight="700">최신 0.904T (2026-09-03)</text><circle cx="908.7" cy="2105.9" r="5" fill="none" stroke="#6b7f3a" stroke-width="1.6" opacity=".55"/>
+<rect x="66" y="2414" width="852" height="440" fill="#ffffff" stroke="#e8e1cf"/><line x1="66" y1="2414.0" x2="918" y2="2414.0" stroke="#f2ecdc"/><text x="58" y="2418.0" font-size="11" fill="#6b6152" text-anchor="end">11.62</text><line x1="66" y1="2469.0" x2="918" y2="2469.0" stroke="#f2ecdc"/><text x="58" y="2473.0" font-size="11" fill="#6b6152" text-anchor="end">10.37</text><line x1="66" y1="2524.0" x2="918" y2="2524.0" stroke="#f2ecdc"/><text x="58" y="2528.0" font-size="11" fill="#6b6152" text-anchor="end">9.12</text><line x1="66" y1="2579.0" x2="918" y2="2579.0" stroke="#f2ecdc"/><text x="58" y="2583.0" font-size="11" fill="#6b6152" text-anchor="end">7.87</text><line x1="66" y1="2634.0" x2="918" y2="2634.0" stroke="#f2ecdc"/><text x="58" y="2638.0" font-size="11" fill="#6b6152" text-anchor="end">6.62</text><line x1="66" y1="2689.0" x2="918" y2="2689.0" stroke="#f2ecdc"/><text x="58" y="2693.0" font-size="11" fill="#6b6152" text-anchor="end">5.37</text><line x1="66" y1="2744.0" x2="918" y2="2744.0" stroke="#f2ecdc"/><text x="58" y="2748.0" font-size="11" fill="#6b6152" text-anchor="end">4.12</text><line x1="66" y1="2799.0" x2="918" y2="2799.0" stroke="#f2ecdc"/><text x="58" y="2803.0" font-size="11" fill="#6b6152" text-anchor="end">2.87</text><line x1="66" y1="2854.0" x2="918" y2="2854.0" stroke="#f2ecdc"/><text x="58" y="2858.0" font-size="11" fill="#6b6152" text-anchor="end">1.63</text><polyline fill="none" stroke="#c2701c" stroke-width="2.2" stroke-linejoin="miter" points="112.3,2545.1 177.1,2545.1 177.1,2570.0 186.4,2570.0 186.4,2562.3 260.5,2562.3 260.5,2574.0 316.0,2574.0 316.0,2635.0 371.6,2635.0 371.6,2627.6 380.9,2627.6 380.9,2631.9 455.0,2631.9 455.0,2624.6 464.2,2624.6 464.2,2627.1 556.8,2627.1 556.8,2631.6 566.1,2631.6 566.1,2633.4"/><circle cx="112.3" cy="2545.1" r="3.2" fill="#c2701c"/><circle cx="177.1" cy="2570.0" r="3.2" fill="#c2701c"/><circle cx="186.4" cy="2562.3" r="3.2" fill="#c2701c"/><circle cx="260.5" cy="2574.0" r="3.2" fill="#c2701c"/><circle cx="316.0" cy="2635.0" r="3.2" fill="#c2701c"/><circle cx="371.6" cy="2627.6" r="3.2" fill="#c2701c"/><circle cx="380.9" cy="2631.9" r="3.2" fill="#c2701c"/><circle cx="455.0" cy="2624.6" r="3.2" fill="#c2701c"/><circle cx="464.2" cy="2627.1" r="3.2" fill="#c2701c"/><circle cx="556.8" cy="2631.6" r="3.2" fill="#c2701c"/><circle cx="566.1" cy="2633.4" r="3.2" fill="#c2701c"/><text x="115.3" y="2849" font-size="9.5" fill="#c2701c" opacity=".8">2026-Q2</text><polyline fill="none" stroke="#c2701c" stroke-width="2.2" stroke-linejoin="miter" points="584.6,2600.3 621.7,2600.3 621.7,2548.4 630.9,2548.4 630.9,2576.3 649.4,2576.3 649.4,2564.4 723.5,2564.4 723.5,2635.9 760.6,2635.9 760.6,2645.6 788.3,2645.6 788.3,2643.9 834.7,2643.9 834.7,2619.1 890.2,2619.1 890.2,2608.3 908.7,2608.3 908.7,2607.1"/><circle cx="584.6" cy="2600.3" r="3.2" fill="#c2701c"/><circle cx="621.7" cy="2548.4" r="3.2" fill="#c2701c"/><circle cx="630.9" cy="2576.3" r="3.2" fill="#c2701c"/><circle cx="649.4" cy="2564.4" r="3.2" fill="#c2701c"/><circle cx="723.5" cy="2635.9" r="3.2" fill="#c2701c"/><circle cx="760.6" cy="2645.6" r="3.2" fill="#c2701c"/><circle cx="788.3" cy="2643.9" r="3.2" fill="#c2701c"/><circle cx="834.7" cy="2619.1" r="3.2" fill="#c2701c"/><circle cx="890.2" cy="2608.3" r="3.2" fill="#c2701c"/><circle cx="908.7" cy="2607.1" r="3.2" fill="#c2701c"/><text x="587.6" y="2849" font-size="9.5" fill="#c2701c" opacity=".8">2026-Q3</text><polyline fill="none" stroke="#3f5fa0" stroke-width="1.6" stroke-dasharray="5,4" points="112.3,2557.5 177.1,2551.8 186.4,2552.7 260.5,2549.1 316.0,2539.7 371.6,2584.7 380.9,2592.7 455.0,2578.1 464.2,2574.1 556.8,2568.3 566.1,2558.6 584.6,2562.1 621.7,2577.5 630.9,2566.9 649.4,2575.3 723.5,2588.0 760.6,2581.5 788.3,2594.5 834.7,2586.6 890.2,2590.4 908.7,2609.0"/><polyline fill="none" stroke="#8b2e3c" stroke-width="2.4" stroke-linejoin="round" points="112.3,2777.3 177.1,2800.7 186.4,2785.2 260.5,2778.6 316.0,2754.3 371.6,2720.4 380.9,2720.3 455.0,2679.2 464.2,2646.2 556.8,2574.2 566.1,2529.7 584.6,2516.3 621.7,2534.6 630.9,2494.1 649.4,2474.5 723.5,2486.0 760.6,2467.3 788.3,2495.0 834.7,2502.5 890.2,2510.8 908.7,2520.4"/><circle cx="112.3" cy="2777.3" r="3" fill="#8b2e3c"/><circle cx="177.1" cy="2800.7" r="3" fill="#8b2e3c"/><circle cx="186.4" cy="2785.2" r="3" fill="#8b2e3c"/><circle cx="260.5" cy="2778.6" r="3" fill="#8b2e3c"/><circle cx="316.0" cy="2754.3" r="3" fill="#8b2e3c"/><circle cx="371.6" cy="2720.4" r="3" fill="#8b2e3c"/><circle cx="380.9" cy="2720.3" r="3" fill="#8b2e3c"/><circle cx="455.0" cy="2679.2" r="3" fill="#8b2e3c"/><circle cx="464.2" cy="2646.2" r="3" fill="#8b2e3c"/><circle cx="556.8" cy="2574.2" r="3" fill="#8b2e3c"/><circle cx="566.1" cy="2529.7" r="3" fill="#8b2e3c"/><circle cx="584.6" cy="2516.3" r="3" fill="#8b2e3c"/><circle cx="621.7" cy="2534.6" r="3" fill="#8b2e3c"/><circle cx="630.9" cy="2494.1" r="3" fill="#8b2e3c"/><circle cx="649.4" cy="2474.5" r="3" fill="#8b2e3c"/><circle cx="723.5" cy="2486.0" r="3" fill="#8b2e3c"/><circle cx="760.6" cy="2467.3" r="3" fill="#8b2e3c"/><circle cx="788.3" cy="2495.0" r="3" fill="#8b2e3c"/><circle cx="834.7" cy="2502.5" r="3" fill="#8b2e3c"/><circle cx="890.2" cy="2510.8" r="3" fill="#8b2e3c"/><circle cx="908.7" cy="2520.4" r="3" fill="#8b2e3c"/><rect x="74" y="2422" width="9" height="9" fill="#8b2e3c" rx="2"/><text x="87" y="2430.5" font-size="10.5" fill="#5c5237">총부채 13주 연율 +9.21%</text><rect x="212.0" y="2422" width="9" height="9" fill="#3f5fa0" rx="2"/><text x="225.0" y="2430.5" font-size="10.5" fill="#5c5237">총부채 YoY +7.19%</text><rect x="325.4" y="2422" width="9" height="9" fill="#c2701c" rx="2"/><text x="338.4" y="2430.5" font-size="10.5" fill="#5c5237">명목 GDPNow(실질+PCE nowcast) +7.24%</text><text x="66" y="2405" font-size="13" font-weight="700" fill="#4a3d28">⑤ 부채 증가율 vs 명목 GDPNow — 총부채(재무부 일간) · 연율 · GDPNow 갱신일 샘플 · 공유축</text><text x="918" y="2405" font-size="12" fill="#c0392b" text-anchor="end" font-weight="700">부채−명목GDP +1.97%p (2026-Q3 · 2026-09-03)</text>
+<rect x="66" y="2864" width="852" height="163" fill="#ffffff" stroke="#e8e1cf"/><text x="72" y="2877" font-size="11" font-weight="700" fill="#4a3d28">⑤-b 부채 13주 연율 − 명목 GDPNow (%p · 부채/GDP 변화 속도 · +=상승)</text><line x1="66" y1="2936.9" x2="918" y2="2936.9" stroke="#7a746a" stroke-width="0.9"/><text x="58" y="2875" font-size="10" fill="#6b6152" text-anchor="end">+4</text><text x="58" y="3025" font-size="10" fill="#6b6152" text-anchor="end">-5</text><rect x="107.8" y="2936.9" width="9.0" height="74.4" fill="#3d7ea6"/><rect x="172.6" y="2936.9" width="9.0" height="73.9" fill="#3d7ea6"/><rect x="181.9" y="2936.9" width="9.0" height="71.4" fill="#3d7ea6"/><rect x="256.0" y="2936.9" width="9.0" height="65.5" fill="#3d7ea6"/><rect x="311.5" y="2936.9" width="9.0" height="38.2" fill="#3d7ea6"/><rect x="367.1" y="2936.9" width="9.0" height="29.7" fill="#3d7ea6"/><rect x="376.4" y="2936.9" width="9.0" height="28.3" fill="#3d7ea6"/><rect x="450.5" y="2936.9" width="9.0" height="17.5" fill="#3d7ea6"/><rect x="459.7" y="2936.9" width="9.0" height="6.1" fill="#3d7ea6"/><rect x="552.3" y="2918.5" width="9.0" height="18.4" fill="#c96a3d"/><rect x="561.6" y="2903.7" width="9.0" height="33.2" fill="#c96a3d"/><rect x="580.1" y="2910.0" width="9.0" height="26.9" fill="#c96a3d"/><rect x="617.2" y="2932.4" width="9.0" height="4.4" fill="#c96a3d"/><rect x="626.4" y="2910.6" width="9.0" height="26.3" fill="#c96a3d"/><rect x="644.9" y="2908.1" width="9.0" height="28.8" fill="#c96a3d"/><rect x="719.0" y="2888.9" width="9.0" height="48.0" fill="#c96a3d"/><rect x="756.1" y="2879.8" width="9.0" height="57.1" fill="#c96a3d"/><rect x="783.8" y="2889.2" width="9.0" height="47.7" fill="#c96a3d"/><rect x="830.2" y="2899.5" width="9.0" height="37.4" fill="#c96a3d"/><rect x="885.7" y="2905.6" width="9.0" height="31.2" fill="#c96a3d"/><rect x="904.2" y="2909.1" width="9.0" height="27.8" fill="#c96a3d"/><text x="918" y="2877" font-size="11" fill="#c96a3d" text-anchor="end" font-weight="700">최신 +2.0%p (2026-09-03)</text>
+<text x="66.0" y="3047" font-size="11" fill="#6b6152" text-anchor="middle">06/04</text><text x="167.9" y="3047" font-size="11" fill="#6b6152" text-anchor="middle">06/15</text><text x="269.7" y="3047" font-size="11" fill="#6b6152" text-anchor="middle">06/26</text><text x="371.6" y="3047" font-size="11" fill="#6b6152" text-anchor="middle">07/07</text><text x="473.5" y="3047" font-size="11" fill="#6b6152" text-anchor="middle">07/18</text><text x="575.3" y="3047" font-size="11" fill="#6b6152" text-anchor="middle">07/29</text><text x="677.2" y="3047" font-size="11" fill="#6b6152" text-anchor="middle">08/09</text><text x="779.1" y="3047" font-size="11" fill="#6b6152" text-anchor="middle">08/20</text><text x="881.0" y="3047" font-size="11" fill="#6b6152" text-anchor="middle">08/31</text>
+<text x="66" y="3073.0" font-size="10.5" fill="#8a7d68">ⓘ 순유동성 = WALCL − WDTGAL − RRP (FRED 주간·수요일 레벨, n=13) · MMF = ICI 주간 총자산 (n=13, 정확 13 · ○ 점선=0 근사 seed) · TGA = 재무부 DTS Table I 일간 종가 (n=65, ● 붉은점=0 anomaly)</text><text x="66" y="3086.5" font-size="10.5" fill="#8a7d68">   Truflation = 대시보드 수집일 축적 (n=93, 무료 tier 5일 지연 · core는 Truflation 미제공 → 라인 없음)</text><text x="66" y="3100.0" font-size="10.5" fill="#8a7d68">   ⑤ 부채 = 재무부 Debt to the Penny 총부채 일간(n=21·GDPNow 갱신일 샘플) · GDPNow(n=21, ALFRED 21 · 페이지 0) + Cleveland PCE nowcast(같은 분기 짝 21) = 명목</text><text x="66" y="3113.5" font-size="10.5" fill="#8a5a2b">🔴 ⑤-b 막대 = 부채 13주 연율 − 명목 GDPNow = 부채/GDP 변화 속도. YoY 점선은 추세 참고(막대에 미사용) · 분기 초 1~6회차는 GDPNow 오차가 커 해석 유보 · 부채한도 동결 구간(음영)은 왜곡</text><text x="66" y="3127.0" font-size="10.5" fill="#8a5a2b">🔴 패널 ⑤ ≠ macro-weekly §11-0 r−g(명목 10Y − 명목 GDP YoY·분기) — 질문이 다르다(부채 *증가율* vs 금리). 서로 인용 금지.</text><text x="66" y="3140.5" font-size="10.5" fill="#8a7d68">   ①-b = 스톡의 1차 미분(주간 변화 — TGA 캘린더 노이즈 포함·위험자산 방향 판단 단독 사용 금지)</text><text x="66" y="3154.0" font-size="10.5" fill="#8a7d68">   ③-b = Truflation 지수가 이미 YoY(속도)이므로 30일 변화 = 인플레 나우캐스트의 가속도(2차 미분)</text>
+</svg></div>
+<p><strong>① 순유동성</strong> — 패널은 <strong>익일물 역레포(ON RRP) 정의</strong>로 <strong>$5,792.3십억</strong>(주간 <strong>+$21.5십억</strong>). §1-2의 <strong>총 역레포 정의</strong>로는 $5,435.1십억(주간 <strong>+$19.8십억</strong>). 어느 정의로 재도 판정 임계 ±$60십억 안쪽 = <strong>중립</strong>이다.</p>
+<p><strong>패널 ② 판독</strong> — MMF 총자산 <strong>$7,979.35십억</strong>(9/2 주 종료·ICI 9/3 릴리스) = <strong>사상 최고</strong>. 직전 고점 7/08 $7,943.03십억을 <strong>+$36.32십억</strong> 경신했다. 주간 <strong>+$44.75십억</strong> · 4주 Δ <strong>+$70.03십억</strong>(8/05 대비) · 13주 Δ <strong>+$90.34십억</strong>(6/03 대비) · 7/29 저점($7,853.93십억) 대비 5주간 <strong>+$125.42십억</strong>. 기관 <strong>$4,865.45십억</strong>(+$33.66십억) vs 소매 $3,113.90십억(+$11.10십억)으로 <strong>증가분의 75%가 기관</strong>이고, 유형별로는 정부형 +$38.80십억이 <strong>증가분의 87%</strong>다. 🔴 <strong>[추론]</strong> 7월 말 유출을 되돌린 것을 넘어 신고점까지 간 것은, 단기채 금리가 MMF 7일 수익률보다 높던 구간이 지나가면서 <strong>직접 매입 대체 유인이 약해진</strong> 쪽과, RRP 완충이 없는 상태에서 <strong>현금이 갈 곳이 정부형 MMF뿐</strong>인 쪽 둘 다로 읽힌다. 저장소 21점 전량 ICI 원본(derived 0).</p>
+<p><strong>③ Truflation vs 공식</strong> — Truflation CPI <strong>2.32%</strong> ↔ 공식 CPI 3.40%, 괴리 <strong>1.08%p</strong>(전주 1.10%p). PCE 쌍은 2.57% ↔ 3.70%. <strong>여덟 주째 1%p대</strong>다. 관측일 2026-09-04 · 무료 tier 5일 지연 · 🔴 Truflation은 근원 CPI 지수를 제공하지 않아 core 라인 없음.</p>
+<p><strong>④ TGA 일간</strong> — 9/3 종가 기준 최신. 주간(H.4.1)으로는 8/26 $959.4십억 → 9/2 <strong>$944.4십억</strong>(<strong>−$15.1십억</strong>). 7~8월 내내 이어진 <strong>$930~960십억 박스</strong> 안이다.</p>
+<p><strong>패널 ⑤ 판독</strong> — 총부채 <strong>$40,103십억</strong>(2026-09-03) · 13주 연율 <strong>+9.21%</strong> · YoY +7.19%</p>
+<p>   13주−YoY = +2.01%p → 최근 가속</p>
+<p>   GDPNow 실질 +4.75% (2026-Q3 · 애틀랜타 연준 페이지 갱신 이력 <strong>17회차</strong>) + PCE nowcast +2.49% (Cleveland as-of 2026-09-04) = <strong>명목 +7.24%</strong></p>
+<p>   ⑤-b 막대 = +9.21 − +7.24 = <strong>+1.97%p</strong> → 부채/GDP <strong>상승</strong> 방향</p>
+<p>   막대 추세(최근 34점): +4.0 → +3.4 → +2.6 → +2.2 → <strong>+2.0</strong></p>
+<p>   부채한도 에피소드: 없음 (13주 연율은 회계적 동결 왜곡 없음)</p>
+<blockquote>🔴 <strong>GDPNow 판독 가드</strong>: 2026-Q3는 <strong>17회차</strong>(7/30~9/3)로 11회차 이후 구간 = |오차| 중앙값 <strong>0.47%p</strong>. 4.7%는 대략 ±0.5%p 폭으로 읽는다. 🔴 이 패널의 판독 대상은 g의 수준이 아니라 <strong>⑤-b 막대의 부호·추세</strong>이며, 막대는 5회차 연속 축소하면서도 <strong>여전히 양(+)</strong> = 부채가 명목 GDP보다 빨리 늘고 있다.</blockquote>
+<blockquote>🔴 <strong>§11-0 r−g와 다른 통계량이다.</strong> 여기(패널 ⑤)는 *부채가 GDP보다 빨리 느는가*(부채 증가율 vs 명목 GDPNow), §11-0은 *금리가 성장을 넘는가*(10년 금리 vs 명목 GDP YoY). 서로 인용하지 않는다.</blockquote>
+<p><strong>📖 배경 — 레짐 4분류·주요 프레임·용어 (접기, 매 보고서 재서술 금지)</strong></p>
+<blockquote>아래 5줄은 반복 용어 정의다. 이미 아는 독자는 건너뛴다.</blockquote>
+<ul>
+<li><strong>레짐 4분류</strong>: 🟢 골디락스(적당한 성장+낮은 인플레+충분한 유동성) / 🟡 리플레이션(성장 가속+인플레 상승+유동성 확장) / 🟠 스태그플레이션(성장 둔화+인플레 상승+유동성 긴축) / 🔴 디플레이션(성장 둔화+인플레 하락+유동성 수축).</li>
+<li><strong>순유동성</strong> = 연준 대차대조표(WALCL) − 재무부 일반계정(TGA) − 역레포(RRP). 본 보고서는 두 정의를 병기한다 — 패널은 <strong>익일물 역레포(ON RRP)</strong>, §1-2는 <strong>총 역레포</strong>(외국 공식기관 풀 포함).</li>
+<li><strong>GSCPI</strong>(글로벌 공급망 압력지수) = 역사 평균 대비 표준편차. 0 위면 압력 존재.</li>
+<li><strong>TGCR/SOFR/EFFR − IORB</strong> = 레포·연방기금 금리가 지준부리보다 높은지. 양(+)이면 현금이 귀하다는 뜻.</li>
+<li><strong>r−g</strong> = 국채 금리 − 명목 GDP 성장률. 음수면 부채비율이 자동으로 내려가는 방향.</li>
+<li><strong>Warsh 인플레 프레임 3종</strong> = Dallas 절사평균 PCE · Cleveland 중위 CPI · Cleveland 16% 절사평균 CPI. 극단값을 잘라낸 &quot;기저 물가&quot;.</li>
+</ul>
+<h2>🌍 세상의 흐름 — 주간 종합</h2>
+<p><strong>① 이번 주의 흐름 축</strong></p>
+<p>1. <strong>고용이 연준의 알리바이를 빼앗았다</strong> — 수(9/3) 월러가 &quot;향후 2주 데이터&quot;라는 조건부 반응함수를 공개하자 9월 인상 베팅은 67%→62%로 물러섰다 [관측](<a href="https://www.federalreserve.gov/newsevents/speech/waller20260903a.htm" target="_blank">연설 원문</a>). 목(9/4) 8월 고용 +162K·실업률 4.1%·참가율 61.6% — 컨센의 3배 [관측](<a href="https://www.bls.gov/news.release/empsit.nr0.htm" target="_blank">BLS</a>), 같은 날 해맥 &quot;인플레를 낮추기 위해 행동할 때&quot; [관측](<a href="https://www.bloomberg.com/news/articles/2026-09-04/fed-s-hammack-says-it-s-time-to-act-to-bring-down-inflation" target="_blank">Bloomberg</a>) → 단기금리↑·주가↓로 인상 쪽 재가격. 같은 날 트럼프 &quot;연준이 안 내리면 주요 교역국과 무역 중단&quot; [관측](<a href="https://edition.cnn.com/markets/fear-and-greed" target="_blank">CNN 마켓</a>) — 연준과 백악관의 간극이 한 주 안에 벌어졌다.</p>
+<p>2. <strong>유가의 양손이 실체가 됐다</strong> — 수(9/2) 백악관 &quot;역사상 최대 석유 합의&quot;: 베네수엘라 650억+ 배럴 과반 지배, 대상 유전 다수가 러·중 기업 또는 마두로 측근 지배였다 [관측](<a href="https://www.whitehouse.gov/releases/2026/09/president-trump-secures-the-biggest-oil-deal-in-world-history/" target="_blank">백악관</a>). 목(9/4) 베센트 &quot;봉쇄 재개 후 이란산 원유가 중국에 못 갔다·선박 안에 쌓인다&quot; [관측](<a href="https://x.com/SecScottBessent/status/2095907853877874926" target="_blank">X</a>) + &quot;이란전 끝나면 $40·금리도 내려간다&quot; [관측](<a href="https://www.bloomberg.com/news/articles/2026-09-04/bessent-sees-oil-as-low-as-40-post-iran-war-taking-yields-down" target="_blank">Bloomberg</a>). 주간 WTI +9.38%($91.22)·Brent +7.30%, 헤지펀드 브렌트 순매수 5월 이후 최대. 연준 노트가 &quot;사상 최대 공급충격에도 선물이 예상보다 덜 올랐다&quot;고 쓴 그 주에 [관측](<a href="https://www.federalreserve.gov/econres/notes/feds-notes/revisiting-the-forecasting-potential-of-futures-prices-20260903.html" target="_blank">FEDS Note</a>), 둔감이 깨졌다.</p>
+<p>3. <strong>19 대 1의 G20과 제재의 3차 확장</strong> — 화(9/1) 애슈빌 의장성명 각주1 &quot;중국을 제외한 참석 전원 합의·중국은 4·10·11·13항 반대&quot; [관측](<a href="https://home.treasury.gov/news/press-releases/sb0620/" target="_blank">sb0620</a>). 본문에 흑자국 내수 왜곡 제거·&quot;중앙은행은 생산능력 이득과 수요 변화를 엄밀히 구분&quot;·FSB 스테이블코인 국경간 보고 예고. 수(9/3) 베센트 &quot;EU 공식 합류&quot;, 목(9/4) OFAC 튀르키예 Golden Global Bank 지정 [관측](<a href="https://home.treasury.gov/news/press-releases/treasury-severs-iranian-regime-s-financial-lifelines-turkiye/" target="_blank">재무부</a>) — UAE(8/28)→튀르키예(9/4). 한국 정부의 호르무즈 기뢰 탐지·초계기 옵션 검토(국회 승인 필요)는 [미확인](2차 X 게시·1차 정부 문서 이번 회차 미확인).</p>
+<p>4. <strong>달러 약세와 달러 현금 선호가 같은 주에 동거했다</strong> — 수(9/3) DXY 99.0 5월 이후 최저, 주간 USD/JPY −1.95%(156.22)·JP10Y 2.91%(3% 하회 복귀)·원/달러 1,346(52주 최강). 그런데 MMF는 $7,979십억 사상 최고(기관 정부형 주도), 지준/은행자산 11.40%→11.29%, 순유동성 +$19.8십억(중립), 유동성/GDP 8.91%. 돈은 달러 밖으로 나간 게 아니라 정부형 MMF로 더 들어갔다.</p>
+<p>5. <strong>관청 셋이 &#x27;돈의 형태&#x27;를 같은 주에 다시 셌다</strong> — 화(9/1) SEC 이전대리인 규칙 현대화 제안(1970~80년대 이후 첫 실질 개정·&quot;블록체인 기술 사용 반영&quot;·60일 의견수렴) [관측](<a href="https://www.sec.gov/newsroom/press-releases/2026-81-sec-proposes-modernize-rules-registered-transfer-agents" target="_blank">SEC 2026-81</a>), 같은 날 WSJ 21개 금융사 스테이블코인 공동 발행사 &quot;디지털자산과의 경쟁 방어&quot; [관측](<a href="https://www.wsj.com/finance/banking/these-banks-are-banding-together-to-launch-a-stablecoin-6de07eff" target="_blank">WSJ</a>), 금(9/4) 연준 FEDS &quot;새 화폐 형태와 미국 통화총량&quot; [관측](<a href="https://www.federalreserve.gov/econres/notes/feds-notes/new-forms-of-money-and-the-u-s-monetary-aggregates-20260904.html" target="_blank">FEDS Note</a>). G20 의장성명의 FSB 국경간 보고 예고까지 넷이 겹쳤다.</p>
+<p><strong>② macro-daily Why/next 회고</strong> (커버: 미국장 기준 2026-08-28 ~ 2026-09-03 · 5회차 · 미커버 거래일 = 9/4(금, 본 주간 보고서가 직접 커버))</p>
+<ul>
+<li>회고 대상 없음 — 도입 이전 회차 2건(as-of 8/28·8/31)</li>
+<li>⏳ 열림 | (9/1 ①) 미국이 일본에 요구하는 것은 엔 개입이 아니라 BOJ 금리와 재정 긴축이다 — JGB 10Y 3.00% → 엔 −1.95%·JP10Y 2.91%로 시장이 먼저 움직였으나 BOJ 결정 전이라 &#x27;요구의 답&#x27;은 미확정.</li>
+<li>⏳ 열림 | (9/1 ②) 바이백 확대 효과가 첫 집행 전에 소거됐다 — 상대 변수가 해외 앵커라면 → 첫 집행(9/9) 미도래. 다만 해외 앵커(JP10Y)는 이번 주 내려왔다.</li>
+<li>✅ 확인 | (9/1 ③) 유가의 두 손 — 서반구 양허를 못 박고 호르무즈를 때렸다, 청구서는 연준 반응함수로 → 9/2 백악관 베네수엘라·9/4 베센트 봉쇄 결과 + 해맥 &quot;행동할 때&quot;·인상 재가격.</li>
+<li>⏳ 열림 | (9/1 ④) 연준은 줄이고 은행은 늘리게 하는 유동성 규제 개편 — 조건부 차입 여력이 현금으로 인정되면 누가 국채를 사나 → 규제 후속 문서 이번 회차 미확인(창 내 발표 없음). MMF 사상 최고·지준 비율 하락은 질문을 키웠을 뿐 답이 아니다.</li>
+<li>✅ 확인 | (9/2 ①) 같은 무대, 세 갈래 목소리 — 트럼프 &#x27;성장 20%&#x27;·워시 &#x27;자본 부족&#x27;·베센트 &#x27;term premium 불변&#x27; → 갈래는 좁혀지지 않고 9/4 트럼프 &quot;무역 중단&quot; 위협·베센트 &quot;$40·금리 하락&quot;·해맥 &quot;행동&quot;으로 세 방향이 더 벌어졌다.</li>
+<li>✅ 확인 | (9/2 ②) G20 애슈빌 — 19 대 1, 공동성명 대신 의장성명 → 재무부 의장성명 각주1이 중국 단독 반대 4개 항을 명기.</li>
+<li>✅ 확인 | (9/2 ③) 엔 급등·닛케이 −2.85%·코스피 −3.99% — 그런데 변동성지수는 내렸다 → 주간 DXY 99.0·원 1,346·엔 156으로 이어진 것은 달러 약세 재가격이었지 위험회피가 아니었다(순유동성 중립·MMF 유입).</li>
+<li>❌ 기각 | (9/2 ④) 호르무즈 봉쇄 86척·이란 걸프 포격 — 그런데 유가 상승폭은 +5.7%→+0.45% → 둔감 전제 소멸: 주간 WTI +9.38%·헤지펀드 브렌트 순매수 5월 이후 최대.</li>
+<li>⏳ 열림 | (9/3 ①) forward guidance를 버린 연준에서 이사 한 사람이 &#x27;2주 데이터&#x27; 조건부 반응함수를 공개했다 → 고용은 강했으나 임금 +3.09%는 감속, 조건문의 판정 변수(물가)는 아직 안 나왔다.</li>
+<li>⏳ 열림 | (9/3 ②) 바이백 확대 첫 집행을 앞두고 &#x27;재무장관은 이기고 싶어 한다&#x27; — 구두개입인가, 트위스트 3.0의 첫 실행인가 → 집행 전이라 판정 불가. 9/4 &quot;$40·금리 하락&quot; 발언은 구두 채널이 한 번 더 쓰였다는 기록.</li>
+<li>✅ 확인 | (9/3 ③) 베네수엘라 650억 배럴 다수 지배권 — 호르무즈를 쥔 채 서반구 공급을 짜는 에너지 통치술 → 양손이 각각 1차 문서로 확인(백악관 9/2·베센트 X 9/4). &#x27;통치술&#x27;이라는 해석은 [추론] 층에 남긴다.</li>
+<li>⏳ 열림 | (9/3 ④) 우에다의 &#x27;위험 관리&#x27; 한 마디 — BOJ 반응함수가 확인 후 인상에서 상방 위험 선제로 옮겨갔나 → 엔 강세·JP10Y 3% 하회는 시장의 선반영일 뿐, 반응함수 변경은 MPM 문서로만 확인된다.</li>
+</ul>
+<h2>🧠 Why and next ? (주간)</h2>
+<h3>1. 고용 +162K — 알리바이가 사라진 뒤, 인상은 누구의 이름으로 적히나</h3>
+<p><strong>Why?</strong> ① [관측] 8월 고용 +162K(컨센 +45~58K)·실업률 4.1%·참가율 61.6%·U-6 7.7%(<a href="https://www.bls.gov/news.release/empsit.nr0.htm" target="_blank">BLS</a>). 고용의 자리는 레저·접객 +62K·정부 +35K, 정보 −23K·금융 −11K. 임금 +3.09% y/y로 감속 경로. 같은 날 해맥 &quot;행동할 때&quot;(<a href="https://www.bloomberg.com/news/articles/2026-09-04/fed-s-hammack-says-it-s-time-to-act-to-bring-down-inflation" target="_blank">Bloomberg</a>). &quot;고용이 약해 인상은 못 한다&quot;는 알리바이가 하루에 사라졌다. / ② <strong>[추론·권력]</strong> forward guidance를 폐기한 의장 아래서 이사 한 명이 블랙아웃 직전에 &quot;2주 데이터&quot;라는 조건문을 공개한 것(<a href="https://www.federalreserve.gov/newsevents/speech/waller20260903a.htm" target="_blank">연설 원문</a>)은, 9월 결정이 인상이 될 때 그것이 &#x27;의장의 판단&#x27;이 아니라 &#x27;데이터가 내린 판단&#x27;으로 기록되게 하는 장치일 수 있다 — 같은 날 트럼프의 &quot;무역 중단&quot; 위협(<a href="https://edition.cnn.com/markets/fear-and-greed" target="_blank">CNN 마켓</a>)을 받아내는 표적을 사람에서 반응함수로 옮기는 셈. <strong>[추론·상대방 관점]</strong> 고용의 내용은 인상 진영에도 편치 않다 — 정부·접객이 끌고 정보·금융이 줄며 임금은 감속했다면, &quot;정책은 총수요를 아주 약간만 제약&quot;이라는 월러의 문장은 &#x27;이미 충분하다&#x27;는 쪽의 논거로도 쓰인다.</p>
+<p><strong>Next?</strong> 월러의 조건문은 물가 한 장으로 갈린다 — 8월 개선이 반복되면 동결, 아니면 인상 고려. 인상이 되면 연준은 &quot;데이터&quot;의 이름으로 발표하고 백악관은 &quot;연준&quot;의 이름으로 받는가. 트럼프의 무역 중단 위협이 실제 교역 조치로 옮겨가면 유가발 물가와 겹쳐 연준이 더 매파가 되는 역설 — 백악관은 그 역설을 계산에 넣었는가, 아니면 위협 자체가 목적인가. <strong>다음 관문 = 8월 CPI</strong>(월러의 &#x27;2주&#x27; 창 안에서 &quot;디스인플레 확인&quot;이 성립하는지·임금 감속이 물가 감속으로 이어졌는지).</p>
+<h3>2. 베센트의 &quot;$40와 금리&quot; — 10년물을 내리는 길이 연준이 아니라 유가를 지나간다면</h3>
+<p><strong>Why?</strong> ① [관측] 9/4 베센트 &quot;이란전 종료 시 유가 $40까지·금리도 내려간다&quot;(<a href="https://www.bloomberg.com/news/articles/2026-09-04/bessent-sees-oil-as-low-as-40-post-iran-war-taking-yields-down" target="_blank">Bloomberg</a>) + 같은 날 &quot;봉쇄 재개 후 이란산 원유가 중국에 못 갔고 해협 안 선박에 쌓인다&quot;(<a href="https://x.com/SecScottBessent/status/2095907853877874926" target="_blank">X</a>) + 9/2 백악관 베네수엘라 650억+ 배럴 과반 지배·&quot;납세자 비용 0&quot;(<a href="https://www.whitehouse.gov/releases/2026/09/president-trump-secures-the-biggest-oil-deal-in-world-history/" target="_blank">백악관</a>). / ② <strong>[추론·자금]</strong> 재무부의 자기 도구는 아직 작동 전이다 — 바이백 확대 첫 집행 미도래, TGA 레포 합격선 TGCR−IORB 60일 평균 −3.88bp로 미달. 이 구간에서 재무장관이 금리 하락 경로를 &#x27;유가&#x27;로 발화한 것은 term premium 기대를 자기 도구가 아니라 유가에 걸어두는 말의 다리일 수 있다. <strong>[추론·상대방 관점]</strong> 봉쇄 &quot;결과&quot;를 재무장관이 직접 게시한 것은 수신자가 시장이 아니라 베이징이다 — 이란산 원유를 잃은 중국이 G20에서 홀로 반대한 4개 항과 같은 주에 놓였다. 연준 노트가 &quot;사상 최대 공급충격에도 선물은 덜 올랐다&quot;(<a href="https://www.federalreserve.gov/econres/notes/feds-notes/revisiting-the-forecasting-potential-of-futures-prices-20260903.html" target="_blank">FEDS Note</a>)고 쓴 것은 전가가 덜 가격화됐다는 뜻으로도, 서반구 공급 기대가 이미 상쇄한다는 뜻으로도 읽힌다.</p>
+<p><strong>Next?</strong> $91에서 $40으로 가려면 &#x27;전쟁 종료&#x27;라는 날짜가 필요하고, 그 날짜는 재무부가 아니라 백악관·이란·중국이 쥔다. 종료 전까지 유가는 연준의 인상 근거, 종료 후에는 재무부의 금리 하락 근거 — 같은 변수가 두 기관에 반대 부호로 들어가는 구간이다. 중국은 갇힌 이란 원유의 빈자리를 러시아 육로·위안 결제로 메우려 하는가, 베네수엘라 유전에서 밀려난 러·중 기업은 어디로 가는가. <strong>다음 관문 = 바이백 확대 첫 집행일</strong> — 10년물이 유가와 재무부 도구 중 어느 쪽에 먼저 반응하는지 첫 실측.</p>
+<h3>3. 애슈빌 의장성명 — 연준 의장의 문장이 G20 문서로 나갔다</h3>
+<p><strong>Why?</strong> ① [관측] 미국 의장국·공동성명 대신 의장성명·각주1 중국 4개 항 반대(<a href="https://home.treasury.gov/news/press-releases/sb0620/" target="_blank">sb0620</a>). 본문 &quot;중앙은행은 생산능력 이득과 수요 변화를 엄밀히 구분하겠다&quot; + &quot;과도한 대외흑자국은 내수를 제약하는 왜곡을 제거하라&quot; + 미국 Trump Accounts 명기 + FSB 스테이블코인 국경간 보고 예고. / ② <strong>[추론·권력]</strong> &quot;생산능력 이득 vs 수요 변화 구분&quot;은 [KNOW] 워시가 잭슨홀에서 공식화한 &#x27;공급측 생산성 이득에는 긴축으로 답하지 않는다&#x27;는 원칙과 같은 문장 구조다 — 재무부가 의장국 지위로 연준 의장의 독트린을 19개국 문서에 먼저 심었다면, 국내에서 &quot;표면 완화·실질 긴축&quot;으로 다투는 프레임이 국제 언어로 먼저 굳는 셈이다. <strong>[추론·상대방 관점]</strong> &quot;과도한 흑자국&quot; 조항은 중국을 향한 것으로 읽히지만 일본도 흑자국이다 — 이번 주 엔 강세·JP10Y 하락은 그 조항을 일본이 자기 문장으로 읽은 결과인지, 단순 달러 약세인지 아직 갈리지 않는다.</p>
+<p><strong>Next?</strong> 공동성명이 아닌 의장성명이 된 G20은 &#x27;19+1&#x27;로 굳어가는가, 아니면 중국이 반대 사유를 공식화해 별도 축을 세우는가. FSB 스테이블코인 국경간 보고는 미국 GENIUS 체계([KNOW])가 국제 표준으로 수출되는 첫 창구가 되는가, 유럽 MiCA([KNOW])와 충돌하는가. Trump Accounts가 G20 문서에 들어간 것은 가계 자산화 축이 대외 문서로 처음 격상된 기록 — 다른 회원국이 같은 형식을 따라오는지. <strong>다음 관문 = FSB 국경간 보고의 첫 실체 문서 · 중국의 4개 항 반대 사유 공표 여부.</strong></p>
+<h3>4. 이전대리인·21개 은행·연준 통화총량 노트 — 토큰화된 달러를 바깥이 아니라 안에서 세겠다는 것인가</h3>
+<p><strong>Why?</strong> ① [관측] SEC 9/1 이전대리인 규칙 현대화 제안 — 1970년대 말~80년대 초 이후 첫 실질 개정·앳킨스 &quot;증권 발행과 주식 이전에서 전자 통신과 블록체인 기술 사용 반영&quot;·60일 의견수렴·Peirce·Uyeda 개별 성명(<a href="https://www.sec.gov/newsroom/press-releases/2026-81-sec-proposes-modernize-rules-registered-transfer-agents" target="_blank">SEC 2026-81</a>). WSJ 9/1 21개 금융사(메가뱅크 다수) 스테이블코인 공동 발행사 &quot;디지털자산과의 경쟁 방어&quot;(<a href="https://www.wsj.com/finance/banking/these-banks-are-banding-together-to-launch-a-stablecoin-6de07eff" target="_blank">WSJ</a>). 연준 9/4 FEDS &quot;새 화폐 형태와 미국 통화총량&quot;(<a href="https://www.federalreserve.gov/econres/notes/feds-notes/new-forms-of-money-and-the-u-s-monetary-aggregates-20260904.html" target="_blank">FEDS Note</a>). / ② <strong>[추론·자금]</strong> 넷이 한 주에 겹친 것은 우연일 수 있으나 방향은 하나다 — 이전대리인은 주식 소유의 원장을, 통화총량은 돈의 정의를, FSB는 국경을 각각 맡아 토큰화된 달러·증권을 제도 안에서 세겠다는 것. 은행 컨소시엄은 그 원장 안에서 예금 기반을 지키려는 방어이고, 그 문장은 은행 자신의 말이다(&quot;경쟁 방어&quot;). <strong>[추론·타이밍]</strong> MMF가 $7,979십억 사상 최고로 부풀고 지준 비율이 11.29%로 내려앉은 주에 연준이 &#x27;돈의 정의&#x27;를 다시 쓴 것은, 통화총량 밖에 있는 달러가 얼마인지를 관청이 먼저 알고 싶어 한다는 신호일 수 있다.</p>
+<p><strong>Next?</strong> 60일 의견수렴에 은행 컨소시엄·기존 이전대리인·DTCC([KNOW])·크립토 네이티브 중 누가 &quot;블록체인 이전대리인&quot; 지위를 요구하고 누가 막으려 하는가. 연준이 새 화폐 형태를 통화총량에 넣으면 통계가 뛰는 착시가, 안 넣으면 정책이 보지 못하는 달러가 커진다 — 어느 쪽을 택하는가. 21개 은행의 발행물은 예금 토큰인가 스테이블코인인가 — 그 이름이 GENIUS([KNOW]) 감독 경로를 가른다. <strong>다음 관문 = SEC 의견수렴 마감(제안일+60일) 시 제출 의견서의 진영 분포.</strong></p>
+<style>
+.privlock{border:1px solid #d8cfb4;background:#FDF6E3;border-radius:10px;padding:16px 18px;margin:22px 0}
+.privlock .pl-h{font-weight:700;color:#1f2328;margin-bottom:4px}
+.privlock .pl-s{font-size:.86em;color:#6b6455;margin-bottom:12px}
+.privlock .pl-r{display:flex;gap:8px;flex-wrap:wrap}
+.privlock input{flex:0 0 130px;font-size:1.1em;letter-spacing:.35em;text-align:center;
+  padding:9px 10px;border:1px solid #d8cfb4;border-radius:7px;background:#fffdf6;color:#1f2328}
+.privlock button{padding:9px 18px;border:0;border-radius:7px;background:#2f6f5e;color:#fff;
+  font-size:1em;font-weight:600;cursor:pointer}
+.privlock button:disabled{opacity:.55;cursor:default}
+.privlock .pl-m{margin-top:9px;font-size:.88em;color:#a33}
+@media print{.privlock{display:none}}
+</style><div class="privlock" id="pl273dd11f" data-p="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"><div class="pl-h">🔒 글감 · 콘텐츠 아이디어</div><div class="pl-s">비공개 섹션입니다. 코드를 입력하면 열립니다.</div><div class="pl-r"><input id="pl273dd11f-i" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="16" placeholder="••••" autocomplete="off" aria-label="비공개 코드"><button id="pl273dd11f-b" type="button">열기</button></div><div class="pl-m" id="pl273dd11f-m"></div></div><script>
+(function(){var R="pl273dd11f",N=310000;
+var el=document.getElementById(R);if(!el)return;
+var i=document.getElementById(R+"-i"),b=document.getElementById(R+"-b"),m=document.getElementById(R+"-m");
+function u8(s){var d=atob(s),a=new Uint8Array(d.length);for(var k=0;k<d.length;k++)a[k]=d.charCodeAt(k);return a;}
+async function go(){
+ var c=(i.value||"").trim();
+ if(!c){m.textContent="코드를 입력하세요.";return;}
+ if(!(window.crypto&&crypto.subtle)){m.textContent="이 브라우저에서는 열 수 없습니다(HTTPS 필요).";return;}
+ b.disabled=true;m.style.color="#6b6455";m.textContent="여는 중…";
+ try{
+  var r=u8(el.getAttribute("data-p")),s=r.slice(0,16),v=r.slice(16,28),ct=r.slice(28);
+  var km=await crypto.subtle.importKey("raw",new TextEncoder().encode(c),"PBKDF2",false,["deriveKey"]);
+  var k=await crypto.subtle.deriveKey({name:"PBKDF2",salt:s,iterations:N,hash:"SHA-256"},
+        km,{name:"AES-GCM",length:256},false,["decrypt"]);
+  var pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:v},k,ct);
+  el.outerHTML=new TextDecoder().decode(pt);
+ }catch(e){m.style.color="#a33";m.textContent="코드가 맞지 않습니다.";b.disabled=false;i.value="";i.focus();}
+}
+b.addEventListener("click",go);
+i.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();go();}});
+})();
+</script><h2>종합 상태 대시보드</h2>
+<table><thead><tr><th>섹션</th><th>상태</th><th>전주 대비</th><th>핵심 변화 (변한 것만)</th></tr></thead><tbody>
+<tr><td>1. 유동성</td><td>🟠</td><td>➡️</td><td>순유동성 +$19.8십억(중립) · <strong>지준 −$30.4십억·비율 11.29%</strong> · RRP $0.5십억 · <strong>MMF 사상 최고</strong> · 유동성/GDP 8.91%</td></tr>
+<tr><td>2. 경기사이클</td><td>🟢</td><td>⬆️</td><td><strong>ISM 서비스 55.4(+1.3)·사업활동 61.7</strong> · 제조 54.6(−1.0) · 2s10s +41bp · 초기청구 206K</td></tr>
+<tr><td>3. 핵심 경제지표</td><td>🟠</td><td>⬆️</td><td><strong>8월 고용 +162K</strong>(컨센 3배) · <strong>GSCPI 1.06</strong>(0.94→) · ISM 가격 71.1/72.6 · Cleveland 9월 CPI nowcast 3.43%</td></tr>
+<tr><td>4. 연준</td><td>🔴</td><td>⬆️</td><td><strong>월러 조건부 인상 시사 + 해맥 &quot;행동할 때&quot;</strong> · RMP 0 유지 · FEDS Notes 4건</td></tr>
+<tr><td>5. 재무부</td><td>🟠</td><td>➡️</td><td>바이백 확대 첫 집행 D-4 · TGA $944.4십억(−$15.1) · <strong>TGCR−IORB −3.88bp 불통과</strong> · OFAC 튀르키예</td></tr>
+<tr><td>5-1. SEC</td><td>🔴</td><td>⬆️</td><td><strong>이전대리인 규칙 현대화 제안(블록체인 명시)</strong> · 9/17 24시간 거래 라운드테이블 · 9/10 투자자자문위 신설</td></tr>
+<tr><td>6. 행정부 정책</td><td>🟠</td><td>➡️</td><td>EO 2건(축산·목장) · <strong>트럼프 &quot;연준 안 내리면 무역 중단&quot;</strong> · H.R.6500 서명</td></tr>
+<tr><td>7. 미중 패권</td><td>🟠</td><td>⬆️</td><td><strong>G20 19대1</strong> · DOJ PRC 요원 실형 · CISA 포스트양자</td></tr>
+<tr><td>8. 달러 패권</td><td>🟠</td><td>➡️</td><td>스테이블코인 총액 $305.2십억(+0.41% 7d) · <strong>21개 은행 공동 발행사</strong> · 중앙은행 금 7월 23톤(4개월 연속)</td></tr>
+<tr><td>9. 지정학</td><td>🔴</td><td>⬆️</td><td><strong>봉쇄 재개 실물 효과 확인</strong> · 베네수엘라 합의 문서화 · 러-우 정전 신호</td></tr>
+<tr><td>10. 시장 심리</td><td>🟠</td><td>⬇️</td><td><strong>F&amp;G 42(Fear)</strong>(전주 52) · VIX 14.53(52주 6%ile) · VIX9D −20.9% · IPO 0건</td></tr>
+<tr><td>11. TFP/생산성</td><td>🟢</td><td>➡️</td><td>r−g <strong>−2.14%p</strong> 캐리 1주차 · Apollo: AI가 해고 아닌 재교육(NY Fed 8월 설문)</td></tr>
+<tr><td>12. 매크로 레짐</td><td>🟡</td><td>⬆️</td><td>인플레 다리 <strong>재형성</strong>(에너지) · 성장 다리 강화 · 유동성 다리 여전히 끊김</td></tr>
+</tbody></table>
+<hr>
+<h2>§1. 유동성 심층</h2>
+<h3>1-1. RMP — 변동 없음</h3>
+<p>8/14~9/14 기간 지시문 그대로: <strong>재투자 약 $17.0십억 · 준비금관리매입(RMP) 없음</strong>(<a href="https://www.newyorkfed.org/markets/domestic-market-operations/monetary-policy-implementation/treasury-securities/treasury-securities-operational-details" target="_blank">NY Fed 운영 상세</a>). 차기 스케줄 공표는 9월 중순. <strong>SRF 9/4 AM·PM 양 회차 모두 $0.000십억</strong>(<a href="https://www.newyorkfed.org/markets/desk-operations/repo" target="_blank">Repo Operations</a>) · <code>RPONTSYD</code> $0.0.</p>
+<h3>1-2. 순유동성 — 중립, 그러나 지준은 또 줄었다</h3>
+<table><thead><tr><th>항목</th><th>9/2</th><th>8/26</th><th>주간 Δ</th></tr></thead><tbody>
+<tr><td>WALCL</td><td>$6,737.2십억</td><td>$6,730.9십억</td><td><strong>+$6.3십억</strong></td></tr>
+<tr><td>TGA(<code>WDTGAL</code>)</td><td>$944.4십억</td><td>$959.4십억</td><td><strong>−$15.1십억</strong></td></tr>
+<tr><td>총 역레포(<code>WLRRAL</code>)</td><td>$357.7십억</td><td>$356.2십억</td><td>+$1.6십억</td></tr>
+<tr><td><strong>순유동성(총 역레포)</strong></td><td><strong>$5,435.1십억</strong></td><td>$5,415.3십억</td><td><strong>+$19.8십억</strong></td></tr>
+<tr><td>순유동성(ON RRP 정의·패널)</td><td>$5,792.3십억</td><td>$5,770.8십억</td><td>+$21.5십억</td></tr>
+<tr><td><strong>지급준비금(<code>WRESBAL</code>)</strong></td><td><strong>$2,894.5십억</strong></td><td>$2,924.9십억</td><td>🔴 <strong>−$30.4십억</strong></td></tr>
+<tr><td>지준/은행자산</td><td><strong>11.29%</strong></td><td>11.40%</td><td><strong>−0.11%p</strong></td></tr>
+<tr><td>ON RRP(<code>RRPONTSYD</code>, 9/4)</td><td>$0.675십억</td><td>—</td><td>완충 소진</td></tr>
+</tbody></table>
+<p>🔴 <strong>B/S는 늘고 TGA는 줄었는데 지준이 줄었다.</strong> 세 다리로 설명되지 않는 −$30.4십억은 화폐발행·기타 부채 항목으로 빠진 몫이다. 순유동성 공식값이 +$19.8십억으로 &quot;중립&quot;인 것과 <strong>지준이 −$30.4십억인 것은 같은 주의 두 사실</strong>이며, 배관 관점에서는 후자가 중요하다.</p>
+<p><strong>💧 순유동성 레짐 태그</strong> (as-of 2026-09-02 · 실증 owner = 순유동성 상관 보고서 2026-08-17)</p>
+<ul>
+<li>🔴 <strong>레짐 = 재정 주도</strong> — RRP 완충 소진 + TGA가 변동의 주인 → 2025~형. 🔴 주가·금리와의 상관 부호가 반전될 수 있는 구간</li>
+<li>13주 ΔNL <strong>−$71십억</strong> = WALCL +26 / −TGA −99 / −RRP +2 → <strong>주인 = TGA</strong></li>
+<li>실현 상관(13주 ΔNL vs 13주 S&amp;P): 롤링 52주 <strong>−0.32</strong> · 156주 −0.08 → 🔴 방향 함의를 쓸 땐 이 값을 같은 줄에 병기한다</li>
+<li>RRP 잔량 $0.5십억 ⚠️ <strong>완충 소진</strong> — B/S 축소·TGA 증가가 준비금에 1:1 전가</li>
+</ul>
+<h3>1-3. 유동성/GDP — 8.91%로 한 칸 더 내려갔다</h3>
+<p><code>WRESBAL + ON RRP</code> ÷ 명목 GDP = <strong>8.91%</strong>(전주 9.01%). 8/26 FEDS Note의 계량에서 <strong>10% 미만 = $500억 순쿠폰 발행이 TGCR−IORB를 약 10bp 올리는 구간</strong>이다(12% 초과 시 1bp 미만).</p>
+<p>🔴 <strong>[Scott-treasury 규약 ⑧ 준수]</strong> 이것은 &quot;곧 경색된다&quot;가 아니라 <strong>조건부 취약성</strong>이다 — 같은 줄에 실측을 병기하면 <strong>TGCR−IORB 최신 −1.0bp · SOFR−IORB +1.0bp · SRF $0.000십억 = 실측 압력 0</strong>이다. 판정 = 🟠 <strong>조건부 취약</strong>. 🔴 감시 대상은 비율의 소수점이 아니라 <strong>11/4 QRA의 쿠폰 라인</strong>이다.</p>
+<h3>1-4. 3-스프레드 주간 추세</h3>
+<p><strong>📊 레포·기준금리 3-스프레드 주간 추세</strong> (bp · 창 60영업일 · *수치 캐리 — 판정은 각 owner*)</p>
+<table><thead><tr><th>스프레드</th><th>최신</th><th>최근 5영업일 평균</th><th>직전 5영업일</th><th>WoW Δ</th><th>60일 평균</th><th>60일 양(+)</th><th>60일 σ</th><th>30일 평균</th></tr></thead><tbody>
+<tr><td><strong>TGCR−IORB</strong></td><td>-1.0</td><td><strong>-1.00</strong></td><td>-2.20</td><td><strong>+1.20</strong></td><td>-3.88</td><td>2/60일</td><td>2.99</td><td>-2.43</td></tr>
+<tr><td><strong>SOFR−IORB</strong></td><td>+1.0</td><td><strong>+1.00</strong></td><td>-0.20</td><td><strong>+1.20</strong></td><td>-1.85</td><td>10/60일</td><td>2.88</td><td>-0.53<strong>(#28 판정 창)</strong></td></tr>
+<tr><td><strong>EFFR−IORB</strong></td><td>-2.0</td><td><strong>-2.00</strong></td><td>-2.00</td><td><strong>+0.00</strong></td><td>-2.10</td><td>0/60일</td><td>0.30</td><td>-2.00</td></tr>
+</tbody></table>
+<ul>
+<li>🔴 <strong>EFFR−IORB 트립와이어</strong>: 현재 -2.0bp · 0bp까지 +2.0bp — 미발화(평시)</li>
+<li>🔴 <strong>창 고정 60영업일</strong> · 🔴 세 계열은 독립 증거가 아니다(TGCR·SOFR 당일 상관 0.93 · EFFR은 1일 시차·전이율 약 5%) — 개수로 세지 말 것.</li>
+<li>🔴 owner 경계: 경색 = SOFR−IORB(30일 rolling) / 합격선 채점 = TGCR−IORB(§5-2) / 전이 = EFFR−IORB. 본 표는 <strong>수치 캐리</strong>이며 서로 대체·재정의하지 않는다.</li>
+</ul>
+<p>🔴 <strong>주간 방향은 둘 다 +1.2bp 조임</strong>이다. 8월 말 월말 왜곡이 빠진 뒤의 정상화 범위 안이고, EFFR은 <strong>0.00bp로 완전 무반응</strong> — 담보부 시장의 조임이 무담보 시장으로 전이되지 않았다.</p>
+<h3>1-5. MMF · 통화량</h3>
+<p>MMF 상세는 §0 <strong>패널 ② 판독</strong>이 owner. 통화량: <code>M2SL</code> <strong>$23,218십억</strong>(7월) · <strong>YoY +5.41%</strong> · 실질 M2(<code>M2REAL</code>) YoY <strong>+2.04%</strong>.</p>
+<p><strong>과잉유동성</strong> = 실질 M2 YoY(+2.04%) − 실질 GDP YoY(+2.10%, 2026-Q2) = <strong>−0.06%p</strong>. 🔴 <strong>동인 판별</strong>: 명목 M2 <strong>+5.41%</strong>(가속 유지) · CPI 3.30% · 실질 GDP 2.10% → <strong>인플레發 + 성장發</strong>이며 <strong>통화수축發이 아니다</strong>(M2가 견조하다). 지난 분기 −1.3%p에서 <strong>거의 0까지 좁혀졌다</strong> — 화폐가 명목경제 속도를 따라잡았다는 뜻이다.</p>
+<p><strong>신용 방향</strong> — 생산적: C&amp;I 대출 <code>BUSLOANS</code> <strong>+8.66% y/y</strong> · 비주거 실질투자 <code>PNFIC1</code> +6.11% · <strong>정보처리장비 <code>B935RC1Q027SBEA</code> +57.86%</strong> · 지식재산 +14.76%. 투기/소비: 부동산 대출 +2.44% · 소비자신용 +2.43%. → 🟢 <strong>생산 방향 유지</strong>(1990년대형). 🔴 단 <strong>&quot;생산 방향 확인 ≠ 생산적 수익 확정&quot;</strong> — 정보처리장비 +57.9%가 1995년인지 1999년인지는 사후에만 확인된다.</p>
+<h3>1-6. 거시 비율 4종</h3>
+<p><strong>📐 거시 비율 4종</strong> (분모 = 명목GDP <strong>$32,486십억</strong> · 2026-Q2 · *수치 캐리 — 🔴 서술은 새 vintage가 나온 주에만*)</p>
+<table><thead><tr><th>비율</th><th>값</th><th>as-of</th><th>빈도</th><th>직전 대비</th></tr></thead><tbody>
+<tr><td><strong>① 순유동성/GDP</strong></td><td><strong>17.83%</strong></td><td>2026-09-02</td><td>주간</td><td>+0.07%p</td></tr>
+<tr><td><strong>② 지급준비금/GDP</strong></td><td><strong>8.91%</strong></td><td>2026-09-02</td><td>주간</td><td>-0.09%p</td></tr>
+<tr><td><strong>③ 정부부채/GDP</strong></td><td><strong>122.59%</strong></td><td>2026-Q1</td><td>분기</td><td>+0.02%p</td></tr>
+<tr><td><strong>④ 재정적자/GDP</strong> (연간)</td><td><strong>-5.77%</strong></td><td>FY2025</td><td>연간</td><td>+0.43%p</td></tr>
+<tr><td>↳ <strong>④-b 12M 롤링</strong>(MTS 월간)</td><td><strong>-5.99%</strong></td><td>2026-07</td><td>월간</td><td>-0.44%p</td></tr>
+</tbody></table>
+<ul>
+<li>①은 <code>WALCL − TGA − RRP</code> = <strong>$5,792.3십억</strong> · ②는 <code>WRESBAL</code> = <strong>$2,894.5십억</strong>. 🔴 <strong>세 유동성 비율의 분자가 다르다</strong> — ①순유동성 / ②지급준비금 / <strong>연준유동성(지준+RRP)</strong>. 지금 ②와 연준유동성이 같은 값인 것은 <strong>RRP가 $0.5십억으로 소진됐기 때문이지 정의가 같아서가 아니다</strong> — 섞어 쓰지 말 것.</li>
+<li>⚠️ ③ vintage <strong>247일 경과</strong>(2026-Q1) — 분기 시리즈라 정상. 재무부 *Debt to the Penny*(일간 $40,103십억)와 <strong>시계열로 잇지 말 것</strong>.</li>
+<li>🔴 ④ 연간 시리즈는 612일 경과라 현재를 대표하지 못한다 — <strong>현재값 판단은 ④-b(12M 롤링 −5.99%)를 쓴다.</strong> 두 값의 차이는 stale이지 악화·개선이 아니다.</li>
+<li>🔴 ③④는 분기·연간이라 <strong>이번 주 무변동이 정상</strong>이다.</li>
+</ul>
+<h3>1-7. Outgrow 가설 binding metric</h3>
+<p>준비금/은행자산 <strong>11.29%</strong>(전주 11.40%) — 학계 임계 11% 대비 <strong>0.29%p</strong> 여유. 🟡 11~13% 구간(임계 근접·모니터링 강화) 유지이나, <strong>2주 연속 하락하며 임계와의 거리가 0.40%p → 0.29%p로 좁혀졌다</strong>.</p>
+<hr>
+<h2>§2. 경기사이클</h2>
+<table><thead><tr><th>지표</th><th>최신</th><th>직전</th><th>신호</th></tr></thead><tbody>
+<tr><td><strong>ISM 제조 PMI (8월)</strong></td><td><strong>54.6%</strong></td><td>55.6%</td><td>🟢 8개월 연속 확장, 그러나 −1.0pt</td></tr>
+<tr><td>├ 신규수주</td><td>53.7</td><td>56.7</td><td>🟡 −3.0pt</td></tr>
+<tr><td>├ 생산</td><td>58.3</td><td>58.5</td><td>🟢</td></tr>
+<tr><td>├ 고용</td><td>51.2</td><td>—</td><td>🟢 확장</td></tr>
+<tr><td>├ <strong>가격</strong></td><td><strong>71.1</strong></td><td>71.1</td><td>🔴 동일 유지</td></tr>
+<tr><td>└ 수주잔고</td><td>51.8</td><td>55.0</td><td>🟡 −3.2pt</td></tr>
+<tr><td><strong>ISM 서비스 PMI (8월)</strong></td><td><strong>55.4%</strong></td><td>54.1%</td><td>🟢 26개월 연속 확장·+1.3pt</td></tr>
+<tr><td>├ 사업활동</td><td><strong>61.7</strong></td><td>59.1</td><td>🟢 +2.6pt</td></tr>
+<tr><td>├ 신규수주</td><td><strong>60.9</strong></td><td>57.2</td><td>🟢 +3.7pt</td></tr>
+<tr><td>├ <strong>고용</strong></td><td><strong>47.8</strong></td><td>47.4</td><td>🔴 <strong>2개월 연속 수축</strong></td></tr>
+<tr><td>└ <strong>가격</strong></td><td><strong>72.6</strong></td><td>70.3</td><td>🔴 +2.3pt · 6개월 중 5번째 70%+</td></tr>
+<tr><td>2s10s (<code>T10Y2Y</code>)</td><td>+0.41%p</td><td>+0.50%p(8/21)</td><td>🟡 플래트닝 지속</td></tr>
+<tr><td>3m10y (<code>T10Y3M</code>)</td><td>+0.87%p</td><td>—</td><td>🟢 정상</td></tr>
+<tr><td>초기청구(<code>ICSA</code>, 8/29주)</td><td>206K</td><td>204K</td><td>🟢 낮음</td></tr>
+<tr><td>연속청구(<code>CCSA</code>, 8/22주)</td><td>1,779K</td><td>1,771K</td><td>🟡 완만 상승</td></tr>
+<tr><td>IG 스프레드(<code>BAMLC0A0CM</code>)</td><td>0.81%</td><td>—</td><td>🟢</td></tr>
+<tr><td>HY 스프레드(<code>BAMLH0A0HYM2</code>)</td><td><strong>2.65%</strong></td><td>2.84%(7/30)</td><td>🟢 3년 창 3.8%ile</td></tr>
+<tr><td>BBK 선행지수(<code>BBKMLEIX</code>, 7월)</td><td>−0.602</td><td>−0.692</td><td>🟡 음수이나 개선</td></tr>
+</tbody></table>
+<p>🔴 <strong>이번 주 §2의 핵심 괴리 두 개</strong>:</p>
+<p>1. <strong>ISM 서비스 고용 47.8(2개월 연속 수축) ↔ 8월 NFP +162K.</strong> 설문과 사업체 조사가 정반대다. 설문은 &quot;채용 계획&quot;을, NFP는 &quot;실현된 고용&quot;을 잰다 — 서비스업 채용 의지가 식는데도 8월 숫자가 컸다면 <strong>되돌림·계절 요인 비중이 크다</strong>는 뜻이 된다(Indeed도 *&quot;이후 수정될 수 있다&quot;*고 유보).</p>
+<p>2. <strong>가격지수 둘 다 70%대인데 실현 물가는 근원 기준으로 식고 있다</strong>(코어 CPI 2.47% y/y·절사평균 PCE 2.3%). 🔴 헤드라인 PMI만 보고 &quot;디스인플레 확정&quot;으로 읽으면 이 괴리를 놓친다 — 그리고 이번 주 유가가 붙으면서 <strong>가격지수 쪽이 먼저 맞을 위험이 커졌다</strong>.</p>
+<p><strong>기업 부채/유동성</strong>: <code>BUSLOANS</code>/<code>M2SL</code> = 2,899.3/23,218 = <strong>12.49%</strong>. <code>BUSLOANS</code> YoY +8.66%(가속) · <code>TOTLL</code> $14,033.9십억. 🟡 대출 사이클이 확장 단계로 들어섰고, 레버리지 축적 초기 신호에 가깝다.</p>
+<p><strong>사이클 위치 판정</strong>: <strong>중기~후기 확장</strong> — PMI 둘 다 50 위·고용 견조·스프레드 최저권. 후기 신호는 곡선 플래트닝(2s10s 41bp)과 가격지수 70%대다.</p>
+<hr>
+<h2>§3. 핵심 경제지표</h2>
+<blockquote>🆕 <strong>macro-monthly(KW) 가속/감속 cross-ref</strong> — 이번 창에 신규 KW 보고서 없음(최신 2026-08-30 1호). 🔴 지표별 ΔYoY 재계산은 macro-monthly-KW owner이므로 본 섹션은 소비만 한다.</blockquote>
+<h3>3-0. 🔴🔴🔴 Warsh 인플레 프레임 3종</h3>
+<table><thead><tr><th>지표</th><th>최신</th><th>직전</th><th>갱신</th><th>판정 임계</th><th>신호</th></tr></thead><tbody>
+<tr><td><strong>Dallas Trimmed Mean PCE (절사평균) 12M</strong></td><td><strong>2.3%</strong></td><td>2.3%</td><td>7월판(8/26·불변·차기 9/30)</td><td>&lt;2.3% 논거 강화 / &gt;2.5% 약화</td><td>🟢</td></tr>
+<tr><td>├ 6M 연율</td><td>2.3%</td><td>2.4%(6월)</td><td>〃</td><td></td><td>🟢</td></tr>
+<tr><td>└ 1M 연율</td><td>2.2%</td><td>1.5%(6월)</td><td>〃</td><td></td><td>🟡 반등</td></tr>
+<tr><td><strong>Cleveland 중위 CPI</strong></td><td><strong>+0.3% m/m</strong> (12M 2.69%)</td><td>—</td><td>7월판(8/12·불변·차기 <strong>9/11</strong>)</td><td>12M &lt;3.0% 인하 명분</td><td>🟢</td></tr>
+<tr><td><strong>Cleveland 16% 절사평균 CPI</strong></td><td><strong>+0.2% m/m</strong> (12M 2.28%)</td><td>—</td><td>〃</td><td>2차 확인</td><td>🟢</td></tr>
+<tr><td>근원 PCE 12M</td><td><strong>3.34%</strong></td><td>3.3%(6월)</td><td>7월(8/26)</td><td>—</td><td>🔴</td></tr>
+<tr><td>헤드라인 PCE 12M</td><td><strong>3.70%</strong></td><td>3.7%(6월)</td><td>〃</td><td>—</td><td>🔴</td></tr>
+</tbody></table>
+<p>🔴 <strong>Core PCE 괴리 분석</strong>: 근원 PCE(Core PCE) <strong>3.34%</strong> vs Dallas Trimmed Mean PCE <strong>2.3%</strong> = <strong>Core PCE 괴리 1.04%p</strong>(임계 0.5%p 초과) → 🟡 프레임 전환 논쟁 지속. 방향 반전은 없다(6개월째 근원 &gt; 절사평균). 코어 CPI 2.47% vs 중위 CPI 2.69% = −0.22%p(임계 미달).</p>
+<p>🔴 <strong>[Warsh 7원칙 대조]</strong> 워시는 잭슨홀에서 <strong>절사평균·중앙값·스티키를 한 번도 인용하지 않았고</strong>(직전 회차 실측) 헤드라인 PCE와 자체 분산지표를 근거로 썼다. 그 지표들은 이번 주에도 <strong>2.28~2.72%로 목표권 안</strong>에 머물렀다 — <strong>자(尺)와 결론의 어긋남이 한 주 더 유지됐다.</strong> 이번 주 새로 붙은 것은 <strong>유가</strong>이고, 유가는 절사평균이 잘라내는 쪽이 아니라 헤드라인을 미는 쪽이다. ⟶ 워시 프레임에서는 이번 주 데이터가 <strong>인상 논거를 강화</strong>한다.</p>
+<p><strong>쉘터 제외 · 스티키 게이지 (이은택 프레임 · 7월판 불변)</strong></p>
+<table><thead><tr><th>게이지</th><th>값</th><th>위험선</th><th>신호</th></tr></thead><tbody>
+<tr><td>쉘터 제외 스티키 코어 CPI(<code>CRESTKCPIXSLTRM159SFRBATL</code>)</td><td><strong>2.23%</strong></td><td>~3%대 진입 시 🟡</td><td>🟢</td></tr>
+<tr><td>애틀랜타 코어 스티키 CPI(<code>CORESTICKM159SFRBATL</code>)</td><td><strong>2.72%</strong></td><td>3.3~3.4 초과 🔴</td><td>🟢</td></tr>
+<tr><td>코어 스티키 연율 MoM(<code>CORESTICKM158SFRBATL</code>)</td><td>3.48%</td><td>가속 반전 시 🟡</td><td>🟡</td></tr>
+<tr><td>스티키 CPI 헤드라인</td><td>2.76%</td><td>—</td><td>🟢</td></tr>
+<tr><td>쉘터 제외 CPI 광의(<code>CUSR0000SA0L2</code>)</td><td>YoY <strong>3.38%</strong></td><td>참고(식품·에너지 포함)</td><td>🟡</td></tr>
+</tbody></table>
+<h3>3-1. 🔴🔴 8월 고용상황 (9/4 · BLS)</h3>
+<table><thead><tr><th>항목</th><th>8월</th><th>7월</th><th>컨센</th><th>판정</th></tr></thead><tbody>
+<tr><td><strong>비농업고용</strong></td><td><strong>+162K</strong> (159,075K)</td><td>+21K</td><td>+45~58K</td><td>🔴🔴 3배 상회</td></tr>
+<tr><td>실업률</td><td>4.1%</td><td>4.1%</td><td>4.2%</td><td>🟢</td></tr>
+<tr><td>U-6</td><td><strong>7.7%</strong></td><td>7.9%</td><td>—</td><td>🟢 개선</td></tr>
+<tr><td>경활 참가율</td><td><strong>61.6%</strong></td><td>61.4%</td><td>—</td><td>🟢 +0.2%p</td></tr>
+<tr><td>고용률</td><td>59.1%</td><td>58.9%</td><td>—</td><td>🟢</td></tr>
+<tr><td>시간당임금</td><td>$37.75 (+0.27% m/m)</td><td>—</td><td>—</td><td><strong>+3.09% y/y</strong> 감속 유지</td></tr>
+<tr><td>주당 근로시간</td><td>34.4h</td><td>34.3h</td><td>—</td><td>🟢</td></tr>
+<tr><td>경제적 이유 시간제</td><td>4,390K</td><td>4,804K</td><td>—</td><td>🟢 −414K</td></tr>
+<tr><td><strong>3개월 평균</strong></td><td><strong>~71K</strong></td><td>~38K(7월 시점)</td><td>—</td><td>🟡 저수위에서 반등</td></tr>
+</tbody></table>
+<p><strong>업종 분해(m/m)</strong> — 레저·접객 <strong>+62K</strong> · 정부 <strong>+35K</strong>(지방정부 교육 반등) · 건설 +22K · 제조 +16K · 전문·사업서비스 +10K ↔ <strong>정보 −23K · 금융 −11K</strong>.</p>
+<p>🔴 <strong>화이트칼라 4종 합 −25K vs 블루칼라 3종 합 +100K</strong> — §15 이질화가 처음으로 부호까지 갈렸다.</p>
+<p><strong>Steelman 반영 결론</strong>: 참가율·고용률·U-6이 동시에 개선됐고 3개월 평균이 38K→71K로 올랐으므로 <strong>일회성 노이즈로 보기 어렵다.</strong> 다만 성장분의 60%가 레저·접객+정부 두 항목의 7월 되돌림이고, 8/28 예비 벤치마크 개정(−79K)이 보여준 <strong>CES 초기치 하향 편향</strong>이 남아 있으며, ISM 서비스 고용은 47.8로 수축 중이다. ⟶ <strong>&quot;노동시장이 인상을 막지 못한다&quot;까지는 확정, &quot;노동시장 재가속&quot;은 유보.</strong></p>
+<h3>3-2. 물가 나우캐스트</h3>
+<table><thead><tr><th>소스</th><th>값</th><th>갱신</th></tr></thead><tbody>
+<tr><td><strong>Cleveland 8월 CPI</strong></td><td>m/m 0.36% · <strong>y/y 3.38%</strong></td><td>9/4</td></tr>
+<tr><td>Cleveland 8월 근원 CPI</td><td>m/m 0.20% · y/y 2.38%</td><td>9/4</td></tr>
+<tr><td>Cleveland 8월 PCE</td><td>m/m 0.35% · y/y 3.80%</td><td>9/4</td></tr>
+<tr><td>Cleveland 8월 근원 PCE</td><td>m/m 0.27% · y/y 3.40%</td><td>9/4</td></tr>
+<tr><td><strong>Cleveland 9월 CPI</strong></td><td>m/m 0.38% · <strong>y/y 3.43%</strong></td><td>9/4</td></tr>
+<tr><td>Cleveland 2026-Q3 SAAR</td><td>CPI 1.27 · 근원 CPI 1.91 · <strong>PCE 2.49</strong> · 근원 PCE 3.00</td><td>9/4</td></tr>
+<tr><td><strong>Truflation CPI</strong></td><td><strong>2.32%</strong> (관측일 9/4)</td><td>괴리 <strong>1.08%p</strong></td></tr>
+<tr><td>Truflation PCE</td><td>2.57% (공식 3.70%)</td><td>괴리 1.13%p</td></tr>
+<tr><td><strong>GDPNow 2026-Q3</strong></td><td><strong>+4.7%</strong> (17회차·차기 9/10)</td><td>9/3</td></tr>
+<tr><td><strong>GSCPI 8월</strong></td><td><strong>1.06</strong> (7월 0.94·초기 0.79에서 상향 개정)</td><td>9월 초</td></tr>
+</tbody></table>
+<p>🔴 <strong>GSCPI가 두 달 연속 올랐고 7월치도 위로 개정됐다</strong> — 호르무즈 봉쇄가 지수에 들어오기 시작했다는 뜻이다. 공급망 압력은 시차를 두고 <strong>재화 물가</strong>로 전이되므로 §3의 근원 게이지가 안정적인 것과 <strong>모순이 아니라 선행 관계</strong>다.</p>
+<p>🔴 <strong>9/11 8월 CPI 컨센 m/m +0.4%</strong>(7월 +0.1%) vs Cleveland nowcast 0.36% — 방향은 일치. <strong>월러 조건문의 심판 지표</strong>다.</p>
+<h3>3-3. 활동 계열 캐리 (7월 확정치·불변)</h3>
+<p>소매판매 <code>RSAFS</code> $763,602백만 · 산업생산 <code>INDPRO</code> 102.99 · 주택착공 <code>HOUST</code> 1,239K · JOLTS 구인 7,271K·퇴직률 1.9%·채용 5,054K(3.2%) · 30년 모기지 <strong>6.71%</strong>(주간 +5bp) · Case-Shiller 336.66(6월).</p>
+<p>소비자심리: 미시간 8월 최종 <strong>51.7</strong> · 1년 기대인플레 <strong>4.0%</strong> · 5~10년 <strong>3.3%</strong> (9월 예비 = 9/11).</p>
+<hr>
+<h2>§4. 연준</h2>
+<h3>4-1. 🔴🔴 월러 9/3 연설 — forward guidance는 버렸지만 조건문은 남겼다</h3>
+<p><a href="https://www.federalreserve.gov/newsevents/speech/waller20260903a.htm" target="_blank">Governor Waller, &quot;The Economic Outlook and Some Comments on My Policy Communication&quot;</a> (Reuters NEXT, 9/3)</p>
+<p><strong>핵심 문장 4개</strong></p>
+<p>1. *&quot;인플레는 FOMC 목표를 의미 있게 웃돌지만, 최근 데이터는 <strong>마침내 디스인플레의 조짐</strong>을 보인다. 향후 2주 데이터가 이를 이어가면 나는 <strong>동결을 지지</strong>하겠다. 8월 데이터가 이 개선이 일시적이었음을 보이면 <strong>9/15~16 회의에서 인상이 적절할 수 있다</strong>.&quot;*</p>
+<p>2. 🔴 *&quot;나는 <strong>정책이 현재 총수요를 아주 약간만 제약(only slightly restricting)</strong> 하고 있다고 판단한다. 인플레가 조금만 가속해도 나를 긴축 지지 쪽으로 밀 수 있다.&quot;*</p>
+<p>3. 🔴 <strong>비시장(nonmarket) 서비스 가격이 7월 근원 상승분의 약 절반</strong>을 차지했다 — *&quot;이 요인을 빼면 기저 인플레는 근원 숫자가 시사하는 것보다 낫다.&quot;* 상무부가 곧 <strong>주식 거래 수수료 추정 방식</strong>을 바꾸면 12개월 PCE 인플레가 <strong>수십 bp 내려갈 수 있다</strong>.</p>
+<p>4. 🔴 *&quot;나는 <strong>워시 의장에 동의해 forward guidance가 지금은 적절하지 않다</strong>고 본다. 다만 진짜 필요할 때는 써야 한다.&quot;*</p>
+<p><strong>Claude 해석</strong>: 3개월 근원 인플레가 <strong>2월 4.76% → 7월 3.05%</strong>로 내려온 궤적을 그는 *&quot;고무적&quot;*이라 했다. 그런데 같은 연설에서 <strong>제약도가 &quot;아주 약간&quot;</strong>이라고 못 박았다 — 이는 §4-9의 3분모 계산(근원 기준 <strong>+0.29%p</strong>)과 정확히 일치하는 자기 진단이며, <strong>인상 문턱이 낮다</strong>는 뜻이다. 🔴 forward guidance 폐기와 조건부 반응함수 공개는 모순이 아니다: 폐기된 것은 *경로 약속*이고 공개한 것은 *조건문*이다. 그가 든 &quot;야구 심판의 스트라이크존&quot; 비유가 그 구분을 명시한다.</p>
+<h3>4-2. 🔴 해맥 9/4 — &quot;행동할 때&quot;</h3>
+<p>클리블랜드 연은 해맥 총재: *&quot;인플레를 낮추기 위해 미 중앙은행이 <strong>행동할 때</strong>&quot;*(<a href="https://www.bloomberg.com/news/articles/2026-09-04/fed-s-hammack-says-it-s-time-to-act-to-bring-down-inflation" target="_blank">Bloomberg</a>). <strong>고용 발표 당일</strong>이다. 🔴 월러의 &quot;조건부&quot;보다 한 칸 앞선 표현으로, 위원회 안에 <strong>무조건 인상파가 최소 1명</strong> 있다는 신호.</p>
+<h3>4-3. 시장 반응 — 인상 쪽으로 재가격</h3>
+<ul>
+<li>Bloomberg: *&quot;Bond Traders Boost Fed-Hike Odds After Jobs, Await Inflation&quot;* · *&quot;Stocks Fall as Jobs Fuel Bets Fed Will Raise Rates&quot;*</li>
+<li>WSJ: *&quot;U.S. Stocks Fall as Robust August Jobs Data Spurs Yields, Rate-Hike Bets&quot;*</li>
+<li>9/4 종가: S&amp;P <strong>−0.38%</strong>(7,718.60) · NASDAQ −0.29% · <code>^TNX</code> <strong>4.784%</strong>(+0.46%·52주 위치 <strong>98.6%</strong>) · <code>^TYX</code> 5.246%</li>
+<li>2s10s <strong>+41bp</strong>(8/21 +50bp → 9/4 +41bp) — <strong>베어 플래트닝 지속</strong></li>
+<li>주간으로는 S&amp;P <strong>+0.09%</strong>로 사실상 보합 — Bloomberg 표현 *&quot;Wall Street Risk Complex Defies Rate Threat&quot;*</li>
+</ul>
+<p>🔴 <strong>10년 BEI(<code>T10YIE</code>) 2.37% · 5y5y(<code>T5YIFR</code>) 2.33%</strong> — 3개월 +9bp에 그친다. <strong>인상은 믿는데 인플레는 안 믿는다</strong>는 직전 회차 판독이 그대로 유지된다.</p>
+<h3>4-4. QT 상태 · 자산 구성 (월 1회 풀 갱신 · 이번 주는 1줄)</h3>
+<p>MBS(<code>WSHOMCB</code>) <strong>$1,913.6십억</strong> · 보유증권 총액(<code>WSHOSHO</code>) $6,468.3십억 → <strong>MBS 비중 29.6%</strong>(직전 풀 갱신 30.5%). 국채 <code>TREAST</code> $4,552.3십억(비중 70.4%·Bills $548.4십억·Notes&amp;Bonds $3,620.8십억). 🟢 <strong>정상 패턴 유지</strong> — 국채↑·MBS↓·전체↑. 재투자처 문구 변경 없음(agency → Treasury bills).</p>
+<h3>4-5. 🆕 이번 주 FEDS Notes 신규 글 (4건)</h3>
+<table><thead><tr><th>Tier</th><th>제목</th><th>발행일</th><th>매칭 프레임</th><th>핵심/시사점</th></tr></thead><tbody>
+<tr><td>🔴</td><td><a href="https://www.federalreserve.gov/econres/notes/feds-notes/why-gold-didnt-actually-overtake-treasury-securities-as-the-worlds-favorite-reserve-asset-20260903.html" target="_blank">Why Gold Didn&#x27;t Actually Overtake Treasury Securities as the World&#x27;s &quot;Favorite&quot; Reserve Asset</a></td><td>2026-09-03</td><td>달러패권·탈달러화</td><td>2025년 세계 금 준비자산이 외국 공적 미국채 보유를 앞질렀다는 사실이 *&quot;금이 국채보다 매력적이 됐다&quot;*는 뜻은 아니라는 스태프 논증. 두 집계의 <strong>분모·모집단이 다르다</strong>는 것이 요지. 🔴 §8 탈달러화 서사에 대한 연준 내부의 정면 반론</td></tr>
+<tr><td>🔴</td><td><a href="https://www.federalreserve.gov/econres/notes/feds-notes/revisiting-the-forecasting-potential-of-futures-prices-20260903.html" target="_blank">Revisiting the Forecasting Potential of Futures Prices</a></td><td>2026-09-03</td><td>유가·인플레 기대</td><td>*&quot;역사상 최대 글로벌 석유 공급충격&quot;*과 <strong>호르무즈 봉쇄</strong>로 인한 백워데이션에도 선물 가격이 예상보다 덜 올랐다 — 중앙은행이 선물을 시장 기대의 대리변수로 쓸 때의 한계를 다룬다. 🔴 이번 주 유가 +9.4%는 이 노트가 지적한 &quot;둔감&quot;이 깨진 사례</td></tr>
+<tr><td>🔴</td><td><a href="https://www.federalreserve.gov/econres/notes/feds-notes/new-forms-of-money-and-the-u-s-monetary-aggregates-20260904.html" target="_blank">New Forms of Money and the U.S. Monetary Aggregates</a></td><td>2026-09-04</td><td>스테이블코인·통화총량</td><td>통화공급 정의(유동성·기능에 따른 분류)를 새 화폐 형태에 어떻게 적용할지. 🔴 §8·§14 토큰화 축의 <strong>연준 쪽 첫 정식 문건</strong></td></tr>
+<tr><td>🟡</td><td><a href="https://www.federalreserve.gov/econres/notes/feds-notes/which-states-are-most-exposed-to-tariff-increases-a-new-measure-based-on-the-consumption-channel-20260903.html" target="_blank">Which states are most exposed to tariff increases?</a></td><td>2026-09-03</td><td>관세 귀착</td><td>주별 소비 채널 관세 노출 신규 측정</td></tr>
+</tbody></table>
+<p>🔴 라벨: <strong>스태프 리서치(연준 공식 입장 아님)</strong> · 프레임 검증·맥락 보강용.</p>
+<h3>4-6. 워시 T/F 5개 상태 레지스터</h3>
+<table><thead><tr><th>T/F</th><th>리더 3명</th><th>이번 주 델타</th><th>페이지 Last Update</th><th>다음 관문</th></tr></thead><tbody>
+<tr><td>커뮤니케이션</td><td>Fisher · Fraga · King</td><td>변동 없음</td><td>2026-07-09</td><td>가이던스·SEP 축소 형태</td></tr>
+<tr><td>대차대조표</td><td>Dynan · Rajan · Stein</td><td>변동 없음</td><td>2026-07-09</td><td>축소 vs 만기 단축</td></tr>
+<tr><td>데이터</td><td>Chetty · McMillon · Murphy</td><td>변동 없음</td><td>2026-07-09</td><td>민간데이터 &quot;대체 vs 보완&quot;</td></tr>
+<tr><td>생산성·고용</td><td>Andreessen · Jones · Sharma</td><td>변동 없음</td><td>2026-07-09</td><td>낙관 톤 유지 여부</td></tr>
+<tr><td>인플레이션 체계 🔴</td><td>Mankiw · Sargent · White</td><td>변동 없음</td><td>2026-07-09</td><td>밴드(±α)·절사평균 채택</td></tr>
+</tbody></table>
+<p><strong>관측 지점 D-day</strong>: 잭슨홀(<strong>통과 — 8/28 「In Our Time」</strong>) · 연내 5개 권고안 도출 <strong>D-117</strong> · 내년 1월 목적·전략 성명 개정 <strong>D-148</strong>.</p>
+<p>보도자료 RSS 주간 T/F 키워드 hit <strong>0건</strong>. 워시 본인 발언 주간 <strong>0건</strong>(연설·증언 RSS 기준 · 잭슨홀 8/28이 최신). 🔴 <strong>권고안은 FOMC 구속력이 없다</strong>(워시 의장 직속). 🔴 <strong>관찰 전용 · 투자 판단·종목 콜은 싣지 않는다.</strong></p>
+<hr>
+<h2>§4-9. 실질 정책 제약도 심층 *(레짐 판단 전용 · 투자 판단·종목 콜은 싣지 않는다)*</h2>
+<h3>4-9-1. 실질 정책금리 3분모 🔴 <strong>부호가 갈린다</strong></h3>
+<table><thead><tr><th>분모</th><th>값 (vintage)</th><th>실질 정책금리 = <code>EFFR</code> 3.63% − 분모</th></tr></thead><tbody>
+<tr><td>근원 PCE</td><td>3.34% (2026-07)</td><td><strong>+0.29%p</strong></td></tr>
+<tr><td>헤드라인 PCE</td><td>3.70% (2026-07)</td><td><strong>−0.07%p</strong></td></tr>
+<tr><td>절사평균 PCE(§3 소비)</td><td>2.30% (2026-07)</td><td><strong>+1.33%p</strong></td></tr>
+</tbody></table>
+<p>🔴 <strong>세 값의 부호가 갈린다</strong> — 근원 기준 미세 긴축 / 헤드라인 기준 <strong>완화</strong> / 절사평균 기준 긴축. <strong>이 갈림 자체가 이번 주 판정의 일부</strong>다. 월러가 *&quot;정책이 총수요를 아주 약간만 제약&quot;*이라고 한 것은 <strong>근원 기준(+0.29%p)</strong> 과 정확히 같은 자리다.</p>
+<p>🔴 분모는 전부 <strong>7월 vintage 불변</strong> — 이번 주 변화는 분자(EFFR 3.63% 불변)에서도 오지 않았다. 세 값 모두 전주와 동일하다.</p>
+<p><strong>트위스트 점검</strong>: 실질 5년(<code>DFII5</code>) 2.15% − 실질 정책금리(근원) 0.29% = <strong>+1.86%p</strong>. &gt;1.5%p → 🔴 <strong>균일 긴축이 아니라 트위스트</strong>(단기는 거의 중립, 중장기만 강하게 제약).</p>
+<h3>4-9-2. 백분위 🔴 창 길이 명시</h3>
+<table><thead><tr><th>계열</th><th>값</th><th>전체 %ile (표본)</th><th>10년 창 %ile</th></tr></thead><tbody>
+<tr><td><code>DFII5</code> (5년 실질)</td><td><strong>2.15%</strong></td><td>92.2%ile (n=5,923 · 2003-01~)</td><td>96.1%ile</td></tr>
+<tr><td><code>DFII10</code> (10년 실질)</td><td><strong>2.42%</strong></td><td>96.3%ile (동)</td><td>99.1%ile</td></tr>
+<tr><td><code>T5YIFR</code> (5y5y 기대)</td><td>2.33%</td><td>57.1%ile (동)</td><td>88.8%ile</td></tr>
+<tr><td><code>THREEFYTP10</code> (기간프리미엄)</td><td><strong>0.875%</strong></td><td><strong>56.8%ile</strong> (n=9,151 · 1990-01~)</td><td><strong>100.0%ile</strong></td></tr>
+<tr><td><code>NFCI</code></td><td>−0.558</td><td>30.0%ile (n=2,904 · 1971~)</td><td>29.6%ile</td></tr>
+<tr><td><code>STLFSI4</code></td><td>−0.853</td><td>5.0%ile (n=1,705 · 1994~)</td><td>3.1%ile</td></tr>
+<tr><td><code>BAMLH0A0HYM2</code> (HY OAS)</td><td>2.65%</td><td><strong>3.8%ile (3년 창 · 2023-09~)</strong></td><td>동</td></tr>
+<tr><td><code>BAMLC0A0CM</code> (IG OAS)</td><td>0.81%</td><td><strong>36.8%ile (3년 창)</strong></td><td>동</td></tr>
+</tbody></table>
+<p>🔴 **<code>BAML*</code>는 FRED가 약 3년 창만 반환**(787건) — *&quot;역사적으로 타이트&quot;* 라고 쓰지 않는다. <strong>3년 창 기준 3.8%ile</strong>이다.</p>
+<p>🔴 <strong>기간프리미엄은 모형 종속이다</strong> — <code>THREEFYTP10</code>은 <strong>Kim–Wright 3요인 모형(연준 이사회 · 1990~)</strong> 이고 <strong>전체 56.8%ile ↔ 10년 창 100.0%ile</strong>로 정반대 서사가 나온다. NY Fed <strong>ACM</strong> 모형으로 같은 날을 재면 백분위가 크게 이동한다(2026-09-03 실측 대조: KW 전체 56.8%ile ↔ ACM 전체 37.5%ile). 🔴 <strong>부호·문턱 서술은 모형 명시 없이 쓰지 않는다.</strong></p>
+<blockquote>🔴 <strong>Apollo 9/2 「Bessent Is Right」와의 대조</strong> — Slok은 <strong>NY Fed(ACM) 측정치가 12개월 횡보</strong>하고 <strong>일본·독일보다 낮다</strong>는 두 사실로 &quot;금리 상승 = 재정 신뢰 붕괴&quot;를 기각했다(<a href="https://www.apollo.com/wealth/insights-news/insights/daily-spark/bessent-is-right" target="_blank">원문</a>). 본 보고서가 쓰는 KW 측정치도 3개월 <strong>+12.1bp</strong>로 완만하다 — <strong>두 모형이 같은 방향을 가리키는 드문 구간</strong>이다. 다만 백분위는 갈린다(KW 전체 57%ile vs 10년 창 100%ile).</blockquote>
+<h3>4-9-3. 기간프리미엄 분해 (3M)</h3>
+<p>10년 실질(<code>DFII10</code>) 3개월 <strong>+31.0bp</strong> = 기간프리미엄(<code>THREEFYTP10</code>) <strong>+12.1bp</strong> + <strong>잔차(기대 실질 정책경로) +18.9bp</strong>.</p>
+<p>⟶ <strong>기대경로 주도(61%)</strong>. 🔴 즉 지금의 긴축은 <strong>인상을 실제로 집행해야 유지되는 조건부 청구권</strong>이다 — 9월 인상이 무산되면 상당 부분이 자기소멸한다. 반대로 프리미엄 몫(39%)은 통화정책 대상이 아니며 재정·공급 쪽에서 온다.</p>
+<h3>4-9-4. 🎯 판별표 — 시장금리 상승이 정책금리 인상을 대체하는가</h3>
+<table><thead><tr><th>지표</th><th>현재</th><th>대체 O 기준</th><th>대체 X 기준</th><th>판정</th></tr></thead><tbody>
+<tr><td>5y5y 선도 기대(<code>T5YIFR</code>)</td><td>2.33%</td><td>≤2.2%</td><td>≥2.5%</td><td>⚪ 중립(경계 안)</td></tr>
+<tr><td>절사평균 PCE</td><td>2.30%</td><td>≤2.4%</td><td>≥2.8%</td><td><strong>대체 O</strong></td></tr>
+<tr><td>UMich 1년 기대</td><td><strong>4.0%</strong>(8월)</td><td>≤4% 회귀</td><td>≥5%</td><td><strong>대체 O</strong>(경계 도달)</td></tr>
+<tr><td><code>NFCI</code></td><td>−0.558</td><td>조여짐(상승)</td><td>더 완화(하락)</td><td><strong>대체 X</strong>(완화)</td></tr>
+<tr><td>HY OAS</td><td><strong>265bp</strong></td><td>≥350bp</td><td>≤260bp</td><td><strong>대체 X</strong>(더 좁아짐)</td></tr>
+<tr><td><strong><code>DGS1</code>−<code>EFFR</code></strong></td><td><strong>+48bp</strong></td><td>≤20bp + 기대 안정</td><td>≥75bp</td><td>⚪ 중립</td></tr>
+</tbody></table>
+<p><strong>판정: 대체 O 2 / 대체 X 2 / 중립 2 → 🔴 판정 유보</strong>(4개 이상 같은 방향 요건 미충족).</p>
+<p>🔴 <strong>핵심 판별</strong>: <code>DGS1</code>−<code>EFFR</code>은 3개월 +29bp 상승해 <strong>선반영이 오히려 두꺼워졌다</strong>(48bp). 동시에 5y5y는 +9bp만 올랐다 — <strong>축소가 아니라 확대</strong>이므로 &quot;시장이 배달한 긴축이 소멸하는&quot; 국면이 아니다. 대신 <strong>HY OAS가 265bp로 3년 창 3.8%ile까지 좁아진 것</strong>이 대체 X 쪽의 가장 강한 증거다: 금리는 오르는데 <strong>신용은 전혀 조여지지 않았다</strong>.</p>
+<h3>4-9-5. §12 반영 1줄</h3>
+<p><code>실질 제약도: 실질 정책금리 +0.29%p(근원 7월)/−0.07%p(헤드라인)/+1.33%p(절사평균) · 판별표 2:2:2 → 시장금리 상승의 정책금리 대체 = 판정 유보. 🔴 &quot;정책금리 동결 = 스탠스 불변&quot;이 아니다 — 이번 주 분모(물가)는 불변인데 유가가 붙었고, 8월 PCE가 나오면 세 분모 전부가 아래로 밀린다.</code></p>
+<hr>
+<h2>§5. 재무부</h2>
+<h3>5-1. TGA · 발행 · 바이백</h3>
+<ul>
+<li>TGA(<code>WDTGAL</code>) <strong>$944.4십억</strong>(9/2·주간 −$15.1십억) · DTS 일간 최신 9/3 · 7~8월 $930~960십억 박스 안</li>
+<li><strong>바이백 확대 첫 집행 9/9</strong> — 발표(8/19) 이후 아직 <strong>미집행</strong>. 회당 최대 $2십억 → 최소 $4십억, &quot;종목당 40억 초과 가능&quot;</li>
+<li>총부채 <strong>$40,103십억</strong>(9/3·Debt to the Penny) · 법정 한도 여유 정상 국면</li>
+<li>재정수지: Calendar-YTD 2026(1~7월) <strong>−$1,196.5십억</strong> vs 전년 동기 −$917.9십억 → <strong>YoY −$278.5십억 악화</strong> · (참고) FYTD(2025-10~2026-07) −$1,798.8십억 · TTM 12개월 −$1,945.7십억 = <strong>GDP 대비 −5.99%</strong></li>
+</ul>
+<p>  🔴 <strong>연환산 금지</strong>(계절성) — 비교는 전년 동기 누적으로만.</p>
+<ul>
+<li>이번 주 국채 입찰 없음(9/8 3년·9/9 10년·9/10 30년 예정)</li>
+</ul>
+<h3>5-2. 🏛️ TBAC 합격선 채점 — <code>TGCR &gt; IORB</code></h3>
+<p><strong>🏛️ TBAC 합격선 채점 — <code>TGCR &gt; IORB</code></strong> (도구 ⑧)</p>
+<ul>
+<li>🔴 <strong>합격선 불통과</strong> — 60영업일 평균 <strong>-3.88bp</strong> (중앙 -3.00 · 양(+) 2/60일 · as-of 2026-09-03)</li>
+<li>최신 -1.0bp = TGCR 3.64% − IORB 3.65%</li>
+<li>0선 교차: <strong>2026-02-27 이탈(불통과 복귀)</strong> ← 교차한 주에만 서술하고, 아닌 주는 위 수치만 캐리한다 → <strong>이번 주 교차 없음</strong></li>
+<li>유보가격 시나리오(직전 250영업일): IORB를 최저입찰금리로 걸면 <strong>무거래일 36.4%</strong>(p99 ≤ IORB) · 중앙값 미체결 78.0% — 🔴 두 지표를 섞지 말 것</li>
+<li>세그먼트 규모: 최신 $1,181십억 · 120일 평균 $1,238십억 — 🔴 점유율 분모는 <strong>평균</strong></li>
+<li>🔴 <strong>창 고정 의무 = 60영업일</strong> · TGCR−IORB를 <strong>단독 반증 지표로 쓰지 않는다</strong>(경쟁입찰 시 자기참조)</li>
+</ul>
+<p><strong>11/4 QRA·TBAC 4문항 게이트</strong>: 이번 주 재무부 보도자료 7일 창에서 <code>repo</code>·<code>repurchase agreement</code>·<code>cash investment</code>·<code>minimum bid</code>·<code>reserve price</code>·<code>primary dealer</code>·<code>TBAC</code> 키워드 hit <strong>0건</strong>. 시행 파라미터 카운터 <strong>0/3</strong>(정상 출력 — 0건이 결과이지 미실행이 아니다). D-60.</p>
+<h3>5-3. 🔴 제재 — 「경제적 추방자 작전」 3차 확장</h3>
+<ul>
+<li><strong>9/4 OFAC: 튀르키예 Golden Global Bank 및 자회사 지정</strong>(IRGC-쿠드스군 연계) — <a href="https://home.treasury.gov/news/press-releases/treasury-severs-iranian-regime-s-financial-lifelines-turkiye/" target="_blank">재무부 보도자료</a>. UAE(8/28 Banque Misr) → <strong>튀르키예(9/4)</strong> 로 제3국 통로가 한 칸 더 넓어졌다.</li>
+<li><strong>9/3 EU 공식 합류</strong> — 베센트: *&quot;유럽연합이 공식적으로 작전에 참여했다&quot;*(<a href="https://x.com/SecScottBessent/status/2095654604943815139" target="_blank">X</a>, EU 성명 인용).</li>
+<li><strong>9/4 봉쇄 실물 효과</strong> — *&quot;미국이 봉쇄를 재개한 이후 이란산 원유 화물이 호르무즈를 통과해 중국으로 가는 데 실패했다. 원유가 해협 내부에 갇힌 선박에 쌓이면서 재고를 보충할 수 없다.&quot;*(<a href="https://x.com/SecScottBessent/status/2095907853877874926" target="_blank">X</a>)</li>
+<li>🔴 <strong>Scott-treasury §6 제약 ⑤ 갱신 판단</strong>: 제재 본업과 10년물 목표함수의 충돌이 이번 주 <strong>유가 +9.4%로 처음 정량 확인</strong>됐다. 그가 이 모순을 푸는 방식은 여전히 프레이밍이다 — 9/4 *&quot;전쟁이 끝나면 $40·금리도 내려간다&quot;*(<a href="https://www.bloomberg.com/news/articles/2026-09-04/bessent-sees-oil-as-low-as-40-post-iran-war-taking-yields-down" target="_blank">Bloomberg</a>). 🔴 <strong>§2 도구 표·§4 정량 기준선 갱신 대상</strong>: TGCR−IORB −3.88bp(8/27 −4.23 → 9/3 −3.88) · RRP $0.5십억 · TGA $944.4십억 · 30년 5.246% · 10년 4.784%.</li>
+</ul>
+<h3>5-4. 재무부 그 외 (7일 창)</h3>
+<ul>
+<li><strong>9/1 <a href="https://home.treasury.gov/news/press-releases/sb0620/" target="_blank">G20 의장성명</a></strong> — §7에서 상세</li>
+<li><strong>8/31 Preliminary Annual Report on U.S. Portfolio Holdings of Foreign Securities at Year-End 2025</strong> — 🟠 미국의 *대외* 증권 보유 연차 예비판(TIC 계열). 본 보고서 §8·§14의 반대 방향 계열</li>
+<li><strong>8/30 READOUT: 베센트–우에다 BOJ 총재 회담</strong> — 🟠 §8-1 엔캐리 축과 직결</li>
+<li>9/3 IRS 사립학교 면세지위(투자 무관)</li>
+</ul>
+<hr>
+<h2>§5-1. SEC 뉴스룸 (7일) *(관찰 전용 · 투자 판단·종목 콜은 싣지 않는다)*</h2>
+<table><thead><tr><th>날짜</th><th>유형</th><th>제목</th><th>분류</th><th>요지</th></tr></thead><tbody>
+<tr><td>9/3</td><td>PR 2026-85</td><td><a href="https://www.sec.gov/newsroom/press-releases/2026-85-sec-proposes-rescission-political-contribution-rule-investment-advisers" target="_blank">SEC Proposes Rescission of Political Contribution Rule for Investment Advisers</a></td><td>🟡</td><td>Rule 206(4)-5 &quot;pay-to-play&quot; 폐지 제안. 위원 3인 개별 성명</td></tr>
+<tr><td><strong>9/1</strong></td><td><strong>PR 2026-83</strong></td><td><a href="https://www.sec.gov/newsroom/press-releases/2026-83-sec-announces-agenda-panelists-roundtable-preparations-24-hour-trading" target="_blank">SEC Announces Agenda and Panelists for Roundtable on Preparations for 24-Hour Trading</a></td><td>🔴 시장구조</td><td>9/17 라운드테이블 의제·패널 확정</td></tr>
+<tr><td><strong>9/1</strong></td><td><strong>PR 2026-81</strong></td><td><a href="https://www.sec.gov/newsroom/press-releases/2026-81-sec-proposes-modernize-rules-registered-transfer-agents" target="_blank">SEC Proposes to Modernize Rules for Registered Transfer Agents</a></td><td>🔴🔴 시장구조</td><td><strong>본문 정독</strong> ↓</td></tr>
+<tr><td>9/1</td><td>PR 2026-82</td><td>샌프란시스코 사모펀드 임원 폰지성 사기 기소</td><td>🟡</td><td>개별 집행</td></tr>
+<tr><td>9/3</td><td>성명 ×3</td><td>Atkins · Peirce(&quot;First Amendment Sense and Sensibilities&quot;) · Uyeda — pay-to-play 폐지</td><td>🟡</td><td>3인 동시 = 쟁점 규정</td></tr>
+<tr><td>9/1</td><td>성명 ×2</td><td>Peirce(&quot;Time to Transfer&quot;) · Uyeda — 이전대리인 규칙</td><td>🔴</td><td>찬반 지형 ↓</td></tr>
+<tr><td>8/31</td><td>성명</td><td>Atkins — Form PF 2024 개정 준수기한 연장</td><td>🟠</td><td>CFTC 8/31 동반 조치와 짝</td></tr>
+</tbody></table>
+<h3>🔴🔴 이전대리인 규칙 현대화 (PR 2026-81) — 본문 정독</h3>
+<ul>
+<li><strong>무엇이 바뀌나</strong>: 이전대리인 규칙은 <strong>1970년대 말~80년대 초 최초 제정 이후 실질 개정이 없었다</strong>. 이번 제안은 기존 규칙 개정 + <strong>규칙 1건 폐지</strong> + <strong>신규 규칙 도입</strong>을 함께 담는다.</li>
+<li>🔴 <strong>앳킨스 의장 인용</strong>: *&quot;이 제안은 <strong>증권 발행과 주식 이전에서 전자 통신과 블록체인 기술 사용을 포함한</strong> 이전대리인의 현재 절차·운영을 반영하도록 규칙을 간소화·현대화한다.&quot;*</li>
+<li>Jamie Selway(거래·시장 부문 디렉터): *&quot;기술이 바뀌고 경쟁 시장이 진화하면 유산 규칙을 다시 보는 것이 좋은 정부다.&quot;*</li>
+<li><strong>시행 시점</strong>: Federal Register 게재 후 <strong>60일 의견수렴</strong>.</li>
+<li><strong>찬반 지형</strong>: Atkins(제안 주도) / <strong>Peirce 「Time to Transfer」</strong>(제목부터 찬성 기조) / <strong>Uyeda 별도 성명</strong>(같은 날 발표) — 🔴 3건 동시 발행이지만 pay-to-play(9/3) 쪽과 달리 <strong>반대 표제는 없다</strong>.</li>
+<li>🟠 <strong>토큰화 함의는 여기서 한 줄만</strong>: 이전대리인은 국가청산·결제 시스템에서 <strong>주식 소유를 실제로 기록하는 자리</strong>다. 블록체인이 그 규칙 문언에 들어온 것은 발행·거래 층이 아니라 <strong>원장 층</strong>의 제도화다. 🔴 상세는 secz-daily·crcl-weekly·Onchain-daily owner.</li>
+</ul>
+<h3>다가오는 이벤트 D-day</h3>
+<ul>
+<li><strong>9/10 (D-5)</strong> 투자자자문위원회 — 공시·AI·<strong>Reg NMS</strong> (🆕 이번 주 신설)</li>
+<li><strong>9/10 (D-5)</strong> 비공개회의</li>
+<li><strong>9/17 (D-12)</strong> <strong>24시간 거래 라운드테이블</strong> — 의제·패널 확정(PR 2026-83)</li>
+</ul>
+<p><strong>What&#x27;s New 미점검(조건 미충족)</strong> — 이번 주 보도자료·성명에 Treasury Clearing·CAT·crypto 신규 항목이 없어 후속 SRO 문서 확인 트리거가 서지 않았다.</p>
+<p>🔴 <strong>[Scott-treasury 갱신 판단]</strong> 국채 시장구조 항목(Treasury Clearing·CAT) 이번 주 신규 0건 → Intent Board §3 캘린더 변경 없음. 이전대리인 제안은 <strong>국채가 아니라 주식 원장</strong>이라 도구표 대상 아님.</p>
+<hr>
+<h2>§6. 행정부 정책</h2>
+<h3>6-1. 🔴 트럼프 — &quot;연준이 금리를 내리지 않으면 주요 교역국과 무역을 중단하겠다&quot; (9/4)</h3>
+<p>CNN 마켓 헤드라인으로 확인(<a href="https://edition.cnn.com/markets/fear-and-greed" target="_blank">CNN</a>). 🔴 <strong>[관측]</strong> 발언 자체 · <strong>[추론]</strong> 통화·재정 함수 함의: 관세·무역 중단은 <strong>수입 물가를 올려 연준의 인상 근거를 강화</strong>하는 방향이라, 요구와 수단이 서로를 상쇄한다. 🔴 §21 축1(관세 법적 근거)에 매핑되나 <strong>통화 함수를 직접 건드리므로</strong> 여기 기재.</p>
+<h3>6-2. 대통령 조치 (7일 창 · 2건 + Fact Sheet 2건)</h3>
+<ul>
+<li><strong>9/4 EO <a href="https://www.whitehouse.gov/presidential-actions/2026/09/supporting-americas-ranchers/" target="_blank">Supporting America&#x27;s Ranchers</a></strong></li>
+<li><strong>9/4 EO Promoting Fair Competition In Livestock Markets And Expanding Market Access for American Meat Producers</strong></li>
+<li>🟡 <strong>매크로 함의</strong>: 8/26 소고기 TRQ 확대 포고에 이어 <strong>축산·식품 가격 축의 두 번째 조치</strong>. CPI 식품 항목과 §17 원자재 축에 닿는다. 곡물가 급등(옥수수 주간 +4.17%·52주 위치 100%)과 같은 방향의 정책 대응.</li>
+</ul>
+<h3>6-3. 그 외 (7일 창)</h3>
+<ul>
+<li><strong>9/2 <a href="https://www.whitehouse.gov/releases/2026/09/g20-innovation-ministerial-concludes-with-consensus-statement/" target="_blank">G20 Innovation Ministerial Concludes with Consensus Statement</a></strong> — 🟡 재무 트랙(의장성명·중국 반대)과 달리 혁신 트랙은 <strong>컨센서스</strong>로 마무리</li>
+<li>9/2 H.R. 6500 서명 · 9/4 &quot;Made in America&quot; 8월 고용 자축 릴리스</li>
+</ul>
+<h3>6-4. 이관 5부서 light cover</h3>
+<table><thead><tr><th>부서</th><th>이번 주</th><th>매크로 함의</th></tr></thead><tbody>
+<tr><td><strong>DHS/CISA</strong></td><td>🟠 <a href="https://www.cisa.gov/news-events/cybersecurity-advisories" target="_blank">Preparing for the Post-Quantum Era: A Call to Action</a> (9/3) · KEV 추가 3회(9/4·9/2·8/31)</td><td>포스트양자 전환 촉구 = §7 양자 축</td></tr>
+<tr><td><strong>DOJ NSD</strong></td><td>🟡 9/1 <strong>PRC 요원 활동 미국 시민 징역 2년</strong> · 9/1 하마스 자금조달 압류 · 9/2 대러 통제품 밀수출 실형</td><td>미중 기술이전·제재 집행</td></tr>
+<tr><td><strong>CFTC</strong></td><td>🟠 <strong>8/31 Form PF 개정 준수기한 추가 연장</strong>(SEC와 동반·4번째) · 9/2 대형거래자 보고 No-Action(직접 참가자) · 9/2 CAD/MXN 금리스왑 청산의무 최종규칙</td><td><strong>사모 가시성 공백 10개월 연장 확정</strong></td></tr>
+<tr><td><strong>FinCEN</strong></td><td>🟠 <strong>9/3 해외 사기센터 운영 디지털자산 사기 연계 약 $130억 식별</strong> · 9/2 남서부 국경 MSB GTO 재발령 · 9/2 SAR 기밀성 공동성명</td><td>G20 코뮈니케의 &quot;scam compounds&quot; 조항과 정확히 짝</td></tr>
+<tr><td><strong>White House</strong></td><td>§6-1~6-3</td><td>—</td></tr>
+</tbody></table>
+<hr>
+<h2>§7. 미중 기술패권</h2>
+<h3>7-1. 🔴 G20 애슈빌 — 19 대 1</h3>
+<p><a href="https://home.treasury.gov/news/press-releases/sb0620/" target="_blank">의장성명 전문</a> (2026-08-31~09-01 · 노스캐롤라이나 애슈빌 · 미국 의장국)</p>
+<p>🔴 <strong>각주 1</strong>: *&quot;이 성명은 참석한 모든 G20 회원국이 합의했으나 <strong>중국은 예외</strong>이며, 중국은 <strong>4·10·11·13항</strong>에 반대했다.&quot;*</p>
+<p>🔴 <strong>[추론] 항 번호 대응</strong> — 본문 문단 순서로 세면 4항 = 호르무즈 항행자유·에너지 무역 교란 / 10·11항 = <strong>글로벌 불균형 2개 문단</strong>(과잉·지속적 흑자국의 왜곡 제거·IMF 감시) / 13항 = 국가부채 구조 문단. <strong>문서에 항 번호가 인쇄돼 있지 않으므로 이 대응은 추론이다.</strong></p>
+<p><strong>본 보고서 관점에서 중요한 문언 4개</strong></p>
+<p>1. 🔴 *&quot;중앙은행은 AI와 여타 구조 변화가 경제를 재편하는 만큼 <strong>생산능력의 이득과 수요의 변화를 엄밀히 구분</strong>하고자 한다.&quot;* — 워시 독트린의 문장 구조가 19개국 문서에 들어갔다.</p>
+<p>2. *&quot;과도하고 지속적인 대외흑자국은 <strong>국내 소비를 제약하고 수출 의존을 낳는 왜곡을 제거</strong>해야 한다.&quot;*</p>
+<p>3. 🔴 <strong>미국 Trump Accounts 명기</strong> — 금융이해력 문단에서 *&quot;미국의 Trump Accounts 활용&quot;*을 저축·투자 촉진 사례로 열거. §21 축5가 대외 문서로 처음 격상.</p>
+<p>4. *&quot;FSB의 <strong>글로벌 스테이블코인 국경간 함의·데이터 소스 보고서</strong> 결과를 기대한다.&quot;* · FATF에 <strong>가상자산 기준 이행</strong> 우선 촉구.</p>
+<p>또한: 비료 공급망 MDB 로드맵 · 2021-04 환율 공약 재확인 · AI·컴퓨팅·디지털 인프라 투자 잠재력 인정(단 금융·부문 리스크 병기).</p>
+<h3>7-2. 그 외</h3>
+<ul>
+<li>🟡 DOJ NSD 9/1 PRC 요원 실형 · 9/2 대러 통제품 밀수출</li>
+<li>🟠 CISA 9/3 포스트양자 전환 촉구</li>
+<li>🟡 Bloomberg: Lutnick 상무장관이 Cerberus 계열사 관련 국방부 거래 검토 담당으로 지정</li>
+<li><strong>Dan Wang</strong> 신규 0건(최신 2026-01-01 연례 서한) · <strong>DARPA</strong> 창 내 신규 0건(최신 8/9)</li>
+</ul>
+<hr>
+<h2>§8. 달러 패권</h2>
+<table><thead><tr><th>지표</th><th>최신</th><th>주간 Δ</th><th>비고</th></tr></thead><tbody>
+<tr><td>DXY</td><td>99.157</td><td><strong>−0.54%</strong></td><td>52주 위치 54.5%</td></tr>
+<tr><td>스테이블코인 총액</td><td><strong>$305.242십억</strong></td><td>+$1.245십억 (+0.41%)</td><td>DefiLlama</td></tr>
+<tr><td>├ USDT</td><td>$183.389십억</td><td>+0.04% (7d)</td><td>점유율 <strong>60.08%</strong></td></tr>
+<tr><td>└ <strong>USDC</strong></td><td><strong>$74.495십억</strong></td><td><strong>+0.81% (7d) · +3.08% (1M)</strong></td><td>USDT보다 20배 빠른 성장</td></tr>
+<tr><td>중앙은행 금 매입</td><td><strong>7월 23톤+</strong> (4개월 연속)</td><td>6월 51톤</td><td>중국 20톤(YTD 60톤)·폴란드</td></tr>
+<tr><td>금</td><td>$4,477.2</td><td>−0.02%</td><td>52주 위치 52.0%</td></tr>
+</tbody></table>
+<h3>8-0. 🔴🔴 21개 금융사 스테이블코인 공동 발행사 (WSJ 9/1)</h3>
+<p><a href="https://www.wsj.com/finance/banking/these-banks-are-banding-together-to-launch-a-stablecoin-6de07eff" target="_blank">These Banks Are Banding Together to Launch a Stablecoin</a> — <strong>21개사(메가뱅크 다수 포함)가 별도 회사를 설립</strong>해 스테이블코인을 발행할 계획. WSJ 표현: *&quot;디지털자산과의 경쟁을 방어하기 위해.&quot;*</p>
+<p>🔴 <strong>[추론]</strong> 은행의 자기 언어가 &quot;방어&quot;라는 점이 이 건의 핵심이다. 예금이 스테이블코인으로 새는 것을 <strong>막는 방법이 자기가 발행하는 것</strong>이라면, 이 컨소시엄의 산출물이 <strong>예금 토큰인지 스테이블코인인지</strong>가 감독 경로(GENIUS)를 가른다. 🔴 상세는 crcl-weekly·Onchain-daily owner — 여기서는 §8 달러 채널 한 줄로만.</p>
+<h3>8-0b. 🔴 연준 스태프: &quot;금이 국채를 앞질렀다&quot;는 서사 반박</h3>
+<p>9/3 FEDS Note(<a href="https://www.federalreserve.gov/econres/notes/feds-notes/why-gold-didnt-actually-overtake-treasury-securities-as-the-worlds-favorite-reserve-asset-20260903.html" target="_blank">원문</a>) — 2025년 세계 금 준비자산이 외국 공적 미국채 보유를 앞질렀다는 사실은 맞지만, <strong>두 집계의 모집단이 달라</strong> 선호 역전으로 읽으면 안 된다는 논증. 🔴 같은 주 중앙은행이 <strong>4개월 연속 금을 사고 있는 것</strong>(7월 23톤·중국 20톤)과 나란히 놓으면, <strong>행동은 금 쪽·해석은 국채 쪽</strong>으로 갈린다.</p>
+<h3>8-1. 엔캐리 청산 리스크</h3>
+<table><thead><tr><th>지표</th><th>현재</th><th>전주</th><th>2024-08 baseline</th><th>임계값</th><th>신호</th></tr></thead><tbody>
+<tr><td>JP10Y</td><td><strong>2.91%</strong> (9/4)</td><td>2.93%</td><td>0.90%</td><td>&gt;3.0% (시나리오 2)</td><td>🟡 <strong>9bp 남음</strong>(전주 7bp에서 완화)</td></tr>
+<tr><td>USD/JPY</td><td><strong>156.22</strong></td><td>160.04</td><td>161 → 141</td><td>&lt;140 / &lt;130</td><td>🟢 <strong>주간 −1.95%(엔 강세)</strong></td></tr>
+<tr><td>US10Y−JP10Y</td><td><strong>1.874%p</strong></td><td>1.790%p</td><td>3.50%</td><td>&lt;1.0% (소멸)</td><td>🟢 <strong>+8.4bp 확대</strong></td></tr>
+<tr><td>(US10Y−JP10Y)/USDJPY</td><td><strong>0.01200</strong></td><td>0.01118</td><td>0.022</td><td>&lt;0.008 (충격)</td><td>🟢 (절정 대비 <strong>−45.5%</strong>)</td></tr>
+</tbody></table>
+<p><strong>보조 4 지표</strong>: USD/JPY 1개월 옵션 vol — 이번 회차 미확인(CME 페이지 값 미노출) · Nikkei JNIV — <code>^N225VIX</code> 미지원(보조 지표 soft) · <strong>BOJ MPM 2026-09-17~18 (D-12)</strong> · Japan CPI Core — 이번 회차 미확인.</p>
+<p>🔴 <strong>이번 주 방향이 전부 완화 쪽으로 돌았다.</strong> 엔이 −1.95% 강세, JP10Y가 3% 아래로 복귀, 합성지표는 0.0112 → 0.0120으로 <strong>오히려 캐리 매력이 회복</strong>됐다(스프레드 확대 &gt; 엔 강세). 🔴 그러나 <strong>BOJ MPM이 9월 FOMC 다음 날</strong>이라는 구조는 그대로다 — 정책 격차가 이틀 간격으로 두 번 재가격되는 창.</p>
+<p><strong>8/30 베센트–우에다 회담 리드아웃</strong>(재무부 발표)이 이 주의 유일한 1차 문서다. 🔴 개입 여부·규모는 <strong>9월 중순 TIC</strong>로 넘어간다.</p>
+<h4>8-1b. 조달경로 4다리 (FIMA 레포)</h4>
+<table><thead><tr><th>다리</th><th>시리즈</th><th>9/2</th><th>8/26</th><th>판정</th></tr></thead><tbody>
+<tr><td>① 담보(FIMA)</td><td><code>WORAL</code></td><td><strong>$0M</strong></td><td>$3M</td><td>미사용</td></tr>
+<tr><td>② 스와프</td><td><code>SWPT</code></td><td>$132M</td><td>$132M</td><td>미사용</td></tr>
+<tr><td>③ 외국공식 역레포</td><td><code>WLRRAFOIAL</code></td><td>$357,217M</td><td>$356,158M</td><td><strong>+$1,059M</strong></td></tr>
+<tr><td>④ 외국공식 커스터디</td><td>H.4.1 직접</td><td>이번 회차 미확인</td><td>—</td><td>FRED 계열 2012 단절</td></tr>
+</tbody></table>
+<p>🟢 <strong>판정</strong>: ①②③ 모두 유의 변화 없음. 🔴 <strong>[관측]</strong>은 잔액 변화까지이고 <strong>&quot;일본이 썼다&quot;는 [추론]</strong> — 세 계열 모두 총액 지표라 국가 식별이 불가능하다. 개입 재원이 미국채 실매도였는지는 <strong>9월 중순 TIC</strong>에서만 확인된다.</p>
+<h3>8-2. 美 국채 안전자산 지위 — 🔴 상관이 양(+)으로 굳었다</h3>
+<table><thead><tr><th>신호</th><th>값</th><th>판정</th></tr></thead><tbody>
+<tr><td><strong>주식–채권 60일 상관</strong>(<code>^GSPC</code> vs <code>IEF</code> 일간수익률)</td><td><strong>+0.412</strong></td><td>🔴 <strong>양(+)</strong> — 헤지 기능 상실 구간</td></tr>
+<tr><td>위기 시 도피 (9/4 고용 쇼크)</td><td>주식 −0.38% · 10Y <strong>+0.46%</strong>(금리 상승 = 채권 하락)</td><td>🔴 <strong>도피 실패</strong></td></tr>
+<tr><td>MOVE(국채 변동성)</td><td>73.10 (주간 +3.01% · 52주 29.3%ile)</td><td>🟢 낮음</td></tr>
+<tr><td>美–獨 10Y 스프레드</td><td>이번 회차 미확인(독일 10Y 별도 수집 없음)</td><td>—</td></tr>
+</tbody></table>
+<p>🔴 <strong>판정: 🔴 가설 강화 쪽</strong>. 주식-채권 상관이 +0.412로 <strong>명확히 양(+)</strong> 이고, 이번 주 9/4 고용 서프라이즈에서 <strong>주식↓ + 금리↑</strong>가 동시에 나왔다 — 러스티그가 말한 &#x27;risky debt&#x27; 패턴의 <strong>3번째 사례</strong>(2025-04 관세·2025-06 이란에 이어). 🔴 <strong>단 Steelman</strong>: 상관 양전환은 2022년처럼 <strong>인플레 변동성 국면의 일시 현상</strong>일 수 있고, MOVE가 29%ile로 낮은 것은 국채 자체의 스트레스는 없다는 반증이다. ⟶ <strong>추적 가설로만 유지</strong>, 단독 매매 신호 아님. 2026-12 재평가 예정.</p>
+<h3>8-3. 위안 아키텍처 3대 정밀 지표</h3>
+<ul>
+<li>① 역외 CNH 예금·SWIFT 위안 점유 — 이번 회차 미확인(월간 소스·창 내 발표 없음)</li>
+<li>② mBridge 비제재국 침투 × 美 제재 강도 — 🔴 <strong>제재 강도는 이번 주 상승</strong>(튀르키예·EU 합류). mBridge 신규 0건</li>
+<li>③ 위안 출구 인프라(판다·딤섬본드·상하이 원유선물 독립 가격발견) — 신규 0건</li>
+<li><strong>CIPS</strong> 월간 갱신 없음</li>
+</ul>
+<p>🔴 <strong>[추론]</strong> 그러나 이번 주 <strong>베센트가 &quot;이란산 원유가 중국에 못 갔다&quot;</strong>고 직접 게시한 것은 위안 결제 채널에 대한 <strong>실물 압박</strong>이다. 지표 ②의 분자(제재 강도)가 올라간 주이므로, 다음 CIPS·CNH 데이터에서 <strong>역인과(제재 그림자)</strong> 를 반드시 통제해야 한다.</p>
+<hr>
+<h2>§9. 지정학</h2>
+<h3>9-1. 🔴🔴 호르무즈 봉쇄 — 실물 효과가 확인됐다</h3>
+<p><strong>9/4 베센트</strong>: *&quot;미국이 봉쇄를 재개한 이후, 이란산 원유 화물은 호르무즈 해협을 성공적으로 통과해 중국으로 가는 데 실패했다. 원유가 해협 내부에 갇힌 선박에 쌓이면서 재고를 보충할 수 없다. 이란의 수출 생명줄이 차단되고 있다.&quot;*(<a href="https://x.com/SecScottBessent/status/2095907853877874926" target="_blank">X</a>)</p>
+<p>🔴 <strong>지난주 판독 기각</strong>: 8/29 회차는 *&quot;봉쇄 86척에도 유가 +0.45%&quot;* 로 둔감을 기록했다. <strong>이번 주 WTI +9.38%·Brent +7.30%</strong>, Bloomberg: *&quot;Hedge Funds Hike Bullish Oil Bets to May High as Iran War Flares&quot;*. 둔감은 구조가 아니라 <strong>실물 결과 확인 전의 대기 상태</strong>였다.</p>
+<ul>
+<li><strong>9/4 Axios</strong>: 트럼프 행정부가 <strong>전후 이란 억제 전략</strong> 준비 중 — 지역 외교·안보 3대 기둥(<a href="https://x.com/sentdefender" target="_blank">sentdefender 요약</a>)</li>
+<li><strong>한국 정부</strong>: 호르무즈 항행자유 지원 군사 옵션 검토(기뢰 탐지·제거, 초계기, 지원함) — <strong>국회 승인 필요</strong> · 🔴 [미확인](2차 X 게시·1차 정부 문서 이번 회차 미확인)</li>
+<li><strong>G20 의장성명</strong>: *&quot;호르무즈 해협과 전 세계에서의 자유롭고 안전하며 예측 가능한 항행&quot;* 명시 — 중국이 반대한 4항에 해당할 가능성</li>
+</ul>
+<h3>9-2. 🔴🔴 베네수엘라 — 650억 배럴</h3>
+<p><a href="https://www.whitehouse.gov/releases/2026/09/president-trump-secures-the-biggest-oil-deal-in-world-history/" target="_blank">President Trump Secures the Biggest Oil Deal in World History</a> (9/2)</p>
+<ul>
+<li><strong>미국의 과반 지배권 = 확인매장량 650억+ 배럴</strong>(미 본토 약 460억 배럴을 초과)</li>
+<li>서명: <strong>국무장관 루비오 · 전쟁장관 헤그세스</strong></li>
+<li>구조: 미 정부가 <strong>거버넌스 권한·경제적 소유권·저비용 인수(off-take) 보장</strong>을 갖는 신설 민간 베네수엘라 회사 — <strong>매장량 기준 세계 2위 민간 석유사</strong>가 된다</li>
+<li>*&quot;납세자 비용 0&quot;* · 미국 정유소 처리·미국 시추장비 사용 명시</li>
+<li>🔴 <strong>대상 유전 다수가 이전에 러시아·중국 기업 또는 마두로/차베스 측근 지배</strong> — 지정학 재배치가 명시적</li>
+<li>3단계 계획: <strong>안정화 → 재건 → 민주적 이행</strong>(&quot;Operation Absolute Resolve&quot; 후속)</li>
+<li>🟠 <strong>Bloomberg(9/4)</strong>: 미국 석유회사 경영진은 이 합의를 불편해한다(*&quot;Acuerdo de Trump con Venezuela inquieta a petroleras de EE.UU.&quot;*)</li>
+</ul>
+<h3>9-3. 러시아-우크라이나 — 정전 신호</h3>
+<p><strong>9/4 젤렌스키</strong>: 백악관 특사 <strong>쿠슈너·윗코프의 일요일 러시아·우크라이나 방문 중 우크라이나가 대러 모든 공격을 중단</strong>하며 러시아도 상응하기를 촉구(<a href="https://x.com/sentdefender" target="_blank">sentdefender</a>). Bloomberg: *&quot;rare signs of progress toward ending the Russia-Ukraine war chipped away at the geopolitical risk premium.&quot;*</p>
+<p>🔴 <strong>유가에 반대 방향 두 힘이 동시에 걸려 있다</strong> — 호르무즈(상방) vs 러-우 종전(하방). 이번 주는 상방이 이겼다.</p>
+<h3>9-4. 에너지 가격</h3>
+<table><thead><tr><th></th><th>9/4</th><th>주간</th><th>1개월</th><th>52주 위치</th></tr></thead><tbody>
+<tr><td>WTI (<code>CL=F</code>)</td><td><strong>$91.22</strong></td><td><strong>+9.38%</strong></td><td>+18.02%</td><td>62.3%</td></tr>
+<tr><td>Brent (<code>BZ=F</code>)</td><td><strong>$95.83</strong></td><td><strong>+7.30%</strong></td><td>+16.17%</td><td>62.1%</td></tr>
+<tr><td>천연가스 (<code>NG=F</code>)</td><td>$2.939</td><td>+1.77%</td><td>+11.33%</td><td>8.4%</td></tr>
+<tr><td>XLE</td><td>$64.06</td><td>+2.20%</td><td>+10.14%</td><td><strong>95.4%</strong></td></tr>
+</tbody></table>
+<p>WSJ(9/1): *&quot;Oil Prices Push Global Bond Market Closer to the Edge — 많은 요인이 금리를 밀지만 <strong>에너지 비용이 인플레의 방아쇠</strong>&quot;*. WSJ 9/4: <strong>디젤 신고가</strong>.</p>
+<hr>
+<h2>§10. 시장 심리</h2>
+<table><thead><tr><th>지표</th><th>현재</th><th>전주</th><th>신호</th></tr></thead><tbody>
+<tr><td><strong>CNN Fear &amp; Greed</strong></td><td><strong>42 (Fear)</strong></td><td>52</td><td>🟠 전일 35에서 반등했으나 주간 −10</td></tr>
+<tr><td>├ 1개월 전</td><td>59</td><td></td><td></td></tr>
+<tr><td>└ 1년 전</td><td>61</td><td></td><td></td></tr>
+<tr><td>VIX</td><td><strong>14.53</strong></td><td>—</td><td>🟢 52주 위치 <strong>6.0%</strong></td></tr>
+<tr><td>VIX9D</td><td><strong>11.97</strong></td><td>—</td><td><strong>주간 −20.89%</strong> · 52주 13.0%</td></tr>
+<tr><td>SKEW</td><td>151.58</td><td>—</td><td>🟡 주간 +1.21% · 1개월 +12.51%</td></tr>
+<tr><td>MOVE</td><td>73.10</td><td>—</td><td>52주 29.3%</td></tr>
+<tr><td>RSP/SPY</td><td>0.2843</td><td>—</td><td>🟠 <strong>주간 −0.87%</strong> (폭 축소)</td></tr>
+</tbody></table>
+<p>🔴 <strong>이번 주 심리의 핵심 괴리</strong>: <strong>F&amp;G가 42(Fear)인데 VIX는 52주 하위 6%, VIX9D는 주간 −21%</strong>다. 설문·모멘텀 기반 심리는 공포인데 <strong>옵션 시장은 무방비</strong>에 가깝다. SKEW가 1개월 +12.5%로 오른 것은 꼬리 헤지 수요만 붙었다는 뜻 — Citadel Rubner의 *&quot;하방 보호가 싸다&quot;* 진단과 정확히 같은 그림이다.</p>
+<p><strong>주간 IPO 명단</strong>: 이번 주 <strong>0건</strong> · 다음 주 <strong>0건</strong>(<a href="https://stockanalysis.com/ipos/calendar/" target="_blank">stockanalysis</a>). 🟠 파이프라인 뉴스로는 <strong>Anthropic이 20억 달러 IPO 주관사로 모건스탠리·골드만삭스를 선정하는 데 근접</strong>(FT·⏳ 2차) · Oura(스마트링) S-1 공개(9개월 매출 +74%). 🔴 종목 판단은 하지 않는다.</p>
+<p><strong>§10-1. 13F</strong>: <strong>비시즌</strong> (다음 시즌 2026-11-15 ~ 11-30).</p>
+<hr>
+<h2>§11. TFP · 생산성</h2>
+<h3>11-0. 🔴 r−g 분기 트리거</h3>
+<p><strong>r−g = −2.14%p</strong> (as-of 2026-Q2 · <strong>캐리 1주차</strong>)</p>
+<p>= r <strong>4.42%</strong>(<code>DGS10</code> 2026-Q2 일간 평균 63일) − g <strong>6.56%</strong>(명목 GDP YoY 날짜매칭 32,486.066 / 30,485.729)</p>
+<p>🔴 <strong>트리거 미발화</strong> — FRED <code>GDP</code>에 직전 보고서 이후 신규 관측치·개정치 없음(2차 추정 8/26 반영분 그대로 · 3차 추정 9월 하순 예정). <strong>이번 주 변화 없음.</strong></p>
+<p>🔴 <strong>단독 판정 금지 — 기초재정수지 병기</strong>: r−g −2.14%p × 부채/GDP 122.59% = 자동 감소 <strong>−2.62%p/년</strong>. 이를 상쇄하는 기초재정 적자는 <strong>−5.99%(12M 롤링 MTS/GDP)</strong> 이며, 이자비용을 뺀 기초수지 기준으로는 약 −2.6%(FY2025 추정). ⟶ <strong>자동 감소분과 기초 적자가 거의 정확히 상쇄</strong>하는 손익분기 구간이 한 주 더 유지됐다. 부채/GDP가 122.59%에서 내려오지 않는 이유가 여기 있다.</p>
+<h3>11-1. AI 생산성 계기판 — 분기 비시즌</h3>
+<p>METR / RLI / AEI 3지표는 <strong>분기 트리거</strong>(다음 시즌 = 2026-10월 첫 macro-weekly).</p>
+<h3>11-2. AI capex 물리 진행 프록시</h3>
+<p>민간 오피스 건설투자 <code>PROFCONS</code> <strong>$123,318백만</strong>(7월·SAAR). 데이터센터 격리는 §22가 owner.</p>
+<h3>11-3. AI 노동 — 🔴 대체가 아니라 재교육</h3>
+<p><strong>Apollo 9/3</strong> <a href="https://www.apollo.com/wealth/insights-news/insights/daily-spark/ai-is-retraining-workers-not-replacing-them" target="_blank">AI Is Retraining Workers, Not Replacing Them</a>: <strong>NY Fed 8월 지역 기업 설문</strong> — AI를 쓰는 <strong>서비스업 34%·제조업 22%가 인력을 재교육</strong>하는 반면, <strong>해고를 보고한 곳은 각각 4%·0%</strong>. Slok의 핵심 견해 = *&quot;AI는 노출 직군의 임금에 하방 압력을 주지만 고용에는 유의한 부정 효과가 없다.&quot;*</p>
+<p>🔴 이것은 §15 Citrini 2028 GIC 시나리오에 대한 <strong>반대 증거</strong>이며, 이번 주 8월 고용의 <strong>정보 −23K·금융 −11K</strong>와는 방향이 갈린다. ⟶ <strong>설문(의도)은 재교육, 실현(사업체 조사)은 감소</strong> — 두 층을 섞지 않는다.</p>
+<h3>11-4. CAPEX 인플레 렌즈</h3>
+<p>PPI 전 상품(<code>PPIACO</code>) <strong>+8.27% y/y</strong>(7월) · 건설 시급·전기 CPI·r\* 이번 회차 신규 발표 없음 · ROI vs 자본비용 미관측.</p>
+<p>⟶ 🟡 <strong>판정: 노동시장 과열 조짐은 아니나 PPI가 8%대</strong>로 원가 전이 압력이 남아 있다. §11 AI 생산성 계기판(공급측)과 <strong>쌍으로만</strong> 해석한다.</p>
+<h3>11-5. 성상현 1222 EXIT 트리거</h3>
+<table><thead><tr><th>#</th><th>신호</th><th>상태</th></tr></thead><tbody>
+<tr><td>1</td><td>생산성 가시화 (METR 더블링 가속 / RLI 계단식 점프)</td><td>○ 미점등(분기 비시즌)</td></tr>
+<tr><td>2</td><td>FOMO 극대화 + 비관론자 항복</td><td>○ 미점등 — <strong>F&amp;G 42(Fear)</strong> · RSP/SPY 하락</td></tr>
+<tr><td>3</td><td>적자비율 꼭지 (재정 적자/GDP 4% 하향)</td><td>○ 미점등 — 12M 롤링 <strong>−5.99%</strong></td></tr>
+</tbody></table>
+<p>→ <strong>0/3 점등 · 강세 유지 구간</strong>. 🔴 EXIT는 확정 매도 신호가 아니라 watch 트리거다.</p>
+<hr>
+<h2>§12. 매크로 레짐 판정</h2>
+<p><strong>🟡 리플레이션 — 유지 · 방향 ⬆️ (지난주 ⬇️에서 반전)</strong></p>
+<table><thead><tr><th>다리</th><th>상태</th><th>이번 주 증거</th></tr></thead><tbody>
+<tr><td><strong>성장 가속</strong></td><td>✅ <strong>강화</strong></td><td>고용 <strong>+162K</strong>(컨센 3배)·3개월 평균 38K→71K · ISM 서비스 <strong>55.4</strong>(사업활동 61.7·신규수주 60.9) · GDPNow <strong>4.7%</strong>(17회차) · 초기청구 206K · HY OAS 265bp(3년 창 3.8%ile)</td></tr>
+<tr><td><strong>인플레 상승</strong></td><td>✅ <strong>재형성</strong>(지난주 &quot;깨짐&quot;에서 반전)</td><td>WTI <strong>+9.38%</strong>·Brent +7.30% · <strong>GSCPI 1.06</strong>(0.94→·7월치 상향 개정) · ISM 가격 제조 71.1/서비스 <strong>72.6</strong> · Cleveland 9월 CPI nowcast <strong>3.43%</strong> · PPI 전상품 +8.27% ↔ 기저 3종은 여전히 2.28~2.72%</td></tr>
+<tr><td><strong>유동성 확장</strong></td><td>❌ <strong>깨짐 유지</strong></td><td>지준 <strong>−$30.4십억</strong>·비율 11.29% · RRP $0.5십억 · 유동성/GDP <strong>8.91%</strong> · 레짐 = 🔴 재정 주도 ↔ 순유동성 +$19.8십억(중립)·MMF 사상 최고</td></tr>
+</tbody></table>
+<p><strong>본 분석</strong>: 지난주 &quot;인플레 다리가 깨졌다&quot;고 판정했던 것이 <strong>한 주 만에 되돌았다.</strong> 되돌린 힘은 수요가 아니라 <strong>공급(호르무즈)</strong> 이고, 성장 다리는 오히려 강해졌다. 성장 가속 + 인플레 상승이면 정의상 리플레이션이므로 <strong>🟡 유지 · 방향 ⬆️</strong>.</p>
+<p>🔴 <strong>다만 이 리플레이션은 성격이 바뀌었다.</strong> 인플레의 원천이 수요가 아니라 공급이면 그것은 성장에 매기는 세금이고, <strong>🟠 스태그플레이션과의 거리는 오히려 가까워진다.</strong> 지금 이 판정을 유지시키는 것은 오직 <strong>성장 다리 하나</strong>이며, 그 성장 다리조차 이번 회차엔 <strong>레저·접객+정부 두 항목의 되돌림</strong>이 60%를 차지했다.</p>
+<p><strong>실질 제약도(§4-9)</strong>: 실질 정책금리 +0.29%p(근원 7월)/−0.07%p(헤드라인)/+1.33%p(절사평균) · 판별표 2:2:2 → <strong>시장금리 상승의 정책금리 대체 = 판정 유보</strong>. 🔴 &quot;정책금리 동결 = 스탠스 불변&quot;이 아니다 — 분모(물가)가 불변인데 유가가 붙었으므로, 8월 PCE가 나오면 세 분모 전부가 위로 밀리고 <strong>실질 제약도는 자동으로 낮아진다</strong>.</p>
+<p><strong>레짐 전환 선행 지표</strong></p>
+<table><thead><tr><th>지표</th><th>값</th><th>방향</th></tr></thead><tbody>
+<tr><td>ISM 제조 PMI</td><td>54.6 (−1.0)</td><td>🟡 고점 후</td></tr>
+<tr><td>2s10s</td><td>+41bp (−9bp)</td><td>🟡 플래트닝</td></tr>
+<tr><td>HY 스프레드</td><td>265bp (3년 창 3.8%ile)</td><td>🟢</td></tr>
+<tr><td><strong>금융여건 NFCI</strong></td><td><strong>−0.558</strong> (30.0%ile)</td><td>🔴 <strong>더 완화</strong> — 금리는 오르는데 여건은 안 조여진다</td></tr>
+<tr><td>2년 금리 방향</td><td>4.34% (3M +29bp)</td><td>🔴 상승</td></tr>
+<tr><td>연준 스탠스</td><td>월러 조건부 인상 · 해맥 무조건 인상</td><td>🔴 매파</td></tr>
+</tbody></table>
+<p>🔴 §13 레짐 4분류의 &#x27;유동성&#x27; 칸은 <strong>NFCI·2년 금리·신용 스프레드</strong>로 채운다(순유동성 레짐 태그가 🔴 재정 주도이므로 순유동성으로 이 칸을 채울 수 없다). ⚠️ NFCI는 주가·스프레드·변동성을 구성요소로 포함하므로 주가 설명에 쓰면 동어반복 — 레짐 *분류* 입력으로만 사용.</p>
+<p><strong>시나리오</strong></p>
+<table><thead><tr><th></th><th>확률</th><th>조건</th><th>귀결</th></tr></thead><tbody>
+<tr><td><strong>기본</strong></td><td><strong>45%</strong></td><td>9/11 CPI가 컨센(+0.4% m/m) 부근 · 9월 FOMC <strong>동결 + 매파 SEP</strong> · 유가 $90대 유지</td><td>커브 플래트닝 지속 · 리플레이션 유지 · 폭 축소 계속</td></tr>
+<tr><td><strong>비관</strong></td><td><strong>35%</strong> ⬆️</td><td>8월 CPI 헤드라인 3.5%+ · <strong>9월 인상 단행</strong> · 유가 $100 돌파</td><td><strong>🟠 스태그플레이션 진입 시험</strong> — 공급발 물가에 정책 긴축이 겹치는 최악 조합</td></tr>
+<tr><td><strong>낙관</strong></td><td>20% ⬇️</td><td>러-우 종전 + 베네수엘라 공급 기대로 유가 되돌림 · CPI 근원 2%대 유지</td><td>인상 프라이싱 해제 · 🟢 골디락스 복귀 시도</td></tr>
+</tbody></table>
+<p>🔴 <strong>직전 회차 대비 확률 이동</strong>: 기본 55%→45% · 비관 20%→<strong>35%</strong> · 낙관 25%→20%. 이동의 근거는 ① 고용이 인상 알리바이를 없앴고 ② 유가 둔감이 깨졌고 ③ 연준 안에서 무조건 인상 발언이 나왔다는 세 가지다.</p>
+<p><strong>Kobeissi Playbook 단계</strong>: <strong>&quot;후기 확장 · 정책 오버슛 리스크&quot;</strong> 유지. 이번 주 새 근거 = F&amp;G 42(Fear)인데 VIX 52주 6%ile, RSP/SPY 주간 −0.87%로 <strong>폭은 좁아지는데 보험은 안 사는</strong> 조합.</p>
+<hr>
+<h2>§13. 세계 양동 이론 워치</h2>
+<p><strong>부분 변동</strong> — 9개 트리거 중 2개에 신규 데이터.</p>
+<table><thead><tr><th>#</th><th>트리거</th><th>현재</th><th>판정</th></tr></thead><tbody>
+<tr><td>1</td><td>미국 월간 재정 적자/GDP</td><td><strong>−5.99%</strong>(12M 롤링·7월) · Calendar-YTD 1~7월 <strong>−$1,196.5십억</strong>(전년 동기 −$917.9십억 대비 <strong>−$278.5십억 악화</strong>)</td><td>🟢 4% 임계에서 멀다 = 민간 흑자 지속</td></tr>
+<tr><td>9</td><td>🆕 한국 FX 구조</td><td><strong>원/달러 1,346</strong>(주간 −2.5% · <strong>52주 위치 0.0% = 52주 최강</strong>) · 외환보유액 <code>TRESEGKRM052N</code> $421,335백만(2026-06·불변)</td><td>🟢 <strong>원화 강세 + 보유액 불변 = 성상현 공식 반증 방향</strong></td></tr>
+</tbody></table>
+<p>나머지 7개 트리거(차기 Refunding 문구·한국 무역수지·OBBA 법인세·동아시아 4국·관세 수입·TIC·DOGE) <strong>기준선 유지</strong>.</p>
+<p>🔴 <strong>트리거 #9 판독</strong>: 원/달러가 <strong>52주 최강(1,346)</strong> 으로 갔다. 성상현 13주차 공식(환율 = M2 ÷ 외환보유액 → 원화 구조적 약세)은 <strong>방향이 이번 주 반대로 실현</strong>됐다. 🔴 규약대로 <strong>약세 + 보유액 감소가 동행할 때만 🔴</strong>이므로, 지금은 반대 방향이라 <strong>공식의 반증 사례로 기록</strong>한다. 상위 신호(term premium <code>THREEFYTP10</code> 0.875%·3M +12bp)는 완만.</p>
+<p><strong>Calendar-YTD 신호 연결</strong>: 누적 적자가 전년 동기 대비 <strong>−$278.5십억 확대</strong>(악화) → §8 &quot;정부 적자 = 민간 흑자&quot; <strong>강화</strong> 🟢. 직전 회차의 &quot;FY26 H1 적자 축소&quot; 서사가 <strong>역전</strong>됐다.</p>
+<hr>
+<h2>§14. GDP 정의 확장 + 비가격 민감 수요</h2>
+<p><strong>(A) BEA 디지털자산</strong>: 신규 0건</p>
+<p><strong>(B) IMF SNA 2025</strong>: 신규 0건</p>
+<p><strong>(C) Chainalysis 점유율</strong>: 신규 0건</p>
+<p><strong>(D) Circle/Tether BEA 분류</strong>: 신규 0건 — 단 🔴 <strong>연준 FEDS Note 9/4 「새 화폐 형태와 미국 통화총량」</strong>(<a href="https://www.federalreserve.gov/econres/notes/feds-notes/new-forms-of-money-and-the-u-s-monetary-aggregates-20260904.html" target="_blank">원문</a>)이 <strong>통화총량 쪽에서 같은 질문을 열었다</strong>. GDP 통계가 아니라 <strong>통화 통계</strong>지만, &quot;새 화폐 형태를 공식 집계에 넣을 것인가&quot;라는 구조는 §14 가설의 인접 사례다.</p>
+<p><strong>(E) 비가격 민감 수요 분류</strong>:</p>
+<table><thead><tr><th>카테고리</th><th>최신</th><th>갱신</th></tr></thead><tbody>
+<tr><td>① 외국 중앙은행</td><td>TIC 6월 −$720억 캐리</td><td>차기 9월 중순</td></tr>
+<tr><td>② 미국 연기금·생보</td><td><code>FDHBFIN</code> $9,270.9십억(2025-Q4)</td><td>분기</td></tr>
+<tr><td>③ 스테이블코인 준비금</td><td>총액 $305.2십억(+0.41% 7d)</td><td>주간</td></tr>
+<tr><td>④ 토큰화 RWA</td><td>이번 회차 미확인(잔액 소스 창 내 갱신 없음)</td><td>—</td></tr>
+<tr><td>⑤ 가격 민감(트레이더)</td><td><strong>헤지펀드 브렌트 순매수 5월 이후 최대</strong></td><td>주간</td></tr>
+<tr><td>보조: term premium(<code>THREEFYTP10</code>·KW)</td><td><strong>0.875%</strong>(8/28) · 3M +12.1bp</td><td>일간</td></tr>
+</tbody></table>
+<p><strong>종합 신호: 🟡</strong> — (A)~(D) 기준선 유지, (E)는 term premium이 완만해 안정. 🔴 트리거 미발동.</p>
+<hr>
+<h2>§15. 화이트칼라 Displacement + 모기지 Fragility 워치</h2>
+<h3>(A) 화이트칼라 vs 블루칼라 NFP — 🔴🔴 부호가 갈렸다</h3>
+<table><thead><tr><th>구분</th><th>8월 m/m</th></tr></thead><tbody>
+<tr><td>금융(<code>USFIRE</code>)</td><td><strong>−11K</strong></td></tr>
+<tr><td>정보(<code>USINFO</code>)</td><td><strong>−23K</strong></td></tr>
+<tr><td>전문·사업서비스(<code>USPBS</code>)</td><td>+10K</td></tr>
+<tr><td>컴퓨터 시스템 설계(<code>CES6054150001</code>)</td><td>−0.9K</td></tr>
+<tr><td><strong>화이트칼라 4종 합</strong></td><td><strong>−25K</strong></td></tr>
+<tr><td>건설(<code>USCONS</code>)</td><td>+22K</td></tr>
+<tr><td>제조(<code>MANEMP</code>)</td><td>+16K</td></tr>
+<tr><td>레저·접객(<code>USLAH</code>)</td><td>+62K</td></tr>
+<tr><td><strong>블루칼라 3종 합</strong></td><td><strong>+100K</strong></td></tr>
+</tbody></table>
+<p>🔴 <strong>판정 격상 근거</strong>: 지난달까지 &quot;화이트칼라 둔화 vs 블루칼라 안정&quot;이었던 것이 이번 회차 <strong>명확한 부호 분리</strong>(−25K vs +100K)로 갔다. 🟡 트리거 조건(화이트칼라 4종 합 MoM 0 또는 마이너스 + 블루칼라 안정) <strong>충족</strong>.</p>
+<h3>(B) 대졸 실업률</h3>
+<p><code>LNS14027662</code> <strong>2.7%</strong>(8월·7월 2.7% 불변) — 기준선 2.0~2.4% 대비 <strong>+0.3~0.7%p</strong>. 🟡 임계 2.7% <strong>도달</strong>(1σ 이탈). 🔴 단 2개월 연속 동일 = 악화 아님.</p>
+<h3>(F) 청년 코호트 (20-24)</h3>
+<table><thead><tr><th>지표</th><th>8월</th><th>7월</th></tr></thead><tbody>
+<tr><td>20-24 실업률(<code>LNS14000036</code>)</td><td>7.1%</td><td>7.1%</td></tr>
+<tr><td>prime(25-54) 실업률(<code>LNS14000060</code>)</td><td>3.6%</td><td>3.6%</td></tr>
+<tr><td><strong>갭</strong></td><td><strong>3.5%p</strong></td><td>3.5%p</td></tr>
+<tr><td>20-24 LFP(<code>LNS11300036</code>)</td><td><strong>70.9%</strong></td><td>70.2%</td></tr>
+<tr><td>채용 수준(<code>JTSHIL</code>, 7월)</td><td><strong>5,054K</strong></td><td>5,332K</td></tr>
+<tr><td>채용률(<code>JTSHIR</code>, 7월)</td><td><strong>3.2%</strong></td><td>3.4%</td></tr>
+</tbody></table>
+<p>🟢 갭 불변 · LFP +0.7%p 개선. 🟡 그러나 <strong>채용(hires)이 −278K·채용률 3.4%→3.2%</strong> 로 내려간 것은 seniority-biased displacement 조건의 절반이다. → <strong>갭 확대 + hires 하락 동반</strong>이 아니므로 🔴 미발동.</p>
+<h3>(C) 모기지 · 주택</h3>
+<p>30년 모기지 <strong>6.71%</strong>(주간 +5bp·전전주 6.65%에서 2주 연속 상승) · DRSFRMACBS <strong>1.86%</strong>(2026-Q1·임계 1.8% 초과 🟡) · DRCCLACBS 2.85%(개선) · Case-Shiller 336.66(6월·전월 +0.37%) · HELOC <code>RHEACBW027SBOG</code> $289.9십억(주간 +$0.27십억).</p>
+<p><strong>Zillow HVI</strong>: 월간 데이터 매월 16일 갱신 → 창 내 신규 없음(차기 9/16). <strong>Fannie Mae HPSI</strong>: 8월분 미발표(차기 9/7 전후).</p>
+<h3>(E) Layoff 분포 · 실질임금</h3>
+<ul>
+<li><strong>Challenger 8월분</strong>: 사이트 목록 최신은 8/6(7월분). 8월분 수치는 ⏳ 2차(<a href="https://x.com/KobeissiLetter" target="_blank">Kobeissi 9/4</a>) — <strong>8월 채용 계획 12,325명 = 2022년 이후 최강 8월</strong>·전년 8월 1,494명 대비 <strong>+725%</strong>·항공우주·방산 4,025명 선두.</li>
+<li><strong>Indeed Hiring Lab 9/4</strong> <a href="https://hiringlab.indeed.com/2026/09/04/august-2026-jobs-report-rebound-without-real-relief/" target="_blank">August 2026 Jobs Report: Rebound Without Real Relief</a> — *&quot;162,000은 강한 숫자지만 구직자에게 실질적 안도를 주기엔 부족하고, <strong>연준이 노동시장에서 눈을 떼고 물가에 집중해 금리를 올릴 자신감을 주기엔 충분</strong>하다. 그것이 이미 정체된 시장을 더 늦출 수 있다.&quot;* · 9/3 <a href="https://hiringlab.indeed.com/" target="_blank">Retail&#x27;s Recent Performance Is Mixed</a> — 소매 노동시장 정체·구인 감소.</li>
+<li><strong>실질임금</strong>: 8월 AHE +3.09% y/y vs CPI 3.30% y/y(7월) → <strong>실질 −0.21%</strong> — 구매력 하락이 한 달 더 이어졌다.</li>
+</ul>
+<p><strong>종합 신호: 🟡 시나리오 progressing</strong> (직전 🟡 유지, 그러나 (A)가 처음으로 부호 분리)</p>
+<p><strong>시간 압축 평가</strong>: <strong>느림</strong> — Citrini 2년 가정 대비 실제 진행은 여전히 느리다. Apollo/NY Fed 설문(재교육 34%·해고 4%)이 반대 증거로 서 있다.</p>
+<p><strong>Steelman 3축</strong>: (시간) 노동 share 이동은 50년에 8%pt였다 — 한 달 −25K는 그 궤도 안이다. (구조) 블루칼라 +100K가 흡수하고 있으므로 총 고용은 늘었다. (데이터) 2개 달만 보면 확증편향 — <strong>정보·금융 감소가 3개월 연속일 때만 🟠 격상</strong>. ⟶ 3축 중 하나도 무너지지 않았으므로 <strong>🟡 유지</strong>.</p>
+<hr>
+<h2>§16. KPOW 정치 권력 균형 워치</h2>
+<p><strong>(A) 종합 지수</strong>: <strong>+0.70 R</strong> (24H <strong>+0.1 R</strong>) — 🔴 직전 회차는 지수값 미노출(차트 캔버스)이었고 <strong>이번 주 값 획득에 성공</strong>했다. 8/29 기준값이 없어 주간 델타는 산출 불가.</p>
+<p><strong>(B) Future</strong>: <strong>2028 대선 민주당 승리 확률 57%</strong></p>
+<p><strong>(C) 셧다운</strong>: 이번 회차 sub-component 미노출 · live 아님</p>
+<p><strong>(D) Current vs Future</strong>: Current = <strong>R trifecta</strong>(하원 217R/212D/1I/5공석 · 상원 53R/45D/2I · 대통령 R) ↔ Future = <strong>D 우세</strong>(대선 57%) → <strong>괴리 유지</strong></p>
+<p><strong>종합 신호: 🟢 레짐 안정</strong> · <strong>horizon</strong>: 중기(2028 지평)</p>
+<p>🔴 KPOW 레벨값은 판정에 쓰지 않는다(proprietary 주간 재가중·블랙박스). 방향성·괴리·셧다운 3가지만 신호.</p>
+<hr>
+<h2>§17. 기후 · 원자재 워치 *(owner = climate-weekly · 여기는 매크로 접점만)*</h2>
+<p><strong>트리거 5개 중 2개 발동</strong></p>
+<table><thead><tr><th>#</th><th>트리거</th><th>상태</th></tr></thead><tbody>
+<tr><td>2</td><td>비료-호르무즈 전이</td><td>🟡 <strong>부분 발동</strong> — 요소 PPI(<code>WPU0652013A</code>) 신규 발표 없음이나 호르무즈 긴장 <strong>재고조 확정</strong>. G20 의장성명이 <strong>비료 공급망 MDB 로드맵</strong>을 명시한 것이 정책 인지의 증거</td></tr>
+<tr><td>5</td><td>소프트 선반영 점프</td><td>🟡 커피 <strong>주간 −9.70%</strong>(반대 방향 급락)</td></tr>
+</tbody></table>
+<p><strong>원자재 주간</strong>: 옥수수 <code>ZC=F</code> <strong>+4.17%</strong>(52주 위치 <strong>100.0%</strong>) · 대두 +0.31%(52주 100.0%) · 밀 −0.44%(87.4%) · 구리 <code>HG=F</code> +1.38%(98.1%) · 알루미늄 −0.12% · <strong>건화물 <code>BDRY</code> +2.60%(52주 99.8%)·<code>BOAT</code> +0.99%(100.0%)</strong> · 비료주 CF −3.24%·NTR −1.56%·MOS +1.41%.</p>
+<p>🔴 <strong>매크로 전이</strong>: 곡물 3종 중 2종이 <strong>52주 신고가권</strong>이고 건화물 운임도 신고가권이다. GSCPI 1.06 상승과 같은 방향 — <strong>cost-push 전선이 에너지 하나가 아니다.</strong> §3 Warsh 프레임의 기저 게이지는 아직 안정이지만, 이 전선들은 <strong>헤드라인을 미는 쪽</strong>이다.</p>
+<hr>
+<h2>§18. 인구 · 노동공급 워치</h2>
+<p><strong>부분 변동</strong> — 국회도서관 NSP 9/4: *&quot;세계 고령인구, 영유아 인구 첫 추월…한국 2060년 세계 최고령 국가 전망&quot;*(<a href="https://nsp.nanet.go.kr/" target="_blank">NSP</a>). 🟡 구조 동인의 <strong>교차 시점이 처음 도달</strong>한 사건이다.</p>
+<p>분기 지표(생산가능인구·prime LFPR·부양비·출산율) 신규 갱신 없음. 이번 주 8월 고용에서 <strong>prime(25-54) LFP 83.4% 불변 · 전체 참가율 61.6%(+0.2%p)</strong> — 월러가 *&quot;노동력 증가가 느린 것은 주로 순이민 급감 때문&quot;*이라고 명시한 것이 인구 축의 이번 주 1차 인용이다.</p>
+<p>🔴 <strong>부호 정직성</strong>: 인구의 <strong>성장 부호는 (−)로 명확</strong>하나 <strong>인플레 부호는 미해결</strong>이다. 단정하지 않는다.</p>
+<hr>
+<h2>§19. 보건 · 생물 워치</h2>
+<p><strong>신규 트리거 없음.</strong> FDA 관련: 9/4 아스트라제네카 ESR1 변이 진행성 유방암 치료제 가속 승인 · 8/31 SEC-FDA MOU — 둘 다 relative-price 사안으로 코어 PCE엔 비이벤트. PHEIC·H5N1·GLP-1 거시 데이터 변곡 없음.</p>
+<hr>
+<h2>§20. 증시 내부 · 어닝 · 월가</h2>
+<h3>20-1. 지수 내부 (주간)</h3>
+<table><thead><tr><th>지표</th><th>9/4</th><th>주간</th><th>1개월</th><th>52주 위치</th></tr></thead><tbody>
+<tr><td>S&amp;P 500</td><td>7,718.60</td><td><strong>+0.09%</strong></td><td>+0.11%</td><td>94.5%</td></tr>
+<tr><td>NASDAQ</td><td>26,506.99</td><td>+0.40%</td><td>+0.60%</td><td>90.7%</td></tr>
+<tr><td><code>^SOX</code></td><td>11,735.26</td><td><strong>+2.32%</strong></td><td>−2.60%</td><td>67.3%</td></tr>
+<tr><td><code>^NYA</code></td><td>24,639.25</td><td>+0.22%</td><td>+0.63%</td><td>95.3%</td></tr>
+<tr><td><strong>RSP/SPY</strong></td><td>0.2843</td><td><strong>−0.87%</strong></td><td>−0.02%</td><td>—</td></tr>
+<tr><td><code>^SKEW</code></td><td>151.58</td><td>+1.21%</td><td>+12.51%</td><td>71.0%</td></tr>
+<tr><td><code>^VIX9D</code></td><td>11.97</td><td><strong>−20.89%</strong></td><td>−35.75%</td><td>13.0%</td></tr>
+</tbody></table>
+<p><strong>섹터 50일선 위: 6/11</strong> — 위: XLK·XLE·XLF·XLV·XLB·XLC / 아래: XLI·XLU·XLP·XLY·XLRE.</p>
+<p><strong>주간 섹터 랭킹</strong>: XLE <strong>+2.20%</strong> · XLK +0.86% · XLU +0.82% · XLV +0.17% · XLF 0.00% ↔ <strong>XLY −1.96%</strong> · XLB −1.39% · XLRE −1.24% · XLI −1.06% · XLP −1.02% · XLC −0.85%.</p>
+<p>🔴 <strong>에너지가 유일한 뚜렷한 승자</strong>(XLE 52주 95.4%)이고 <strong>경기소비재가 최하위</strong>다 — 유가가 지수 안에서 그대로 재분배되고 있다.</p>
+<h3>20-2. 어닝 스코어카드</h3>
+<p><strong>해당 주 대형 어닝 없음</strong>(2분기 시즌 종료 · 3분기 시즌은 10월 중순 시작). 개별 사례로 Bloomberg: Bloom Energy·Illumina·Everpure <strong>S&amp;P 500 편입</strong>(9월 정기 리밸런스) · FICO·Equifax·TransUnion 급락(FHFA Pulte의 신용점수 비용 비판 재개).</p>
+<h3>20-3. 🔴 §10 심리와의 괴리 점검 (의무 1줄)</h3>
+<p><strong>F&amp;G 42(Fear) + 마진·레버리지 여건 완화(NFCI −0.558·HY OAS 3년 창 3.8%ile) ↔ 실제 폭 축소(RSP/SPY 주간 −0.87%·섹터 50일선 위 6/11).</strong> 설문 심리는 공포, 신용 여건은 무방비, 실제 폭은 좁아지는 <strong>3중 괴리</strong>다. 🔴 포지셔닝·마진부채·자금흐름·13F는 §10/§10-1 owner이므로 여기서 복제하지 않는다.</p>
+<h3>20-4. 월가 하우스뷰 *(참고 · 🔴 매매 판단 소스 아님)*</h3>
+<ul>
+<li>🔴 <strong>Citadel Securities(Scott Rubner) 8/31</strong> <a href="https://www.citadelsecurities.com/news-and-insights/global-market-intelligence/september-setup/" target="_blank">September Setup: The Asymmetry Has Changed</a> — *&quot;미국 주식에 여전히 건설적이지만 8월을 끌고 온 셋업이 바뀌고 있다.&quot;* 3/30 저점 이후 S&amp;P <strong>+약 22%·시총 +약 $12조(5개월)</strong>. <strong>어닝 순풍 소진 · 노출 재구축 완료 · 변동성 압축 · 하방 보호가 싸다 · 연중 최약 계절 구간 진입.</strong> 결론: *&quot;강세를 이용해 일부 익스포저를 줄이고 값싼 보호를 더하는 쪽을 택하겠다 — 9월은 전술적 하방 창이지 광범위한 약세 전환의 시작이 아니다.&quot;*</li>
+<li><strong>KKR</strong> 최신 Macro Insights = &quot;Flash Macro: U.S. Jobs&quot;(AUGUST 2026) · 창 내 신규 0건</li>
+<li><strong>Carlyle</strong> 최신 = &quot;Signal vs. Noise&quot;(7/28) · 창 내 신규 0건</li>
+<li><strong>Apollo(Slok)</strong> — §4-9-2·§11-3에 반영</li>
+</ul>
+<h3>20-5. M&amp;A 파이프라인</h3>
+<p>창 내 대형 딜 발표 0건.</p>
+<hr>
+<h2>§20-6. 외부 리서치 큐레이션 — 점검 결과</h2>
+<table><thead><tr><th>소스</th><th>창 내 신규</th><th>처리</th></tr></thead><tbody>
+<tr><td><strong>Apollo Daily Spark</strong></td><td>✅ 4건</td><td>9/4 독일 연금개혁 €900억/년 유입 · <strong>9/3 AI는 재교육(§11-3)</strong> · <strong>9/2 「Bessent Is Right」(§4-9-2)</strong> · 9/1 미국 주택 10 facts</td></tr>
+<tr><td><strong>Citrini Research</strong></td><td>0건</td><td>최신 = &quot;Macro Memo: Regime Change&quot;(8/27·직전 회차 반영 완료)</td></tr>
+<tr><td><strong>Citadel Securities</strong></td><td>✅ 1건</td><td>8/31 September Setup (§20-4)</td></tr>
+<tr><td>KKR / Carlyle</td><td>0건</td><td>최신 각각 8월·7/28</td></tr>
+<tr><td><strong>Hoover Daily Report</strong></td><td>5건(주중)</td><td>9/4 이슈 = &quot;What Role Should AI Play in the Classroom?&quot; — 🔴 투자 관련 필독 0건</td></tr>
+<tr><td><strong>Yale Budget Lab</strong></td><td>0건</td><td>5개 토픽 최신 전부 8/24 이전</td></tr>
+<tr><td><strong>DARPA</strong></td><td>0건</td><td>최신 8/9</td></tr>
+<tr><td><strong>Google DeepMind</strong></td><td>📄 1건</td><td>9/1 *Designing Proactive Thought Partners for Writing* — 🟡 능력 frontier 아님(&quot;능력≠확산&quot; 필터 적용) · 📢 blog 창 내 신규 0건. 🔴 필독 0건</td></tr>
+<tr><td><strong>World Gold Council</strong></td><td>0건</td><td>최신 8/19 GDAS 출범</td></tr>
+<tr><td><strong>Dan Wang</strong></td><td>0건</td><td>최신 2026-01-01 연례 서한</td></tr>
+<tr><td><strong>NSP 국회도서관</strong></td><td>✅ 3건</td><td>9/4 세계 고령인구 역전(§18) · 9/4 EU 방위태세 · 9/3 공공기관 이전</td></tr>
+</tbody></table>
+<hr>
+<h2>§21. 행정부 의도 추적 *(관찰 전용 · 투자 판단·종목 콜은 싣지 않는다)*</h2>
+<h3>21-1. 5축 진척도</h3>
+<table><thead><tr><th>축</th><th>이번 주 델타</th><th>누적 상태</th><th>가설 판정</th><th>신호등</th></tr></thead><tbody>
+<tr><td><strong>1 관세 법적 근거</strong></td><td>변동 없음 (신규 조치 0)</td><td>301/232/§122 누적</td><td>⏸</td><td>🟢</td></tr>
+<tr><td><strong>2 동맹 차등 요금표</strong></td><td>변동 없음</td><td>6행 구간</td><td>⏸</td><td>🟢</td></tr>
+<tr><td><strong>3 핵심광물 국가화</strong></td><td>변동 없음</td><td>EXIM·완화계획</td><td>⏸</td><td>🟢</td></tr>
+<tr><td><strong>4 유가의 선거 시계</strong></td><td>🔴🔴 <strong>베네수엘라 650억 배럴 문서화(9/2) + 호르무즈 봉쇄 실물 효과(9/4) + 베센트 &quot;$40&quot; 발언</strong></td><td>조이는 손·여는 손 양쪽 모두 1차 문서 확보</td><td>✅</td><td>🔴</td></tr>
+<tr><td><strong>5 가계의 자산화</strong></td><td>🔴 <strong>Trump Accounts가 G20 의장성명에 명기(9/1)</strong> + 트럼프 &quot;연준 안 내리면 무역 중단&quot;(9/4)</td><td>대외 문서 격상 · 연준 압박 지속</td><td>✅</td><td>🟠</td></tr>
+</tbody></table>
+<h3>21-2. 관전지표 7개 채점</h3>
+<table><thead><tr><th>#</th><th>지표</th><th>무엇을 가르는가</th><th>현재값</th><th>판정</th><th>🔴 반증</th></tr></thead><tbody>
+<tr><td>1</td><td>FOMC 결과</td><td>행정부가 통화 축을 통제하는가</td><td>9/15~16 미도래 · <strong>연준 내부 인상 발언 2건</strong></td><td>❌ <strong>통제 실패 방향</strong></td><td>인하 시 축5 지지</td></tr>
+<tr><td>2</td><td>301조 면제·TRQ 승인 건수</td><td>요금표 vs 재량적 딜</td><td>이번 주 0건</td><td>⏸</td><td>대량 승인 = 요금표 해석 기각</td></tr>
+<tr><td>3</td><td>국방부 완화계획 승인 추이</td><td>2027 기한이 실효인가</td><td>이번 주 0건</td><td>⏸</td><td>대량 승인 = &quot;절벽&quot; 기각</td></tr>
+<tr><td>4</td><td>Project Vault 실제 집행</td><td>문서인가 현금인가</td><td>이번 주 0건</td><td>⏸</td><td>집행 0 = &quot;국가 대차대조표 이동&quot; 기각</td></tr>
+<tr><td>5</td><td>이란 합의 + Brent&lt;$80</td><td>선거 시계 가설</td><td><strong>Brent $95.83(주간 +7.3%)</strong> · 합의 없음</td><td>❌ <strong>기각 방향</strong></td><td>유가↑+군사강도↑ = 반증 — <strong>이번 주 실제로 그렇게 됐다</strong></td></tr>
+<tr><td>6</td><td>호르무즈 통항량</td><td>물류 회복</td><td><strong>[미확인]</strong>(정량 소스 없음) · 정성으로는 &quot;이란 화물 통과 실패&quot;</td><td>—</td><td>—</td></tr>
+<tr><td>7</td><td>한·일 12.5% 상한 유지</td><td>안정적 지위 vs 재협상 카드</td><td>이번 주 변동 0</td><td>⏸</td><td>—</td></tr>
+</tbody></table>
+<p>🔴 <strong>반증 열 채점 결과</strong>: 지표 5가 <strong>이번 주 실제로 반증 방향으로 움직였다</strong>(유가 상승 + 군사 강도 상승 동시). 지표 1도 연준 내부 인상 발언으로 축5의 통제 가설을 약화시켰다.</p>
+<h3>21-3. 🔴 표현 강도 대장 (ledger) — 재상향 금지</h3>
+<table><thead><tr><th>대상</th><th>이전 표현</th><th>현재 표현</th><th>조정일</th><th>사유</th></tr></thead><tbody>
+<tr><td>축1~3 통합</td><td><del>&quot;되돌릴 수 없는 구조물을 세웠다&quot;</del></td><td><strong>&quot;되돌리는 데 드는 비용을 크게 올려놨다&quot;</strong></td><td>2026-07-28</td><td>반박③ — 면제·TRQ·완화계획 예외가 실질 유효</td></tr>
+<tr><td>전체 프레임</td><td><del>&quot;설계된 대전략&quot;</del></td><td><strong>&quot;수렴하는 설계 서명&quot;</strong></td><td>2026-07-28</td><td>반박② 부분 수용 — 관료 조직의 절차 리듬 가능성</td></tr>
+<tr><td>반박①(법적 기회주의)</td><td>—</td><td><strong>기각하지 않고 병기</strong></td><td>2026-07-28</td><td>기회주의와 전략적 재기초는 배타적이지 않음</td></tr>
+<tr><td><strong>축4 (유가)</strong></td><td><strong>&quot;조이는 손과 여는 손&quot;</strong></td><td><strong>표현 유지</strong></td><td>—</td><td>🔴 이번 주 1차 문서 2건이 붙었으나 <strong>반증지표 5가 오히려 반증 방향</strong>이라 재상향 금지 요건 미충족</td></tr>
+</tbody></table>
+<p>🔴 <strong>재상향 금지 규칙 적용</strong>: 축4는 이번 주 백악관·재무장관 1차 문서가 모두 확보됐지만, <strong>관전지표 5(이란 합의 + Brent&lt;$80)가 반증 방향</strong>으로 갔으므로 표현을 강화하지 않는다.</p>
+<h3>21-4. 한국 함의</h3>
+<ul>
+<li><strong>원/달러 1,346 = 52주 최강</strong> · 코스피 외국인 수급은 macro-daily owner</li>
+<li><strong>호르무즈 항행자유 군사 옵션 검토</strong> — 국회 승인 필요 · 🔴 [미확인](1차 정부 문서 이번 회차 미확인). 성사되면 한국은 중동 에너지 물류에 <strong>군사 자산으로 관여</strong>하는 첫 사례가 된다</li>
+<li>반도체 고강도 표적 관세(러트닉·⏳ 2차)는 §21 축2 관측 대상 — 이번 주 1차 문서 없음</li>
+</ul>
+<p>🔴 <strong>[관측]/[추론]/[미확인] 라벨 분리 · 정책·산업 층까지만 · 종목 티커 없음 · §16(권력 전망)과 분리 · 투자 판단·종목 콜은 싣지 않는다.</strong></p>
+<hr>
+<h2>§22. AI capex GDP 귀착 · 되감김 속도 *(레짐 판단 전용 · 종목 티커 없음)*</h2>
+<p><strong>as-of</strong>: BEA 2026Q2 · Census 2026-07 · capex 2026Q2 · US_SHARE as-of 2026-08-08</p>
+<table><thead><tr><th>블록</th><th>값</th></tr></thead><tbody>
+<tr><td><strong>Ⓐ Slok 지표</strong>(5사 연결 글로벌 capex/GDP)</td><td>0.55%(CY2023) → <strong>2.24%</strong> · Δ<strong>+1.68%p</strong> · <strong>+0.61%p/년</strong></td></tr>
+<tr><td><strong>Ⓑ ① 미국 소재분만</strong>(×0.745)</td><td>0.41% → <strong>1.67%</strong></td></tr>
+<tr><td><strong>Ⓑ ② 채널별 국내 순증</strong></td><td>구조물 <strong>−$0.3십억(−0.00%p)</strong> · 장비(정보처리장비 − 컴퓨터수입) <strong>−$104.7십억(−0.32%p)</strong> · 소프트웨어 <strong>+$172.0십억(+0.53%p)</strong> → <strong>합계 +$67.0십억 (+0.21%p)</strong></td></tr>
+<tr><td><strong>Ⓒ 속도</strong></td><td>Slok <strong>+0.61%p/년</strong> vs <strong>국내 순증 +0.07%p/년</strong> (경과 2.75년)</td></tr>
+<tr><td>Ⓒ BEA 실측 성장기여(정보처리장비+SW)</td><td>2023 +0.00%p / 2024 +0.11%p / 2025 <strong>+0.44%p</strong> / 2026 +0.24%p</td></tr>
+<tr><td>Ⓒ 대조군 주거투자 기여</td><td>붐 2002~05 +0.44%p → <strong>되감김 2006~08 −1.06%p (2.4배 비대칭)</strong></td></tr>
+<tr><td><strong>Ⓓ 트리거</strong></td><td>T1 capex 롤오버 미발동 · T2 DC건설 롤오버 미발동 · <strong>T3 수입 되돌림 착시 미발동</strong> · T4 국내 귀착률 반전 미발동 → <strong>0/4</strong></td></tr>
+</tbody></table>
+<p>🔴 <strong>구조물 채널은 DC건설 + 그 외 비주거 합산으로만 읽는다</strong> — 데이터센터만 보면 붐이지만 합산은 <strong>−$0.3십억(사실상 0)</strong>이다. 그 외 민간 비주거 건설이 데이터센터 증가분을 거의 정확히 상쇄하고 있다.</p>
+<p>🔴🔴 <strong>&quot;GDP 귀착이 작다 ≠ 리스크가 작다&quot;</strong> — 국내 순증이 Slok 지표의 약 <strong>1/8</strong>(0.07 vs 0.61%p/년)이라는 것은 *국민계정 산술*일 뿐이며, <strong>주식·크레딧 노출(지수 집중도·사모신용의 neocloud 파이낸싱)은 §20·§10이 owner이고 본 §22의 계산은 그것을 전혀 측정하지 않는다.</strong></p>
+<p>🔴 <strong>caveat 인용</strong>: *&quot;수입 차감은 채널 단위 방향성 추정이며 정밀 귀착 계산이 아니다.&quot;* Slok의 2027~29 3.1% 경로는 <strong>[전망]</strong>(컨센서스)이며 실현 데이터로 검증 불가.</p>
+<hr>
+<h2>📈 시장 스냅샷 (9/4 종가 · 주간 = 8/28 대비)</h2>
+<table><thead><tr><th>자산</th><th>종가</th><th>주간</th><th>1개월</th><th>52주 위치</th></tr></thead><tbody>
+<tr><td>S&amp;P 500</td><td>7,718.60</td><td>+0.09%</td><td>+0.11%</td><td>94.5%</td></tr>
+<tr><td>NASDAQ</td><td>26,506.99</td><td>+0.40%</td><td>+0.60%</td><td>90.7%</td></tr>
+<tr><td><strong>DXY</strong></td><td>99.157</td><td><strong>−0.54%</strong></td><td>−0.81%</td><td>54.5%</td></tr>
+<tr><td>VIX</td><td>14.53</td><td>+0.69%</td><td>−4.09%</td><td><strong>6.0%</strong></td></tr>
+<tr><td><strong>10Y (<code>^TNX</code>)</strong></td><td><strong>4.784%</strong></td><td>+1.36%</td><td>+2.44%</td><td><strong>98.6%</strong></td></tr>
+<tr><td>30Y (<code>^TYX</code>)</td><td>5.246%</td><td>+0.77%</td><td>+0.63%</td><td>91.8%</td></tr>
+<tr><td>2Y (<code>DGS2</code>, 9/3)</td><td>4.34%</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>2s10s</td><td>+0.41%p</td><td>−9bp</td><td>—</td><td>—</td></tr>
+<tr><td><strong>WTI</strong></td><td><strong>$91.22</strong></td><td><strong>+9.38%</strong></td><td>+18.02%</td><td>62.3%</td></tr>
+<tr><td><strong>Brent</strong></td><td><strong>$95.83</strong></td><td><strong>+7.30%</strong></td><td>+16.17%</td><td>62.1%</td></tr>
+<tr><td>천연가스</td><td>$2.939</td><td>+1.77%</td><td>+11.33%</td><td>8.4%</td></tr>
+<tr><td>금</td><td>$4,477.20</td><td>−0.02%</td><td>+5.54%</td><td>52.0%</td></tr>
+<tr><td>BTC</td><td>$79,689</td><td>+2.61%</td><td>+26.55%</td><td>31.9%</td></tr>
+<tr><td>ETH</td><td>$2,454.10</td><td>+1.48%</td><td>+30.47%</td><td>28.2%</td></tr>
+<tr><td><strong>USD/JPY</strong></td><td><strong>156.221</strong></td><td><strong>−1.95%</strong></td><td>−0.88%</td><td>56.2%</td></tr>
+<tr><td><strong>USD/KRW</strong></td><td><strong>1,345.99</strong></td><td><strong>−2.50%</strong></td><td>−5.29%</td><td><strong>0.0%</strong></td></tr>
+<tr><td>JP10Y</td><td>2.91%</td><td>−2bp</td><td>+10bp</td><td>—</td></tr>
+<tr><td>IEF</td><td>92.25</td><td>−0.65%</td><td>−0.75%</td><td>2.5%</td></tr>
+<tr><td>TLT</td><td>82.21</td><td>−0.81%</td><td>−0.38%</td><td>8.0%</td></tr>
+<tr><td>MOVE</td><td>73.10</td><td>+3.01%</td><td>−3.96%</td><td>29.3%</td></tr>
+</tbody></table>
+<hr>
+<h2>🎯 해석 · 시사점</h2>
+<p><strong>1. 이번 주 실제로 바뀐 것은 &quot;누가 인상을 막느냐&quot;였다.</strong> 지난주까지 인상을 막던 것은 *약한 고용*이었다. 8월 +162K로 그 방벽이 사라졌고, 남은 방벽은 *물가 한 장*이다. 그런데 같은 주에 유가가 +9.4% 올랐다 — <strong>방벽 두 개가 같은 주에 무너지거나 흔들렸다.</strong></p>
+<p><strong>2. 인플레의 성격이 수요에서 공급으로 바뀌었다.</strong> 기저 3종(절사평균 2.3%·중위 2.69%·스티키 2.72%)은 여전히 목표권이고, 코어 CPI는 2.47%다. 올라온 것은 헤드라인 쪽 — 유가·GSCPI·곡물·운임·ISM 가격지수. 🔴 <strong>공급발 물가에 정책 긴축으로 답하면 성장에 두 번 과세</strong>하는 것이고, 그것이 §12 비관 시나리오 확률을 20%→35%로 올린 이유다.</p>
+<p><strong>3. 배관은 조용한데 배관의 여유는 계속 줄고 있다.</strong> 실측 스프레드는 압력 0(TGCR−IORB −1bp·SRF $0)이지만 지준은 −$30.4십억, 비율은 11.29%로 임계 11%에 <strong>0.29%p</strong>까지 왔다. 유동성/GDP 8.91%는 <strong>같은 발행 충격이 10배로 증폭되는 구간</strong>이다. 🔴 감시 대상은 이번 주 스프레드가 아니라 <strong>11/4 QRA의 쿠폰 라인</strong>이다.</p>
+<p><strong>4. 관청 셋이 &#x27;돈의 형태&#x27;를 같은 주에 만졌다.</strong> SEC(원장)·연준(정의)·FSB(국경). 여기에 은행 21곳의 공동 발행사가 붙었다. 🔴 이것은 <strong>토큰화가 제도 밖에서 안으로 들어오는 국면</strong>의 신호이지, 특정 사업자의 가치 귀착 신호가 아니다 — 귀착 분석은 Onchain-daily·crcl-weekly·secz-daily owner.</p>
+<h3>포지션 시사점 — 섹터·thesis 수준 *(개별 종목 심층은 종목별 전용 스킬 owner · 개별 종목 매수·매도 판단 없음)*</h3>
+<ul>
+<li><strong>에너지</strong>: 이번 주 유일한 뚜렷한 승자(XLE 주간 +2.20%·52주 95.4%). 🔴 단 상방 원천이 봉쇄이고, 하방 원천(러-우 종전·베네수엘라 공급)이 둘 다 살아 있어 <strong>양방향 꼬리가 두껍다</strong>.</li>
+<li><strong>AI 인프라·전력</strong>: §22 국내 순증 +0.07%p/년으로 국민계정 기여는 여전히 작다. 🔴 그러나 이것은 <strong>GDP 산술</strong>이고 지수 집중도·사모신용 노출은 별개 축이다.</li>
+<li><strong>금리 민감·고멀티플</strong>: 실질 10년 2.42%(전체 96%ile)에 인상 프라이싱이 얹혔다. 대신 HY OAS 265bp로 <strong>신용은 전혀 조여지지 않았다</strong> — 조정이 오면 금리 채널이지 신용 채널이 아니다.</li>
+<li><strong>토큰화·스테이블코인</strong>: 규제 방향이 이번 주 <strong>제도화 쪽으로 명확히 이동</strong>(SEC 이전대리인·연준 통화총량·FSB). USDC 7일 +0.81% vs USDT +0.04%로 <strong>규제 준수 발행사 쪽 성장이 20배 빠르다</strong>.</li>
+<li><strong>원자력·우주/방산</strong>: 이번 창 신규 정책 이벤트 0건. Challenger 8월 채용 계획에서 <strong>항공우주·방산이 4,025명으로 선두</strong>(⏳ 2차).</li>
+</ul>
+<hr>
+<h2>🚨 핵심 리스크</h2>
+<p>1. <strong>9/11 CPI 상방 서프라이즈 → 9월 인상 (확률 중 · 시계 2주)</strong> — 컨센 m/m +0.4%인데 유가는 이미 붙었고 ISM 가격지수는 70%대다. 헤드라인이 3.5%+로 나오면 월러 조건문이 인상 쪽으로 넘어가고 해맥은 이미 넘어가 있다. <strong>반증</strong> = 근원 m/m 0.2% 이하 + 헤드라인 0.3% 이하.</p>
+<p>2. <strong>공급발 물가 + 정책 긴축의 동시 발생 (확률 중 · 시계 1~3개월)</strong> — 유가·곡물·운임·GSCPI 네 전선이 동시에 올라오는데 연준이 수요를 누르면 §12 비관 시나리오(🟠 스태그플레이션)로 간다. <strong>반증</strong> = 러-우 종전 확정 + Brent $80 하향.</p>
+<p>3. <strong>준비금 임계 접근 (확률 저~중 · 시계 1~2개월)</strong> — 지준/은행자산 11.29%로 임계 11%까지 0.29%p. RMP는 0이고 RRP 완충도 없다. 9/15~10/31 법인세 창에 TGA가 부풀면 지준이 직접 깎인다. <strong>반증</strong> = 9월 중순 NY Fed 스케줄에서 RMP 재개.</p>
+<p>4. <strong>엔캐리 + 정책 격차 (확률 저~중 · 시계 2주)</strong> — JP10Y 3.0%까지 9bp, BOJ MPM이 <strong>9월 FOMC 다음 날</strong>. 이번 주 엔 강세로 지표는 완화됐으나 <strong>두 회의가 이틀 간격</strong>이라는 구조는 그대로다. <strong>반증</strong> = BOJ 동결 + 엔 160 재돌파 없음.</p>
+<p>5. <strong>국채 헤지 기능 상실 (확률 중 · 시계 3~6개월)</strong> — 주식-채권 60일 상관 <strong>+0.412</strong>, 9/4 고용 쇼크에서 주식↓+금리↑ 동시 발생(3번째 사례). 60/40 포트폴리오의 분산 효과가 작동하지 않는 구간. <strong>반증</strong> = 다음 위험회피 이벤트에서 금리 하락(도피 성공).</p>
+<p>6. <strong>화이트칼라 고용 3개월 연속 감소 (확률 저~중 · 시계 2개월)</strong> — 정보 −23K·금융 −11K가 8월에 처음 부호로 갈렸다. 3개월 연속이면 §15가 🟠로 격상된다. <strong>반증</strong> = 9~10월 정보·금융 플러스 전환.</p>
+<hr>
+<h2>⏭️ 다음 주 주요 일정</h2>
+<p>🔴 출처 = <a href="https://www.investing.com/economic-calendar/" target="_blank">investing.com 경제 캘린더</a> <strong>&quot;Next Week&quot;</strong>(중요도 ★3 전량 + 스킬 고유 이벤트 병합) · 시간대 <strong>ET(GMT−4:00) 확정</strong>(페이지 <code>Current Time: 18:19 (GMT-4:00)</code> 실측) · KST = ET + 13시간 · 🔴 컨센서스는 *예상*이며 확정 수치는 발표 후 FRED/1차로 교체한다.</p>
+<table><thead><tr><th>날짜(ET)</th><th>시각 ET(KST)</th><th>이벤트</th><th>컨센서스 / 직전</th><th>예상 영향</th></tr></thead><tbody>
+<tr><td>9/7 (월)</td><td>종일</td><td><strong>미국 Labor Day 휴장</strong></td><td>—</td><td>—</td></tr>
+<tr><td>9/8 (화)</td><td>11:00 (00:00+1)</td><td>NY Fed 1년 기대인플레 (8월)</td><td>— / 3.6%</td><td>🟡</td></tr>
+<tr><td>9/8 (화)</td><td>13:00 (02:00+1)</td><td>3년물 입찰</td><td>— / 4.291%</td><td>🟡</td></tr>
+<tr><td>9/8 (화)</td><td>15:00 (04:00+1)</td><td>소비자신용 (7월)</td><td>— / $14.17십억</td><td>🟡</td></tr>
+<tr><td><strong>9/9 (수)</strong></td><td><strong>13:00 (02:00+1)</strong></td><td><strong>10년물 입찰 ★★★</strong></td><td>— / 4.683%</td><td>🔴</td></tr>
+<tr><td><strong>9/9 (수)</strong></td><td>—</td><td><strong>재무부 바이백 확대 첫 집행</strong></td><td>회당 최소 $4십억</td><td>🔴🔴 §5-1</td></tr>
+<tr><td>9/9 (수)</td><td>12:00 (01:00+1)</td><td>EIA 단기 에너지 전망</td><td>—</td><td>🟡 유가</td></tr>
+<tr><td>9/10 (목)</td><td>06:00 (19:00)</td><td>OPEC 월간 보고서</td><td>—</td><td>🟡</td></tr>
+<tr><td><strong>9/10 (목)</strong></td><td><strong>08:30 (21:30)</strong></td><td><strong>PPI (8월·MoM) ★★★</strong></td><td><strong>+0.3%</strong> / 0.0%</td><td>🔴</td></tr>
+<tr><td>9/10 (목)</td><td>08:30 (21:30)</td><td>근원 PPI (8월·MoM)</td><td>+0.3% / +0.2%</td><td>🔴</td></tr>
+<tr><td>9/10 (목)</td><td>08:30 (21:30)</td><td>초기 실업수당 ★★★</td><td>— / 206K</td><td>🔴</td></tr>
+<tr><td>9/10 (목)</td><td>10:00 (23:00)</td><td>기존주택판매 (8월) ★★★</td><td>4.03M / 4.06M</td><td>🟡</td></tr>
+<tr><td>9/10 (목)</td><td>11:30 (00:30+1)</td><td><strong>Atlanta Fed GDPNow (Q3)</strong></td><td>4.7% / 4.7%</td><td>🟡 §0 패널 ⑤</td></tr>
+<tr><td><strong>9/10 (목)</strong></td><td><strong>13:01 (02:01+1)</strong></td><td><strong>30년물 입찰 ★★★</strong></td><td>— / 5.216%</td><td>🔴</td></tr>
+<tr><td>9/10 (목)</td><td>—</td><td><strong>SEC 투자자자문위</strong>(공시·AI·Reg NMS)</td><td>—</td><td>🟡 §5-1</td></tr>
+<tr><td>9/11 (금)</td><td>05:00 (18:00)</td><td>IEA 월간 보고서</td><td>—</td><td>🟡</td></tr>
+<tr><td><strong>9/11 (금)</strong></td><td><strong>08:30 (21:30)</strong></td><td><strong>🔴🔴 CPI (8월·MoM) ★★★</strong></td><td><strong>+0.4%</strong> / +0.1%</td><td>🔴🔴 <strong>월러 조건문 심판</strong></td></tr>
+<tr><td>9/11 (금)</td><td>08:30 (21:30)</td><td>CPI (8월·YoY) ★★★</td><td>— / 3.4%</td><td>🔴🔴</td></tr>
+<tr><td>9/11 (금)</td><td>08:30 (21:30)</td><td>근원 CPI (8월·MoM) ★★★</td><td>+0.2% / +0.2%</td><td>🔴</td></tr>
+<tr><td>9/11 (금)</td><td>10:00 (23:00)</td><td>미시간 소비자심리 (9월 예비)</td><td>— / 51.7</td><td>🟡</td></tr>
+<tr><td>9/11 (금)</td><td>10:00 (23:00)</td><td>미시간 1년/5년 기대인플레</td><td>— / 4.0% · 3.3%</td><td>🔴 §4-9 판별표</td></tr>
+<tr><td>9/11 (금)</td><td>—</td><td><strong>Cleveland Median CPI 갱신</strong></td><td>—</td><td>🔴 Warsh 프레임</td></tr>
+</tbody></table>
+<p><strong>스킬 고유 이벤트</strong>: 9/15~16 <strong>FOMC</strong> · 9/17~18 <strong>BOJ MPM</strong> · 9/17 SEC 24시간 거래 라운드테이블 · 9/16 Zillow 월간 · 9/7 전후 Fannie Mae HPSI · 9월 중순 <strong>TIC</strong>(일본 개입 재원 확인) · 9월 중순 NY Fed 차기 운영 스케줄 · <strong>11/4 QRA (D-60)</strong> · 11/3 중간선거 (D-59).</p>
+<hr>
+<h2>🔮 전망 (향후 1~3개월)</h2>
+<h3>단기 비관 / 현실주의</h3>
+<p>인상을 막던 두 방벽(약한 고용·식는 물가) 중 하나가 사라졌고 나머지 하나가 유가로 흔들린다. 유동성 쪽은 여유가 계속 줄어(지준 비율 11.29%·유동성/GDP 8.91%) <strong>같은 발행 충격이 10배로 증폭되는 구간</strong>에 있고, 그 시험대는 11/4 QRA다. 시장은 이 모든 것을 <strong>VIX 52주 6%ile·HY OAS 3년 창 3.8%ile</strong>로 받고 있다 — 가격에 반영된 위험이 실제 위험보다 작다. 폭(RSP/SPY)은 좁아지는데 보험은 싸다는 조합은 역사적으로 <strong>급격한 리프라이싱의 전조</strong>였고, Citadel이 9월을 &quot;전술적 하방 창&quot;이라 부른 이유도 같다.</p>
+<h3>장기 낙관 / 이상주의</h3>
+<p>이번 주 물가를 민 것은 <strong>수요가 아니라 공급</strong>이다. 공급 충격은 정의상 되돌아온다 — 러-우 종전 신호가 실제로 나왔고, 베네수엘라 650억 배럴이 문서화됐으며, 베센트가 말한 $40이 허풍이더라도 <strong>방향은 공급 증가</strong>다. 기저 물가 3종은 이미 목표권(2.28~2.72%)에 들어와 있고 임금은 3.09%로 감속 중이다. 즉 <strong>공급이 정상화되면 인플레는 빠르게 목표로 수렴할 수 있는 구조</strong>다. 동시에 AI 자본지출은 소프트웨어 채널에서 +$172십억(국내 순증의 유일한 플러스)으로 계속 쌓이고 있고, NY Fed 설문은 기업이 AI로 <strong>해고가 아니라 재교육</strong>을 하고 있음을 보였다 — 생산성 개선이 임금 압력 없이 오는 경로다. 관청 셋이 같은 주에 &#x27;돈의 형태&#x27;를 제도 안으로 끌어들인 것도 장기적으로는 <strong>금융 인프라의 비용을 낮추는</strong> 방향이다.</p>
+<hr>
+<p>출처: FRED API(134계열) · yfinance(49심볼) · <a href="https://www.bls.gov/news.release/empsit.nr0.htm" target="_blank">BLS 고용상황</a> · <a href="https://www.federalreserve.gov/newsevents/speech/waller20260903a.htm" target="_blank">연준 월러 연설</a> · <a href="https://www.federalreserve.gov/econres/notes/feds-notes/" target="_blank">FEDS Notes 4건</a> · 연준 보도자료·연설·증언 RSS · <a href="https://www.newyorkfed.org/markets/domestic-market-operations/monetary-policy-implementation/treasury-securities/treasury-securities-operational-details" target="_blank">NY Fed 운영 상세</a> · <a href="https://www.newyorkfed.org/markets/desk-operations/repo" target="_blank">NY Fed Repo</a> · <a href="https://www.newyorkfed.org/research/policy/gscpi" target="_blank">NY Fed GSCPI</a> · <a href="https://home.treasury.gov/news/press-releases" target="_blank">재무부 보도자료</a> · <a href="https://home.treasury.gov/news/press-releases/sb0620/" target="_blank">G20 의장성명</a> · <a href="https://home.treasury.gov/news/press-releases/treasury-severs-iranian-regime-s-financial-lifelines-turkiye/" target="_blank">OFAC 튀르키예</a> · <a href="https://www.whitehouse.gov/news/" target="_blank">백악관</a> · <a href="https://www.sec.gov/newsroom/press-releases" target="_blank">SEC 뉴스룸</a> · <a href="https://www.sec.gov/newsroom/speeches-statements" target="_blank">SEC 성명</a> · <a href="https://www.sec.gov/newsroom/meetings-events" target="_blank">SEC 일정</a> · <a href="https://www.cftc.gov/PressRoom/PressReleases" target="_blank">CFTC</a> · <a href="https://www.fincen.gov/news-room" target="_blank">FinCEN</a> · <a href="https://www.justice.gov/nsd" target="_blank">DOJ NSD</a> · <a href="https://www.cisa.gov/news-events/cybersecurity-advisories" target="_blank">CISA</a> · <a href="https://www.dhs.gov/news-releases" target="_blank">DHS</a> · <a href="https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/" target="_blank">ISM</a> · <a href="https://www.dallasfed.org/research/pce" target="_blank">Dallas Fed</a> · <a href="https://www.clevelandfed.org/indicators-and-data/inflation-nowcasting" target="_blank">Cleveland Fed Nowcast</a> · <a href="https://www.clevelandfed.org/indicators-and-data/median-cpi" target="_blank">Cleveland Median CPI</a> · <a href="https://www.atlantafed.org/research-and-data/data/gdpnow" target="_blank">Atlanta Fed GDPNow</a> · <a href="https://www.ici.org/research/stats/mmf" target="_blank">ICI</a> · <a href="https://truflation.com/dashboard" target="_blank">Truflation</a> · <a href="https://defillama.com/stablecoins" target="_blank">DefiLlama</a> · <a href="https://edition.cnn.com/markets/fear-and-greed" target="_blank">CNN Fear &amp; Greed</a> · <a href="https://kalshi.com/indices/kpow" target="_blank">Kalshi KPOW</a> · <a href="https://stockanalysis.com/ipos/calendar/" target="_blank">stockanalysis IPO</a> · <a href="https://www.investing.com/economic-calendar/" target="_blank">investing.com 경제캘린더</a> · <a href="https://tradingeconomics.com/japan/government-bond-yield" target="_blank">tradingeconomics JP10Y</a> · <a href="https://www.apollo.com/wealth/insights-news/insights/daily-spark" target="_blank">Apollo Daily Spark</a> · <a href="https://www.citadelsecurities.com/news-and-insights/global-market-intelligence/september-setup/" target="_blank">Citadel Securities</a> · <a href="https://www.citriniresearch.com/" target="_blank">Citrini</a> · KKR · Carlyle · <a href="https://www.hoover.org/publications/daily-report" target="_blank">Hoover</a> · <a href="https://budgetlab.yale.edu/topic/trade" target="_blank">Yale Budget Lab</a> · <a href="https://deepmind.google/research/publications/" target="_blank">DeepMind</a> · <a href="https://www.darpa.mil/rss.xml" target="_blank">DARPA</a> · <a href="https://www.gold.org/news" target="_blank">World Gold Council</a> · <a href="https://danwang.co/" target="_blank">Dan Wang</a> · <a href="https://hiringlab.indeed.com/" target="_blank">Indeed Hiring Lab</a> · <a href="https://www.challengergray.com/blog/category/job-cuts-report/" target="_blank">Challenger Gray</a> · <a href="https://www.zillow.com/research/data/" target="_blank">Zillow Research</a> · <a href="https://www.fanniemae.com/research-and-insights/surveys-indices/national-housing-survey" target="_blank">Fannie Mae</a> · <a href="https://nsp.nanet.go.kr/" target="_blank">NSP 국회도서관</a> · Bloomberg/WSJ(news-headlines MCP RSS) · X(@FirstSquawk·@KobeissiLetter·@sentdefender·@SecScottBessent·@USTreasury·@WhiteHouse)</p>
+<p>⚠️ <strong>수집 상태(실패·미확인 항목만)</strong>: USD/JPY 1개월 옵션 vol(CME 페이지 값 미노출) · Nikkei JNIV(<code>^N225VIX</code> 미지원·보조 지표) · Japan CPI Core · 美–獨 10Y 스프레드(독일 10Y 별도 수집 없음) · KPOW 셧다운 sub-component(차트 캔버스) · 호르무즈 통항량 정량 · 한국 호르무즈 파병 검토 1차 정부 문서 · Challenger 8월분 1차(사이트 목록 최신 8/6 · 8월분은 2차 경유) · Fannie Mae HPSI 8월분(미발표) · Zillow 월간(9/16 갱신) · 토큰화 RWA 잔액.</p>
+<p>🔸 <strong>staleness sentinel</strong>: <code>carlyle_insights</code> 최상단이 6회 연속 동일(Signal vs. Noise). 🔴 이번 회차 라이브 재확인 결과 개별 글의 <code>time[datetime]</code>이 <strong>2026-07-28</strong>로 실제 최신이며 pinned 히어로에 물린 것이 아니다 — 월간 저빈도 소스의 정상 상태.</p>
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다. 2026-09-05 기준.</p>
+<div class="foot">macro-weekly · Chrome MCP 전용 · collect finalize PASS(53/53) · validate 전 Phase PASS · 라이트 테마 자동 생성</div>
+</div></body></html>
