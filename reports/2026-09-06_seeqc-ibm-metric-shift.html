@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IBM이 산업의 자(尺)를 바꾸고 있다 — SEEQC 영향 + Diraq 자체내장 (2026-09-06)</title>
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="양자">
+<meta name="vault-skill" content="Industry Deep Analysis">
+<meta name="vault-date" content="2026-09-06">
+<meta name="vault-published" content="2026-09-06">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="IBM이 8/31 성능 지표를 규모·품질·속도로 재정의하고 Nighthawk r2로 큐비트 수 불변·처리량 25배를 냈다. 25배는 제어전자가 아니라 칩 위 리셋 소자에서 나왔고 IBM은 제어층을 내재화 중 — SEEQC에는 자(尺)는 순풍·저자는 역풍. Diraq×Equinix 자체내장 문장은 패키징이라 악재 아님, 진짜 악재는 Diraq의 2025 Nature mK CMOS 제어.">
+<style>body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Apple SD Gothic Neo','Segoe UI',sans-serif;line-height:1.65;margin:0;padding:32px 12px;}
+.container{max-width:1000px;margin:0 auto;background:#FDF6E3;border-radius:14px;padding:36px 44px;box-shadow:0 2px 16px rgba(80,60,20,.12);}
+h1{font-size:1.7em;border-bottom:3px solid #c44;padding-bottom:10px;margin-top:0;}
+h2{font-size:1.3em;border-bottom:1px solid #d9cfb3;padding-bottom:6px;margin-top:32px;}
+h3{font-size:1.08em;margin-top:22px;color:#7a3a10;}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.9em;}
+th,td{border:1px solid #ddd0ad;padding:7px 10px;text-align:left;vertical-align:top;}
+thead th{background:#efe6cb;}
+tbody tr:nth-child(even) td{background:#f7efd9;}
+blockquote{background:#f5edd6;border-left:4px solid #c9a84a;margin:14px 0;padding:12px 16px;border-radius:0 6px 6px 0;font-size:.95em;}
+a{color:#0a66c2;text-decoration:none;} a:hover{text-decoration:underline;}
+ul{padding-left:22px;} li{margin:4px 0;}
+hr{border:none;border-top:1px solid #e0d6b8;margin:24px 0;}
+strong{color:#3a2c10;} em{color:#5c4a00;}
+code{background:#efe6cb;padding:1px 5px;border-radius:4px;font-size:.9em;}
+del{color:#8a7a5a;}
+@media print{body{background:#fff;padding:0;}.container{box-shadow:none;max-width:100%;}table,blockquote{break-inside:avoid;}}</style>
+</head>
+<body>
+<div class="container">
+<h1>IBM이 산업의 자(尺)를 바꾸고 있다 — SEEQC 사업에 미치는 영향</h1>
+<h2>+ Diraq "극저온 냉각·제어전자 자체 내장"은 SEEQC에 악재인가</h2>
+<p><strong>작성 2026-09-06 · 기준 미국장 마감 9/04 · 분류 Research / 양자 · 1차 출처 = IBM Quantum 블로그 2건·Nature 2편·Diraq 보도자료·SEEQC 자체 자료·SEC EDGAR·TQI</strong></p>
+<blockquote>본 보고서는 일회성 조사·분석이다. SEEQC 정례 추적의 owner는 SEEQC-daily / SEEQC-weekly이며, 여기서 제안한 신호·메모리 갱신은 <strong>사용자 확인 후</strong> 반영 대상이다. 상장 전 회사이므로 시세·매매 판단은 없다.</blockquote>
+<hr>
+<h2>0. 열 줄 요약</h2>
+<ul>
+<li><strong>IBM은 8/31에 자(尺)를 바꿨다.</strong> <a href="https://www.ibm.com/quantum/blog/hardware-metrics-2026">하드웨어 지표 글</a>에서 양자컴퓨터 성능을 <strong>규모(프로그래머블 큐비트)·품질(큐비트 연산 수)·속도(초당 최대 회로 수)</strong> 세 축으로 정의했고, 같은 날 <a href="https://www.ibm.com/quantum/blog/nighthawk-r2">Nighthawk r2</a>로 <strong>큐비트 120개를 그대로 둔 채 초당 회로를 4,000 → 100,000+(25배)</strong> 로 올렸다.</li>
+<li><strong>25배의 정체는 제어 전자가 아니라 큐비트 칩 위의 "배출식 리셋 장치"다.</strong> 큐비트마다 튜너블 커플러로 차가운 환경에 연결해 T1을 200µs → 25ns로 순간 단축, 회로 사이 대기시간을 수백 µs → <strong>1µs</strong>로 줄였다. IBM 글에 제어 전자·배선·극저온 전자 언급은 <strong>0회</strong>다.</li>
+<li>따라서 <strong>단기(2026~27)에는 SEEQC에 직접 순풍이 아니다.</strong> IBM은 "상온 제어 + 칩 위 보조 소자"만으로 처리량 병목을 풀어 보였고, 이는 SEEQC의 핵심 주장(<em>제어를 냉장고 안 디지털 칩으로</em>)이 <strong>처리량 축에서는 필수가 아님</strong>을 보여준 사례다.</li>
+<li><strong>중기(Starling 2029)에는 자가 SEEQC 쪽으로 돈다.</strong> 리셋이 1µs가 되면 초당 회로 수의 다음 병목은 <strong>판독(readout)·상온 왕복 지연·배선</strong>이고, QEC용 동적 회로는 실시간 피드포워드를 요구한다. SEEQC가 파는 JDPD 디지털 판독·SFQ 제어가 정확히 이 층이다. <strong>지금까지 산업의 유일한 자였던 "큐비트 수"에 SEEQC의 기여는 0이었으나, "속도" 자에는 기여 경로가 있다.</strong></li>
+<li><strong>그러나 자를 바꾼 IBM은 SEEQC의 고객으로 커지는 대신 그 층을 내재화 중이다.</strong> <a href="https://thequantuminsider.com/2026/08/26/ibm-completes-acquisition-hrl-laboratories/">HRL 인수 완료 8/26</a>(극저온·제어전자·패키징·인터커넥트 명시), <a href="https://www.ibm.com/quantum/blog/modular-cryogenics">모듈형 극저온 8/19</a>(배선을 <em>줄이는</em> 대신 <strong>"배선 용량 확장"</strong>으로 수천 큐비트/냉동기), Anderon 300mm. SEEQC의 <a href="https://seeqc.com/resources/quantum-computing-wiring-bottleneck">"배선 병목: 수백 큐비트를 못 넘는다"</a> 서사와 IBM의 실제 경로는 <strong>정면으로 다르다.</strong></li>
+<li><strong>판정: "자를 바꾼 것"은 순풍, "자를 바꾼 사람"은 역풍.</strong> SEEQC의 현실적 수혜 경로는 IBM이 아니라 <strong>자급 능력이 없는 초전도 2군</strong>(Rigetti·IQM·OQC·Alice&amp;Bob 등)과 신규 제조 생태계다. <a href="https://thequantuminsider.com/2026/09/03/seeqc-signs-mou-to-expand-quantum-technology-cooperation-in-taiwan/">9/03 대만 MOU</a>가 정확히 이 방향이다.</li>
+<li><strong>Diraq×Equinix의 "냉각·제어전자 자체 내장"은 문장 자체로는 악재가 아니다.</strong> <a href="https://www.diraq.com/newsdesk/diraq-to-deploy-a-quantum-computer-inside-an-australian-equinix-data-centernbsp">Diraq 보도자료</a>의 의미는 <em>냉동기와 제어 랙을 한 캐비닛에 담아 데이터센터에 그냥 꽂는다</em>는 <strong>패키징 서술</strong>이고, <strong>8큐비트</strong>는 상온 제어로 충분하다(SEEQC 자신의 자료: 50큐비트도 동축 수백 개면 된다). 20kW의 대부분은 냉동기 몫이다.</li>
+<li><strong>진짜 악재는 그 뒤에 있다.</strong> Diraq은 이미 <a href="https://www.nature.com/articles/s41586-025-09157-x">밀리켈빈 cryo-CMOS 제어칩으로 스핀 큐비트를 제어한 논문</a>을 <strong>Nature 2025-06-25</strong>에 실었다(약 10만 트랜지스터·sub-K·1·2큐비트 게이트 성능 영향 거의 없음). HRL(→IBM)도 <a href="https://www.nature.com/articles/s41586-026-10754-7">4K CMOS 컨트롤러 + 초전도 리본케이블 + mK 큐비트 보드</a>로 Nature 2026-07-29. <strong>실리콘 스핀 진영은 자기 모달리티에 맞는 극저온 제어를 CMOS로 스스로 만든다.</strong></li>
+<li><strong>SEEQC 영향 = "모달리티 무관" 서사의 축소.</strong> 실리콘 스핀 시장은 SEEQC의 SFQ 제어 TAM에서 사실상 빠진다(큐비트도 제어도 같은 CMOS 팹). 초전도 코어 시장(IBM·Rigetti·IQM·Google 계열)은 남지만, 그 중 최대 고객 IBM은 자급으로 간다. <strong>🟠 실질 악재·🔴 아님</strong> — SEEQC의 초전도 코어 thesis는 훼손되지 않았다.</li>
+<li><strong>근황</strong>: SEC 신규 공시 0(8/28 이후) · 424B4·8-A12B 여전히 없음 · <strong>Outside Date 10/31까지 D-55</strong> · 현금 $18.1M(6/30) · 9/03 대만 MOU는 금액 0의 프레임 계약. 자(尺)가 어떻게 바뀌든 <strong>이 회사의 시계는 지표가 아니라 자금</strong>이다.</li>
+</ul>
+<hr>
+<h2>1. 무슨 일이 있었나 — IBM의 두 게시물 (8/31)</h2>
+<h3>1-1. 새 자(尺): 규모·품질·속도</h3>
+<p><a href="https://www.ibm.com/quantum/blog/hardware-metrics-2026">How to measure the performance of a quantum computer</a> (IBM Quantum 블로그 · 2026-08-31 · Holger Haas·David McKay·Robert Davis)</p>
+<table><thead><tr><th>축</th><th>지표</th><th>정의(IBM 원문 요지)</th></tr></thead><tbody>
+<tr><td><strong>규모</strong></td><td>프로그래머블 큐비트 수</td><td>사용자가 직접 제어·알고리즘에 쓸 수 있는 큐비트만 센다. <strong>커플러·리셋 소자 등 보조 양자 소자는 제외</strong></td></tr>
+<tr><td><strong>품질</strong></td><td>큐비트 연산 수(qubit operations)</td><td>신뢰성 있게 실행할 수 있는 복잡한 연산의 규모</td></tr>
+<tr><td><strong>속도</strong></td><td><strong>초당 최대 회로 수</strong></td><td>회로 처리량. <em>"시스템의 shot rate(반복 실행률)와 밀접"</em> — 얼마나 빨리 회로를 반복 실행·측정하는가</td></tr>
+</tbody></table>
+<p>IBM은 이 글에서 <em>"오늘의 칩은 큐비트와 사실상 구별되지 않는 수백 개의 제어 가능한 양자 소자를 쓰지만, 그 다수는 회로를 지원하기 위한 것이지 직접 계산에 쓰이지 않는다"</em> 고 명시했다. 즉 <strong>"큐비트 몇 개"라는 헤드라인 숫자에서 보조 소자를 빼고, 대신 속도를 정식 축으로 넣은 것</strong>이 이번 자의 변경이다.</p>
+<h3>1-2. Nighthawk r2: 큐비트는 그대로, 속도만 25배</h3>
+<p><a href="https://www.ibm.com/quantum/blog/nighthawk-r2">IBM Quantum Nighthawk r2 — more circuits, faster</a> (2026-08-31) · <a href="https://thequantuminsider.com/2026/09/03/ibms-nighthawk-r2-quantum-processor-targets-a-25-fold-increase-in-circuit-speed/">TQI 9/03</a></p>
+<table><thead><tr><th>항목</th><th>Heron</th><th>Nighthawk r2</th></tr></thead><tbody>
+<tr><td>프로그래머블 큐비트</td><td>—</td><td><strong>120개 (r1과 동일)</strong></td></tr>
+<tr><td>물리 양자 소자</td><td>—</td><td><strong>458개</strong> = 큐비트 120 + 커플러 218 + <strong>리셋 소자 120</strong></td></tr>
+<tr><td>초당 회로</td><td>약 4,000</td><td><strong>100,000+ (25배)</strong></td></tr>
+<tr><td>회로 간 대기</td><td>수백 µs</td><td><strong>1µs</strong></td></tr>
+<tr><td>초기화 오류</td><td>—</td><td>약 25배 감소</td></tr>
+<tr><td>검증</td><td>—</td><td>7,500게이트 초과 회로에서 PEA 정확 추정 = 2026 로드맵 목표</td></tr>
+<tr><td>제공</td><td>—</td><td>IBM Phoenix 시스템으로 IBM Quantum Platform 즉시</td></tr>
+</tbody></table>
+<p><strong>쉽게 말해 — 왜 25배가 나왔나.</strong> 양자 회로는 매번 큐비트를 바닥상태(0)로 되돌린 뒤 시작한다. Heron까지는 <strong>"측정해서 1이면 π-펄스로 뒤집는" 조건부 리셋</strong>을 썼는데, 측정 정확도에 묶이고 계산 상태 밖으로 새어나간(누설) 큐비트는 못 잡아서, 확실히 비우려면 <strong>수백 µs를 그냥 기다려야</strong> 했다. Nighthawk r2는 <strong>큐비트마다 "배출구"를 하나씩 달았다</strong> — 고동적범위 튜너블 커플러로 큐비트를 차가운 환경에 순간 연결하면 큐비트의 에너지 보유 시간(T1)이 <strong>약 200µs → 약 25ns</strong>로 떨어져 즉시 비워진다. 이웃 큐비트는 건드리지 않는다. 그래서 회로 사이 대기가 1µs로 줄고, 같은 시간에 25배 많은 회로를 돌린다.</p>
+<p><strong>투자 관점에서 결정적인 사실 하나 — 이 개선은 전부 "냉장고 안 큐비트 칩 위"에서 일어났고, 제어 전자 층은 건드리지 않았다.</strong> IBM 글 전체에서 <em>control electronics·wiring·cryogenic electronics·room temperature</em> 언급은 0회이며 "control"은 "controllable quantum elements" 한 번뿐이다(원문 전수 확인). 리셋 소자를 켜는 신호는 여전히 상온 전자에서 내려온다.</p>
+<hr>
+<h2>2. SEEQC의 사업에 어떤 영향인가 — 시간 지평 3단 분리</h2>
+<p>먼저 SEEQC가 파는 것을 한 줄로: <strong>초전도 양자컴퓨터의 제어·판독 전자를 상온 랙에서 냉장고 안 밀리켈빈 디지털 칩(SFQ)으로 끌어내려 배선과 열을 줄인다.</strong> 검증된 실증은 <a href="https://thequantuminsider.com/2026/03/20/seeqc-reports-first-quantum-computer-with-integrated-qubit-control-on-a-chip-at-millikelvin-temperatures/">Nature Electronics 2026-03-20</a>(밀리켈빈 통합 큐비트 제어 세계 최초). 매출은 H1'26 $1.79M, 그중 완전 상용 칩은 약 5%, 95%는 엔지니어링·통합 서비스(8/28 S-1/A).</p>
+<h3>2-1. 단기 (Nighthawk·Kookaburra 세대, 2026~27) — 중립 ~ 약한 역풍</h3>
+<ul>
+<li>IBM은 <strong>제어 층을 바꾸지 않고</strong> 처리량 병목을 풀었다. 이는 "속도를 올리려면 제어를 극저온 디지털로 내려야 한다"는 논리가 <strong>이 세대에서는 성립하지 않음</strong>을 시장에 보여준 사례다.</li>
+<li>SEEQC의 <a href="https://seeqc.com/resources/quantum-computing-wiring-bottleneck">자체 자료</a>도 인정한다: <em>"업계 표준 방식(상온 제어 + 동축 케이블)은 오늘의 큐비트 수에서는 잘 작동한다."</em> 병목은 <em>"50큐비트에서는 동축 수백 개, 1,000큐비트에서는 3,000~5,000개"</em> 에서 온다는 것이 SEEQC의 주장이다. <strong>Nighthawk r2는 120큐비트다.</strong></li>
+<li>즉 단기에는 <strong>"IBM이 속도를 25배 올렸다"가 SEEQC 매출로 연결되는 경로가 없다.</strong></li>
+</ul>
+<h3>2-2. 중기 (Starling 2029 · 200 논리큐비트 · 물리 수천~1만) — 자가 SEEQC 쪽으로 돈다, 단 고객은 아니다</h3>
+<p><strong>왜 유리한가.</strong> 속도 = shot rate이고, shot 한 번의 시간 예산은 대략 <code>리셋 + 게이트 열 + 판독 + (동적 회로면) 상온 왕복 판정</code> 이다. 리셋이 1µs로 내려온 뒤 남는 항은 <strong>판독과 왕복 지연</strong>이다. QEC는 회로 중간 측정 → 판정 → 다음 게이트라는 피드포워드를 매 사이클 요구한다(IBM도 <em>"많은 QEC 프로토콜과 양자-고전 워크플로는 동적 회로를 요구한다"</em> 고 썼다). 이 층에서 신호를 <strong>냉장고 안에서 디지털로 바로 판독(JDPD)·판정</strong>하면 왕복이 사라진다 — SEEQC가 파는 것이 정확히 이것이다. <strong>"큐비트 수" 자에는 SEEQC의 기여가 0이었지만, "속도" 자에는 기여 경로가 있다.</strong> 자의 변경은 SEEQC가 파는 물건이 <em>측정되는 축</em>을 처음으로 만들어 준 사건이다.</p>
+<p><strong>왜 그 유리함이 IBM 매출로는 안 오는가.</strong> 같은 2주 동안 IBM이 한 일:</p>
+<table><thead><tr><th>날짜</th><th>IBM 행동</th><th>SEEQC 층과의 관계</th></tr></thead><tbody>
+<tr><td>8/19</td><td><a href="https://www.ibm.com/quantum/blog/modular-cryogenics">모듈형 극저온 아키텍처</a> — 알루미늄 박스형 "셀"을 이어 붙여 <strong>배선 용량과 챔버 부피를 확장</strong>, <strong>냉동기당 수천 큐비트</strong></td><td>배선 병목을 <strong>"배선을 줄여서"가 아니라 "배선을 더 넣어서"</strong> 푼다. SEEQC 서사의 정반대 경로</td></tr>
+<tr><td>8/26</td><td><a href="https://thequantuminsider.com/2026/08/26/ibm-completes-acquisition-hrl-laboratories/">HRL Laboratories 인수 완료</a> — 보도자료가 명시한 획득 역량: <em>"cryogenics, <strong>control electronics</strong>, packaging, and interconnect"</em></td><td><strong>SEEQC가 파는 층을 통째로 내재화</strong></td></tr>
+<tr><td>8/31</td><td>Nighthawk r2 리셋 소자 — 칩 위 보조 양자 소자로 속도 해결</td><td>제어 층 개입 없이 속도 축 선점</td></tr>
+<tr><td>(진행)</td><td>Anderon — 올버니 300mm 순수 양자 웨이퍼 파운드리</td><td>SEEQC NORDTECH(NY CREATES 300mm)와 <strong>같은 생태계, 관계 미확정</strong></td></tr>
+</tbody></table>
+<p>IBM은 S-1에서 SEEQC의 파트너·고객(초전도 + DARPA QBI)으로 기재된 회사다. 그 회사가 <strong>자를 바꾸면서 동시에 그 자에서 이기는 수단을 전부 안에 들였다.</strong> SEEQC 입장에서 IBM은 "자를 바꿔 준 사람"이자 "그 자 위에서 SEEQC를 필요로 하지 않으려는 사람"이다.</p>
+<h3>2-3. 장기 (Blue Jay 2030년대 · 물리 10만+) — 물리 한계가 SEEQC 편이나, 그때 IBM은 자급</h3>
+<p>큐비트 10만 개에 동축 30~50만 개는 어떤 모듈형 냉동기로도 안 된다 — 여기서는 SEEQC의 논리(밀리켈빈 디지털 다중화)가 물리적으로 맞다. 그러나 IBM은 HRL의 cryo-CMOS 팀과 자체 로드맵을 갖고 있고, 스핀 큐비트 쪽은 §3에서 보듯 이미 mK CMOS 제어가 Nature에 실렸다. <strong>장기의 물리는 SEEQC 편이지만 장기의 고객은 SEEQC 편이 아니다</strong> — 단, SFQ(초전도 디지털·nW급 소비전력·mK 동작)와 cryo-CMOS(3~4K·mW급)는 다른 물건이고, 밀리켈빈 스테이지의 냉각 예산은 극도로 작다. 초전도 큐비트 옆 <strong>mK 스테이지 안</strong>에서 디지털을 돌리는 실증은 SEEQC가 유일하다(Nature Electronics 3/20). 이 차이가 장기 옵션의 전부다.</p>
+<h3>2-4. 판정</h3>
+<p><strong>"자를 바꾼 것"은 순풍, "자를 바꾼 사람"은 역풍.</strong> 속도가 공식 축이 된 것은 SEEQC의 물건이 측정될 자리를 만든 사건이다. 그러나 최대 고객이자 자의 저자인 IBM은 제어·극저온·패키징을 내재화했고, 배선 병목을 "더 큰 냉동기"로 풀겠다고 공개했다. 따라서 <strong>SEEQC의 현실적 매출 경로는 IBM이 아니라 자급 능력이 없는 초전도 2군</strong>(Rigetti·IQM·OQC·Alice&amp;Bob·신규 국가 프로그램)과 제조 생태계이며, 9/03 대만 MOU(§4)는 그 방향의 첫 움직임이다. <em>가장 강한 반론 — "IBM은 시스템 회사이지 부품 회사가 아니므로 SFQ 판독칩 정도는 여전히 외부에서 살 수 있다" — 는 HRL 인수 보도자료가 'control electronics'를 획득 역량으로 <strong>직접 명시</strong>한 사실 앞에서 유지되지 않는다. 판정 유지.</em></p>
+<hr>
+<h2>3. Diraq "극저온 냉각과 제어 전자장치를 모두 자체 내장" — SEEQC에 악재인가</h2>
+<h3>3-1. 그 문장이 실제로 뜻하는 것</h3>
+<p><a href="https://www.diraq.com/newsdesk/diraq-to-deploy-a-quantum-computer-inside-an-australian-equinix-data-centernbsp">Diraq 보도자료 (Diraq 뉴스데스크 9/01 AEST · TQI 8/31)</a> 원문:</p>
+<blockquote><em>"The installed quantum computer will feature a silicon chip containing eight quantum bits (qubits), with all cryogenic cooling and control electronics self-contained. The complete system fits within Equinix's existing data center alongside standard servers, requiring minimal integration and drawing less than 20kW of power. Scaling to higher qubit counts requires only a chip replacement, with no changes to the surrounding infrastructure."</em></blockquote>
+<p><strong>쉽게 말해</strong> — "냉동기도, 제어 랙도 다 한 캐비닛 안에 들어 있어서 데이터센터에 서버처럼 꽂기만 하면 된다"는 <strong>배포 형태(패키징)의 서술</strong>이다. 이 문장은 제어 전자가 <em>어디 온도에</em> 있는지 말하지 않는다. 판단 근거:</p>
+<table><thead><tr><th>근거</th><th>내용</th></tr></thead><tbody>
+<tr><td><strong>큐비트 수</strong></td><td><strong>8개.</strong> SEEQC 자신의 자료가 <em>"50큐비트에서는 동축 수백 개로 관리 가능"</em> 이라 했다. 8큐비트에 극저온 제어를 넣을 이유가 없다</td></tr>
+<tr><td><strong>20kW</strong></td><td>희석냉동기(압축기+펄스튜브)가 통상 10kW 안팎을 쓴다. 남는 몫이 상온 제어 랙 하나 분량이다 [추정]</td></tr>
+<tr><td><strong>"칩 교체만으로 확장"</strong></td><td>제어 전자를 큐비트 옆 mK 칩에 붙였다면 큐비트 칩만 바꿔선 안 된다. 상온 제어가 그대로이기 때문에 가능한 문장</td></tr>
+<tr><td><strong>협업 목적(보도자료 명시)</strong></td><td>"실제 DC에서 원격 모니터링·CPU/GPU 연동 성능 시험 → 상업 규모 경로 → 파트너·고객 시연". <strong>제어 아키텍처 실증이 아니라 배포·운영 실증</strong></td></tr>
+<tr><td><strong>Diraq 로드맵</strong></td><td><a href="https://www.diraq.com/newsdesk/diraq-sets-roadmap-for-utility-scale-quantum-computing-with-millions-of-qubits-on-a-single-silicon-chip">로드맵 문서</a>: <em>"결함내성 QPU를 <strong>랙 규모 극저온 시스템</strong> 안에 맞춰 표준 DC 인프라와 통합"</em> — 2029년 물리 15만/논리 최대 1,000, 2031년 물리 200만+/논리 1만+</td></tr>
+</tbody></table>
+<p>→ <strong>문장 자체 = 🟡 SEEQC 악재 아님.</strong> 이 문장을 "Diraq이 극저온 제어 전자를 큐비트 옆에 통합했다"로 읽으면 오독이다.</p>
+<h3>3-2. 그런데 진짜 악재는 문장 밖에 있다</h3>
+<p>Diraq은 이미 <strong>밀리켈빈 CMOS 제어를 해냈다</strong> — <a href="https://www.nature.com/articles/s41586-025-09157-x">Spin-qubit control with a milli-kelvin CMOS chip</a>, <strong>Nature 643, 382–387 (2025-06-25)</strong>. 저자 = 시드니대·<strong>Diraq</strong>·UNSW·<strong>Emergence Quantum</strong>(David Reilly)·게이오대. 요지:</p>
+<blockquote>스핀 큐비트의 장점은 서브마이크론 크기라 한 칩에 수백만 개를 넣을 수 있다는 것인데, 큐비트마다 제어선이 여러 개 필요해 <strong>연결 밀도가 근본적 확장 장벽</strong>이다. 해법은 제어를 밀리켈빈 큐비트 옆에 두는 것이나 <strong>열과 누화가 성능을 해칠 수 있다.</strong> 여기서 <strong>약 10만 트랜지스터의 sub-K CMOS</strong>로 MOS 스핀 큐비트를 제어하여, <strong>밀리켈빈 제어가 1·2큐비트 게이트 성능에 거의 영향을 주지 않음</strong>을 보였다 — <em>"칩렛 방식 제어 아키텍처"</em> 의 전망.</blockquote>
+<p>이건 SEEQC가 파는 바로 그 논리("제어를 큐비트 옆 mK로")를 <strong>실리콘 스핀 진영이 CMOS로 자체 구현</strong>했다는 뜻이다. 그리고 같은 진영에서 하나 더:</p>
+<table><thead><tr><th></th><th>SEEQC</th><th>Diraq(+Sydney/Emergence)</th><th>HRL → IBM</th></tr></thead><tbody>
+<tr><td>게재</td><td>Nature Electronics <strong>2026-03-20</strong></td><td><strong>Nature 2025-06-25</strong></td><td><a href="https://www.nature.com/articles/s41586-026-10754-7">Nature <strong>2026-07-29</strong></a></td></tr>
+<tr><td>큐비트</td><td>초전도</td><td>실리콘 MOS 스핀</td><td>실리콘 exchange-only 스핀(54 QD·최대 18큐비트)</td></tr>
+<tr><td>제어 위치</td><td><strong>밀리켈빈 · SFQ 초전도 디지털</strong></td><td><strong>밀리켈빈 · cryo-CMOS</strong> (~10만 Tr)</td><td><strong>4K CMOS 컨트롤러</strong> + 초전도 리본케이블 → mK 큐비트 보드</td></tr>
+<tr><td>실증 범위</td><td>통합 큐비트 제어 최초</td><td>1·2큐비트 게이트 성능 영향 거의 없음</td><td>거리-5 반복부호·거리-2 오류검출 부호</td></tr>
+<tr><td>소유</td><td>독립·상장 신청 중</td><td>비상장(Diraq)</td><td><strong>IBM (8/26 종결)</strong></td></tr>
+</tbody></table>
+<p><strong>시간순으로는 Diraq(2025-06) → SEEQC(2026-03) → HRL(2026-07)</strong> 이다. 9/01 심층분석에서 "SEEQC가 먼저였다"고 정정했던 것은 HRL 대비이고, <strong>mK 제어 자체는 Diraq이 SEEQC보다 9개월 앞섰다</strong>(모달리티·기술은 다르다: CMOS vs SFQ).</p>
+<h3>3-3. SEEQC 영향 정리</h3>
+<table><thead><tr><th>영향</th><th>방향</th><th>크기</th></tr></thead><tbody>
+<tr><td><strong>① "모달리티 무관 곡괭이" 서사 축소</strong> — 실리콘 스핀은 큐비트도 제어도 같은 CMOS 팹에서 나온다(Diraq·HRL·Intel·Quantum Motion 모두 이 노선). SFQ 제어를 살 이유가 구조적으로 약하다</td><td>🔴 역풍</td><td>중 — 단 SEEQC 실제 고객(IBM·Rigetti·IQM)은 전부 <strong>초전도</strong>라 현 매출엔 영향 0</td></tr>
+<tr><td><strong>② 초전도 코어 시장은 그대로</strong> — SFQ는 초전도 공정이고 초전도 큐비트와 같은 mK 스테이지에서 nW급으로 돈다. cryo-CMOS는 mW급이라 초전도 mK 스테이지의 냉각 예산과 맞지 않는다 [S-1 주장·독립검증 ❌]</td><td>🟢 방어</td><td>중</td></tr>
+<tr><td><strong>③ 배포 편의성의 대비 효과</strong> — "랙 하나·20kW·서버 옆에 꽂는다"는 초전도 대비 실리콘 스핀의 <strong>배포 우위</strong>를 시장에 각인. 초전도 전체(=SEEQC 시장)의 상대 매력 하락</td><td>🟠 2차 역풍</td><td>소 — 8큐비트 데모이고 IBM은 모듈형 냉동기로 수천 큐비트 대응</td></tr>
+<tr><td><strong>④ 경쟁 실증의 누적</strong> — mK/4K 제어 실증이 세 진영(SFQ·mK CMOS·4K CMOS)에서 나왔고 그중 하나는 IBM 소유</td><td>🟠 역풍</td><td>중 — "극저온 디지털 제어를 하는 곳이 드물다"는 희소성 전제의 추가 약화</td></tr>
+</tbody></table>
+<p><strong>판정 — 사용자 질문에 대한 답: "악재가 아닌지"</strong> → <strong>문장은 아니고(패키징), 배경은 맞다(🟠).</strong> Diraq×Equinix 발표 자체는 8큐비트 상온 제어 시스템의 데이터센터 배포이며 SEEQC 층과 무관하다. 그러나 그 발표를 계기로 확인한 사실 — Diraq이 2025년에 이미 mK CMOS 제어를 Nature에 실었고, HRL이 4K CMOS 제어로 QEC 부호를 돌렸으며 그 회사가 IBM 소유가 된 것 — 은 <strong>SEEQC의 "모달리티 무관·희소한 극저온 제어" 서사를 실리콘 스핀 쪽에서 잘라낸다.</strong> 초전도 코어 thesis(IBM·Rigetti·IQM·Google 계열)는 훼손되지 않았으므로 🔴는 아니다. <em>반론 — "SFQ는 mK에서 nW, CMOS는 mW라 급이 다르다"는 SEEQC의 방어는 옳지만 그것은 초전도 mK 스테이지에서만 결정적이고, 스핀 큐비트는 1K 안팎에서도 동작하므로 CMOS의 열 예산이 문제가 안 된다. 즉 방어는 초전도 시장 안에서만 유효하다 — 판정 유지.</em></p>
+<hr>
+<h2>4. SEEQC 근황 (2026-09-06 기준)</h2>
+<table><thead><tr><th>항목</th><th>상태</th><th>출처</th></tr></thead><tbody>
+<tr><td><strong>SEC 공시</strong></td><td><strong>8/28 이후 신규 0건</strong> — 424B4(가격결정)·8-A12B(거래소 등록) 여전히 없음. 상장 미완료·시세 없음</td><td><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0001779977&amp;type=&amp;dateb=&amp;owner=include&amp;count=40">SEC EDGAR</a></td></tr>
+<tr><td><strong>Outside Date</strong></td><td><strong>2026-10-31 · D-55</strong> (Allegro 종료합의 참조 시한)</td><td>8/28 8-K</td></tr>
+<tr><td><strong>현금</strong></td><td>$18.1M(6/30) · H1 소모 $9.85M → 자체 런웨이 약 3~4분기 · going concern 13회(S-1/A)</td><td>8/28 10-Q·S-1/A</td></tr>
+<tr><td><strong>9/03 대만 MOU</strong></td><td>대만 <strong>Quantum Industry Technology Promotion Office</strong>와 MOU — <strong>SEMICON Taiwan 2026</strong>에서 CTO <strong>Shu-Jen Han</strong> 서명. 범위 = 기술·제품개발·<strong>제조·시험·검증</strong>·상업화·공급망. 금액·기간 없음(프레임 계약). Han: <em>"대만의 반도체·전자·제조 집적은 확장 가능한 글로벌 양자 산업에 중요한 역할"</em>, <em>"SEEQC가 이미 대만에 구축한 생태계 위에 쌓는다"</em></td><td><a href="https://thequantuminsider.com/2026/09/03/seeqc-signs-mou-to-expand-quantum-technology-cooperation-in-taiwan/">TQI 9/03</a></td></tr>
+<tr><td><strong>의미</strong></td><td>150mm 자체 팹 → <strong>NORDTECH(NY CREATES 300mm)에 이은 두 번째 외부 제조 경로.</strong> IBM이 자급으로 가는 상황에서 SEEQC가 <strong>IBM 밖의 제조·고객 생태계</strong>를 찾는 움직임으로 읽힌다. 단 MOU는 매출이 아니다</td><td>본 보고서 §2-4</td></tr>
+<tr><td><strong>seeqc.com</strong></td><td>대만 MOU 미게재. 최신 자료 = "배선 병목" 해설 + Nature Electronics + NORDTECH</td><td>seeqc.com/resources</td></tr>
+<tr><td><strong>TQI 인용 현황</strong></td><td>9/03 Nighthawk 기사에 SEEQC 언급 0 · Diraq 기사에 SEEQC 언급 0</td><td>TQI</td></tr>
+</tbody></table>
+<hr>
+<h2>5. 쉬운 설명 — 왜 "자(尺)"가 중요한가</h2>
+<p><strong>비유.</strong> 지금까지 양자컴퓨터는 "몇 큐비트냐"로 줄 세워졌다. 이건 자동차를 <strong>실린더 수</strong>로만 비교하는 것과 같다. IBM이 이번에 내놓은 자는 실린더 수(규모)·완주 가능한 거리(품질)·<strong>시속(속도)</strong> 세 가지다.</p>
+<p><strong>SEEQC가 파는 것은 실린더가 아니라 변속기·배선이다.</strong> 실린더 수로만 평가하는 시장에서는 변속기 회사가 측정될 자리가 없었다. 시속이 정식 지표가 되면 변속기가 처음으로 점수판에 오른다 — 이것이 순풍이다.</p>
+<p><strong>그런데 이번 시속 25배는 변속기를 바꿔서 나온 게 아니다.</strong> 엔진 실린더마다 작은 "배출 밸브"(리셋 소자)를 달아서 다음 사이클로 빨리 넘어가게 한 것이다. 변속기(제어 전자)는 그대로 상온에 있다. 그리고 그 자동차 회사(IBM)는 변속기 회사(HRL)를 사서 안에 들였다 — 이것이 역풍이다.</p>
+<p><strong>Diraq의 "다 내장했다"는 말은</strong> 엔진·변속기를 차체 하나에 다 넣어 주차장에 세울 수 있게 했다는 뜻이지, 변속기를 엔진 실린더 안에 넣었다는 뜻이 아니다. 다만 Diraq은 그 일도 이미 2025년에 논문으로 해 보였다 — 그것도 SEEQC와 다른 방식(CMOS)으로.</p>
+<hr>
+<h2>6. 앞으로 볼 것 — 관측 가능한 신호</h2>
+<table><thead><tr><th>#</th><th>신호</th><th>의미</th><th>관측 경로</th></tr></thead><tbody>
+<tr><td>1</td><td><strong>IBM Kookaburra/Starling 설계에서 제어 전자의 위치</strong>(상온 / 4K / mK) 공개</td><td>IBM이 속도 축의 다음 병목(판독·왕복)을 <strong>어느 온도에서</strong> 풀지 = SEEQC 층의 IBM 내 수요 존재 여부</td><td>IBM Quantum 블로그·Technology Atlas</td></tr>
+<tr><td>2</td><td>IBM 속도 지표의 <strong>다음 병목을 IBM 스스로 "readout / latency"로 명명</strong>하는지</td><td>SEEQC JDPD가 측정되는 자의 완성</td><td>IBM 블로그</td></tr>
+<tr><td>3</td><td><strong>초전도 2군(Rigetti·IQM·OQC·Alice&amp;Bob)의 제어 조달 공시</strong> — 자체 vs 외부(SEEQC·Qblox·QM·ZI)</td><td>SEEQC의 실제 매출 경로</td><td>각사 IR·TQI</td></tr>
+<tr><td>4</td><td><strong>대만 MOU의 후속</strong> — 구체 파트너(파운드리·패키징)·금액·SEEQC 대만 법인</td><td>프레임 → 계약 전환 여부</td><td>TQI·seeqc.com·SEC</td></tr>
+<tr><td>5</td><td><strong>424B4 / 8-A12B</strong></td><td>상장 완주 = going concern 해소</td><td>SEC EDGAR</td></tr>
+<tr><td>6</td><td><strong>Diraq Equinix 시스템의 제어 벤더</strong> 공개(자체 mK CMOS 적용 여부)</td><td>§3-1 판정의 사후 검증</td><td>Diraq 뉴스데스크</td></tr>
+<tr><td>7</td><td><strong>Anderon–NORDTECH 관계</strong> 확정</td><td>파트너 vs 경쟁</td><td>상무부·IBM·SEEQC</td></tr>
+</tbody></table>
+<hr>
+<h2>7. 메모리·신호 갱신 제안 (사용자 확인 대상)</h2>
+<ul>
+<li><strong>SEEQC-Memory §7 "같은 층의 실증" 표에 Diraq 열 추가</strong> — Nature 2025-06-25 mK cryo-CMOS(~10만 Tr) · 시간순 Diraq → SEEQC → HRL.</li>
+<li><strong>§8 ⚠️ 신호 ⑤(핵심 고객 내재화)</strong>: IBM 계약 미갱신 공시는 없으나 <strong>내재화 방향 증거 3건</strong>(HRL 'control electronics' 명시·모듈형 극저온 "배선 용량 확장"·리셋 소자) 누적 → <strong>🟠 감시 강화</strong> 표기 제안. 🟢6(IBM 파일럿→상업계약) 가능성 하향.</li>
+<li><strong>🟢 신호 신설 후보</strong>: "IBM이 속도 자의 다음 병목을 readout/latency로 공식화" — SEEQC 층이 측정되는 자의 완성.</li>
+<li><strong>§0 한 줄 thesis 보강</strong>: "모달리티 무관"을 <strong>"초전도 무관(any superconducting QPU)"</strong> 으로 좁혀 읽을 것 — 실리콘 스핀은 CMOS 자체 제어 노선.</li>
+<li>Q-weekly 실리콘 스핀 ★★★→★★★★ 상향 검토 근거에 <strong>Diraq mK CMOS 논문(2025-06)</strong> 1건 추가(9/01·9/05 보고서가 기록한 3건 + 1).</li>
+</ul>
+<hr>
+<h2>8. 출처</h2>
+<p><strong>IBM 1차</strong> — <a href="https://www.ibm.com/quantum/blog/hardware-metrics-2026">How to measure the performance of a quantum computer (2026-08-31)</a> · <a href="https://www.ibm.com/quantum/blog/nighthawk-r2">IBM Quantum Nighthawk r2 — more circuits, faster (2026-08-31)</a> · <a href="https://www.ibm.com/quantum/blog/modular-cryogenics">IBM's new modular architecture for cryogenic systems (2026-08-19)</a></p>
+<p><strong>Nature</strong> — <a href="https://www.nature.com/articles/s41586-025-09157-x">Spin-qubit control with a milli-kelvin CMOS chip — Nature 643, 382 (2025-06-25)</a> · <a href="https://www.nature.com/articles/s41586-026-10754-7">A digitally controlled silicon quantum processing unit — Nature (2026-07-29)</a></p>
+<p><strong>Diraq 1차</strong> — <a href="https://www.diraq.com/newsdesk/diraq-to-deploy-a-quantum-computer-inside-an-australian-equinix-data-centernbsp">Diraq to Deploy a Quantum Computer Inside an Equinix Data Center (9/01 AEST)</a> · <a href="https://www.diraq.com/newsdesk/diraq-sets-roadmap-for-utility-scale-quantum-computing-with-millions-of-qubits-on-a-single-silicon-chip">Diraq sets roadmap for utility-scale quantum computing</a></p>
+<p><strong>SEEQC 1차</strong> — <a href="https://seeqc.com/resources/quantum-computing-wiring-bottleneck">The Wiring Bottleneck: Why Qubit Control Doesn't Scale Past a Few Hundred Qubits</a> · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0001779977&amp;type=&amp;dateb=&amp;owner=include&amp;count=40">SEC EDGAR CIK 0001779977</a> (8/28 S-1/A·10-Q·8-K)</p>
+<p><strong>TQI</strong> — <a href="https://thequantuminsider.com/2026/09/03/ibms-nighthawk-r2-quantum-processor-targets-a-25-fold-increase-in-circuit-speed/">IBM Nighthawk r2 (9/03)</a> · <a href="https://thequantuminsider.com/2026/09/03/seeqc-signs-mou-to-expand-quantum-technology-cooperation-in-taiwan/">SEEQC 대만 MOU (9/03)</a> · <a href="https://thequantuminsider.com/2026/08/31/diraq-to-deploy-a-quantum-computer-inside-an-equinix-data-center/">Diraq×Equinix (8/31)</a> · <a href="https://thequantuminsider.com/2026/08/26/ibm-completes-acquisition-hrl-laboratories/">IBM–HRL 인수 완료 (8/26)</a> · <a href="https://thequantuminsider.com/2026/03/20/seeqc-reports-first-quantum-computer-with-integrated-qubit-control-on-a-chip-at-millikelvin-temperatures/">SEEQC Nature Electronics (3/20)</a></p>
+<p><strong>선행 자체 보고서</strong> — SEEQC 심층 분석 2026-09-01(vault <code>2026-09-01_seeqc-deep-analysis</code>) · IBM 양자 심층조사 2026-07-26(vault <code>2026-07-26_ibm-quantum-deep-research</code>) · SEEQC·Riverlane·NVQLink 3자 기술 비교 2026-07-05</p>
+<p><strong>수집 방법</strong> — 전량 Chrome MCP 직접 열람(WebFetch/WebSearch 0회). <code>[추정]</code> 표기 항목(20kW 배분)은 1차 수치가 아니다. cryo-CMOS mW급·SFQ nW급 대비는 SEEQC S-1 주장이며 독립 검증되지 않았다.</p>
+</div>
+</body>
+</html>
