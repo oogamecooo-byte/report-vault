@@ -1,0 +1,1106 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PSQL (Pasqal Holding SA) — R-Dive: 제품·수익모델 정밀 해부 — 2026-09-06</title>
+<style>
+:root{--cream:#FDF6E3;--bg:#EBE4D3;--ink:#1f2328;--line:#e8e1cf;}
+*{box-sizing:border-box}
+body{margin:0;padding:28px 16px;background:var(--bg);color:var(--ink);
+ font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+ font-size:15px;line-height:1.75;}
+.wrap{max-width:940px;margin:0 auto;background:var(--cream);border:1px solid var(--line);
+ border-radius:10px;padding:38px 44px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+h1{font-size:26px;margin:0 0 6px;letter-spacing:-.4px;border-bottom:3px solid #c0392b;padding-bottom:12px}
+h1+blockquote{margin-top:14px}
+h2{font-size:20px;margin:34px 0 12px;padding-bottom:6px;border-bottom:1px solid #ddd4bd}
+h3{font-size:16.5px;margin:24px 0 8px;color:#8a3225}
+h4{font-size:15px;margin:18px 0 6px}
+blockquote{margin:14px 0;padding:10px 16px;background:#f6efdb;border-left:4px solid #c8bb9a;
+ border-radius:0 6px 6px 0;font-size:13.5px;color:#4a4a4a}
+blockquote p{margin:4px 0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13px;background:#fff;
+ page-break-inside:avoid}
+th{background:#f3ecd9;border:1px solid #ddd4bd;padding:8px 10px;text-align:left;font-weight:600}
+td{border:1px solid #e3dcc8;padding:7px 10px;font-variant-numeric:tabular-nums}
+tr:nth-child(even) td{background:#fdfbf4}
+code{background:#f0e9d6;padding:1px 5px;border-radius:3px;font-size:12.5px}
+hr{border:0;border-top:1px solid #ddd4bd;margin:30px 0}
+a{color:#1f5f8b}
+ul,ol{padding-left:22px}
+li{margin:5px 0}
+details{margin:14px 0;background:#f6efdb;border:1px solid #ddd4bd;border-radius:6px;padding:10px 16px}
+summary{cursor:pointer;font-weight:600}
+strong{color:#111}
+.footer{margin-top:34px;padding-top:14px;border-top:1px solid #ddd4bd;font-size:12px;color:#7b7364}
+@media print{body{background:#fff;padding:0}.wrap{background:#fff;border:0;box-shadow:none;padding:0}
+ table{page-break-inside:avoid}h2{page-break-after:avoid}}
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+</style><meta name="vault-stage" content="Dive">
+<meta name="vault-topic" content="PSQL">
+<meta name="vault-skill" content="R-Dive">
+<meta name="vault-date" content="2026-09-06">
+<meta name="vault-published" content="2026-09-06">
+<meta name="description" content="PSQL (Pasqal Holding SA) — R-Dive: 제품·수익모델 정밀 해부 — 2026-09-06">
+<meta name="robots" content="noindex, nofollow">
+</head><body><div class="wrap">
+<h1>PSQL (Pasqal Holding SA) — R-Dive: 제품·수익모델 정밀 해부</h1>
+<blockquote>
+<p>2026-09-06 · 첫 실행(델타 없음) · 단독 모드 · 통화 = EUR(IFRS 감사) / USD(시장·SPAC 자료)
+1차 출처: <a href="https://www.sec.gov/Archives/edgar/data/2119292/000121390026096761/">20-F 2026-09-02</a> · <a href="https://www.sec.gov/Archives/edgar/data/2119292/000121390026085694/ea0282861-11.htm">424B3 2026-08-05</a> · <a href="https://www.sec.gov/Archives/edgar/data/2088295/000121390026023839/ea027921801ex99-3.htm">SPAC 투자자 프레젠테이션 2026-03 (EX-99.3)</a> · <a href="https://www.sec.gov/Archives/edgar/data/2119292/000121390026096761/ea030376501ex15-1.htm">20-F EX-15.1 프로포마</a></p>
+</blockquote>
+<hr />
+<h2>📄 한 장 요약</h2>
+<ul>
+<li><strong>확정 아키타입 = ③ 정부 집중형(주) + ⑥ 하드웨어 일회판매형(부)</strong>. 선언된 ② 곡괭이(QCaaS 통행세)형은 <strong>매출 €0 = 아직 존재하지 않는다</strong>.</li>
+<li>🔴🔴 <strong>"매출 $26.1M"은 정부보조금을 더한 숫자다 — 1차 자료로 확증.</strong> SPAC 덱 슬라이드 19의 막대 범례가 문자 그대로 <strong>"Commercial | Grant"</strong>이고, 슬라이드 33 「Business Model」은 <strong>Grants를 6개 매출 스트림 중 하나로 명시</strong>한다. IFRS 감사 매출은 <strong>€16.5M</strong>이고 보조금 €7.2M은 손익계산서에서 <strong>별도 계정</strong>이다.</li>
+<li>🔴 이 정의 하나가 밸류에이션을 바꾼다: <strong>P/S 88.3배(IFRS 매출) ↔ 61.4배(보조금 포함)</strong>. 덱이 주장한 <em>"peer 대비 in line"</em>은 <strong>분모에 보조금을 넣어야만 성립</strong>한다(IONQ 65.0배·INFQ 68.2배).</li>
+<li>🔴🔴 <strong>반복매출이 사실상 0.</strong> 유지보수 €7천, 클라우드(QCaaS) <strong>€0</strong>. 회사 스스로 위험요인에 <em>"recurring revenue streams 미확립·고객 관계가 반복적이지 않다"</em>고 적었다.</li>
+<li>🔴🔴 <strong>백로그의 절반이 확정이 아니다.</strong> 감사된 확정 수주잔고(RPO) <strong>€35.4M</strong> vs 마케팅 문구 "booked &amp; awarded incl. grants" <strong>€68.4M</strong> = <strong>확정 비중 51.8%</strong>. 게다가 확정 잔고는 전년 €36.2M 대비 <strong>−2%(역성장)</strong>.</li>
+<li>🔴 <strong>매출의 2/3가 유럽 공공·국방 3건.</strong> GENCI/CEA+Jülich QPU 2건 €6.1M(QPU 매출의 81.8%) + 프랑스 국방조달청(DGA) €5.0M(서비스의 77.4%) = 총매출의 <strong>67.4%</strong>. 상위 3고객 <strong>77.9%</strong>, 프랑스+독일 <strong>90%</strong>.</li>
+<li>🔴 <strong>생산능력 13대는 매출 13대가 아니다.</strong> 회사 자료상 연 13대 중 <strong>판매용(온프레미스)은 3~4대</strong>, 7~8대는 자사 클라우드 fleet, 2대는 R&amp;D. 실현 ASP(€3.05M/대) 기준 <strong>하드웨어 판매 상한 ≈ 연 €9~12M</strong> — FY2025 총매출보다도 작다.</li>
+<li>🔴 <strong>매출 자체에 현금 아닌 부분이 섞여 있다.</strong> QPU 매출 €7.46M 중 <strong>€1.67M(22.4%)이 IFRS 15 유의적 금융요소 accretion 환입</strong> — 기계를 판 돈이 아니라 선수금 할인 되감기다.</li>
+<li><strong>결론</strong>: 제품(중성원자·상온·모듈)은 실재하고 인도 실적도 있으나, <strong>수익모델은 "국가가 사주는 일회성 장비"</strong> 단계다. 재평가 방아쇠는 클라우드/유지보수 라인이 20-F에 <strong>처음 숫자로 등장하는 분기</strong>.</li>
+</ul>
+<details><summary><b>배경</b> (접이식 — 이하 섹션에서 반복하지 않음)</summary>
+
+Pasqal은 프랑스 팔레조 기반 **중성원자(neutral atom)** 방식 양자컴퓨팅 기업. 2026-08-27 Bleichroeder Acquisition Corp II와의 de-SPAC 종결로 **Pasqal Holding SA**(프랑스 SA)가 되었고 8/28 나스닥 `PSQL`/`PSQLW` 데뷔. **Foreign Private Issuer**라 10-K/10-Q가 아니라 **20-F/6-K + IFRS(IASB)** 체계다(CIK 0002119292). 감사 재무제표·MD&A·사업 설명 전문은 2026-08-05 424B3(합병 proxy/prospectus)에 실려 있다.
+
+</details>
+
+<hr />
+<h1>Part A — 아키타입 확정</h1>
+<h2>A.1 본 종목 = ③ 정부 집중형(주) + ⑥ 하드웨어 일회판매형(부)</h2>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>판정</th>
+<th>근거(1차)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>주 아키타입 ③ 정부 집중·계약형</strong></td>
+<td><strong>≈55%</strong></td>
+<td>매출 인식의 실체가 공공 발주 — GENCI/CEA·Jülich(국립 HPC센터) QPU 2건 €6.1M + 프랑스 DGA(국방조달) €5.0M = <strong>총매출의 67.4%</strong>. 여기에 손익계산서 별도 계정 <strong>정부보조금 €7.2M</strong>을 더하면 <em>공공자금 비중 = 77.3%</em>(매출+보조금 기준)</td>
+</tr>
+<tr>
+<td><strong>부 아키타입 ⑥ 하드웨어 일회판매</strong></td>
+<td><strong>≈35%</strong></td>
+<td>QPU €7.46M + Cryostat €2.55M = <strong>매출의 60.8%가 시점 인식 일회성 판매</strong>. ASP×대수 구조</td>
+</tr>
+<tr>
+<td>선언·미실현 ② 곡괭이 take-rate형</td>
+<td><strong>0%</strong></td>
+<td>회사가 설계한 QCaaS(클라우드 사용량 과금)의 FY2025 매출 = <strong>€0</strong>. 주석 원문: <em>"No revenue was recognized on time-sharing computing services as at December 31, 2025"</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>전환 falsifier(아키타입이 바뀌었다고 인정할 조건)</strong>
+- ③→②로 이동 확증: 20-F/6-K에 <strong>클라우드·QCaaS 매출 라인이 처음 등장하고 총매출의 10% 초과</strong> + <strong>비유럽 민간 고객 매출 비중 25% 초과</strong>.
+- ③ 고착 확증(부정): 보조금 수익이 다시 증가해 <em>매출+보조금</em> 중 보조금 비중이 30%를 다시 넘거나, 상위 3고객 비중이 78% 위로 유지.
+- ⑥ 강화: 온프레미스 인도 대수가 연 3대 이상으로 안정되고 유지보수(현재 €7천)가 인도 대수에 비례해 나타남.</p>
+<blockquote>
+<p>💡 <strong>🔤 아키타입</strong> — 수익이 만들어지는 구조의 유형. 유형이 정해지면 반드시 점검해야 할 함정도 따라온다.
+💡 <strong>🔤 QCaaS</strong> — Quantum Computing as a Service. 양자컴퓨터를 사지 않고 클라우드로 시간·작업 단위로 빌려 쓰는 것.</p>
+</blockquote>
+<hr />
+<h1>Part B — 제품·서비스 이해 + 수익모델 정밀 해부</h1>
+<h2>B.0.1 제품·서비스 카탈로그 (주력 3)</h2>
+<h3>① QPU 온프레미스 (Orion 계열 — 현행 상용기)</h3>
+<p><strong>무엇(What)</strong> 고객 데이터센터에 통째로 설치·인도하는 중성원자 양자처리장치 완제품. 현행 상용 세대는 <strong>Orion</strong>(Alpha→Beta→Gamma, 140~200+ 물리 큐비트, 소비전력 약 4kW). 매출 구성상 최대 라인(FY2025 €7.46M, 45.3%).</p>
+<p><strong>작동·구성(How)</strong> 진공 챔버 안에 루비듐 원자를 레이저로 붙잡아(광 트랩) 격자처럼 배열하고, 다시 레이저로 원자 상태를 조작해 계산한다. 초전도 방식처럼 <strong>극저온 냉동기(25 밀리켈빈)나 수천 가닥의 배선이 필요 없어</strong> 표준 데이터센터 환경에서 동작한다는 것이 물리적 차별점이다. 회사는 "1,000개 이상 원자 트래핑 시연"과 2028년 1만 물리 큐비트를 목표로 제시한다.</p>
+<p><strong>고객·용도(Who·Why)</strong> 사실상 <strong>국가 HPC 센터와 국방·국영에너지</strong>다. 인도처 = GENCI/CEA(프랑스), Forschungszentrum Jülich(독일), DistriQ(캐나다 퀘벡), Saudi Aramco(사우디 200큐비트 1호기), CINECA(이탈리아, 2026 커미셔닝 예정). 구매 동기는 "당장의 계산 이득"보다 <strong>자국 양자 주권(sovereign capability) 확보</strong>에 가깝다.</p>
+<p><strong>차별점(Edge)</strong> 회사 비교표 기준 — 상온 동작(에너지비용↓) · 고연결성(Native/High) · 물리 큐비트 250+(Fresnel) · 아날로그+디지털 이중 모드. 회사는 "가장 많은 양자컴퓨터를 인도했으면서(10대·3대 생산 중) 조달 자본은 가장 적다($300M+)"고 주장한다 — <strong>회사 주장(claim)</strong>이며 제3자 검증은 확인되지 않는다.</p>
+<p><strong>매출 위치(Where)</strong> <code>QPU sales</code> 라인. 🔴 다만 이 라인 €7,457천에는 <strong>금융요소 accretion 환입 €1,667천(22.4%)</strong>이 포함돼 있어 "장비를 팔아 받은 대가"는 €5.79M이다.</p>
+<h3>② QPU 관련 서비스 (R&amp;D 계약 중심 — 이름과 실체가 다르다)</h3>
+<p><strong>무엇</strong> 회계상 <code>QPU-related services</code>. 회사 설명은 클라우드 접속·R&amp;D·소프트웨어/알고리즘·운영유지보수를 묶은 라인이지만, 주석은 <strong>"주로 R&amp;D 서비스"</strong>라고 못 박는다. FY2025 €6.46M(39.2%).</p>
+<p><strong>작동·구성</strong> 고객(주로 정부)이 정의한 과제를 Pasqal 인력이 수행하고, 원가투입법(cost-to-cost)으로 진행률을 매겨 기간에 걸쳐 인식한다. 즉 <strong>인건비를 파는 용역</strong>에 가깝고, 소프트웨어 라이선스처럼 복제되는 매출이 아니다.</p>
+<p><strong>고객·용도</strong> 압도적으로 <strong>프랑스 국방조달청 DGA</strong> — 이 한 계약이 €5.0M으로 서비스 라인의 <strong>77.4%</strong>, 총매출의 <strong>30.4%</strong>다(전년 €0.8M).</p>
+<p><strong>차별점</strong> 국방 계약 접근권 자체(프랑스 PROQCIMA 프로그램). 진입장벽이지만 <strong>국적 종속형 장벽</strong>이라 미국·아시아로 복제되지 않는다.</p>
+<p><strong>매출 위치</strong> 기간 인식. 🔴 이 라인 안에서 <strong>유지보수는 €7천, 클라우드는 €0</strong> — 즉 "서비스"의 반복성은 사실상 없다.</p>
+<h3>③ Cryostat(극저온 시스템) 판매</h3>
+<p><strong>무엇</strong> 양자기술 연구용 극저온 장비 판매. FY2025 €2.55M(15.5%), 전년 €1.44M. 인수한 사업의 유산에 가까운 <strong>인접 장비 매출</strong>로, 중성원자 QPU 자체와 직접 연결되지 않는다(오히려 중성원자의 셀링포인트는 "극저온이 필요 없다"는 것이다).</p>
+<p><strong>해석</strong> 매출의 15.5%가 <strong>자사 핵심 논거와 무관한 장비 판매</strong>라는 점은 "양자컴퓨팅 매출"이라는 라벨을 그대로 믿으면 안 되는 두 번째 이유다(첫 번째는 보조금).</p>
+<blockquote>
+<p>주력 외: Pulser / Pulser Studio(오픈소스 파이썬 펄스 컴파일러·<strong>직접 과금 근거 미확인</strong>), 자체 클라우드 포털 + Azure Quantum·Google Cloud Marketplace 채널(<strong>매출 €0</strong>), 자회사 <strong>Aeponyx</strong>(캐나다·질화규소 PIC 광집적회로, 2024-07 인수 · 2026-07 퀘벡 C2MI에 PIC 패키징 센터 개소).</p>
+</blockquote>
+<h2>B.0.2 핵심 기술·IP·기술 해자</h2>
+<ul>
+<li><strong>기반 스택</strong>: 광 트랩(레이저 핀셋) 원자 배열 + 아날로그(해밀토니안 직접 모사) 및 디지털 게이트 이중 모드 + <strong>PIC(광집적회로) 내재화</strong>. 2026-08 "칩 위에서 개별 원자 포획 세계 최초"(광트랩 4개·루비듐 4원자·수명 27.5초)는 자회사 Aeponyx의 SiN 공정을 쓴 것으로, <strong>제어 광학을 사서 내재화</strong>하는 수직통합 경로다.</li>
+<li><strong>IP</strong>: 약 <strong>92개 특허 패밀리</strong>(하드웨어 57 / 응용·소프트웨어 35). 만료는 대부분 <strong>2039~2046</strong>, Aeponyx 최고령 특허는 2032 만료.</li>
+<li><strong>재현 난이도</strong>: 중성원자 진영(QuEra·Infleqtion·Atom Computing·planqc)에서 <strong>2큐비트 게이트 99.5%대는 복수 벤더가 이미 달성</strong>했고, 2026-07 135쪽 공동 리뷰 논문을 진영 5사가 <strong>공저</strong>했다 — 즉 핵심 물리는 진영 공유 자산에 가깝다. Pasqal 고유의 리드는 물리보다 <strong>인도·제조 실적(2개 공장·연 13대 목표)</strong>과 <strong>PIC 내재화</strong> 쪽에 있다.</li>
+<li><strong>R&amp;D 방향</strong>: Vela(2027, 200+ 물리) → Centaurus(2028, 초기 FTQC) → Lyra(2029, 200+ 논리 큐비트). 별도로 양자우위 시연 전용 324큐비트 QPU.</li>
+<li>🔴 <strong>마케팅 vs 실증 구분</strong>: "세계 최초", "가장 많은 인도", "$720B TAM(2040)"는 모두 <strong>회사·GQI 자료 기반 주장</strong>. 반면 인도 실적(GENCI·Jülich 커미셔닝), 특허 패밀리 수, 92개 IP는 공시 문서로 확인된다.</li>
+</ul>
+<h2>B.0.3 🔴 제품 → 수익모델 연결 (R-Dive 고유)</h2>
+<table>
+<thead>
+<tr>
+<th>주력 제품</th>
+<th style="text-align: left;">과금 유형</th>
+<th style="text-align: center;">아키타입</th>
+<th style="text-align: left;">가격 결정력</th>
+<th style="text-align: left;">전환비용·lock-in</th>
+<th style="text-align: left;">운영레버리지 기여</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① QPU 온프레미스</td>
+<td style="text-align: left;">하드웨어 일회판매(시점 인식, 예약·인도·커미셔닝 3단계 분할 수금)</td>
+<td style="text-align: center;">⑥+③</td>
+<td style="text-align: left;"><strong>중간</strong> — commodity는 아니나 구매자가 국가 조달이라 <strong>예산·입찰이 상한</strong>. 개별 협상·가격 미공시</td>
+<td style="text-align: left;"><strong>낮음</strong> — 인도 후 반복 청구가 사실상 발생 안 함(유지보수 €7천)</td>
+<td style="text-align: left;"><strong>낮음</strong> — 대당 제조·설치 원가가 붙는 변동비 구조</td>
+</tr>
+<tr>
+<td>② QPU 관련 서비스(R&amp;D 계약)</td>
+<td style="text-align: left;">정부 계약(기간 인식·원가투입법)</td>
+<td style="text-align: center;">③</td>
+<td style="text-align: left;"><strong>낮음</strong> — 원가 기반 정산, 인력 시간이 상한</td>
+<td style="text-align: left;"><strong>중간</strong> — 국방 보안·인증 채널</td>
+<td style="text-align: left;"><strong>없음</strong> — 매출↑ = 인건비↑ 정비례</td>
+</tr>
+<tr>
+<td>③ Cryostat</td>
+<td style="text-align: left;">하드웨어 일회판매</td>
+<td style="text-align: center;">⑥</td>
+<td style="text-align: left;"><strong>낮음</strong>(범용 장비)</td>
+<td style="text-align: left;">없음</td>
+<td style="text-align: left;">낮음</td>
+</tr>
+<tr>
+<td>(선언) QCaaS 클라우드</td>
+<td style="text-align: left;">사용량·capacity 월정액</td>
+<td style="text-align: center;">②</td>
+<td style="text-align: left;">미검증</td>
+<td style="text-align: left;">미검증</td>
+<td style="text-align: left;"><strong>높을 예정</strong> — 자사 fleet 고정비 위 사용량</td>
+</tr>
+<tr>
+<td>(별도 계정) 정부보조금</td>
+<td style="text-align: left;">보조금</td>
+<td style="text-align: center;">③</td>
+<td style="text-align: left;">정책이 결정</td>
+<td style="text-align: left;">없음</td>
+<td style="text-align: left;">—</td>
+</tr>
+</tbody>
+</table>
+<p>🔴 <strong>해자 → 수익 전환 진단</strong>: B.0.2의 기술 해자(상온 동작·PIC 내재화·92 특허)가 위 표의 <strong>어느 칸으로도 아직 전환되지 않았다</strong>. 가격결정력 칸은 "국가 예산이 상한", 전환비용 칸은 "인도 후 반복 청구 없음", 운영레버리지 칸은 "대당 변동비". <strong>기술 우월이 돈이 되는 통로로 설계된 유일한 칸이 QCaaS인데, 그 칸의 FY2025 매출이 €0이다.</strong> 이것이 본 R-Dive의 구조적 결론이다.</p>
+<hr />
+<h2>B.1 매출 스트림 분해 (IFRS 감사, € 천)</h2>
+<table>
+<thead>
+<tr>
+<th>스트림</th>
+<th style="text-align: right;">FY2025</th>
+<th style="text-align: right;">비중</th>
+<th style="text-align: right;">FY2024</th>
+<th style="text-align: right;">YoY</th>
+<th>과금모델</th>
+<th style="text-align: center;">반복성</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>QPU 판매</td>
+<td style="text-align: right;">7,457</td>
+<td style="text-align: right;">45.3%</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">—</td>
+<td>하드웨어 시점 인식</td>
+<td style="text-align: center;">🔴</td>
+<td>Note 19.2</td>
+</tr>
+<tr>
+<td>QPU 관련 서비스</td>
+<td style="text-align: right;">6,459</td>
+<td style="text-align: right;">39.2%</td>
+<td style="text-align: right;">2,064</td>
+<td style="text-align: right;">+213%</td>
+<td>정부계약·기간 인식</td>
+<td style="text-align: center;">🔴</td>
+<td>Note 19.2</td>
+</tr>
+<tr>
+<td>Cryostat 판매</td>
+<td style="text-align: right;">2,552</td>
+<td style="text-align: right;">15.5%</td>
+<td style="text-align: right;">1,444</td>
+<td style="text-align: right;">+77%</td>
+<td>하드웨어 시점 인식</td>
+<td style="text-align: center;">🔴</td>
+<td>Note 19.2</td>
+</tr>
+<tr>
+<td><strong>매출 합계</strong></td>
+<td style="text-align: right;"><strong>16,468</strong></td>
+<td style="text-align: right;">100%</td>
+<td style="text-align: right;"><strong>3,508</strong></td>
+<td style="text-align: right;"><strong>+369%</strong></td>
+<td></td>
+<td style="text-align: center;"></td>
+<td></td>
+</tr>
+<tr>
+<td><em>(별도 계정)</em> 정부보조금 수익</td>
+<td style="text-align: right;">7,211</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">10,794</td>
+<td style="text-align: right;"><strong>−33%</strong></td>
+<td>보조금</td>
+<td style="text-align: center;">🟡</td>
+<td>P&amp;L</td>
+</tr>
+<tr>
+<td><em>(별도 계정)</em> 기타영업수익</td>
+<td style="text-align: right;">1,907</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">259</td>
+<td style="text-align: right;">+636%</td>
+<td>—</td>
+<td style="text-align: center;">🔴</td>
+<td>P&amp;L</td>
+</tr>
+</tbody>
+</table>
+<p><strong>지역별</strong>: 프랑스 10,352(63%) · 독일 4,387(27%) · 기타 유럽 790(5%) · 북미 346(2%) · 아시아태평양 228(1%) · 기타 365(2%). <strong>프랑스+독일 = 90%</strong>.</p>
+<p>🔴 <strong>믹스 시프트 방향</strong>: FY2024는 "보조금이 매출의 3배"인 연구조직에 가까웠고, FY2025에 처음으로 <strong>QPU 인도 매출(€7.5M)</strong>이 생기며 매출&gt;보조금으로 역전됐다. 방향은 <strong>개선</strong>이 맞다. 단 그 개선의 정체가 <strong>정부 2건 커미셔닝</strong>이므로 반복성은 담보되지 않는다.</p>
+<h2>B.1a 🔴🔴 "매출"의 정의 검증 — 덱의 $26.1M은 무엇인가</h2>
+<p><strong>검증 결과 = 구조는 확증(confirmed), 산식은 부분 기각(rejected).</strong></p>
+<p><strong>① 확증된 부분(1차 증거 2건)</strong>
+1. SPAC 투자자 프레젠테이션(2026-03, EX-99.3) 슬라이드 19의 그래프는 제목이 <strong>"LTM Revenue ($M)"</strong>인데 <strong>범례가 <code>Commercial</code> / <code>Grant</code> 두 개의 누적 구성요소</strong>다. 값은 Dec-24 $16.4 → Mar-25 $17.9 → Jun-25 $17.9 → Sep-25 $19.6 → <strong>Dec-25 $26.1</strong>, 성장 "~1.60x". 각주: <em>"LTM revenue numbers are unaudited, based on management estimates"</em>, 환율 <em>EUR/USD 1.1826 (2026-02-28 기준)</em>.
+2. 같은 덱 슬라이드 33 「Business Model」은 매출 스트림을 6개로 열거하는데 마지막 항목이 <strong>"Grants: Includes money received to fund R&amp;D programs and partial or total QPU deployments"</strong>이다. 즉 <strong>회사의 사업모델 정의 자체가 보조금을 매출 스트림으로 취급</strong>한다.
+→ 가설의 핵심("덱 수치 = IFRS 매출 + 정부보조금")은 <strong>회사 자신의 문서로 확증</strong>된다. IFRS 손익계산서에서는 <code>Revenue</code>(1행)와 <code>Government grant income</code>(2행)이 분리돼 있고, 덱은 이 <strong>두 줄을 더한 것</strong>을 "Revenue"라 부른다.</p>
+<p><strong>② 기각된 부분(산식의 정확한 조합)</strong>
+덱이 밝힌 자체 환율 1.1826을 적용하면 $26.1M = <strong>€22.07M</strong>인데, 감사치 조합은 다음과 같아 <strong>어느 것과도 일치하지 않는다</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>정의</th>
+<th style="text-align: right;">FY2025 (€천)</th>
+<th style="text-align: right;">USD 환산(1.1621)</th>
+<th style="text-align: right;">YoY</th>
+<th style="text-align: right;">시총 $1,689.9M 기준 P/S</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ⓐ IFRS 감사 매출만</td>
+<td style="text-align: right;">16,468</td>
+<td style="text-align: right;">$19.14M</td>
+<td style="text-align: right;"><strong>+369%</strong></td>
+<td style="text-align: right;"><strong>88.3배</strong></td>
+</tr>
+<tr>
+<td>ⓑ 매출 + 정부보조금</td>
+<td style="text-align: right;">23,679</td>
+<td style="text-align: right;">$27.52M</td>
+<td style="text-align: right;">+65.6%</td>
+<td style="text-align: right;"><strong>61.4배</strong></td>
+</tr>
+<tr>
+<td>ⓒ 매출 + 보조금 + 기타영업수익</td>
+<td style="text-align: right;">25,586</td>
+<td style="text-align: right;">$29.73M</td>
+<td style="text-align: right;">+75.7%</td>
+<td style="text-align: right;">56.8배</td>
+</tr>
+<tr>
+<td>ⓓ 덱 "LTM Revenue" (비감사·경영진 추정)</td>
+<td style="text-align: right;">≈22,070</td>
+<td style="text-align: right;"><strong>$26.1M</strong></td>
+<td style="text-align: right;">+59%</td>
+<td style="text-align: right;">64.7배</td>
+</tr>
+<tr>
+<td>ⓔ proxy 이사회 논거란 서술</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;"><strong>"약 100%"</strong></td>
+<td style="text-align: right;">—</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>ⓓ(€22.07M)는 ⓑ(€23.68M)보다 <strong>6.8% 작다</strong>. 덱은 감사 전 경영진 추정치였고 최종 감사에서 상향된 것으로 읽는 것이 가장 단순한 설명이지만, <strong>덱의 정확한 구성 명세는 공시되지 않았다</strong> → 산식 단정 금지.</li>
+<li>🔴 <strong>같은 1년에 대해 시중에 성장률이 네 개 있다</strong>: +369%(감사 매출) / +65.6%(매출+보조금) / <strong>+59%(덱)</strong> / <strong>"약 100%"(proxy 이사회 의사결정 근거란 원문 — "approximately 100% revenue growth in 2025 (unaudited)")</strong>. 산정 기준은 어느 쪽도 명세되지 않았다.</li>
+</ul>
+<p><strong>③ 이 정의가 실제로 바꾸는 것 — 헤드라인</strong></p>
+<p>덱 슬라이드 36은 <em>"Pasqal's Valuation in Line with Peers while Delivering Growing Quantum Computing Revenues"</em>라고 주장한다. 오늘 가격($7.96·시총 $1,689.9M)으로 검산하면:</p>
+<table>
+<thead>
+<tr>
+<th>종목</th>
+<th style="text-align: right;">P/S(TTM)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PSQL — 보조금 포함(덱 정의)</strong></td>
+<td style="text-align: right;"><strong>61~65배</strong></td>
+</tr>
+<tr>
+<td>IONQ</td>
+<td style="text-align: right;">65.0배</td>
+</tr>
+<tr>
+<td>INFQ</td>
+<td style="text-align: right;">68.2배</td>
+</tr>
+<tr>
+<td><strong>PSQL — IFRS 감사 매출</strong></td>
+<td style="text-align: right;"><strong>88.3배</strong></td>
+</tr>
+<tr>
+<td>RGTI</td>
+<td style="text-align: right;">380배</td>
+</tr>
+<tr>
+<td>QBTS</td>
+<td style="text-align: right;">497배</td>
+</tr>
+<tr>
+<td>QNT</td>
+<td style="text-align: right;">569배</td>
+</tr>
+</tbody>
+</table>
+<p>⇒ <strong>"peer와 in line"은 분모에 보조금을 넣었을 때만 참이다.</strong> IFRS 매출로 보면 PSQL은 IONQ·INFQ보다 <strong>35~44% 비싸다</strong>. (반대로 RGTI·QBTS·QNT 대비로는 어느 정의로도 훨씬 싸다 — 한 방향으로만 읽지 않도록 병기한다.)</p>
+<blockquote>
+<p>💡 <strong>📐 P/S(주가매출비율)</strong> — 시가총액 ÷ 연간 매출. 분모를 무엇으로 정의하느냐에 따라 값이 통째로 달라진다는 것이 이 섹션의 요지.
+💡 <strong>🔤 정부보조금 수익(government grant income)</strong> — 연구개발비를 국가가 대신 내주는 돈. 고객이 대가로 낸 돈이 아니므로 IFRS는 매출로 잡지 않는다.</p>
+</blockquote>
+
+<div class="dd-fig">
+  <p class="cap"><b>그림 1 · FY2025 "매출"의 정의 사다리</b> — 같은 1년을 부르는 네 개의 숫자와 그때의 P/S(시총 $1,689.9M 기준). 값은 §B.1a 표와 동일 출처.</p>
+  <div id="fig-ladder"></div>
+  <p class="dd-note">ⓐ만 IFRS 감사 매출이다. 덱·언론이 쓰는 $26.1M은 회사 문서상 Commercial+Grant이며 비감사 경영진 추정치다.</p>
+</div>
+<div class="dd-fig">
+  <p class="cap"><b>그림 2 · 양자 상장사 P/S 비교</b> — PSQL은 정의에 따라 두 줄로 표시. TTM 매출 — PSQL $19.1M(IFRS)/$26.1M(덱) · IONQ $246.5M · INFQ $42.4M · QNT $23.0M · RGTI $13.4M · QBTS $12.4M (yfinance 2026-09-04).</p>
+  <div id="fig-peer"></div>
+  <p class="dd-note">P/S는 낮을수록 저렴. 매출 규모 자체가 작은 구간이라 배수만으로 우열을 단정하지 않는다.</p>
+</div>
+
+<h2>B.2 과금·가격 모델 + 정량</h2>
+<table>
+<thead>
+<tr>
+<th>정량 메트릭</th>
+<th>산식</th>
+<th>본 종목 값</th>
+<th>해석</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Take rate</td>
+<td>수수료 ÷ 거래액</td>
+<td><strong>해당 없음</strong></td>
+<td>거래 플랫폼형 아님</td>
+</tr>
+<tr>
+<td>Implied fee rate</td>
+<td>매출 ÷ AUM</td>
+<td><strong>해당 없음</strong></td>
+<td>예치자산형 아님</td>
+</tr>
+<tr>
+<td>Float yield</td>
+<td>이자수익 ÷ 예치자산</td>
+<td><strong>해당 없음</strong></td>
+<td>float형 아님</td>
+</tr>
+<tr>
+<td><strong>실현 ASP(대당 인식 매출)</strong></td>
+<td>GENCI+Jülich 인식액 ÷ 인도 2대</td>
+<td><strong>≈ €3.05M/대</strong> (금융요소 accretion 제거 시 €2.2M/대)</td>
+<td>유일하게 <strong>역산 가능</strong>한 단가</td>
+</tr>
+<tr>
+<td>정가·리스트 프라이스</td>
+<td>—</td>
+<td><strong>❌ 미공시</strong></td>
+<td>개별 협상 계약</td>
+</tr>
+<tr>
+<td>QCaaS 시간당·capacity 단가</td>
+<td>—</td>
+<td><strong>❌ 미공시</strong>(매출 자체가 €0)</td>
+<td></td>
+</tr>
+<tr>
+<td>유지보수 요율</td>
+<td>월정액 ÷ 대당</td>
+<td><strong>❌ 미공시</strong> — 실적은 €7천</td>
+<td>덱은 "5년 수명·대당 월 반복"이라 설계</td>
+</tr>
+<tr>
+<td>보조금 의존도</td>
+<td>보조금 ÷ (매출+보조금)</td>
+<td><strong>30.5%</strong> (전년 75.5%)</td>
+<td>감소 중이나 여전히 3할</td>
+</tr>
+</tbody>
+</table>
+<h2>B.3 단위 경제학</h2>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>값</th>
+<th>단위</th>
+<th>출처/판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>대당 인식 매출(ASP)</td>
+<td>€3.05M (ex-accretion €2.2M)</td>
+<td>€/QPU</td>
+<td>역산(GENCI+Jülich €6.1M ÷ 2대)</td>
+</tr>
+<tr>
+<td>연 생산능력</td>
+<td><strong>13대</strong> — 온프레미스 <strong>3~4</strong> / 클라우드 자사 fleet <strong>7~8</strong> / R&amp;D <strong>2</strong></td>
+<td>대/년</td>
+<td>덱 슬라이드 29</td>
+</tr>
+<tr>
+<td><strong>판매 가능 물량 기준 하드웨어 매출 상한</strong></td>
+<td><strong>≈ €9~12M/년</strong> (3~4대 × €3.05M)</td>
+<td>€</td>
+<td>🔴 <strong>FY2025 총매출(€16.5M)보다 작다</strong></td>
+</tr>
+<tr>
+<td>대당 원가 / 대당 총이익</td>
+<td><strong>❌ 미공시</strong></td>
+<td></td>
+<td>IFRS 성격별 손익계산서 — 매출원가 라인 자체가 없음</td>
+</tr>
+<tr>
+<td>ARPU·LTV/CAC·CAC payback</td>
+<td><strong>❌ 미공시</strong></td>
+<td></td>
+<td>고객 수 자체가 한 자릿수 수준</td>
+</tr>
+<tr>
+<td>인건비 ÷ 매출</td>
+<td><strong>2.35배</strong> (€38,671천 ÷ €16,468천)</td>
+<td></td>
+<td>P&amp;L</td>
+</tr>
+<tr>
+<td>원재료 매입 ÷ 매출</td>
+<td>30.7% (€5,057천)</td>
+<td></td>
+<td>매출원가 아님(성격별 표시)</td>
+</tr>
+</tbody>
+</table>
+<p>🔴 <strong>13대 논거의 해체</strong>: "연 13대"를 ASP로 곱해 €40M 매출을 상상하기 쉽지만, <strong>회사 자신의 배분표가 판매용을 3~4대로 못 박는다</strong>. 나머지 7~8대는 <strong>자사 클라우드 fleet = capex이지 매출이 아니다</strong>. 즉 현 설계에서 하드웨어 판매 매출의 천장은 연 €9~12M이고, <strong>13대 능력이 매출로 바뀌려면 반드시 QCaaS(현재 €0)가 켜져야 한다</strong>. 마진 구조도 여기서 갈린다 — 온프레미스는 대당 변동비 구조, 클라우드는 fleet 고정비 위 사용량 구조(운영레버리지가 생기는 유일한 경로).</p>
+<h2>B.4 매출 품질 + 집중도</h2>
+<ul>
+<li><strong>반복성</strong>: 유지보수 €7천 + 클라우드 €0 = <strong>총매출의 0.04%</strong>. 회사 위험요인 원문: <em>"has not yet established a broad, diversified customer base with recurring revenue streams… existing customer engagements have generally not been repeated in nature."</em></li>
+<li><strong>예약 잔고(RPO·확정 수주)</strong>: <strong>€35,432천</strong> (2026년 내 완료 예정 €15,288 / 2027년 이후 €20,144). 전년 €36,150천 대비 <strong>−2.0%</strong>.</li>
+<li><strong>마케팅 잔고</strong>: "booked and awarded business, <strong>including grants</strong>" <strong>$78.6M(€68.4M)</strong>, 2026-03-31 기준. 덱(2025-12 기준)은 "$80M+".</li>
+<li>🔴 <strong>확정 비중 = 35,432 ÷ 68,400 = 51.8%</strong>. 나머지 약 48%는 보조금 + "awarded"(수주 확정 아님).</li>
+<li><strong>선수금(계약부채)</strong>: <strong>€22,977천</strong> = 총매출의 <strong>1.40배</strong>. 2024년 유입분에 <strong>Aramco €9,038천</strong>, DGA €1,800천, GENCI €1,640천, Jülich €1,062천. 2025년 유입분은 CINECA €5,345천, DistriQ €2,981천 등.</li>
+<li><strong>고객 집중</strong>: 상위 3고객 = 매출의 <strong>77.9%(€12,826천)</strong>, 모두 프랑스·독일. 단일 최대(DGA) <strong>30.4%</strong>.</li>
+</ul>
+<h2>B.5 가치사슬 내 수익 포착 지점</h2>
+<p><strong>유럽 국가 예산·EU 프로그램 → 국립 HPC센터/국방부 → Pasqal(장비+용역) → 자국 산업 이용자</strong></p>
+<p>Pasqal이 마진을 떼는 길목은 <strong>"국가가 자국 양자 주권을 사는 자리"</strong>다. 이 길목은 경쟁이 적고(자국 챔피언 프리미엄) 대금 회수가 안전하다는 장점이 있으나, <strong>가격 상한이 예산으로 정해지고 수요가 정책 사이클을 탄다</strong>. 회사가 목표하는 다음 길목(민간 클라우드 사용량 통행세)은 아직 매출이 발생하지 않았다.</p>
+<hr />
+<h1>Part C — 12 함정 강제 체크리스트</h1>
+<h3>C.1 마진 분모 forensics 🚩</h3>
+<p>IFRS <strong>성격별(by nature)</strong> 손익계산서라 <strong>매출원가·매출총이익 라인이 존재하지 않는다</strong>. 원재료 매입(€5,057천)은 있으나 제조 인건비가 통합 인건비(€38,671천)에 섞여 분리 불가. ⇒ <strong>PSQL의 gross margin은 공시로 계산할 수 없다</strong>. 외부 사이트가 GM을 제시한다면 그것은 재구성치다(실제 yfinance는 PSQL의 매출조차 <code>None</code>으로 반환). 🚩 <strong>분모 재정의 필요</strong>.</p>
+<h3>C.2 반복매출 프리미엄 🚩🚩</h3>
+<p>반복매출 ≈ <strong>0.04%</strong>(유지보수 €7천, 클라우드 €0). 회사 스스로 위험요인에서 반복매출 부재와 "고객 관계가 반복적이지 않다"를 인정. 🚩🚩 <strong>반복매출 프리미엄을 적용할 근거 없음.</strong></p>
+<h3>C.3 발표 숫자 ↔ 장부 매출 격차 🚩</h3>
+<p>ARR 공시는 없다. 대신 <strong>"booked &amp; awarded incl. grants $78.6M" ÷ 감사 확정 RPO €35.4M ≈ 1.93배</strong>. 그리고 별개로 <strong>"LTM Revenue $26.1M" ÷ 감사 매출 $19.1M ≈ 1.36배</strong>. 두 격차 모두 <strong>축소 일정이 제시되지 않았다</strong>. 🚩</p>
+<h3>C.4 백로그 품질 — 확정 vs 천장 🚩🚩</h3>
+<ul>
+<li>확정(definitive·firm orders) <strong>€35.4M = 51.8%</strong></li>
+<li>나머지 48% = 보조금 + "awarded"(수주 확정 아님)</li>
+<li>🔴 게다가 <strong>확정 잔고 자체가 전년 대비 −2.0%</strong>, 2026년 내 인식 예정분은 €15.3M로 FY2025 매출(€16.5M)에도 못 미친다.
+🚩🚩 <strong>헤드라인 잔고 성장이 확정 잔고 성장으로 뒷받침되지 않는다.</strong></li>
+</ul>
+<h3>C.5 가격 결정력 — commodity vs 차별화 🚩(조건부)</h3>
+<p>QPU는 원자재형 commodity가 <strong>아니다</strong>(개별 협상·기술 차별). 그러나 매출의 67.4%가 <strong>공공 조달</strong>이라 실제 가격 상한은 국가 예산과 입찰 절차가 정한다. 정가·인상 여력 <strong>❌ 미공시</strong>. 🚩 <em>"차별화돼 있으나 가격을 스스로 정하지 못하는" 유형.</em></p>
+<h3>C.6 고객·유통 집중도 🚩🚩</h3>
+<p>단일 최대 고객(DGA) <strong>30.4%</strong>, 상위 3고객 <strong>77.9%</strong>, 프랑스+독일 <strong>90%</strong>. 유통은 자사 직판 + Azure/Google Cloud 마켓플레이스이나 <strong>후자를 통한 매출은 €0</strong>이라 유통 의존도는 현재 무의미. 🚩🚩</p>
+<h3>C.7 매크로 민감도 — 단일 최대 외부 변수 🚩</h3>
+<p><strong>유럽 공공 R&amp;D·국방 예산</strong>. 이미 실현된 형태로 관찰됨 — FY2025 보조금 −33% 중 €1.0M이 <strong>프랑스 연구세액공제 적격비용 축소 법개정</strong> 때문이었다. 회사 위험요인도 정부 예산 삭감을 명시. 매출+보조금의 <strong>77.3%가 공공자금</strong> ⇒ 단일 변수 노출이 50% 초과. 🚩</p>
+<h3>C.8 금리 비대칭 — float 모델 ⚪(직접 해당 없음) / 🟡(역방향 노출 있음)</h3>
+<p>float형이 아니므로 "금리↓ = 매출 급감" 구조는 없다. 다만 <strong>역방향 노출</strong>이 있다: 고객 선수금 €23.0M에 IFRS 15 유의적 금융요소가 붙어 FY2025에 accretion <strong>+€2,718천</strong>이 계약부채를 키우고 <strong>환입 €1,667천이 매출로 인식</strong>되며 동시에 <strong>이자비용(€3,871천)을 키운다</strong>. 금리가 높을수록 매출과 이자비용이 함께 부풀고, 매출의 질은 낮아진다.</p>
+<h3>C.9 운영 레버리지 🚩</h3>
+<p>인건비가 매출의 <strong>2.35배</strong>, 영업손실 €50.5M. 고정비 비중이 크므로 이론상 레버리지는 크지만 <strong>분모(매출)가 너무 작아 실효가 없다</strong>. 매출이 2배(€33M)가 돼도 영업손실은 €30M대에 머문다. 진짜 레버리지가 생기는 유일한 경로(클라우드 fleet 가동률)는 매출 €0. incremental margin <strong>❌ 미공시</strong>. 🚩</p>
+<h3>C.10 현금 전환 — NI vs OCF 🚩</h3>
+<table>
+<thead>
+<tr>
+<th>€ 천</th>
+<th style="text-align: right;">FY2025</th>
+<th style="text-align: right;">FY2024</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>당기순손실</td>
+<td style="text-align: right;">(92,355)</td>
+<td style="text-align: right;">(48,498)</td>
+</tr>
+<tr>
+<td>영업활동 현금흐름</td>
+<td style="text-align: right;"><strong>(24,270)</strong></td>
+<td style="text-align: right;">(29,922)</td>
+</tr>
+<tr>
+<td>투자활동</td>
+<td style="text-align: right;">(5,371)</td>
+<td style="text-align: right;">(28,595)</td>
+</tr>
+<tr>
+<td>재무활동</td>
+<td style="text-align: right;">+96,723</td>
+<td style="text-align: right;">+4,764</td>
+</tr>
+</tbody>
+</table>
+<p>순손실 €92.4M과 OCF −€24.3M의 간극 €68M 대부분은 <strong>비현금 항목</strong>(전환사채 등 FVTPL 공정가치 변동 €34.9M + 주식보상 €9.7M + 감가상각 €8.8M 등 합계 €53.6M)과 <strong>운전자본 €14.3M</strong>이다. 🔴 그 운전자본의 핵심이 <strong>계약부채(고객 선수금) +€10.0M</strong> — 즉 <strong>OCF 개선의 상당 부분이 "고객이 미리 준 돈"</strong>이다. 선수금 유입이 멈추면 실질 소모율이 즉시 확대된다. 참고로 FY2025 <strong>신규 청구액(billings) €9,997천 &lt; 매출 €16,468천</strong> — 2024년에 쌓아둔 선수금을 헐어 매출을 인식한 해였다. 🚩</p>
+<h3>C.11 주당 희석 🚩</h3>
+<ul>
+<li>현재 유통주식 <strong>212,293,691주</strong>(20-F EX-15.1 프로포마 = yfinance와 일치·1차 확정).</li>
+<li>🔴 <strong>SPAC 공모주 환매율 약 90%</strong> — 신탁 $251.3M 중 <strong>$226.5M 환매</strong>, 살아남은 공중주주 주식은 <strong>2,710,398주(전체의 1.28%)</strong>. 데뷔 +95% 후 4거래일 −58%의 물리적 배경이 여기 있다(유통 물량 극소).</li>
+<li>🔴 <strong>희석 대기 물량 108,630,543주 = 현 주식수의 +51.2%</strong>: BSPCE·옵션 32,703,460 / 전환사채 전환 26,041,667 / Investment Warrants 32,552,083 / 상장 워런트 17,333,333(공모 9,583,333 + 사모 7,750,000). 완전희석 시 <strong>320.9M주</strong>, 현 주가 기준 시총 <strong>$2.55B</strong>.</li>
+<li>전환사채는 덱 발표 시 $200M이었으나 최종 <strong>$312.5M</strong>으로 증액(+워런트는 원금 대응 주식수의 <strong>125%</strong>까지).
+🚩 매출이 3.7배 늘어도 <strong>주당 가치 경로는 희석 51%가 상쇄</strong>한다.</li>
+</ul>
+<h3>C.12 모델 전환 신호 = 재평가 트리거 🚩(부정 — 정체)</h3>
+<p>설계상 전환 = <strong>일회성 온프레미스 판매 → 반복 QCaaS</strong>(생산능력 13대 중 7~8대를 자사 fleet으로 돌리는 구조가 그 증거). <strong>현재 전환 진행률 0%</strong>(클라우드 매출 €0, 유지보수 €7천). 
+- 🚩(긍정 전환 신호가 될 것): 20-F/6-K에 <strong>클라우드·유지보수 매출 라인이 처음 숫자로 등장</strong>하는 분기 / 사우디 Aramco 200큐비트 커미셔닝(선수금 €9.0M이 매출로 전환되는 이벤트) / CINECA 커미셔닝(선수금 €5.3M).
+- 🚩(부정): 확정 RPO 역성장(−2%)이 이어지고 보조금 비중이 재상승.</p>
+<hr />
+<h2>🔎 §E 경쟁 제품 대비 차별점 (제품 수준 한정)</h2>
+<blockquote>
+<p>산업·경쟁 구도 전반은 R-Dive 범위 밖 — <code>Deep-Dive §E</code>. 여기서는 <strong>제품 사양·수익모델 비교</strong>만.</p>
+</blockquote>
+<p><strong>모달리티 비교(회사 제시 표 · 슬라이드 30 — 출처가 회사이므로 자사 유리 편향 가능)</strong></p>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>트랩이온(IonQ·Quantinuum)</th>
+<th>초전도(IBM·Rigetti)</th>
+<th><strong>중성원자(Pasqal)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>확장 메커니즘</td>
+<td>자기 트랩(칩 간 이온 이동 어려움)</td>
+<td>물리 배선(수천 큐비트 배선 난제)</td>
+<td><strong>광학(레이저) — 배선 없음</strong></td>
+</tr>
+<tr>
+<td>물리 큐비트(현재)</td>
+<td>36~56</td>
+<td>133(Heron)</td>
+<td><strong>250+(Fresnel)</strong></td>
+</tr>
+<tr>
+<td>연결성</td>
+<td>All-to-All(우수하나 큐비트 수 제약)</td>
+<td>낮음(최근접)</td>
+<td>높음/네이티브</td>
+</tr>
+<tr>
+<td>동작 온도</td>
+<td>복잡한 광학·진공</td>
+<td><strong>25 밀리켈빈(극저온)</strong></td>
+<td><strong>상온</strong>(4K 시 1,000+ 원자 시연)</td>
+</tr>
+<tr>
+<td>전략 초점</td>
+<td>클라우드 엔터프라이즈</td>
+<td>클라우드 제너럴리스트</td>
+<td><strong>주권·엔터프라이즈(온프레미스)</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>수익모델 관점의 실제 차별점 — 사양보다 중요한 것</strong></p>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>PSQL</th>
+<th>IONQ</th>
+<th>INFQ</th>
+<th>QBTS/RGTI/QNT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매출 성격</td>
+<td><strong>장비 일회판매 + 정부 R&amp;D 용역</strong></td>
+<td>클라우드·시스템 판매 + <strong>파운드리(SkyWater)</strong></td>
+<td>정부 집중(계약·센싱)</td>
+<td>시스템·클라우드·서비스</td>
+</tr>
+<tr>
+<td>반복매출</td>
+<td><strong>≈0.04%</strong></td>
+<td>일부</td>
+<td>일부</td>
+<td>일부</td>
+</tr>
+<tr>
+<td>TTM 매출</td>
+<td>$19.1M(IFRS) / $26.1M(보조금 포함)</td>
+<td>$246.5M</td>
+<td>$42.4M</td>
+<td>$12.4M / $13.4M / $23.0M</td>
+</tr>
+<tr>
+<td>P/S</td>
+<td><strong>88.3배 / 61~65배</strong></td>
+<td>65.0배</td>
+<td>68.2배</td>
+<td>497 / 380 / 569배</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>제품 차별점의 상업적 의미</strong>: "상온 동작·배선 없음"은 <strong>고객의 설치 총소유비용을 낮춰 온프레미스 판매를 가능하게 하는</strong> 차별점이다. 실제로 Pasqal은 경쟁사 대비 <strong>온프레미스 인도 실적이 많다</strong>(회사 주장 10대 인도·3대 생산 중). 그러나 온프레미스는 구조적으로 <strong>일회성</strong>이라, 같은 차별점이 <strong>반복매출 부재의 원인</strong>이기도 하다 — 강점과 약점이 같은 뿌리에서 나온다.</li>
+<li><strong>아날로그+디지털 이중 모드</strong>는 "지금 당장 쓸 수 있는 문제(최적화·물성 시뮬레이션)"를 판매 논거로 쓰게 해주지만, 아날로그 성과는 <strong>고전 컴퓨터 대비 우위 입증이 까다로워</strong> 가격 결정력으로 전환하기 어렵다.</li>
+<li><strong>자본효율</strong>: 회사 표 기준 조달 $300M+로 최다 인도 — 사실이면 대당 자본소요가 낮다는 뜻이나 <strong>제3자 검증 미확인(claim)</strong>.</li>
+</ul>
+<hr />
+<h1>Part D — 종합 판정</h1>
+<h2>D.1 자가점검</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>질문</th>
+<th>답</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>주력 제품 3~5개 5필드 서술 + 제품→수익모델 매핑</td>
+<td>✅ B.0.1~B.0.3</td>
+</tr>
+<tr>
+<td>1</td>
+<td>무엇을 누구에게 왜 파나</td>
+<td>✅ QPU·R&amp;D 용역·Cryostat을 국가 HPC/국방에 = 자국 양자 주권</td>
+</tr>
+<tr>
+<td>2</td>
+<td>매출 주머니와 비중·추세</td>
+<td>✅ B.1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>주력 과금모델</td>
+<td>✅ 하드웨어 시점 인식 + 정부계약 기간 인식</td>
+</tr>
+<tr>
+<td>4</td>
+<td>반복매출 비중</td>
+<td>✅ <strong>0.04%</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td>고객·유통 집중</td>
+<td>✅ 상위3 77.9%·단일 30.4%</td>
+</tr>
+<tr>
+<td>6</td>
+<td>마진 분모</td>
+<td>✅ <strong>매출총이익 라인 부재 = 계산 불가</strong></td>
+</tr>
+<tr>
+<td>7</td>
+<td>매출 흔들 외부 변수</td>
+<td>✅ 유럽 공공 R&amp;D·국방 예산</td>
+</tr>
+<tr>
+<td>8</td>
+<td>발표 숫자 vs 장부</td>
+<td>✅ 1.93배(잔고) / 1.36배(매출 정의)</td>
+</tr>
+<tr>
+<td>9</td>
+<td>믹스 방향</td>
+<td>✅ 보조금 의존 75.5%→30.5%로 개선, 단 정부 2건에 의존</td>
+</tr>
+</tbody>
+</table>
+<h2>D.2 수익모델 등급</h2>
+<table>
+<thead>
+<tr>
+<th>차원</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>예측가능성(반복성)</td>
+<td style="text-align: center;">🔴</td>
+<td>반복매출 0.04% · 확정 RPO −2% · 매출이 커미셔닝 이벤트에 좌우</td>
+</tr>
+<tr>
+<td>수익성(마진 구조)</td>
+<td style="text-align: center;">🔴</td>
+<td>매출총이익 계산 불가 · 인건비/매출 2.35배 · 영업손실 €50.5M</td>
+</tr>
+<tr>
+<td>과금 강도(가격결정력·lock-in)</td>
+<td style="text-align: center;">🟡</td>
+<td>차별화 제품이나 가격 상한이 국가 예산 · 인도 후 반복 청구 없음</td>
+</tr>
+<tr>
+<td>고객 stickiness</td>
+<td style="text-align: center;">🟡</td>
+<td>국가 인프라라 교체는 어렵지만 <strong>재구매 근거가 계약에 없다</strong></td>
+</tr>
+</tbody>
+</table>
+<h2>D.3 종합 판정</h2>
+<p><strong>아키타입 = ③ 정부 집중형(주, 공공자금 77.3%) + ⑥ 하드웨어 일회판매형(부, 시점 인식 60.8%). 선언된 ② 곡괭이 QCaaS형은 매출 €0으로 아직 존재하지 않는다.</strong></p>
+<p><strong>핵심 edge 1개</strong> — 상온 동작·배선 없는 광학 확장 구조 덕분에 <strong>표준 데이터센터에 통째로 팔 수 있는 유일급 양자 하드웨어</strong>이고, 그 결과 경쟁사 대비 온프레미스 인도 실적이 앞선다. 이는 "국가가 양자 주권을 산다"는 오늘의 유일한 실질 수요와 정확히 맞물린 제품 설계다.</p>
+<p><strong>치명 함정 3개</strong>
+1. 🔴🔴 <strong>"매출"이라는 단어의 정의 문제</strong> — 시장에 유통되는 $26.1M은 회사 문서상 <strong>Commercial + Grant</strong>이고(1차 확증), IFRS 감사 매출은 $19.1M이다. 이 하나로 P/S가 61~65배 ↔ 88.3배로 갈리고, 덱의 "peer 대비 in line" 주장이 성립하느냐가 갈린다.
+2. 🔴🔴 <strong>반복이 없다</strong> — 유지보수 €7천·클라우드 €0. 회사 자신이 위험요인에 "고객 관계가 반복적이지 않다"고 썼다. 게다가 <strong>연 13대 생산능력 중 판매용은 3~4대뿐</strong>이라 하드웨어 매출 상한이 €9~12M/년이다. 매출 확장은 <strong>반드시</strong> QCaaS 점화에 걸려 있는데 그 라인은 아직 0이다.
+3. 🔴 <strong>확정되지 않은 잔고 + 51% 희석 대기</strong> — 마케팅 잔고 €68.4M 중 확정은 51.8%이고 확정분은 전년 대비 −2%. 동시에 희석 대기 물량이 유통주식의 +51.2%다.</p>
+<p><strong>thesis 함의</strong> — PSQL은 "양자 하드웨어 회사"라기보다 현재로선 <strong>유럽 공공조달 프로젝트 사업자</strong>에 가깝고, 투자 논거의 성패는 기술 로드맵(Vela/Centaurus/Lyra)이 아니라 <strong>수익모델 전환(온프레미스 일회성 → 클라우드 반복)의 첫 숫자가 언제 20-F에 찍히느냐</strong>에 달려 있다. 그 전까지 모든 매출·잔고 헤드라인은 <strong>정의를 확인하고 읽어야 한다</strong>.</p>
+<hr />
+<h2>📋 12 함정 🚩 요약</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>함정</th>
+<th style="text-align: center;">판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C.1</td>
+<td>마진 분모 forensics</td>
+<td style="text-align: center;">🚩 (매출총이익 라인 부재)</td>
+</tr>
+<tr>
+<td>C.2</td>
+<td>반복매출 프리미엄</td>
+<td style="text-align: center;">🚩🚩 (0.04%)</td>
+</tr>
+<tr>
+<td>C.3</td>
+<td>발표 숫자 ↔ 장부 격차</td>
+<td style="text-align: center;">🚩 (1.93배 / 1.36배)</td>
+</tr>
+<tr>
+<td>C.4</td>
+<td>백로그 품질(확정 vs 천장)</td>
+<td style="text-align: center;">🚩🚩 (확정 51.8%·전년비 −2%)</td>
+</tr>
+<tr>
+<td>C.5</td>
+<td>가격 결정력</td>
+<td style="text-align: center;">🚩 (차별화, 그러나 예산이 상한)</td>
+</tr>
+<tr>
+<td>C.6</td>
+<td>고객·유통 집중도</td>
+<td style="text-align: center;">🚩🚩 (상위3 77.9%)</td>
+</tr>
+<tr>
+<td>C.7</td>
+<td>매크로 민감도</td>
+<td style="text-align: center;">🚩 (공공자금 77.3%)</td>
+</tr>
+<tr>
+<td>C.8</td>
+<td>금리 비대칭(float)</td>
+<td style="text-align: center;">⚪ 직접 해당 없음 / 🟡 accretion 역방향 노출</td>
+</tr>
+<tr>
+<td>C.9</td>
+<td>운영 레버리지</td>
+<td style="text-align: center;">🚩 (인건비/매출 2.35배)</td>
+</tr>
+<tr>
+<td>C.10</td>
+<td>현금 전환</td>
+<td style="text-align: center;">🚩 (OCF 개선의 상당분이 고객 선수금 +€10.0M)</td>
+</tr>
+<tr>
+<td>C.11</td>
+<td>주당 희석</td>
+<td style="text-align: center;">🚩 (대기 물량 +51.2%)</td>
+</tr>
+<tr>
+<td>C.12</td>
+<td>모델 전환 신호</td>
+<td style="text-align: center;">🚩 (전환 진행률 0%)</td>
+</tr>
+</tbody>
+</table>
+<h2>⚠️ 수집 한계</h2>
+<ul>
+<li><strong>덱 "LTM Revenue"의 Commercial/Grant 구성비</strong>: 슬라이드가 이미지 기반이라 누적 막대의 <strong>분할 수치는 추출 불가</strong> — 범례·총액·환율만 확인. 정확한 산식은 ❌ 미공시로 처리.</li>
+<li><strong>trajectory 차트 미렌더</strong>: 감사 실측점이 FY2024·FY2025 <strong>2개뿐</strong>이라 5점 추세선은 거짓 추세 위험 → 정의 사다리 막대(§B.1a)로 대체.</li>
+<li><strong>QPU 정가·QCaaS 단가·대당 원가·incremental margin</strong>: ❌ 미공시(추정하지 않음).</li>
+<li><strong>de-SPAC 종결 후 실제 현금 잔액</strong>: 프로포마 기준 <strong>$343.8M</strong>(20-F EX-15.1) — 실측 잔액은 차기 6-K/20-F에서 확인 필요.</li>
+</ul>
+<hr />
+<p><em>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</em></p>
+<div class="footer">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다. · R-Dive v0.7 · 생성 2026-09-06</div>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const VIZ={"ladder": {"title": "FY2025 매출 정의별 USD 환산 ($M)", "unit": "M", "items": [{"label": "ⓐ IFRS 감사 매출", "value": 19.14, "color": "#c0392b"}, {"label": "ⓓ 덱 LTM(비감사)", "value": 26.1, "color": "#f39c12"}, {"label": "ⓑ 매출+보조금", "value": 27.52, "color": "#2980b9"}, {"label": "ⓒ +기타영업수익", "value": 29.73, "color": "#8e44ad"}]}, "peer": {"metrics": [{"key": "ps", "label": "P/S", "unit": "x", "better": "low"}, {"key": "mc", "label": "시가총액", "unit": "$B", "better": "neutral"}], "rows": [{"name": "PSQL (IFRS 감사 매출)", "subject": true, "note": "€16.47M @1.1621", "vals": {"ps": 88.3, "mc": 1.69}}, {"name": "PSQL (덱 정의·보조금 포함)", "subject": true, "note": "Commercial+Grant", "vals": {"ps": 64.7, "mc": 1.69}}, {"name": "IONQ", "vals": {"ps": 65.0, "mc": 16.01}}, {"name": "INFQ", "vals": {"ps": 68.2, "mc": 2.9}}, {"name": "RGTI", "vals": {"ps": 380.0, "mc": 5.07}}, {"name": "QBTS", "vals": {"ps": 497.0, "mc": 6.18}}, {"name": "QNT", "vals": {"ps": 569.1, "mc": 13.07}}]}};
+DDViz.renderBars('fig-ladder', VIZ.ladder);
+DDViz.renderHeatmap('fig-peer', VIZ.peer);
+</script></body></html>
