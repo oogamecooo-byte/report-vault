@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>무기한 선물 101 — 만기 없는 선물은 왜, 어떻게 태어났나 | 2026-09-06</title>
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="온체인">
+<meta name="vault-date" content="2026-09-06">
+<meta name="vault-series" content="개념 공부 101">
+<meta name="description" content="무기한 선물(perpetual futures)의 뜻·탄생 배경(실러 1993 → BitMEX 2016)·펀딩비와 청산의 작동 원리·'선물'이라는 이름의 정당성·온체인 금융(Hyperliquid·Ethena·스테이블코인 담보·주식 무기한 선물)과의 연결을 쉬운 말로 풀어 쓴 학습 보고서. 매수 신호 아님.">
+<style>
+  :root{ --sand:#EBE4D3; --cream:#FDF6E3; --ink:#1f2328; --sub:#5b6b62; --line:#e0d8c4;
+         --accent:#2E6F6A; --accent2:#1E5F45; --quote:#6a5a2a; --hl:#5c4a00; --red:#a83a2e; --blue:#2b5f8a; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--sand);color:var(--ink);
+       font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;line-height:1.75;font-size:16.5px}
+  .wrap{max-width:880px;margin:0 auto;padding:38px 20px 90px}
+  header.rep{margin-bottom:26px;border-bottom:2px solid var(--line);padding-bottom:22px}
+  .kicker{color:var(--accent);font-weight:800;letter-spacing:.13em;font-size:12.5px}
+  header.rep h1{margin:8px 0 6px;font-size:32px;letter-spacing:-.01em;color:#14231c;line-height:1.28}
+  .sub{font-size:15.5px;color:var(--sub);margin-bottom:10px}
+  .byline{font-size:13.5px;color:var(--sub);background:var(--cream);border:1px solid var(--line);
+          border-radius:10px;padding:9px 13px;display:inline-block}
+  section.card{background:var(--cream);border:1px solid var(--line);border-radius:14px;
+       padding:22px 26px;margin:18px 0;box-shadow:0 1px 2px rgba(60,50,20,.03)}
+  h2{font-size:21.5px;margin:6px 0 12px;color:#14231c;border-left:5px solid var(--accent);padding-left:11px;line-height:1.3}
+  h3{font-size:17.5px;margin:22px 0 6px;color:var(--accent2)}
+  .tldr{background:#f2ecda}
+  .tldr ol{margin:6px 0 0;padding-left:22px} .tldr li{margin:8px 0}
+  p{margin:10px 0}
+  b,strong{color:#111}
+  .eng{color:var(--sub);font-weight:600;font-size:.92em}
+  .analogy{background:#fbf3d6;border:1px solid #ecd9a6;border-left:4px solid #d9b64e;
+       border-radius:9px;padding:11px 15px;margin:12px 0;font-size:15.5px}
+  .analogy b{color:var(--hl)}
+  .note{background:#eaf1ef;border:1px solid #cfe0da;border-left:4px solid var(--accent);
+        border-radius:9px;padding:11px 15px;margin:12px 0;font-size:15px}
+  .warn{background:#f8e7e3;border:1px solid #e8c4bd;border-left:4px solid var(--red);
+        border-radius:9px;padding:11px 15px;margin:12px 0;font-size:15px}
+  .verdict{background:#e9eef5;border:1px solid #c9d6e6;border-left:4px solid var(--blue);
+        border-radius:9px;padding:12px 16px;margin:14px 0;font-size:15.5px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14.5px;background:#fff}
+  th,td{border:1px solid #e3dcc8;padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#efe8d4;color:#33403a;font-weight:800}
+  .tw{overflow-x:auto}
+  .formula{font-family:ui-monospace,Menlo,monospace;font-size:14px;background:#f6f0dc;border:1px dashed #d8c99b;
+           border-radius:8px;padding:10px 14px;margin:10px 0;overflow-x:auto}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:12px 0}
+  .box{flex:1 1 150px;background:#fff;border:1px solid #d9d0b8;border-radius:10px;padding:10px 12px;font-size:14px}
+  .box .t{font-weight:800;color:var(--accent2);display:block;margin-bottom:3px}
+  .arrow{align-self:center;font-weight:800;color:var(--sub)}
+  dl.gloss{margin:6px 0} dl.gloss dt{font-weight:800;color:var(--accent2);margin-top:13px}
+  dl.gloss dd{margin:2px 0 0;color:#33403a}
+  ul.refs{list-style:none;padding:0;margin:6px 0}
+  ul.refs li{padding:9px 0;border-bottom:1px dashed var(--line)}
+  ul.refs li:last-child{border-bottom:none}
+  ul.refs a{color:var(--accent);text-decoration:none;font-weight:700;word-break:break-all}
+  ul.refs .desc{display:block;font-size:13.5px;color:var(--sub);margin-top:2px}
+  .tag{display:inline-block;background:#e0ebe8;color:var(--accent);font-size:11.5px;font-weight:800;
+       border-radius:6px;padding:2px 8px;margin-right:6px;vertical-align:middle}
+  details.q{margin:8px 0;background:#fff;border:1px solid #d9d0b8;border-radius:9px;padding:8px 12px}
+  details.q summary{cursor:pointer;font-weight:700}
+  footer{margin-top:34px;font-size:12.5px;color:var(--sub);text-align:center;line-height:1.7;
+         border-top:1px solid var(--line);padding-top:18px}
+  @media print{ body{background:#fff} section.card{box-shadow:none} }
+  @media (max-width:640px){ .wrap{padding:24px 14px 70px} header.rep h1{font-size:25px} section.card{padding:18px} }
+</style></head>
+<body><div class="wrap">
+
+<header class="rep">
+  <div class="kicker">개념 공부 101 · 파생상품 · 온체인 금융</div>
+  <h1>무기한 선물 101 — 만기 없는 선물은 왜, 어떻게 태어났나</h1>
+  <div class="sub">선물이 뭔지부터, 왜 만기가 골칫거리였는지, 펀딩비가 어떻게 만기를 대신하는지, 그리고 왜 굳이 “선물”이라 부르는지까지. 마지막에 온체인 금융과의 연결을 따로 다룬다.</div>
+  <div class="byline">2026-09-06 · 학습용 개념 보고서 · 특정 상품·종목의 매수 신호가 아님 · 사실관계는 BitMEX 공식 가이드·Coinbase·Cboe 공지·2026-09 보도로 확인, 미확인 수치는 [미검증] 표기</div>
+</header>
+
+<section class="card tldr">
+  <h2>📌 세 줄 요약</h2>
+  <ol>
+    <li><b>무기한 선물은 “만기가 없는 선물”이다.</b> 보통 선물은 정해진 날에 끝나서 계속 들고 있으려면 다음 달 계약으로 갈아타야 한다(롤오버). 무기한 선물은 그 갈아타기를 없애고, 대신 <b>8시간마다 롱과 숏이 서로 주고받는 작은 돈(펀딩비)</b>으로 가격을 현물에 묶어 둔다.</li>
+    <li><b>태어난 이유는 두 가지다.</b> 학문적으로는 1993년 실러 교수가 “거래하기 힘든 자산(집값 등)의 가격을 만기 없이 추적하자”고 제안했고, 실전에서는 2016년 BitMEX가 <b>은행 계좌 없이 비트코인만으로 24시간 레버리지·공매도를 하고 싶은 코인 트레이더</b>를 위해 만들었다.</li>
+    <li><b>“선물”이라는 이름은 절반만 맞다.</b> 뼈대(증거금·레버리지·현금 정산·양방향 베팅·기초자산을 실제로 안 가짐)는 선물이지만, 만기가 없어 실체는 “이자를 주고받는 마진 현물”이나 CFD에 더 가깝다. 이 이름 문제는 2025~26년 미국에서 <b>진짜 법정 다툼</b>이 됐다. 온체인 금융에서는 무기한 선물이 <b>가장 큰 수수료 원천이자 스테이블코인 수요의 핵심 축</b>이고, 이제 주식·원유·비상장 기업까지 “토큰화하기 전에 먼저 무기한 선물로” 거래되고 있다.</li>
+  </ol>
+</section>
+
+<section class="card">
+  <h2>1. 먼저, 보통 선물부터</h2>
+  <p><b>선물</b><span class="eng"> (futures)</span>은 “<b>미래의 정해진 날에, 지금 정한 가격으로 사고팔기로 한 약속</b>”이다. 약속이지 물건 자체가 아니다. 그래서 물건값의 일부(증거금)만 걸고 거래할 수 있고, 값이 오르면 산 쪽이, 내리면 판 쪽이 이익을 본다.</p>
+
+  <div class="analogy">🌾 <b>비유:</b> 쌀농사를 짓는 농부는 가을에 쌀값이 떨어질까 걱정이고, 떡집 사장은 쌀값이 오를까 걱정이다. 둘이 봄에 “가을에 한 가마 10만 원에 넘기자”고 약속하면 둘 다 마음이 편해진다. 이게 선물의 원래 목적인 <b>헤지</b>(위험 피하기)다. 18세기 오사카 도지마 쌀시장, 19세기 시카고 곡물시장이 이렇게 시작됐다.</div>
+
+  <h3>선물이 하는 일 세 가지</h3>
+  <div class="tw"><table>
+    <tr><th style="width:22%">기능</th><th>뜻</th><th>누가 쓰나</th></tr>
+    <tr><td><b>헤지</b></td><td>가격이 움직여서 생기는 손해를 미리 막는다</td><td>농부·정유사·수출기업·펀드</td></tr>
+    <tr><td><b>가격 발견</b></td><td>“시장이 미래 가격을 얼마로 보는가”가 숫자로 드러난다</td><td>모든 참여자</td></tr>
+    <tr><td><b>레버리지</b></td><td>증거금만 걸고 큰 금액을 움직인다(수익도 손실도 배로)</td><td>투기자·차익거래자</td></tr>
+  </table></div>
+
+  <h3>만기와 정산</h3>
+  <p>선물에는 반드시 <b>만기일</b>이 있다. 만기가 오면 실제 물건을 주고받거나(실물 인도), 차액만 돈으로 주고받고(현금 정산) 계약이 끝난다. 그리고 만기까지의 기간 동안 선물 가격은 현물 가격과 조금 다르다. 이 차이를 <b>베이시스</b>라고 부른다.</p>
+  <div class="tw"><table>
+    <tr><th style="width:24%">용어</th><th>뜻(쉬운 말)</th></tr>
+    <tr><td><b>콘탱고</b></td><td>선물이 현물보다 비싼 상태. 보관비·이자 때문에 보통 이렇다</td></tr>
+    <tr><td><b>백워데이션</b></td><td>선물이 현물보다 싼 상태. 지금 당장 물건이 귀할 때</td></tr>
+    <tr><td><b>롤오버</b></td><td>만기가 다가오면 이번 달 계약을 팔고 다음 달 계약을 사서 포지션을 이어가는 것</td></tr>
+  </table></div>
+</section>
+
+<section class="card">
+  <h2>2. 만기가 왜 골칫거리였나</h2>
+  <p>헤지 목적이면 만기가 있는 게 자연스럽다(가을에 쌀을 넘기면 끝). 그런데 “<b>그냥 오래 들고 있고 싶은 사람</b>”에게 만기는 불편함 그 자체다.</p>
+  <ul>
+    <li><b>롤오버 비용.</b> 콘탱고 상태에서 매달 갈아타면 매번 조금씩 비싼 계약으로 갈아타게 되어 돈이 샌다. 이걸 <b>롤 손실</b>이라고 한다.</li>
+    <li><b>유동성이 쪼개진다.</b> 3월물·6월물·9월물… 계약이 여러 개면 거래가 분산돼 호가가 얇아진다.</li>
+    <li><b>만기일 변동성.</b> 만기 직전엔 가격이 이상하게 움직이는 일이 잦다(현물과 선물의 강제 수렴).</li>
+    <li><b>관리 부담.</b> 만기를 잊으면 강제 청산이나 실물 인도가 일어난다.</li>
+  </ul>
+
+  <h3>코인판의 특수한 사정 (2016년 무렵)</h3>
+  <p>여기에 암호화폐 시장은 세 가지 특수 사정이 더 있었다.</p>
+  <ol>
+    <li><b>시장이 24시간 365일 열린다.</b> “3월 셋째 금요일 오후 3시 만기” 같은 전통 금융의 리듬이 안 맞는다.</li>
+    <li><b>달러 은행 계좌가 없었다.</b> 초기 코인 거래소는 은행과 연결이 어려웠다. 그래서 <b>비트코인 자체를 증거금으로</b> 쓰는 상품이 필요했다.</li>
+    <li><b>현물 공매도가 어려웠다.</b> 코인을 빌려서 파는 시장이 부실해서, 하락에 베팅하려면 파생상품이 필요했다.</li>
+  </ol>
+  <p>정리하면 “<b>만기 없이, 24시간, 코인만 가지고, 양방향으로, 레버리지를 써서</b>” 거래할 상품이 필요했다. 그 답이 무기한 선물이다.</p>
+</section>
+
+<section class="card">
+  <h2>3. 탄생 — 교수의 논문에서 코인 거래소로</h2>
+  <div class="flow">
+    <div class="box"><span class="t">1993 · 실러</span>예일대 로버트 실러 교수가 “무기한 선물” 개념을 논문으로 제안. 집값처럼 <b>거래하기 힘든 자산</b>의 가격지수를 만기 없이 추적하자는 아이디어. 매일 작은 현금 흐름(배당·임대료 지수)을 주고받아 가격을 지수에 묶는 구조</div>
+    <div class="arrow">→</div>
+    <div class="box"><span class="t">2016-05-13 · BitMEX</span>아서 헤이즈의 BitMEX가 <b>XBTUSD 무기한 스왑</b> 상장. 비트코인을 증거금으로, 만기 없이, 8시간마다 펀딩비를 주고받는 구조. 실러의 “주기적 현금 흐름”을 <b>롱·숏 간 펀딩비</b>로 바꿔 코인에 이식</div>
+    <div class="arrow">→</div>
+    <div class="box"><span class="t">2019~ · 확산</span>바이낸스·바이비트·OKX 등이 같은 구조를 채택. 코인 파생 거래의 <b>표준 상품</b>이 됨. 현물보다 무기한 선물 거래량이 훨씬 커짐</div>
+  </div>
+  <div class="note">🔎 <b>이름의 뿌리:</b> “perpetual futures”라는 말은 실러 논문(Journal of Finance, 1993) 제목에 이미 들어 있다. BitMEX는 자기 상품을 “perpetual <b>swap</b>”(무기한 스왑)이라 불렀다. 지금 흔히 쓰는 “무기한 선물”이라는 이름은 이 두 계보가 섞인 결과다. 이 점이 5장(이름 논쟁)에서 중요해진다.</div>
+  <p>실러가 겨냥한 건 “집값을 사고팔 수 없으니 집값 지수를 계약으로 만들자”였고, BitMEX가 겨냥한 건 “달러 없이 비트코인으로 24시간 베팅하자”였다. 목적은 달랐지만 <b>만기라는 마찰을 없애고 대신 주기적으로 작은 돈을 주고받는다</b>는 핵심 설계는 같다.</p>
+</section>
+
+<section class="card">
+  <h2>4. 작동 원리 — 펀딩비가 만기를 대신한다</h2>
+
+  <h3>4-1. 가격이 세 개다</h3>
+  <p>무기한 선물을 처음 보면 헷갈리는 게 “가격이 여러 개”라는 점이다. 각각 역할이 다르다.</p>
+  <div class="tw"><table>
+    <tr><th style="width:20%">이름</th><th>무엇인가</th><th>무엇에 쓰나</th></tr>
+    <tr><td><b>지수 가격</b></td><td>여러 현물 거래소 가격의 평균. “진짜 시세”의 기준</td><td>펀딩비 계산의 기준</td></tr>
+    <tr><td><b>마크 가격</b></td><td>지수 가격 + 최근 베이시스의 이동평균. 순간적 급등락을 걸러 낸 “공정가”</td><td><b>청산 여부·미실현 손익</b> 판단(호가창 조작으로 청산당하는 걸 막는다)</td></tr>
+    <tr><td><b>최종 체결가</b></td><td>지금 호가창에서 실제로 체결되는 가격</td><td>내가 사고파는 가격</td></tr>
+  </table></div>
+
+  <h3>4-2. 펀딩비 — 롱과 숏이 서로 주고받는 “월세”</h3>
+  <div class="analogy">🏠 <b>비유:</b> 집을 사지 않고 집값에만 베팅하는 사람이 많아지면, 산다는 쪽(롱)이 판다는 쪽(숏)보다 많아져 계약 가격이 진짜 집값보다 올라간다. 그러면 거래소가 “<b>산 쪽이 판 쪽에 8시간마다 소액을 내라</b>”고 정한다. 롱이 돈을 내야 하니 롱이 줄고, 숏은 돈을 받으니 숏이 늘어, 계약 가격이 다시 집값 쪽으로 내려온다. 반대면 숏이 롱에게 낸다. 이 “월세”가 펀딩비다.</div>
+  <p>핵심 규칙 세 가지:</p>
+  <ul>
+    <li><b>거래소는 펀딩비를 가져가지 않는다.</b> 롱과 숏 사이에서 직접 오간다(BitMEX 가이드 명시).</li>
+    <li><b>펀딩 시각에 포지션을 들고 있어야만</b> 내거나 받는다. 그 직전에 닫으면 해당 없음.</li>
+    <li>펀딩비는 <b>증거금이 아니라 포지션 명목 금액</b>에 곱한다. 레버리지를 높일수록 증거금 대비 펀딩 부담이 커진다.</li>
+  </ul>
+
+  <p>BitMEX가 정한 원조 공식은 이렇다. 대부분의 거래소가 거의 그대로 쓴다.</p>
+  <div class="formula">펀딩비 F = 프리미엄 P + clamp( 이자 I − P , −0.05% , +0.05% )<br>
+  · I(이자 항) = (달러 빌리는 이자 − 코인 빌리는 이자) ÷ 3  → 관행상 8시간당 0.01%<br>
+  · P(프리미엄 항) = 계약 가격이 마크 가격보다 얼마나 비싼가(8시간 시간가중 평균)<br>
+  · 결과: 계약이 현물과 비슷하면 F ≈ I = 0.01%(롱이 숏에게 조금 낸다). 계약이 많이 비싸면 F가 커지고, 많이 싸면 음수가 된다</div>
+
+  <p>숫자 감각을 잡아 보자.</p>
+  <div class="tw"><table>
+    <tr><th>상황</th><th>명목 금액</th><th>펀딩비(8시간)</th><th>낼 돈</th><th>연율 환산</th></tr>
+    <tr><td>평상시 롱</td><td>100,000 USDT</td><td>+0.01%</td><td>8시간 10 USDT · 하루 30 USDT</td><td>약 10.95%</td></tr>
+    <tr><td>과열장 롱</td><td>100,000 USDT</td><td>+0.10%</td><td>8시간 100 USDT · 하루 300 USDT</td><td>약 109.5%</td></tr>
+    <tr><td>공포장 숏</td><td>100,000 USDT</td><td>−0.05%</td><td>숏이 8시간 50 USDT를 <b>낸다</b></td><td>약 −54.8%</td></tr>
+  </table></div>
+  <p>즉 <b>“만기가 없다” ≠ “공짜로 오래 들 수 있다”</b>다. 롤오버 비용이 사라진 자리에 펀딩비가 들어왔다. 다만 롤오버는 몇 달에 한 번 크게 내는 것이고, 펀딩비는 8시간마다 잘게 내는 것이라 <b>“매 8시간마다 자동으로 롤오버되는 선물”</b>이라고 이해하면 정확하다.</p>
+
+  <h3>4-3. 증거금 · 레버리지 · 청산</h3>
+  <p>무기한 선물의 위험은 대부분 여기서 나온다. 예시로 보자(수수료·펀딩 제외한 단순화).</p>
+  <div class="tw"><table>
+    <tr><th>항목</th><th>값</th><th>설명</th></tr>
+    <tr><td>증거금</td><td>10,000 USDT</td><td>내가 실제로 건 돈</td></tr>
+    <tr><td>레버리지</td><td>10배</td><td>명목 100,000 USDT = BTC 1개(가격 100,000 가정) 롱</td></tr>
+    <tr><td>가격 +5%</td><td>+5,000 USDT</td><td>증거금 대비 <b>+50%</b></td></tr>
+    <tr><td>가격 −5%</td><td>−5,000 USDT</td><td>증거금 대비 <b>−50%</b></td></tr>
+    <tr><td>유지 증거금 0.5%</td><td>500 USDT</td><td>이 아래로 떨어지면 <b>강제 청산</b></td></tr>
+    <tr><td>청산 가격(대략)</td><td>약 90,500</td><td>손실이 9,500에 닿는 지점 = <b>−9.5%</b>만 떨어져도 전액 잃음</td></tr>
+  </table></div>
+  <p>청산 뒤에 남는 문제도 있다. 가격이 순간적으로 점프해 청산 가격보다 더 나쁜 가격에 팔리면 증거금으로 손실을 다 못 메운다. 그 구멍을 메우는 장치가 두 개다.</p>
+  <ul>
+    <li><b>보험 기금.</b> 청산이 예상보다 좋은 가격에 처리될 때 남는 돈을 모아 두었다가, 나쁜 청산 때 구멍을 메운다.</li>
+    <li><b>자동 디레버리징(ADL).</b> 보험 기금도 바닥나면, 반대편에서 <b>이익을 많이 낸 고레버리지 포지션</b>을 강제로 일부 닫아 구멍을 메운다. “이겼는데 강제로 일부 정리당하는” 낯선 규칙이다.</li>
+  </ul>
+
+  <h3>4-4. 인버스 vs 리니어 — 증거금을 무엇으로 내나</h3>
+  <div class="tw"><table>
+    <tr><th style="width:18%">유형</th><th>증거금·손익 통화</th><th>왜 생겼나</th><th>지금</th></tr>
+    <tr><td><b>인버스</b>(코인 마진)</td><td>비트코인 등 코인 자체</td><td>2016년 BitMEX엔 달러 은행이 없었다. 계약 1개 = 1달러어치로 정해 <b>달러 금액을 헤지</b>하기 쉽게 설계</td><td>소수</td></tr>
+    <tr><td><b>리니어</b>(USDT/USDC 마진)</td><td>달러 스테이블코인</td><td>스테이블코인이 커지면서 손익 계산이 직관적인 달러 표시 계약이 표준이 됨</td><td><b>대다수</b></td></tr>
+  </table></div>
+  <p>이 전환이 뒤에 나올 온체인 이야기의 씨앗이다. <b>무기한 선물의 증거금이 달러 스테이블코인으로 바뀌면서, 무기한 선물 시장이 곧 스테이블코인의 큰 수요처가 됐다.</b></p>
+</section>
+
+<section class="card">
+  <h2>5. 왜 굳이 “선물”이라고 부르나 — 이름의 정당성</h2>
+  <p>이 질문은 단순한 말장난이 아니다. 같은 물건을 “선물”이라 부르느냐 “스왑”·“CFD”라 부르느냐에 따라 <b>어느 법의 적용을 받는지, 어느 거래소가 상장할 수 있는지</b>가 달라진다.</p>
+
+  <h3>5-1. 선물이라 부를 근거 — 뼈대가 선물이다</h3>
+  <div class="tw"><table>
+    <tr><th style="width:28%">선물의 뼈대</th><th>무기한 선물</th></tr>
+    <tr><td>기초자산을 실제로 갖지 않는다</td><td>✅ 같다. 비트코인을 보유하지 않고 가격에만 노출</td></tr>
+    <tr><td>증거금만 걸고 레버리지</td><td>✅ 같다. 초기·유지 증거금, 강제 청산</td></tr>
+    <tr><td>롱·숏 양방향, 제로섬</td><td>✅ 같다. 누가 벌면 누가 잃는다</td></tr>
+    <tr><td>현금 정산</td><td>✅ 같다. 실물 인도 없음</td></tr>
+    <tr><td>거래소 주문장에서 표준화된 계약으로 거래</td><td>✅ 같다(딜러와 1:1로 맺는 CFD와 다른 점)</td></tr>
+    <tr><td>가격 = 현물 + 베이시스</td><td>✅ 같다. 다만 베이시스가 펀딩비로 매번 청산된다</td></tr>
+    <tr><td><b>만기·롤오버</b></td><td>❌ <b>없다.</b> 펀딩비가 대신한다</td></tr>
+  </table></div>
+  <p>일곱 중 여섯이 같다. 그래서 “<b>만기가 무한대로 늘어난 선물</b>”, 혹은 “<b>매 8시간마다 저절로 롤오버되는 선물</b>”이라는 설명이 실무자 사이에 통한다.</p>
+
+  <h3>5-2. 선물이 아니라고 볼 근거 — 실체는 “이자 주고받는 마진 현물”</h3>
+  <ul>
+    <li>선물의 핵심 경제 기능인 <b>“미래 특정 시점의 가격 약속”</b>이 없다. 무기한 선물이 추적하는 건 미래 가격이 아니라 <b>지금 현물 가격</b>이다.</li>
+    <li>펀딩비 구조는 “돈을 빌려 현물을 사고 이자를 내는” <b>마진 거래</b>와 경제적으로 동일하다. BitMEX 가이드 스스로 “마진 기반 현물 시장을 흉내 낸다”고 쓴다.</li>
+    <li>롱·숏이 주기적으로 현금 흐름을 교환하는 구조는 <b>스왑</b>의 정의다. 만든 회사도 “무기한 스왑”이라고 이름 붙였다.</li>
+    <li>개인이 레버리지로 가격 차액만 정산하는 상품이라는 점에서 유럽의 <b>CFD</b>(차액결제거래)와 사실상 같은 소비자 상품이다.</li>
+  </ul>
+
+  <div class="tw"><table>
+    <tr><th>비교</th><th>선물</th><th>무기한 선물</th><th>스왑</th><th>CFD</th><th>마진 현물</th></tr>
+    <tr><td>만기</td><td>있음</td><td><b>없음</b></td><td>있음(장기)</td><td>없음</td><td>없음</td></tr>
+    <tr><td>주기적 현금 교환</td><td>없음(일일 정산만)</td><td><b>펀딩비</b></td><td>이자 교환</td><td>하룻밤 이자</td><td>대출 이자</td></tr>
+    <tr><td>거래 상대</td><td>거래소 주문장</td><td>거래소 주문장</td><td>은행·딜러 1:1</td><td>브로커 1:1</td><td>거래소+대출자</td></tr>
+    <tr><td>기초자산 보유</td><td>없음</td><td>없음</td><td>없음</td><td>없음</td><td><b>있음</b></td></tr>
+    <tr><td>추적 대상</td><td>미래 가격</td><td><b>현재 현물</b></td><td>금리·지수</td><td>현재 현물</td><td>현재 현물</td></tr>
+  </table></div>
+
+  <h3>5-3. 이름이 법정으로 간 이유 (2025~2026 미국)</h3>
+  <p>미국에서는 “거래소에서 거래되는 선물”이면 상품선물거래위원회(CFTC)의 틀 안에 들어온다. 그런데 미국의 선물은 만기가 있는 게 전제였다. 그래서 제도권이 무기한 선물을 들여올 때 <b>“이름은 무기한인데 만기를 억지로 붙이는”</b> 우회가 나왔다.</p>
+  <div class="tw"><table>
+    <tr><th style="width:15%">시점</th><th style="width:22%">누가</th><th>무엇</th><th>이름 문제 처리</th></tr>
+    <tr><td>2016-05</td><td>BitMEX(역외)</td><td>XBTUSD 무기한 스왑</td><td>규제 밖. “스왑”이라 명명</td></tr>
+    <tr><td>2025-07-21</td><td>Coinbase Derivatives(CFTC 등록)</td><td>미국 최초 “무기한형” 선물. 24/7 · 펀딩비 · 나노 BTC/ETH</td><td><b>만기 5년</b>(2030-12-20)을 붙여 “장기 선물”로 분류. 이름은 “perpetual-<b>style</b>”</td></tr>
+    <tr><td>2025-12</td><td>Cboe 선물거래소</td><td>비트코인·이더 “연속 선물”(PBT·PET)</td><td><b>만기 10년</b> + 매일 “펀딩 금액” 현금 조정. 이름은 “continuous”</td></tr>
+    <tr><td>2026-05-29</td><td>Kalshi(CFTC 승인)</td><td>미국 규제 하 비트코인 무기한 계약</td><td>CFTC가 지정계약시장에 상장 허용</td></tr>
+    <tr><td>2026-09-02</td><td>CFTC vs CME</td><td>CME가 “Kalshi 무기한 승인은 위법”이라며 CFTC 제소 → CFTC는 각하 요청</td><td><b>“무기한 계약이 선물인가”가 법정 쟁점이 됨.</b> CFTC 입장: 어느 지정계약시장이든 상장 가능</td></tr>
+    <tr><td>2026-09-03</td><td>Polymarket(역외)</td><td>예측시장이 무기한 선물 67종 출시(코인·주식·원유·비상장 기업 등, 최대 20배)</td><td>미국 밖 이용자 대상</td></tr>
+  </table></div>
+
+  <div class="verdict">⚖️ <b>정리:</b> “선물”이라는 이름은 <b>구조(뼈대)를 설명하는 이름으로는 정당하고, 경제적 실체를 설명하는 이름으로는 부정확하다.</b> 실체는 “이자를 주고받는 마진 현물”이나 스왑에 가깝다. 그런데도 시장이 “선물”을 택한 이유는 ① 트레이더에게 익숙한 화면·용어(증거금·청산·롱숏)를 그대로 쓰기 위해서, ② 제도권에 들어올 때 “선물”이라는 기존 법 상자에 넣는 게 가장 빠르기 때문이다. Coinbase의 5년 만기와 Cboe의 10년 만기는 <b>이름을 지키기 위해 만기를 붙인 사례</b>이고, CME·CFTC 소송은 <b>이름을 두고 벌어진 실제 싸움</b>이다. 반대로 “실체가 스왑이니 스왑 규제(은행·딜러 규제)를 받아야 한다”는 주장도 가능하고, 그 경우 개인 거래 접근이 크게 좁아진다. 이름은 곧 규제 경로다.</div>
+</section>
+
+<section class="card">
+  <h2>6. 누가, 왜 쓰나</h2>
+  <div class="tw"><table>
+    <tr><th style="width:18%">참여자</th><th>목적</th><th>무기한 선물을 고르는 이유</th></tr>
+    <tr><td>투기자</td><td>방향 베팅</td><td>레버리지 · 24시간 · 공매도 쉬움 · 롤오버 신경 안 씀</td></tr>
+    <tr><td>채굴자·보유자</td><td>헤지</td><td>코인을 팔지 않고 하락 위험만 덜어냄(숏)</td></tr>
+    <tr><td>차익거래자</td><td>펀딩비 수취</td><td><b>현물 매수 + 무기한 숏</b>으로 가격 위험을 0으로 만들고 펀딩비만 받는다(“캐시 앤 캐리”). 뒤의 Ethena가 이걸 상품화</td></tr>
+    <tr><td>마켓메이커</td><td>스프레드</td><td>현물·선물·무기한 세 시장 사이 가격 차를 좁히며 수수료·리베이트</td></tr>
+  </table></div>
+  <div class="note">🌡️ <b>펀딩비 = 시장 심리 온도계.</b> 펀딩비가 계속 높게 양수면 “레버리지 롱이 과밀”이라는 뜻이고, 그런 구간에서 급락이 오면 롱 청산이 연쇄로 터진다(청산 → 가격 하락 → 다음 청산). 반대로 깊은 음수는 공포 과밀이다. 그래서 많은 분석가가 가격보다 펀딩비·미결제약정(열려 있는 계약 총량)을 먼저 본다.</div>
+</section>
+
+<section class="card">
+  <h2>7. 위험 — 만기가 없어서 생기는 위험, 없어져도 남는 위험</h2>
+  <ul>
+    <li><b>청산 연쇄.</b> 고레버리지가 쌓이면 작은 급변에도 강제 청산이 도미노처럼 터진다. 무기한 선물이 현물보다 거래량이 커서 <b>파생이 현물을 흔드는</b> 역전이 자주 일어난다.</li>
+    <li><b>펀딩비 누적.</b> 방향은 맞았는데 펀딩비를 몇 달 내다가 수익이 사라지는 경우. “만기 없음”을 “비용 없음”으로 착각하는 데서 온다.</li>
+    <li><b>거래소 상대방 위험.</b> 중앙화 거래소 무기한 선물은 결국 거래소 장부 위의 숫자다. 2022년 FTX 파산은 “거래소가 내 증거금을 잘 갖고 있는가”가 핵심 위험임을 보여줬다.</li>
+    <li><b>가격 조작·오라클 위험.</b> 마크 가격이 청산을 결정하므로, 얇은 현물 시장을 잠깐 밀어 청산을 유도하는 공격이 가능하다. 지수 가격을 여러 거래소 평균으로 두는 이유다.</li>
+    <li><b>ADL.</b> 이긴 쪽인데도 상대편 구멍을 메우려 강제로 일부 정리당할 수 있다.</li>
+    <li><b>규제 위험.</b> 위 5-3처럼 “이게 선물인가”가 아직 확정되지 않은 나라가 많다. 글 쓰는 시점에 국내 원화 거래소에는 무기한 선물이 없고, 국내 이용자는 해외·온체인 거래소로 나가 있다.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>8. 온체인 금융과의 연관성 — 무기한 선물은 온체인의 “가격 층”이자 “달러 수요 층”</h2>
+  <p>여기서부터가 오늘 보고서의 두 번째 축이다. 온체인 금융(블록체인 위에서 중개자 없이 돌아가는 금융)에서 무기한 선물은 주변 상품이 아니라 <b>중심 상품</b>이다. 다섯 갈래로 나눠 본다.</p>
+
+  <h3>8-1. 왜 온체인과 궁합이 맞나</h3>
+  <p>무기한 선물의 성격(24시간·국경 없음·만기 관리 불필요·현금 정산)은 블록체인의 성격(24시간·국경 없음·스마트컨트랙트 자동 정산)과 거의 같다. 실물 인도가 없으니 “물건을 체인 위에 올릴” 필요도 없다. <b>가격만 있으면 무엇이든 계약으로 만들 수 있다.</b> 그래서 탈중앙 금융에서 수수료를 가장 많이 만드는 상품군이 대체로 무기한 선물이다.</p>
+
+  <h3>8-2. 온체인 무기한 선물의 세 가지 설계</h3>
+  <div class="tw"><table>
+    <tr><th style="width:20%">세대</th><th>대표</th><th>구조(쉬운 말)</th><th>장점 / 약점</th></tr>
+    <tr><td>① 유동성 풀형</td><td>GMX(2021~)</td><td>주문장이 없다. 예치자들이 돈을 모아 둔 풀이 <b>모든 트레이더의 상대방</b>이 되고, 가격은 외부 오라클이 준다</td><td>단순·체인 어디서나 가능 / 오라클이 틀리면 풀이 털린다, 큰 주문에 약함</td></tr>
+    <tr><td>② 혼합형</td><td>dYdX v3</td><td>주문장·매칭은 체인 밖 서버, 정산·담보만 체인 위</td><td>빠름 / “반쯤 중앙화”</td></tr>
+    <tr><td>③ 전용 체인 완전 온체인 주문장</td><td><b>Hyperliquid</b>(2023~)</td><td>무기한 선물 전용 블록체인을 따로 만들어 <b>주문장·매칭·청산까지 전부 체인 위</b>에서 처리. 중앙화 거래소급 속도 + 내 지갑에 돈을 둔 채 거래</td><td>2026년 1분기 온체인 무기한 거래량의 약 32%(VanEck) / 검증인 수가 적다는 탈중앙성 논쟁, 해킹 자금 세탁 경유지 논란(2026-08 보도)</td></tr>
+  </table></div>
+
+  <h3>8-3. 중앙화 거래소 vs 온체인 — 무엇이 달라지나</h3>
+  <div class="tw"><table>
+    <tr><th style="width:22%">항목</th><th>중앙화 거래소 무기한 선물</th><th>온체인 무기한 선물</th></tr>
+    <tr><td>내 증거금은 어디에</td><td>거래소 장부(거래소가 망하면 같이 위험)</td><td><b>내 지갑·스마트컨트랙트</b>(거래소 파산 위험과 분리)</td></tr>
+    <tr><td>청산·보험기금</td><td>거래소 내부 규칙, 사후 공개</td><td>코드와 잔고가 <b>실시간 공개</b></td></tr>
+    <tr><td>가격 조작 취약점</td><td>얇은 현물 밀어서 마크가격 흔들기</td><td>같은 문제 + <b>오라클 지연·조작</b></td></tr>
+    <tr><td>누가 상장하나</td><td>거래소 상장팀</td><td>규칙만 맞으면 <b>누구나 새 시장을 배포</b>(Hyperliquid HIP-3 방식)</td></tr>
+    <tr><td>규제</td><td>국가별 라이선스</td><td>아직 회색지대. 국경이 없어 단속이 어렵고, 그래서 각국이 “이름 붙이기”를 서두른다</td></tr>
+  </table></div>
+  <div class="note">🔗 <b>FTX 사건이 온체인 무기한 선물을 키웠다.</b> 2022년 “거래소가 고객 증거금을 몰래 썼다”는 사실이 드러난 뒤, “증거금을 내 지갑에 두고 거래하고 싶다”는 수요가 폭발했다. Hyperliquid의 성장은 이 수요와 맞물린다.</div>
+
+  <h3>8-4. 담보가 달러 스테이블코인이다 — 무기한 선물이 곧 스테이블코인 수요</h3>
+  <p>4-4에서 본 인버스→리니어 전환의 결과, 온체인 무기한 선물의 증거금·손익은 거의 전부 <b>USDC·USDT 같은 달러 스테이블코인</b>이다. Hyperliquid의 증거금은 USDC 기반이다. 트레이더가 무기한 선물을 하려면 먼저 스테이블코인을 사야 하므로, <b>무기한 선물 시장이 커질수록 달러 스테이블코인 발행·유통도 커진다.</b> 반대로 무기한 선물 거래가 식으면 스테이블코인 수요도 빠진다.</p>
+  <p>이 연결은 “달러 스테이블코인이 왜 늘어나는가”를 볼 때 자주 빠지는 고리다. 결제·송금 수요보다 <b>파생 거래 담보 수요</b>가 더 큰 구간이 많다. 스테이블코인 발행사 입장에서 무기한 선물 거래소는 가장 큰 도매 고객 중 하나다.</p>
+
+  <h3>8-5. 펀딩비가 “수익률”로 포장된다 — Ethena와 합성 달러</h3>
+  <p>6장의 차익거래(현물 롱 + 무기한 숏 = 가격 위험 0 + 펀딩비 수취)를 <b>그대로 토큰으로 포장</b>한 것이 Ethena의 USDe(“합성 달러”)다.</p>
+  <div class="flow">
+    <div class="box"><span class="t">① 담보 받기</span>이용자가 스테이킹된 이더·비트코인·스테이블코인을 맡긴다</div>
+    <div class="arrow">→</div>
+    <div class="box"><span class="t">② 헤지</span>같은 금액만큼 거래소에서 <b>무기한 선물 숏</b>을 연다. 가격이 오르든 내리든 합계는 1달러 근처(델타 중립)</div>
+    <div class="arrow">→</div>
+    <div class="box"><span class="t">③ 수익</span>숏 포지션이 받는 <b>펀딩비</b> + 스테이킹 이자를 USDe 예치자에게 나눠 준다</div>
+  </div>
+  <p>Ethena 자체 위험 문서에 따르면 비트코인·이더 펀딩비는 최근 3년 평균 연 7.8~9% 양수였다(Spark 리서치 재인용). 즉 <b>“무기한 선물의 롱 과밀 → 숏이 받는 월세”가 이 달러의 이자 원천</b>이다. 규모는 2026-09-04 기준 약 43억 달러(DefiLlama).</p>
+  <div class="warn">⚠️ <b>이 구조의 약점은 무기한 선물 자체의 약점이다.</b> ① 펀딩비가 음수로 돌아서면(공포장) 숏이 오히려 돈을 낸다 → Ethena는 담보를 스테이블코인 쪽으로 옮기고 준비기금으로 버틴다고 설명한다. ② 헤지를 거는 거래소가 망하면(FTX형) 숏 포지션이 사라진다. ③ 무기한 선물 미결제약정 총량이 곧 USDe의 성장 상한이다. 시장이 작으면 합성 달러도 못 큰다. 따라서 USDe는 “달러”라기보다 <b>“무기한 선물 시장의 펀딩비를 토큰으로 만든 것”</b>으로 읽는 게 정확하다.</div>
+
+  <h3>8-6. “토큰화하기 전에 무기한 선물로 먼저” — 주식·상품·비상장 기업</h3>
+  <p>온체인 무기한 선물이 2026년에 가장 크게 바뀐 지점이다. 무기한 선물은 <b>가격만 있으면 무엇이든 계약으로 만들 수 있다</b>(8-1). 그래서 자산을 실제로 토큰화(소유권을 체인에 올리기)하기 전에, 먼저 그 가격을 추적하는 무기한 선물이 나온다.</p>
+  <ul>
+    <li><b>Hyperliquid HIP-3.</b> 담보를 건 배포자가 누구나 새 무기한 시장을 열 수 있는 규칙. 이걸로 미국 주식·S&amp;P 500·은·원유 무기한 선물이 체인 위에서 거래됐다. 2026-02-05 한 구간에서 HIP-3 은 무기한 거래량이 COMEX 은 명목 거래량의 약 1%(Grayscale). 2026-07에는 실물자산(RWA) 시장이 2주 연속 플랫폼 주간 거래량의 절반을 넘겼고 HIP-3 미결제약정이 40억 달러를 넘었다(관련 회사의 SEC 제출 자료 인용).</li>
+    <li><b>Polymarket Perps(2026-09-03).</b> 예측시장 회사가 코인·주식·원유·비상장 기업(스페이스X 등) 무기한 선물 67종을 최대 20배 레버리지로 출시(미국 밖). “예측시장 → 파생상품”으로 상품군이 번지는 신호다.</li>
+    <li><b>한국 주식도 예외가 아니다.</b> 2026-09 국내 사설은 해외 온체인 거래소에서 SK하이닉스 주가를 추종하는 무기한 선물의 한국 투자자 누적 거래액이 약 40억 달러라고 썼다. <b>[미검증 — 사설 인용 수치, 거래소 1차 자료 확인 전]</b></li>
+  </ul>
+  <div class="verdict">🧭 <b>여기서 헷갈리면 안 되는 것:</b> 주식 무기한 선물은 <b>주식도, 토큰증권도 아니다.</b> 주주권·배당권이 없고, 가격에만 베팅하는 고배율 파생이다. 그런데 “토큰화”가 규제·권리 정리 때문에 느리게 가는 동안, 무기한 선물은 <b>가격 노출만 떼어내 먼저 판다.</b> 결과적으로 (1) 거래량·수수료·데이터는 자산이 상장된 나라가 아니라 <b>무기한 선물 거래소가 있는 곳</b>에 쌓이고, (2) 결제 통화는 원화가 아니라 <b>달러 스테이블코인</b>이 된다. “토큰화는 참이지만 가치를 누가 가져가느냐는 별개”라는 명제의 실물 사례다. 반론도 있다. 무기한 선물 거래량은 대부분 단기 회전이라, 실제 자본 조달(발행)과 소유권 이전이 오는 토큰화와는 <b>층이 다르다</b>. 무기한 선물이 토큰화를 대체하는 게 아니라, 토큰화 <b>앞에 깔리는 그림자 시장</b>이라고 보는 게 균형 잡힌 읽기다.</div>
+
+  <h3>8-7. 제도권과 온체인의 수렴 — 한 장 지도</h3>
+  <div class="tw"><table>
+    <tr><th style="width:26%">층</th><th>무기한 선물이 하는 역할</th><th>2026-09 현재 주역</th></tr>
+    <tr><td>가격 층</td><td>24시간 가격 발견. 현물보다 거래량이 커서 가격을 먼저 움직인다</td><td>바이낸스 등 중앙화 거래소 · Hyperliquid</td></tr>
+    <tr><td>담보·달러 층</td><td>증거금이 달러 스테이블코인 → 스테이블코인 수요의 큰 축</td><td>USDT · USDC</td></tr>
+    <tr><td>수익 층</td><td>펀딩비를 “이자”로 포장한 합성 달러</td><td>Ethena USDe</td></tr>
+    <tr><td>확장 층</td><td>주식·상품·비상장까지 “토큰화 전 가격 노출”</td><td>Hyperliquid HIP-3 · Polymarket Perps</td></tr>
+    <tr><td>제도권 층</td><td>만기를 붙여 “선물”로 편입, 이름을 두고 소송</td><td>Coinbase(5년) · Cboe(10년) · Kalshi · CFTC vs CME</td></tr>
+  </table></div>
+  <p>이 다섯 층이 한 방향을 가리킨다. <b>무기한 선물은 온체인 금융에서 “가장 먼저 돈이 도는 곳”이고, 그 위에 스테이블코인·합성 달러·토큰화가 얹힌다.</b> 그래서 온체인 금융을 볼 때 무기한 선물 거래량·펀딩비·미결제약정은 스테이블코인 발행량과 함께 읽어야 뜻이 통한다. 다만 어느 층도 그 자체로 특정 자산의 매수 근거는 아니다.</p>
+</section>
+
+<section class="card">
+  <h2>9. 용어집 (첫 등장 순)</h2>
+  <dl class="gloss">
+    <dt>선물 <span class="eng">futures</span></dt><dd>미래의 정해진 날에 정해진 가격으로 사고팔기로 한 표준화된 약속. 거래소에서 거래.</dd>
+    <dt>헤지 <span class="eng">hedge</span></dt><dd>가격 변동으로 생길 손해를 반대 포지션으로 미리 막는 것.</dd>
+    <dt>베이시스 <span class="eng">basis</span></dt><dd>선물 가격과 현물 가격의 차이.</dd>
+    <dt>롤오버 <span class="eng">rollover</span></dt><dd>만기 계약을 닫고 다음 만기 계약으로 갈아타는 것.</dd>
+    <dt>펀딩비 <span class="eng">funding rate</span></dt><dd>무기한 선물에서 롱과 숏이 8시간(거래소별 상이)마다 서로 주고받는 소액. 계약 가격을 현물에 묶는 장치.</dd>
+    <dt>마크 가격 <span class="eng">mark price</span></dt><dd>청산 판단용 공정 가격. 지수 가격에 베이시스 이동평균을 더한 값.</dd>
+    <dt>청산 <span class="eng">liquidation</span></dt><dd>손실이 커져 유지 증거금 아래로 내려가면 거래소가 강제로 포지션을 닫는 것.</dd>
+    <dt>보험 기금 <span class="eng">insurance fund</span></dt><dd>청산 손실이 증거금을 넘을 때 메우는 공동 기금.</dd>
+    <dt>ADL <span class="eng">auto-deleveraging</span></dt><dd>보험 기금이 부족할 때 반대편 이익 포지션을 강제로 일부 닫는 규칙.</dd>
+    <dt>인버스 / 리니어</dt><dd>증거금을 코인으로 내는 계약 / 달러 스테이블코인으로 내는 계약.</dd>
+    <dt>미결제약정 <span class="eng">open interest</span></dt><dd>아직 닫히지 않은 계약의 총량. 시장에 쌓인 레버리지 크기.</dd>
+    <dt>CFD</dt><dd>차액결제거래. 브로커와 1:1로 가격 차액만 정산하는 유럽식 개인 파생상품.</dd>
+    <dt>오라클 <span class="eng">oracle</span></dt><dd>블록체인 밖의 가격을 체인 안으로 전해 주는 장치. 틀리면 온체인 파생이 통째로 흔들린다.</dd>
+    <dt>델타 중립 <span class="eng">delta neutral</span></dt><dd>현물 롱과 파생 숏을 같은 크기로 들어 가격이 움직여도 합계가 변하지 않게 만든 상태.</dd>
+    <dt>HIP-3</dt><dd>Hyperliquid에서 담보를 건 배포자가 새 무기한 시장을 스스로 열 수 있게 한 규칙.</dd>
+  </dl>
+</section>
+
+<section class="card">
+  <h2>10. 자가 점검 다섯 문항</h2>
+  <details class="q"><summary>1. 무기한 선물에는 만기가 없는데, 그럼 “오래 들고 있어도 비용이 없다”가 맞는가?</summary><p>아니다. 롤오버 비용 대신 8시간마다 펀딩비를 내거나 받는다. 롱 과밀 구간에서 롱을 오래 들면 연 두 자릿수 비용이 나올 수 있다.</p></details>
+  <details class="q"><summary>2. 펀딩비가 계속 +0.1%라면 시장은 어떤 상태인가?</summary><p>계약이 현물보다 비싸고 레버리지 롱이 과밀한 상태. 급락 시 롱 청산 연쇄 위험이 높다.</p></details>
+  <details class="q"><summary>3. 청산 여부는 세 가격 중 무엇으로 판단하나?</summary><p>마크 가격. 최종 체결가로 판단하면 얇은 호가창을 잠깐 밀어 남을 청산시키는 공격이 가능하기 때문이다.</p></details>
+  <details class="q"><summary>4. Coinbase는 왜 “무기한”이라면서 5년 만기를 붙였나?</summary><p>미국 규제 틀에서 “선물”로 상장하려면 만기가 필요했다. 이름(선물)을 지키려 만기를 붙인 사례이며, 같은 이유로 Cboe는 10년 만기를 썼다.</p></details>
+  <details class="q"><summary>5. Ethena USDe의 이자는 어디서 나오나? 언제 위험해지나?</summary><p>무기한 선물 숏이 받는 펀딩비(+스테이킹 이자). 펀딩비가 음수로 오래 가거나, 헤지를 건 거래소가 망하거나, 무기한 선물 시장 자체가 쪼그라들 때 위험해진다.</p></details>
+</section>
+
+<section class="card">
+  <h2>참고 자료</h2>
+  <ul class="refs">
+    <li><span class="tag">1차</span><a href="https://www.bitmex.com/app/perpetualContractsGuide" target="_blank" rel="noopener">BitMEX — Perpetual Contracts Guide</a><span class="desc">XBTUSD 상장일(2016-05-13)·펀딩 공식·이자 항·프리미엄 항·펀딩 상한·인버스/리니어/콴토 정의. 본문 4장의 원전.</span></li>
+    <li><span class="tag">학술</span>Robert J. Shiller, “Measuring Asset Values for Cash Settlement in Derivative Markets: Hedonic Repeated Measures Indices and Perpetual Futures”, <i>Journal of Finance</i> 48(3), 1993.<span class="desc">“무기한 선물” 개념의 학문적 출처. 거래하기 힘든 자산의 지수를 만기 없이 추적하는 계약 제안.</span></li>
+    <li><span class="tag">1차</span><a href="https://www.coinbase.com/blog/perpetual-futures-have-arrived-in-the-us" target="_blank" rel="noopener">Coinbase — Perpetual futures have arrived in the U.S. (2025-07-21)</a><span class="desc">미국 “무기한형” 선물 출시. 5년 만기(2030-12-20)·24/7·펀딩비.</span></li>
+    <li><span class="tag">1차</span><a href="https://www.cboe.com/continuous-futures-pipeline-hub/" target="_blank" rel="noopener">Cboe — Continuous Futures Resource Hub</a><span class="desc">비트코인·이더 연속 선물(PBT·PET). 10년 만기·일일 펀딩 금액. 2025-11-17 보도자료 및 2025-12 상장.</span></li>
+    <li><span class="tag">보도</span><a href="https://www.coindesk.com/policy/2026/09/03/cftc-asks-judge-to-dismiss-cme-lawsuit-over-crypto-perpetual-futures" target="_blank" rel="noopener">CoinDesk — CFTC asks judge to dismiss CME lawsuit over crypto perpetual futures (2026-09-03)</a><span class="desc">Kalshi 무기한 승인을 둘러싼 CME 제소와 CFTC 각하 요청. 5-3의 “이름이 법정으로 간” 사례.</span></li>
+    <li><span class="tag">보도</span>Polymarket Perps 출시(2026-09-03) — Investing.com·Yahoo Finance·디지털투데이 보도 종합.<span class="desc">67종·최대 20배·코인/주식/원유/비상장. 미국 밖 이용자 대상.</span></li>
+    <li><span class="tag">리서치</span><a href="https://www.vaneck.com/us/en/blogs/digital-assets/exploring-hyperliquid-redefining-derivatives-trading/" target="_blank" rel="noopener">VanEck — Exploring Hyperliquid (2026-05-27)</a> · <a href="https://research.grayscale.com/reports/hyperliquid-breaks-the-mold" target="_blank" rel="noopener">Grayscale — Hyperliquid Breaks the Mold (2026-06-03)</a><span class="desc">2026년 1분기 거래량·온체인 무기한 점유율 약 32%·HIP-3 은 무기한 vs COMEX 비교. 자산운용사 리서치이므로 이해당사자 관점 감안.</span></li>
+    <li><span class="tag">1차</span><a href="https://docs.ethena.fi/protocol-overview/risks/funding-risk" target="_blank" rel="noopener">Ethena Docs — Funding Risk</a> · <a href="https://docs.ethena.fi/overview/how-usde-works" target="_blank" rel="noopener">How USDe Works</a><span class="desc">델타 중립 구조·음수 펀딩 대응·준비기금. 3년 평균 펀딩 수치는 Spark 리서치(2026-03-12) 재인용.</span></li>
+    <li><span class="tag">데이터</span>DefiLlama 스테이블코인 대시보드(2026-09-04 기준 USDe 약 43억 달러).<span class="desc">발행량은 집계기별로 차이가 있어 방향만 참고.</span></li>
+  </ul>
+  <p class="sub" style="margin-top:12px">확인 방법: BitMEX·Coinbase·Cboe·Ethena는 공식 페이지 본문을 직접 읽었고, CFTC·CME·Polymarket·Hyperliquid 수치는 2026-09 보도·리서치 요약을 교차 확인했다. SK하이닉스 무기한 선물 거래액은 사설 인용이라 [미검증]으로 남겼다.</p>
+</section>
+
+<footer>
+  개념 공부 101 시리즈 · 2026-09-06 · 학습 목적의 개념 정리이며 어떤 상품·종목·프로토콜의 매수·매도 권유가 아닙니다.<br>
+  무기한 선물은 원금 전액 손실이 가능한 고위험 상품입니다.
+</footer>
+</div></body></html>
