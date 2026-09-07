@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Shapiro vs Domingo 토큰 온톨로지 논쟁 — 무엇이 "진짜" 토큰화 증권인가 | 2026-09-07</title>
+<meta name="vault-stage" content="Analysis">
+<meta name="vault-topic" content="SECZ">
+<meta name="vault-date" content="2026-09-07">
+<meta name="description" content="변호사·MetaLeX 창업자 Gabriel Shapiro(@lex_node)가 &quot;대부분의 토큰화 증권은 중개인 코스프레&quot;라며 제시한 5가지 토큰화 모델과, 이에 맞선 Securitize CEO 카를로스 도밍고의 현실주의 반론을 정리한 종합 분석. 온체인 상태=법적 상태(Model 1)라는 순수주의가 UCC·DTC·이전대리인 제도와 어디서 충돌하는지, 그 논쟁이 Securitize의 해자에 무엇을 의미하는지 평가한다. 원 작성 2026-04-25, 공개 발행 2026-09-07. 매수 신호 아님.">
+<style>
+  :root {
+    --bg: #ffffff; --bg-alt: #f8f9fb; --bg-soft: #f0f3f8;
+    --text: #1a1d23; --text-dim: #5a6270; --text-mute: #8891a0;
+    --border: #e4e8ef; --accent: #0066cc;
+    --accent-red: #d93025; --accent-orange: #e8710a;
+    --accent-yellow: #c99700; --accent-green: #137333;
+    --accent-blue: #1967d2; --accent-purple: #7e57c2;
+    --card-shadow: 0 1px 3px rgba(20,30,50,0.04), 0 0 0 1px var(--border);
+    --critical-bg: #fef6f5; --high-bg: #fff8f0; --medium-bg: #fffbe8;
+    --info-bg: #f0f7ff; --positive-bg: #f0faf3;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', 'Noto Sans KR', sans-serif;
+    background: var(--bg-alt); color: var(--text); line-height: 1.65; margin: 0;
+    padding: 20px 16px; font-size: 14.5px; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  header { background: linear-gradient(135deg, #fff 0%, #f3f7fc 100%); border-radius: 14px;
+    padding: 28px 32px; margin-bottom: 22px; box-shadow: var(--card-shadow); }
+  header h1 { margin: 0 0 8px 0; font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; }
+  header .subtitle { color: var(--text-dim); font-size: 0.92rem; margin-bottom: 14px; }
+  .source-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .source-tag { padding: 4px 10px; border-radius: 6px; background: var(--positive-bg); color: var(--accent-green);
+    font-size: 0.78rem; font-weight: 600; border: 1px solid #bfe0c9; }
+  section { background: #fff; border-radius: 12px; padding: 22px 26px; margin-bottom: 18px;
+    box-shadow: var(--card-shadow); }
+  h2 { font-size: 1.18rem; font-weight: 700; margin: 0 0 16px 0; padding-bottom: 10px;
+    border-bottom: 2px solid var(--border); letter-spacing: -0.01em; }
+  h3 { font-size: 1.05rem; font-weight: 700; margin: 22px 0 12px 0; letter-spacing: -0.01em; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 12px 0; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: var(--bg-soft); font-weight: 600; font-size: 0.82rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.03em; }
+  tr:hover td { background: var(--bg-alt); }
+  blockquote { border-left: 3px solid var(--accent); padding: 8px 16px; margin: 12px 0;
+    background: var(--bg-alt); color: var(--text-dim); font-style: italic;
+    font-size: 0.92rem; border-radius: 0 8px 8px 0; }
+  .model-card { border-radius: 10px; padding: 18px 22px; margin-bottom: 14px;
+    border-left: 5px solid var(--border); background: var(--bg-alt); }
+  .model-card h3 { margin-top: 0; font-size: 1.1rem; }
+  .model-card.optimal { border-left-color: var(--accent-green); background: var(--positive-bg); }
+  .model-card.warning { border-left-color: var(--accent-yellow); background: var(--medium-bg); }
+  .model-card.criticism { border-left-color: var(--accent-red); background: var(--critical-bg); }
+  .model-card.neutral { border-left-color: var(--accent-blue); background: var(--info-bg); }
+  .model-card.synthetic { border-left-color: var(--text-mute); background: var(--bg-alt); }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.78rem;
+    font-weight: 600; margin-left: 4px; }
+  .pill-green { background: #d4edda; color: var(--accent-green); }
+  .pill-red { background: #f8d7da; color: var(--accent-red); }
+  .pill-yellow { background: #fff3cd; color: #856404; }
+  .pill-blue { background: #cce5ff; color: var(--accent-blue); }
+  .pill-mute { background: var(--bg-soft); color: var(--text-mute); }
+  .actor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0; }
+  .actor-card { background: var(--bg-alt); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px; }
+  .actor-card.shapiro { border-left: 4px solid var(--accent-red); }
+  .actor-card.domingo { border-left: 4px solid var(--accent-green); }
+  .actor-card.ferguson { border-left: 4px solid var(--accent-blue); }
+  .actor-card .name { font-weight: 700; margin-bottom: 4px; font-size: 1rem; }
+  .actor-card .role { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 8px; }
+  ul { margin: 8px 0 12px 0; padding-left: 22px; }
+  ul li { margin-bottom: 6px; font-size: 0.92rem; }
+  .key-quote { background: linear-gradient(135deg, #fff8e1 0%, #fff3c4 100%);
+    border-radius: 10px; padding: 16px 22px; margin: 14px 0;
+    border-left: 4px solid var(--accent-yellow); font-style: italic; font-size: 0.95rem; }
+  .key-quote .author { font-style: normal; font-weight: 600; color: var(--accent-yellow);
+    display: block; margin-top: 8px; font-size: 0.85rem; }
+  .insight-box { background: linear-gradient(135deg, var(--positive-bg) 0%, #e8f5ec 100%);
+    border-radius: 10px; padding: 16px 22px; margin: 14px 0;
+    border-left: 4px solid var(--accent-green); }
+  .insight-box .label { font-weight: 700; color: var(--accent-green); margin-bottom: 6px;
+    font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .timeframe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .timeframe-card { background: var(--bg-alt); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px; }
+  .timeframe-card.short { border-left: 4px solid var(--accent-green); }
+  .timeframe-card.long { border-left: 4px solid var(--accent-yellow); }
+  .timeframe-card h4 { margin: 0 0 8px 0; font-size: 0.98rem; }
+  code { font-family: 'SF Mono', Monaco, 'Consolas', monospace;
+    background: var(--bg-soft); padding: 1px 6px; border-radius: 3px; font-size: 0.85em; }
+  @media (max-width: 768px) {
+    .actor-grid, .timeframe-grid { grid-template-columns: 1fr; }
+    header { padding: 20px; } section { padding: 16px; }
+  }
+  footer { text-align: center; color: var(--text-mute); font-size: 0.78rem; padding: 20px; }
+  .toc { background: var(--info-bg); border-radius: 10px; padding: 16px 22px; margin-bottom: 18px;
+    border-left: 4px solid var(--accent-blue); }
+  .toc h3 { margin-top: 0; font-size: 0.95rem; }
+  .toc ol { margin: 6px 0; padding-left: 24px; }
+  .toc a { color: var(--accent-blue); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>Shapiro vs Carlos Domingo 토큰 온톨로지 논쟁</h1>
+  <div class="subtitle">Gabriel Shapiro의 5가지 토큰화 증권 모델 + Securitize 반론 종합 분석 · <strong>원 작성 2026-04-25</strong> · 공개 발행 2026-09-07 (내용은 작성 시점 기준, 이후 갱신 없음)</div>
+  <div class="source-tags">
+    <span class="source-tag">🟢 1차 출처: Shapiro X 스레드 직접 추출</span>
+    <span class="source-tag">🟢 Memory §3-7, Archive §B</span>
+    <span class="source-tag">🟢 Ferguson 후속 (4/16 Securitize 공식 RT)</span>
+  </div>
+</header>
+
+<div class="toc">
+  <h3>📋 목차</h3>
+  <ol>
+    <li><a href="#bg">배경 / 발단</a></li>
+    <li><a href="#models">Shapiro의 5가지 토큰화 증권 모델</a></li>
+    <li><a href="#domingo">Carlos Domingo 반론</a></li>
+    <li><a href="#ferguson">Ferguson 후속 반박</a></li>
+    <li><a href="#axiom">Axiom 평가</a></li>
+    <li><a href="#secz">SECZ 투자 시사점</a></li>
+    <li><a href="#monitor">검증 / 모니터링 항목</a></li>
+    <li><a href="#conclusion">결론</a></li>
+  </ol>
+</div>
+
+<section id="bg">
+  <h2>1. 배경 / 발단</h2>
+  <div class="actor-grid">
+    <div class="actor-card shapiro">
+      <div class="name">Gabriel Shapiro <span class="pill pill-mute">@lex_node</span></div>
+      <div class="role">MetaLeX Labs 창업자, 변호사 (CyberCorps)</div>
+      <strong>입장:</strong> Securitize 비판자 — 토큰화 증권 아키텍처가 본질적으로 결함 있다고 주장
+    </div>
+    <div class="actor-card domingo">
+      <div class="name">Carlos Domingo <span class="pill pill-mute">@carlosdomingo</span></div>
+      <div class="role">Securitize CEO</div>
+      <strong>입장:</strong> 현실주의 옹호자 — 규제 환경 하에서 작동하는 모델이 "온톨로지적 순수성"보다 중요
+    </div>
+  </div>
+
+  <h3>📅 시점</h3>
+  <ul>
+    <li><strong>Shapiro 원전 스레드</strong>: 2026.3월 (Memory에 3.29 기록)</li>
+    <li><strong>Domingo 반론</strong>: 2026.3.29 X에서 직접 토론</li>
+    <li><strong>Ferguson 후속 반박</strong>: 2/26 스레드, <strong>2026.4.16 Securitize 공식 RT</strong></li>
+  </ul>
+
+  <h3>📰 Shapiro의 도발적 표현</h3>
+  <ul>
+    <li>스레드 제목: <strong>"5 Ways of Tokenizing Securities (& One Which is Best)"</strong></li>
+    <li>별개 게시물: <strong>"Most Tokenized Securities Are Intermediary Cosplay"</strong></li>
+  </ul>
+
+  <div class="key-quote">
+    "대부분의 토큰화 프로젝트는 증권의 <strong>기념품</strong>을 블록체인에 올려놓을 뿐, 모든 실제 법적·금융 인프라는 정확히 이전 상태로 유지되고 있다."
+    <span class="author">— Gabriel Shapiro (X 스레드 원전, 2026.3)</span>
+  </div>
+</section>
+
+<section id="models">
+  <h2>2. 🟦 Shapiro의 5가지 토큰화 증권 모델 (원전 직접 추출)</h2>
+
+  <blockquote>⚠️ <strong>편향 명시</strong>: Shapiro는 <strong>MetaLeX Labs 창업자</strong>로 Model 1(자신의 cyberCERT) 옹호 입장. 본인이 글에서도 이를 명시. 5개 모델 분류 자체는 학술적으로 유용.</blockquote>
+
+  <div class="model-card optimal">
+    <h3>Model 1: Blockchain as Ledger, Token as Ledger Entry <span class="pill pill-green">최적 (Shapiro)</span></h3>
+    <p><strong>블록체인 = 원장, 토큰 = 원장 항목</strong></p>
+    <ul>
+      <li><strong>정의</strong>: 블록체인이 회사의 <strong>공식 주식 원장 자체</strong>. 토큰 메타데이터 = 공식 기업 기록.</li>
+      <li><strong>핵심 명제</strong>: <em>"온체인 상태 = 법적 상태"</em></li>
+      <li><strong>사례</strong>: MetaLeX의 <strong>cyberCERT</strong> (ERC-721 NFT, Delaware 법 §219, §224 기반)</li>
+      <li><strong>법적 근거</strong>: Delaware 2017 DGCL 개정안 ("one or more distributed electronic networks or databases"); Wyoming 회사법</li>
+    </ul>
+  </div>
+
+  <div class="model-card warning">
+    <h3>Model 2: Tokens as Certificates <span class="pill pill-yellow">법 개혁 필요</span></h3>
+    <p><strong>증명서로서의 토큰 (디지털 주식 증서)</strong></p>
+    <ul>
+      <li><strong>정의</strong>: 토큰 = 전자 주식 증서. 1960년대 종이 증서의 디지털 유사물.</li>
+      <li><strong>법적 한계</strong>:
+        <ul>
+          <li><strong>UCC Article 8</strong>: 종이 증서만 인정 (Official Comments에 명시)</li>
+          <li><strong>ESIGN법</strong>: UCC가 규율하는 증권 거래 명시적 제외 → 종이-전자 동등성 미적용</li>
+          <li>현재 미국 대부분 관할권에서 토큰을 증권 증서로 취급 불가</li>
+        </ul>
+      </li>
+      <li><strong>유일한 예외</strong>: Wyoming "증서 토큰" 허용 (단, 2차 이전·담보 대출 시 UCC §8 상호작용 미검증)</li>
+    </ul>
+    <div class="key-quote">
+      "법 개혁 필요한 이론을 중심으로 프로덕션 시스템을 구축하는 것은 책임감 있는 엔지니어링이 아닙니다. 그것은 <strong>열망적인 법률 자문</strong>입니다."
+      <span class="author">— Shapiro</span>
+    </div>
+  </div>
+
+  <div class="model-card criticism">
+    <h3>Model 3: Tokens as Instructions <span class="pill pill-red">Securitize DS Protocol 위치</span></h3>
+    <p><strong>지시로서의 토큰 (TA에 대한 메시지)</strong></p>
+    <ul>
+      <li><strong>정의</strong>: UCC Article 8 "instruction" 개념 — 발행자에게 등록 소유권 변경 통지하는 메시지</li>
+      <li><strong>메커니즘</strong>: 토큰 이전 = TA(Transfer Agent)에 대한 <strong>"이전 지시 메시지"</strong></li>
+      <li><strong>법적 지지</strong>: PEB (Permanent Editorial Board) 다가올 보고서</li>
+      <li><strong>유효 use case (Shapiro 인정)</strong>: 고도로 중개된 기관 컨텍스트에서 블록체인이 broker-dealer↔TA 메시징 버스로 작동</li>
+      <li><strong>불가능한 것</strong>: peer-to-peer 결제, DeFi 통합, 거버넌스 자동화</li>
+    </ul>
+    <div class="key-quote">
+      "토큰은 <strong>운반 비둘기</strong>이지 증권이 아니다. 우리가 이미 가진 시스템과 같다 — 단지 추가 단계가 있을 뿐. 낡은 배관에 반짝이는 파이프만 입힌 것."
+      <span class="author">— Shapiro (Securitize DS Protocol 직접 비판)</span>
+    </div>
+  </div>
+
+  <div class="model-card neutral">
+    <h3>Model 4: Tokens as 'Control Agreements' <span class="pill pill-blue">Second-Best (Shapiro)</span></h3>
+    <p><strong>통제 합의로서의 토큰</strong></p>
+    <ul>
+      <li><strong>정의</strong>: UCC Article 8 "control" 개념. 발행자가 사전에 매수자 지시 따르기로 commit → 등록 소유권자 동의 없이 통제 가능</li>
+      <li><strong>메커니즘</strong>: 토큰 이전 = "control agreement" 권리 양도 → 새 토큰 보유자가 발행자에게 직접 지시 가능</li>
+      <li><strong>장점</strong>: <em>"Bearer-like"</em> (사전 commitment이라 case-by-case 재량 없음). PEB 지지</li>
+      <li><strong>한계</strong>:
+        <ul>
+          <li>여전히 <strong>부수적 합의(ancillary agreement) 접근</strong></li>
+          <li>토큰 ≠ 증권 자체. 토큰 = "증권에 대한 계약 권리"</li>
+          <li>실제 등록 소유권은 토큰 거래에 lag 발생 가능</li>
+          <li>ERC-20 transfer를 contract-rights-assignment로 해석하는 것은 "추상적이고 비직관적"</li>
+        </ul>
+      </li>
+      <li><strong>MetaLeX 입장</strong>: cyberSCRIP을 통해 수용 가능, but <strong>"second-best"</strong></li>
+    </ul>
+  </div>
+
+  <div class="model-card synthetic">
+    <h3>Model 5: Synthetic <span class="pill pill-mute">진정한 토큰화 아님</span></h3>
+    <p><strong>합성 (Perps, Structured Products, Security-Based Swaps)</strong></p>
+    <ul>
+      <li><strong>정의</strong>: 진정한 "토큰화"가 아님. 참조 자산 가격에 대한 <strong>합성 노출</strong>을 제공하는 신규 금융상품</li>
+      <li><strong>사례</strong>: Perpetual futures, tokenized structured notes, security-based swaps</li>
+      <li><strong>본질적 한계</strong>: AAPL perp 보유자는 Apple 주식 <strong>미보유</strong> — 계약 청구권 또는 (DeFi에서) 합성 노출만</li>
+      <li><strong>시장 기능</strong>: 노출·접근 제공 (인정), but 진정한 소유권 양도는 아님</li>
+    </ul>
+    <div class="key-quote">
+      "The SEC's <strong>January 2026 Statement on Tokenized Securities</strong> addresses these as 'synthetic models' of 'third-party-sponsored tokenized securities'."
+      <span class="author">— Shapiro 직접 인용 (Memory §3-2c (vii) 검증 항목 답변: SEC 1월 분류는 3월 SEC-CFTC Token Taxonomy와 별개 문서)</span>
+    </div>
+  </div>
+
+  <h3>📊 5개 모델 요약 비교표</h3>
+  <table>
+    <tr><th>모델</th><th>토큰 = ?</th><th>법적 근거</th><th>DeFi 적격성</th><th>Shapiro 평가</th><th>대표 사례</th></tr>
+    <tr>
+      <td><strong>1. Chain-as-Ledger</strong></td><td>원장 항목</td><td>DGCL §219/§224</td><td>🟢 가능</td>
+      <td><span class="pill pill-green">✅ 최적</span></td><td>MetaLeX cyberCERT</td>
+    </tr>
+    <tr>
+      <td><strong>2. Certificate</strong></td><td>디지털 증서</td><td>UCC §8 (종이만 인정)</td><td>🟡 불확실</td>
+      <td><span class="pill pill-yellow">법 개혁 필요</span></td><td>Wyoming 증서 토큰</td>
+    </tr>
+    <tr>
+      <td><strong>3. Instruction</strong></td><td>TA에 보내는 지시</td><td>PEB 지지 (예정)</td><td>❌ admin key 문제</td>
+      <td><span class="pill pill-red">"운반 비둘기"</span></td><td><strong>Securitize DS Protocol</strong></td>
+    </tr>
+    <tr>
+      <td><strong>4. Control Agreement</strong></td><td>통제 권리 양도</td><td>UCC §8 control</td><td>🟡 부분적</td>
+      <td><span class="pill pill-blue">Second-best</span></td><td>(혼합 사용)</td>
+    </tr>
+    <tr>
+      <td><strong>5. Synthetic</strong></td><td>합성 노출</td><td>SEC 1월 2026 = third-party-sponsored</td><td>🟢 가능 (DeFi)</td>
+      <td><span class="pill pill-mute">"토큰화 아님"</span></td><td>DeFi perps, 구조화 노트</td>
+    </tr>
+  </table>
+</section>
+
+<section id="domingo">
+  <h2>3. 🛡️ Carlos Domingo의 반론 <span style="font-size:0.85rem;color:var(--text-mute);font-weight:normal;">(Memory §3-7)</span></h2>
+
+  <ol>
+    <li>
+      <strong>SEC 지침은 블록체인을 TA 원장으로 사용하는 것을 명시적으로 허용</strong><br>
+      → Securitize는 SEC 인가 받은 등록 Transfer Agent로 합법적 운영
+    </li>
+    <li>
+      <strong>Compliance Controls는 필수, DeFi 순수주의는 비현실적</strong>
+      <ul>
+        <li><code>freeze</code>, <code>forceTransfer</code>, <code>pause</code>, <code>recover</code> 권한은 <strong>규제 준수상 필수</strong></li>
+        <li>미국 증권법 하에서 KYC/AML, 제재 대응, 사기 복구 등 admin key 없이 운영 불가</li>
+      </ul>
+    </li>
+    <li>
+      <strong>실증적 반론</strong>: $3B AUM이 현재 이 모델로 작동 중
+      <ul>
+        <li>2026.4 기준 BUIDL $2.5B + 기타 $1.2B+ = 실제 시장에서 작동</li>
+        <li>"토큰이 결제 수단이자 대장 역할을 동시에 수행"</li>
+      </ul>
+    </li>
+  </ol>
+</section>
+
+<section id="ferguson">
+  <h2>4. 🆕 Ferguson 후속 반박 <span style="font-size:0.85rem;color:var(--text-mute);font-weight:normal;">(2/26 스레드, 2026.4.16 Securitize 공식 RT)</span></h2>
+
+  <div class="actor-card ferguson">
+    <div class="name">Ferguson</div>
+    <div class="role">Memory §2-4c — Securitize 공식 채널 RT 시점에서 회사 입장 강화</div>
+  </div>
+
+  <h3>랩드 RWA의 결함 (Model 1 시도의 현실적 한계)</h3>
+  <ol>
+    <li><strong>기초자산과의 단절</strong> (off-chain reality와 disconnect) — 진짜 Model 1을 추구해도 결국 off-chain 자산과 연결되어야 함</li>
+    <li><strong>기관 수용 불가</strong> — 카운터파티 위험으로 인해 큰 기관이 받지 않음</li>
+  </ol>
+
+  <div class="key-quote">
+    "<strong>완벽한 Model 1 토큰은 존재하지 않는다.</strong> 네이티브 방식이 현실적 차선책이다."
+    <span class="author">— Ferguson (Securitize 4/16 공식 RT)</span>
+  </div>
+
+  <p>→ Shapiro의 이상론을 정면 반박: 이론적 Model 1을 추구해도 실무에서는 결함 있음</p>
+</section>
+
+<section id="axiom">
+  <h2>5. ⚖️ Axiom 평가 <span style="font-size:0.85rem;color:var(--text-mute);font-weight:normal;">(Memory §3-7)</span></h2>
+
+  <h3>Shapiro 분석의 합당성</h3>
+  <ul>
+    <li>🟢 <strong>기술적 분석은 대부분 정확</strong> — DS Protocol 토큰이 법적 소유권 자체가 아닌 것은 사실</li>
+    <li>🟢 5가지 모델 분류는 학술적으로 유용</li>
+  </ul>
+
+  <h3>그러나 실무적 결론은 과도</h3>
+  <ul>
+    <li>🟡 현 규제 환경에서 Model 1(체인=원장)은 <strong>법적으로 거의 불가능</strong></li>
+    <li>🟡 "온톨로지적 순수성"은 시장이 요구하는 가치가 아님</li>
+  </ul>
+
+  <div class="insight-box">
+    <div class="label">🔑 핵심 통찰: "비트코인 → 스테이블코인" 아날로지</div>
+    비트코인이 순수 탈중앙화 화폐로는 <strong>실패</strong>했지만, 하이브리드 형태인 <strong>스테이블코인이 $300B+ 시장</strong>을 창출했다 (2026.4 기준).
+    <br><br>
+    시장이 요구하는 것은 <strong>"온톨로지적 순수성"이 아닌 "기능성"</strong>이다.
+  </div>
+
+  <h3>Securitize의 가치는 "온톨로지적 순수성"이 아닌:</h3>
+  <ol>
+    <li><strong>규제 인프라</strong> (BD+ATS+TA 풀스택)</li>
+    <li><strong>기관 네트워크</strong> (BlackRock, Apollo, Hamilton Lane, Franklin)</li>
+    <li><strong>실행력</strong> ($4B AUM, NYSE Digital TA, Upshift 파트너십)</li>
+  </ol>
+
+  <h3>시계별 영향</h3>
+  <div class="timeframe-grid">
+    <div class="timeframe-card short">
+      <h4>3-5년 투자 논거 <span class="pill pill-green">영향 없음</span></h4>
+      현재 규제·기관 인프라가 결정적. Securitize 풀스택 라이선스가 핵심 해자.
+    </div>
+    <div class="timeframe-card long">
+      <h4>5-10년 시계 <span class="pill pill-yellow">모니터링</span></h4>
+      Model 1 진화 여부가 장기 해자 깊이 결정. Vault Registrar EIP, UCC Article 12 진척 추적.
+    </div>
+  </div>
+</section>
+
+<section id="secz">
+  <h2>6. 🎯 SECZ 투자 시사점</h2>
+
+  <h3>단기 (3-5년) — 🟢 영향 없음</h3>
+  <ul>
+    <li>현재 SEC 분류(2026.1)에서 <strong>issuer-sponsored 모델(Model 3 포함)이 "직접 권리" 카테고리로 가장 유리</strong> (Blockworks Research 인용)</li>
+    <li>Securitize의 풀스택 라이선스(BD+ATS+TA)가 핵심 해자 — 이것이 "온톨로지"보다 훨씬 가치 있음</li>
+    <li>BUIDL $2.5B + Securitize 운영 자산 $3.69B + 기관 네트워크 = <strong>실증된 시장 적합성</strong></li>
+  </ul>
+
+  <h3>중기 (5-10년) — 🟡 모니터링 필요</h3>
+
+  <h4>Securitize가 Model 1으로 진화할 수 있는가?</h4>
+  <ul>
+    <li><strong>Vault Registrar v2</strong> (2026.3.14 EIP 제안) → 부분적 Model 1 시도</li>
+    <li>ERC8004 + s402 (AI 에이전트 인프라, 2026.3.24)</li>
+    <li>UCC Article 12 "Controllable Electronic Records" 분류가 일부 Model 1 가능성 열어줌</li>
+  </ul>
+
+  <h4>경쟁 위협</h4>
+  <ul>
+    <li><strong>CyberCorps/MetaLeX</strong> (Shapiro 회사) — Model 1 직접 구현, 그러나 라이선스/AUM 0에서 시작</li>
+    <li><strong>Superstate Opening Bell</strong> — Model 1에 가장 가까운 현실적 시도 ($1.2B AUM, 4/1 Memory 기록)</li>
+    <li><strong>Ondo</strong> — Model 2 (Entitlements) 기반, SEC NAL 요청 (4/13)</li>
+  </ul>
+
+  <h4>손절 트리거 연계</h4>
+  <ul>
+    <li>본 논쟁은 <strong>§13 손절 트리거 7가지 중 어느 것에도 직접 영향 없음</strong></li>
+    <li>단, Model 1 패러다임 shift가 5-10년 내 발생 시 경쟁사 위협(#6) 모니터링 강화 필요</li>
+  </ul>
+</section>
+
+<section id="monitor">
+  <h2>7. 📌 검증 / 모니터링 항목</h2>
+
+  <h3>단기 (다음 6개월)</h3>
+  <ul>
+    <li>☐ <strong>Securitize의 Model 1 방향 진화</strong> — Vault Registrar v2 EIP 표준화 진척</li>
+    <li>☐ <strong>UCC Article 12 기반 토큰 법적 지위</strong> 확립 진행</li>
+    <li>☐ <strong>DeFi 담보 적격성 개선</strong> — admin key 권한 축소 또는 시간잠금 도입 여부</li>
+    <li>☐ <strong>CyberCorps/MetaLeX의 ERC-721 Stock Ledger Entry Token</strong> 실제 구현 진행</li>
+    <li>☐ <strong>SEC "blockchain as TA ledger" 지침 공식화</strong> 여부</li>
+  </ul>
+
+  <h3>중기 (6-24개월)</h3>
+  <ul>
+    <li>☐ Superstate Opening Bell ($1.2B AUM) → $5B+ 도달 여부 (Model 1 모델의 시장 검증)</li>
+    <li>☐ Ondo SEC NAL 결과 (Model 2의 규제 인정)</li>
+    <li>☐ Securitize가 Vault Registrar 기반 새 아키텍처 출시할지</li>
+  </ul>
+</section>
+
+<section id="conclusion">
+  <h2>8. 🔚 결론</h2>
+
+  <h3>Shapiro의 비판은 <strong>이론적으로 정확</strong></h3>
+  <ul>
+    <li>5가지 모델 분류는 <strong>학술적으로 유용한 프레임워크</strong></li>
+    <li>DS Protocol이 Model 3(Instruction Token)이라는 기술적 분석은 <strong>사실</strong></li>
+    <li>Admin key 문제·DeFi 담보 적격성 한계도 <strong>현실 인정</strong></li>
+  </ul>
+
+  <h3>그러나 <strong>투자 결정에는 영향 미미</strong></h3>
+  <ul>
+    <li>시장은 "온톨로지적 순수성"이 아닌 <strong>기능성·실행력</strong>에 가치 부여</li>
+    <li>비트코인 → 스테이블코인 진화 패턴이 토큰화 증권에도 적용</li>
+    <li>SEC 1월 2026 분류가 issuer-sponsored 모델을 <strong>직접 우호</strong> 위치로 확정 (Blockworks 인용)</li>
+  </ul>
+
+  <h3>5-10년 워치</h3>
+  <ul>
+    <li>Model 1 패러다임 shift 가능성을 <strong>모니터링하되 매도 트리거로 사용 안 함</strong></li>
+    <li>Securitize가 Vault Registrar 등으로 Model 1 방향 진화 시 <strong>해자 더 깊어짐</strong></li>
+    <li>CyberCorps/MetaLeX 같은 Model 1 순수주의자가 라이선스+AUM 동시 돌파 시 <strong>장기 위협 재평가</strong></li>
+  </ul>
+</section>
+
+<section>
+  <h2>📚 출처</h2>
+  <ul>
+    <li><strong>Shapiro 원전 X 스레드</strong>: <code>x.com/lex_node/status/2030322576208068616</code> (제목: "5 Ways of Tokenizing Securities & One Which is Best", 추출일 2026-04-25)</li>
+    <li><strong>Shapiro 부속 글</strong>: <code>x.com/lex_node/status/2038003451003547956</code> ("Most Tokenized Securities Are Intermediary Cosplay")</li>
+    <li><strong>Memory §3-7</strong>: 내부 리서치 노트 (Shapiro/Domingo 논쟁 요약)</li>
+    <li><strong>Archive §B</strong>: 내부 리서치 아카이브(2026 Q2)</li>
+    <li><strong>Memory §2-4c</strong>: Ferguson 반박 (Securitize 공식 4/16 RT)</li>
+    <li><strong>Blockworks Research</strong>: "From Wrappers to Venues" (Securitize 자금 지원, SEC 1월 2026 분류 인용)</li>
+  </ul>
+</section>
+
+<footer>
+  <div>수집 방법: Chrome MCP only · 분석적 가드레일 4단계 적용</div>
+  <div>(Memory 스캔 → 편향 검토 → 사실/주장/추론 분리 → 확장 추론 금지)</div>
+  <div>작성: 2026-04-25 KST</div>
+</footer>
+
+</div>
+</body>
+</html>
