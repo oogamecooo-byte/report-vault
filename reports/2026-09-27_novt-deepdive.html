@@ -1,0 +1,1551 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NOVT (Novanta) Deep-Dive — 로봇 부품 회사인가, 의료 소모품 인수 회사인가 (2026-09-27)</title>
+<meta name="vault-stage" content="Dive"><meta name="vault-topic" content="NOVT"><meta name="vault-date" content="2026-09-27">
+<meta name="vault-skill" content="Deep-Dive"><meta name="description" content="2026-09-27 Novanta Deep-Dive — 7축 ⭐3.2. 순현금 회사가 Riverpoint Medical 인수(.2B+M)로 8개월 만에 순부채 ~.5억·주식 +19~23%. 밸류 🔴 고평가(약·경계)·내구성 🔴 결합취약(경계선)·Fable 판사 🔴 진입 보류(10월 감사 재무·11월 3분기 전까지). 로봇 비중은 32.5%→약 28%로 희석.">
+<style>/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+
+body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Helvetica Neue','Apple SD Gothic Neo',sans-serif;line-height:1.65;margin:0;padding:0;}
+.container{max-width:940px;margin:24px auto;background:#FDF6E3;padding:36px 44px;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.08);}
+h1{font-size:1.7em;border-bottom:3px solid #c0392b;padding-bottom:.3em;margin-top:.2em;}
+h2{font-size:1.32em;border-bottom:1px solid #c9bfa3;padding-bottom:.24em;margin-top:1.7em;color:#8a2415;}
+h3{font-size:1.1em;margin-top:1.3em;color:#5c4a00;}
+h4{font-size:1.0em;margin-top:1.1em;color:#5c4a00;}
+blockquote{border-left:4px solid #c9a227;background:#f5ecd3;margin:.8em 0;padding:.5em 1em;color:#4a4230;border-radius:0 6px 6px 0;}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.9em;display:block;overflow-x:auto;}
+th,td{border:1px solid #e8e1cf;padding:6px 9px;text-align:left;vertical-align:top;}
+th{background:#efe6cc;color:#5c4a00;font-weight:600;}
+tr:nth-child(even) td{background:#faf4e2;}
+code{background:#efe6cc;padding:1px 5px;border-radius:4px;font-size:.88em;}
+pre{background:#f0e8cf;padding:12px;border-radius:6px;overflow-x:auto;border:1px solid #e8e1cf;}
+a{color:#b0562a;text-decoration:none;} a:hover{text-decoration:underline;}
+hr{border:none;border-top:1px solid #d8cca8;margin:1.6em 0;}
+strong{color:#3a2f18;}
+.judge{background:#f3ead0;border:2px solid #c0392b;border-radius:8px;padding:16px 20px;margin:1.2em 0;}
+.judge h2{border:none;color:#8a2415;margin-top:0;}
+.dd-fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:12px;margin:1em 0;}
+.dd-fig figcaption{font-size:.82em;color:#6b5d3a;margin-top:6px;text-align:center;}
+.footer{margin-top:2em;padding-top:1em;border-top:1px solid #d8cca8;font-size:.85em;color:#6b5d3a;}
+@media print{body{background:#fff;}.container{box-shadow:none;background:#fff;}}
+@media (max-width:640px){.container{padding:20px 16px;}}
+</style><meta name="vault-published" content="2026-09-27">
+<meta name="robots" content="noindex, nofollow">
+</head><body><div class="container">
+<h1>🌳 NOVT (Novanta) Deep-Dive — 로봇 부품 회사인가, 의료 소모품 인수 회사인가 (2026-09-27)</h1>
+<blockquote>
+<p>첫 실행(직전 Deep-Dive 없음) · 기준 시세 2026-09-25 종가 $143.93 · 1차 자료 = SEC 10-K FY2025 · 10-Q 2026년 2분기 · 8-K 2025-06~2026-08(인수 계약·종결·사모증자·신용계약) · DEF 14A 2026 · 실적 발표문 4개 분기 · 선행 분석 = 같은 날 R-Dive(제품·수익모델) · History-Dive(역사) · People-Dive(사람) · 차트 참고 read · 방법론 DD-v1.33</p>
+</blockquote>
+<div class="judge"><h2>🧑‍⚖️ 종합 매수 판단 (Fable 판사 · Step 7.5)</h2>
+<blockquote>
+<p>신선한 컨텍스트의 Fable 5.1 판사가 판단 브리프·원자료·초안을 직접 읽고 낸 전-축 통합 판정이다. 판사 원문을 그대로 옮겼다(공개판에서는 개인 규율 점검표를 빼고, 내부 파일명 1곳을 일반 명칭으로 바꿨다). <strong>낮은 신뢰도 종합 콜 · 매수·매도 강제 신호 아님 · 최종 판단은 사용자.</strong></p>
+</blockquote>
+<p><strong>verdict: 🔴 현재가 진입 보류</strong> — 밸류·기대값·내구성·분면·독점 다섯 축이 전부 "비싸거나 약함" 한쪽을 가리키고, 그 판정을 뒤집을 1차 자료(인수 감사 재무제표·3분기 실적)가 몇 주 뒤에 나오므로 지금 사서 얻는 것이 없다.</p>
+<p><strong>요약 1줄:</strong> 🔴 보류 — 인수 후 기업가치를 설명하려면 매출이 연 13~27% 커야 하는데 현실은 5~10%이고, 10~11월 검증 자료가 남아 있다(낮은 신뢰도 종합 콜).</p>
+<p><strong>근거:</strong></p>
+<ol>
+<li>
+<p><strong>전-축 통합 — 결합 형세는 "죽지는 않지만 비싼 회사, 그리고 사려는 이유와 회사 돈의 방향이 반대인 회사"다.</strong> 브리프 D §H.7.3(🔴 고평가·역-DCF 필요 성장 13~27% vs 현실 5~10%·FCF 수익률 1.6~2.1%)과 §H.1(5년 기대값 1.25x·지연 계수 적용 1.20x·2년 0.92x·3년 0.98x)은 같은 말을 두 번 한다 — 지금 가격은 2~3년을 기다려도 본전이고, 5년 기대수익은 연 4~5%로 자본비용 아래다. §G.8(🔴 결합취약이지만 "금리 하나로는 안 무너짐")은 이 회사가 망할 회사가 아니라는 뜻이라 밸류 판정과 <strong>엇갈리는 듯 보이지만</strong>, 결합하면 "생존은 되지만 그 생존에 웃돈을 낼 이유가 없다"로 닫힌다. §H.5(무게중심 = 자본 배분·약한 고리 = 리버포인트 통합·레버리지)와 §H.1 Bull(휴머노이드 부품 양산·고객 검증 D)을 겹치면 가장 중요한 엇갈림이 드러난다 — <strong>회사는 12억 달러를 의료 소모품에 걸었는데, 주가가 2배 가는 시나리오는 로봇에 걸려 있다.</strong> §H.6(1/7·"안정적 롤업"은 시장이 이미 아는 통념)은 그 로봇 서사에 숨은 비밀이 없다고 못 박는다. 다섯 축 중 어느 하나도 매수 쪽으로 기울지 않는다.</p>
+</li>
+<li>
+<p><strong>가장 결정적 한 가지 = 자기 반박이 통하지 않는 밸류 판정이다.</strong> 브리프 D §H.7.3은 "가정 하나로는 안 뒤집힘(할인율 8%·이익률 25%·성장 3.5% 셋이 겹쳐야 9%)"이라 적었고, 싸 보이는 지표는 과거 매출 배수(33퍼센타일) 하나뿐인데 그 지표는 순현금 4.8억 달러가 순부채 9.5억 달러로 바뀐 것을 못 본다(브리프 C.2·D §H.7.3). 이익 배수는 73퍼센타일이다. 두 지표가 반대인 이유는 이익률 하락(브리프 C.5·C.7)이라 봉합되지 않는다.</p>
+</li>
+<li>
+<p><strong>시간 지평 — 기다리는 쪽이 정보를 공짜로 얻는다.</strong> 브리프 E와 초안 §H.2에 따르면 10월 초 인수 감사 재무제표, 11월 초 3분기 실적(종결 후 실제 현금·레버리지·금리 헤지 여부), 2027년 1월 마일스톤 2억 5,000만 달러 재원이 몰려 있다. 셋 다 판정을 바꿀 수 있는 1차 자료인데 지금은 회사 제시치(미감사)뿐이다(브리프 C.1·C.4 고객 검증 B~D). 브리프 D §H.1 Base 2년 0.97x는 "먼저 사 둘 대가"가 없다는 뜻이다.</p>
+</li>
+<li>
+<p><strong>주식 수가 늘고 주당 매출은 제자리다.</strong> 브리프 C.2 — 재원 3종(의무전환 유닛·사모증자·차입)으로 주식이 19~23% 늘었는데 주당 매출은 약 26.6달러로 그대로다. 브리프 D §H.1이 기대값에 이미 반영했으므로 재계산하지 않지만, "인수로 커졌다"는 서사가 주주 몫으로는 커지지 않았다는 사실 자체가 근거다.</p>
+</li>
+<li>
+<p><strong>엇갈림 명시 — 브리프 D §H.7.3 🎯(진입 보류)·§H.5(회피·관망)와 본 verdict는 같은 방향이다.</strong> 차트 참고 read(브리프 D 마지막 줄)는 등급 Buy이지만 4축 1/4·16일간 9번 변경·손익비 0.4:1이라 뒤집는 힘이 없다. 타이밍 뉘앙스 1줄만: 박스 하단 132.5~135.9달러 재시험 또는 150달러 종가 돌파 확인 전에는 차트도 지금 자리를 "걸지 않음"으로 둔다.</p>
+</li>
+<li>
+<p><strong>🔴가 ⚪로 바뀌는 조건(재고 trigger):</strong> (a) 가격 104~117달러(브리프 D §H.7.3 — 2027 조정 EBITDA 18배, Base 출구 배수와 같아지는 자리) <strong>또는</strong> (b) 비가격 3종 동시 — 인수 감사 재무제표가 회사 제시(매출 1.5억 달러·마진 40%) 대비 −10% 이내 + 마일스톤 재원이 증자가 아님 + 구조조정·인수 비용이 연 1,500만 달러 이하로 줄어드는 첫 분기(브리프 D §H.7.3 Flip·초안 §H.3). 같은 날 텐배거 스크리닝(Physical AI)이 "A 조건부"로 남겨 둔 조건이 이번 Deep-Dive에서 발동해 준-B로 내려간 상태라, 위 (b)가 없으면 스크리닝 판정도 되돌아가지 않는다.</p>
+</li>
+<li>
+<p><strong>정찰 소액은 규율 위반이 아니다.</strong> 본 verdict는 낮은 신뢰도 종합 콜이다(Intel 40달러 대기 → 100달러 급등 전례). 공매도 15%(브리프 C.10·A)가 의무전환 유닛 헤지가 아니라 실제 숏이라면 인수 재무제표 무난 통과 시 급등으로 (a) 가격은 영영 안 올 수 있다. 그 경우를 대비한 정찰성 소액은 §H.5 "관망"과 양립한다 — 단 그것은 "지금 싸서"가 아니라 "정보 비대칭이 풀리는 날 자리를 잃지 않으려고"라는 이유여야 한다.</p>
+</li>
+</ol>
+<p><strong>Steelman:</strong></p>
+<ul>
+<li><strong>본 분석</strong>: 다섯 축 전부 비싸거나 약함 → 🔴 보류.</li>
+<li><strong>자기 반박(구조 + 시간 축)</strong>: "비싸다"의 분모가 전부 GAAP·조정 항목 환원 기준인데, 시장은 조정 EBITDA로 이 회사를 채점한다(목표가 2곳이 2027 조정 EPS 44.5배·브리프 D §H.7.3 메타 행). 리버포인트 마진 40%가 2027년 1년치 반영되고 구조조정이 끝나면 2028년 배수는 18~19배로 Base 출구와 같아진다(초안 §H.7 Steelman 시간축). 그러면 "지금 가격 = 2028년 Base 가격"이라 지금 사도 2년 뒤 본전 + 그 뒤 성장분이 남는다. 게다가 §G.8은 극단 시나리오 조건부라 파산 위험은 낮다 — <strong>"안 죽고 비싸지 않은 회사"라면 🔴가 아니라 ⚪가 정직한 라벨이고</strong>, 공매도 15%가 풀리면 117달러 trigger는 영영 안 온다(Intel 모양).</li>
+<li><strong>유지 / 수정 / 철회 → 수정 유지</strong>: 🔴는 유지하되 성격을 바꾼다. 시간축 반박의 전제("조정 항목이 줄어든다")는 3년째 증거가 없고(1,370만 → 2,270만 → 상반기 1,510만 달러·브리프 C.5), 2027년에는 리버포인트 통합 비용이 새로 얹힌다. 그리고 Base 2년 0.97x·3년 0.98x는 "지금 사서 기다리는 사람"과 "10~11월 자료를 보고 사는 사람"의 기대 결과가 같다는 뜻이다 — 기다리는 쪽만 정보를 더 가진다. 따라서 본 🔴는 <strong>"가격 하나를 기다리는 보류"가 아니라 "10월 감사 재무제표·11월 3분기 두 자료 전까지의 보류"</strong>로 좁힌다. 숏커버 급등으로 놓치면 그것은 §H.1 Bull(5년 2.06x·연 15%)을 놓친 것이지 텐배거를 놓친 것이 아니다.</li>
+</ul>
+<p><strong>한계:</strong></p>
+<ol>
+<li>리버포인트 감사 재무제표(8-K/A) 미제출 — 인수 매출 1.5억 달러·마진 40%는 회사 제시·미감사(브리프 E). 본 verdict의 "비싸다"와 "안 죽는다" 둘 다 이 숫자 위에 서 있다.</li>
+<li>신용계약 원문의 약정 EBITDA 정의 미수집 — §G.8 임계점(순레버리지 4.0배)이 회사 조정 EBITDA 기준인지 더 보수적 정의인지에 따라 결합취약 경계선이 움직인다.</li>
+<li>공매도 리포트 검색 미수행(초안 §K.4c ❓) — 공매도 15%가 헤지인지 실제 숏인지 모른다. 이는 Steelman의 "trigger 영영 안 옴" 위험의 크기를 정하는 변수다.</li>
+<li>목표가 커버 2곳뿐이라 컨센서스가 없고, 2분기 콜은 공식 녹취가 아니다. 휴머노이드 주문 고객·금액 미공시(고객 검증 D).</li>
+<li>브리프 vs 원본 불일치 — 없음(item D 여섯 판정·수치 전부 초안·차트 보고서와 일치). 단 초안 요약의 "순레버리지 약 2.7배(회사 제시)"와 10-Q 실측 0.57배는 종결 전후 시점 차이라 오류가 아니다.</li>
+<li>9/22 +7.3% 원인 미확인(브리프 C.10) — 미공개 정보 가능성을 판정에 넣지 못했다.</li>
+</ol>
+</div><hr />
+<h2>📌 한 장 요약</h2>
+<ul>
+<li>🔴 <strong>이 회사의 돈은 로봇이 아니라 의료로 가고 있다.</strong> 2026년 7월 23일 Riverpoint Medical(수술용 봉합사·봉합 고정 나사·이식용 섬유)을 선지급 12억 달러 + 2027년 1월 8일까지 마일스톤 2억 5,000만 달러에 인수했다. 회사 역사상 최대 인수다. 의료 비중은 약 60%로 올라가고, 로봇·자동화 비중은 32.5%에서 약 28%로 내려간다.</li>
+<li>🔴 <strong>순현금 회사가 8개월 만에 순부채 약 9.5억 달러 회사가 됐다.</strong> 재원은 2025년 11월 의무전환 유닛(TEU) 6억 3,250만 달러, 2026년 6월 사모증자 3억 달러(주당 140달러), 차입 6억 1,600만 달러다. 주식 수는 2025년 말 대비 약 19~23% 늘어난다(TEU가 2028년 11월 주식으로 바뀌는 분 포함). 인수를 합쳐도 <strong>주당 매출은 제자리</strong>(약 26.6달러)다.</li>
+<li>🔴 <strong>밸류 〔§H.7〕: 🔴 고평가(약·경계)·신뢰도 중간(하단) · 🎯 진입 보류 — 더 싸게 사는 기준 $104~117(낮은 신뢰도 참고).</strong> 인수 후 기업가치 약 70~72억 달러를 설명하려면 앞으로 5년간 매출이 연 13~27% 늘어야 한다. 현실 범위는 5~10%다. 싸 보이는 지표는 과거 매출 배수(33퍼센타일) 하나뿐이고, 그것도 순부채 전환을 반영하지 못한다.</li>
+<li>🔴 <strong>내구성 〔§G.8〕: 🔴 결합취약(경계선).</strong> 금리·원가 하나만으로는 버틴다. 2027년 하반기에 매출 −15~20%와 원가 상승이 겹치면 약정 한도(순레버리지 4.0배)를 넘는다. 금리 헤지가 공시되지 않아 금리 +100bp마다 이자가 약 900만~1,000만 달러 늘어난다(추정).</li>
+<li>🟠 <strong>로봇 쪽 실체는 작지만 진짜다.</strong> 로봇·자동화 매출 2025년 3억 1,860만 달러(+10.5%) · 2026년 2분기 +13.5%. 휴머노이드는 2분기에 "훈련 시설용 수백 대분 서보 드라이브" 첫 의미 있는 주문(금액 미공시·경영진 "이익률 기여 미미" · 고객 검증 D). 그리고 <strong>중국 희토류 수출 허가를 몇 달째 못 받아</strong> 로봇·정밀제조 일부 납품이 늦어지고 있다(10-Q 신규 위험 문구).</li>
+<li>🟠 <strong>역사가 한 번 경고한 패턴이다.</strong> 성장의 약 3분의 2를 인수로 샀고, 10년 평균 유기성장은 3.5%다(약속 5~7%의 0.59배). "성장이 멈추면 역사상 최대 인수를 새로 조달한 돈으로 한다"는 패턴은 2008년 Excel 인수 → 2009~10년 파산보호(당시 GSI Group)가 첫 사례였다. 지금은 조건이 다르다 — 순레버리지 약 2.7배(회사 제시)·반복 매출 소모품·현 CEO 체제 인수 6건 실패 0.</li>
+<li>🟠 <strong>고객 집중 정정</strong>: 의료 OEM 두 곳이 매출의 12%·11%다(합계 23% · 이름 미공시 · 최소 구매 약정 없음 · 고객 검증 B). 같은 날 오전 스크리닝 보고서의 "10% 초과 고객 없음"은 사실이 아니다.</li>
+<li><strong>7축 종합 ⭐3.2</strong> (사업·thesis 매력도 · 밸류 멀티플 미반영) · 🧭 분면 〔§H.5〕 = <strong>약하고 비싼 쪽</strong>(회피·관망) · 💎 0to1 〔§H.6〕: Track A 1/7 → 불운 위험 ‖ ⭐2.5 ‖ 시장정의 화법 = 혼재.</li>
+<li><strong>BRCR 〔§H.7.6〕</strong>: ⚪ 적정(−0.10) · EBITDA 배수로 교차하면 🔴 쪽(−0.24) · 구속 병목 = 의료 OEM 설계 채택 잠금 · [올라탐 우세 · ATI 힘-토크 니치만 소유] · 약한 신호.</li>
+</ul>
+<blockquote>
+<p><strong>배경 (처음 보는 독자용 · 1회만)</strong>: Novanta는 1968년 레이저 스캐너 회사 General Scanning으로 시작했다. GSI Group 시절 무리한 차입 인수와 회계 재작성으로 2009~10년 파산보호를 겪었다. 이후 반도체 장비 사업 40%를 팔고 의료로 방향을 틀어 2016년 지금 이름이 됐다. 지금은 스스로를 "의료·산업 장비 회사(OEM)에 핵심 부품을 설계 단계부터 끼워 파는 회사"라고 부른다. 수술 로봇·레이저 가공기·반도체 장비·창고 로봇을 만드는 회사가 고객이다. 최종 사용자에게 직접 파는 일은 거의 없다.</p>
+</blockquote>
+<hr />
+<h2>🧭 7축 점수 (DD-v1.33)</h2>
+<figure class="dd-fig"><div id="fig-score7"></div><div class="dd-legend" id="fig-score7-leg"></div><figcaption id="fig-score7-cap"></figcaption></figure>
+
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">가중</th>
+<th style="text-align: center;">⭐</th>
+<th>한 줄</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🌦️ 날씨 (지정학+거시)</td>
+<td style="text-align: center;">3.0</td>
+<td style="text-align: center;">3.0</td>
+<td>의료 60%가 경기를 막아 주지만, 헤지 없는 변동금리 부채·중국 희토류 수출통제에 직접 노출</td>
+</tr>
+<tr>
+<td>⛰️ 산 (산업)</td>
+<td style="text-align: center;">1.5</td>
+<td style="text-align: center;">3.5</td>
+<td>로봇·자동화 + 최소침습수술 소모품 — 세상을 바꾸는 쪽이나 국가 자본의 직접 수혜는 약함</td>
+</tr>
+<tr>
+<td>🌲 숲 (섹터)</td>
+<td style="text-align: center;">1.5</td>
+<td style="text-align: center;">3.5</td>
+<td>힘-토크 센서 니치 1등 · 모션 부품은 난립 · 지금 병목은 아님</td>
+</tr>
+<tr>
+<td>🌳 나무 (기업)</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">3.5</td>
+<td>설계 채택 잠금은 진짜 · 곡괭이 질은 인수 레버리지로 준-B</td>
+</tr>
+<tr>
+<td>🌲🌳 옆의 나무</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">3.0</td>
+<td>매출 배수는 peer 중앙 · 이익률은 peer 아래</td>
+</tr>
+<tr>
+<td>👤 사람</td>
+<td style="text-align: center;">1.5</td>
+<td style="text-align: center;">3.5</td>
+<td>전문경영인 운영형 · 인수 통합은 입증, 유기성장 약속 미달 · 공개시장 매수 0주</td>
+</tr>
+<tr>
+<td>🔢 숫자 (재무건전성)</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">2.0</td>
+<td>GAAP 영업이익률 3년 하락 · 인수 후 부채 구조 🔴</td>
+</tr>
+<tr>
+<td><strong>종합 (가중평균)</strong></td>
+<td style="text-align: center;">10.5</td>
+<td style="text-align: center;"><strong>3.2</strong></td>
+<td>사업·thesis 매력도 · 밸류 멀티플 미반영 — "이 가격에 살 만한가"는 §H.7.3에서 따로 답함</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>비전축(⑤)은 사용자 수기 ⭐ 영역이다 — 🔴 <strong>비전축 사용자 ⭐ 대기</strong>. 위 사람 ⭐는 객관 7축만으로 산출했다.</p>
+</blockquote>
+<hr />
+<h1>Part 1 — Top-Down 7계층</h1>
+<h2>A. 🌦️ 날씨 — 지정학 + 거시경제 (장기 구조)</h2>
+<p><strong>한 줄로 말하면: 의료 비중이 커져 경기에는 덜 흔들리지만, 인수로 생긴 변동금리 부채와 중국산 희토류 때문에 날씨에 오히려 더 민감해졌다.</strong></p>
+<p>이 회사가 날씨를 받는 통로는 세 개다. 첫째 금리다 — 인수 뒤 약 8.5억 달러(마일스톤 포함 약 10~11억 달러) 부채가 대부분 변동금리이고, 금리 스왑은 공시되지 않았다. 둘째 미·중 공급망이다 — 로봇·정밀제조 제품 일부가 중국산 희토류 자석을 쓰는데, 중국 정부의 수출 허가를 몇 달째 받지 못해 납품이 늦어지고 있다. 셋째 경기다 — 의료가 약 60%라 제조업 경기 하강을 절반 넘게 막아 준다.</p>
+<table>
+<thead>
+<tr>
+<th>점검</th>
+<th style="text-align: center;">판정</th>
+<th style="text-align: center;">⭐</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>미·중 패권 구도</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+<td>지역화 생산 전략(미국·멕시코·코스타리카 FDA 등록 공장)이 관세·공급망 재편에 순풍. 단 부품 원료는 중국 의존</td>
+</tr>
+<tr>
+<td>수출통제·희토류</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">1</td>
+<td>10-Q(2026-08-05) 신규 위험 문구 — "중국산 희토류 수출 허가를 수개월째 받지 못해 주문 이행 지연·원가 상승" (<a href="https://www.sec.gov/Archives/edgar/data/1076930/000119312526335404/novt-20260703.htm">10-Q</a>)</td>
+</tr>
+<tr>
+<td>금리 민감도</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">1</td>
+<td>종결 후 총부채 $854.7M(<a href="https://www.sec.gov/Archives/edgar/data/1076930/000119312526316947/novt-20260722.htm">8-K</a>) · 스왑 공시 없음 · +100bp 부담 $1.5M(10-K 기준) → 약 $9~10M(추정)</td>
+</tr>
+<tr>
+<td>경기 사이클</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+<td>의료 ~60%(회사 제시) · 의료 소모품 반복 매출 ~25%</td>
+</tr>
+<tr>
+<td>달러</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+<td>미국 외 매출 약 45% · 환헤지 계약만 존재</td>
+</tr>
+<tr>
+<td>thesis anchor 정합</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+<td>아래 표</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>anchor (사용자 thesis 메모리)</th>
+<th style="text-align: center;">정합</th>
+<th>이 종목 노출</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>성상현 5/14 OpImp(현금흐름·생산성 시대)</td>
+<td style="text-align: center;">🟡</td>
+<td>자동화 부품은 생산성 수혜 · 단 현금 전환은 약함(2025 FCF $48.4M)</td>
+</tr>
+<tr>
+<td>Warsh 이중 전략(표면 완화·실질 긴축)</td>
+<td style="text-align: center;">🔴</td>
+<td>정책금리가 내려도 실질 차환 금리는 안 내려간다 — 헤지 없는 변동금리 부채에 불리</td>
+</tr>
+<tr>
+<td>사용자 매크로 view(Higher-for-Longer)</td>
+<td style="text-align: center;">🔴</td>
+<td>같은 이유</td>
+</tr>
+<tr>
+<td>Fryman 대만 억제 · 달러 패권</td>
+<td style="text-align: center;">⚪</td>
+<td>직접 노출 작음</td>
+</tr>
+<tr>
+<td>Carnegie 3진영(AI 노동)</td>
+<td style="text-align: center;">🟡</td>
+<td>휴머노이드·자동화가 노동 대체의 물리 층 — 단 매출 비중 작음</td>
+</tr>
+</tbody>
+</table>
+<p><strong>날씨 ⭐ = (4+1+1+4+2.5+4)÷6 = 2.75 → 3.0.</strong> 매크로 레짐은 오늘 오전 macro-weekly(2026-09-26) 인용 — 10년물 5.18%·30년물 5.50%·10/28 연준 인상 확률 66%·스태그플레이션 긴장.</p>
+<p>▶ <strong>Flip</strong>: 🟢 강화 = 희토류 허가 정상화 공시 / 변동금리 부채 50%+ 스왑 고정 · 🔴 훼손 = 희토류 허가 장기화로 로봇·정밀제조 매출 역성장 / 차환 조건 악화.</p>
+<h2>B. ⛰️ 산 — 산업</h2>
+<p><strong>한 줄로 말하면: 올라탄 산업(로봇·자동화, 최소침습수술)은 세상을 바꾸는 쪽이지만, 이 회사는 그 산업의 국가 자본을 직접 받는 자리가 아니다.</strong></p>
+<ul>
+<li><strong>B.1 세상을 바꾸는 산업인가</strong>: ✅ YES — 로봇·자동화(IFR 2025년 산업용 로봇 신규 설치 +11%·가동 재고 500만 대)와 최소침습수술(병원 수술을 외래로 옮기는 흐름). ⭐5</li>
+<li><strong>B.2 미·중 패권 자본 투입(제1원칙)</strong>: ⚠️ — 로봇·희토류는 미·중 경쟁의 한복판이지만, CHIPS·IRA 같은 직접 보조금 수혜는 없다. ⭐3</li>
+<li><strong>B.3 내러티브 5축</strong>:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">충족</th>
+<th style="text-align: center;">깊이 ⭐</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔧 기술</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">4</td>
+<td>힘-토크 센서·서보 드라이브가 휴머노이드 관절·손목에 들어감(10-K "humanoids" 응용 명시)</td>
+</tr>
+<tr>
+<td>👥 사회</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">3</td>
+<td>고령화→수술 수요 · 노동 부족→자동화</td>
+</tr>
+<tr>
+<td>🏛️ 정책</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">2</td>
+<td>희토류 수출통제는 역풍 · 리쇼어링은 순풍</td>
+</tr>
+<tr>
+<td>🌐 지정학</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">2</td>
+<td>공급망 재편의 간접 수혜</td>
+</tr>
+<tr>
+<td>💰 자본</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">3</td>
+<td>로봇 자본 유입(SoftBank 매집 등) · 회사 자체는 인수 자본 조달</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-c3"></div><div class="dd-legend" id="fig-c3-leg"></div><figcaption id="fig-c3-cap"></figcaption></figure>
+
+<p>등급 = 🟡 3축(기술·사회·자본) · 최강 축 = 기술 ⭐4.
+- <strong>B.4 산업 CAGR</strong>: 로봇·자동화 부품은 중고성장(연 10% 안팎·추정), 최소침습 소모품은 회사 제시 12~15%. 30% 초과 산업은 아니다. ⭐2.5</p>
+<p><strong>산 ⭐ = (5+3+4+2.5)÷4 = 3.6 → 3.5.</strong> ▶ Flip: 🟢 휴머노이드 양산 주문(수천 대 단위) 공시 · 🔴 로봇 설비투자 사이클 하강.</p>
+<h2>C. 🌲 숲 — 섹터 (병목 위치)</h2>
+<p><strong>한 줄로 말하면: 이 회사가 서 있는 칸(힘-토크 센서·정밀 모션·의료기기 부품)은 부가가치는 괜찮지만 지금 병목은 아니다. 병목이 될 수 있는 건 2~5년 뒤 휴머노이드 대량 생산 때의 힘-토크 센서뿐이다.</strong></p>
+<p>같은 날 Chain-Dive(Physical AI)에서 산업 전체를 9구간으로 나눴다. Novanta는 ④ 센서·인지(ATI 힘-토크)와 ⑤ 구동(서보 드라이브·코어리스 모터·인코더)에 걸쳐 있다.</p>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>병목</th>
+<th>본 종목 위치</th>
+<th style="text-align: center;">가격 반영</th>
+<th style="text-align: center;">유지 기간</th>
+<th>해소 경로</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 (0~6M)</td>
+<td>로봇 두뇌 소프트웨어의 사후학습·신뢰성</td>
+<td>밖</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>T+6~24M</td>
+<td>로봇 안전인증·현장 허가</td>
+<td>간접(안전 센서·충돌 감지)</td>
+<td style="text-align: center;">낮음</td>
+<td style="text-align: center;">추정 불가</td>
+<td>NVIDIA가 인증을 칩 플랫폼에 흡수</td>
+</tr>
+<tr>
+<td>T+2~5Y</td>
+<td>대량 휴머노이드의 관절·손목 부품</td>
+<td><strong>힘-토크 센서(ATI)·서보</strong></td>
+<td style="text-align: center;">낮음</td>
+<td style="text-align: center;">추정 불가</td>
+<td>카메라 기반 촉각 추정으로 우회 · 중국 국산화 · OEM 내재화(Tesla식)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>지불자 경로</strong>: 로봇 쪽 큰손(휴머노이드 OEM)은 아직 웃돈을 내는 단계가 아니다(연구·훈련 시설용 소량) → <code>경로 불명</code>에 가까운 <code>1단계 간접</code>. 의료 쪽은 큰손 = 수술기기 OEM → <strong><code>직접</code></strong> — 대신 두 고객이 매출의 23%(고객 검증 B)이고 가격 인상 테스트는 🟡(아래 §D.6-a)라 큰손 협상력에 마진이 눌리는 자리이기도 하다.</li>
+</ul>
+<p><strong>4중 필터(섹터 단위)</strong></p>
+<table>
+<thead>
+<tr>
+<th>필터</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">⚪</td>
+<td>2026년 1분기 수주 +37%·수주/매출 1.10 · 부족·리드타임 신호는 없음(오히려 자사 공급이 희토류로 막힘)</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">🟡</td>
+<td>힘-토크 센서는 상장 사실상 1곳(ATI)+비상장(SCHUNK·Bota·Robotiq) 과점 · 모션 부품은 AMETEK·Parker·Regal·Allient 등 다수</td>
+</tr>
+<tr>
+<td>③ 섹터 1~2등</td>
+<td style="text-align: center;">⭐4</td>
+<td>ATI 힘-토크 니치 1등 · 회사 전체로는 여러 니치의 강자</td>
+</tr>
+<tr>
+<td>④ 마진</td>
+<td style="text-align: center;">🟡</td>
+<td>GM 44.4%(FY25) · GAAP 영업이익률 9.6%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>숲 ⭐ = (병목성 2.5 + 2.5 + 4 + 4 + 4)÷5 = 3.4 → 3.5.</strong> ▶ Flip: 🟢 휴머노이드 OEM의 힘-토크 센서 단독 공급 계약 · 🔴 카메라·AI 기반 힘 추정이 센서를 대체한 양산 사례.</p>
+<h2>D. 🌳 나무 — 기업</h2>
+<h3>D.0 제품·수익모델 — R-Dive(2026-09-27) 요약</h3>
+<p><strong>한 줄로 말하면: 장비 회사가 설계도에 부품을 한 번 넣으면 그 장비가 단종될 때까지 주문이 이어지는 구조다. 이 끈적임이 뼈대이고, 지금 회사는 그 위에 의료 소모품을 얹고 있다.</strong></p>
+<ul>
+<li><strong>아키타입</strong>: ⑥ 하드웨어 일회 판매형(설계 채택 부품, 2025 매출의 약 85%) + ① 믹스 시프트(의료 소모품 15% → 인수 후 약 25% · 회사 목표 "2030년 약 3분의 1").</li>
+<li><strong>매출 구성(2025)</strong>: 로봇·자동화 $318.6M(32.5%) · 정밀제조(레이저 조준·광원·공기 베어링 스핀들) $182.3M(18.6%) · 첨단수술(기체 주입기·펌프·튜브 세트) $242.4M(24.7%) · 정밀의료(의료기기용 카메라·RFID 등) $237.3M(24.2%) + Riverpoint 연 ~$150M(회사 제시·미감사).</li>
+<li><strong>치명 함정(R-Dive 12함정 🚩3)</strong>: ① 이익률 분모 착시 — 조정 EBITDA 22.5% vs GAAP 영업이익 9.6%, 빼는 구조조정·인수 비용이 해마다 반복($13.7M → $22.7M → 2026 상반기 $15.1M) ② 고객 집중 — 두 곳 23% ③ 주당 희석 — 주식 +19~23%인데 주당 매출 제자리.</li>
+<li><strong>사업부 이익률 역방향</strong>: 자동화 19.3% → 22.9%로 오르는데 의료는 16.5% → 10.7%로 내려왔다. 회사는 이익률이 떨어지던 의료 쪽에 14억 5,000만 달러를 걸었다(R-Dive).</li>
+</ul>
+<figure class="dd-fig"><div id="fig-d0"></div><div class="dd-legend" id="fig-d0-leg"></div><figcaption id="fig-d0-cap"></figcaption></figure>
+
+<h3>D.0.5 고객 검증 등급</h3>
+<table>
+<thead>
+<tr>
+<th>고객 관계</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>의료 OEM 2곳(12%·11%)</td>
+<td style="text-align: center;">B</td>
+<td>10-K 집중도 주석으로 확인 · 이름 미공시 · 최소 구매 약정 없음</td>
+</tr>
+<tr>
+<td>상위 10곳(42%)</td>
+<td style="text-align: center;">B</td>
+<td>10-K</td>
+</tr>
+<tr>
+<td>휴머노이드 서보 드라이브 첫 주문</td>
+<td style="text-align: center;">D</td>
+<td>2분기 실적 통화 발언뿐 · 고객명·금액 미공시 · 시험·훈련 시설용</td>
+</tr>
+<tr>
+<td>Riverpoint 고객(같은 의료 OEM군)</td>
+<td style="text-align: center;">C</td>
+<td>회사 설명회 자료(비GAAP·미감사)</td>
+</tr>
+</tbody>
+</table>
+<h3>D.5 곡괭이 질 — <strong>준-B (자본 조달형 인수 확장)</strong></h3>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 마진</td>
+<td style="text-align: center;">🟡</td>
+<td>출처 3분해: (a) 가격결정력 ✅ — 인플레期 GM 42.5→44.0→45.4%(2021~23) · (b) 정부 이전지출 없음 · (c) 일회성 없음 → A 가능. 단 GAAP 영업이익률 3년 하락</td>
+</tr>
+<tr>
+<td>② 설비투자 강도</td>
+<td style="text-align: center;">🟢</td>
+<td>매출의 1.6%</td>
+</tr>
+<tr>
+<td>③ 자금조달 의존</td>
+<td style="text-align: center;">🔴</td>
+<td>TEU $632.5M + 사모증자 $300M + 차입 $616M · 주식 +19~23%</td>
+</tr>
+<tr>
+<td>④ 현금 전환</td>
+<td style="text-align: center;">⚪</td>
+<td>2025 FCF $48.4M(OCF −60%) → 2026 상반기 $104.9M(단 고객 선급금 $11M → $48M 포함)</td>
+</tr>
+</tbody>
+</table>
+<p>오전 스크리닝에서 "A 조건부(사용처 공시되면 재판정)"로 둔 판정을 <strong>준-B로 재판정</strong>한다 — 조건이 발동했다.</p>
+<h3>D.6 해자</h3>
+<p><strong>D.6-a 해자 유형 4종 + 가격 인상 테스트</strong></p>
+<table>
+<thead>
+<tr>
+<th>유형</th>
+<th style="text-align: center;">작동</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 네트워크 효과</td>
+<td style="text-align: center;">❌</td>
+<td>해당 없음(부품 판매)</td>
+</tr>
+<tr>
+<td>② 브랜드</td>
+<td style="text-align: center;">⚠️</td>
+<td>GM 44%로 AME 37%·ITGR 26%보다 높지만 CGNX 69%보다 낮음</td>
+</tr>
+<tr>
+<td>③ 전환 비용</td>
+<td style="text-align: center;">✅</td>
+<td>10-K: 장비 수명 동안 공급자 교체 어려움 · 의료는 부품 교체 시 재인증</td>
+</tr>
+<tr>
+<td>④ 비용 우위</td>
+<td style="text-align: center;">❌</td>
+<td>근거 없음</td>
+</tr>
+</tbody>
+</table>
+<p>가격 인상 테스트 = <strong>🟡</strong>(R-Dive C.5 소비 — 인플레期 GM 방어는 확인, 2025년 관세·지역화 비용은 흡수했으나 물량 −0.5%) → ✅ 1개 = ⭐3, 🟡 상한 ⭐3 → <strong>D.6-a ⭐3</strong>.
+<strong>D.6-b</strong>: Durable(FDA 등록 공장·설계 채택 설치 기반·Riverpoint 특허 80건+) + Variable(센서·모션 기술) = 균형형이나 Durable 중간 → ⭐4. <strong>D.6 ⭐ = 3.5</strong> · 해자 내구성 = 의료 7~10년 / 자동화 3~5년(추정).</p>
+<h3>D.7 확장성 ⭐4 — 수술 로봇·창고 자동화·휴머노이드·반도체 장비·의료기기로 인접 확장. 단 확장 방향이 로봇이 아니라 의료로 기울었다.</h3>
+<h3>D.8 하방·상방 ⭐3 — Cash cow = 의료 소모품 반복 매출(~$300M·회사 제시) ✅ · 하방은 인수 레버리지로 전보다 덜 닫혀 있다.</h3>
+<p><strong>나무 ⭐ = (D.0 4 + D.5 2.5 + D.6 3.5 + D.7 4 + D.8 3)÷5 = 3.4 → 3.5.</strong> ▶ Flip: 🟢 Riverpoint 감사 재무가 회사 제시치와 일치 · 조정 항목 연 $15M 이하로 축소 · 🔴 의료 부문 이익률 추가 하락 / 두 대형 고객 중 1곳 이탈.</p>
+<h2>E. 🌲🌳 옆의 나무 — 경쟁사</h2>
+<p><strong>한 줄로 말하면: 매출 대비 몸값은 동종 중간인데, 이익률은 동종 아래다. 몸값의 웃돈이 이익률로 설명되지 않는다.</strong></p>
+<p>peer = AME(정밀 계측·모션) · CGNX(머신비전) · MKSI(레이저·광학) · TDY(센서) · ITGR(의료 OEM 부품 — 본 종목이 열위인 비교 포함) · 대장주 Keyence(시총 앵커로 쓰지 않음).</p>
+<figure class="dd-fig"><div id="fig-e1"></div><div class="dd-legend" id="fig-e1-leg"></div><figcaption id="fig-e1-cap"></figcaption></figure>
+
+<table>
+<thead>
+<tr>
+<th>항목 (2026-09-25 · TTM · GAAP 기준 열 통일)</th>
+<th>NOVT 합산</th>
+<th>AME</th>
+<th>CGNX</th>
+<th>MKSI</th>
+<th>TDY</th>
+<th>ITGR</th>
+<th>Keyence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EV/매출</td>
+<td>6.0</td>
+<td>7.5</td>
+<td>8.8</td>
+<td>4.9</td>
+<td>4.7</td>
+<td>3.1</td>
+<td>14.2</td>
+</tr>
+<tr>
+<td>EV/EBITDA</td>
+<td>~30</td>
+<td>23.7</td>
+<td>35.7</td>
+<td>20.1</td>
+<td>18.9</td>
+<td>16.2</td>
+<td>—</td>
+</tr>
+<tr>
+<td>조정 P/E(다음 해 컨센)</td>
+<td>33.0</td>
+<td>26.1</td>
+<td>29.1</td>
+<td>14.8</td>
+<td>22.9</td>
+<td>18.4</td>
+<td>42.6</td>
+</tr>
+<tr>
+<td>GM</td>
+<td>44.5%</td>
+<td>36.9%</td>
+<td>68.9%</td>
+<td>47.0%</td>
+<td>43.3%</td>
+<td>26.1%</td>
+<td>83.7%</td>
+</tr>
+<tr>
+<td>영업이익률</td>
+<td>11.5%</td>
+<td>26.2%</td>
+<td>29.4%</td>
+<td>20.6%</td>
+<td>20.2%</td>
+<td>10.0%</td>
+<td>54.0%</td>
+</tr>
+<tr>
+<td>반복 매출</td>
+<td>소모품 ~25%</td>
+<td>—</td>
+<td>서비스 &lt;10%</td>
+<td>—</td>
+<td>—</td>
+<td>높음</td>
+<td>—</td>
+</tr>
+<tr>
+<td>고객 집중</td>
+<td>2곳 23%</td>
+<td>낮음</td>
+<td>1곳 15%</td>
+<td>—</td>
+<td>정부</td>
+<td>높음</td>
+<td>낮음</td>
+</tr>
+</tbody>
+</table>
+<p>(yfinance·§H.7 서브에이전트 재구성값. NOVT EV는 인수 후 재구성 ~$71억. Keyence는 엔화 157.19/달러 환산.)</p>
+<ul>
+<li><strong>수익모델</strong>: 동등(GM 중간·반복 매출은 소모품으로 늘어나는 중). <strong>정부 vs 민간</strong>: 민간 거의 전부. <strong>경쟁 포지션</strong>: 방어(힘-토크 니치 1등·설계 채택 잠금) — 최대 위협 = 로봇 OEM의 부품 내재화.</li>
+<li><strong>옆나무 ⭐ = 3.0.</strong></li>
+</ul>
+<h2>F. 👤 사람 — People-Dive(2026-09-27) 요약</h2>
+<p><strong>한 줄로 말하면: 약속한 곳에 돈을 쓰는 데는 정확하지만, 가장 중요한 약속(유기성장)은 10년째 못 지켰다. 그리고 자기 돈으로 주식을 산 적이 없다.</strong></p>
+<p>CEO 겸 이사회 의장 <strong>Matthijs Glastra</strong>는 창업자가 아니라 필립스에서 18년 일한 전문경영인이다. 2012년 사업부장으로 들어와 COO를 거쳐 2016년 CEO가 됐다. "작은 회사를 사서 개선 체계로 굴리는" 운영형이다.</p>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">⭐</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 약력</td>
+<td style="text-align: center;">4</td>
+<td>델프트공대 응용물리 · 필립스 18년(LED 부품 회사 COO 포함) · CEO 10년째 · 2021년부터 의장 겸임</td>
+</tr>
+<tr>
+<td>② 명성</td>
+<td style="text-align: center;">3</td>
+<td>업계 행사 연사 수준 · 저서·장문 인터뷰 없음</td>
+</tr>
+<tr>
+<td>③ 능력</td>
+<td style="text-align: center;">3.5</td>
+<td>재임 10년 주가 8.5배(러셀2000 2.6배) · 인수 6건 손실 처리 0 / 유기성장 10년 평균 3.5% · 2021년 말 이후 주가 −18% · 2025 OCF −60%</td>
+</tr>
+<tr>
+<td>④ 도덕성</td>
+<td style="text-align: center;">4</td>
+<td>개인 소송·SEC 조치·특수관계 거래 없음 · 보수가 주가 따라 실제로 깎임(2023 성과주식 29%만 지급) · 🟡 감시 3건(아래)</td>
+</tr>
+<tr>
+<td>⑤ 비전</td>
+<td style="text-align: center;">사용자 ⭐ 대기</td>
+<td>💬 Claude 의견: "고부가 부품 + 반복 매출 소모품으로 경기에 덜 흔들리는 회사"라는 비전은 10년 동안 말과 돈의 방향이 같았다. 다만 본인의 사명이라기보다 포트폴리오 설계자의 비전이다(halo 효과 주의 · 매수신호 아님)</td>
+</tr>
+<tr>
+<td>⑥ Skin in the Game</td>
+<td style="text-align: center;">2.5</td>
+<td>보유 약 8.4만 주(약 $1,210만·추정) · <strong>14년 공개시장 매수 0주</strong> · 누적 매도 29.8만 주(약 $3,820만)</td>
+</tr>
+<tr>
+<td>⑦ 거버넌스</td>
+<td style="text-align: center;">3.5</td>
+<td>이사 9명 중 8명 독립 · 보수 안건 찬성 97~98% / CEO 의장 겸임 · 선임이사가 보상위원장 겸임 · 2024~25 임원 3명·사외이사 2명 교체</td>
+</tr>
+<tr>
+<td>⑧ 외부 평가</td>
+<td style="text-align: center;">3</td>
+<td>글래스도어 3.7·CEO 지지 72% · 경영진 평가사 "비용 통제와 유기성장 실행 기록이 엇갈린다"</td>
+</tr>
+</tbody>
+</table>
+<p><strong>사람 ⭐ = 객관 7축 평균 3.4 → 3.5.</strong></p>
+<ul>
+<li><strong>언행일치(판정 가능 9건)</strong>: 이행 6 · 부분 2 · 미달 1. 이행한 6건은 모두 1년 이내 약속이거나 "돈을 쓰겠다"는 약속이다. 미달 1건이 핵심인 유기성장 5~7% 약속(10년 평균 3.5%)인데, 2026년 2월에 다시 "중간~높은 한 자릿수"를 걸었다.</li>
+<li><strong>🟡 도덕성 감시 3건</strong>: ① 공로를 넉넉하게 세는 화법("재임 중 의료 비중 10% → 55%" — 취임 때 이미 약 40~45%) ② 새 매도 계획(2026-06-12, 3.9만 주·2027-05까지)을 세운 날이 인수 발표 사흘 뒤 ③ 2025년 직원 현금 보너스를 주식으로 대체하면서 경영진은 현금 보너스를 받음. 게이트는 통과(규정 위반 증거 없음).</li>
+<li><strong>핵심 인재</strong>: 2025-01 공동 COO 2명(Thermo Fisher·Danaher 출신) — 1명이 Riverpoint 통합 담당 · 법무총괄 2025-07 교체(새 법무총괄은 화이자·버텍스 인수 법무 출신) · CFO Robert Buckley 15년째·보유 약 13.3만 주(연봉의 약 33배, CEO보다 많음)·매도는 2016년 옵션 행사분만.</li>
+<li>🔴 <strong>사용자 직접 점검 의무</strong> — 한정수 CEO 정성 driver(① 야망 ② 야수성 ③ 헝그리 정신)와 의미주의자 기준(① 창업자-CEO? → 아님 ② Skin in the Game? ③ 사명 &gt; 부?)은 Claude가 채점하지 않는다.</li>
+<li>▶ Flip: 🟢 공개시장 첫 매수 · 2027년 말 순레버리지 2.3배 미만 달성 / 🔴 사모증자가 $140 아래에서 새 계획 매도 집행 · Riverpoint 감사 숫자 괴리에 대한 설명 부실 · CFO 이탈.</li>
+</ul>
+<h2>G. 🔢 숫자 — 재무건전성 (SEC 1차)</h2>
+<p><strong>한 줄로 말하면: 매출은 인수로 커지고 유기성장도 최근 살아났지만, 회계상 이익률은 3년째 내려왔고 인수로 재무 구조가 순현금에서 순부채로 뒤집혔다.</strong></p>
+<h3>G.1 기본 정량 (참고 — 밸류 멀티플은 점수 미반영)</h3>
+<ul>
+<li>주가 $143.93 · 52주 $98.27~176.38 · 보통주 3,781만 주 · 희석(TEU 최소 전환 포함) 약 4,254만 주 → 희석 시총 약 $61억 · 인수 후 EV 약 $70~72억.</li>
+<li>공매도 497만 주 = 유통주식의 15.1% · 회수 일수 15.6일(2026-09 기준) — 의무전환 유닛 보유자의 헤지 매도가 섞였을 가능성[추론].</li>
+</ul>
+<h3>G.1.5 🎯 시총 10배 랜드마크</h3>
+<figure class="dd-fig"><div id="fig-g15"></div><div class="dd-legend" id="fig-g15-leg"></div><figcaption id="fig-g15-cap"></figcaption></figure>
+
+<p>지금은 약 $61억(희석) → 텐배거면 약 $610억으로 AMETEK(현 $575억)·Teradyne(현 $623억) 크기다(규모 비교일 뿐).</p>
+<h3>G.3 4축</h3>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">판정</th>
+<th>근거 (SEC 10-K·10-Q)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 성장</td>
+<td style="text-align: center;">🟡</td>
+<td>매출 9년 CAGR 11.0%(인수 포함) · 유기 FY25 −0.5% → 26Q1 +3.1% → 26Q2 +9.3%(2023년 1분기 이후 최고)</td>
+</tr>
+<tr>
+<td>② 마진</td>
+<td style="text-align: center;">🔴</td>
+<td>GAAP 영업이익률 12.5%(2023) → 11.6% → 9.6%(2025) → 26Q2 6.8% · 조정 EBITDA는 반대로 상승</td>
+</tr>
+<tr>
+<td>③ 현금</td>
+<td style="text-align: center;">⚪</td>
+<td>OCF 2024 $158.5M → 2025 $64.1M → 2026 상반기 $116.5M(선급금 포함)</td>
+</tr>
+<tr>
+<td>④ 고금리·고물가 내구성</td>
+<td style="text-align: center;">🔴</td>
+<td>G.4-a 인수 후 5 sub: 이자보상(GAAP 영업이익 ÷ 이자) ~2배 🔴 · 순부채/EBITDA ~2.7배(회사 제시) 🟡 · 만기 = 신용계약 전부 2030-06 한 해 집중 🔴 · 변동금리 &gt;50%·스왑 없음 🔴 · 즉시 유동성(현금 ÷ 1년 내 부채·마일스톤) &lt;1배 🔴(리볼버 잔여 $434M 별도) → 🟢 0/5</td>
+</tr>
+</tbody>
+</table>
+<h3>G.5 궤적</h3>
+<figure class="dd-fig"><div id="fig-g5"></div><div class="dd-legend" id="fig-g5-leg"></div><figcaption id="fig-g5-cap"></figcaption></figure>
+
+<table>
+<thead>
+<tr>
+<th>FY</th>
+<th style="text-align: right;">매출 $M</th>
+<th style="text-align: right;">GM</th>
+<th style="text-align: right;">GAAP 영업이익률</th>
+<th style="text-align: right;">OCF</th>
+<th style="text-align: right;">FCF</th>
+<th style="text-align: right;">희석 주식(M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2021</td>
+<td style="text-align: right;">706.8</td>
+<td style="text-align: right;">42.5%</td>
+<td style="text-align: right;">9.1%</td>
+<td style="text-align: right;">94.6</td>
+<td style="text-align: right;">74.6</td>
+<td style="text-align: right;">35.8</td>
+</tr>
+<tr>
+<td>2022</td>
+<td style="text-align: right;">860.9</td>
+<td style="text-align: right;">44.0%</td>
+<td style="text-align: right;">12.0%</td>
+<td style="text-align: right;">90.8</td>
+<td style="text-align: right;">71.1</td>
+<td style="text-align: right;">35.9</td>
+</tr>
+<tr>
+<td>2023</td>
+<td style="text-align: right;">881.7</td>
+<td style="text-align: right;">45.4%</td>
+<td style="text-align: right;">12.5%</td>
+<td style="text-align: right;">120.1</td>
+<td style="text-align: right;">100.1</td>
+<td style="text-align: right;">36.0</td>
+</tr>
+<tr>
+<td>2024</td>
+<td style="text-align: right;">949.2</td>
+<td style="text-align: right;">44.4%</td>
+<td style="text-align: right;">11.6%</td>
+<td style="text-align: right;">158.5</td>
+<td style="text-align: right;">141.4</td>
+<td style="text-align: right;">36.1</td>
+</tr>
+<tr>
+<td>2025</td>
+<td style="text-align: right;">980.6</td>
+<td style="text-align: right;">44.4%</td>
+<td style="text-align: right;">9.6%</td>
+<td style="text-align: right;">64.1</td>
+<td style="text-align: right;">48.4</td>
+<td style="text-align: right;">36.7</td>
+</tr>
+<tr>
+<td>2026E(가이던스)</td>
+<td style="text-align: right;">1,130~1,140</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">~41~42.5</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>2026 가이던스(8/5·Riverpoint 포함): 조정 EBITDA $273~278M · 조정 EPS $3.68~3.74. 2월 단독 가이던스($1,030~1,050M) 대비 매출 +$100M은 대부분 인수분이다.</li>
+</ul>
+<h3>G.6 실물 병목 7카테고리: 자동화 ✅ · 산업재 ✅ · 공급망 재편(지역화 생산) △.</h3>
+<h3>G.8 고금리·고물가 내구성 정밀 진단 (서브에이전트 · 점수 미합산)</h3>
+<p><strong>요약</strong>: 🏷️ <strong>🔴 결합취약(경계선·극단 시나리오 조건부)</strong> · 신뢰도 중간(하단) · 흔들림 변수 = 2027년 매출 감소 폭(자동화 부문·희토류) · 풀 DD 승격 중상.
+🎯 <strong>버티는가</strong>: 금리 하나로는 무너지지 않는다. 무너뜨리는 것은 2027년 하반기에 매출 −15~20%와 원가 상승이 겹치는 경우다(낮은 신뢰도 참고 · 매도 신호 아님).</p>
+<table>
+<thead>
+<tr>
+<th>근거 (1차 공시)</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>종결 후 총부채</td>
+<td>$854.7M (<a href="https://www.sec.gov/Archives/edgar/data/1076930/000119312526316947/novt-20260722.htm">종결 8-K</a>) · 마일스톤 뒤 약 $10~11억</td>
+</tr>
+<tr>
+<td>약정</td>
+<td>순레버리지 한도 4.00배(인수 후 4개 분기 4.50배) · 현금 차감 최대 $100M · 고정비보상 하한 1.25배(4개 분기 1.00배) · 7/3 실측 0.57배 / 4.93배 (<a href="https://www.sec.gov/Archives/edgar/data/1076930/000119312526335404/novt-20260703.htm">10-Q</a>)</td>
+</tr>
+<tr>
+<td>리볼버 남은 한도</td>
+<td>$434.0M(7/23) — 마일스톤을 리볼버로 내면 약 $200~280M</td>
+</tr>
+<tr>
+<td>금리 헤지</td>
+<td>스왑 공시 없음(환헤지만) · +100bp 부담 $1.5M(10-K) → 약 $9~10M(추정)</td>
+</tr>
+<tr>
+<td>만기</td>
+<td>신용계약 전부 2030-06 한 해 · TEU 노트 잔액 $94.4M(2028-11까지 분할)</td>
+</tr>
+<tr>
+<td>연 고정 유출</td>
+<td>이자 $55~65M + 의무 원금 $45~55M = 연 $100~120M(추정)</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>결합 시나리오 (원가/금리/수요 · 2027 EBITDA 기준선 $300~330M)</th>
+<th>약정 레버리지</th>
+<th>EBITDA÷이자</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>경미 +5%/+100bp/−5%</td>
+<td>3.1~3.4배</td>
+<td>3.7~4.3배</td>
+</tr>
+<tr>
+<td>기준 +10%/+200bp/−10%</td>
+<td>3.5~4.0배</td>
+<td>2.8~3.3배</td>
+</tr>
+<tr>
+<td>심각 +20%/+300bp/−20%</td>
+<td><strong>5.0~6.0배 ❌</strong></td>
+<td>1.6~2.0배</td>
+</tr>
+<tr>
+<td>디플레형 −10%/−100bp/−20%</td>
+<td>3.75~4.3배 ⚠️</td>
+<td>4.2~4.8배</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>🔴 <strong>임계점</strong>: 변수 하나씩으로는 모두 생존한다. 수요 −15% 이상과 원가 +10% 이상이 약정 완화 기간이 끝난 2027년 3분기 이후에 겹치면 약정을 넘는다. 가격 전가력은 1차로 확인된다(인플레期 GM 42.5 → 45.4%). 다만 희토류는 가격이 아니라 <strong>물량</strong> 문제라 전가로 막을 수 없다.</li>
+<li>1970년대 유사성 3/5 · 인플레 부호 = 약한 피해(영업 중립~약수혜, 재무 피해) · [고금리 지속 시 − / 저금리·디스인플레 전환 시 금리만 보면 +, 수요 −20% 동반이면 중립].</li>
+<li>⚠️ 당초 경계 없는 🔴이었으나, 과거 10년 최악 매출 감소가 −5.7%(2020)라 −20%는 표본 밖 극단이므로 "경계선·극단 시나리오 조건부"로 범위를 좁혔다.</li>
+<li>▶ Flip: 🔴→⚪ = 마일스톤 후 순레버리지 ≤2.8배 · 변동부채 50%+ 스왑 고정 · 추가 증자 / 🔴 심화 = 자동화 수주 −10% 2분기 연속 · 희토류 장기화 · 가이던스 하향 / 레짐 반증 = SOFR 3% 미만 + 제조업 PMI 50 회복.</li>
+<li>의무 라벨: ① 낮은 신뢰도 참고 ② 🎯 직접 한 줄(위) ③ 장기 thesis 종목 stop sign ❌ ④ 점수 미반영.</li>
+<li>오늘 오전 standalone 진단(10-K 기준 "⚪ 조건부 — 현금이 인수로 나가면 결합취약군으로 이동")의 조건이 실제로 발동해 판정이 바뀌었다.</li>
+</ul>
+<p><strong>숫자 ⭐ = (🟡4 + 🔴1 + ⚪2.5 + 🔴1)÷4 = 2.1 → 2.0.</strong> ▶ Flip: 🟢 마일스톤 지급 후 순레버리지 ≤2.8배 · 변동부채 절반 이상 스왑 · 조정 항목 축소 · 🔴 가이던스 하향 / 마일스톤을 증자로 조달.</p>
+<hr />
+<h1>Part 2 — 추가 심층</h1>
+<h2>H. 시나리오 · Catalyst · 리스크 신호</h2>
+<h3>H.1 시나리오 (2/3/5년)</h3>
+<p>기준: 희석 4,250만 주 · 2026 매출 $1,135M · 조정 EBITDA 마진 24.3% → 수렴 · 순부채는 시나리오별 상환 경로.</p>
+<table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: center;">확률</th>
+<th style="text-align: center;">2년</th>
+<th style="text-align: center;">3년</th>
+<th style="text-align: center;">5년</th>
+<th>가정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🟢 Bull</td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: center;">1.24x</td>
+<td style="text-align: center;">1.41x</td>
+<td style="text-align: center;"><strong>2.06x</strong> ($296)</td>
+<td>매출 CAGR 13%(휴머노이드 부품 양산 + Riverpoint 12~15% + 추가 인수) · 마진 28% · EV/EBITDA 21~22배</td>
+</tr>
+<tr>
+<td>🟡 Base</td>
+<td style="text-align: center;">50%</td>
+<td style="text-align: center;">0.97x</td>
+<td style="text-align: center;">1.03x</td>
+<td style="text-align: center;"><strong>1.22x</strong> ($175)</td>
+<td>CAGR 8.5% · 마진 25.5% · 20→18배 · 순부채 $4억까지 축소</td>
+</tr>
+<tr>
+<td>🔴 Bear</td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: center;">0.51x</td>
+<td style="text-align: center;">0.47x</td>
+<td style="text-align: center;"><strong>0.50x</strong> ($72)</td>
+<td>CAGR 4% · 마진 22% · 13~14배 · 순부채 $9억 유지(자동화 하강 + 희토류 장기화)</td>
+</tr>
+<tr>
+<td><strong>기댓값</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">0.92x</td>
+<td style="text-align: center;">0.98x</td>
+<td style="text-align: center;"><strong>1.25x</strong> ⚠️ &lt;1.5x</td>
+<td></td>
+</tr>
+<tr>
+<td>📜 History 지연 계수 적용 Base</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">0.98x</td>
+<td style="text-align: center;">1.01x</td>
+<td style="text-align: center;">1.13x</td>
+<td>유기성장 약속 달성비 0.59 적용 → Base CAGR 7.0% · 기댓값 5년 1.20x</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-h1"></div><div class="dd-legend" id="fig-h1-leg"></div><figcaption id="fig-h1-cap"></figcaption></figure>
+
+<ul>
+<li>⚠️ Base 2년 0.97x &lt; 2.0x → "bull tail 의존" 플래그(게이트 아님).</li>
+<li>암묵 exit 멀티플 역산: Base 지분가치 ÷ 매출 ≈ 4.4배(역사 P/S 3.9~9.7배 · peer 중앙 6.2) → 재평가 의존 <strong>낮음</strong> / Bull ≈ 6.0배 → <strong>중간</strong>.</li>
+<li>Bull 가정의 휴머노이드 부품 양산은 <strong>고객 검증 D</strong>(시험·훈련 시설용 첫 주문) 위에 서 있다.</li>
+</ul>
+<h3>H.2 Catalyst</h3>
+<table>
+<thead>
+<tr>
+<th>일시</th>
+<th>이벤트</th>
+<th style="text-align: center;">영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10 초</td>
+<td>Riverpoint 인수 감사 재무제표(8-K/A) 제출 기한</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2026-11 초</td>
+<td>3분기 실적 — 종결 후 실제 현금·레버리지·스왑 여부</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2027-01-08</td>
+<td>마일스톤 $250M 지급(재원: 현금·리볼버·증자?)</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2027-02</td>
+<td>FY2026 10-K — 조정 항목 규모·Riverpoint 첫 연간 기여</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>2028-11</td>
+<td>TEU 강제 전환(472만~590만 주)</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>상시</td>
+<td>중국 희토류 수출 허가 · 휴머노이드 OEM 양산 주문</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+</tbody>
+</table>
+<h3>H.3-0 보유 종목 가설 신선도 — 해당 없음(미보유 종목).</h3>
+<h3>H.3 ⚠️ Thesis 리스크 신호 (조기경보)</h3>
+<table>
+<thead>
+<tr>
+<th>신호</th>
+<th>관측 trigger</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>인수 숫자 괴리</td>
+<td>Riverpoint 감사 재무 매출·EBITDA가 회사 제시($150M·40%)보다 10%+ 낮음</td>
+</tr>
+<tr>
+<td>레버리지</td>
+<td>마일스톤 후 순레버리지 3.0배 초과 · 약정 완화 기간(4개 분기) 종료 시점 3.5배 초과</td>
+</tr>
+<tr>
+<td>조정 항목 상습화</td>
+<td>구조조정·인수 비용이 연 $20M+ 4년째</td>
+</tr>
+<tr>
+<td>유기성장 재둔화</td>
+<td>2027년 유기성장 3% 미만(10년 평균 3.5%로 회귀)</td>
+</tr>
+<tr>
+<td>공급</td>
+<td>희토류 허가 거부 2분기 이상 추가 지속</td>
+</tr>
+<tr>
+<td>사람</td>
+<td>CEO 매도 가속(10b5-1 외 재량 매도) · 핵심 사업부장 이탈</td>
+</tr>
+</tbody>
+</table>
+<h3>H.5 🧭 CAE · Edge Grid 좌표</h3>
+<figure class="dd-fig"><svg viewBox="0 0 520 300" width="100%" style="max-width:520px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="20" width="220" height="130" fill="#fdeee9"/><rect x="280" y="20" width="220" height="130" fill="#eef6f0"/>
+<rect x="60" y="150" width="220" height="130" fill="#eeeeee"/><rect x="280" y="150" width="220" height="130" fill="#e8f0f8"/>
+<line x1="280" y1="20" x2="280" y2="280" stroke="#999" stroke-dasharray="4,3"/><line x1="60" y1="150" x2="500" y2="150" stroke="#999" stroke-dasharray="4,3"/>
+<text x="170" y="40" font-size="11" text-anchor="middle" fill="#8a2415">강한데 비싼 → 트림·회피</text>
+<text x="390" y="40" font-size="11" text-anchor="middle" fill="#1f6f3b">강하고 싼 → 집중매수 후보</text>
+<text x="170" y="270" font-size="11" text-anchor="middle" fill="#555">약하고 비싼 → 회피·관망</text>
+<text x="390" y="270" font-size="11" text-anchor="middle" fill="#2c5282">약하고 싼 → 정찰</text>
+<text x="280" y="295" font-size="11" text-anchor="middle" fill="#444">← 엣지 소진(비싼)   ·   엣지 잔량(싼) →</text>
+<text x="20" y="150" font-size="11" text-anchor="middle" fill="#444" transform="rotate(-90 20,150)">중요도 약 → 강</text>
+<circle cx="215" cy="205" r="7" fill="#c0392b"/><text x="112" y="228" font-size="10" fill="#c0392b">NOVT 2026-09-27 (L1R1H1 · G1P1D1)</text>
+</svg><figcaption>§H.5 CAE·Edge Grid 2×2 분면 — 중요도 下 · 엣지 下 → 약하고 비싼 쪽(회피·관망)</figcaption></figure>
+
+<ul>
+<li><strong>(a) CAE</strong>: C 제약(희토류 수출통제·금리) / A 조정(자본 배분 — 인수·희석) / E 표현(휴머노이드 서사). 무게중심 = <strong>A(자본 배분)</strong>. 🔴 약한 고리 = Riverpoint 통합과 레버리지.</li>
+<li><strong>(b) Edge Grid</strong>: 중요도 L1·R1·H1(下) — 부품 니치라 여러 층에 걸치지 않고, 되돌릴 수 없는 변화의 한가운데도 아니며, 병목 경도도 낮다. 엣지 G1·P1·D1(下) — 시장은 이 종목을 로봇도 의료도 아닌 산업재·반도체와 같이 움직이는 종목으로 본다(60일 상관 XLI 0.56·SMH 0.55·QQQ 0.55 = 혼재 · 로봇 테마 SYM 0.28↓·의료기기 IHI 0.00). 내 가설(의료 소모품 롤업 + 로봇 옵션)과 다르지만, 괴리가 엣지라기보다 시장이 두 서사 모두에 값을 크게 안 주는 상태다.</li>
+<li><strong>(c)(d) 분면 = 약하고 비싼 쪽</strong> → 회피·관망. 3 잠금장치 해당 없음.</li>
+<li>〔CAE C=제약/A=조정/E=표현〕 〔중요도 L 다층성·R 비가역성·H 병목경도 · 엣지 G 선반영격차·P 연료잔량·D 컨센서스반증, 각 0~3〕</li>
+<li><strong>(e) 과목 적합도</strong>: 이 종목 thesis = <code>수학형</code>(현재 실적·레버리지로 설명) · 이달 시장 과목 = 📐 수학(조달 능력 채점 · Expect-daily 9/26·macro-weekly 9/26 §10 인용) → 일치. 수학 과목에서 채점 대상인 <strong>조달 능력</strong>이 이 종목의 약점이다.</li>
+</ul>
+<h3>H.6 💎 0to1 독점 판정 (별도 렌즈 · 7축 미합산)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>질문</th>
+<th style="text-align: center;">판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 기술 10배</td>
+<td></td>
+<td style="text-align: center;">NO</td>
+<td>점진 개선형 부품</td>
+</tr>
+<tr>
+<td>② 시기</td>
+<td></td>
+<td style="text-align: center;">⚠️</td>
+<td>휴머노이드는 아직 훈련 단계</td>
+</tr>
+<tr>
+<td>③ 작은 시장 독점</td>
+<td></td>
+<td style="text-align: center;">⚠️</td>
+<td>힘-토크 니치 1등이나 회사 전체는 여러 니치의 합</td>
+</tr>
+<tr>
+<td>④ 사람</td>
+<td></td>
+<td style="text-align: center;">⚠️</td>
+<td>인수 통합 능력은 입증 · 유기성장 약속은 미달</td>
+</tr>
+<tr>
+<td>⑤ 유통</td>
+<td></td>
+<td style="text-align: center;">YES</td>
+<td>같은 의료 OEM 고객에 교차 판매하는 채널</td>
+</tr>
+<tr>
+<td>⑥ 존속성</td>
+<td></td>
+<td style="text-align: center;">⚠️</td>
+<td>설계 채택 잠금 7~10년 · OEM 내재화 위험</td>
+</tr>
+<tr>
+<td>⑦ 숨겨진 비밀</td>
+<td></td>
+<td style="text-align: center;">NO</td>
+<td>"안정적 롤업"은 시장이 이미 아는 통념</td>
+</tr>
+</tbody>
+</table>
+<p>Track A <strong>1/7 → 불운 위험</strong> ‖ Track B ⭐(1+3+3+3+5+3+1)÷7 = 2.7 → <strong>2.5</strong> ‖ 시장정의 화법 = <strong>혼재</strong>(정밀의료·정밀제조·로봇·첨단수술을 합쳐 부르는 합집합 화법 + 영업이익률은 peer 아래). soft-flag 없음(🔴 조건 미해당).</p>
+<h3>H.7 💰 밸류에이션 정밀 판정 (서브에이전트 · 7축 미합산)</h3>
+<p><strong>요약 1줄</strong>: 🏷️ 🔴 고평가(약·경계) · 신뢰도 중간(하단) — 인수 후 기업가치 약 $71억은 할인율 6.6~7.8%를 깔아야 설명되고, 싸 보이는 건 과거 매출 배수 하나뿐이다.</p>
+<h4>H.7.1 아키타입 소비</h4>
+<p>주 Ⓑ 구조적 컴파운더 + 부 Ⓓ 현금흐름형 (R-Dive 확정값 그대로·재분류 ❌)</p>
+<p><strong>인수 후 기업가치 재구성</strong> (야후 $50.1억은 인수 전 현금 반영이라 폐기)
+| 항목 | 값 | 근거 |
+|---|---|---|
+| 희석 주식 | 4,254만~4,300만 | 현재가가 $134.08 위 → 전환권은 최소치 472만주 (10-Q 2분기) |
+| 시가총액 | $61.2~61.9억 | × $143.93 |
+| 총부채 + 마일스톤 | $854.8M + $250M | 10-Q 후속사건·종결 8-K |
+| 현금(추정) | $100~200M | 7/3 $718.7M − 종결 현금 약 $584M + 3분기 현금흐름 |
+| <strong>기업가치</strong> | <strong>$70~72억</strong> | 순부채 약 $9.5억 |
+| 분모 | 매출 인수 합산 TTM ~$11.8억 · 2027 컨센 $13.13억(n=3) · 2027 조정 EBITDA 추정 $3.0~3.3억 | |</p>
+<h4>5렌즈 감사표</h4>
+<table>
+<thead>
+<tr>
+<th>렌즈</th>
+<th>산출</th>
+<th>판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 역-DCF</td>
+<td>할인율 9~12%·영구성장 2.5~3.5%·세후 전 영업이익률 22~25% → 5년 매출 연 13~27%(중앙 21%) 필요. 성장 10%로 두면 이익률 30~53% 필요. 성장 12% 지속 기간 12~27년. 현실 범위 = 유기 성장 5~8%(상한 10%)·이익률 20~22%(상한 AME 26%)</td>
+<td>🔴 범위 밖. 가정 1개로 안 뒤집힘(할인율 8%+이익률 25%+성장 3.5% 셋이 겹쳐야 9%) → fragile 아님. 시장 암묵 할인율 6.6~7.8%</td>
+</tr>
+<tr>
+<td>② Ⓑ+Ⓓ</td>
+<td>Ⓑ 성장 조정 매출배수 = NTM 5.4배 ÷ 유기 ~7% = 0.77 (보고 성장 15.9%는 인수분이라 부적격). 성장+현금마진 = 유기 ~6% + FCF 11.5% ≈ 18. Ⓓ 조정 EBITDA 2027E 21.5~23.7배 → 해마다 반복되는 구조조정·인수 비용(24년 $13.7M→25년 $22.7M→26 상반기 $15.1M)을 비용으로 되돌리면 24~27배, GAAP 기반 TTM 합산 ~30배. 이자 반영 FCF 수익률 1.6~2.1%</td>
+<td>🔴 분모를 보수적으로 잡을수록 비싸짐</td>
+</tr>
+<tr>
+<td>③ 상대가치</td>
+<td>아래 표 + 역사</td>
+<td>⚪~🔴 (엇갈림)</td>
+</tr>
+<tr>
+<td>④ 컨센서스</td>
+<td>아래 메타·리비전 행</td>
+<td>선반영 · 소수 의견</td>
+</tr>
+<tr>
+<td>⑤ §H.1</td>
+<td>Base 18배·Bull 22배·Bear 13배(재계산 ❌). 5년 연 10.5% 수익에는 18배 exit면 매출 연 15%, 22배면 연 11% 필요 → 현재가는 Bull 배수 + Base 이상 성장을 동시에 요구. 기대값 1.25배(연 ~4.6%) &lt; 자본비용</td>
+<td>🔴 ①과 방향 일치</td>
+</tr>
+</tbody>
+</table>
+<p><strong>③-(가) peer 표</strong> (2026-09-25 야후 · TTM · 한 열에 한 기준)
+| 종목 | EV/매출 TTM | EV/EBITDA TTM (GAAP 기반) | P/E TTM GAAP | P/E 다음 해 조정(컨센) | EV/매출총이익 |
+|---|---|---|---|---|---|
+| NOVT 합산 | 6.0 | ~30 | 91~99 | 33.0 | 12.9 |
+| AME | 7.5 | 23.7 | 36.7 | 26.1 | 20.4 |
+| CGNX | 8.8 | 35.7 | 57.0 | 29.1 | 12.7 |
+| MKSI | 4.9 | 20.1 | 41.5 | 14.8 | 10.4 |
+| TDY | 4.7 | 18.9 | 29.7 | 22.9 | 10.9 |
+| ITGR | 3.1 | 16.2 | 34.6 | 18.4 | 11.7 |
+| Keyence (엔→달러 157.19·시총 $1,228억) | 14.2 | 자료 없음 (EV/영업이익 ~26) | 43.3 | 42.6 | 17.0 |
+| 중앙값 | 6.2 | 20.1(미국 5사) | 39.4 | 24.5 | 12.2 |</p>
+<p><strong>(나) 프리미엄 정당성</strong>: 성장 ⚠️(유기 6~9% vs CGNX 17%) · 마진 ❌(GAAP 영업이익률 11.5% vs peer 중앙 ~20%) · 질 ⚠️(의료 ~60%·설계 채택 잠금 ✅ / 현금 전환 약·순부채 전환 ❌). 매출 배수는 중앙이라 정당, EBITDA +50%·조정 P/E +35% 웃돈은 정당화 안 됨.
+<strong>(다) 역사</strong>: P/S 5.75배 = 33퍼센타일·Z −0.38 (n=60·월말·TTM·희석) / GAAP P/E 99배 = 73퍼센타일·Z +0.63 (n=60·월말·TTM·희석). P/E Z 조건: 5년 흑자 분기 100%·부호 반전 0 → 충족. 전환 신호: 인수 매출 비중 ~13%(&lt;25%)·의료 비중 +~10%p(&lt;30%p)·아키타입 불변 → Z 허용. 🔴 두 Z가 반대인 이유는 이익률 하락이다(봉합 ❌). 또 P/S는 순현금 $4.8억→순부채 ~$9.5억 전환을 못 보므로 '싸다'는 약하게 본다. Z는 기술 통계일 뿐, 평균 회귀 근거가 아니다.</p>
+<p><strong>④ 메타 행</strong>: 목표가 n=2($194/$195·평균 $194.5·+35%) → <strong>컨센서스 아님·소수 의견·신뢰도 낮음 클램프</strong> · 추정치 n=3.
+<strong>리비전 행</strong>: 30일 상향 3·하향 0. 2026 EPS $3.59→$3.69(+2.9%), 2027 $4.14→$4.37(+5.4%) — 8/5 인수 반영이 대부분이다. 목표가는 2027 조정 EPS의 44.5배라 배수 확장을 가정한다. 1차 증거 URL이 없어 역베팅 승격 ❌.</p>
+<h4>⑥ BRCR (약한 신호·조건부)</h4>
+<p>S 0.7 · R 0.6 · D 0.6 · C 0.4 → BRCR^(1/4) = 0.56. peer 매출총이익 배수 백분위 0.67 → 괴리 −0.10 = ⚪. GM 44%라 저-GM 교차 규칙에 해당한다 → EBITDA 배수 백분위 0.8로 교차하면 −0.24로 🔴 쪽.
+구속 병목: 의료 OEM 설계 채택 잠금(교체 시 재인증) <strong>[올라탐 우세 · ATI 힘-토크 니치만 소유]</strong></p>
+<h4>H.7.3 종합</h4>
+<p>🏷️ <strong>🔴 고평가(약·경계)</strong> · 신뢰도 <strong>중간(하단)</strong> · swing = 2027 유기 성장률(자동화 사이클 회복 + Riverpoint 12~15% 유지) · 풀 DD 승격 = 중(가격 trigger 도달 시 상)
+렌즈 엇갈림: ③ 역사 P/S만 '싸다', ①②⑤·③ EBITDA/P/E는 '비싸다'.
+🎯 <strong>🔴 진입 보류</strong> · 더 싸게 사는 trigger = 주가 <strong>$104~117</strong> (2027 조정 EBITDA × 18배, 즉 §H.1 Base exit와 같아지는 가격).
+🟢 적극 발화 체크: 역-DCF 현실 범위 ❌ · peer 대비 할인 ❌ · 리비전 상향 ✅ → 1/3, 발화 ❌.
+의무 라벨: ① 낮은 신뢰도 참고 ② 🎯 직접 한 줄(위) ③ 장기 thesis 종목 stop sign ❌ ④ 점수 미반영.</p>
+<h4>Steelman 3축</h4>
+<ul>
+<li><strong>데이터</strong>: 조정 P/E 33배는 AME 26·CGNX 29와 한 자릿수 차이다. 상각비는 현금이 아니므로 GAAP P/E 99배는 과장이다.</li>
+<li><strong>구조</strong>: 역-DCF 실패는 업종 전체 현상이다(AME 23.7배·CGNX 35.7배도 할인율 7%대). 절대 평가로는 가를 수 없고, 상대로는 매출 배수 중앙 = ⚪다.</li>
+<li><strong>시간</strong>: 2027년 Riverpoint(마진 40%)가 1년치 반영되고 구조조정이 끝나면 2028년 EBITDA 배수는 18~19배로 Base exit와 같아진다.
+→ <strong>수정</strong>: 🔴 유지하되 '약·경계'로 낮춤. 조정 항목이 3년째 줄지 않아 시간축 반박의 전제는 아직 증거가 없다.</li>
+</ul>
+<h4>▶ Flip</h4>
+<p>🔴→⚪: 주가 ≤$117 · 또는 조정 항목 연 $15M 이하 + 유기 성장 ≥8% 2분기 연속(2027 EBITDA 컨센 ≥$3.5억). 🔴 심화: 가이던스 하향 · 마일스톤 $250M 증자 조달 · 유기 성장 마이너스 복귀.</p>
+<p>출처: SEC 10-Q(2026 2분기)·8-K(2026-07-27)·실적 보도자료(2026-08-05) https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0001076930 · 분기 순이익 https://data.sec.gov/api/xbrl/companyconcept/CIK0001076930/us-gaap/NetIncomeLoss.json · 시세·peer·컨센 https://finance.yahoo.com/quote/NOVT/</p>
+<ul>
+<li>신규 수집: 인수 후 기업가치 재구성 · peer 5사+대장주 멀티플(시점·기준 열 통일) · 자기 5년 P/S·P/E 퍼센타일과 Z · 컨센 메타(목표가 2곳)·리비전(30일 상향 3·하향 0).</li>
+</ul>
+<h2>I. 자금흐름 · 내부정보</h2>
+<h3>I.0 지분 구조</h3>
+<table>
+<thead>
+<tr>
+<th>주체</th>
+<th>보유</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BlackRock</td>
+<td>12.7% (480만 주)</td>
+<td>13F 2026-06-30</td>
+</tr>
+<tr>
+<td>Vanguard(두 법인 합산)</td>
+<td>약 10.6%</td>
+<td>13F</td>
+</tr>
+<tr>
+<td>T. Rowe Price</td>
+<td>5.9% (+24.6% 증가)</td>
+<td>13F</td>
+</tr>
+<tr>
+<td>임원·이사 전체</td>
+<td>1.2% (43.8만 주)</td>
+<td>DEF 14A 2026</td>
+</tr>
+<tr>
+<td>사모증자 투자자</td>
+<td>214만 주(재판매 등록 의무)</td>
+<td>8-K 2026-06-09</td>
+</tr>
+<tr>
+<td>공매도</td>
+<td>유통주식의 15.1% · 회수 15.6일</td>
+<td>yfinance(거래소 보고)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>차등 의결권 없음(1주 1표). 캐나다(뉴브런즈윅) 법인.</li>
+<li><strong>잠재 희석</strong>: TEU 472만~590만 주(2028-11) · 스톡옵션·RSU(10-K 주석 — 별도 합산 ❌ 미수집).</li>
+<li><strong>I.3b 레버리지·인버스 ETF 노출</strong>: 발견 0개(하한) → 명목 노출 0% · 리밸런싱 영향 없음.</li>
+</ul>
+<h3>I.2 내부자 거래 (Form 4 · 12개월)</h3>
+<ul>
+<li>CEO Glastra: 2026-03~07 매도 40,000주·$5.87M(주당 $130~171 · Form 4 원문) · 보유 = 위임장 19.4만 주(옵션 7.7만 포함) · People-Dive 추정 실보유 약 8.4만 주.</li>
+<li>CFO Buckley: 2026-03 옵션 9,957주 행사 후 전량 매도.</li>
+<li>이사 Secor: 2026-09-11 663주 매도.</li>
+<li>
+<p>매수 0건.</p>
+</li>
+<li>
+<p><strong>10b5-1 확인(People-Dive · Form 4 각주)</strong>: 2026년 CEO 매도는 전부 배우자가 수탁자인 신탁을 통한 10b5-1 계획이다(정확히 40,000주·$5.87M · 2025-09-11 계획 6.8만 주 한도는 2026년 1~7월 전량 집행). 2026-06-12 새 계획(3.9만 주·2027-05까지)은 인수 발표 사흘 뒤다.</p>
+</li>
+</ul>
+<h2>J. 산업 · 규제 · 정책 리스크 — History-Dive(2026-09-27) 요약</h2>
+<ul>
+<li><strong>J.1 역사</strong>: General Scanning(1968) → GSI Lumonics(1999 합병·캐나다 법인) → GSI Group(2005) → 2008 Excel 차입 인수(3억 6,870만 달러·11% 채권) → 2008-12 재무제표 재작성 → <strong>2009-11 파산보호 → 2010-07 탈출</strong>(주주 몫 86.1% 방어) → 2011 SEC 위반 중지 명령(벌금 없음)·나스닥 재상장 → 2012~15 사업 40% 매각·의료 전환 → 2016 Novanta. 2016~2025 유기성장: +3.4 +8.5 +7.0 +0.7 −7.6 +10.3 +13.8 +1.3 −1.6 −0.5%(평균 3.5%).</li>
+<li><strong>M&amp;A 스코어카드</strong>(5,000만 달러 이상 9건): 성공 4(JADAK·Laser Quantum·WOM·ATI) · 보류 3 · 실패 2(Excel·NDS — 둘 다 현 CEO 이전). 현 CEO 체제 6건 실패 0 · 2015~2025 영업권 감액 0.</li>
+<li><strong>J.2 규제·법적</strong>: FDA 510(k)(Riverpoint는 고객 대신 인허가 절차를 직접 수행) · 중국 수출통제(희토류) · 현재 10-K 연혁에 2008~10 파산 이력 미기재(History-Dive).</li>
+<li><strong>J.3 정책</strong>: 관세·지역화 생산 · 의료기기 규제 변경.</li>
+</ul>
+<h2>K. 공시 · 컨콜 · 가이던스</h2>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>가이던스(당시)</th>
+<th>실제</th>
+<th>괴리</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026 1분기</td>
+<td>매출 $250~255M</td>
+<td>$257.7M</td>
+<td>상회</td>
+</tr>
+<tr>
+<td>2026 연간(2월)</td>
+<td>매출 $1,030~1,050M(단독)</td>
+<td>8월 $1,130~1,140M(인수 포함)로 상향</td>
+<td>인수분</td>
+</tr>
+<tr>
+<td>2026 3분기</td>
+<td>매출 $300~304M · 조정 EBITDA $74~77M</td>
+<td>11월 발표 예정</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>K.2 경영진 화법</strong>: 2월 "역사상 가장 큰 인수 파이프라인" → 6월 인수 발표 → 8월 "소모품 25%·의료 60%" — 말과 행동이 같은 방향으로 움직였다. 로봇은 "작은 바탕에서 빠르게"로 표현 수위를 스스로 낮춘다.</li>
+<li><strong>K.4 8-K 12개월</strong>: 2025-11-12 TEU 발행 · 2026-05-15 신용계약 2차 개정(지연인출 텀론 $200M) · 2026-06-09 인수 계약 + 사모증자 · 2026-07-27 인수 종결·$616M 차입 · 2026-08-05 2분기 실적 · 2025-07 법무총괄 교체 · 2025-09 이사 사임 · 2025-09 자사주 매입 한도 +$200M.</li>
+<li><strong>K.4b AI 밸류체인 이익 귀착</strong>: 회사 설명상 생성형 AI 관련 매출 약 17%(+25%). 2025년은 매출 +3.3%에 OCF −60%로 🔴(현금이 따라오지 않은 칸) → 2026 상반기 OCF 회복은 고객 선급금($11M → $48M) 효과가 커 🟢로 확정하지 않는다. 매출채권 $184.9M → $178.7M · 재고 $188.3M → $192.7M(안정).</li>
+<li><strong>K.4c 외부 비판 리포트</strong>: ❓ 미확인 — 최근 12개월 공매도 리포트 검색을 이번에 수행하지 못했다(공매도 비율 15%라 확인 가치 있음 → §L.deferred).</li>
+</ul>
+<h2>L. 동적 발견</h2>
+<ul>
+<li><strong>L.1 오전 스크리닝 보고서 사실 오류 2건 🔴</strong> — 같은 날 "텐배거 스크리닝 — Physical AI"의 ① "6억 달러 현금 사용처 미공개" ② "10% 초과 고객 없음"은 틀렸다. 원인 = ①은 2월 10-K만 보고 6~7월 8-K를 확인하지 않음 ②는 다른 종목(Allient) 10-K 문구와 섞임. 결론 영향 = 곡괭이 질 A 조건부 → 준-B, 내구성 ⚪ → 🔴 경계선, 5년 기대값 1.29x → 1.25x(방향 불변 — 진입 적격 ❌ 유지).</li>
+<li><strong>L.2 9/22 주가 +7.3% (원인 미확인)</strong> — 같은 날 XLI +0.2%·SMH +1.9%·TER +4.5%. 개별 공시 없음.</li>
+<li><strong>L.3 공매도 15.1%</strong> — 의무전환 유닛 헤지 매도 추정[추론]. 확인 방법 = TEU 발행 전후 공매도 잔고 추이.</li>
+<li><strong>L.deferred</strong>: 최근 12개월 공매도 리포트(§K.4c) · Riverpoint 8-K/A(10월 초) · 신용계약 원문의 약정 EBITDA 정의 · 휴머노이드 주문 고객·금액.</li>
+</ul>
+<hr />
+<h2>🔴 종합 판단</h2>
+<ul>
+<li><strong>7축 종합 ⭐3.2</strong>(사업·thesis 매력도) — 설계 채택 잠금이라는 진짜 해자가 있는 중간 품질의 부품 회사다. 점수를 깎는 것은 재무건전성(⭐2.0)과 지정학·금리 노출이다.</li>
+<li><strong>시간 지평 충돌</strong>: 단기(0~6M)는 인수 숫자 검증(8-K/A·3분기)과 마일스톤 지급이 모두 몰려 있어 불확실성이 가장 크다. 중기(6M~3Y)는 Riverpoint 1년치 기여와 구조조정 종료로 EBITDA 배수가 18~19배로 내려올 수 있다(§H.7 Steelman). 장기(3~10Y)는 휴머노이드 부품 옵션이지만, 회사의 자본은 그 반대 방향에 걸려 있다.</li>
+<li><strong>텐배거 현실성</strong>: 5년 기대값 1.25x(지연 계수 적용 1.20x) — 게이트 1.5x 미달. 10배를 가려면 AMETEK 크기가 돼야 한다.</li>
+<li><strong>종합 판정</strong>: <strong>추가 검증</strong> — 10월 8-K/A와 11월 3분기가 판정을 바꿀 수 있는 1차 자료다.</li>
+</ul>
+<hr />
+<h2>수집 상태 (실패·불완전만)</h2>
+<ul>
+<li>⚠️ Riverpoint 감사 재무제표(8-K/A) — 미제출(기한 10월 초).</li>
+<li>⚠️ 신용계약 원문(약정 EBITDA 정의) — 미수집.</li>
+<li>⚠️ 최근 12개월 공매도 리포트 — 검색 미수행(§L.deferred).</li>
+<li>⚠️ 2분기 실적 통화 녹취 — 공식본이 아니라 제3자 게재본(R-Dive).</li>
+<li>⚠️ 목표가 커버 애널리스트 2곳 — 컨센서스 아님(소수 의견).</li>
+</ul>
+<h2>다음 실행 보완 목록</h2>
+<ol>
+<li>2026-10 Riverpoint 8-K/A 원문 → 회사 제시치 대비 괴리.</li>
+<li>2026-11 3분기 10-Q → 종결 후 현금·순레버리지·스왑.</li>
+<li>공매도 리포트·TEU 헤지 여부 확인.</li>
+<li>사용자 수기: 비전축 ⭐ · "나를 보자" 5문항.</li>
+</ol>
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p>
+<div class="footer">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const VIZ = {"score7": {"label": "확신도 7축 (DD-v1.33)", "axes": ["🌦️ 날씨", "⛰️ 산", "🌲 숲", "🌳 나무", "🌲🌳 옆나무", "👤 사람", "🔢 숫자"], "max": 5, "series": [{"name": "NOVT 2026-09-27", "color": "#c0392b", "scores": [3.0, 3.5, 3.5, 3.5, 3.0, 3.5, 2.0]}]}, "narrative": {"label": "내러티브 5축 깊이", "axes": ["🔧 기술", "👥 사회", "🏛️ 정책", "🌐 지정학", "💰 자본"], "max": 5, "series": [{"name": "NOVT", "color": "#2980b9", "scores": [4, 3, 2, 2, 3]}]}, "trajectory": {"periods": ["FY21", "FY22", "FY23", "FY24", "FY25", "FY26E"], "forecastFrom": 5, "inflection": {"index": 4}, "series": [{"label": "매출 $M", "axis": "left", "color": "#2980b9", "values": [706.8, 860.9, 881.7, 949.2, 980.6, 1135]}, {"label": "OCF $M", "axis": "left", "color": "#27ae60", "values": [94.6, 90.8, 120.1, 158.5, 64.1, 150]}, {"label": "GAAP 영업이익률 %", "axis": "right", "color": "#c0392b", "values": [9.1, 12.0, 12.5, 11.6, 9.6, 8.0]}]}, "peers": {"metrics": [{"key": "mcap", "label": "시총", "unit": "$B", "better": "neutral"}, {"key": "evs", "label": "EV/매출 TTM", "unit": "x", "better": "low"}, {"key": "eve", "label": "EV/EBITDA TTM", "unit": "x", "better": "low"}, {"key": "gm", "label": "GM", "unit": "%", "better": "high"}, {"key": "om", "label": "영업이익률", "unit": "%", "better": "high"}], "rows": [{"name": "NOVT (인수 후)", "subject": true, "vals": {"mcap": 6.1, "evs": 6.0, "eve": 30, "gm": 44.5, "om": 11.5}}, {"name": "AME", "vals": {"mcap": 57.5, "evs": 7.5, "eve": 23.7, "gm": 36.9, "om": 26.2}}, {"name": "CGNX", "vals": {"mcap": 9.9, "evs": 8.8, "eve": 35.7, "gm": 68.9, "om": 29.4}}, {"name": "MKSI", "vals": {"mcap": 17.6, "evs": 4.9, "eve": 20.1, "gm": 47.0, "om": 20.6}}, {"name": "TDY", "vals": {"mcap": 28.5, "evs": 4.7, "eve": 18.9, "gm": 43.3, "om": 20.2}}, {"name": "ITGR", "note": "의료 OEM 부품", "vals": {"mcap": 4.3, "evs": 3.1, "eve": 16.2, "gm": 26.1, "om": 10.0}}, {"name": "Keyence", "note": "대장주 · 엔→달러", "vals": {"mcap": 122.8, "evs": 14.2, "eve": null, "gm": 83.7, "om": 54.0}}]}, "scenario": {"horizonLabel": "5년", "threshold": 1.5, "cases": [{"label": "Bull", "tone": "bull", "prob": 0.25, "mult": 2.06}, {"label": "Base", "tone": "base", "prob": 0.5, "mult": 1.22}, {"label": "Bear", "tone": "bear", "prob": 0.25, "mult": 0.5}]}, "landmark": {"current": {"label": "NOVT(희석)", "mcap": 6.1}, "target": {"label": "×10", "mcap": 61}, "refs": [{"name": "CGNX", "mcap": 9.9}, {"name": "MKSI", "mcap": 17.6}, {"name": "TDY", "mcap": 28.5}, {"name": "AME", "mcap": 57.5}, {"name": "TER", "mcap": 62.3}, {"name": "Keyence", "mcap": 122.8}], "sentence": "지금 약 $61억(희석) → 텐배거면 약 $610억 = AMETEK·Teradyne 크기 (규모 비교일 뿐)"}, "bars": {"title": "인수 후 연간 매출 구성 (2025 매출 + Riverpoint 회사 제시 연 ~$150M · $M)", "mode": "share", "unit": "$M", "items": [{"label": "로봇·자동화", "value": 318.6}, {"label": "정밀제조", "value": 182.3}, {"label": "첨단수술", "value": 242.4}, {"label": "정밀의료", "value": 237.3}, {"label": "Riverpoint(의료 소모품)", "value": 150}]}};
+try{
+DDViz.renderRadar('fig-score7','fig-score7-leg',VIZ.score7);
+DDViz.renderRadar('fig-c3','fig-c3-leg',VIZ.narrative);
+DDViz.renderTrajectory('fig-g5','fig-g5-leg',VIZ.trajectory);
+DDViz.renderHeatmap('fig-e1',VIZ.peers);
+DDViz.renderScenario('fig-h1',null,VIZ.scenario);
+DDViz.renderMcapLadder('fig-g15','fig-g15-cap',VIZ.landmark);
+DDViz.renderBars('fig-d0',VIZ.bars);
+var _c=document.getElementById("fig-score7-cap"); if(_c)_c.textContent="7축 가중평균 33.25 ÷ 10.5 = 종합 ⭐3.2 (사업·thesis 매력도 · 밸류 멀티플 미반영)";
+var _c=document.getElementById("fig-c3-cap"); if(_c)_c.textContent="§B.3 내러티브 5축 깊이 — 🟡 3축(기술·사회·자본)";
+var _c=document.getElementById("fig-g5-cap"); if(_c)_c.textContent="§G.5 FY21~25 SEC 10-K + FY26E(매출=8/5 가이던스 중간 · OCF·영업이익률=추정·점선) — 변곡점 FY25(OCF −60% · 영업이익률 9.6%)";
+var _c=document.getElementById("fig-e1-cap"); if(_c)_c.textContent="§E.1 peer 히트맵 (2026-09-25 · TTM · GAAP 기반 · USD) — NOVT는 인수 후 EV 재구성값";
+var _c=document.getElementById("fig-h1-cap"); if(_c)_c.textContent="§H.1 5년 시나리오 — 기댓값 1.25x(⚠️ <1.5x) · History 지연 계수 적용 시 1.20x · Base 2년 0.97x = bull-tail 의존 ⚠️(게이트 아님)";
+var _c=document.getElementById("fig-g15-cap"); if(_c)_c.textContent="§G.1.5 시총 10배 사다리 (규모 비교일 뿐 · 밸류 앵커 아님)";
+var _c=document.getElementById("fig-d0-cap"); if(_c)_c.textContent="§D.0 인수 후 매출 구성 — 로봇·자동화 약 28% · 의료 약 60%";
+}catch(e){console.error('viz',e);}
+</script></body></html>
