@@ -1,0 +1,928 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>FN (Fabrinet) R-Dive — 제품·수익모델 정밀 해부 — 2026-09-27</title>
+<style>
+:root{--bg:#EBE4D3;--card:#FDF6E3;--ink:#1f2328;--muted:#5b5346;--line:#e0d8c4;--accent:#7a5c2e;--good:#2e7d32;--warn:#b26a00;--bad:#b03030;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic',sans-serif;line-height:1.7;font-size:15px}
+.wrap{max-width:1060px;margin:24px auto;padding:0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px 30px;margin-bottom:18px;box-shadow:0 1px 3px rgba(60,50,30,.06)}
+h1{font-size:25px;margin:.1em 0 .3em;letter-spacing:-.5px}
+h2{font-size:20px;margin:1.2em 0 .5em;padding-bottom:.26em;border-bottom:2px solid var(--accent);color:#3a2f1c}
+h3{font-size:16.5px;margin:1.05em 0 .35em;color:#4a3c22}
+h4{font-size:14.5px;margin:.9em 0 .3em;color:#5a4a2c}
+h5{font-size:13.5px;margin:.8em 0 .25em;color:#6a5630}
+p,li{color:var(--ink)} small,.muted{color:var(--muted)}
+a{color:#1f6feb;text-decoration:none} a:hover{text-decoration:underline}
+code{background:#f2ead6;padding:1px 5px;border-radius:4px;font-size:12.5px}
+table{border-collapse:collapse;width:100%;margin:.7em 0;font-size:12.5px}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:#f3ebd6;font-weight:700}
+tr:nth-child(even) td{background:#fbf3df}
+.tldr{background:#f6efda;border-left:5px solid var(--accent);border-radius:8px;padding:14px 20px}
+.tldr li{margin:.3em 0}
+.kbig{font-size:17px;font-weight:800;color:#7a2e2e}
+.pill{display:inline-block;padding:1px 9px;border-radius:11px;font-size:12px;font-weight:700;border:1px solid;vertical-align:middle}
+.p-excl{background:#fbe6e6;color:#9a2a2a;border-color:#e2b4b4}
+.p-watch{background:#fdf2dc;color:#7a5512;border-color:#e6cf9a}
+.p-cand{background:#e4f3e4;color:#236b27;border-color:#abd6ab}
+.alert{background:#fbe9e3;border-left:5px solid var(--bad);border-radius:8px;padding:12px 18px;margin:.6em 0}
+.note{font-size:13px;color:var(--muted);background:#f6efda;border-radius:8px;padding:9px 14px;margin:.5em 0}
+.verify{background:#eef4f7;border-left:4px solid #2980b9;border-radius:6px;padding:11px 16px;margin:.7em 0;font-size:13px}
+.steel{background:#eef0ea;border-left:4px solid #6b7a5a;border-radius:6px;padding:10px 15px;margin:.6em 0;font-size:13px}
+ul,ol{margin:.4em 0 .6em;padding-left:1.25em} hr{border:none;border-top:1px solid var(--line);margin:1.3em 0}
+@media print{body{background:#fff}.card{box-shadow:none;border-color:#ddd}}
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+</style><style>details{margin:.6em 0} summary{cursor:pointer} h1+p{margin-top:0}</style><meta name="vault-stage" content="Dive">
+<meta name="vault-topic" content="FN">
+<meta name="vault-skill" content="R-Dive">
+<meta name="vault-date" content="2026-09-27">
+<meta name="vault-published" content="2026-09-27">
+<meta name="description" content="FN (Fabrinet) R-Dive — 제품·수익모델 정밀 해부 — 2026-09-27">
+<meta name="robots" content="noindex, nofollow">
+</head><body><div class="wrap">
+<div class="card"><h1>🔬 FN (Fabrinet) R-Dive — 제품·수익모델 정밀 해부</h1><p class="muted">2026-09-27 · 직전 실행 2026-06-21 대비 델타 중심 · SEC 10-K FY2026(2026-08-18) + 8-K Q4 FY26(2026-08-17) + companyfacts 1차 검증 · Chrome MCP·SEC API만 사용 · 매수신호 0</p></div>
+<div class="card">
+<p>직전 실행 2026-06-21 대비 <strong>델타 중심</strong> 재실행(98일 경과). 1차 자료 = SEC 10-K FY2026(2026-08-18 제출 · 회계연도 종료 2026-06-26) Item 1·Item 7·Item 7A·주석 3(고객 집중·최종시장)·주석 15(고객 워런트)·현금흐름표 + 8-K(2026-08-17 · Q4 FY26 실적 보도자료 Ex.99.1 · 텀론 Ex.10.2) + companyfacts XBRL + investor.fabrinet.com 보도자료 목록. 시세 = yfinance. 매수신호 0.</p>
+<ul>
+<li>10-K FY26: <a href="https://www.sec.gov/Archives/edgar/data/1408710/000140871026000028/fn-20260626.htm">https://www.sec.gov/Archives/edgar/data/1408710/000140871026000028/fn-20260626.htm</a></li>
+<li>8-K Q4 FY26(보도자료·텀론): <a href="https://www.sec.gov/Archives/edgar/data/1408710/000140871026000026/">https://www.sec.gov/Archives/edgar/data/1408710/000140871026000026/</a></li>
+<li>companyfacts: <a href="https://data.sec.gov/api/xbrl/companyfacts/CIK0001408710.json">https://data.sec.gov/api/xbrl/companyfacts/CIK0001408710.json</a></li>
+</ul>
+<hr />
+</div><div class="card"><h2>📄 한 장 요약</h2>
+<ol>
+<li><strong>델타 요약</strong> — 6/21 보고서 이후 10-K FY26·Q4 실적이 나왔다. 아키타입·제품·기술·해자 판정은 <strong>변동 없음</strong>. 바뀐 것은 세 가지: ① 고객 집중의 <em>형태</em>, ② 현금 전환의 <em>급격한 악화</em>, ③ 회사가 매출을 <em>어떻게 잘라 보여주는가</em>(공시 분류 재편).</li>
+<li><strong>확정 아키타입(유지)</strong>: 주 ⑥ 고급 위탁제조 85% + 부 ② 수직통합 곡괭이(커스텀 광학·유리) 15%. FY26 매출 $4,641M(+35.7%), GM 12.0%(FY25 12.1%) — "매출은 36% 늘었는데 마진율은 그대로"라는 pass-through 구조가 1년 더 확인됐다.</li>
+<li>🔴 <strong>고객 집중(C.6) — NVIDIA 1위 → 2위로.</strong> FY26 10% 이상 고객 4곳 = Cisco 19.9% · NVIDIA 16.3% · Nokia 10.7% · Amazon 10.5% = <strong>57.4%</strong>(FY25 2곳 45.8%). NVIDIA는 27.6%→16.3%로 내려갔고, 비중×매출로 역산하면 달러 매출도 약 $944M→$757M(<strong>−20%</strong>)이다. 6/25 기준 매출채권에서 NVIDIA는 10% 미만(전년 25.5%). "NVIDIA 인질" 시나리오는 약해졌지만, 상위 4사 합산은 오히려 커졌다.</li>
+<li>🔴 <strong>현금 전환(C.10) — FCF $207M → $4M.</strong> FY26 영업현금 $256.7M(전년 $328.4M) − 설비투자 $252.5M = <strong>FCF $4.2M</strong>. Q4 단독 FCF −$36.9M. 재고 $581M→<strong>$1,021M</strong>(+76%, 재고일수 70→91일), 매출채권 $759M→$1,018M. 매입채무 +$368M로 절반쯤 상쇄. 8/17 태국 은행에서 <strong>텀론 THB 25억(약 $75M) 차입 + 한도 증액</strong> — 무차입 회사가 설비투자를 빚으로 채우기 시작했다.</li>
+<li>🟠 <strong>순이익의 분모(C.1)</strong> — GAAP 순이익 $473.0M에는 Raytek 지분 재평가 이익 <strong>$56.7M(비현금)</strong>이 들어 있고, 새로 생긴 Pillar Two 최저한세 <strong>$57.4M</strong>이 이를 거의 상쇄했다. 실효세율 6.4%→<strong>14.8%</strong>. 이 세금은 FY27 가이던스에도 주당 $0.40로 계속 잡혀 있어 <em>구조적</em> 순마진 하향이다. 비-GAAP 순이익 $510.9M(11.0%)은 둘을 모두 뺀 값.</li>
+<li>🟠 <strong>공시 분류 재편(C.12)</strong> — Q4 FY26부터 Telecom/Datacom/DCI/HPC 4분류를 폐지하고 <strong>Data center 47.9% / Communications infrastructure 33.3% / Automotive·Industrial·Others 18.8%</strong> 3분류로 바꿨다. 회사 스스로 "데이터센터 회사"로 재정의한 신호이지만, 6/21 보고서의 DCI·HPC 개별 숫자는 더 추적할 수 없게 됐다.</li>
+<li><strong>Q1 FY27 가이던스</strong>: 매출 $1.375~1.425B(Q4 $1,315.8M 대비 +4.5~8.3%), 비-GAAP EPS $4.10~4.25.</li>
+<li><strong>종합 판정(유지)</strong>: 예측가능성 ⭐2 · 수익성 ⭐3 · 과금 강도 ⭐2 · 고객 stickiness ⭐4. 치명 함정 순위 교체 — <strong>1위 C.10 현금 전환(승격) · 2위 C.6 고객 집중(형태 변화)</strong>.</li>
+<li>thesis 함의 한 문장: "못 떼어내지만 더 못 빨아먹는 통행료 사업"이라는 골격은 그대로인데, 이번 분기부터는 <strong>그 통행료를 받기 위해 먼저 재고와 공장에 돈을 묻는 비용</strong>이 눈에 보이기 시작했다.</li>
+</ol>
+<blockquote>
+<p>💡 <strong>📐 FCF(잉여현금흐름)</strong> — 영업으로 벌어들인 현금에서 공장·설비에 쓴 돈을 뺀 것. "장부 이익"이 아니라 "실제로 손에 남은 돈".</p>
+</blockquote>
+<hr />
+<details><summary><b>배경</b> (6/21 보고서와 동일 · 접이식)</summary>
+
+Fabrinet은 케이맨 법인·태국 생산 기지의 정밀 광학 위탁제조사다. 광통신 OEM(Cisco·NVIDIA·Nokia 등)이 설계한 광모듈·트랜시버·ROADM·레이저·자동차 센서를 대신 조립·테스트해 넘긴다. 핵심 공정은 광섬유를 칩에 1마이크론 이하로 맞추는 광 패키징, 결정 성장, 정밀 유리 인발, 광학 코팅. 고객과 직접 경쟁하지 않는 "유일한 외주 파트너" 포지션과 3~6개월 인증(qualification)이 전환비용을 만든다. 상세 서술은 6/21 보고서 B.0 참조.
+</details>
+
+<hr />
+</div><div class="card"><h2>Part A — 아키타입 확정</h2>
+<p><strong>변동 없음</strong> — 주 ⑥ 고급 위탁제조 85% + 부 ② 수직통합 곡괭이 15%.</p>
+<p>재검증 근거(10-K FY26 Item 7 "Our Contracts"): 공급계약 초기 최대 3년 + 1년 자동 갱신, <strong>최소 구매 의무 없음</strong>, 고객 rolling forecast, 고객 장비 위탁(consignment), 원가 절감 공유 조항 — 문구가 FY25와 동일하다. 매출 인식은 출하 시점, backlog는 "미래 매출의 신뢰할 수 있는 지표가 아니다"라는 자기 진술도 그대로.</p>
+<hr />
+</div><div class="card"><h2>Part B.0 — 제품·서비스·기술 이해</h2>
+<h3>B.0.1 제품 카탈로그(주력 Top 5) — 제품 실체 <strong>변동 없음</strong>, ⑤매출 위치만 재매핑</h3>
+<p>10-K FY26 Item 1 제품 목록(ROADM·광증폭기·변조기 / 튠어블 레이저·트랜시버·트랜스폰더 / AOC·인피니밴드·이더넷 인터커넥트 / 산업 레이저 / 자동차·의료 센서)은 FY25와 같다. 6/21 보고서의 5개 제품 문단은 그대로 유효하다. 바뀐 것은 <strong>회사가 이 제품들을 어느 매출 바구니에 담아 보여주느냐</strong>다.</p>
+<table>
+<thead>
+<tr>
+<th>6/21 보고서 제품</th>
+<th>구 분류(FY25 10-K·10-Q Q3)</th>
+<th><strong>신 분류(FY26 10-K)</strong></th>
+<th>FY26 매출 위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① ROADM·증폭기·변조기(Telecom)</td>
+<td>Optical comm › Telecom 35.5%</td>
+<td><strong>Communications infrastructure</strong> (DCI 제외 통신)</td>
+<td>$1,546M · 33.3% · +47.4%</td>
+</tr>
+<tr>
+<td>② DCI·AOC·800G/1.6T 트랜시버</td>
+<td>Optical comm › Datacom 21.4% + DCI 16.2%</td>
+<td><strong>Data center</strong></td>
+<td>$2,225M · 47.9% · +40.8%</td>
+</tr>
+<tr>
+<td>⑤ HPC 시스템 조립</td>
+<td>Non-optical › HPC 8.8%</td>
+<td><strong>Data center</strong> (HPC 포함으로 명시)</td>
+<td>위와 합산 · 개별 ❌ 미공시</td>
+</tr>
+<tr>
+<td>③ 산업 레이저·자동차 센서</td>
+<td>Non-optical › Automotive 9.5%·Laser 3.6%</td>
+<td><strong>Automotive, Industrial and Others</strong></td>
+<td>$870M · 18.8% · +10.1%</td>
+</tr>
+<tr>
+<td>④ 커스텀 광학·유리(수직통합)</td>
+<td>비공시</td>
+<td>비공시(변동 없음)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>🔴 <strong>입도 후퇴</strong>: FY26 10-K에서 "Datacom", "Telecom" 개별 매출 행이 사라졌다(본문 검색 0건). 6/21 보고서가 "AI 매출 25%(DCI+HPC)"로 잡았던 숫자는 이제 "Data center 47.9%"라는 더 넓은 바구니로만 볼 수 있다. Data center 정의(주석 3 각주 1) = "DCI + HPC + 기타 데이터센터 전용 응용".</li>
+<li><strong>신규 기재(6/21 보고서 미기재)</strong>: Fabrinet Israel — 이스라엘 "Startup Village"의 NPI(신제품 도입) 센터, 임차 27,000 sqft(Item 2). 실리콘밸리 Fabrinet West와 같은 역할 — 고객 근처에서 시제품·양산 설계를 하고 태국으로 넘긴다.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>🔤 NPI(New Product Introduction)</strong> — 고객의 새 제품을 처음 양산 라인에 올리는 단계. 여기서 붙잡은 프로그램이 나중에 태국 대량 생산으로 이어진다.</p>
+</blockquote>
+<h3>B.0.2 기술·IP·해자 — <strong>변동 없음</strong> + 규모 갱신</h3>
+<ul>
+<li>특허가 아닌 영업비밀·NDA 중심, 공정 개선은 고객에 귀속 — FY26 10-K 문구 동일. 인증 목록(ISO 9001·TL 9000·IATF 16949·ISO 13485·AS 9100·NADCAP) 동일.</li>
+<li><strong>규모 델타</strong>: 태국 자가 시설 3.7M → <strong>3,875,000 sqft</strong>, 종업원 16,457 → <strong>21,521명</strong>(+31% · 제조 21,020명). Chonburi 2.0M sqft 신공장(총 $132.5M) 잔여 지출 $39.7M → 거의 완공 단계. <strong>2026-05 Navanakorn 8에이커 캠퍼스 인수</strong>, Pathum Thani 시설 인수(개보수 중), <strong>FY27 캘리포니아 제조 건물 매입 예정</strong>(Item 7 Capital Expenditures).</li>
+<li><strong>Raytek(대만 반도체) 지분 — 정정</strong>: 6/21 보고서는 "16%"로 썼으나 10-K FY26 주석은 <strong>13.8%</strong>, 매입가 NT$10.2억($32.4M). 2026-05 타이베이 신흥주식시장(ESB) 등록으로 관측 가능 가격이 생겨 <strong>$89.1M으로 재평가</strong>(이익 $56.7M을 기타수익에 인식). FN 보유분은 거래 제한 상태.</li>
+<li>기술 우월 ≠ 가격 결정력: GM 12.0%(FY25 12.1% · FY24 12.4%)로 4년 연속 하향 — 판정 유지.</li>
+</ul>
+<h3>B.0.3 제품 → 수익모델 연결 — <strong>변동 없음</strong></h3>
+<p>6/21 표(과금 = 출하 단가×수량 · 아키타입 ⑥ · 가격 결정력 commodity 쪽 · lock-in 중상 · 운영 레버리지 낮음)가 그대로 적용된다. 이번에 추가로 확인된 근거 두 가지:
+- Amazon 워런트 매출 차감(contra-revenue) FY26 <strong>$4.8M</strong>(FY25 $4.1M), 누적 행사 가능 85,942주(전년 38,192주). 대형 고객이 거래 조건으로 지분을 받아가는 구조 지속.
+- MD&amp;A: "우리가 부과하는 가격은 시간이 지나며 <strong>하락</strong>할 것으로 예상(경쟁 압력)" — 문구 동일.</p>
+<hr />
+</div><div class="card"><h2>Part B.1 — 매출 스트림 분해 (신 3분류, 10-K FY26 주석 3 · 과거 재분류)</h2>
+<table>
+<thead>
+<tr>
+<th>최종시장</th>
+<th>FY24 ($K)</th>
+<th>%</th>
+<th>FY25 ($K)</th>
+<th>%</th>
+<th><strong>FY26 ($K)</strong></th>
+<th><strong>%</strong></th>
+<th>YoY</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Data center (DCI·HPC·기타 DC)</td>
+<td>1,529,693</td>
+<td>53.1</td>
+<td>1,579,915</td>
+<td>46.2</td>
+<td><strong>2,225,081</strong></td>
+<td><strong>47.9</strong></td>
+<td>+40.8%</td>
+</tr>
+<tr>
+<td>Communications infrastructure (통신, DCI 제외)</td>
+<td>767,368</td>
+<td>26.6</td>
+<td>1,049,397</td>
+<td>30.7</td>
+<td><strong>1,546,403</strong></td>
+<td><strong>33.3</strong></td>
+<td>+47.4%</td>
+</tr>
+<tr>
+<td>Automotive, Industrial &amp; Others</td>
+<td>585,906</td>
+<td>20.3</td>
+<td>790,015</td>
+<td>23.1</td>
+<td><strong>869,613</strong></td>
+<td><strong>18.8</strong></td>
+<td>+10.1%</td>
+</tr>
+<tr>
+<td><strong>합계</strong></td>
+<td>2,882,967</td>
+<td>100</td>
+<td>3,419,327</td>
+<td>100</td>
+<td><strong>4,641,097</strong></td>
+<td>100</td>
+<td><strong>+35.7%</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>읽는 법: FY24→FY25에 Data center가 53%→46%로 <em>비중이 줄었던</em> 이유가 이번 재분류로 드러난다 — NVIDIA 비중 35%→28%→16% 하락과 궤를 같이 한다. FY26에는 통신 인프라(+47%)가 데이터센터(+41%)보다 빨리 자랐다. <strong>"AI 데이터센터 한 축 성장"이 아니라 "데이터센터 + 통신 두 축"</strong>이 FY26의 실체.</li>
+<li>🔴 <strong>믹스 방향(C.12 트리거)</strong>: 자동차·산업은 23.1%→18.8%로 축소(성장 +10%로 뒤처짐). 광통신 두 바구니가 81.2%.</li>
+<li><strong>선수금(계약부채)</strong>: $14.5M → <strong>$4.2M</strong>(매출의 0.1%). 고객이 미리 내는 돈이 거의 없다 = 재고·운전자본을 FN이 먼저 짊어지는 구조(C.10 연결).</li>
+</ul>
+<h3>지역 — 🔴 정의 변경 주의</h3>
+<p>Q4 FY26부터 <strong>bill-to(청구지) → ship-to(배송지)</strong> 기준으로 바꿨다. 6/21 보고서의 "북미 43.4%(FY25)"는 청구지 기준이라 아래와 <strong>직접 비교 불가</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>ship-to</th>
+<th>FY24</th>
+<th>FY25</th>
+<th>FY26</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Asia-Pacific and others</td>
+<td>77.9%</td>
+<td>74.3%</td>
+<td>73.9%</td>
+</tr>
+<tr>
+<td>North America</td>
+<td>18.2%</td>
+<td>21.6%</td>
+<td>22.7%</td>
+</tr>
+<tr>
+<td>Europe</td>
+<td>3.9%</td>
+<td>4.1%</td>
+<td>3.4%</td>
+</tr>
+</tbody>
+</table>
+<p>배송지로 보면 제품의 3/4은 아시아(고객의 아시아 조립 거점)로 나간다. 회사는 FY27에 북미 외 비중이 다시 늘 것으로 예상.</p>
+<h3>반복성 — <strong>변동 없음</strong>: 전량 단기 PO, ARR 0.</h3>
+<hr />
+</div><div class="card"><h2>Part B.2 — 과금·가격 모델 (정량)</h2>
+<p><strong>모델 변동 없음</strong> — 원가가산·부가가치형 pass-through. take rate·float yield·implied fee rate 부적용(사유 동일).</p>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>FY25</th>
+<th><strong>FY26</strong></th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매출</td>
+<td>$3,419.3M</td>
+<td><strong>$4,641.1M</strong></td>
+<td>+35.7%</td>
+</tr>
+<tr>
+<td>매출원가</td>
+<td>$3,006.0M (87.9%)</td>
+<td><strong>$4,084.6M (88.0%)</strong></td>
+<td>"판매량 증가에 비례"</td>
+</tr>
+<tr>
+<td>GM</td>
+<td>12.1%</td>
+<td><strong>12.0%</strong></td>
+<td>Q4 단독 12.0% (Q4 FY25 12.2%)</td>
+</tr>
+<tr>
+<td>자재비 추정(COGS×80%, 동종 벤치마크 가정)</td>
+<td>~$2,405M</td>
+<td><strong>~$3,268M</strong></td>
+<td>❌ SEC 미공시 · 가정</td>
+</tr>
+<tr>
+<td>부가가치 매출(매출−자재 추정)</td>
+<td>~$1,014M (30%)</td>
+<td><strong>~$1,373M (30%)</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>부가가치 마진(GP ÷ 부가가치)</td>
+<td>~40.8%</td>
+<td><strong>~40.5%</strong></td>
+<td>자재를 빼고 봐도 확장 없음</td>
+</tr>
+<tr>
+<td>워런트 매출 차감</td>
+<td>$4.1M</td>
+<td><strong>$4.8M</strong></td>
+<td>Amazon · 85,942주 vested</td>
+</tr>
+</tbody>
+</table>
+<p>📐 산식 주의: 자재비 80% 가정은 동종 EMS 통상 범위(75~85%)이며 FN 공시가 아니다. 방향성 참고용.</p><div class="dd-fig"><p class="cap"><b>매출 vs GM% (FY23~FY26, SEC 10-K)</b> — 좌축 매출 $M · 우축 GM %. 매출이 4년간 1.75배로 늘었지만 GM은 12.7%→12.0%로 하향 — "매출↑ + rate↓" 가격압박 신호(§C.5). FY27은 연간 가이던스 없음 → 전망 점 없음.</p><div id="fig-rate"></div><div class="dd-legend" id="leg-rate"></div><p class="dd-note">출처: companyfacts XBRL(Revenues·GrossProfit) + 10-K FY26 Item 7. 값은 §B.2·§B.3 표와 동일.</p></div>
+<hr />
+</div><div class="card"><h2>Part B.3 — 단위 경제</h2>
+<h3>고객당 매출(비중 × 총매출 역산 · 10-K는 비중만 공시)</h3>
+<table>
+<thead>
+<tr>
+<th>고객</th>
+<th>FY24</th>
+<th>FY25</th>
+<th><strong>FY26</strong></th>
+<th>역산 $ (FY25→FY26)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cisco</td>
+<td>13.4%</td>
+<td>18.2%</td>
+<td><strong>19.9%</strong></td>
+<td>$622M → <strong>$924M</strong> (+48%)</td>
+</tr>
+<tr>
+<td>NVIDIA</td>
+<td>35.1%</td>
+<td>27.6%</td>
+<td><strong>16.3%</strong></td>
+<td>$944M → <strong>$757M</strong> (<strong>−20%</strong>)</td>
+</tr>
+<tr>
+<td>Nokia</td>
+<td>&lt;10%</td>
+<td>&lt;10%</td>
+<td><strong>10.7%</strong></td>
+<td>— → <strong>$497M</strong></td>
+</tr>
+<tr>
+<td>Amazon</td>
+<td>&lt;10%</td>
+<td>&lt;10%</td>
+<td><strong>10.5%</strong></td>
+<td>— → <strong>$487M</strong></td>
+</tr>
+<tr>
+<td>상위 합산</td>
+<td>48.5% (2사)</td>
+<td>45.8% (2사)</td>
+<td><strong>57.4% (4사)</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>🔴 NVIDIA 달러 매출 감소는 10-K에 <em>설명이 없다</em>(비중만 공시). 가능한 해석은 ① NVIDIA가 일부 프로그램을 다른 EMS나 내재화로 옮겼다, ② NVIDIA 물량이 Amazon 등 최종 고객 직거래로 재배치됐다, ③ 제품 세대 전환기 물량 공백. <strong>어느 쪽인지 1차 자료로 확정 불가</strong> → Q1 FY27 10-Q(11월 초 예정) 집중 확인 항목.</li>
+</ul>
+<h3>마진 분해 (SEC 검증)</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FY24</th>
+<th>FY25</th>
+<th><strong>FY26</strong></th>
+<th><strong>Q4 FY26</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매출 ($M)</td>
+<td>2,883.0</td>
+<td>3,419.3</td>
+<td><strong>4,641.1</strong></td>
+<td><strong>1,315.8</strong> (+44.6% YoY)</td>
+</tr>
+<tr>
+<td>GP ($M) / GM</td>
+<td>356.1 / 12.4%</td>
+<td>413.3 / 12.1%</td>
+<td><strong>556.5 / 12.0%</strong></td>
+<td><strong>158.1 / 12.0%</strong></td>
+</tr>
+<tr>
+<td>SG&amp;A %</td>
+<td>2.8%</td>
+<td>2.6%</td>
+<td><strong>2.0%</strong></td>
+<td>1.8%</td>
+</tr>
+<tr>
+<td>OM</td>
+<td>9.6%</td>
+<td>9.4%</td>
+<td><strong>10.0%</strong></td>
+<td><strong>10.2%</strong></td>
+</tr>
+<tr>
+<td>순이익 ($M) / 순마진</td>
+<td>296.2 / 10.3%</td>
+<td>332.5 / 9.7%</td>
+<td><strong>473.0 / 10.2%</strong></td>
+<td>139.3 / 10.6%</td>
+</tr>
+<tr>
+<td>비-GAAP 순이익 ($M)</td>
+<td>—</td>
+<td>368.8 / 10.8%</td>
+<td><strong>510.9 / 11.0%</strong></td>
+<td>149.1 / 11.3%</td>
+</tr>
+<tr>
+<td>실효세율</td>
+<td>4.9%</td>
+<td>6.4%</td>
+<td><strong>14.8%</strong></td>
+<td>30.3% (Pillar Two 일괄 반영)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>레버리지는 여전히 <strong>SG&amp;A에서만</strong> 나온다(2.6%→2.0%, OM +0.6pp). GM은 4년 연속 하향.</li>
+<li>🟠 <strong>순이익 $473M의 구성</strong>: Raytek 재평가 이익 +$56.7M(비영업·비현금) − Pillar Two 최저한세 −$57.4M(현금 유출 예정). 두 항목이 우연히 상쇄돼 GAAP 순마진이 "좋아 보이지만", 앞의 것은 일회성이고 뒤의 것은 매년 계속된다.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>🔤 Pillar Two</strong> — OECD 글로벌 최저한세(15%). 태국 세금 감면으로 실효세율이 6%대였던 FN에 "부족분(top-up)"을 걷는 제도. FY26부터 적용돼 실효세율이 두 배 이상 올랐다.</p>
+</blockquote>
+<h3>자본 강도</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FY24</th>
+<th>FY25</th>
+<th><strong>FY26</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PP&amp;E 순액 ($M)</td>
+<td>307.2</td>
+<td>380.6</td>
+<td><strong>615.1</strong> (+62%)</td>
+</tr>
+<tr>
+<td>설비투자 — 현금 ($M)</td>
+<td>47.5</td>
+<td>121.1</td>
+<td><strong>252.5</strong></td>
+</tr>
+<tr>
+<td>설비투자 — 발생 기준 ($M, 10-K 표)</td>
+<td>49.3</td>
+<td>130.7</td>
+<td><strong>298.9</strong></td>
+</tr>
+<tr>
+<td>설비투자 ÷ 매출</td>
+<td>1.7%</td>
+<td>3.5%</td>
+<td><strong>5.4%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>회사는 FY27 설비투자가 FY26보다 <strong>더 늘 것</strong>이라 밝혔다(캘리포니아 건물 매입·Pathum Thani·장비). "자기 현금으로 충당하는 자본집약형"이라던 6/21 판정은 <strong>수정</strong> — 8/17 텀론 차입으로 <em>외부 자금이 들어오기 시작했다</em>.</p>
+<hr />
+</div><div class="card"><h2>Part B.4 — 매출 품질 + 고객 집중</h2>
+<ul>
+<li><strong>고객 집중</strong>: 위 B.3 표. 매출채권 집중(6/26): Cisco 16.1% · Nokia 14.2% · Amazon 11.5% · <strong>NVIDIA &lt;10%</strong>(전년 25.5%). 채권 쪽에서 NVIDIA가 사라진 것은 연말 분기 NVIDIA 출하가 전년보다 뚜렷이 작았다는 방증.</li>
+<li><strong>backlog 비신뢰 · 최소 구매 의무 없음 · PO 취소 가능</strong> — 변동 없음.</li>
+<li><strong>공급 측 sole-source</strong> — 변동 없음(문구 동일).</li>
+<li><strong>환율</strong>: 달러가 2024-06 이후 바트 대비 <strong>9.4% 약세</strong>. 매출은 달러, 인건비는 바트 → GM을 누르는 방향. 헤지는 12개월 이내 계약만.</li>
+</ul>
+<hr />
+</div><div class="card"><h2>Part B.5 — 가치사슬 수익 포착 지점 — <strong>변동 없음</strong></h2>
+<p>"설계는 고객, 양산은 FN" 길목에서 표면 12%·부가가치 ~40%를 떼는 구조 그대로. 가격 결정력은 "올릴 힘"이 아니라 "안 잘리는 힘". FY26에 새로 확인된 것은 그 길목이 <strong>NVIDIA 한 곳이 아니라 Cisco·NVIDIA·Nokia·Amazon 네 곳</strong>으로 넓어졌다는 점 — 단일 고객 리스크는 줄고, 네 대형 고객 공통의 협상력(가격 하락 압력·워런트)은 그대로다.</p>
+<hr />
+</div><div class="card"><h2>Part C — 12 함정 (델타 중심 · 전수)</h2>
+<p><strong>C.1 마진 분모 forensics</strong> — 🚩 유지·<strong>보강</strong>. GM 12.0%는 자재 pass-through 착시(부가가치 ~40%)라는 점은 동일. 새로 붙는 분모 함정은 <strong>순이익</strong>: GAAP $473M에 비현금 Raytek 이익 $56.7M이 들어 있고 Pillar Two $57.4M이 상쇄. "순마진 10.2%"를 그대로 읽으면 안 되고, 비-GAAP $510.9M(둘 모두 제외)과 GAAP 두 개를 나란히 봐야 한다.</p>
+<p><strong>C.2 반복매출</strong> — 🚩 유지. ARR 0 · 계약부채 $4.2M(매출 0.1%) — 선수금 구조조차 없다.</p>
+<p><strong>C.3 ARR↔장부매출 격차</strong> — 없음 유지(ARR 지표 미사용).</p>
+<p><strong>C.4 backlog 품질</strong> — 🚩 유지. "backlog는 신뢰 지표 아님" 문구 동일. Q1 FY27 가이던스($1.375~1.425B)가 유일한 단기 가시성.</p>
+<p><strong>C.5 가격 결정력</strong> — 🚩 유지. GM 12.0%(4년 연속 하향) · "가격은 시간이 지나며 하락" 재확인 · 워런트 차감 $4.8M. 10% 이상 고객이 4곳으로 늘었지만 넷 모두 hyperscaler·통신 장비 1위급이라 협상력 지형은 바뀌지 않았다.</p>
+<p><strong>C.6 고객·유통 집중</strong> — 🚩 유지·<strong>형태 변화</strong>. 4사 57.4%(FY25 2사 45.8%). NVIDIA 27.6→16.3%(달러 −20% 역산), Cisco 19.9%로 1위, Nokia·Amazon 신규 10%+. 6/21의 "NVIDIA 단일 in-sourcing" 시나리오는 <em>이미 일부 현실화된 듯 보이지만</em>(원인 미공시), 매출은 그 사이 36% 늘었다 — 즉 <strong>한 고객이 빠져도 다른 세 고객이 채우는 다변화된 집중</strong>으로 바뀌었다. 리스크의 성격이 "한 곳 이탈"에서 "네 곳 공통의 AI·통신 capex 사이클"로 이동.</p>
+<p><strong>C.7 매크로 민감도</strong> — 🚩 유지. Data center 47.9% + Comm infra 33.3% = 81.2%가 네트워크·데이터센터 투자 사이클에 묶여 있다(10-K Item 1A가 이 두 시장 미확장을 명시적 리스크로 기재). 추가 변수: 바트 강세(달러 −9.4%).</p>
+<p><strong>C.8 금리 비대칭(float)</strong> — 없음 유지. 이자수익 $32.4M(−19%, 평균 금리 4.2→3.7%), 10bp 하락 시 −$0.9M(Item 7A). 단 <strong>이자비용이 처음 생긴다</strong> — 텀론 THB 25억(~$75M) + 한도 THB 26.1억·$100M(8/17). 규모는 작으나 "현금 부자·무차입" 서사는 종료.</p>
+<p><strong>C.9 운영 레버리지</strong> — 🚩 부분 유지. SG&amp;A 2.6→2.0%로 OM 9.4→10.0%(Q4 10.2%) — 판관비 레버리지는 실재. GM 레버리지는 없음(12.4→12.1→12.0). 회사는 FY27 SG&amp;A 증가·태국/중국 인건비 상승을 예고.</p>
+<p><strong>C.10 NI↔FCF</strong> — 🚩 유지·<strong>최치명으로 승격</strong>.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FY24</th>
+<th>FY25</th>
+<th><strong>FY26</strong></th>
+<th>Q4 FY26</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>순이익 ($M)</td>
+<td>296.2</td>
+<td>332.5</td>
+<td><strong>473.0</strong></td>
+<td>139.3</td>
+</tr>
+<tr>
+<td>영업현금 ($M)</td>
+<td>413.1</td>
+<td>328.4</td>
+<td><strong>256.7</strong></td>
+<td>55.0</td>
+</tr>
+<tr>
+<td>설비투자 현금 ($M)</td>
+<td>47.5</td>
+<td>121.1</td>
+<td><strong>252.5</strong></td>
+<td>91.9</td>
+</tr>
+<tr>
+<td><strong>FCF ($M)</strong></td>
+<td>365.6</td>
+<td>207.3</td>
+<td><strong>4.2</strong></td>
+<td><strong>−36.9</strong></td>
+</tr>
+<tr>
+<td>재고 ($M) / 재고일수</td>
+<td>463 / 67일</td>
+<td>581 / 70일</td>
+<td><strong>1,021 / 91일</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>매출채권 ($M) / DSO</td>
+<td>592 / 75일</td>
+<td>759 / 81일</td>
+<td><strong>1,018 / 80일</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>매입채무 ($M)</td>
+<td>443</td>
+<td>637</td>
+<td><strong>1,006</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>회사 설명: "다음 분기 수요 대응용 재고 증가 + 회수 시점 차이" 그리고 매입채무 증가로 일부 상쇄. <strong>AI 밸류체인 운전자본 전가 검증</strong>(스킬 의무 항목): 매출 +36% 대비 재고 +76%·매입채무 +58%·매출채권 +34% → DSO는 안정(81→80일)이나 <strong>재고가 매출보다 두 배 빨리 늘었다</strong>. Q1 가이던스 QoQ +4.5~8%로는 재고 91일을 정당화하기 어렵다 → 순수 "선행 투자형"으로 보기엔 폭이 크다. 판정: 🔴 "매출↑·OCF↓·재고 팽창·차입 시작" = 이익이 라벨에 머무는 칸. 단 순현금 $875M(현금+단기투자)이 있어 부실형은 아니다. Q1 FY27 10-Q 재고 방향이 결정적.</p>
+<p><strong>C.11 주당 희석</strong> — 없음 유지(양호). 희석 주식 36.27M→36.25M. 주당 매출 $94→<strong>$128</strong>(+36%). 자사주 매입은 $125.7M→<strong>$5.2M</strong>으로 급감(잔여 한도 $169.0M, Q4 매입 0주) — 현금을 공장에 돌린 결과. 워런트 vested 85,942주는 소액.</p>
+<p><strong>C.12 모델 전환 신호</strong> — 🚩 유지·<strong>강화</strong>. ① 공시 3분류 재편 = 회사 스스로 "Data center 회사"로 재정의. ② Raytek(대만 반도체) 지분 상장·재평가 $89.1M. ③ FY27 <strong>캘리포니아 제조 건물 매입</strong> — 태국 단일 기지에서 미국 내 제조 거점 확대([추론] 고객 근접·관세·온쇼어링 대응 가능성, 10-K는 사유 미기재). ④ 텀론 차입 개시. ⑤ Navanakorn·Pathum Thani 캠퍼스 추가. 전부 "순수 조립사 → 데이터센터 인프라 공급망의 자본집약 노드"로 이동하는 방향. 상방(가치사슬 상류)·하방(자본 강도) 양면.</p>
+<hr />
+</div><div class="card"><h2>Part D — 종합 판정</h2>
+<h3>D.2 수익모델 4차원 등급 (유지)</h3>
+<table>
+<thead>
+<tr>
+<th>차원</th>
+<th>등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>예측가능성</td>
+<td>⭐⭐</td>
+<td>backlog 비신뢰·단기 PO·선수금 0.1% · 다음 분기 가이던스만</td>
+</tr>
+<tr>
+<td>수익성</td>
+<td>⭐⭐⭐</td>
+<td>GM 12.0% 박스(4년 하향) · OM 10.0% · 부가가치 ~40% · 순현금 $875M. 단 FCF $4M·Pillar Two 구조적 세부담</td>
+</tr>
+<tr>
+<td>과금 강도</td>
+<td>⭐⭐</td>
+<td>pass-through · 가격 하락 자인 · 워런트 · 세그먼트 마진 미공시(잠정치)</td>
+</tr>
+<tr>
+<td>고객 stickiness</td>
+<td>⭐⭐⭐⭐</td>
+<td>3~6개월 인증·copy-exact·비경쟁 신뢰 · 10%+ 고객이 2→4곳으로 <em>늘어난</em> 것 자체가 신규 대형 프로그램 진입의 증거</td>
+</tr>
+</tbody>
+</table>
+<h3>D.3 종합</h3>
+<ul>
+<li><strong>아키타입</strong>: ⑥ 고급 위탁제조 85% + ② 수직통합 곡괭이 15% — 유지.</li>
+<li><strong>핵심 edge 1</strong>: 전환비용 기반 stickiness. FY26에 Nokia·Amazon이 10% 고객으로 올라온 것은 이 edge가 <em>새 고객에게도</em> 작동함을 보여준다.</li>
+<li><strong>치명 함정</strong>: ① C.10 현금 전환 — FCF $207M→$4M, 재고 91일, 차입 개시. ② C.6 고객 집중 — 4사 57.4%, NVIDIA −20%(원인 미공시).</li>
+<li><strong>thesis 함의</strong>: 통행료 사업의 골격은 그대로지만, FY26은 "통행료를 받으려면 먼저 도로를 넓혀야 한다"는 비용이 현금흐름에 처음 찍힌 해다. 마진 확장 없는 매출 36% 성장은 운전자본과 공장으로 흡수됐다. 재평가 여부는 <strong>Q1 FY27 10-Q(11월 초)의 재고·NVIDIA 비중</strong> 두 숫자에 달려 있다.</li>
+</ul>
+<p>(반박 결과 판정이 뒤집힌 항목: B.3 자본 강도 "자기 현금 충당형" → <strong>"외부 차입 개시"로 수정</strong>. 나머지 판정은 반박 통과.)</p>
+<hr />
+</div><div class="card"><h2>📋 12 함정 🚩 요약</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>함정</th>
+<th>6/21</th>
+<th><strong>9/27</strong></th>
+<th>델타</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C.1</td>
+<td>마진 분모</td>
+<td>🚩</td>
+<td>🚩</td>
+<td>순이익 분모(Raytek 이익·Pillar Two) 추가</td>
+</tr>
+<tr>
+<td>C.2</td>
+<td>반복매출</td>
+<td>🚩</td>
+<td>🚩</td>
+<td>계약부채 $4.2M 확인</td>
+</tr>
+<tr>
+<td>C.3</td>
+<td>ARR↔장부</td>
+<td>없음</td>
+<td>없음</td>
+<td>—</td>
+</tr>
+<tr>
+<td>C.4</td>
+<td>backlog 품질</td>
+<td>🚩</td>
+<td>🚩</td>
+<td>—</td>
+</tr>
+<tr>
+<td>C.5</td>
+<td>가격 결정력</td>
+<td>🚩</td>
+<td>🚩</td>
+<td>GM 12.0% · 워런트 $4.8M</td>
+</tr>
+<tr>
+<td>C.6</td>
+<td>고객 집중</td>
+<td>🚩 최치명</td>
+<td>🚩 2위</td>
+<td>4사 57.4% · NVIDIA 16.3%(−20%) · Cisco 1위</td>
+</tr>
+<tr>
+<td>C.7</td>
+<td>매크로 민감도</td>
+<td>🚩</td>
+<td>🚩</td>
+<td>DC+통신 81.2% · 바트 강세</td>
+</tr>
+<tr>
+<td>C.8</td>
+<td>금리 비대칭</td>
+<td>없음</td>
+<td>없음</td>
+<td>이자비용 신규(텀론 ~$75M)</td>
+</tr>
+<tr>
+<td>C.9</td>
+<td>운영 레버리지</td>
+<td>🚩 부분</td>
+<td>🚩 부분</td>
+<td>OM +0.6pp(SG&amp;A만)</td>
+</tr>
+<tr>
+<td>C.10</td>
+<td>NI↔FCF</td>
+<td>🚩 2위</td>
+<td><strong>🚩 최치명</strong></td>
+<td>FCF $4.2M · 재고 91일 · 차입</td>
+</tr>
+<tr>
+<td>C.11</td>
+<td>주당 희석</td>
+<td>없음</td>
+<td>없음</td>
+<td>자사주 매입 $5.2M으로 급감</td>
+</tr>
+<tr>
+<td>C.12</td>
+<td>모델 전환</td>
+<td>🚩</td>
+<td>🚩 강화</td>
+<td>3분류 재편 · 캘리포니아 · Raytek 상장</td>
+</tr>
+</tbody>
+</table>
+</div><div class="card"><h2>⚠️ 수집 실패·불완전</h2>
+<ul>
+<li>Q4 FY26 <strong>분기 단독</strong> 3분류 매출(Data center 등) — 10-K·보도자료 모두 연간만 공시, 10-Q는 Q4 없음 → ❌ 미수집.</li>
+<li>구 4분류(Telecom/Datacom/DCI/HPC) <strong>FY26 연간</strong> 값 — 회사가 분류를 폐지해 존재하지 않음 → 6/21 표와의 직접 비교 불가.</li>
+<li>NVIDIA 비중 하락 <strong>원인</strong> — 10-K 비중만 공시, 서술 없음. 컨콜 발언은 R-Dive 범위 밖(Call-Dive 소관) → ❌ 미확인.</li>
+<li>세그먼트별 마진 — 단일 세그먼트, 미공시(변동 없음).</li>
+<li>자재비 절대액 — 미공시(80% 가정 유지).</li>
+</ul>
+<hr />
+<p>시세(2026-09-25 종가, yfinance): $417.39 · 시총 $14.96B · 52주 $355.5~748.89 · PSR(TTM) 3.2 · 후행 PER 32.0 · 선행 PER 19.2. (6/21 보고서 시점 $573.76.)</p>
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p></div>
+</div><script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script><script>const VIZ={"trajectory": {"periods": ["FY23", "FY24", "FY25", "FY26"], "forecastFrom": 4, "inflection": {"index": 3, "label": "공시 3분류 재편·텀론 차입(C.12)"}, "series": [{"key": "rev", "label": "매출 ($M)", "axis": "left", "color": "#2980b9", "values": [2645.2, 2883.0, 3419.3, 4641.1]}, {"key": "rate", "label": "GM (%)", "axis": "right", "color": "#c0392b", "values": [12.7, 12.4, 12.1, 12.0]}]}}; DDViz.renderTrajectory('fig-rate','leg-rate',VIZ.trajectory);</script></body></html>
