@@ -8,7 +8,7 @@
 <meta name="vault-stage" content="Analysis">
 <meta name="vault-topic" content="SECZ">
 <meta name="vault-date" content="2026-09-28">
-<meta name="description" content="SECZ 경쟁·협업 지도를 생애주기 9단계 별로 여는 인터랙티브 대시보드. 별을 누르면 상품 7종마다 SECZ + 협업사·발행사 주도형 경쟁사·제3자형 경쟁사(DTCC 트윈·역외 래퍼) 표가 열리고, 시간 슬라이드(지금·2027 초·2028 A·2028 B)로 칸의 상태와 내용이 바뀐다. 칸·회사를 누르면 상세와 카드가 열린다. 매수·매도 신호 아님.">
+<meta name="description" content="SECZ 경쟁·협업 지도를 생애주기 9단계(만들기·관리하기·돌리기) 별로 여는 인터랙티브 대시보드. 별을 누르면 상품 7종마다 SECZ + 협업사·발행사 주도형 경쟁사·제3자형 경쟁사(DTCC 트윈·역외 래퍼) 표가 열리고, 시간 슬라이드(지금·2027 초·2028 A·2028 B)로 칸의 상태와 내용이 바뀐다. 칸·회사를 누르면 상세와 카드가 열린다. 매수·매도 신호 아님.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@600;700;900&display=swap">
@@ -43,6 +43,9 @@ button{font-family:inherit;color:inherit;}
 #s-main h1{font-family:"Noto Serif KR",serif;font-weight:900;font-size:56px;line-height:1.18;margin:18px 0 0;letter-spacing:-.02em;}
 #s-main .sub{font-size:21px;color:var(--paper-dim);font-weight:300;margin-top:14px;line-height:1.6;}
 .stars{position:absolute;left:80px;right:80px;top:330px;display:grid;grid-template-columns:repeat(9,1fr);gap:6px;}
+.sgroups{position:absolute;left:80px;right:80px;top:292px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.sgroups div{display:flex;align-items:center;gap:12px;font-size:14px;letter-spacing:.12em;color:var(--paper-dim);}
+.sgroups div::before,.sgroups div::after{content:"";flex:1;height:1px;background:var(--rule);}
 .path{position:absolute;left:80px;top:330px;width:1440px;height:160px;pointer-events:none;}
 .path path{stroke-dasharray:1700;stroke-dashoffset:1700;transition:stroke-dashoffset 2.4s cubic-bezier(.3,.6,.3,1) .3s;}
 #s-main.active .path path{stroke-dashoffset:0;}
@@ -86,7 +89,7 @@ button{font-family:inherit;color:inherit;}
 .stnav{display:flex;gap:2px;}
 .ss{background:none;border:1px solid transparent;padding:2px 2px 3px;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;opacity:.5;transition:opacity .2s,border-color .2s;}
 .ss:hover{opacity:.9;} .ss.on{opacity:1;border-color:var(--rule);background:rgba(8,25,43,.6);}
-.ss .art{width:36px;height:36px;} .ss span{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);} .ss.on span{color:#fff;}
+.ss .art{width:36px;height:36px;} .ss:nth-child(4),.ss:nth-child(7){margin-left:12px;} .ss span{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);} .ss.on span{color:#fff;}
 .stnav button{border:1px solid var(--rule);background:var(--ink-800);padding:8px 14px;cursor:pointer;font-size:14px;color:var(--paper-dim);}
 .stnav button:hover{border-color:rgba(230,237,245,.5);color:#fff;}
 .stinfo{display:grid;grid-template-columns:1fr;gap:0;margin-top:10px;border:1px solid var(--rule);background:rgba(8,25,43,.75);}
@@ -299,6 +302,7 @@ details.bg[open] summary{color:var(--paper-dim);}
 .agh.sub{white-space:normal;line-height:1.25;font-size:11.5px;padding:4px 0;}
 .arh{display:flex;align-items:center;gap:8px;padding:0 8px;background:rgba(8,25,43,.75);height:60px;cursor:pointer;font-size:14px;}
 .arh:hover{background:var(--ink-750);}
+.arh small.gl{display:block;font-size:11.5px;letter-spacing:.08em;color:var(--muted);}
 .arh svg{width:40px;height:40px;flex:none;}
 .at{height:60px;position:relative;display:flex;align-items:center;justify-content:center;gap:5px;background:rgba(11,33,56,.55);border:1px solid var(--rule-soft);cursor:pointer;transition:border-color .2s,background .2s;}
 .at.s-f{background:linear-gradient(180deg,rgba(24,62,92,.95),rgba(16,46,72,.95));border-color:rgba(79,209,232,.4);}
@@ -455,9 +459,10 @@ details.bg[open] summary{color:var(--paper-dim);}
 <section class="scr active" id="s-main">
   <div class="eyebrow rv" style="--i:0">SECZ 경쟁·협업 지도 · 2026-09-28</div>
   <h1 class="rv" style="--i:1">SECZ 경쟁·협업 지도</h1>
-  <div class="sub rv" style="--i:2">토큰화 증권의 생애주기 9단계. 별을 누르면 상품마다 <strong>SECZ + 협업사 · 발행사 주도형 경쟁사 · 제3자형 경쟁사</strong> 표가 열린다.</div>
+  <div class="sub rv" style="--i:2">토큰화 증권의 생애주기 9단계 — 만들기 · 관리하기 · 돌리기. 별을 누르면 상품마다 <strong>SECZ + 협업사 · 발행사 주도형 경쟁사 · 제3자형 경쟁사</strong> 표가 열린다.</div>
   <svg class="path" viewBox="0 0 1440 160" aria-hidden="true"><path d="M80 75 C 200 20, 280 130, 400 75 S 600 20, 720 75 S 920 130, 1040 75 S 1240 20, 1360 75" fill="none" stroke="url(#pathg)" stroke-width="1.4" stroke-dasharray="4 6"/>
     <defs><linearGradient id="pathg" x1="0" x2="1"><stop offset="0" stop-color="#7E97AE" stop-opacity=".45"/><stop offset="1" stop-color="#7E97AE" stop-opacity=".45"/></linearGradient></defs></svg>
+  <div class="sgroups rv" style="--i:3"><div>만들기</div><div>관리하기</div><div>돌리기</div></div>
   <div class="stars" id="stars"></div>
   <div class="mainfoot rv" style="--i:6">
     <button class="btn" data-go="guide">읽는 법 — 토큰 3종·세 조건·기호 <span class="k">G</span></button>
@@ -504,7 +509,7 @@ details.bg[open] summary{color:var(--paper-dim);}
     <div><div class="eyebrow">플레이어</div><h2 style="margin-top:6px">누가 어디에 서 있나 — 이름을 누르면 카드가 열린다</h2></div>
   </div>
   <div class="pgroups" id="pgroups"></div>
-  <div class="legend" style="margin-top:10px"><span><i class="dot co"></i>협업 <i class="dot cp" style="margin-left:6px"></i>경쟁 <i class="dot mx" style="margin-left:6px"></i>복합 = 회사 전체 관계</span><span><span class="tk"><i style="background:#C9D6E3"></i><i style="background:var(--warn)"></i><i style="background:var(--legacy)"></i><i></i></span> 눈금 = 서 있는 단계 R1→R9 · 색 = 그 단계의 자리(협업 · 발행사 주도형 · 제3자형)</span><span>숫자 = 서 있는 칸 수</span></div>
+  <div class="legend" style="margin-top:10px"><span><i class="dot co"></i>협업 <i class="dot cp" style="margin-left:6px"></i>경쟁 <i class="dot mx" style="margin-left:6px"></i>복합 = 회사 전체 관계</span><span><span class="tk"><i style="background:#C9D6E3"></i><i style="background:var(--warn)"></i><i style="background:var(--legacy)"></i><i></i></span> 눈금 = 서 있는 단계(만들기 → 돌리기, 9칸) · 색 = 그 단계의 자리(협업 · 발행사 주도형 · 제3자형)</span><span>숫자 = 서 있는 칸 수</span></div>
 </section>
 
 <!-- 읽는 법 -->
@@ -530,7 +535,7 @@ details.bg[open] summary{color:var(--paper-dim);}
       <p>사모펀드·벤처는 셋 다 막혀 발행사 주도가 사실상 강제된다. 하이일드·CLO는 ①②를 통과해 트윈이 구조상 가능하다.</p>
     </div>
     <div class="limits"><b>이 지도의 한계</b>
-    <p>"?" 칸은 빈칸이 아니라 모르는 칸이다. 매출은 칸별로 공시되지 않아 ●◐ 구분은 공시된 두 매출 줄과 상품 규모를 짜 맞춘 추정이다. 같은 "협업"이라도 BlackRock(수년·수십억 달러)과 구속력 없는 MOU는 무게가 다르다. 2027·2028 칸과 전환 가능성은 전부 주관 추정이다.</p></div>
+    <p>"미확인" 칸은 없다는 뜻이 아니라 공개 자료로 확인하지 못한 칸이다. 매출은 칸별로 공시되지 않아 ●◐ 구분은 공시된 두 매출 줄과 상품 규모를 짜 맞춘 추정이다. 같은 "협업"이라도 BlackRock(수년·수십억 달러)과 구속력 없는 MOU는 무게가 다르다. 2027·2028 칸과 전환 가능성은 전부 주관 추정이다.</p></div>
     </div>
     <div class="gbox"><h4>칸 기호</h4>
       <div id="gLegend"></div>
@@ -721,7 +726,7 @@ bitgo:{n:'BitGo',r:'co',g:'담보·DeFi',now:'[라이브 스크리너] 적격 �
 const ROWT={
 R1:['SECZ는 Securitize Capital(7/22 RIA 등록 효력)로 자사 계열 펀드만 자문한다. ACRED·STAC·HINC가 여기 속한다. BUIDL은 BlackRock이 직접 운용·자문한다. 돈이 나는 칸은 사모신용 하나다.',
     '새 자문 칸은 거의 생기지 않는다. 관측점은 HINC 잔액과 두 번째 자체 펀드다. 자체 펀드가 커질수록 고객 운용사와 경쟁한다는 부작용도 함께 커진다.',
-    '명부 필수화 세계에서도 자문 칸은 크게 바뀌지 않는다. 규칙이 바꾸는 것은 명부(R4)이지 자문이 아니다.',
+    '명부 필수화 세계에서도 자문 칸은 크게 바뀌지 않는다. 규칙이 바꾸는 것은 명부 단계이지 자문이 아니다.',
     '배관 독식 세계에서 SECZ에게 남는 펀드 칸의 일부다. 자문 보수(연 $200만~800만 가정)는 규칙이 아니라 모집력에 달려 있다.'],
 R2:['매출의 몸통이다. 2분기 토큰화 매출 $784만 대부분이 펀드 발행 공사비다. 요율은 1년 새 약 97bp에서 73bp로 내려왔다. 주식 발행 칸은 FINRA 인수 자격까지 있지만 외부 대형 상장사 고객은 0곳이다.',
     '관측할 것은 넷이다. 3분기 토큰화 매출 $920만 이상, KB증권 첫 기관 MMF, Socios 첫 구단, Cantor 첫 온체인 IPO. 2027-01-18 GENIUS법 효력으로 준비금 펀드 수요가 생길 수 있다.',
@@ -762,7 +767,7 @@ const COLT={
 C1:['SECZ의 본진이다. BUIDL·BRSRV·VBILL의 발행·명부·판매를 맡는다. 다만 BUIDL 비중이 47.7%로 처음 50% 아래로 내려갔고 보유자도 처음 줄었다. 경쟁은 Circle USYC(역외)·Ondo·Franklin·Janus다.',
     'GENIUS법 효력(2027-01-18)으로 준비금 펀드(BRSRV) 수요가 생길 수 있다. 동시에 BNY 디지털 TA와 Ondo의 Fund/SERV 선점이 몫을 나눈다. 물량은 늘고 요율은 내리는 칸이다.',
     '규칙 변화와 무관하게 ●를 유지한다. 다만 BNY·Ondo와 나눠 갖는 몫이 커진다.',
-    '배관 독식 세계에서도 남는 칸이다. 단, 기관 담보와 유통은 트윈 국채와 Fund/SERV로 옮아 판매 칸(R7)은 ◐가 된다.'],
+    '배관 독식 세계에서도 남는 칸이다. 단, 기관 담보와 유통은 트윈 국채와 Fund/SERV로 옮아 판매·유통 칸은 ◐가 된다.'],
 C2:['DTC가 보관한 국채의 청구권 토큰이다. 7/15 Citadel이 CME 증거금으로 실제 납입했고, J.P. Morgan도 토큰화 자산으로 증거금을 채웠다. SECZ가 택하지 않은 모델이라 이 줄에 SECZ는 없다.',
     '10월 DTCC 토큰화 서비스 정식 출시, 2027 상반기 Stellar 연결. 트윈이 표준 배관으로 굳는다.',
     '트윈과 발행사 토큰 사이에 전환 다리가 생기면 "다리 건너편 명부"가 필요해진다. 그래도 이 줄 자체는 DTCC의 몫이다.',
@@ -861,7 +866,7 @@ const sy=h=>String(h).replace(/⚠\uFE0F?/g,WARN);   // ⚠ 글꼴이 △로 그
 const plain=h=>String(h).replace(/⚠\uFE0F?/g,'[압력]').replace(/✨/g,'[기회]');
 const tx=s=>sy((s||'').replace(/겸업/g,'복합').replace(/\[라이브 스크리너\]\s*/g,''));
 const REL={co:'협업',cp:'경쟁',mx:'복합'};
-const SNAME={f:'가동 + 매출',p:'가동 · 매출 미미',l:'인가·도구만',n:'서 있지 않음',q:'확인 필요'};
+const SNAME={f:'가동 + 매출',p:'가동 · 매출 미미',l:'인가·도구만',n:'서 있지 않음',q:'미확인(공개 자료로 확인 못 함)'};
 const RANK={n:0,q:1,l:2,p:3,f:4};
 const REDUCE=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -897,6 +902,10 @@ ASSETS.forEach(A=>{ if(A.span){CINFO[A.span]={a:A.a,m:'모델 미분할',alt:0};
   MODELS.forEach(M=>{const v=A.m[M.id]; if(typeof v==='string') CINFO[v]={a:A.a,m:M.n,alt:M.alt};});});
 const GL={o:'✓',h:'△',x:'✕','-':'·'};
 const TN=['지금','2027 초','2028+ A','2028+ B'];
+const GRPN=['만들기','관리하기','돌리기'];                       // 생애주기 9단계 = 세 묶음(1~3 · 4~6 · 7~9)
+const grpOf=i=>GRPN[Math.floor(i/3)];
+const stIdx=r=>STAGES.findIndex(x=>x.r===r);
+const stName=k=>STAGES[stIdx(k.slice(0,2))].n;
 
 // ── 계산 ──
 const cIdx=c=>COLS.findIndex(x=>x.id===c);
@@ -928,7 +937,7 @@ const esc=x=>String(x).replace(/<[^>]+>/g,'').replace(/"/g,'&quot;');
 function altRel(k,t){const r=k.slice(0,2),c=k.slice(2),s=stAt(r,c,t),ao=ASSET_OF[c];if(s==='f'||s==='p')return 'br';
   if(!cmpOf(k).length)return 'open';
   if(t===3&&ao&&ao.role==='twin'){const i=ao.A.m.iss;if(RANK[stAt(r,i,3)]<RANK[stAt(r,i,2)])return 'dom';}return 'sub';}
-const altEv=(c,t)=>t<=1?(SUBEV[c]?SUBEV[c][0]:'확인 필요'):'';   // 2028은 세계 띠에 '전부 추정' 한 번
+const altEv=(c,t)=>t<=1?(SUBEV[c]?SUBEV[c][0]:'미확인'):'';   // 2028은 세계 띠에 '전부 추정' 한 번
 const cmpOf=k=>(NAMES[k]||[]).filter(x=>x[1]!=='co');
 const cpOf=k=>(NAMES[k]||[]).filter(x=>x[1]==='cp');      // 발행사 주도형 열 = 순수 경쟁만
 const allyOf=k=>(NAMES[k]||[]).filter(x=>x[1]!=='cp');   // SECZ + 협업사 열 = 협업 + 복합
@@ -1015,7 +1024,7 @@ const bars3=(n,cls)=>`<span class="b3 ${cls}">${[0,1,2].map(i=>`<i class="${i<n?
 function renderMain(){
   $('#stars').innerHTML=STAGES.map((s,i)=>{let f=0,p=0,same=0,sub=0;
     ASSETS.forEach(A=>{const c=A.span||A.m.iss,v=st0(s.r,c);if(v==='f')f++;if(v==='p')p++;same+=cpOf(s.r+c).length;if(!A.span)ALTM.forEach(([m])=>{if(typeof A.m[m]==='string')sub+=cmpOf(s.r+A.m[m]).length;});});const cmp=same+sub;
-    return `<button class="star rv" style="--i:${4+i*0.35}" data-ri="${i}" title="${s.n} · 매출 나는 칸 ${f} · 매출 미미 ${p} · 경쟁사 ${cmp}(발행사 주도형 ${same} · 제3자형 ${sub})"><span>${starArt(i)}</span><div class="code">${s.r}</div><div class="nm">${s.n}</div><div class="stat bars"><span class="bx">${bars3(Math.min(3,f),'rev')}<em>매출</em></span><span class="bx">${bars3(lvComp(cmp),'cmpb')}<em>경쟁</em></span></div><div class="cmp">매출 칸 ${f} · 경쟁사 ${cmp}</div></button>`;}).join('')
+    return `<button class="star rv" style="--i:${4+i*0.35}" data-ri="${i}" title="${s.n} · 매출 나는 칸 ${f} · 매출 미미 ${p} · 경쟁사 ${cmp}(발행사 주도형 ${same} · 제3자형 ${sub})"><span>${starArt(i)}</span><div class="nm">${s.n}</div><div class="stat bars"><span class="bx">${bars3(Math.min(3,f),'rev')}<em>매출</em></span><span class="bx">${bars3(lvComp(cmp),'cmpb')}<em>경쟁</em></span></div><div class="cmp">매출 칸 ${f} · 경쟁사 ${cmp}</div></button>`;}).join('')
     +`<div class="slegend rv" style="--i:7"><span>${bars3(2,'rev')} 매출 = 매출 나는 칸 수(0~3)</span><span>${bars3(2,'cmpb')} 경쟁 = 경쟁사 수(없음 · 1~4 · 5~8 · 9곳 이상)</span><span>별에 마우스 → 숫자</span></div>`;
   $$('#stars .star').forEach(b=>b.onclick=()=>openStage(+b.dataset.ri,b));
 }
@@ -1027,10 +1036,10 @@ function openStage(ri,fromEl){if(S.scr!=='stage')S.hist.push(snap());S.ri=(ri+9)
   if(S.scr!=='stage') show('stage',fromEl?starOrigin(fromEl):null); else updRail();}
 function renderStage(){const s=STAGES[S.ri];
   $('#stIcon').innerHTML=starArt(S.ri).replace('class="art"','class="art" style="width:88px;height:88px"');
-  $('#stCode').innerHTML=`${s.r} · ${s.doing} · ${s.free?'<span class="free">인가 불필요</span>':`<span class="lic">인가 = ${s.lic}</span>`}`;
+  $('#stCode').innerHTML=`${grpOf(S.ri)} · ${s.doing} · ${s.free?'<span class="free">인가 불필요</span>':`<span class="lic">인가 = ${s.lic}</span>`}`;
   $('#stName').textContent=s.n;
   $('#stInfo').innerHTML=`<div><b>SECZ 쪽</b>${s.secz}</div>`;
-  $('#stStrip').innerHTML=STAGES.map((x,i)=>`<button class="ss${i===S.ri?' on':''}" data-ri="${i}" title="${i+1} · ${x.r} ${x.n}">${starArt(i)}<span>${x.r}</span></button>`).join('');
+  $('#stStrip').innerHTML=STAGES.map((x,i)=>`<button class="ss${i===S.ri?' on':''}" data-ri="${i}" title="${i+1} · ${grpOf(i)} · ${x.n}">${starArt(i)}</button>`).join('');
   $$('#stStrip .ss').forEach(b=>b.onclick=()=>openStage(+b.dataset.ri));
   $('#track').innerHTML=[0,1,2,3].map(t=>tpanel(t)).join('');
   setTime(S.t,true); bindCells();
@@ -1102,7 +1111,7 @@ function updTsc(el,cur){el.dataset.cur=cur;el.querySelector('.fl').style.width=`
 // ── 칸 상세 (시점별) ──
 function openCell(k,keep){S.k=k;const r=k.slice(0,2),c=k.slice(2),t=S.t,row=ROWS.find(x=>x.id===r),stg=STAGES.find(x=>x.r===r);
   const s=stAt(r,c,t),s0=st0(r,c);
-  {const ao=ASSET_OF[c];$('#pCrumb').innerHTML=`${r} ${stg.n}${ao&&ao.role!=='iss'?` <a class="back2" data-k="${r+ao.A.m.iss}">↔ 같은 상품의 SECZ 칸</a>`:''}`;$$('#pCrumb [data-k]').forEach(a=>a.onclick=()=>openCell(a.dataset.k));}
+  {const ao=ASSET_OF[c];$('#pCrumb').innerHTML=`${grpOf(stIdx(r))} · ${stg.n}${ao&&ao.role!=='iss'?` <a class="back2" data-k="${r+ao.A.m.iss}">↔ 같은 상품의 SECZ 칸</a>`:''}`;$$('#pCrumb [data-k]').forEach(a=>a.onclick=()=>openCell(a.dataset.k));}
   $('#pTitle').innerHTML=cellLabel(k);
   $('#pTabs').innerHTML=TN.map((n,i)=>`<button class="${i===t?'on':''}" data-t="${i}">${n}</button>`).join('');
   $$('#pTabs button').forEach(b=>b.onclick=()=>{ if(S.scr==='stage') setTime(+b.dataset.t); else {S.t=+b.dataset.t; openCell(k,true);} });
@@ -1147,11 +1156,11 @@ function closePanel(){$('#panel').classList.remove('open');$('#s-stage').classLi
 function cellsOf(id){return Object.keys(NAMES).filter(k=>NAMES[k].some(x=>x[0]===id));}
 function miniMap(id,cs){
   const rows=STAGES.map(s=>{const mine=cs.filter(k=>k.slice(0,2)===s.r);
-    const by=b=>mine.filter(k=>roleOf(k,id)===b).map(k=>{const ao=ASSET_OF[k.slice(2)];return `<button data-k="${k}" title="${esc(`${k.slice(0,2)} · ${cellLabel(k)}`)}">${SHORT[ao.A.a]||ao.A.a}${ao.role==='twin'?' 트윈':ao.role==='wrap'?' 래퍼':''}</button>`;}).join('');
-    return `<div class="mr${mine.length?'':' e'}"><span class="ms">${s.r} ${s.n}</span>${['ally','iss','third'].map(b=>`<span class="mc c-${b}">${by(b)}</span>`).join('')}</div>`;}).join('');
+    const by=b=>mine.filter(k=>roleOf(k,id)===b).map(k=>{const ao=ASSET_OF[k.slice(2)];return `<button data-k="${k}" title="${esc(`${stName(k)} · ${cellLabel(k)}`)}">${SHORT[ao.A.a]||ao.A.a}${ao.role==='twin'?' 트윈':ao.role==='wrap'?' 래퍼':''}</button>`;}).join('');
+    return `<div class="mr${mine.length?'':' e'}"><span class="ms">${s.n}</span>${['ally','iss','third'].map(b=>`<span class="mc c-${b}">${by(b)}</span>`).join('')}</div>`;}).join('');
   return `<div class="mini"><div class="mr mh"><span></span><span>SECZ + 협업사</span><span>발행사 주도형</span><span>제3자형</span></div>${rows}</div>`;}
 function openPlayer(id){const p=P[id],rel=p.r,pf=profileOf(id),cs=pf.cs,tv={'상':3,'중':2,'하~중':1.5,'하':1}[p.turn],live=/\[라이브 스크리너\]/.test(p.now||'');S.card=id;
-  const lab=k=>`${k.slice(0,2)} · ${cellLabel(k)}`;
+  const lab=k=>`${stName(k)} · ${cellLabel(k)}`;
   const sum=['third','iss','ally'].filter(b=>pf.cnt[b]).map(b=>`${BNAME[b]} ${pf.cnt[b]}`).join(' · ');
   const where=!cs.length?'—':cs.length<=3?`<span class="cells">${cs.map(k=>`<button data-k="${k}">${lab(k)}</button>`).join('')}</span>`:`<span style="font-size:13px;color:var(--muted)">${sum}</span>${miniMap(id,cs)}`;
   const turn=rel==='co'?'이미 협업':tv?`${p.turn}<span class="steps">${[1,2,3].map(i=>`<i class="${tv>=i?'on':tv>=i-.5?'half':''}"></i>`).join('')}</span>`:'평가 전';
@@ -1180,7 +1189,7 @@ function renderAll(){const t=S.at;
   let h=`<div class="agrid"><div class="agh blank"></div>`;
   ASSETS.forEach(A=>h+=`<div class="agh grp g0" style="grid-column:span 3">${A.a}</div>`);
   h+=`<div class="agh blank"></div>`+ASSETS.map(()=>`<div class="agh sub g0" title="SECZ + 협업사">SECZ<br>+협업사</div><div class="agh sub" title="발행사 주도형 경쟁사">발행사<br>주도형</div><div class="agh sub alt" title="제3자형 경쟁사">제3자형<br>&nbsp;</div>`).join('');
-  STAGES.forEach((s,i)=>{h+=`<div class="arh" data-ri="${i}">${starArt(i)}<span><b>${s.r}</b> ${s.n}</span></div>`;
+  STAGES.forEach((s,i)=>{h+=`<div class="arh" data-ri="${i}">${starArt(i)}<span>${i%3===0?`<small class="gl">${grpOf(i)}</small>`:''}${s.n}</span></div>`;
     ASSETS.forEach(A=>{const k=s.r+(A.span||A.m.iss),c=k.slice(2),v=stAt(s.r,c,t),cm=cpOf(k),isHot=HOT.includes(k),co=allyOf(k);
       h+=`<div class="at g0 s-${v}" data-col="0" data-k="${k}" title="${esc(`${s.n} × ${A.a} · SECZ ${SNAME[v]}${co.length?` · 협업·복합 ${co.map(([id])=>pname(id)).join('·')}`:''}`)}">${glyph(v,24)}${pinHTML(k,t)}${chgHTML(k,t)}</div>`;
       h+=`<div class="at${isHot?' hot':''}" data-col="1" data-k="${k}" title="${esc(`${s.n} × ${A.a} · 발행사 주도형 경쟁사 ${cm.length}곳${cm.length?` · ${cm.map(([id])=>pname(id)).join('·')}`:''}${isHot?' · 가장 붐비는 칸':''}`)}">${cm.length?`<b class="cn">${cm.length}</b>`:'<span class="z">—</span>'}</div>`;
@@ -1192,7 +1201,7 @@ function renderAll(){const t=S.at;
         tips.push(`${lab} ${RELN[rel]}${altEv(w,t)?` · ${altEv(w,t)}`:''} · 상대 ${nn}곳${nn?` (${cmpOf(x).map(([id])=>pname(id)).join('·')})`:''}`);});
       if(best==='open'){best=null;ak='';}
       const sym=best?`<span class="am1 r-${best}"></span>`:'<span class="z">—</span>';
-      h+=`<div class="at${ak?'':' nok'}" data-col="2" ${ak?`data-k="${ak}"`:''} title="${esc(`${s.r} ${s.n} × ${A.a} · 제3자형 경쟁사 — ${tips.join(' / ')}`)}">${sym}${n?`<span class="an">${n}</span>`:''}</div>`;});});
+      h+=`<div class="at${ak?'':' nok'}" data-col="2" ${ak?`data-k="${ak}"`:''} title="${esc(`${s.n} × ${A.a} · 제3자형 경쟁사 — ${tips.join(' / ')}`)}">${sym}${n?`<span class="an">${n}</span>`:''}</div>`;});});
   $('#agrid').innerHTML=h+`</div>`;
   $('#aCol').innerHTML='열 강조'+[['전부',0],['SECZ + 협업사',1],['발행사 주도형',2],['제3자형',3]].map(([n,i])=>`<button class="${(S.acol||0)===i?'on':''}" data-c="${i}">${n}<span>${i}</span></button>`).join('');
   $$('#aCol button').forEach(b=>b.onclick=()=>setCol(+b.dataset.c));
@@ -1212,7 +1221,7 @@ function profileOf(id){const cs=cellsOf(id),cnt={ally:0,iss:0,third:0},st={},pr=
   cs.forEach(k=>{const b=roleOf(k,id),r=k.slice(0,2);cnt[b]++;if(!st[r]||pr[b]>pr[st[r]])st[r]=b;});
   const band=cs.length?['third','iss','ally'].reduce((a,b)=>cnt[b]>cnt[a]?b:a,'third'):(P[id].r==='co'?'ally':'iss');
   return {cs,cnt,st,band};}
-const ticks=st=>`<span class="tk">${STAGES.map(s=>`<i title="${s.r} ${s.n}"${st[s.r]?` style="background:${BCOL[st[s.r]]}"`:''}></i>`).join('')}</span>`;
+const ticks=st=>`<span class="tk">${STAGES.map(s=>`<i title="${s.n}"${st[s.r]?` style="background:${BCOL[st[s.r]]}"`:''}></i>`).join('')}</span>`;
 function renderPlayers(){const groups=['공급','명부·배관','거래·유통','토큰화 전문사','담보·DeFi'];
   const prof={};Object.keys(P).forEach(id=>prof[id]=profileOf(id));
   $('#pgroups').innerHTML=BAND.map(B=>{const ids=Object.keys(P).filter(id=>prof[id].band===B.id);
@@ -1227,7 +1236,7 @@ function updRail(){const home='<a data-nav="home">별 지도</a>',org=S.hist.len
   let c='<b>별 지도</b>';
   if(S.scr==='stage'){const s=STAGES[S.ri];
     const via=org&&org.scr==='players'?` › <a data-nav="back">◂ 플레이어${org.card?` · ${pname(org.card)} 카드`:''}</a>`:org&&org.scr==='all'?' › <a data-nav="back">◂ 전체 지도</a>':'';
-    c=`${home}${via} › ${S.k?`<a data-nav="stage"><b>${s.r} ${s.n}</b></a>`:`<b>${s.r} ${s.n}</b>`} › ${TN[S.t]}${S.k?` › ${cellLabel(S.k)}`:''}`;}
+    c=`${home}${via} › ${S.k?`<a data-nav="stage"><b>${s.n}</b></a>`:`<b>${s.n}</b>`} › ${TN[S.t]}${S.k?` › ${cellLabel(S.k)}`:''}`;}
   else if(S.scr==='all')c=`${home} › <b>전체 지도</b>`;
   else if(S.scr==='players')c=`${home} › ${card?`<a data-nav="card">플레이어</a> › <b>${pname(S.card)} 카드</b>`:'<b>플레이어</b>'}`;
   else if(S.scr==='guide')c=`${home} › <b>읽는 법</b>`;
@@ -1286,7 +1295,7 @@ function loop(ts){draw(ts);if(!REDUCE)requestAnimationFrame(loop);}
 sky(); if(!REDUCE) requestAnimationFrame(loop);
 
 // ── 읽는 법 기호 ──
-$('#gLegend').innerHTML=[['f','가동 + 매출 — SECZ가 돈을 버는 칸'],['p','가동 중, 매출은 미미하거나 연동 안 됨'],['l','인가·도구는 있음, 가동 기록 없음'],['n','서 있지 않음'],['q','확인 필요 — 모르는 칸']].map(x=>`<div class="row">${glyph(x[0],26)}${x[1]}</div>`).join('')+
+$('#gLegend').innerHTML=[['f','가동 + 매출 — SECZ가 돈을 버는 칸'],['p','가동 중, 매출은 미미하거나 연동 안 됨'],['l','인가·도구는 있음, 가동 기록 없음'],['n','서 있지 않음'],['q','미확인 — 공개 자료로 확인하지 못한 칸(없다는 뜻이 아님)']].map(x=>`<div class="row">${glyph(x[0],26)}${x[1]}</div>`).join('')+
  `<div class="row">${sigHTML(3)} 경쟁 강도 = 그 칸의 경쟁·복합 상대 수(4곳 이상 만칸)</div><div class="row"><i class="dot co"></i>협업 <i class="dot cp"></i>경쟁 <i class="dot mx"></i>복합</div><div class="row"><span style="border:1px solid var(--warn);width:22px;height:14px;display:inline-block"></span> 가장 붐비는 칸</div><div class="row">${WARN} 압력 · ✨ 기회(2027 초) · ▲▼ 지금 대비(2028)</div>`;
 
 $('#gLegend').innerHTML+=`<div class="row" style="margin-top:10px;display:block;line-height:1.6"><b>표의 세 열</b> — SECZ + 협업사(발행사 주도) · 발행사 주도형 경쟁사 · 제3자형 경쟁사(트윈·래퍼 · SEC 2026-01-28 직원 성명의 제3자 토큰 분류). 같은 방식으로 겨루는 회사와, 발행사 동의 없이 같은 수요를 가져가는 회사(DTCC 등)를 나눠 본다.</div>
