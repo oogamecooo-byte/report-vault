@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="vault-stage" content="Analysis">
+<meta name="vault-topic" content="SECZ">
+<meta name="vault-date" content="2026-09-28">
+<meta name="description" content="SECZ 경쟁·협업 지도를 클릭해서 보는 지도판. 생애주기 9단계 × 자산군 11칸 타일을 누르면 그 칸의 상태·협업사·경쟁사·미래 변화·매출 상방이 열리고, 시간 슬라이더(지금·2027 초·2028 갈림길 A/B)와 보기 전환(점유·경쟁 밀도·매출 상방), 플레이어 카드(앞·뒤)로 같은 지도를 다른 각도에서 본다. 매수·매도 신호 아님.">
+<title>SECZ 경쟁·협업 지도판 — 칸을 눌러 보는 토큰화 전장 — 2026-09-28</title>
+<style>
+:root{
+  --page:#EBE4D3; --card:#FDF6E3; --ink:#1f2328; --sub:#6b5d3f; --line:#ddd0ad; --head:#efe6cb;
+  --f:#7fbf6a; --f2:#cfe8c4; --p:#e7cf6a; --p2:#f3e7b0; --l:#d9d2bf; --n:#e2ddd2; --q:#ffffff;
+  --co:#2e7d32; --cp:#c0392b; --mx:#7b4fa8; --accent:#1f6f8b;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--page);color:var(--ink);font-family:-apple-system,'Apple SD Gothic Neo','Segoe UI',sans-serif;line-height:1.55;}
+.wrap{max-width:1380px;margin:0 auto;padding:22px 16px 40px;}
+header.top{background:var(--card);border-radius:14px;padding:18px 22px;box-shadow:0 2px 14px rgba(80,60,20,.10);}
+h1{font-size:1.35em;margin:0 0 4px;}
+.meta{color:var(--sub);font-size:.82em;}
+.brief{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
+.brief div{background:#fff8e6;border:1px solid #e3cf93;border-radius:10px;padding:9px 12px;font-size:.88em;}
+.brief b{display:block;margin-bottom:2px;}
+.start{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.86em;}
+.start button{border:1px solid #c9a84a;background:#fff3cf;border-radius:18px;padding:5px 12px;cursor:pointer;font-size:.95em;}
+.start button:hover{background:#ffe9a8;}
+
+.controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin:14px 0 10px;background:var(--card);border-radius:12px;padding:10px 16px;box-shadow:0 1px 8px rgba(80,60,20,.08);}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+.seg button{border:none;background:#f7efd9;padding:6px 12px;cursor:pointer;font-size:.86em;color:var(--ink);}
+.seg button.on{background:var(--accent);color:#fff;}
+.lbl{font-size:.78em;color:var(--sub);margin-right:6px;}
+.slider{display:flex;align-items:center;gap:8px;}
+.slider input{width:220px;accent-color:var(--accent);}
+.tick{font-size:.8em;font-weight:600;min-width:150px;}
+.warn{font-size:.74em;color:#9b2c1c;}
+
+.main{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:14px;}
+.board{background:var(--card);border-radius:14px;padding:12px;box-shadow:0 2px 14px rgba(80,60,20,.10);overflow-x:auto;}
+.grid{display:grid;grid-template-columns:118px repeat(11,minmax(72px,1fr));gap:5px;min-width:980px;}
+.gh{font-size:.72em;text-align:center;font-weight:700;background:var(--head);border-radius:6px;padding:4px 2px;display:flex;flex-direction:column;justify-content:center;}
+.gh small{font-weight:400;color:var(--sub);}
+.gh.grp{grid-column:span 2;background:#e4d8b4;}
+.gh.grp3{grid-column:span 3;background:#e4d8b4;}
+.gh.blank{background:transparent;}
+.rh{font-size:.76em;font-weight:700;background:var(--head);border-radius:6px;padding:6px 8px;display:flex;align-items:center;cursor:help;}
+.tile{position:relative;border-radius:8px;min-height:62px;padding:5px 4px 4px;cursor:pointer;border:1px solid rgba(0,0,0,.08);
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);transition:background-color .45s,transform .15s,box-shadow .2s,opacity .3s;text-align:center;}
+.tile:hover{transform:translateY(-2px);box-shadow:inset 0 -3px 0 rgba(0,0,0,.1),0 4px 10px rgba(80,60,20,.18);}
+.tile .sym{font-size:1.15em;font-weight:800;line-height:1.1;}
+.tile .nm{font-size:.62em;line-height:1.25;margin-top:2px;}
+.tile .nm span{display:inline-block;padding:0 3px;border-radius:3px;margin:1px;}
+.tile.sel{outline:3px solid var(--accent);outline-offset:1px;}
+.tile.hot::after{content:"";position:absolute;inset:0;border-radius:8px;border:2px solid #c0392b;pointer-events:none;}
+.tile.dim{opacity:.22;}
+.tile.glow{box-shadow:0 0 0 3px #fff,0 0 0 6px var(--glow,#1f6f8b),0 6px 14px rgba(0,0,0,.2);transform:translateY(-2px);}
+.tile .pin{position:absolute;top:3px;right:4px;font-size:.7em;}
+.tile .chg{position:absolute;top:3px;left:4px;font-size:.7em;}
+.s-f{background:var(--f2);} .s-p{background:var(--p2);} .s-l{background:var(--l);} .s-n{background:var(--n);color:#8a7f6a;} .s-q{background:var(--q);}
+.c-co{background:#dcefd4;color:#24521a;} .c-cp{background:#f6d9d3;color:#7a2416;} .c-mx{background:#e7dcf2;color:#4b2a6e;}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:10px 4px 2px;font-size:.78em;color:var(--sub);align-items:center;}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:middle;margin-right:4px;border:1px solid rgba(0,0,0,.1);}
+
+.players{margin-top:12px;}
+.players h3{font-size:.9em;margin:4px 4px 6px;}
+.pgrp{margin:4px 0 6px;font-size:.78em;}
+.pgrp b{color:var(--sub);margin-right:6px;}
+.chip{display:inline-block;border-radius:14px;padding:3px 10px;margin:2px;font-size:.95em;cursor:pointer;border:1px solid transparent;}
+.chip.co{background:#dcefd4;color:#24521a;border-color:#a9cf99;}
+.chip.cp{background:#f6d9d3;color:#7a2416;border-color:#e0a597;}
+.chip.mx{background:#e7dcf2;color:#4b2a6e;border-color:#c3a9dd;}
+.chip.on{box-shadow:0 0 0 2px #1f2328;}
+
+aside.drawer{background:var(--card);border-radius:14px;padding:16px 18px;box-shadow:0 2px 14px rgba(80,60,20,.10);position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;}
+aside h2{font-size:1.08em;margin:0 0 4px;}
+aside h4{font-size:.86em;margin:14px 0 4px;color:#7a3a10;}
+aside p,aside li{font-size:.86em;}
+aside ul{padding-left:18px;margin:4px 0;}
+.badge{display:inline-block;font-size:.74em;padding:1px 7px;border-radius:10px;margin-right:4px;border:1px solid var(--line);background:#fff;}
+.state-line{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;}
+.state-line span{font-size:.78em;padding:3px 8px;border-radius:6px;}
+.upbox{background:#eef3e6;border-left:4px solid #6b8e4e;padding:8px 10px;border-radius:0 6px 6px 0;margin:6px 0;font-size:.84em;}
+.futbox{background:#f5edd6;border-left:4px solid #c9a84a;padding:8px 10px;border-radius:0 6px 6px 0;margin:6px 0;font-size:.84em;}
+.close{float:right;border:none;background:none;font-size:1.2em;cursor:pointer;color:var(--sub);}
+.hint{color:var(--sub);font-size:.84em;}
+
+/* 카드 */
+.cardwrap{perspective:1000px;margin-top:8px;}
+.pcard{position:relative;width:100%;min-height:330px;transition:transform .6s;transform-style:preserve-3d;cursor:pointer;}
+.pcard.flip{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;padding:14px;border:2px solid var(--line);background:linear-gradient(160deg,#fffaf0,#f6ecd2);overflow:auto;}
+.face.back{transform:rotateY(180deg);background:linear-gradient(160deg,#f7f1e3,#ece0bf);}
+.face .ttl{font-weight:800;font-size:1.05em;}
+.stat{display:grid;grid-template-columns:auto 1fr;gap:3px 8px;font-size:.8em;margin:8px 0;}
+.stat b{color:var(--sub);font-weight:600;}
+.meter{display:inline-block;height:8px;border-radius:4px;background:#e2ddd2;width:100%;position:relative;vertical-align:middle;}
+.meter i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;}
+.flipnote{font-size:.72em;color:var(--sub);text-align:right;margin-top:6px;}
+
+/* 모바일 */
+.mob{display:none;}
+@media (max-width:860px){
+  .main{grid-template-columns:1fr;}
+  .brief{grid-template-columns:1fr;}
+  .board .grid{display:none;}
+  .mob{display:block;}
+  .coltabs{display:flex;overflow-x:auto;gap:6px;padding-bottom:6px;}
+  .coltabs button{flex:0 0 auto;border:1px solid var(--line);background:#f7efd9;border-radius:16px;padding:5px 10px;font-size:.8em;}
+  .coltabs button.on{background:var(--accent);color:#fff;}
+  .mrow{display:flex;gap:8px;align-items:stretch;margin:6px 0;}
+  .mrow .rh{flex:0 0 108px;}
+  .mrow .tile{flex:1;text-align:left;min-height:48px;}
+  aside.drawer{position:static;max-height:none;}
+  .slider input{width:150px;}
+  .tick{min-width:120px;}
+}
+@media print{body{background:#fff;}}
+</style>
+<meta name="vault-published" content="2026-09-28">
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="meta">SECZ 분석 · 인터랙티브 지도판 · 2026-09-28(KST) · 본문 보고서: <a href="2026-09-28_secz-competitive-map.html">SECZ 경쟁·협업 지도</a> · 매수·매도 신호 아님</div>
+  <h1>SECZ 경쟁·협업 지도판 — 칸을 눌러 보는 토큰화 전장</h1>
+  <div class="brief">
+    <div><b>💰 돈은 왼쪽에</b>매출이 나는 칸은 99칸 중 11칸, 전부 펀드 쪽(국채·사모신용·사모펀드)이다.</div>
+    <div><b>⚔️ 싸움은 오른쪽에</b>가장 붐비는 칸은 상장주식(발행사 주도) × 명부·거래 — 매출은 아직 누구에게도 없다.</div>
+    <div><b>🧭 회색 네 줄</b>트윈·래퍼 모델 4개 열에 SECZ는 없다. 한 모델에만 선 유일한 대형 사업자다.</div>
+  </div>
+  <div class="start"><span class="lbl">먼저 볼 칸 →</span>
+    <button data-go="R4C6">⚔️ 가장 붐비는 칸</button>
+    <button data-go="R4C1">💰 지금 돈이 나는 칸</button>
+    <button data-go="R7C8">🤝 적에서 동료가 될 칸</button>
+    <button data-go="R5C5">🌱 스스로 넓힐 칸</button>
+  </div>
+</header>
+
+<div class="controls">
+  <div><span class="lbl">보기</span>
+    <div class="seg" id="modeSeg">
+      <button data-mode="own" class="on">SECZ 점유</button>
+      <button data-mode="comp">경쟁 밀도</button>
+      <button data-mode="up">매출 상방</button>
+    </div>
+  </div>
+  <div class="slider"><span class="lbl">시점</span>
+    <input type="range" id="time" min="0" max="3" step="1" value="0">
+    <span class="tick" id="tickLbl">지금 (2026-09)</span>
+  </div>
+  <span class="warn" id="timeWarn"></span>
+</div>
+
+<div class="main">
+<section class="board">
+  <div class="grid" id="grid"></div>
+  <div class="mob" id="mob">
+    <div class="coltabs" id="coltabs"></div>
+    <div id="mlist"></div>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div class="players" id="players"></div>
+</section>
+
+<aside class="drawer" id="drawer"></aside>
+</div>
+</div>
+
+<script>
+// ───────────────────────── 데이터 (한 곳에서만 고친다) ─────────────────────────
+const ROWS=[
+ {id:'R1',n:'R1 구조화·자문',d:'펀드를 설계하고 운용을 조언하는 일. 투자자문업(RIA) 인가. SECZ = Securitize Capital(7/22 등록 효력).'},
+ {id:'R2',n:'R2 발행·모집·인수',d:'증권을 만들어 투자자에게 배정하는 일. 브로커딜러(BD) 인가. SECZ = Securitize Markets(5/5 FINRA 승인에 1차·2차 공모 인수 포함).'},
+ {id:'R3',n:'R3 토큰 기술·준법',d:'누가 사고팔 수 있는지 토큰에 새기는 기술. 인가가 필요 없는 층이라 누구나 들어온다. SECZ = DS Protocol·Vault Registrar.'},
+ {id:'R4',n:'R4 명부·기업행위',d:'주주명부를 적고 배당·환매·의결을 처리하는 일. 이전대리인(TA) 인가. SECZ = 디지털 TA + Pacific Stock Transfer(전통 주식 TA·발행사 3,257곳).'},
+ {id:'R5',n:'R5 펀드행정',d:'NAV 계산·회계. SECZ = Securitize Fund Services(MG Stover 인수분·관리자산 $243억·펀드 663개).'},
+ {id:'R6',n:'R6 수탁',d:'자산 보관. SECZ = BD 토큰 수탁 승인(5/5)은 있으나 대형 펀드 수탁은 BNY가 맡는다. 약한 줄.'},
+ {id:'R7',n:'R7 판매·유통',d:'투자자에게 닿는 길. 인가보다 관계가 중요한 층. 회사 CEO도 "병목은 유통"이라고 했다.'},
+ {id:'R8',n:'R8 2차 거래',d:'사고파는 장소. ATS·거래소, 그리고 9/17 혁신 면제로 생긴 AMM 거래장소(TSV).'},
+ {id:'R9',n:'R9 담보·DeFi',d:'토큰을 대출 담보로 쓰는 일. 인가 불필요. 쓰임새는 늘지만 SECZ 수수료로 이어지는 구조가 아직 없다.'}
+];
+const COLS=[
+ {id:'C1',n:'토큰 펀드',g:'국채·MMF',m:'발행사 주도',d:'BUIDL·BRSRV·VBILL 같은 토큰 MMF. SECZ의 본진이자 매출의 중심.'},
+ {id:'C2',n:'DTC 트윈',g:'국채·MMF',m:'수탁형',gray:1,d:'DTC가 보관한 국채의 청구권 토큰. 7/15 Citadel이 CME 증거금으로 실제 납입, 2027 상반기 Stellar 연결. SECZ 부재.'},
+ {id:'C3',n:'사모신용',g:'',m:'',d:'ACRED(Apollo)·Hamilton Lane 신용펀드. 운용사가 곧 발행사라 모델이 하나.'},
+ {id:'C4',n:'하이일드·CLO',g:'',m:'',d:'HINC(Neuberger 하위자문). 도구는 다 붙었지만 첫 모집 $5.1M.'},
+ {id:'C5',n:'사모펀드·벤처',g:'',m:'',d:'ARKVX·펀드행정 고객 663개. 토큰화 교차 판매의 저수지.'},
+ {id:'C6',n:'발행사 주도',g:'상장주식',m:'발행사 주도',d:'발행사가 직접 만드는 "진짜 주식" 토큰. SECZ·Computershare·Superstate·tZERO 방식. 경쟁의 본진, 매출은 0.'},
+ {id:'C7',n:'DTC 트윈',g:'상장주식',m:'수탁형',gray:1,d:'DTC 예탁 청구권 토큰(동일 CUSIP·발행사 동의 불요). 10월 정식 출시, Nasdaq 토큰(2027 2분기)이 이 배관 위. SECZ 부재.'},
+ {id:'C8',n:'역외 래퍼·합성',g:'상장주식',m:'합성형',gray:1,d:'미국 밖 전용. Ondo GM(점유 1위 27.19%)·Robinhood(역외 채무증권)·xStocks. 미국 진입하려면 "동일 권리" 토큰이 필요 → 동료 전환 후보.'},
+ {id:'C9',n:'발행사 주도',g:'비상장주식',m:'발행사 주도',d:'비상장 지분의 발행사 주도 토큰. Socios 스포츠 구단 지분(EU DLT 첫 프로젝트 예정). 배관(DTC)이 못 오는 자산.'},
+ {id:'C10',n:'예탁증서·SPV',g:'비상장주식',m:'래퍼',gray:1,d:'Citi 인가 토큰화 예탁증서(SIX 체인)·SPV 청구권. 은행 컨소시엄 표준화가 위험.'},
+ {id:'C11',n:'기타 대체',g:'',m:'',d:'부동산·원자재 등. 회사에 "Alternative Assets" 상품군은 있으나 구성은 확인 필요.'}
+];
+// 상태: f=가동+매출 p=가동·매출 미미 l=인가만 n=없음 q=확인필요
+const S0={
+R1:'p n f p q n n n n n q', R2:'f n f p p p n n p n q', R3:'f n f p f p n n p n q',
+R4:'f n f p q p n n p n q', R5:'q n q q f n n n n n q', R6:'n n l n l l n n l n l',
+R7:'f n f p p p n n p n q', R8:'p n p p q p n n p n q', R9:'p n q p n p n n n n n'};
+const HOT=['R2C6','R3C6','R4C6','R7C6','R8C6'];
+// 칸 안 이름 [플레이어id, 관계]
+const NAMES={
+R1C1:[['blackrock','co'],['vaneck','co']], R1C3:[['apollo','co'],['hamilton','co']], R1C4:[['neuberger','co']], R1C5:[['ark','co']], R1C9:[['socios','co']],
+R2C1:[['blackrock','co'],['circle','cp'],['ondo','cp']], R2C2:[['dtcc','cp']], R2C3:[['apollo','co'],['kkr','co'],['figure','cp']], R2C4:[['neuberger','co']], R2C5:[['ark','co'],['citi','cp']],
+R2C6:[['cantor','co'],['currenc','co'],['superstate','cp']], R2C7:[['dtcc','cp'],['nasdaq','cp']], R2C8:[['ondo','cp'],['robinhood','cp']], R2C9:[['socios','co']], R2C10:[['citi','cp']],
+R3C1:[['ondo','cp'],['franklin','cp']], R3C2:[['dtcc','cp']], R3C3:[['plume','cp']], R3C6:[['tzero','cp'],['vertalo','cp']], R3C7:[['dtcc','cp']], R3C8:[['kraken','cp']],
+R4C1:[['bny','mx'],['circle','cp']], R4C2:[['dtcc','cp']], R4C5:[['dtcc','cp']], R4C6:[['computershare','mx'],['tzero','cp'],['equiniti','cp'],['continental','co'],['broadridge','mx']], R4C7:[['dtcc','cp']], R4C10:[['citi','cp']],
+R5C1:[['bny','mx']],
+R6C1:[['bny','mx']], R6C2:[['dtcc','cp']], R6C4:[['bny','mx']], R6C6:[['tzero','cp'],['bitgo','co']], R6C7:[['dtcc','cp']], R6C8:[['coalition','cp']], R6C10:[['citi','cp']],
+R7C1:[['ondo','cp'],['kb','co'],['dtcc','cp']], R7C2:[['dtcc','cp']], R7C6:[['blockchaincom','mx'],['coalition','cp'],['bakkt','co']], R7C7:[['kraken','cp'],['coalition','cp']], R7C8:[['robinhood','cp'],['coinbase','cp'],['gemini','cp'],['blockchaincom','mx']], R7C9:[['socios','co']], R7C10:[['citi','cp']],
+R8C1:[['defi','co']], R8C6:[['nyse','co'],['jump','co'],['tzero','cp']], R8C7:[['nasdaq','cp']], R8C8:[['ondo','cp'],['robinhood','cp']],
+R9C1:[['ethena','co'],['defi','co'],['franklin','cp']], R9C2:[['dtcc','cp']], R9C4:[['defi','co']], R9C6:[['defi','co']], R9C7:[['dtcc','cp']]
+};
+const NOTES={
+R1C1:'BUIDL은 BlackRock이 운용·자문하고 SECZ는 자문사가 아니다. Securitize Capital은 일부 자사 계열 펀드에서만 자문. 그래서 ◐.',
+R1C3:'ACRED(Apollo)·Hamilton Lane 신용펀드의 자문사가 Securitize Capital. 7/22 RIA 등록은 진입이 아니라 자격 격상.',
+R1C4:'HINC — Securitize Capital이 자문사, Neuberger($613B)가 하위자문. 운용 이력 0에서 출발, 첫 모집 $5.1M·투자자 2인.',
+R1C5:'ARKVX에서 SECZ의 역할(자문·TA·발행 플랫폼 중 무엇)은 아직 확인되지 않았다.',
+R2C1:'BUIDL·BRSRV·VBILL 발행·배정. 토큰 국채 시장에선 Circle USYC(역외)·Ondo·Franklin·Janus와 경쟁. BUIDL 비중 47.7%로 처음 50% 아래, 보유자도 처음 감소.',
+R2C3:'ACRED $1.109억·투자자 26명. 자사 브랜드 단독 펀드는 모집이 부진하고, 대형 운용사 브랜드가 붙으면 커진다.',
+R2C4:'HINC Form D $5.1M·투자자 2인(자기자금 시딩). 하이일드는 이미 싼 ETF가 많아 토큰화 프리미엄이 붙기 어렵다.',
+R2C5:'ARKVX 9/24 — 이더리움·최소 $500. 첫 이틀 약 $4,938(펀드 순자산의 0.0004%). 비상장 벤처 지분은 Citi 예탁증서가 인접 경쟁.',
+R2C6:'Cantor와 온체인 IPO·유상증자(7/15), CURRENC Capital과 상장사 대상 공동 영업(8/26). 외부 상장사 발행은 아직 0곳, KPI 75개 대비 3종(자사주·CURR·FGNX).',
+R2C9:'Socios Equity Token — 스포츠 구단 소수 지분. EU DLT 파일럿 TSS의 첫 프로젝트 예정. 참여 구단·조건 미공개. 구단 가치 약 $5,000억(회사 추정).',
+R3C1:'DS Protocol이 토큰에 이전 제한을 새긴다. 이 층은 인가가 필요 없어 누구나 들어온다(ERC-3643 진영에 DTCC·Franklin·Invesco).',
+R3C4:'도구는 붙었지만 HINC 규모가 작아 ◐.',
+R3C6:'사장 Redfearn은 "전송 제한을 토큰 자체에 심는 것"을 강점으로 꼽았다. 반면 tZERO는 "준법 인식 이전 로직" 특허를 ICE에 라이선스했고, SECZ는 비침해 확인 소송의 원고다.',
+R3C9:'Socios 건이 첫 대형 사례가 될 예정.',
+R4C1:'BUIDL·BRSRV의 공식 명부를 SECZ TA가 퍼블릭 체인 위에 유지(485APOS 1차 문서). 그러나 BlackRock의 BSTBL은 TA를 BNY가 맡았다 — 현재 매출과 직접 부딪히는 유일한 칸.',
+R4C3:'ACRED 등 사모신용 펀드의 디지털 명부.',
+R4C4:'HINC 명부. 규모가 작아 ◐.',
+R4C5:'사모펀드 명부 — 펀드별 확인 필요. DTCC 사모시장 고객 3,131곳(토큰화 관련성 미확인).',
+R4C6:'가장 붐비는 칸. SECZ(디지털 TA + Pacific Stock Transfer 발행사 3,257곳) · Computershare(IST·S&P 500의 58%) · tZERO(ICE 제휴) · Equiniti(발행사 2,910곳·2027-01 Bullish 편입). 9/17 면제 조문에 "transfer agent"는 0회 — 이 칸의 규칙은 11/3 TA 규칙이 정한다.',
+R4C9:'비상장 발행사의 명부. Socios 첫 구단이 나오면 SECZ가 명부를 맡는다.',
+R5C1:'BUIDL 펀드행정 담당은 확인 필요. BRSRV는 BNY가 수탁·회계.',
+R5C5:'Securitize Fund Services(MG Stover 인수) 관리자산 $243억·펀드 663개. 대부분 토큰화되지 않은 펀드 → 토큰화 교차 판매의 저수지. 자산서비스 매출 2분기 $660만(+3%), 유일하게 느는 줄.',
+R6C1:'대형 펀드 수탁은 BNY(BRSRV 수탁·회계). SECZ의 약한 줄.',
+R6C6:'5/5 FINRA가 BD의 토큰 수탁을 승인. 가동 기록은 없다. 회사 모델이 "투자자 본인 보관"이라 수탁 수익은 작게 설계돼 있다. BitGo(적격 수탁·라이브 스크리너)는 협업 후보.',
+R7C1:'Securitize Markets가 판매. 9/16 DTCC Fund/SERV(미국 뮤추얼펀드 거래 85%+)의 첫 토큰화 회원은 Ondo 자회사 — SECZ도 BD 자격으로 들어갈 수 있는 문. KB증권 MOU로 한국 기관 유통 계획.',
+R7C3:'Securitize Markets 판매. 적격투자자 대상.',
+R7C4:'HINC 모집 부진 — 판매망이 약점.',
+R7C5:'ARKVX 첫 이틀 약 $4,938.',
+R7C6:'소비 쪽이 비어 있는 칸. Blockchain.com(계좌 4,400만+)이 NYSE 경유로 붙었지만 역외에선 Ondo 토큰을 판다. 9/24 발행사 후원 연합(Bullish·Alpaca·Apex·DriveWealth)에 SECZ는 없다.',
+R7C8:'역외 유통사의 칸. 미국 고객에게 팔려면 9/17 면제의 "동일 권리"(합성 제외·발행사 거부권)를 채워야 한다 → 명부를 찍는 쪽(SECZ 등)에서 토큰을 받아와야 한다. 적에서 동료가 될 가능성이 가장 큰 칸.',
+R7C9:'Socios가 팬 층·구단 관계를, SECZ가 투자자 온보딩을 맡는다.',
+R8C1:'BUIDL은 Uniswap 등에서 일부 2차 유동성. 규모는 작다.',
+R8C6:'NYSE 디지털 플랫폼(규제 승인·출시일 없음), 자체 ATS, Solana(Jump 프롭 AMM·Jupiter). 주말엔 "Market unavailable". 9/17 혁신 면제의 AMM 거래장소(TSV)와 구조가 맞지만 한도(원주 거래량의 2.5%)가 크기를 막는다.',
+R8C9:'Securitize Markets ATS에서 사모 증권 거래.',
+R9C1:'BUIDL이 여러 거래소·DeFi에서 담보(Euler 등), Ethena가 STAC에 $2.5억. 그러나 SECZ 담보 수수료 공시 0. DTCC 국채 트윈은 7/15 CME 증거금으로 실제 납입 — 같은 자리를 노린다.',
+R9C4:'HINC가 9/1 Loopscale에서 가동, Aave Horizon 등재 제안. 사는 이유가 수익률이 아니라 담보 효용으로 바뀐다.',
+R9C6:'토큰화 SECZ 주식이 8/20 Loopscale 담보로 가동(오라클 RedStone). 운용보수 0% — 매출 사건 아님.'
+};
+// 2027 압력(⚠) / 기회(✨)
+const P27={
+R4C1:['⚠','BNY 디지털 TA 확대(7/29 출시) — BlackRock 외 운용사로 번지면 현재 매출과 정면 충돌.'],
+R7C1:['⚠','Fund/SERV 첫 자리를 Ondo가 선점. SECZ가 가입하느냐가 관측점.'],
+R9C1:['⚠','DTCC 담보 레일의 적격 목록에 토큰 MMF가 들어가느냐(4분기~2027 상반기).'],
+R4C6:['⚠','2027-01 Bullish×Equiniti 클로징 · NYSE 승인 TA 명단(~2027-03).'],
+R7C6:['⚠','발행사 후원 연합이 명부 담당을 누구로 정하나.'],
+R8C6:['⚠','NYSE 플랫폼 승인 여부 — CEO 스스로 거래량은 2027로 미룸.'],
+R3C6:['✨','Computershare 첫 IST 발행("연내 확실") — 주식 칸 첫 매출 후보.'],
+R2C9:['✨','Socios 첫 구단 발행 · EU TSS 첫 거래.'],
+R2C1:['✨','KB 첫 기관 MMF · GENIUS 효력(2027-01-18)으로 준비금 펀드 수요.'],
+R5C5:['✨','펀드행정 고객의 토큰 클래스 추가.']
+};
+// 2028 갈림길 A(명부 필수화) / B(배관 독식) — 상태 덮어쓰기
+const FA={R2C6:'f',R3C6:'f',R4C6:'f',R7C6:'f',R8C6:'f',R4C7:'p',R2C8:'p',R4C8:'p',R2C9:'f',R4C9:'f',R7C9:'p'};
+const FB={R2C6:'p',R3C6:'p',R4C6:'p',R7C6:'l',R8C6:'l',R7C1:'p',R2C9:'f',R4C9:'f',R2C5:'f'};
+const FNOTE={
+A:'명부 필수화 세계: 규칙·면제가 "동일 권리는 등록 TA가 검증"으로 굳는다. 역외 래퍼가 미국에 들어오려고 발행사 주도 토큰을 조달하고(래퍼 열에 SECZ가 공급자로 등장), 트윈과 발행사 토큰 사이에 전환 다리가 생긴다(트윈 명부 칸에 ◐).',
+B:'배관 독식 세계: 트윈이 담보·유통·24시간 거래의 기본값이 된다. 발행사 주도 주식 칸은 "원하는 소수 발행사용"으로 줄고, SECZ에게 남는 것은 펀드 칸과 배관이 못 가는 비상장 칸이다.'
+};
+// 매출 상방 11개
+const UP=[
+ {n:'기존 운용사의 다음 펀드 + 펀드행정 고객의 토큰 전환',pr:3,sz:'미산정 · 현 연환산 약 $5,800만의 확장',line:'토큰화(건별) + 자산서비스(반복)',cells:['R2C1','R4C1','R2C3','R4C3','R5C5','R2C5'],sig:'자산서비스 고객의 토큰 클래스 추가 · 3Q 토큰화 ≥ $920만'},
+ {n:'새 지역·새 자산군 발행 일감(KB·Socios·ARK·VARA)',pr:2.5,sz:'미산정 (건별·울퉁불퉁)',line:'토큰화(건별)',cells:['R2C9','R7C1','R2C5','R4C9'],sig:'KB 첫 기관 MMF · Socios 첫 구단'},
+ {n:'스테이블코인 준비금 펀드(BRSRV)',pr:2,sz:'미산정 · SECZ 몫은 TA 요금 수준',line:'토큰화(유지·TA)',cells:['R2C1','R4C1'],sig:'BRSRV 잔액 · 첫 스테이블코인 발행사 연결'},
+ {n:'발행·환매 0.10% 징수 스위치',pr:2,sz:'연 $0~200만',line:'신규(거래 연동)',cells:['R7C1','R7C3'],sig:'상품 페이지 요율 변경'},
+ {n:'Computershare 경유 발행사 토큰 기술료',pr:2,sz:'연 $30만~1,000만',line:'신규(기술료)',cells:['R3C6','R4C6'],sig:'첫 IST 발행사 이름'},
+ {n:'NYSE 디지털 플랫폼 참여',pr:1.5,sz:'연 $100만~2,500만',line:'신규(TA·BD 참가)',cells:['R4C6','R8C6'],sig:'승인 TA 명단(~2027-03)'},
+ {n:'자체 발행사 명부 관리(Pacific 포함)',pr:1,sz:'연 $400만~1,100만',line:'신규(명부)',cells:['R4C6'],sig:'외부 상장사 첫 토큰화 발표'},
+ {n:'투자자문 보수(자체 펀드)',pr:1,sz:'연 $200만~800만',line:'신규(운용보수)',cells:['R1C3','R1C4'],sig:'HINC 잔액 · 두 번째 자체 펀드'},
+ {n:'온체인 IPO 인수',pr:1,sz:'연 $100만~400만',line:'신규(인수)',cells:['R2C6'],sig:'첫 온체인 IPO'},
+ {n:'역외 유통사에 발행사 토큰 공급',pr:1,sz:'미산정 (열리면 가장 큼)',line:'신규(발행·명부)',cells:['R7C8','R2C8'],sig:'11/3 의견 흐름 · 래퍼의 권리 구조 변경'},
+ {n:'담보·DeFi 쓰임새',pr:0.5,sz:'연 $0~100만',line:'없음(과금 구조 부재)',cells:['R9C1','R9C4','R9C6'],sig:'담보 수수료 첫 공시'}
+];
+// 플레이어
+const P={
+blackrock:{n:'BlackRock',r:'mx',g:'공급',now:'BUIDL·BRSRV 발행·TA=SECZ. 그러나 BSTBL TA=BNY, 9/24 Ondo 전용 모델 3종. 계약에 자체 토큰화 금지 없음.',y27:'펀드·MMF는 유지, 주식 레인은 다른 곳과 — "칸별 분산".',y28:'DTCC 담보 레일에 펀드를 올리면 쓰임새↑ 또는 트윈 국채로 대체.',peer:'BUIDL 외 신규 펀드도 SECZ에 발행.',foe:'새 토큰 상품을 BNY·Ondo·자체 인프라로.',sig:'BUIDL 비중·보유자 수 · BlackRock 신규 토큰 상품의 TA',when:'상시',turn:'—'},
+vaneck:{n:'VanEck',r:'co',g:'공급',now:'VBILL 발행. 공식 파트너 명단(5/5).',y27:'—',y28:'—',peer:'추가 펀드.',foe:'Arc 등에서 직접 발행.',sig:'VBILL 잔액',when:'상시',turn:'—'},
+apollo:{n:'Apollo',r:'co',g:'공급',now:'ACRED $1.109억·투자자 26명. Securitize Capital이 자문사.',y27:'카테고리당 1~2개 펀드라 신규 수 제한.',y28:'Arc 자체 발행 시 이탈 신호.',peer:'후속 신용펀드.',foe:'Arc native 발행.',sig:'ACRED Form D/A 개정',when:'상시',turn:'—'},
+hamilton:{n:'Hamilton Lane',r:'co',g:'공급',now:'신용펀드 — Securitize Capital 자문.',y27:'—',y28:'—',peer:'—',foe:'—',sig:'—',when:'—',turn:'—'},
+kkr:{n:'KKR',r:'co',g:'공급',now:'2021 첫 토큰화 펀드 이후 파트너.',y27:'—',y28:'—',peer:'—',foe:'—',sig:'—',when:'—',turn:'—'},
+neuberger:{n:'Neuberger',r:'co',g:'공급',now:'HINC 하위자문. 첫 모집 $5.1M.',y27:'DeFi 담보 수요가 커져야 의미.',y28:'—',peer:'—',foe:'—',sig:'HINC 잔액',when:'—',turn:'—'},
+ark:{n:'ARK Invest',r:'co',g:'공급',now:'ARKVX 토큰화(9/24) · 첫 이틀 $4,938 · SECZ 역할 미확인.',y27:'추가 펀드 가능("많이 토큰화").',y28:'등록 공모펀드 토큰 클래스(IC-36333) 실제 사용 시 새 열.',peer:'ARK 추가 펀드.',foe:'—',sig:'ARKVX 토큰 규모',when:'2027',turn:'—'},
+socios:{n:'Socios.com',r:'co',g:'공급',now:'9/2 제휴 — 스포츠 구단 소수 지분 토큰. Socios=구단 관계·팬 층 / SECZ=발행·명부·이전 통제. EU DLT TSS 첫 프로젝트 예정.',y27:'첫 구단 발행이 관문.',y28:'구단 지분 약 $5,000억 중 일부 온체인.',peer:'—',foe:'—',sig:'참여 구단 발표',when:'2027',turn:'—'},
+currenc:{n:'CURRENC Capital',r:'co',g:'공급',now:'8/26 제휴 — 이미 토큰화한 상장사(CURR)가 다른 상장사를 설득하는 영업.',y27:'참여 상장사 이름이 관문.',y28:'—',peer:'—',foe:'—',sig:'참여 상장사',when:'2027',turn:'—'},
+cantor:{n:'Cantor Fitzgerald',r:'co',g:'공급',now:'7/15 온체인 IPO 제휴 · 9/21 커버리지 개시 — 합병 SPAC 모회사라 독립 의견 아님.',y27:'첫 온체인 IPO.',y28:'—',peer:'—',foe:'—',sig:'첫 온체인 IPO',when:'2027',turn:'—'},
+dtcc:{n:'DTCC',r:'cp',g:'명부·배관',now:'10월 토큰화 서비스 출시 · 7/15 국채 트윈 CME 증거금 · 9/16 Fund/SERV 첫 토큰화 회원 = Ondo 자회사. SECZ는 명단 부재(네이티브 진영 전체 부재).',y27:'트윈이 표준 배관. 발행사가 아무것도 안 해도 트윈이 생김.',y28:'전환 다리가 생기면 SECZ는 "다리 건너편 명부"로 공존.',peer:'Computershare 7/27 의견서의 "트윈·IST 동등 취급·상호운용" 채택 → 다리 건너편 등록 TA 필요 · Fund/SERV는 BD 자격으로 가입 가능.',foe:'사모·펀드 자산으로 확대 · ComposerX TA 기능 상업화 · 담보 목록에서 토큰 MMF 제외.',sig:'10월 출시 자료 · SR-DTC 규정 변경 · Fund/SERV 회원 명단',when:'2026-10~2027',turn:'중'},
+computershare:{n:'Computershare',r:'mx',g:'명부·배관',now:'IST 제휴(4/29) · 미국 고객 2,500곳+·S&P 500의 58% · "기술 계약", 독점 미확인 · CEO "연내 확실".',y27:'첫 IST 발행이 나오면 주식 칸 첫 매출.',y28:'명부 수익은 Computershare 몫, SECZ는 기술료.',peer:'IST 발행 확대.',foe:'기술 공급자를 DTCC·tZERO로 교체·병행.',sig:'첫 IST 발행사 이름',when:'2026 연말',turn:'—'},
+tzero:{n:'tZERO (ICE)',r:'cp',g:'명부·배관',now:'BD·TA·ATS 3종 · 8/31 ICE 디지털 TA 제휴("a" design partner) · 특허 103건 ICE 라이선스 · SECZ에 제품 중단 요구 → SECZ 비침해 확인 소송 원고.',y27:'NYSE 승인 TA 명단에 둘이 공존이 기본.',y28:'분쟁이 교차 라이선스로 끝나면 동료.',peer:'ICE가 여러 TA를 쓰는 설계 → 역할 분담 · ICE 중재 화해.',foe:'승인 TA 명단에서 SECZ 부재 · 특허 청구 확대.',sig:'승인 TA 명단 · 델라웨어 소송',when:'~2027-03',turn:'중'},
+equiniti:{n:'Bullish × Equiniti',r:'cp',g:'명부·배관',now:'2027-01 클로징 예정 · Equiniti 발행사 2,910곳·계좌 1,350만 · "거래소+데이터+명부" 수직 통합 선언.',y27:'클로징 후 발행사에 토큰화 옵션 = 다면 압착의 마지막 조각.',y28:'SECZ 풀스택의 영리 복제판.',peer:'Equiniti가 외부 토큰화 기술을 조달할 때.',foe:'자체 구축(토큰화 총괄 영입).',sig:'클로징 후 첫 제품의 기술 출처',when:'2027-01~',turn:'하'},
+bny:{n:'BNY',r:'mx',g:'명부·배관',now:'BRSRV 수탁·회계 · BSTBL TA · 7/29 글로벌 디지털 TA 출시 · S-1 고객 명단.',y27:'은행 내재화 확대 — 펀드 TA 칸의 현재 매출과 부딪히는 유일한 상대.',y28:'은행 컨소시엄 표준 시 독립 사업자 자리 축소.',peer:'수탁·회계는 BNY, 명부는 SECZ의 분업 유지.',foe:'디지털 TA를 BlackRock 외 운용사로 확대.',sig:'BNY 디지털 TA 신규 고객',when:'2027',turn:'—'},
+continental:{n:'Continental',r:'co',g:'명부·배관',now:'자사주 토큰화 때 거쳐 간 전통 TA.',y27:'—',y28:'—',peer:'—',foe:'—',sig:'—',when:'—',turn:'—'},
+broadridge:{n:'Broadridge',r:'mx',g:'명부·배관',now:'Ondo가 ProxyVote로 의결권 전달 · 전 모델 지원.',y27:'"동일 권리" 요건이 굳으면 위임장 전달 공급자로 누구와도 협업.',y28:'—',peer:'SECZ 발행 토큰의 의결권 처리를 맡음.',foe:'자체 토큰 명부까지 확장.',sig:'SECZ 토큰의 의결권 처리 방식',when:'2027',turn:'상'},
+superstate:{n:'Superstate',r:'mx',g:'토큰화 전문사',now:'같은 네이티브 진영 · DTCC 실거래 불참.',y27:'규제에선 같은 편, 영업에선 경쟁.',y28:'—',peer:'SEC 의견서 공동 목소리.',foe:'발행사 영업 가격 경쟁.',sig:'의견서 공동 서명',when:'11/3 전후',turn:'중'},
+vertalo:{n:'Vertalo',r:'cp',g:'명부·배관',now:'등록 TA · 9/6 SEC 의견서 79쪽(설계 논리는 SECZ에 유리).',y27:'TA 규칙이 소형 비용을 올리면 밀려남.',y28:'—',peer:'—',foe:'—',sig:'—',when:'—',turn:'—'},
+nyse:{n:'NYSE (ICE)',r:'co',g:'거래·유통',now:'3/24 MOU(원문 비공개) · 규제 승인·출시일 없음 · CEO "거래량은 2027".',y27:'승인 TA 명단(4분기~2027-03).',y28:'뜨면 주식 칸 핵심 유통 경로.',peer:'—',foe:'명단에서 SECZ 부재.',sig:'ICE 발표 문구·명단',when:'~2027-03',turn:'—'},
+blockchaincom:{n:'Blockchain.com',r:'mx',g:'거래·유통',now:'9/23 NYSE MOU(계좌 4,400만+) — 기사상 SECZ가 디지털 TA·BD 참가자 · 역외에선 Ondo 토큰 판매.',y27:'두 레일 중 어느 쪽 물량이 큰지가 관측점.',y28:'—',peer:'NYSE 레일 물량 확대.',foe:'Ondo 레일 물량이 더 커짐.',sig:'레일별 물량',when:'2027',turn:'—'},
+nasdaq:{n:'Nasdaq (+Kraken)',r:'cp',g:'거래·유통',now:'3/18 SEC 승인 · DTCC 배관 위 · 자체 토큰 2027 2분기.',y27:'DTCC 진영의 거래소 얼굴.',y28:'—',peer:'Nasdaq 상장사가 발행사 주도를 택할 때(약함).',foe:'—',sig:'Nasdaq 토큰 첫 분기',when:'2027 2분기',turn:'하'},
+robinhood:{n:'Robinhood',r:'cp',g:'거래·유통',now:'주식 토큰 = 역외 채무증권(면제 제외 유형) · 9/17 배당 반영을 배당락일로 앞당김 · AMC CEO가 거부권 들어 공개 지목.',y27:'미국 진입엔 "동일 권리" 토큰 필요.',y28:'유통망 동료 또는 TA 인수 후 수직 통합.',peer:'미국 고객용 발행사 주도 토큰을 명부 쪽에서 조달 → SECZ = 공급자.',foe:'TA 직접 인수(Bullish 방식).',sig:'권리 구조 변경 · TA 인수 · 첫 TSV 공지자',when:'2027~2028',turn:'상'},
+kraken:{n:'Kraken (xStocks)',r:'cp',g:'거래·유통',now:'xStocks 역외 토큰 · Nasdaq 토큰 유통 예정.',y27:'—',y28:'—',peer:'Robinhood와 같은 논리.',foe:'자체 명부.',sig:'미국 진입 형태',when:'2027~2028',turn:'상'},
+coinbase:{n:'Coinbase (Base)',r:'cp',g:'거래·유통',now:'Base 위 토큰화 주식 거래량 주장(비공식) · OCC 신탁 조건부.',y27:'—',y28:'—',peer:'Robinhood와 같은 논리.',foe:'TA 인수.',sig:'미국 진입 형태',when:'2027~2028',turn:'상'},
+gemini:{n:'Gemini',r:'cp',g:'거래·유통',now:'[라이브 스크리너] 디지털자산 거래·수탁 플랫폼(GEMI).',y27:'—',y28:'—',peer:'역외 유통사와 같은 논리.',foe:'—',sig:'—',when:'—',turn:'상'},
+coalition:{n:'발행사 후원 연합',r:'cp',g:'거래·유통',now:'Bullish·Alpaca·Apex·DriveWealth(9/24) — SECZ 부재. "발행사 후원"은 SECZ가 써 온 용어.',y27:'연합의 명부 담당 선택.',y28:'—',peer:'Bullish 뺀 셋은 TA가 없음 → 명부 파트너 필요.',foe:'Bullish가 Equiniti로 명부 독점.',sig:'연합의 TA 파트너 발표',when:'2027-01 전후',turn:'중'},
+kb:{n:'KB증권',r:'co',g:'거래·유통',now:'9/23 MOU — 기관 MMF → KB운용 펀드 → 주식·ADR·회사채·한국 국채. 구속력·금액 없음.',y27:'첫 기관 MMF.',y28:'원화·한국 국채 열이 새로 생길 수도.',peer:'—',foe:'—',sig:'첫 기관 MMF',when:'2027',turn:'—'},
+jump:{n:'Jump · Jupiter',r:'co',g:'거래·유통',now:'Solana 프롭 AMM 유동성·분배. 주말엔 Market unavailable.',y27:'혁신 면제 TSV 구조와 일치.',y28:'—',peer:'—',foe:'—',sig:'주말 거래 상태',when:'—',turn:'—'},
+bakkt:{n:'Bakkt',r:'co',g:'거래·유통',now:'[라이브 스크리너] 기관이 꽂아 쓰는 중개·거래 플랫폼(BKKT) — 유통 부품 후보.',y27:'—',y28:'—',peer:'—',foe:'—',sig:'—',when:'—',turn:'—'},
+ondo:{n:'Ondo (+Oasis Pro)',r:'cp',g:'토큰화 전문사',now:'토큰화 주식 1위(27.19%) · 3모델 동시 · Oasis Pro 100%(BD·ATS·TA, FY2025 매출 $27) · Fund/SERV 첫 회원 · BlackRock 전용 모델 · 창업자 사망 후 매각 제시 보도(회사 부인).',y27:'더 큰 회사가 사면 "강해진 1위".',y28:'미국 발행사 주도 레인에서 실제 명부 역량이 필요해지는 순간이 관측점.',peer:'외부 TA가 필요할 때 · 인수자가 SECZ 파트너일 때.',foe:'더 큰 회사가 인수.',sig:'매각 후속 · Oasis Pro TA 활동',when:'불확실',turn:'하'},
+circle:{n:'Circle (USYC·Arc)',r:'mx',g:'토큰화 전문사',now:'USYC = 역외 토큰 MMF(SECZ 미사용) · Arc 메인넷 9/16 · 사전판매에 BlackRock·Apollo·ICE.',y27:'BUIDL Arc 통합 여부.',y28:'BD·ATS·TA 인수 시 발행 칸 직접 경쟁.',peer:'USDC 결제·Arc 배포에서 SECZ가 발행층 유지.',foe:'운용사가 Arc에서 SECZ 없이 발행 · 라이선스 인수.',sig:'BUIDL Arc 발행 주체',when:'2027',turn:'—'},
+figure:{n:'Figure',r:'cp',g:'토큰화 전문사',now:'주택담보 대출 토큰화 · 상장 시총 $71.6억(라이브).',y27:'자산군이 달라 정면 충돌 작음.',y28:'—',peer:'—',foe:'—',sig:'—',when:'—',turn:'—'},
+franklin:{n:'Franklin (BENJI)',r:'cp',g:'토큰화 전문사',now:'토큰 국채 상위권 · 8/12 SEC 무조치로 담보 활용 허가.',y27:'담보 칸 선점 경쟁.',y28:'—',peer:'—',foe:'—',sig:'—',when:'—',turn:'—'},
+plume:{n:'Plume · Centrifuge',r:'cp',g:'토큰화 전문사',now:'Plume = 인가 구축 중·"디지털 TA" 의회 증언.',y27:'—',y28:'—',peer:'—',foe:'—',sig:'—',when:'—',turn:'—'},
+citi:{n:'은행 (Citi 등)',r:'cp',g:'토큰화 전문사',now:'Citi 인가 토큰화 예탁증서(SIX) · §401로 은행 내재화 가능.',y27:'—',y28:'은행 컨소시엄 표준화 위험.',peer:'규제 부담을 덜려고 외주.',foe:'한 은행 인프라를 여러 은행이 채택.',sig:'2~3번째 은행 채택',when:'2027~2028',turn:'하~중'},
+defi:{n:'Loopscale·Aave·Euler',r:'co',g:'담보·DeFi',now:'토큰화 SECZ·HINC(Loopscale), HINC(Aave 제안), BUIDL(Euler). 수수료 연동 0.',y27:'—',y28:'—',peer:'—',foe:'—',sig:'담보 수수료 첫 공시',when:'—',turn:'—'},
+ethena:{n:'Ethena',r:'co',g:'담보·DeFi',now:'STAC에 $2.5억 투입 · StablecoinX(USDE, 라이브)가 생태계 상장사.',y27:'—',y28:'—',peer:'—',foe:'—',sig:'—',when:'—',turn:'—'},
+bitgo:{n:'BitGo',r:'co',g:'담보·DeFi',now:'[라이브 스크리너] 적격 수탁(BTGO) — SECZ의 약한 수탁 줄을 메울 협업 후보.',y27:'—',y28:'—',peer:'—',foe:'—',sig:'—',when:'—',turn:'—'}
+};
+// ───────────────────────── 로직 ─────────────────────────
+const REL={co:'협업',cp:'경쟁',mx:'겸업'};
+const SYM={f:'●',p:'◐',l:'○',n:'–',q:'?'};
+const SNAME={f:'가동 + 매출',p:'가동, 매출 미미',l:'인가만',n:'서 있지 않음',q:'확인 필요'};
+const TIMES=['지금 (2026-09)','2027 초','2028+ 갈림길 A · 명부 필수화','2028+ 갈림길 B · 배관 독식'];
+let mode='own', time=0, sel=null, pl=null, mcol='C6';
+const state0=(r,c)=>S0[r].split(' ')[COLS.findIndex(x=>x.id===c)];
+function stateAt(r,c){const k=r+c; if(time===2&&FA[k])return FA[k]; if(time===3&&FB[k])return FB[k]; return state0(r,c);}
+function compN(k){return (NAMES[k]||[]).filter(x=>x[1]!=='co').length;}
+function upOf(k){return UP.filter(u=>u.cells.includes(k));}
+function tileStyle(k,r,c){
+  if(mode==='own'){return {cls:'s-'+stateAt(r,c),bg:''};}
+  if(mode==='comp'){const n=compN(k); const a=[ '#f4efe2','#f6d9d3','#eeae9f','#dd7c67','#c0392b'][Math.min(n,4)]; return {cls:'',bg:a,fg:n>=3?'#fff':''};}
+  const u=upOf(k); if(!u.length) return {cls:'',bg:'#f1ede0'};
+  const pr=Math.max(...u.map(x=>x.pr)); const a=pr>=3?'#6fb35a':pr>=2.5?'#9fd08c':pr>=2?'#cfe8c4':pr>=1.5?'#e6f1dd':'#f0f4ea';
+  return {cls:'',bg:a};
+}
+function tileHTML(k,r,c,mobile){
+  const st=tileStyle(k,r,c); const s=stateAt(r,c);
+  const names=(NAMES[k]||[]).slice(0,3).map(([id,rel])=>`<span class="c-${rel}">${P[id]?P[id].n.split(' (')[0]:id}</span>`).join('');
+  let pin=''; if(time===1&&P27[k]) pin=`<span class="pin">${P27[k][0]}</span>`;
+  let chg=''; if((time===2&&FA[k])||(time===3&&FB[k])){const o=state0(r,c),nw=stateAt(r,c); if(o!==nw) chg=`<span class="chg">${rank(nw)>rank(o)?'▲':'▼'}</span>`;}
+  const upm = mode==='up'&&upOf(k).length? `<div class="nm">상방 ${upOf(k).length}건</div>`:'';
+  const cmpm = mode==='comp'? `<div class="nm">경쟁·겸업 ${compN(k)}</div>`:'';
+  const hot=HOT.includes(k)&&mode==='own'?' hot':'';
+  return `<div class="tile ${st.cls}${hot}" data-k="${k}" style="${st.bg?'background:'+st.bg+';':''}${st.fg?'color:'+st.fg:''}">${pin}${chg}<div class="sym">${SYM[s]}</div>${mode==='own'?`<div class="nm">${names}</div>`:''}${upm}${cmpm}${mobile?`<div class="nm" style="color:#6b5d3f">${(NOTES[k]||'').slice(0,60)}${(NOTES[k]||'').length>60?'…':''}</div>`:''}</div>`;
+}
+function rank(s){return {n:0,q:1,l:2,p:3,f:4}[s];}
+function renderGrid(){
+  const g=document.getElementById('grid'); let h='<div class="gh blank"></div>';
+  h+=`<div class="gh grp">국채·MMF</div><div class="gh" style="grid-row:span 2">사모신용</div><div class="gh" style="grid-row:span 2">하이일드·CLO</div><div class="gh" style="grid-row:span 2">사모펀드·벤처</div><div class="gh grp3">상장주식</div><div class="gh grp">비상장주식</div><div class="gh" style="grid-row:span 2">기타 대체</div>`;
+  h+='<div class="gh blank"></div>';
+  COLS.forEach(c=>{ if(c.g) h+=`<div class="gh" title="${c.d}">${c.n}<small>${c.m}</small></div>`; });
+  ROWS.forEach(r=>{ h+=`<div class="rh" title="${r.d}">${r.n}</div>`; COLS.forEach(c=>{h+=tileHTML(r.id+c.id,r.id,c.id,false);}); });
+  g.innerHTML=h;
+  // 모바일
+  document.getElementById('coltabs').innerHTML=COLS.map(c=>`<button data-c="${c.id}" class="${c.id===mcol?'on':''}">${c.g?c.g+'·':''}${c.n}</button>`).join('');
+  document.getElementById('mlist').innerHTML=`<p class="hint" style="margin:4px 2px">${COLS.find(c=>c.id===mcol).d}</p>`+ROWS.map(r=>`<div class="mrow"><div class="rh">${r.n}</div>${tileHTML(r.id+mcol,r.id,mcol,true)}</div>`).join('');
+  applyHighlight(); bindTiles();
+}
+function applyHighlight(){
+  document.querySelectorAll('.tile').forEach(t=>{
+    t.classList.toggle('sel',t.dataset.k===sel);
+    t.classList.remove('dim','glow');
+    if(pl){ const hit=(NAMES[t.dataset.k]||[]).find(x=>x[0]===pl); if(hit){t.classList.add('glow'); t.style.setProperty('--glow',hit[1]==='co'?'#2e7d32':hit[1]==='cp'?'#c0392b':'#7b4fa8');} else t.classList.add('dim'); }
+  });
+}
+function bindTiles(){ document.querySelectorAll('.tile').forEach(t=>t.onclick=()=>openCell(t.dataset.k)); }
+function openCell(k){
+  sel=k; pl=null; renderPlayers(); applyHighlight();
+  const r=ROWS.find(x=>x.id===k.slice(0,2)), c=COLS.find(x=>x.id===k.slice(2));
+  const col=`${c.g?c.g+' · ':''}${c.n}${c.m&&c.g&&c.m!==c.n?' ('+c.m+')':''}`;
+  const s0=state0(r.id,c.id);
+  const sA=FA[k]||s0, sB=FB[k]||s0;
+  const names=(NAMES[k]||[]).map(([id,rel])=>`<span class="chip ${rel}" data-p="${id}">${P[id].n} · ${REL[rel]}</span>`).join(' ')||'<span class="hint">기록된 상대 없음</span>';
+  const ups=upOf(k).map(u=>`<div class="upbox"><b>${u.n}</b><br>늘어나는 줄: ${u.line}<br>크기(3년 내·가정): ${u.sz}<br>가능성: ${prLabel(u.pr)} · 첫 신호: ${u.sig}</div>`).join('');
+  const colNote=c.gray&&!NOTES[k]?`SECZ가 택하지 않은 모델의 칸이다. ${c.d}`:(NOTES[k]||c.d);
+  const p27=P27[k]?`<div class="futbox">${P27[k][0]} <b>2027 초</b> — ${P27[k][1]}</div>`:'';
+  const d=document.getElementById('drawer');
+  d.innerHTML=`<button class="close" onclick="resetDrawer()">✕</button>
+  <h2>${r.n.split(' ').slice(1).join(' ')} × ${col}</h2>
+  <div class="hint">${r.id}·${c.id} ${HOT.includes(k)?'· ⚔️ 가장 붐비는 칸':''}</div>
+  <div class="state-line"><span class="s-${s0}">지금 ${SYM[s0]} ${SNAME[s0]}</span><span class="s-${sA}">2028 A ${SYM[sA]}</span><span class="s-${sB}">2028 B ${SYM[sB]}</span></div>
+  <h4>이 칸에서 벌어지는 일</h4><p>${colNote}</p>
+  <h4>이 칸의 상대</h4><div>${names}</div>
+  ${p27}
+  ${(FA[k]||FB[k])?`<div class="futbox"><b>2028+</b> — A(명부 필수화): ${SNAME[sA]} / B(배관 독식): ${SNAME[sB]} <span class="hint">(추정)</span></div>`:''}
+  ${ups?'<h4>매출 상방</h4>'+ups:''}
+  <h4>행·열 설명</h4><p class="hint">${r.d}<br>${c.d}</p>`;
+  d.querySelectorAll('.chip').forEach(ch=>ch.onclick=()=>openPlayer(ch.dataset.p));
+  if(window.innerWidth<860) d.scrollIntoView({behavior:'smooth'});
+}
+function prLabel(p){return p>=3?'상':p>=2.5?'중상':p>=2?'중':p>=1.5?'하~중':'하';}
+function meter(v,max,color){return `<span class="meter"><i style="width:${Math.round(v/max*100)}%;background:${color}"></i></span>`;}
+function openPlayer(id){
+  pl=id; sel=null; renderPlayers(); applyHighlight();
+  const p=P[id]; const cells=Object.keys(NAMES).filter(k=>NAMES[k].some(x=>x[0]===id));
+  const tv={'상':3,'중':2,'하~중':1.5,'하':1}[p.turn];
+  const d=document.getElementById('drawer');
+  d.innerHTML=`<button class="close" onclick="resetDrawer()">✕</button>
+  <div class="hint">플레이어 카드 · 카드를 누르면 뒤집힌다</div>
+  <div class="cardwrap"><div class="pcard" id="pc">
+   <div class="face"><div class="ttl">${p.n}</div><span class="chip ${p.r}">${REL[p.r]}</span> <span class="badge">${p.g}</span>
+    <div class="stat"><b>서 있는 칸</b><span>${cells.length}칸 ${meter(cells.length,8,'#1f6f8b')}</span>
+     <b>동료 전환</b><span>${tv?p.turn+' '+meter(tv,3,'#2e7d32'):'해당 없음'}</span>
+     <b>시점</b><span>${p.when}</span></div>
+    <p style="font-size:.84em">${p.now}</p>
+    <p class="hint" style="font-size:.78em">칸: ${cells.map(k=>`${k.slice(0,2)}·${COLS.find(c=>c.id===k.slice(2)).n}`).join(' / ')||'—'}</p>
+    <div class="flipnote">뒤집어서 미래 보기 ↻</div></div>
+   <div class="face back"><div class="ttl">${p.n} — 앞으로</div>
+    <h4>2027 (추정)</h4><p style="font-size:.84em">${p.y27}</p>
+    <h4>2028+ (추정)</h4><p style="font-size:.84em">${p.y28}</p>
+    <h4>🤝 동료가 되는 조건</h4><p style="font-size:.84em">${p.peer}</p>
+    <h4>⚔️ 적이 굳는 조건</h4><p style="font-size:.84em">${p.foe}</p>
+    <h4>👀 관측 지표</h4><p style="font-size:.84em">${p.sig}</p>
+    <div class="flipnote">앞면으로 ↻</div></div>
+  </div></div>
+  <p class="hint" style="margin-top:10px">지도에서 이 회사가 서 있는 칸만 빛나고 있다(초록 테두리 = 협업, 빨강 = 경쟁, 보라 = 겸업). 칸을 누르면 칸 설명으로 돌아간다.</p>`;
+  const pc=document.getElementById('pc'); pc.onclick=()=>pc.classList.toggle('flip');
+  const h=Math.max(...[...pc.querySelectorAll('.face')].map(f=>f.scrollHeight)); pc.style.minHeight=Math.min(h+10,620)+'px';
+  if(window.innerWidth<860) d.scrollIntoView({behavior:'smooth'});
+}
+function resetDrawer(){
+  sel=null; pl=null; renderPlayers(); applyHighlight();
+  document.getElementById('drawer').innerHTML=`<h2>칸이나 회사를 눌러 보세요</h2>
+  <p class="hint">타일 하나 = "어떤 증권을, 생애주기의 어느 단계에서" 만나는 자리. 색은 SECZ가 그 칸에 어떻게 서 있는지다.</p>
+  <h4>이 지도를 보는 세 가지 방법</h4>
+  <ul><li><b>SECZ 점유</b> — 초록(●)은 돈이 나는 칸, 노랑(◐)은 가동만, 회색(–)은 SECZ가 택하지 않은 모델.</li>
+  <li><b>경쟁 밀도</b> — 칸에 경쟁·겸업 상대가 몇 곳인지. 빨갈수록 붐빈다.</li>
+  <li><b>매출 상방</b> — 매출이 늘 수 있는 칸. 진한 초록일수록 가능성이 높다(크기와는 다름).</li></ul>
+  <h4>시점 슬라이더</h4>
+  <ul><li><b>2027 초</b> — 칸은 거의 그대로, ⚠(압력)·✨(기회) 표시가 뜬다.</li>
+  <li><b>2028+ A</b> — ${FNOTE.A}</li><li><b>2028+ B</b> — ${FNOTE.B}</li></ul>
+  <h4>관측 캘린더</h4>
+  <ul><li>10월 — DTCC 토큰화 서비스 출시 명단</li><li>11/3 — SEC 이전대리인 규칙 의견 마감</li><li>11월 — SECZ 3분기 실적(토큰화 ≥ $920만)</li><li>4분기~2027-03 — NYSE 승인 TA 명단 · Computershare 첫 IST</li><li>2027-01 — Bullish×Equiniti 클로징</li><li>2027 상반기 — DTCC×Stellar · Nasdaq 토큰</li></ul>
+  <p class="hint">2027·2028 상태와 전환 가능성은 전부 주관 추정이다. 상세 근거·출처는 <a href="2026-09-28_secz-competitive-map.html">본문 보고서</a>.</p>`;
+}
+function renderPlayers(){
+  const groups=['공급','명부·배관','거래·유통','토큰화 전문사','담보·DeFi'];
+  document.getElementById('players').innerHTML='<h3>플레이어 — 누르면 서 있는 칸이 빛나고 카드가 열린다</h3>'+groups.map(g=>`<div class="pgrp"><b>${g}</b>${Object.entries(P).filter(([,p])=>p.g===g).map(([id,p])=>`<span class="chip ${p.r}${pl===id?' on':''}" data-p="${id}">${p.n}</span>`).join('')}</div>`).join('');
+  document.querySelectorAll('#players .chip').forEach(ch=>ch.onclick=()=>{ if(pl===ch.dataset.p){resetDrawer();} else openPlayer(ch.dataset.p); });
+}
+function renderLegend(){
+  const L=document.getElementById('legend');
+  if(mode==='own') L.innerHTML=`<span><i style="background:var(--f2)"></i>● 가동+매출</span><span><i style="background:var(--p2)"></i>◐ 가동·매출 미미</span><span><i style="background:var(--l)"></i>○ 인가만</span><span><i style="background:var(--n)"></i>– 서 있지 않음</span><span><i style="background:#fff"></i>? 확인 필요</span><span><i style="background:#fff;border:2px solid #c0392b"></i>가장 붐비는 칸</span><span>이름: <b style="color:var(--co)">협업</b> · <b style="color:var(--cp)">경쟁</b> · <b style="color:var(--mx)">겸업</b></span>${time===1?'<span>⚠ 압력 · ✨ 기회</span>':''}${time>=2?'<span>▲▼ 지금 대비 변화</span>':''}`;
+  else if(mode==='comp') L.innerHTML=`<span><i style="background:#f4efe2"></i>0</span><span><i style="background:#f6d9d3"></i>1</span><span><i style="background:#eeae9f"></i>2</span><span><i style="background:#dd7c67"></i>3</span><span><i style="background:#c0392b"></i>4+ 경쟁·겸업 상대 수</span>`;
+  else L.innerHTML=`<span><i style="background:#6fb35a"></i>가능성 상</span><span><i style="background:#9fd08c"></i>중상</span><span><i style="background:#cfe8c4"></i>중</span><span><i style="background:#e6f1dd"></i>하~중</span><span><i style="background:#f0f4ea"></i>하</span><span>※ 가능성 ≠ 크기. 확실한 상방은 왼쪽(작음), 큰 상방은 오른쪽(남의 결정 의존)</span>`;
+}
+function renderAll(){ renderGrid(); renderLegend(); if(sel) openCell(sel); else if(pl) openPlayer(pl); }
+document.querySelectorAll('#modeSeg button').forEach(b=>b.onclick=()=>{mode=b.dataset.mode; document.querySelectorAll('#modeSeg button').forEach(x=>x.classList.toggle('on',x===b)); renderAll();});
+document.getElementById('time').oninput=e=>{time=+e.target.value; document.getElementById('tickLbl').textContent=TIMES[time]; document.getElementById('timeWarn').textContent=time>0?'추정 — 모델 산출이 아님':''; renderAll();};
+document.getElementById('coltabs').addEventListener('click',e=>{const b=e.target.closest('button'); if(!b)return; mcol=b.dataset.c; renderGrid();});
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const k=b.dataset.go; mcol=k.slice(2); renderGrid(); openCell(k); const t=document.querySelector(`#grid .tile[data-k="${k}"]`); if(t&&window.innerWidth>=860) t.scrollIntoView({behavior:'smooth',block:'center',inline:'center'});});
+renderPlayers(); renderLegend(); renderGrid(); resetDrawer();
+</script>
+</body>
+</html>
