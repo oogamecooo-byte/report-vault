@@ -59,6 +59,7 @@ button{font-family:inherit;color:inherit;}
 .b3{display:inline-flex;gap:2px;align-items:flex-end;height:18px;vertical-align:middle;} .b3 i{width:5px;background:var(--rule);display:block;}
 .b3 i:nth-child(1){height:7px;} .b3 i:nth-child(2){height:12px;} .b3 i:nth-child(3){height:18px;}
 .b3.rev i.on{background:#4FD1E8;} .b3.cmpb i.on{background:var(--warn);}
+.star .stat .b3,.slegend .b3{align-items:flex-end;gap:2px;}
 .star .stat .none{font-family:"Noto Sans KR",sans-serif;font-size:12.5px;color:var(--muted);}
 .star .cmp{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:6px;font-size:13px;color:var(--paper-dim);opacity:0;transition:opacity .25s;}
 .star:hover .cmp,.star.kb .cmp{opacity:1;}
@@ -95,6 +96,21 @@ button{font-family:inherit;color:inherit;}
 .sthead .code .lic{color:var(--paper-dim);} .sthead .code .free{color:var(--paper-dim);border:1px solid var(--rule);padding:0 7px;}
 
 .tbar{display:flex;align-items:center;gap:10px;margin-top:10px;}
+.tsc{position:relative;flex:1;max-width:760px;height:50px;margin:0 6px;user-select:none;}
+.tsc .hit{position:absolute;left:40px;right:40px;top:4px;height:22px;cursor:pointer;}
+.tsc .ln{position:absolute;left:0;right:0;top:9px;height:4px;background:var(--rule);border-radius:2px;}
+.tsc .fl{position:absolute;left:0;top:0;bottom:0;background:var(--paper-dim);border-radius:2px;transition:width .35s;}
+.tsc .st{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:none;cursor:pointer;color:var(--muted);font-family:inherit;padding:0;z-index:2;}
+.tsc .st i{width:12px;height:12px;border-radius:50%;background:var(--ink-800);border:2px solid var(--rule);margin-top:9px;display:block;transition:.25s;}
+.tsc .st b{font-size:14px;font-weight:500;white-space:nowrap;}
+.tsc .st:hover b{color:var(--paper);}
+.tsc .st.done i{border-color:var(--paper-dim);background:var(--paper-dim);}
+.tsc .st.on i{width:18px;height:18px;margin-top:6px;border-color:#fff;background:#fff;box-shadow:0 0 0 4px rgba(230,237,245,.15);}
+.tsc .st.on b{color:#fff;}
+.tsc .tip{position:absolute;top:56px;z-index:30;width:540px;background:#0C233B;border:1px solid var(--rule);padding:10px 14px;font-size:13.5px;line-height:1.55;color:var(--paper-dim);opacity:0;pointer-events:none;transition:opacity .15s;box-shadow:0 12px 30px rgba(0,0,0,.45);}
+.tsc .tip.show{opacity:1;}
+.tsc .tip b{color:#fff;} .tsc .tip .sd{border:1px solid var(--rule);padding:0 7px;margin-left:8px;font-size:12.5px;color:var(--paper);}
+.tsc .tip .sg{display:block;color:var(--muted);font-size:12.5px;margin-top:4px;}
 .tbar .lbl{font-size:13px;letter-spacing:.1em;color:var(--muted);margin-right:4px;}
 .tabs{display:flex;gap:0;border:1px solid var(--rule);}
 .tabs button{background:transparent;border:none;border-right:1px solid var(--rule);padding:8px 18px;cursor:pointer;text-align:left;min-width:176px;transition:.25s;}
@@ -108,8 +124,10 @@ button{font-family:inherit;color:inherit;}
 .tdots{margin-left:auto;font-size:13px;color:var(--muted);}
 
 .viewport{position:relative;overflow:hidden;margin-top:10px;height:600px;}
-.track{display:flex;width:400%;height:100%;transition:transform .7s cubic-bezier(.2,.7,.2,1);}
-.tpanel{width:25%;height:100%;padding-right:2px;}
+.track{display:grid;width:100%;height:100%;}
+.tpanel{grid-area:1/1;height:100%;padding-right:2px;opacity:0;visibility:hidden;filter:blur(6px);
+  transition:opacity .45s ease,filter .45s ease,visibility 0s linear .45s;}
+.tpanel.on{opacity:1;visibility:inherit;filter:none;transition:opacity .45s ease .12s,filter .45s ease .12s,visibility 0s;}
 .tsum{display:flex;gap:16px;align-items:flex-start;font-size:14px;line-height:1.55;color:var(--paper-dim);max-height:68px;overflow:hidden;
   border-left:3px solid rgba(183,199,216,.5);padding:2px 0 0 14px;margin-bottom:6px;}
 .tsum .tx{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
@@ -119,6 +137,7 @@ button{font-family:inherit;color:inherit;}
 .tpanel.on .chg3{animation:chgflash 1.2s ease .45s 1;}
 @keyframes chgflash{0%{box-shadow:0 0 0 0 rgba(230,237,245,0);}35%{box-shadow:0 0 0 2px rgba(230,237,245,.85);}100%{box-shadow:0 0 0 0 rgba(230,237,245,0);}}
 @media (prefers-reduced-motion:reduce){.tpanel.on .chg3{animation:none;}}
+.tsum .when small{display:block;font-family:"Noto Sans KR",sans-serif;font-size:12px;font-weight:400;color:var(--muted);}
 .tsum .when{font-family:"Noto Serif KR",serif;font-weight:700;color:#fff;white-space:nowrap;font-size:16px;}
 
 .tbl{display:grid;grid-template-columns:196px repeat(3,1fr);gap:5px;}
@@ -177,7 +196,7 @@ button{font-family:inherit;color:inherit;}
 .world .side{font-size:13px;color:var(--paper);border:1px solid rgba(183,199,216,.55);padding:1px 9px;white-space:nowrap;}
 .world .wsig{grid-column:2/4;font-size:13px;color:var(--muted);}
 /* 열 아래 범례 */
-.lgrid{display:grid;grid-template-columns:196px repeat(3,1fr);gap:5px;margin-top:8px;font-size:13px;color:var(--muted);}
+.lgrid{display:grid;grid-template-columns:196px repeat(3,1fr);gap:5px;margin-top:5px;font-size:13px;color:var(--muted);}
 .lgrid>div{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;padding:0 6px;}
 .lgrid span{display:inline-flex;align-items:center;gap:4px;}
 .sym{display:inline-block;vertical-align:-1px;}
@@ -460,7 +479,7 @@ details.bg[open] summary{color:var(--paper-dim);}
   <div class="tbar">
     <span class="lbl">시간</span>
     <button class="tarr" id="tPrev" title="이전 시점 (←)">‹</button>
-    <div class="tabs" id="tTabs"></div>
+    <div class="tsc" id="tScroll"></div>
     <button class="tarr" id="tNext" title="다음 시점 (→)">›</button>
   </div>
   <div class="viewport"><div class="track" id="track"></div></div>
@@ -471,7 +490,7 @@ details.bg[open] summary{color:var(--paper-dim);}
   <div class="sthead" style="grid-template-columns:64px 1fr auto">
     <button class="back" data-go="main">◂</button>
     <div><div class="eyebrow">전체 지도</div><h2 style="margin-top:6px">9단계 × 상품 7종 한눈에</h2></div>
-    <div class="tbar" style="margin:0"><button class="tarr" id="aPrev">‹</button><div class="tabs" id="aTabs"></div><button class="tarr" id="aNext">›</button></div>
+    <div class="tbar" style="margin:0"><button class="tarr" id="aPrev">‹</button><div class="tsc" id="aScroll" style="flex:none;width:560px"></div><button class="tarr" id="aNext">›</button></div>
   </div>
   <div class="acol" id="aCol"></div>
   <div id="agrid"></div>
@@ -1023,9 +1042,9 @@ function diffOf(r,t){let up=0,dn=0,rel=0,w=0,o=0;ASSETS.forEach(A=>{const c=A.sp
     if(!A.span)ALTM.forEach(([m])=>{const v=A.m[m];if(typeof v==='string'&&altRel(r+v,t)!==altRel(r+v,0))rel++;});});return {up,dn,rel,w,o};}
 function splitHead(txt){const m=String(txt||'').match(/^(.+?[.。])\s+([\s\S]*)$/);return m?[m[1],m[2]]:[txt||'',''];}
 function tpanel(t){const s=STAGES[S.ri],W=t>=2?WORLD[t===2?'A':'B']:null;
-  let h=`<div class="tpanel">${W?`<div class="world"><span class="wn">${TN[t]} · ${W.name}</span><span class="wd">${W.def}</span><span class="side">${W.side} · 전부 추정</span><span class="wsig">먼저 갈리는 신호 · ${W.sig}</span></div>`:''}<div class="tsum"><span class="when">${TN[t]}</span><span class="tx">${(()=>{const d=diffOf(s.r,t),[hd,bd]=splitHead(ROWT[s.r][t]);const n=d.up+d.dn+d.rel;const tag=t===1?(d.w+d.o?`<span class="dlt">신호 ${d.w+d.o}칸 · ${WARN}${d.w} ✨${d.o}</span>`:''):t>=2?`<span class="dlt">지금 대비 ${n}칸 바뀜${d.up+d.dn?` · SECZ ▲${d.up} ▼${d.dn}`:''}</span>`:'';return `${tag}<b class="hd">${tx(hd)}</b> ${tx(bd)}`;})()}</span></div><div class="tbl">`;
-  h+=`<div class="th corner"><span>상품 ↓</span></div>`+COL3.map(M=>`<div class="th ${M.alt?'alt':''}"><b>${M.n}</b><span>${M.s}</span></div>`).join('');
-  ASSETS.forEach(A=>{h+=`<div class="rh"><b>${A.a}</b><span>${A.ex}</span></div>`;
+  let h=`<div class="tpanel"><div class="tsum"><span class="when">${TN[t]}${W?`<small>${W.side}</small>`:''}</span><span class="tx">${(()=>{const d=diffOf(s.r,t),[hd,bd]=splitHead(ROWT[s.r][t]);const n=d.up+d.dn+d.rel;const tag=t===1?(d.w+d.o?`<span class="dlt">신호 ${d.w+d.o}칸 · ${WARN}${d.w} ✨${d.o}</span>`:''):t>=2?`<span class="dlt">지금 대비 ${n}칸 바뀜${d.up+d.dn?` · SECZ ▲${d.up} ▼${d.dn}`:''}</span>`:'';return `${tag}<b class="hd">${tx(hd)}</b> ${tx(bd)}`;})()}</span></div><div class="tbl">`;
+  h+=`<div class="th corner"><span>상품 종류</span></div>`+COL3.map(M=>`<div class="th ${M.alt?'alt':''}"><b>${M.n}</b><span>${M.s}</span></div>`).join('');
+  ASSETS.forEach(A=>{h+=`<div class="rh"><b>${A.a}</b></div>`;
     const k=s.r+(A.span||A.m.iss);
     h+=cellA(k,t)+cellB(k,t)+(A.span?`<div class="cell na" title="기타 대체는 토큰 방식을 나누지 않았다 — 대체 경로 미분류"><b>—</b></div>`:cellC(A,s.r,t));});
   h+=`</div>${legendHTML(t)}</div>`;return h;}
@@ -1053,12 +1072,32 @@ function legendHTML(t){
   return `<div class="lgrid"><div>${tm}</div><div>${g}</div><div><span style="color:var(--warn)">▢ 가장 붐비는 칸</span></div><div><span>${tags}</span><span>— = 상대 없음·막힘(마우스로 이유)</span></div></div>`;}
 function bindCells(){$$('#track .cell[data-k],#track .aln[data-k]').forEach(b=>b.onclick=e=>{e.stopPropagation();openCell(b.dataset.k);});}
 function setTime(t,instant){S.t=Math.max(0,Math.min(3,t));
-  const tr=$('#track'); if(instant){tr.style.transition='none';} tr.style.transform=`translateX(${-25*S.t}%)`; if(instant){tr.offsetHeight;tr.style.transition='';}
-  $$('#track .tpanel').forEach((x,i)=>x.classList.toggle('on',i===S.t));
-  $('#tTabs').innerHTML=TIMEINFO.map((x,i)=>`<button class="${i===S.t?'on':''}" data-t="${i}"><b>${x.k}</b><span>${sy(x.s)}</span></button>`).join('');
-  $$('#tTabs button').forEach(b=>b.onclick=()=>setTime(+b.dataset.t));
+  const tp=$$('#track .tpanel'); if(instant) tp.forEach(x=>x.style.transition='none');
+  tp.forEach((x,i)=>x.classList.toggle('on',i===S.t)); if(instant){tp[0]&&tp[0].offsetHeight;tp.forEach(x=>x.style.transition='');}
+  updTsc($('#tScroll'),S.t);
   markSel(); if(S.k&&$('#panel').classList.contains('open')) openCell(S.k,true); updRail();}
 function markSel(){$$('.cell[data-k],.aln[data-k]').forEach(c=>c.classList.toggle('sel',c.dataset.k===S.k));}
+
+// ── 시간 스크롤 막대 ──
+function timeDesc(i){const x=TIMEINFO[i];
+  if(i>=2){const W=WORLD[i===2?'A':'B'];return `<b>${x.k} · ${W.name}</b><span class="sd">${W.side} · 전부 추정</span><br>${W.def}<span class="sg">먼저 갈리는 신호 · ${W.sig}</span>`;}
+  return i===0?'<b>지금</b> <span class="sd">2026-09 기준</span><br>공시·보도자료로 확인된 현재 상태.':`<b>${x.k}</b> <span class="sd">${sy(x.s)}</span><br>${sy(x.d)}`;}
+function buildTsc(el,pick){
+  el.innerHTML=`<div class="hit"><div class="ln"><div class="fl"></div></div></div>${TIMEINFO.map((x,i)=>`<button class="st" data-t="${i}" style="left:calc(40px + (100% - 80px) * ${i/3})"><i></i><b>${x.k}</b></button>`).join('')}<div class="tip"></div>`;
+  const tip=el.querySelector('.tip'),hit=el.querySelector('.hit');
+  el.querySelectorAll('.st').forEach(b=>{const i=+b.dataset.t;b.onclick=()=>pick(i);
+    b.onmouseenter=()=>{tip.innerHTML=timeDesc(i);tip.style.left=b.style.left;tip.style.transform=`translateX(${['-10%','-50%','-50%','-90%'][i]})`;tip.classList.add('show');};
+    b.onmouseleave=()=>tip.classList.remove('show');});
+  const at=e=>{const r=hit.getBoundingClientRect();return Math.round(Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*3);};
+  let drag=false;
+  hit.onpointerdown=e=>{drag=true;hit.setPointerCapture(e.pointerId);const i=at(e);if(i!==+el.dataset.cur)pick(i);};
+  hit.onpointermove=e=>{if(!drag)return;const i=at(e);if(i!==+el.dataset.cur)pick(i);};
+  hit.onpointerup=hit.onpointercancel=()=>{drag=false;};
+  let acc=0,lock=0;
+  el.addEventListener('wheel',e=>{e.preventDefault();const now=Date.now();if(now<lock)return;acc+=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
+    if(Math.abs(acc)>50){const c=+el.dataset.cur,n=Math.max(0,Math.min(3,c+(acc>0?1:-1)));acc=0;lock=now+450;if(n!==c)pick(n);}},{passive:false});}
+function updTsc(el,cur){el.dataset.cur=cur;el.querySelector('.fl').style.width=`${cur/3*100}%`;
+  el.querySelectorAll('.st').forEach((b,i)=>{b.classList.toggle('on',i===cur);b.classList.toggle('done',i<cur);});}
 
 // ── 칸 상세 (시점별) ──
 function openCell(k,keep){S.k=k;const r=k.slice(0,2),c=k.slice(2),t=S.t,row=ROWS.find(x=>x.id===r),stg=STAGES.find(x=>x.r===r);
@@ -1137,8 +1176,7 @@ function gotoCell(k){if(S.scr!=='stage')S.hist.push(snap());closeModal();const r
 // ── 전체 지도 ──
 function setCol(n){S.acol=n;const g=$('#agrid');g.className=n?'fc'+n:'';$$('#aCol button').forEach(b=>b.classList.toggle('on',+b.dataset.c===n));}
 function renderAll(){const t=S.at;
-  $('#aTabs').innerHTML=TIMEINFO.map((x,i)=>`<button class="${i===t?'on':''}" data-t="${i}" style="min-width:130px"><b>${x.k}</b><span>${sy(x.s)}</span></button>`).join('');
-  $$('#aTabs button').forEach(b=>b.onclick=()=>{S.at=+b.dataset.t;renderAll();});
+  updTsc($('#aScroll'),t);
   let h=`<div class="agrid"><div class="agh blank"></div>`;
   ASSETS.forEach(A=>h+=`<div class="agh grp g0" style="grid-column:span 3">${A.a}</div>`);
   h+=`<div class="agh blank"></div>`+ASSETS.map(()=>`<div class="agh sub g0" title="SECZ + 협업사">SECZ<br>+협업사</div><div class="agh sub" title="발행사 주도형 경쟁사">발행사<br>주도형</div><div class="agh sub alt" title="제3자형 경쟁사">제3자형<br>&nbsp;</div>`).join('');
@@ -1226,9 +1264,6 @@ document.addEventListener('keydown',e=>{const k=e.key,modal=$('#modal').classLis
     else if(k==='ArrowDown'||k==='PageDown'){stepStage(1);e.preventDefault();} else if(k==='ArrowUp'||k==='PageUp'){stepStage(-1);e.preventDefault();}}
   else if(S.scr==='all'){if(k==='ArrowRight'){$('#aNext').click();} else if(k==='ArrowLeft'){$('#aPrev').click();}}
 });
-// 트랙패드 가로 스크롤 = 시간 넘기기
-let wx=0,wlock=0; $('#s-stage').addEventListener('wheel',e=>{if(!e.target.closest('.viewport')||Math.abs(e.deltaX)<=Math.abs(e.deltaY))return;e.preventDefault();
-  const now=Date.now();if(now<wlock)return;wx+=e.deltaX;if(Math.abs(wx)>60){setTime(S.t+(wx>0?1:-1));wx=0;wlock=now+650;}},{passive:false});
 // 표 위 좌우 끌기 = 시간 넘기기
 let dx=null; $('#s-stage').addEventListener('pointerdown',e=>{if(e.target.closest('.viewport'))dx=e.clientX;});
 $('#s-stage').addEventListener('pointerup',e=>{if(dx===null)return;const d=e.clientX-dx;dx=null;if(Math.abs(d)>90)setTime(S.t+(d<0?1:-1));});
@@ -1259,6 +1294,7 @@ $('#gLegend').innerHTML+=`<div class="row" style="margin-top:10px;display:block;
  <div class="row"><i class="rt dom">대체 우세</i> 2028 B(배관 독식)에서 트윈이 기본값이 되어, 같은 줄 SECZ 자리가 A 세계보다 낮아진다</div>
  <div class="row"><i class="rt br">SECZ도 공급</i> SECZ가 그 방식에도 토큰을 공급한다(2028 A) — 대체가 아니라 공급 관계</div>
  <div class="row">— = 제3자형 상대가 아직 없거나(길만 열림), 밑 증권 조건(가운데 상자 ①②③) 때문에 막힌 칸 — 마우스를 올리면 어느 쪽인지 나온다</div>`;
+buildTsc($('#tScroll'),i=>setTime(i)); buildTsc($('#aScroll'),i=>{S.at=i;renderAll();});
 renderMain(); renderPlayers(); updRail();
 })();
 </script>
