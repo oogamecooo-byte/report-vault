@@ -91,8 +91,10 @@ button{font-family:inherit;color:inherit;}
 .tdots{margin-left:auto;font-size:13px;color:var(--muted);}
 
 .viewport{position:relative;overflow:hidden;margin-top:10px;height:608px;}
-.track{display:flex;width:400%;height:100%;transition:transform .7s cubic-bezier(.2,.7,.2,1);}
-.tpanel{width:25%;height:100%;padding-right:2px;}
+.track{display:grid;width:100%;height:100%;}
+.tpanel{grid-area:1/1;height:100%;padding-right:2px;opacity:0;visibility:hidden;filter:blur(6px);
+  transition:opacity .45s ease,filter .45s ease,visibility 0s linear .45s;}
+.tpanel.on{opacity:1;visibility:visible;filter:none;transition:opacity .45s ease .12s,filter .45s ease .12s,visibility 0s;}
 .tsum{display:flex;gap:16px;align-items:flex-start;font-size:14px;line-height:1.55;color:var(--paper-dim);max-height:68px;overflow:hidden;
   border-left:3px solid var(--token);padding:2px 0 0 14px;margin-bottom:8px;}
 .tsum .when{font-family:"Noto Serif KR",serif;font-weight:700;color:#fff;white-space:nowrap;font-size:16px;}
@@ -275,7 +277,7 @@ button{font-family:inherit;color:inherit;}
 @keyframes tw{0%,100%{opacity:1;}50%{opacity:.55;}}
 @media (prefers-reduced-motion:reduce){
   .spin,.pulse,.breath,.tw{animation:none !important;}
-  .scr,.rv,.track,.face,.panel{transition:none !important;}
+  .scr,.rv,.track,.tpanel,.face,.panel{transition:none !important;}
 }
 </style>
 </head>
@@ -818,7 +820,8 @@ function legendHTML(){return `<div class="legend"><span>${glyph('f',20)}가동 +
   <span>— 막힘·지도 밖</span><span style="color:var(--warn)">▢ 가장 붐비는 칸</span><span>아이콘 옆 ▲▼ 지금 대비 · ✨⚠ 2027 신호</span><span style="color:var(--paper-dim)">칸에 마우스 → 경쟁 강도·관계 색 · 누르면 상세</span></div>`;}
 function bindCells(){$$('#track .cell[data-k]').forEach(b=>b.onclick=e=>{e.stopPropagation();openCell(b.dataset.k);});}
 function setTime(t,instant){S.t=Math.max(0,Math.min(3,t));
-  const tr=$('#track'); if(instant){tr.style.transition='none';} tr.style.transform=`translateX(${-25*S.t}%)`; if(instant){tr.offsetHeight;tr.style.transition='';}
+  const tp=$$('#track .tpanel'); if(instant) tp.forEach(x=>x.style.transition='none');
+  tp.forEach((x,i)=>x.classList.toggle('on',i===S.t)); if(instant){tp[0]&&tp[0].offsetHeight;tp.forEach(x=>x.style.transition='');}
   $('#tTabs').innerHTML=TIMEINFO.map((x,i)=>`<button class="${i===S.t?'on':''}" data-t="${i}"><b>${x.k}</b><span>${x.s}</span></button>`).join('');
   $$('#tTabs button').forEach(b=>b.onclick=()=>setTime(+b.dataset.t));
   markSel(); if(S.k&&$('#panel').classList.contains('open')) openCell(S.k,true); updRail();}
