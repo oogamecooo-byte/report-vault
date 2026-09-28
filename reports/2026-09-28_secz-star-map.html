@@ -8,7 +8,7 @@
 <meta name="vault-stage" content="Analysis">
 <meta name="vault-topic" content="SECZ">
 <meta name="vault-date" content="2026-09-28">
-<meta name="description" content="SECZ 경쟁·협업 지도를 생애주기 9단계 별로 여는 인터랙티브 대시보드. 별을 누르면 상품 7종마다 SECZ 자리·같은 방식 경쟁·다른 방식 대체(DTCC 트윈·역외 래퍼) 표가 열리고, 시간 슬라이드(지금·2027 초·2028 A·2028 B)로 칸의 상태와 내용이 바뀐다. 칸·회사를 누르면 상세와 카드가 열린다. 매수·매도 신호 아님.">
+<meta name="description" content="SECZ 경쟁·협업 지도를 생애주기 9단계 별로 여는 인터랙티브 대시보드. 별을 누르면 상품 7종마다 SECZ + 협업사·발행사 주도형 경쟁사·제3자형 경쟁사(DTCC 트윈·역외 래퍼) 표가 열리고, 시간 슬라이드(지금·2027 초·2028 A·2028 B)로 칸의 상태와 내용이 바뀐다. 칸·회사를 누르면 상세와 카드가 열린다. 매수·매도 신호 아님.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@600;700;900&display=swap">
@@ -235,6 +235,7 @@ button{font-family:inherit;color:inherit;}
 .agh{font-size:11.5px;text-align:center;padding:5px 1px;background:rgba(8,25,43,.75);color:var(--paper-dim);border-top:2px solid rgba(183,199,216,.4);white-space:nowrap;overflow:hidden;}
 .agh.alt{border-top-color:var(--legacy);} .agh.grp{border-top-color:var(--rule);font-weight:700;color:var(--paper);}
 .agh.blank{background:transparent;border-top-color:transparent;}
+.agh.sub{white-space:normal;line-height:1.25;font-size:11px;padding:4px 0;}
 .arh{display:flex;align-items:center;gap:8px;padding:0 8px;background:rgba(8,25,43,.75);height:60px;cursor:pointer;font-size:14px;}
 .arh:hover{background:var(--ink-750);}
 .arh svg{width:40px;height:40px;flex:none;}
@@ -338,7 +339,7 @@ button{font-family:inherit;color:inherit;}
 <section class="scr active" id="s-main">
   <div class="eyebrow rv" style="--i:0">SECZ 경쟁·협업 지도 · 2026-09-28</div>
   <h1 class="rv" style="--i:1">SECZ 경쟁·협업 지도</h1>
-  <div class="sub rv" style="--i:2">토큰화 증권의 생애주기 9단계. 별을 누르면 상품마다 <strong>SECZ 자리 · 같은 방식 경쟁 · 다른 방식 대체</strong> 표가 열린다.</div>
+  <div class="sub rv" style="--i:2">토큰화 증권의 생애주기 9단계. 별을 누르면 상품마다 <strong>SECZ + 협업사 · 발행사 주도형 경쟁사 · 제3자형 경쟁사</strong> 표가 열린다.</div>
   <svg class="path" viewBox="0 0 1440 160" aria-hidden="true"><path d="M80 75 C 200 20, 280 130, 400 75 S 600 20, 720 75 S 920 130, 1040 75 S 1240 20, 1360 75" fill="none" stroke="url(#pathg)" stroke-width="1.4" stroke-dasharray="4 6"/>
     <defs><linearGradient id="pathg" x1="0" x2="1"><stop offset="0" stop-color="#7E97AE" stop-opacity=".45"/><stop offset="1" stop-color="#7E97AE" stop-opacity=".45"/></linearGradient></defs></svg>
   <div class="stars" id="stars"></div>
@@ -403,7 +404,7 @@ button{font-family:inherit;color:inherit;}
       <div class="mdl alt"><b>래퍼 · 합성</b><span>역외 법인이 감싸거나 가격만 따라가는 별도 증권을 판다. 미국인에게 팔 수 없다. Robinhood·xStocks·Ondo GM.</span></div>
       <p style="margin-top:8px">분류는 SEC 직원 성명(2026-01-28)을 따랐다. 새 이전대리인 보고서 양식(TA-2)도 같은 분류로 건수를 받는다.</p>
     </div>
-    <div class="gbox"><h4>세 조건 (표의 세로축 옆 ①②③)</h4>
+    <div class="gbox"><h4>세 조건 (제3자형 칸의 막힘 ①②③)</h4>
       <p>어떤 상품이 어떤 토큰 종류로 만들어질 수 있는지는 자산군 이름이 아니라 밑에 깔린 증권의 상태가 정한다.</p>
       <ul><li><b>①</b> 발행사·운용사 동의 없이 넘길 수 있나 — 막히면 트윈도 래퍼도 안 된다</li>
       <li><b>②</b> DTC에 예탁돼 있나(증권번호) — 막히면 트윈이 안 된다</li>
@@ -778,11 +779,11 @@ function expandKeys(spec){const out=new Set();
   return out;}
 EVT.forEach(e=>e.set=expandKeys(e.keys));
 
-// ── 표 세 열: SECZ 자리 / 같은 방식 경쟁 / 다른 방식 대체 ──
+// ── 표 세 열: SECZ + 협업사 / 발행사 주도형 경쟁사 / 제3자형 경쟁사 ──
 const COL3=[
- {n:'SECZ 자리',s:'발행사 주도 방식 · SECZ 상태와 협업 상대'},
- {n:'같은 방식 경쟁',s:'같은 발행사 주도 토큰을 만드는 상대'},
- {n:'다른 방식 대체',s:'트윈·래퍼로 같은 수요를 가져가는 상대',alt:1}];
+ {n:'SECZ + 협업사',s:'발행사 주도 방식 · SECZ 상태와 함께하는 회사'},
+ {n:'발행사 주도형 경쟁사',s:'발행사가 직접 만드는 토큰으로 겨루는 회사'},
+ {n:'제3자형 경쟁사',s:'발행사 동의 없이 트윈·래퍼로 같은 수요를 가져가는 회사',alt:1}];
 const ALTM=[['twin','트윈'],['wrap','래퍼']];
 const RELN={sub:'대체',dom:'대체 우세',br:'다리',open:'경로만'};
 const ASSET_OF={};ASSETS.forEach(A=>{if(A.span){ASSET_OF[A.span]={A,role:'iss'};return;}
@@ -863,9 +864,9 @@ function show(id,origin){
 function renderMain(){
   $('#stars').innerHTML=STAGES.map((s,i)=>{let f=0,p=0,same=0,sub=0;COLS.forEach(c=>{const v=st0(s.r,c.id);if(v==='f')f++;if(v==='p')p++;});
     ASSETS.forEach(A=>{same+=compN(s.r+(A.span||A.m.iss));if(!A.span)ALTM.forEach(([m])=>{if(typeof A.m[m]==='string')sub+=compN(s.r+A.m[m]);});});const cmp=same+sub;
-    const stat=f+p?`<span class="${f?'':'z'}">${glyph('f',16)}${f}</span><span class="${p?'':'z'}">${glyph('p',16)}${p}</span>`:'<span class="none">SECZ 자리 없음</span>';
-    return `<button class="star rv" style="--i:${4+i*0.35}" data-ri="${i}" title="${s.n} · 매출 나는 칸 ${f} · 가동 칸 ${p} · 같은 방식 경쟁 ${same} · 다른 방식 대체 ${sub}"><span>${starArt(i)}</span><div class="code">${s.r}</div><div class="nm">${s.n}</div><div class="stat">${stat}</div><div class="cmp">${sigHTML(Math.min(4,Math.ceil(cmp/3)))}같은 방식 ${same} · 대체 ${sub}</div></button>`;}).join('')
-    +`<div class="slegend rv" style="--i:7"><span>${glyph('f',16)}매출 나는 칸 수</span><span>${glyph('p',16)}가동 칸 수</span><span>별에 마우스를 올리면 같은 방식 경쟁 · 다른 방식 대체 상대 수</span></div>`;
+    const stat=f+p?`<span class="${f?'':'z'}">${glyph('f',16)}${f}</span><span class="${p?'':'z'}">${glyph('p',16)}${p}</span>`:'<span class="none">—</span>';
+    return `<button class="star rv" style="--i:${4+i*0.35}" data-ri="${i}" title="${s.n} · 매출 나는 칸 ${f} · 가동 칸 ${p} · 발행사 주도형 경쟁사 ${same} · 제3자형 경쟁사 ${sub}"><span>${starArt(i)}</span><div class="code">${s.r}</div><div class="nm">${s.n}</div><div class="stat">${stat}</div><div class="cmp">${sigHTML(Math.min(4,Math.ceil(cmp/3)))}발행사 주도형 ${same} · 제3자형 ${sub}</div></button>`;}).join('')
+    +`<div class="slegend rv" style="--i:7"><span>${glyph('f',16)}매출 나는 칸 수</span><span>${glyph('p',16)}가동 칸 수</span><span>별에 마우스를 올리면 발행사 주도형 · 제3자형 경쟁사 수</span></div>`;
   $$('#stars .star').forEach(b=>b.onclick=()=>openStage(+b.dataset.ri,b));
 }
 function starOrigin(el){const st=$('#stage').getBoundingClientRect(),r=el.getBoundingClientRect(),sc=st.width/1600;
@@ -886,28 +887,28 @@ function renderStage(){const s=STAGES[S.ri];
 function tpanel(t){const s=STAGES[S.ri];
   let h=`<div class="tpanel"><div class="tsum"><span class="when">${TN[t]}</span><span>${tx(ROWT[s.r][t])}</span></div><div class="tbl">`;
   h+=`<div class="th corner"><span>상품 ↓</span></div>`+COL3.map(M=>`<div class="th ${M.alt?'alt':''}"><b>${M.n}</b><span>${M.s}</span></div>`).join('');
-  ASSETS.forEach(A=>{h+=`<div class="rh"><b>${A.a}</b><span>${A.ex}</span><span class="gates" title="① 무동의 이전 · ② DTC 예탁 · ③ 헤지">${[...A.g].map((g,j)=>`<i class="${g==='-'?'':g}">${'①②③'[j]}</i>`).join('')}</span></div>`;
+  ASSETS.forEach(A=>{h+=`<div class="rh"><b>${A.a}</b><span>${A.ex}</span></div>`;
     const k=s.r+(A.span||A.m.iss);
     h+=cellA(k,t)+cellB(k,t)+(A.span?`<div class="cell na" title="기타 대체는 토큰 방식을 나누지 않았다 — 대체 경로 미분류"><b>—</b></div>`:cellC(A,s.r,t));});
   h+=`</div>${legendHTML(t)}</div>`;return h;}
 function cellA(k,t){const r=k.slice(0,2),c=k.slice(2),s=stAt(r,c,t),co=(NAMES[k]||[]).filter(x=>x[1]==='co');
-  const nm=co.length?co.slice(0,3).map(([id])=>`<span class="it">${pname(id)}</span>`).join('')+(co.length>3?`<span class="it">+${co.length-3}</span>`:''):'<span class="none">협업 상대 기록 없음</span>';
+  const nm=co.length?co.slice(0,3).map(([id])=>`<span class="it">${pname(id)}</span>`).join('')+(co.length>3?`<span class="it">+${co.length-3}</span>`:''):'<span class="none">—</span>';
   const tip=esc([SNAME[s],co.length?`협업 ${co.length}곳`:'',t===1&&P27[k]?`${P27[k][0]} ${P27[k][1]}`:''].filter(Boolean).join(' · '));
   return `<button class="cell s-${s}" data-k="${k}" title="${tip}"><span class="gw">${glyph(s,30)}${chgHTML(k,t)}${pinHTML(k,t)}</span><span class="mid"><div class="nms">${nm}</div></span></button>`;}
 function cellB(k,t){const cm=cmpOf(k),isHot=HOT.includes(k);
-  if(!cm.length) return `<button class="cell cb empty" data-k="${k}" title="같은 방식 상대 기록 없음"><span class="mid"><div class="nms">같은 방식 상대 없음</div></span></button>`;
+  if(!cm.length) return `<button class="cell cb empty" data-k="${k}" title="발행사 주도형 경쟁사 기록 없음"><span class="mid"><div class="nms">—</div></span></button>`;
   const nm=cm.slice(0,3).map(([id,rel])=>`<span class="it ${rel}"><i></i>${pname(id)}</span>`).join('')+(cm.length>3?`<span class="it">+${cm.length-3}</span>`:'');
-  return `<button class="cell cb${isHot?' hot':''}" data-k="${k}" title="같은 방식 경쟁·복합 ${cm.length}곳${isHot?' · 가장 붐비는 칸':''}"><span class="mid"><div class="nms">${nm}</div></span>${sigHTML(cm.length)}</button>`;}
+  return `<button class="cell cb${isHot?' hot':''}" data-k="${k}" title="발행사 주도형 경쟁·복합 ${cm.length}곳${isHot?' · 가장 붐비는 칸':''}"><span class="mid"><div class="nms">${nm}</div></span>${sigHTML(cm.length)}</button>`;}
 function cellC(A,r,t){
   const lines=ALTM.map(([m,lab])=>{const v=A.m[m];
     if(typeof v!=='string'){const g=(v.why.match(/[①②③]/g)||[]).join('');
       return `<span class="aln off" title="${esc((v.t==='x'?'구조상 막힘 — ':'지도 밖 — ')+v.why)}"><span class="mt">${lab}</span><span class="an">${v.t==='x'?`막힘 ${g}`:'지도 밖'}</span></span>`;}
     const k=r+v,rel=altRel(k,t),cm=cmpOf(k),ev=altEv(v,t);
-    const nm=cm.length?cm.slice(0,3).map(([id])=>pname(id)).join(' · '):'아직 없음';
+    const nm=cm.length?cm.slice(0,3).map(([id])=>pname(id)).join(' · '):'—';
     return `<button class="aln r-${rel}" data-k="${k}" title="${esc(`${lab} · ${RELN[rel]} · ${ev} · 상대 ${cm.length}곳`)}"><span class="mt">${lab}</span><span class="an">${nm}</span><span class="ev">${ev}</span><span class="rt">${RELN[rel]}</span></button>`;});
   return `<div class="cell c3">${lines.join('')}</div>`;}
 function legendHTML(){return `<div class="legend"><span>${glyph('f',20)}가동 + 매출</span><span>${glyph('p',20)}가동 · 매출 미미</span><span>${glyph('l',20)}인가·도구만</span><span>${glyph('n',20)}없음</span><span>${glyph('q',20)}확인 필요</span>
-  <span><i class="rt sub">대체</i> <i class="rt dom">대체 우세</i> <i class="rt br">다리</i> <i class="rt open">경로만</i> 막힘 = ①②③</span><span style="color:var(--warn)">▢ 같은 방식이 가장 붐비는 칸</span><span>▲▼ 지금 대비 · ✨⚠ 2027 신호</span><span style="color:var(--paper-dim)">마우스 → 상대 수 · 누르면 상세</span></div>`;}
+  <span><i class="rt sub">대체</i> <i class="rt dom">대체 우세</i> <i class="rt br">다리</i> <i class="rt open">경로만</i> 막힘 = ①②③</span><span style="color:var(--warn)">▢ 발행사 주도형 경쟁이 가장 붐비는 칸</span><span>▲▼ 지금 대비 · ✨⚠ 2027 신호</span><span style="color:var(--paper-dim)">마우스 → 상대 수 · 누르면 상세</span></div>`;}
 function bindCells(){$$('#track .cell[data-k],#track .aln[data-k]').forEach(b=>b.onclick=e=>{e.stopPropagation();openCell(b.dataset.k);});}
 function setTime(t,instant){S.t=Math.max(0,Math.min(3,t));
   const tp=$$('#track .tpanel'); if(instant) tp.forEach(x=>x.style.transition='none');
@@ -937,13 +938,13 @@ function openCell(k,keep){S.k=k;const r=k.slice(0,2),c=k.slice(2),t=S.t,ci=CINFO
   h+=`<div class="sec cell-own"><h4>이 칸 · ${TN[t]}</h4><p>${own}</p></div>`;
   const AO=ASSET_OF[c];
   if(AO&&AO.role==='iss'&&!AO.A.span){
-    h+=`<div class="sec"><h4>다른 방식 대체 · ${TN[t]}</h4>${ALTM.map(([m,lab])=>{const v=AO.A.m[m];
+    h+=`<div class="sec"><h4>제3자형 경쟁사 · ${TN[t]}</h4>${ALTM.map(([m,lab])=>{const v=AO.A.m[m];
       if(typeof v!=='string') return `<div class="subc off"><b>${lab} · ${v.t==='x'?'막힘':'지도 밖'}</b><br>${tx(v.why)}</div>`;
       const ak=r+v,rel=altRel(ak,t),cm=cmpOf(ak);
-      return `<div class="subc r-${rel}" data-k="${ak}"><b>${lab}</b><i class="rt">${RELN[rel]}</i> <span style="color:var(--muted);font-size:12px">${altEv(v,t)}</span><br>상대 · ${cm.length?cm.map(([id])=>pname(id)).join(' · '):'아직 없음'}<br>${t<=1?tx(SUBEV[v]?SUBEV[v][1]:''):relNote(rel)}</div>`;}).join('')}</div>`;}
+      return `<div class="subc r-${rel}" data-k="${ak}"><b>${lab}</b><i class="rt">${RELN[rel]}</i> <span style="color:var(--muted);font-size:12px">${altEv(v,t)}</span><br>상대 · ${cm.length?cm.map(([id])=>pname(id)).join(' · '):'—'}<br>${t<=1?tx(SUBEV[v]?SUBEV[v][1]:''):relNote(rel)}</div>`;}).join('')}</div>`;}
   else if(AO&&AO.role!=='iss'){const rel=altRel(k,t);
     h+=`<div class="sec"><h4>SECZ 방식과의 관계 · ${TN[t]}</h4><div class="subc off r-${rel}"><b>${AO.A.a}의 ${AO.role==='twin'?'트윈':'래퍼'}</b><i class="rt">${RELN[rel]}</i> <span style="color:var(--muted);font-size:12px">${altEv(c,t)}</span><br>${t<=1?tx(SUBEV[c]?SUBEV[c][1]:''):relNote(rel)}</div>
-      <div class="subc" data-k="${r+AO.A.m.iss}"><b>← 같은 상품의 SECZ 자리 보기</b></div></div>`;}
+      <div class="subc" data-k="${r+AO.A.m.iss}"><b>← 같은 상품의 SECZ + 협업사 보기</b></div></div>`;}
   h+=`<div class="sec"><h4 class="k">${ci.a} × ${ci.m} 줄의 ${TN[t]}</h4><p>${tx(COLT[c][t])}</p></div>`;
   h+=`<div class="sec"><h4 class="k">${stg.n} 단계의 ${TN[t]}</h4><p>${tx(ROWT[r][t])}</p></div>`;
   h+=`<div class="sec"><h4>이 시점에 이 칸을 움직이는 일</h4>${evs.length?evs.map(e=>`<div class="evc"><span class="d">${e.d}</span><b>${e.n}</b><div class="g">좋은 쪽 · ${e.good}</div><div class="bd">나쁜 쪽 · ${e.bad}</div><div class="s">관측 · ${e.sig}</div></div>`).join(''):'<p class="none">이 시점에 이 칸을 직접 겨냥한 사건은 기록되지 않았다.</p>'}</div>`;
@@ -979,23 +980,23 @@ function renderAll(){const t=S.at;
   $$('#aTabs button').forEach(b=>b.onclick=()=>{S.at=+b.dataset.t;renderAll();});
   let h=`<div class="agrid"><div class="agh blank"></div>`;
   ASSETS.forEach(A=>h+=`<div class="agh grp g0" style="grid-column:span 3">${A.a}</div>`);
-  h+=`<div class="agh blank"></div>`+ASSETS.map(()=>`<div class="agh g0">자리</div><div class="agh">같은 방식</div><div class="agh alt">대체</div>`).join('');
+  h+=`<div class="agh blank"></div>`+ASSETS.map(()=>`<div class="agh sub g0" title="SECZ + 협업사">SECZ<br>+협업사</div><div class="agh sub" title="발행사 주도형 경쟁사">발행사<br>주도형</div><div class="agh sub alt" title="제3자형 경쟁사">제3자형<br>&nbsp;</div>`).join('');
   STAGES.forEach((s,i)=>{h+=`<div class="arh" data-ri="${i}">${starArt(i)}<span><b>${s.r}</b> ${s.n}</span></div>`;
     ASSETS.forEach(A=>{const k=s.r+(A.span||A.m.iss),c=k.slice(2),v=stAt(s.r,c,t),cm=cmpOf(k),isHot=HOT.includes(k),co=(NAMES[k]||[]).filter(x=>x[1]==='co');
       h+=`<div class="at g0 s-${v}" data-k="${k}" title="${esc(`${s.n} × ${A.a} · SECZ ${SNAME[v]}${co.length?` · 협업 ${co.map(([id])=>pname(id)).join('·')}`:''}`)}">${glyph(v,24)}${pinHTML(k,t)}${chgHTML(k,t)}</div>`;
-      h+=`<div class="at${isHot?' hot':''}" data-k="${k}" title="${esc(`${s.n} × ${A.a} · 같은 방식 경쟁·복합 ${cm.length}곳${cm.length?` · ${cm.map(([id])=>pname(id)).join('·')}`:''}${isHot?' · 가장 붐비는 칸':''}`)}">${cm.length?`<b class="cn">${cm.length}</b>`:'<span class="z">·</span>'}</div>`;
+      h+=`<div class="at${isHot?' hot':''}" data-k="${k}" title="${esc(`${s.n} × ${A.a} · 발행사 주도형 경쟁·복합 ${cm.length}곳${cm.length?` · ${cm.map(([id])=>pname(id)).join('·')}`:''}${isHot?' · 가장 붐비는 칸':''}`)}">${cm.length?`<b class="cn">${cm.length}</b>`:'<span class="z">—</span>'}</div>`;
       if(A.span){h+=`<div class="at nok" title="기타 대체는 토큰 방식을 나누지 않았다 — 대체 경로 미분류"><span class="z">—</span></div>`;return;}
       let sq='',ak='',n=0;const tips=[];
       ALTM.forEach(([m,lab])=>{const w=A.m[m];
         if(typeof w!=='string'){sq+=`<span class="am off">${w.t==='x'?'✕':'·'}</span>`;tips.push(`${lab} ${w.t==='x'?'막힘':'지도 밖'}`);return;}
         const x=s.r+w,rel=altRel(x,t),nn=cmpOf(x).length;if(!ak)ak=x;n+=nn;
         sq+=`<span class="am r-${rel}"></span>`;tips.push(`${lab} ${RELN[rel]} · ${altEv(w,t)} · 상대 ${nn}곳${nn?` (${cmpOf(x).map(([id])=>pname(id)).join('·')})`:''}`);});
-      h+=`<div class="at${ak?'':' nok'}" ${ak?`data-k="${ak}"`:''} title="${esc(`${s.n} × ${A.a} · 다른 방식 대체 — ${tips.join(' / ')}`)}"><span class="ams">${sq}</span>${n?`<span class="an">${n}</span>`:''}</div>`;});});
+      h+=`<div class="at${ak?'':' nok'}" ${ak?`data-k="${ak}"`:''} title="${esc(`${s.n} × ${A.a} · 제3자형 경쟁사 — ${tips.join(' / ')}`)}"><span class="ams">${sq}</span>${n?`<span class="an">${n}</span>`:''}</div>`;});});
   $('#agrid').innerHTML=h+`</div>`;
   $$('#agrid .arh').forEach(b=>b.onclick=()=>openStage(+b.dataset.ri));
   $$('#agrid .at[data-k]').forEach(b=>b.onclick=()=>{S.t=S.at;gotoCell(b.dataset.k);});
   let f=0;ROWS.forEach(r=>COLS.forEach(c=>{if(stAt(r.id,c.id,t)==='f')f++;}));
-  $('#aLegend').innerHTML=`<span style="color:#fff">${TIMEINFO[t].k} · 가동+매출 <b class="mono">${f}</b>칸 (원자료 108칸 중)</span><span>${glyph('f',18)}매출</span><span>${glyph('p',18)}가동</span><span>${glyph('l',18)}인가만</span><span>${glyph('n',18)}없음</span><span>${glyph('q',18)}확인 필요</span><span><b class="mono" style="color:var(--paper)">3</b> 같은 방식 경쟁·복합 수</span><span>대체(위 트윈 · 아래 래퍼) <i class="am r-sub" style="display:inline-block;vertical-align:middle"></i> 대체 <i class="am r-dom" style="display:inline-block;vertical-align:middle"></i> 대체 우세 <i class="am r-br" style="display:inline-block;vertical-align:middle"></i> 다리 <i class="am r-open" style="display:inline-block;vertical-align:middle"></i> 경로만 ✕ 막힘</span><span style="color:var(--warn)">▢ 같은 방식이 가장 붐비는 칸</span><span style="color:var(--paper-dim)">행 → 그 별 · 칸 → 상세 · 마우스 → 상대 이름</span>`;}
+  $('#aLegend').innerHTML=`<span style="color:#fff">${TIMEINFO[t].k} · 가동+매출 <b class="mono">${f}</b>칸 (원자료 108칸 중)</span><span>${glyph('f',18)}매출</span><span>${glyph('p',18)}가동</span><span>${glyph('l',18)}인가만</span><span>${glyph('n',18)}없음</span><span>${glyph('q',18)}확인 필요</span><span><b class="mono" style="color:var(--paper)">3</b> 발행사 주도형 경쟁사 수</span><span>제3자형(위 트윈 · 아래 래퍼) <i class="am r-sub" style="display:inline-block;vertical-align:middle"></i> 대체 <i class="am r-dom" style="display:inline-block;vertical-align:middle"></i> 대체 우세 <i class="am r-br" style="display:inline-block;vertical-align:middle"></i> 다리 <i class="am r-open" style="display:inline-block;vertical-align:middle"></i> 경로만 ✕ 막힘</span><span style="color:var(--warn)">▢ 발행사 주도형 경쟁이 가장 붐비는 칸</span><span style="color:var(--paper-dim)">행 → 그 별 · 칸 → 상세 · 마우스 → 상대 이름</span>`;}
 
 // ── 플레이어 화면 ──
 function renderPlayers(){const groups=['공급','명부·배관','거래·유통','토큰화 전문사','담보·DeFi'];
@@ -1060,8 +1061,8 @@ sky(); if(!REDUCE) requestAnimationFrame(loop);
 $('#gLegend').innerHTML=[['f','가동 + 매출 — SECZ가 돈을 버는 칸'],['p','가동 중, 매출은 미미하거나 연동 안 됨'],['l','인가·도구는 있음, 가동 기록 없음'],['n','서 있지 않음'],['q','확인 필요 — 모르는 칸']].map(x=>`<div class="row">${glyph(x[0],26)}${x[1]}</div>`).join('')+
  `<div class="row">${sigHTML(3)} 경쟁 강도 = 그 칸의 경쟁·복합 상대 수(4곳 이상 만칸)</div><div class="row"><i class="dot co"></i>협업 <i class="dot cp"></i>경쟁 <i class="dot mx"></i>복합</div><div class="row"><span style="border:1px solid var(--warn);width:22px;height:14px;display:inline-block"></span> 가장 붐비는 칸</div><div class="row">⚠ 압력 · ✨ 기회(2027 초) · ▲▼ 지금 대비(2028)</div>`;
 
-$('#gLegend').innerHTML+=`<div class="row" style="margin-top:10px;display:block;line-height:1.6"><b>표의 세 열</b> — SECZ 자리(발행사 주도) · 같은 방식 경쟁 · 다른 방식 대체(트윈·래퍼). 같은 칸에서 싸우는 상대와, 다른 방식으로 같은 수요를 가져가는 상대(DTCC 등)를 나눠 본다.</div>
- <div class="row"><i class="rt sub">대체</i> 다른 방식이 같은 수요를 노린다 · 증거 수준(실거래·시범 거래·구조상 가능) 병기</div>
+$('#gLegend').innerHTML+=`<div class="row" style="margin-top:10px;display:block;line-height:1.6"><b>표의 세 열</b> — SECZ + 협업사(발행사 주도) · 발행사 주도형 경쟁사 · 제3자형 경쟁사(트윈·래퍼 · SEC 2026-01-28 직원 성명의 제3자 토큰 분류). 같은 방식으로 겨루는 회사와, 발행사 동의 없이 같은 수요를 가져가는 회사(DTCC 등)를 나눠 본다.</div>
+ <div class="row"><i class="rt sub">대체</i> 제3자형이 같은 수요를 노린다 · 증거 수준(실거래·시범 거래·구조상 가능) 병기</div>
  <div class="row"><i class="rt dom">대체 우세</i> 2028 B(배관 독식)에서 트윈이 기본값이 되어, 같은 줄 SECZ 자리가 A 세계보다 낮아진다</div>
  <div class="row"><i class="rt br">다리</i> SECZ가 그 방식에도 토큰을 공급한다(2028 A)</div>
  <div class="row"><i class="rt open">경로만</i> 구조상 가능하지만 그 단계에 이 방식으로 들어온 상대가 아직 없다</div>
