@@ -1,0 +1,898 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>R-Dive — LEU (Centrus Energy) 제품·수익모델 정밀 해부 — 2026-09-29</title><meta name="vault-stage" content="Dive"><meta name="vault-skill" content="R-Dive"><meta name="vault-topic" content="LEU"><meta name="vault-date" content="2026-09-29"><meta name="vault-unlisted" content="1"><meta name="description" content="Centrus 수익모델 델타 — DOE HALEU 운영 매출 9/30 사실상 종료, 12개월 세전이익 < 이자수익, 9/9 증자 +12.6%·워런트 +31%, 우라늄 마진 정정(~32%), 정부 HALEU 가격 SWU 최대 ~$415"><style>
+:root{--bg:#EBE4D3;--card:#FDF6E3;--ink:#1f2328;--muted:#5b5346;--line:#e0d8c4;--accent:#7a5c2e;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;line-height:1.72;font-size:15px}
+.wrap{max-width:1000px;margin:24px auto;padding:0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 28px;margin-bottom:18px;box-shadow:0 1px 3px rgba(60,50,30,.06);overflow-x:auto}
+h1{font-size:23px;margin:.1em 0 .4em;letter-spacing:-.4px;color:#2b2416}
+h2{font-size:19.5px;margin:.2em 0 .5em;padding-bottom:.25em;border-bottom:2px solid var(--accent);color:#3a2f1c}
+h3{font-size:16px;margin:1.1em 0 .35em;color:#4a3c22}
+a{color:#1f6feb;text-decoration:none}a:hover{text-decoration:underline}
+table{border-collapse:collapse;width:100%;margin:.7em 0;font-size:13px}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:#f3ebd6;font-weight:700}
+tr:nth-child(even) td{background:#fbf3df}
+blockquote{margin:.8em 0;background:#f6efda;border-left:5px solid var(--accent);border-radius:8px;padding:8px 16px;color:#2b2a26;font-size:14px}
+blockquote.term{background:#f1ece0;border-left-color:#d68910;font-size:13.5px}
+blockquote p{margin:.35em 0}
+hr{border:none;border-top:1px solid var(--line);margin:1.2em 0}
+.foot{font-size:13px;color:var(--muted);text-align:center;margin:10px 0 30px}
+@media (max-width:640px){.card{padding:16px 14px}body{font-size:14.5px}}
+@media print{body{background:#fff}.card{box-shadow:none;border-color:#ddd;background:#fff}}
+
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+</style><meta name="vault-published" content="2026-09-29">
+<meta name="robots" content="noindex, nofollow">
+</head><body><div class="wrap"><section class="card"><h1>R-Dive — LEU (Centrus Energy) 제품·수익모델 정밀 해부</h1>
+<blockquote>
+<p><strong>종목</strong>: Centrus Energy (NYSE: LEU) · SEC CIK 1065059 · <strong>작성일</strong> 2026-09-29 · R-Dive full · 선행 모드(Deep-Dive가 이 보고서를 요약해 씀)
+<strong>직전 R-Dive</strong>: 2026-06-11 → 이번은 그 뒤 3.5개월의 <strong>변화분(델타)</strong> 중심. 바뀌지 않은 항목은 "변동 없음" 1줄.
+<strong>기준 시세</strong>: 9/28 종가 $140.37 · 경제적 주식 수 약 2,246만 주(Class A 1,973만 + Class B 72만 + 사전행사 워런트 201만) 기준 시가총액 약 <strong>$3.15B</strong> · 최근 12개월 매출 $473.9M 대비 <strong>6.7배</strong>
+<strong>1차 자료</strong>: <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053863/leu-20260630.htm">2분기 10-Q (8/6 제출)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053863/exhibit_104x063026xhaleu.htm">HALEU 운영계약 변경서 P00027 (10-Q 첨부 10.4)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053433/leu-20260805.htm">2분기 실적 8-K (8/5)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053897/ex991_080626x-energypr.htm">X-energy 계약 (8/6)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026057731/leu-20260815.htm">성과연동 주식보상 8-K (8/18)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026061036/ex991-centrusandradianta.htm">Radiant 계약 (9/9)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000110465926107103/tm2625019d5_8k.htm">유상증자 8-K (9/11)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000110465926107103/tm2625019d5_ex99-2.htm">증자 가격 결정 보도자료</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000110465926106829/tm2625019d3_424b5.htm">최종 투자설명서 424B5 (9/11)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026062535/ex991_centrusandantaress.htm">Antares 계약 (9/17)</a> · <a href="https://data.sec.gov/api/xbrl/companyfacts/CIK0001065059.json">SEC XBRL 재무 데이터</a></p>
+</blockquote>
+<hr />
+</section><section class="card"><h2>📄 한 장 요약</h2>
+<ol>
+<li>🔴 <strong>정부 HALEU 운영 매출이 9/30로 사실상 끊긴다.</strong> DOE는 6/30 계약을 바꿔 7~9월을 "생산 없는 설비 유지 3개월, 고정가 $15M"으로 돌렸고, 남은 21개월 생산 옵션(최대 $163M)은 행사할 뜻이 없다고 통보했다. 2025년 매출의 23%($102.5M)를 차지하던 주머니가 10월부터 비는 셈이다. 회사는 "민간 상업 운영 전환"을 협의 중이라고만 밝혔다.</li>
+<li>🔴 <strong>9/9 유상증자 $500M + 행사가 $227~363의 워런트 699만 주.</strong> 주식·사전행사 워런트로 즉시 약 +12.6%의 주식이 늘었고, 워런트가 모두 행사되면 약 $2B가 더 들어오는 대신 주식이 약 31% 더 늘어난다. 2021년 이후 매출총이익은 $114.5M→$112.1M로 제자리인데 주식은 1,349만→약 2,246만 주로 66% 늘었다.</li>
+<li>🔴 <strong>최근 12개월 세전이익 $47.4M보다 현금 이자수익 $62.7M이 더 크다.</strong> 본업(중개+정부 용역+공장 준비비)만 떼면 세전 약 −$15M이다. 이익의 원천이 사실상 은행 예금 이자다.</li>
+<li>🟠 <strong>우라늄 $53.4M은 '통과성 매출'이 아니었다(정정).</strong> 10-Q의 물량·단가 설명으로 역산하면 우라늄의 매출총이익률은 약 30~33%다. 진짜 변화는 반대편에 있다 — <strong>SWU 중개 마진이 약 40%→35%로 줄었다.</strong> 사들이는 단가가 13% 오를 때 파는 단가는 3%밖에 못 올렸다.</li>
+<li>🟠 <strong>상업 HALEU 확정 계약 3건(X-energy·Radiant·Antares), 모두 선급금 포함.</strong> 수요 쪽 "2막" 증거는 분명히 늘었다. 다만 3건 모두 금액을 밝히지 않았다.</li>
+<li>🟠 <strong>$900M DOE 계약의 실체 = 매출이 아니라 설비 보조금에 가까운 고정가 계약.</strong> 2032년 7월까지 HALEU 1톤을 넘기면 설비 소유권이 회사로 온다. 돈은 2028년(약 40%)과 2031년 완공(약 30%)에 몰려 들어온다.</li>
+<li>🟠 <strong>정부가 매긴 HALEU 가격 = kg당 $17,000.</strong> SWU로 환산하면 최대 약 $415로, 회사 자료가 쓰는 "HALEU SWU $1,000" 가정의 절반에 못 미친다(환산 가정은 본문 B.2).</li>
+<li><strong>12 함정 = 🚩 8 / 🟡 3 / ✅ 1</strong> (직전 🚩6/🟡4/✅2 → 반복매출·고객 집중이 🚩로, 금리 민감도가 🟡로 올라감). <strong>종합 🟡 유지 — 단 1막(지금 버는 구조)은 예상보다 일찍 얇아졌고, 2막(자체 농축)은 고객·자금이 더 채워졌다.</strong></li>
+</ol>
+<hr />
+</section><section class="card"><h2>배경 (한 번만)</h2>
+<p>Centrus는 원자력 발전소 연료의 핵심 재료인 <strong>농축 우라늄</strong>을 판다. 지금은 스스로 농축하지 않는다. 러시아 TENEX와 프랑스 Orano에서 사서 전 세계 전력회사에 장기계약으로 되파는 <strong>중개상</strong>이다. 동시에 오하이오 Piketon 공장에서 미 에너지부(DOE) 소유의 시범 설비(원심분리기 16대)로 차세대 원자로 연료 HALEU를 정부 대신 생산해 왔다. 회사의 미래 계획은 2029년부터 자기 원심분리기로 직접 농축하는 제조사가 되는 것이다. 직전 보고서는 이 구조를 "사라질 예정인 1막(중개+정부 용역)과, 2029년에 켜져야 하는 2막(자체 농축) 사이의 막간"이라고 정리했다.</p>
+<blockquote class="term"><p>💡 <strong>SWU</strong> — 우라늄을 농축하는 "작업량"의 단위. 농축 서비스는 SWU 몇 개로 사고판다.
+💡 <strong>HALEU</strong> — 일반 원전 연료(농축도 5% 미만)보다 진하게(5~20%) 농축한 연료. 차세대 소형 원자로 대부분이 이것을 쓴다. 미국에서 이걸 만들 인가를 가진 곳은 Centrus 하나다.</p>
+</blockquote>
+<hr />
+</section><section class="card"><h1>Part A — 아키타입 (변동 없음 · 무게중심만 이동)</h1>
+<p><strong>한 줄로 말하면</strong>: 분류는 그대로(④ 장기계약·다중 수입원 + ③ 정부 의존 + ① 전환 중)지만, ③ 정부 몫이 빠지고 ① 전환의 "선급금 받는 민간 고객"이 새로 들어왔다.</p>
+<table>
+<thead>
+<tr>
+<th>순위</th>
+<th>아키타입</th>
+<th>6/11</th>
+<th>9/29</th>
+<th>무엇이 바뀌었나</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>주</td>
+<td>④ 장기계약·다중 수입원</td>
+<td>중개 북 + 정부 용역 + 미래 농축</td>
+<td><strong>유지</strong></td>
+<td>수도꼭지 3개 중 정부 용역 꼭지가 10월부터 잠김</td>
+</tr>
+<tr>
+<td>부</td>
+<td>③ 정부 집중</td>
+<td>DOE 운영계약 매출</td>
+<td><strong>축소</strong></td>
+<td>운영계약은 끝나고, $900M 계약은 매출이 아닌 설비 보조 성격</td>
+</tr>
+<tr>
+<td>전환</td>
+<td>① 믹스 시프트</td>
+<td>미점화</td>
+<td><strong>미점화 · 그러나 선급금 유입 시작</strong></td>
+<td>민간 HALEU 확정 계약 3건 — 매출은 2029년 이후, 현금(선급금)은 먼저</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</section><section class="card"><h1>Part B — 제품·서비스 + 수익모델</h1>
+</section><section class="card"><h2>B.0 제품·서비스·기술 (델타만)</h2>
+<p><strong>한 줄로 말하면</strong>: 파는 물건 목록은 같다. 달라진 것은 ① 정부 시범 생산이 멈췄고 ② "군사용으로도 쓸 수 있는 미국산 연료"라는 성질이 새 판매 포인트가 됐으며 ③ 부품 제조사 인수를 추진 중이라는 점이다.</p>
+<p><strong>① SWU 중개 — 변동 없음(구조)·마진은 악화.</strong> 여전히 TENEX·Orano에서 사서 되판다. 10-Q는 "2027년까지 인도할 물량의 절반을 훨씬 넘게 TENEX에서 조달했다"고 적었다. 새로 드러난 사실은 러시아에 천연우라늄을 되돌려줘야 하는 조건과 관련해 <strong>한 처리시설이 더는 TENEX용 우라늄을 받지 않겠다고 통보</strong>했다는 점, 그리고 러시아산 연료를 실어 나르는 <strong>유일한 운송사의 캐나다 허가가 2027년 3월까지</strong>라는 점이다. 중개 사업의 "파이프" 자체가 가늘어지고 있다.</p>
+<p><strong>② 천연우라늄 판매 — 이번 분기 $53.4M로 커짐.</strong> 전년 같은 분기엔 0이었다. 평소엔 계약 인도 시점에 따라 들쭉날쭉한 부속 거래다. 이번엔 마진이 SWU와 비슷했다(B.3).</p>
+<p><strong>③ HALEU 시범 생산(DOE 소유) — 6월 중순 생산 종료, 9/30까지 "설비 유지만".</strong> DOE는 <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053863/exhibit_104x063026xhaleu.htm">계약 변경서 P00027</a>로 원래 2년짜리 옵션을 "3개월 유지(고정가 $15M, 월 $5M, 생산 없음)"와 "21개월 생산(목표원가 $149.2M + 수수료 $14.0M)"으로 쪼갠 뒤 앞의 것만 행사했다. 10-Q에는 <strong>"DOE는 현재 추가 옵션을 행사할 의향이 없다"</strong>와 <strong>"2027 회계연도 예산안에 이 설비 운영비가 없다"</strong>가 함께 적혀 있다. 회사는 이 설비를 자기 돈으로 상업 운영하는 방안을 DOE와 협의 중이다. 9/29 현재 합의 발표는 확인하지 못했다.</p>
+<blockquote class="term"><p>💡 <strong>cost-plus vs 고정가</strong> — cost-plus는 "쓴 비용 + 수수료"를 받는 계약이라 손해 위험이 적다. 이번 유지 옵션은 "월 $5M 고정"이라 비용이 넘치면 회사가 떠안는다.</p>
+</blockquote>
+<p><strong>④ 자체 상업 농축(2029년~) — 고객·자금 쪽 진전.</strong> 원심분리기 첫 신규 기계는 2029년 가동 목표로 변동 없음. 달라진 것은 누가 사고 누가 돈을 대느냐다.
+- <strong>민간 확정 계약 3건</strong>: <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053897/ex991_080626x-energypr.htm">X-energy(8/6, LEU+HALEU)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026061036/ex991-centrusandradianta.htm">Radiant(9/8, 이동식 초소형 원자로)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026062535/ex991_centrusandantaress.htm">Antares(9/17, 국방·우주용 초소형 원자로)</a>. 셋 다 "구속력 있는 확정 계약"이고 <strong>선급금</strong>을 포함한다. 인도 시작은 셋 다 2030년 이전(회사 표현 "이번 10년대가 끝나기 전"). 금액은 셋 다 비공개. Oklo(6월 의향서)는 아직 확정 계약 발표가 없다.
+- <strong>"무의무(unobligated) 농축"이 새 판매 포인트</strong>: 원심분리기 기술과 부품 공급망이 전부 미국산이라, 여기서 나온 연료는 군사 목적에도 쓸 수 있다. 회사는 "배치 가능한 미국산 기술 중 유일"이라고 주장한다(회사 주장이며 외부 검증은 못 함). Radiant·Antares 둘 다 국방 고객을 가진 회사라는 점에서 이 성질이 실제로 팔리고 있다.
+- <strong>$900M DOE 계약(7/1 서명)의 실체</strong>: 10-Q 주석 13 "정부 인센티브"에 분류됐다. 고정가 $900M을 성과 단계마다 나눠 받고, 2032년 7월까지 HALEU(농축도 19.75%) 1톤을 인도하면 <strong>설치한 설비의 소유권이 회사로 넘어온다.</strong> 돈은 2028년에 약 40%, 2031년 완공 시 약 30%가 몰린다. 추가 옵션은 HALEU 5톤씩 2번, 톤당 $17.0M.</p>
+<blockquote class="term"><p>💡 <strong>무의무 농축(unobligated)</strong> — 외국 기술로 만든 핵연료는 "평화적 용도만" 쓰겠다는 국제 약속에 묶인다. 미국 기술로만 만든 연료는 그 족쇄가 없어 군함·군 기지 원자로에도 쓸 수 있다.</p>
+</blockquote>
+<p><strong>⑤ 새로 등장 — 국내 부품 제조사 인수 추진.</strong> <a href="https://www.sec.gov/Archives/edgar/data/1065059/000110465926107103/tm2625019d5_8k.htm">9/11 8-K</a>에 "인수가 약 $115~125M, 2025년 매출 약 $160M인 국내 제조 공급사와 막바지 협상 중"이 적혔다. 확정 계약은 아직 없다. 성사되면 지금 매출의 3분의 1 규모가 한 번에 붙는다. 매출 대비 가격이 0.7~0.8배라는 것은 이익률이 낮은 제조업일 가능성이 높다는 뜻이다(대상 회사 이름·마진은 미공시).</p>
+<h3>B.0.2 기술·해자 — 변동 없음 (한 가지 추가)</h3>
+<p>미국 유일 HALEU 인가 · 원심분리기 자체 설계 · 누적 생산 실적은 그대로다. 추가된 것은 "미국산 = 군사용 가능"이라는 <strong>규제상 희소성</strong>이다. 경쟁사(Urenco·Orano)는 유럽 기술이라 이 칸에 들어올 수 없다. 이는 해자가 <strong>돈으로 바뀌는 첫 통로</strong>(국방 고객·선급금)가 보이기 시작했다는 뜻이다.</p>
+<h3>B.0.3 제품 → 수익모델 연결 (갱신)</h3>
+<table>
+<thead>
+<tr>
+<th>제품</th>
+<th>과금 방식</th>
+<th>아키타입</th>
+<th>가격 결정력</th>
+<th>고객 묶임</th>
+<th>운영 레버리지</th>
+<th>6/11 대비</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① SWU 중개</td>
+<td>장기 공급계약(사용량)</td>
+<td>④</td>
+<td>🔴 시장가 + 매입가 상승에 눌림</td>
+<td>🟢 다년 계약</td>
+<td>🔴 없음</td>
+<td><strong>마진 하락 확인</strong></td>
+</tr>
+<tr>
+<td>② 천연우라늄</td>
+<td>단발 판매</td>
+<td>④</td>
+<td>🔴 시장가</td>
+<td>⚪</td>
+<td>🔴</td>
+<td>규모 커짐·마진 정상</td>
+</tr>
+<tr>
+<td>③ HALEU 시범(DOE)</td>
+<td>고정가 유지 → 종료</td>
+<td>③</td>
+<td>⚪</td>
+<td>🟢</td>
+<td>🔴</td>
+<td><strong>10월부터 매출 사실상 0</strong></td>
+</tr>
+<tr>
+<td>④ 자체 농축(2029~)</td>
+<td>장기 공급계약 + <strong>선급금</strong></td>
+<td>④→차별화</td>
+<td>미래 🟢 (단 정부 가격은 낮음, B.2)</td>
+<td>🟢🟢 무의무·유일 인가</td>
+<td>🟢🟢 고정비 설비</td>
+<td><strong>확정 고객 3곳 추가</strong></td>
+</tr>
+<tr>
+<td>⑤ 부품 제조(인수 시)</td>
+<td>제조 판매</td>
+<td>⑥</td>
+<td>🔴 추정</td>
+<td>🟡</td>
+<td>🟡</td>
+<td><strong>신규(미확정)</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>해자 → 돈 1줄</strong>: 직전엔 "해자가 돈이 되는 칸이 지금 손익계산서에 없다"였다. 이번엔 <strong>"매출 칸은 여전히 비었지만, 현금 칸(선급금)에는 처음으로 들어오기 시작했다."</strong> 선급금은 빚도 아니고 주식 발행도 아닌 공장 자금이다. 다만 금액이 공개되지 않아 크기를 잴 수 없다.</p>
+<hr />
+</section><section class="card"><h2>B.1 매출 주머니 분해 (최신)</h2>
+<p><strong>한 줄로 말하면</strong>: 최근 12개월 매출은 늘었지만, 늘어난 몫은 우라늄이고 핵심인 SWU는 줄었다. 정부 용역 몫(22.5%)은 10월부터 빠진다.</p>
+<table>
+<thead>
+<tr>
+<th>매출 주머니</th>
+<th style="text-align: right;">2025년</th>
+<th style="text-align: right;">2026 상반기</th>
+<th style="text-align: center;">상반기 전년比</th>
+<th style="text-align: right;">최근 12개월</th>
+<th style="text-align: center;">12개월 비중</th>
+<th>과금 방식</th>
+<th style="text-align: center;">반복성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SWU (중개)</strong></td>
+<td style="text-align: right;">$298.7M</td>
+<td style="text-align: right;">$141.6M</td>
+<td style="text-align: center;"><strong>−20%</strong> (물량 −31%·단가 +16%)</td>
+<td style="text-align: right;">$263.3M</td>
+<td style="text-align: center;">55.6%</td>
+<td>장기 공급계약</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td><strong>천연우라늄</strong></td>
+<td style="text-align: right;">$47.5M</td>
+<td style="text-align: right;">$56.4M</td>
+<td style="text-align: center;">전년 0</td>
+<td style="text-align: right;">$103.9M</td>
+<td style="text-align: center;">21.9%</td>
+<td>단발</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td><strong>기술 솔루션(대부분 DOE HALEU)</strong></td>
+<td style="text-align: right;">$102.5M</td>
+<td style="text-align: right;">$54.8M</td>
+<td style="text-align: center;">+8%</td>
+<td style="text-align: right;">$106.7M</td>
+<td style="text-align: center;">22.5%</td>
+<td>정부 계약</td>
+<td style="text-align: center;">🔴 <strong>10월 종료</strong></td>
+</tr>
+<tr>
+<td><strong>합계</strong></td>
+<td style="text-align: right;"><strong>$448.7M</strong></td>
+<td style="text-align: right;"><strong>$252.8M</strong></td>
+<td style="text-align: center;">+11%</td>
+<td style="text-align: right;"><strong>$473.9M</strong></td>
+<td style="text-align: center;">100%</td>
+<td></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>계산: 최근 12개월 = 2025년 + 2026 상반기 − 2025 상반기. SWU $298.7 + $141.6 − $177.0 = $263.3M. 세 주머니 합이 $473.9M로 맞는다.</li>
+<li><strong>2분기만 보면</strong>: 매출 $176.1M(+14%) = SWU $100.0M(−20%) + 우라늄 $53.4M(신규) + 기술 솔루션 $22.7M(−21%). 우라늄을 빼면 매출은 −20.6%다.</li>
+<li><strong>지역</strong>: 2분기 중개 매출의 <strong>77%가 해외</strong>(미국 $35.4M · 해외 $118.0M). 2025년 연간은 미국 67%였다 — 인도 시점에 따라 크게 흔들린다.</li>
+<li><strong>올해 회사 전망</strong>: 매출 $450~500M 유지. 상반기 $252.8M이므로 하반기엔 $197~247M이 필요하다. 그런데 기술 솔루션은 3분기 유지비 $15M 외엔 빠지므로, 하반기 목표의 대부분을 중개가 채워야 한다.</li>
+</ul>
+<div class="dd-fig"><p class="cap"><b>분기 매출과 매출총이익률 (최근 6개 분기, SEC XBRL 실측)</b> — 매출은 인도 시점에 따라 두 배씩 오르내리고, 이익률은 −6%에서 45%까지 흔들린다. 2분기 매출 최고치의 상당 부분은 우라늄 편입이다.</p><div id="fig-rate"></div><div class="dd-legend" id="leg-rate"></div></div>
+
+</section><section class="card"><h2>B.2 가격 — 정량 점검</h2>
+<p><strong>한 줄로 말하면</strong>: 중개 마진은 "싸게 사 둔 계약"의 효과가 닳으며 줄고 있고, 정부가 매긴 HALEU 가격은 회사 가정보다 낮다.</p>
+<p>통행세율·예치자산 수익률 같은 지표는 이 회사에 맞지 않는다(해당 없음 — 중개·정부 계약 구조). 대신 아래로 본다.</p>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>값</th>
+<th>6/11 대비</th>
+<th>해석</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>시장가 연동 매출 비중</td>
+<td><strong>약 77.5%</strong> (SWU+우라늄, 12개월)</td>
+<td>변동 없음(~77%)</td>
+<td>가격은 시장이 정한다</td>
+</tr>
+<tr>
+<td>SWU 현물가</td>
+<td>$200 (6/30 기준 보합)</td>
+<td>변동 없음</td>
+<td>사상 최고 수준 유지</td>
+</tr>
+<tr>
+<td>SWU 판매 단가 변화</td>
+<td>2분기 +3% · 상반기 +16%</td>
+<td>1분기 +52%에서 급둔화</td>
+<td>옛날에 맺은 판매 계약 가격이 시장보다 몇 년 늦게 따라온다(10-Q)</td>
+</tr>
+<tr>
+<td><strong>SWU 매입 단가 변화</strong></td>
+<td><strong>2분기 +13% · 상반기 +23%</strong></td>
+<td><strong>신규 확인</strong></td>
+<td>매입 계약은 시장 연동 공식이라 먼저 오른다</td>
+</tr>
+<tr>
+<td><strong>SWU 중개 마진(추정)</strong></td>
+<td>2분기 <strong>약 35%</strong> (전년 40.3%)</td>
+<td><strong>약 −6%p</strong></td>
+<td>판매가 +3% vs 매입가 +13%</td>
+</tr>
+<tr>
+<td><strong>정부 HALEU 옵션 가격</strong></td>
+<td><strong>kg당 $17,000</strong> (톤당 $17.0M)</td>
+<td><strong>신규 1차</strong></td>
+<td>아래 환산 참고</td>
+</tr>
+</tbody>
+</table>
+<p><strong>HALEU 가격 환산 (직접 계산 · 가정 명시)</strong>: 농축도 19.75% HALEU 1kg을 만들려면, 폐기 농도 0.25%를 가정할 때 약 <strong>41 SWU</strong>와 천연우라늄 약 42kg이 든다. 원료를 DOE가 대준다면 $17,000 ÷ 41 = <strong>SWU당 약 $415</strong>. 원료까지 회사가 대야 한다면(천연 육불화우라늄 kg당 약 $280 × 42kg ≈ $11,800 차감) SWU당 약 $125로 떨어진다. 계약서에 원료를 누가 대는지는 이번에 확인하지 못했다. <strong>어느 쪽이든 회사 5월 투자자 자료의 "HALEU SWU $1,000" 가정보다 낮다.</strong> 정부가 첫 대량 구매자로서 할인을 받은 것일 수 있어 민간 가격과 같다고 단정할 수는 없다. 그러나 "HALEU는 일반 연료의 5배 가격"이라는 thesis 숫자를 <strong>처음으로 실제 계약 가격과 대조할 수 있게 됐고, 그 대조 결과는 불리하다.</strong></p>
+<blockquote class="term"><p>💡 <strong>머천트 스프레드</strong> — 중개상이 싸게 사서 비싸게 팔 때 남는 차이. 제조 원가 우위가 아니라 "언제 계약했느냐"에서 나온다. 매입 계약이 시장가를 먼저 따라가면 차이가 줄어든다.</p>
+</blockquote>
+</section><section class="card"><h2>B.3 단위 경제</h2>
+<p><strong>한 줄로 말하면</strong>: 우라늄은 마진이 정상이었고, 문제는 SWU와 정부 용역의 마진 하락이다.</p>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>값</th>
+<th>계산·출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>중개 주문 1건 평균</td>
+<td><strong>$11.7M</strong> (상반기)</td>
+<td>10-Q MD&amp;A · 2025년 $10.2M</td>
+</tr>
+<tr>
+<td>SWU 매출총이익(2분기, 추정)</td>
+<td>약 <strong>$34.7M / 매출 $100.0M ≈ 35%</strong></td>
+<td>전년 원가 $75.0M × 물량 0.77 × 단가 1.13 = $65.3M</td>
+</tr>
+<tr>
+<td><strong>우라늄 매출총이익(2분기, 추정)</strong></td>
+<td>약 <strong>$16.9M / 매출 $53.4M ≈ 32%</strong></td>
+<td>세그먼트 총이익 $51.6M − SWU 몫 $34.7M</td>
+</tr>
+<tr>
+<td>같은 방식 상반기 검산</td>
+<td>SWU 약 43% · 우라늄 약 33%</td>
+<td>전년 원가 $95.1M × 0.69 × 1.23 = $80.7M</td>
+</tr>
+<tr>
+<td>기술 솔루션 매출총이익</td>
+<td><strong>2분기 −$1.7M (−7.5%)</strong></td>
+<td>실비+수수료 구조인데 적자</td>
+</tr>
+<tr>
+<td>원심분리기 설비 단위 산술</td>
+<td>변동 없음</td>
+<td>직전 보고서 동일</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>🔴 <strong>정정 1건</strong>: 8/6 실적 분석(발표 직후·10-Q 제출 전)은 "우라늄 $53.4M의 총이익 기여 +$0.9M, 마진 약 1.7%의 통과성 매출"로 적었다. 그러나 <strong>+$0.9M은 LEU 세그먼트 전체 총이익의 전년 대비 증가분</strong>이지 우라늄 몫이 아니다. 10-Q의 SWU 물량(−23%)·단가(+3%)·원가(+13%) 설명으로 역산하면 SWU 매출이 $99.7M으로 실제 $100.0M과 맞아떨어져 역산의 신뢰도가 높다. 회사는 우라늄 몫 총이익을 따로 공시하지 않으므로 이 값은 추정이다.</li>
+<li>뜻: "매출 +14%는 우라늄 착시"라는 결론은 맞다. 하지만 <strong>"이익은 SWU가 버티고 우라늄은 껍데기"가 아니라, "SWU 마진이 줄어든 만큼을 우라늄이 메웠다"</strong>가 정확하다. 우라늄은 반복되지 않는 거래라 다음 분기에 이 메움이 사라질 수 있다.</li>
+</ul>
+</section><section class="card"><h2>B.4 매출의 질 + 고객 집중</h2>
+<p><strong>한 줄로 말하면</strong>: 헤드라인 백로그는 $4.5B지만, 조건 없이 확정된 매출 잔고는 $0.8B다. 그리고 고객 한 곳이 분기 매출의 45%를 차지했다.</p>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th style="text-align: right;">금액</th>
+<th>성격</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>전사 백로그</td>
+<td style="text-align: right;"><strong>$4.5B</strong> (2025년 말 $3.8B)</td>
+<td>회사가 말하는 총액</td>
+</tr>
+<tr>
+<td>└ LEU 세그먼트</td>
+<td style="text-align: right;">$3.7B</td>
+<td>이 중 <strong>$3.0B가 조건부</strong>(공장 운영 단계 달성이 조건), 그 조건부 중 $2.4B가 확정 계약서</td>
+</tr>
+<tr>
+<td>└ 기술 솔루션</td>
+<td style="text-align: right;">$0.8B</td>
+<td><strong>DOE 운영계약 옵션 — 2027 예산 미반영 + DOE 행사 의향 없음</strong></td>
+</tr>
+<tr>
+<td><strong>회계상 잔여 이행의무(확정 잔고)</strong></td>
+<td style="text-align: right;"><strong>$0.8B</strong></td>
+<td>LEU $0.7B(2030년까지) + 기술 솔루션 $40.4M(2026년까지)</td>
+</tr>
+<tr>
+<td>고객 선수금(이연 매출)</td>
+<td style="text-align: right;">$85.0M (연초 $131.1M)</td>
+<td>이미 받은 돈이 매출로 소진되는 중</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>계산: 확정 잔고 ÷ 헤드라인 = $0.8B ÷ $4.5B = <strong>18%</strong>. 나머지 82%는 조건이 붙었거나(공장 가동), 사실상 사라질 옵션(DOE)이다.</li>
+<li>8~9월 확정 계약 3건(X-energy·Radiant·Antares)이 백로그에 얼마를 더했는지는 3분기 10-Q(11월 초 예상)에서야 보인다.</li>
+<li><strong>고객 집중 (10-Q 주석 12)</strong>: 2분기 LEU 고객 두 곳이 <strong>$78.9M(전체 매출의 44.8%)</strong>, <strong>$39.1M(22.2%)</strong>. 기술 솔루션 고객 한 곳(DOE로 보임)이 $22.0M. 상반기로는 세 곳이 $78.9M + $57.6M + $53.5M = $190.0M, <strong>전체의 75%</strong>. 2025년 연간은 상위 2곳 31%였다.</li>
+</ul>
+<blockquote class="term"><p>💡 <strong>백로그 vs 잔여 이행의무</strong> — 백로그는 회사가 스스로 셈한 "앞으로 받을 수도 있는 돈"이고 조건부·옵션까지 넣는다. 잔여 이행의무는 회계 기준상 "계약으로 이미 약속된 돈"만 센다. 둘의 차이가 클수록 헤드라인을 조심해야 한다.</p>
+</blockquote>
+</section><section class="card"><h2>B.5 가치사슬 위치 — 변동 없음 (하나만 추가)</h2>
+<p>채굴 → 변환 → <strong>농축(여기)</strong> → 연료 가공 → 원전. Centrus는 아직 이 길목의 생산자가 아니라 통행자(중개상)다. 추가: 인수 추진 중인 부품 제조사는 <strong>원심분리기 공급망 안쪽으로 들어가는</strong> 수직 계열화다. 자체 농축을 앞당기는 효과는 있으나, 수익모델에는 저마진 제조 매출을 더한다.</p>
+<hr />
+</section><section class="card"><h1>Part C — 12 함정 체크리스트 (전수 재판정)</h1>
+<h3>C.1 마진의 분모 🚩 (유지 · 강화)</h3>
+<ul>
+<li><strong>최근 12개월 세전이익 $47.4M &lt; 이자수익 $62.7M.</strong> 계산: 세전 $85.9M(2025) + $34.1M(2026 상반기) − $72.6M(2025 상반기) = $47.4M. 이자수익 $44.7M + $33.3M − $15.3M = $62.7M. 이자를 빼면 <strong>약 −$15.3M</strong>.</li>
+<li>2분기 판관비가 두 배($13.4M→$26.2M)가 된 이유가 10-Q로 확인됐다. <strong>이사회 주식보상을 '자본'에서 '부채'로 재분류하며 생긴 일회성 비현금 비용 $17.2M.</strong> 앞으로 이 부채($18.0M)는 주가에 맞춰 매 분기 다시 평가된다. 주가가 오르면 비용, 내리면 이익이 생긴다 — <strong>본업과 무관한 손익 변동이 하나 생겼다.</strong></li>
+<li>공장 준비비(Growth Costs)가 1분기 $17.0M → 2분기 $10.6M로 줄었다. 회사는 "지출을 설비 투자로 처리할 수 있게 되면 비용 처리를 멈춘다"고 썼다. 즉 줄어든 이유 중 상당 부분은 <strong>회계 분류가 비용→설비로 옮겨가는 것</strong>이지 덜 쓰는 것이 아니다. 앞으로 영업이익이 좋아 보여도 현금흐름(C.10)으로 확인해야 한다.</li>
+</ul>
+<blockquote class="term"><p>💡 <strong>Growth Costs(성장 비용)</strong> — 미래 공장을 돌리기 위해 지금 쓰는 준비 비용(채용·교육·제조 준비). 설비로 잡히기 전 단계라 비용으로 처리된다.</p>
+</blockquote>
+<h3>C.2 반복매출 착시 🚩 (🟡 → 🚩 상향)</h3>
+<ul>
+<li>직전에 "정부 옵션 갱신에 의존한다"고 경고했던 바로 그 일이 일어났다. DOE 운영계약은 3년 옵션이 여러 번 이어질 것처럼 보였지만, 7~9월 유지 3개월을 끝으로 <strong>추가 행사 의향 없음</strong>이다. 12개월 매출의 22.5%가 "반복될 것처럼 보였던 일회성"으로 판명됐다.</li>
+</ul>
+<h3>C.3 계약액 ↔ 장부 매출 격차 ✅ (변동 없음)</h3>
+<ul>
+<li>연간 계약액(ARR)을 내세우는 모델이 아니다. 백로그와 장부의 격차는 C.4에서 본다.</li>
+</ul>
+<h3>C.4 백로그 품질 🚩 (유지 · 악화)</h3>
+<ul>
+<li>확정 잔고 비율 18%(B.4). 기술 솔루션 $0.8B는 사실상 자금 근거를 잃었다.</li>
+<li>긍정 요인: 5월 1분기 발표문에 있던 "상당한 공공·민간 투자 확보에 달렸다"는 문구가 빠지고, 조건부 계약의 남은 조건이 "운영 단계 달성"으로 좁혀졌다(8/6 실적 분석에서 확인). 여기에 $489M 증자와 선급금이 더해져 <strong>"조건부"가 "확정"으로 바뀔 자금 조건은 대부분 채워졌다.</strong> 남은 위험은 돈이 아니라 공사 실행이다.</li>
+</ul>
+<h3>C.5 가격 결정력 🚩 (유지 · 근거 추가)</h3>
+<ul>
+<li>중개 쪽: 매입 단가 +13~23% vs 판매 단가 +3~16% — <strong>시장이 오를 때 오히려 마진이 눌리는 구조</strong>가 확인됐다. 직전에 "옛 계약의 횡재(싸게 사 둔 TENEX 물량)"라고 부른 효과가 닳고 있다.</li>
+<li>HALEU 쪽: 첫 정부 가격이 SWU당 최대 약 $415로, 회사 가정 $1,000보다 낮다(B.2).</li>
+</ul>
+<h3>C.6 고객·공급 집중 🚩 (🟡 → 🚩 상향)</h3>
+<ul>
+<li>2분기 단일 고객 44.8%, 상반기 세 곳 75%(B.4). 공급 쪽은 TENEX 의존 50% 이상 + 러시아산 운송사 1곳 + 우라늄 반환 처리시설 1곳 이탈. 사는 쪽도, 파는 쪽도, 나르는 쪽도 한두 곳에 몰려 있다.</li>
+</ul>
+<h3>C.7 외부 변수 하나 🚩 (유지)</h3>
+<ul>
+<li>가장 큰 단일 변수는 <strong>미국 정부 예산·정책</strong>임이 이번 분기에 실제로 증명됐다(DOE 예산안 하나로 매출 22%가 사라짐). 러시아 수입 면제 3차 신청(2026~2027년 미국 고객용)은 여전히 결정 대기다.</li>
+</ul>
+<h3>C.8 금리 민감도 🟡 (✅ → 🟡 상향)</h3>
+<ul>
+<li>이자형(float) 회사는 아니지만, <strong>이익의 대부분이 예금 이자</strong>가 됐다(C.1). 증자 후 현금은 약 $2.36B로 추정된다(6월 말 $1,868.5M + 순조달 약 $489M, 3분기 지출 반영 전). 금리 1%p가 내리면 연 이자수익이 약 $23.6M 준다 — 최근 12개월 세전이익 $47.4M의 <strong>약 절반</strong>이다. 부채는 전부 고정금리(0%·2.25% 전환사채)라 반대쪽 위험은 없다.</li>
+</ul>
+<h3>C.9 운영 레버리지 🟡 (변동 없음)</h3>
+<ul>
+<li>지금 매출은 중개(매입가에 비례)와 정부 용역(비용에 비례)이라 규모가 커져도 이익이 불어나지 않는다. 레버리지는 전부 2029년 자체 설비에 예약돼 있다.</li>
+</ul>
+<h3>C.10 현금 전환 🚩 (유지)</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;">순이익</th>
+<th style="text-align: right;">영업현금흐름</th>
+<th style="text-align: right;">설비투자</th>
+<th style="text-align: right;">잉여현금흐름</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025년</td>
+<td style="text-align: right;">+$77.8M</td>
+<td style="text-align: right;">+$51.0M</td>
+<td style="text-align: right;">−$19.7M</td>
+<td style="text-align: right;">+$31.3M</td>
+</tr>
+<tr>
+<td>2026 상반기</td>
+<td style="text-align: right;"><strong>+$26.8M</strong></td>
+<td style="text-align: right;"><strong>−$16.7M</strong></td>
+<td style="text-align: right;"><strong>−$94.8M</strong></td>
+<td style="text-align: right;"><strong>−$111.5M</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>올해 설비투자 전망은 $350~500M. 상반기 $94.8M이므로 하반기에 $255~405M이 더 나가야 한다(상반기의 2.7~4.3배).</li>
+<li>버틸 힘: 증자 후 현금 약 $2.36B − 전환사채 원금 $1,207.5M = 순현금 약 $1.15B(추정). 여기에 선급금과 $900M 정부 계약금(2028·2031년 집중)이 들어온다. 오하이오 증설 총액이 "수십억 달러"라 이것으로 충분한지는 회사가 총사업비를 밝히지 않아 판단할 수 없다.</li>
+</ul>
+<h3>C.11 주당 희석 🚩 (유지 · 크게 강화)</h3>
+<ul>
+<li><strong>9/9 증자 구조</strong>: 주식 50만 주($199.64) + 사전행사 워런트 200.6만 주($199.54) = 약 $500M, 순조달 약 $489M. 여기에 <strong>공짜로 얹어준 일반 워런트 699만 주</strong>가 4개 묶음으로 붙었다. 행사가는 9/9 종가 $181.49의 125%·150%·175%·200%($226.86 / $272.24 / $317.61 / $362.98)이고, 만기는 2028~2031년이다. 묶음마다 행사 대금이 약 $500M, 모두 합쳐 약 $2B다.</li>
+<li><strong>즉시 희석</strong>: 주식+사전행사 워런트 250.6만 주 ÷ 증자 전 경제적 주식 수 약 1,995만 주 = <strong>약 +12.6%</strong>.</li>
+<li><strong>잠재 희석</strong>: 워런트 699만 주 ÷ 증자 후 약 2,246만 주 = <strong>약 +31%</strong>. 전환사채(2.25%는 이미 가격 위, 0%는 전환가 $229.62로 가격 아래)까지 더하면 "성공할수록 주식이 늘어나는" 구조가 더 두꺼워졌다.</li>
+<li><strong>주당 기준으로 본 5년의 결과</strong>: 2021년 매출총이익 $114.5M → 최근 12개월 $112.1M(제자리). 같은 기간 주식은 1,349만 → 약 2,246만 주(+66%). <strong>주당 매출총이익은 2022년 $8.07 → 증자 후 기준 약 $4.99(−38%).</strong> 주당 매출도 $20.12(2022) → 약 $21.10(증자 후)로 거의 제자리다. 회사 규모는 커졌지만, 한 주가 가진 몫은 늘지 않았다.</li>
+<li>가격 반응: 9/9 종가 $181.49 → 9/28 $140.37(<strong>−22.7%</strong>). 증자 가격은 시가보다 10% 높았지만, 투자자는 그 웃돈을 워런트로 돌려받았다.</li>
+</ul>
+<blockquote class="term"><p>💡 <strong>사전행사 워런트</strong> — 행사가가 $0.10이라 사실상 주식과 같다. 한 투자자가 5% 이상을 갖게 되는 공시 부담을 피할 때 주로 쓴다. 💡 <strong>일반 워런트</strong> — 정해진 가격에 나중에 새 주식을 살 권리. 주가가 그 가격을 넘으면 회사는 돈을 받고, 기존 주주 몫은 줄어든다.</p>
+</blockquote>
+<h3>C.12 모델 전환 신호 🟡 (유지 · 양방향으로 움직임)</h3>
+<ul>
+<li>부정: 1막 수입원이 예정보다 일찍 줄어든다. 러시아 계약 만료(2027년 말)를 기다리기도 전에 정부 용역이 2026년 3분기로 끝난다. 막간이 <strong>1년 이상 길어졌다.</strong></li>
+<li>긍정: 2막의 세 가지 전제 — 확정 고객(3곳+), 자금(증자·선급금·$900M), 경영진 보상 연동 — 이 모두 앞당겨 채워지고 있다. 8/15 성과연동 주식보상은 CEO 몫($5M) 100%를 <strong>"첫 설비에서 농축 달성"</strong>에 걸었고, 다른 임원은 30%를 첫 설비 완공에, 70%를 농축 달성에 걸었다(비용이 정한 범위 안일 때만).</li>
+<li>직전 보고서가 세운 검증 게이지 5종의 현재값: 설계 패키지 15%(2분기) · 핵심 협력사 계약 약 75% · DOE $900M 체결 ✅ · 첫 설비 42개월 시계 변동 없음 · Palantir $300M 절감 = 여전히 수치 미공개.</li>
+</ul>
+<hr />
+</section><section class="card"><h1>Part D — 종합</h1>
+</section><section class="card"><h2>D.1 자가점검 (변한 답만)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>질문</th>
+<th>6/11</th>
+<th>9/29</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>매출 주머니</td>
+<td>3개</td>
+<td><strong>실질 2개로 축소 예정</strong>(10월부터 정부 용역 공백)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>고객 집중</td>
+<td>🟡 상위2 31%</td>
+<td>🚩 단일 고객 분기 45%</td>
+</tr>
+<tr>
+<td>6</td>
+<td>마진의 분모</td>
+<td>영업이익 선</td>
+<td><strong>세전이익 전부가 이자수익</strong></td>
+</tr>
+<tr>
+<td>8</td>
+<td>발표 숫자 vs 장부</td>
+<td>조건부 60%+</td>
+<td><strong>확정 잔고 18%</strong></td>
+</tr>
+<tr>
+<td>나머지</td>
+<td></td>
+<td></td>
+<td>변동 없음</td>
+</tr>
+</tbody>
+</table>
+</section><section class="card"><h2>D.2 수익모델 등급 (4차원)</h2>
+<table>
+<thead>
+<tr>
+<th>차원</th>
+<th style="text-align: center;">6/11</th>
+<th style="text-align: center;">9/29</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>예측 가능성</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;"><strong>🔴</strong></td>
+<td>정부 용역 종료 + 단일 고객 45% + 우라늄 들쭉날쭉</td>
+</tr>
+<tr>
+<td>수익성</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">🟡</td>
+<td>중개 마진은 아직 30%대. 다만 이익의 대부분이 이자</td>
+</tr>
+<tr>
+<td>과금 강도</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">🔴</td>
+<td>시장가 77.5% + 정부 HALEU 가격이 가정보다 낮음</td>
+</tr>
+<tr>
+<td>고객 묶임</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">🟢</td>
+<td>확정 계약·선급금·무의무 연료라는 대체 불가 성질</td>
+</tr>
+</tbody>
+</table>
+</section><section class="card"><h2>D.3 종합 판정</h2>
+<ul>
+<li><strong>아키타입</strong>: ④ 장기계약·다중 수입원(주) + ③ 정부(축소 중) + ① 전환(미점화, 선급금 유입 시작).</li>
+<li><strong>핵심 강점 1개</strong>: 미국산 기술로만 만든 유일한 HALEU — 이제 <strong>국방·우주 고객이 선급금을 내고 사는</strong> 단계로 넘어갔다.</li>
+<li><strong>치명 함정 2개</strong>: ① <strong>C.11 희석</strong> — 주당 몫이 5년째 제자리인데 또 +12.6%, 대기 물량 +31%. ② <strong>C.1/C.2 이익의 실체</strong> — 세전이익 전부가 예금 이자이고, 정부 용역 매출은 10월부터 빈다.</li>
+<li><strong>thesis 함의</strong>: 직전의 "1막이 사라지고 2막이 켜지는 막간"은 유지된다. 달라진 것은 <strong>막간이 1년 이상 길어졌고(정부 용역 조기 종료), 그 공백을 주주 돈(증자)과 고객 돈(선급금)으로 메우는 쪽으로 방향이 정해졌다</strong>는 점이다. 이제 이 회사의 수익모델을 평가하는 핵심 질문은 "지금 얼마나 버나"가 아니라 <strong>"2029~2031년 설비가 제때 켜질 때, 한 주에 돌아오는 몫이 희석을 이길 만큼 큰가"</strong>다. 정부 HALEU 가격(SWU당 최대 약 $415)은 그 질문에 불리한 첫 실측치다.</li>
+<li><strong>등급</strong>: 🟡 유지. 지금 버는 구조는 약해졌고(예측 가능성 🔴), 미래 구조는 고객·자금이 채워졌다 — 두 방향이 상쇄된 결과다.</li>
+</ul>
+</section><section class="card"><h2>🔭 다음에 확인할 것 (3분기 10-Q, 11월 초 예상)</h2>
+<ol>
+<li>10월 이후 Piketon 시범 설비 — DOE와 "민간 상업 운영" 합의가 났는가, 아니면 멈췄는가</li>
+<li>X-energy·Radiant·Antares 3건이 백로그와 선수금에 얼마로 잡혔는가</li>
+<li>부품 제조사 인수 확정 여부와 그 회사의 마진</li>
+<li>하반기 설비투자 속도($255~405M 필요)와 Growth Costs의 설비 전환 규모</li>
+<li>러시아 수입 면제 3차(2026~2027년 미국 고객용) 결정</li>
+</ol>
+<hr />
+</section><section class="card"><h2>12 함정 요약</h2>
+<table>
+<thead>
+<tr>
+<th>함정</th>
+<th style="text-align: center;">6/11</th>
+<th style="text-align: center;">9/29</th>
+<th>한 줄</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C.1 마진의 분모</td>
+<td style="text-align: center;">🚩</td>
+<td style="text-align: center;">🚩</td>
+<td>12개월 세전 $47.4M &lt; 이자수익 $62.7M</td>
+</tr>
+<tr>
+<td>C.2 반복매출 착시</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;"><strong>🚩</strong></td>
+<td>DOE 운영계약 추가 행사 없음 — 매출 22.5% 공백</td>
+</tr>
+<tr>
+<td>C.3 계약액↔장부</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>해당 모델 아님</td>
+</tr>
+<tr>
+<td>C.4 백로그 품질</td>
+<td style="text-align: center;">🚩</td>
+<td style="text-align: center;">🚩</td>
+<td>확정 잔고 $0.8B / 헤드라인 $4.5B = 18%</td>
+</tr>
+<tr>
+<td>C.5 가격 결정력</td>
+<td style="text-align: center;">🚩</td>
+<td style="text-align: center;">🚩</td>
+<td>매입가 +13% vs 판매가 +3% · 정부 HALEU SWU 최대 ~$415</td>
+</tr>
+<tr>
+<td>C.6 집중도</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;"><strong>🚩</strong></td>
+<td>2분기 단일 고객 44.8%</td>
+</tr>
+<tr>
+<td>C.7 외부 변수</td>
+<td style="text-align: center;">🚩</td>
+<td style="text-align: center;">🚩</td>
+<td>정부 예산 하나로 매출 22% 소멸</td>
+</tr>
+<tr>
+<td>C.8 금리</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;"><strong>🟡</strong></td>
+<td>금리 1%p↓ = 세전이익 약 절반</td>
+</tr>
+<tr>
+<td>C.9 운영 레버리지</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">🟡</td>
+<td>변동 없음</td>
+</tr>
+<tr>
+<td>C.10 현금 전환</td>
+<td style="text-align: center;">🚩</td>
+<td style="text-align: center;">🚩</td>
+<td>상반기 잉여현금흐름 −$111.5M</td>
+</tr>
+<tr>
+<td>C.11 주당 희석</td>
+<td style="text-align: center;">🚩</td>
+<td style="text-align: center;">🚩</td>
+<td>즉시 +12.6% · 워런트 +31% · 주당 총이익 −38%(2022比)</td>
+</tr>
+<tr>
+<td>C.12 전환 신호</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">🟡</td>
+<td>막간 1년+ 연장 vs 고객·자금 선확보</td>
+</tr>
+</tbody>
+</table>
+<p><strong>합계: 🚩 8 / 🟡 3 / ✅ 1</strong> (직전 🚩 6 / 🟡 4 / ✅ 2)</p>
+</section><section class="card"><h2>⚠️ 수집 한계</h2>
+<ul>
+<li>⚠️ X-energy·Radiant·Antares 계약 금액·선급금 규모 — 회사 비공개(3분기 10-Q 대기).</li>
+<li>⚠️ $900M 계약의 회계 처리(매출 인식 vs 설비 원가 차감) — 10-Q가 "정부 인센티브" 주석에 두었을 뿐 처리 방식은 명시하지 않아 확인 못 함.</li>
+<li>⚠️ HALEU 옵션 가격의 원료 공급 주체 — 계약 본문 미확인. SWU 환산은 폐기 농도 0.25% 가정.</li>
+<li>⚠️ 10월 이후 시범 설비 운영 여부 — 9/29 기준 회사 발표·SEC 공시 없음.</li>
+</ul>
+<hr />
+</section><p class="foot">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p></div><script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script><script>const VIZ={"trajectory": {"periods": ["1Q25", "2Q25", "3Q25", "4Q25", "1Q26", "2Q26"], "forecastFrom": 6, "inflection": {"index": 5, "label": "우라늄 $53.4M 편입·SWU −20%"}, "series": [{"key": "rev", "label": "분기 매출 ($M)", "axis": "left", "color": "#2980b9", "values": [73.1, 154.5, 74.9, 146.2, 76.7, 176.1]}, {"key": "rate", "label": "매출총이익률 (%)", "axis": "right", "color": "#c0392b", "values": [45.0, 34.9, -5.7, 23.9, 41.1, 28.3]}], "note": "XBRL 분기 계산: Q1'25=H1-Q2, Q4'25=FY-9M. 전 기간 실측(전망 없음)."}};DDViz.renderTrajectory('fig-rate','leg-rate',VIZ.trajectory);</script></body></html>
