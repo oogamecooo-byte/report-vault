@@ -11,3 +11,6 @@
   ET 기준일로 잡으면 카드가 전날 묶음에 들어가 "오늘 날짜에 없는" 상태가 된다.
   원문 발행일(ET/현지시각)은 보고서 본문에 따로 밝힌다.
 - 보고서 메타: `<title>`, `vault-stage`, `vault-topic`, `vault-topics`(보조, `|` 구분), `vault-date`(기준일), `vault-published`(발행일), `description`(카드 요약).
+- **Dive 계열은 메인 목록에 Deep-Dive만 올린다.** (사용자 지시 2026-09-29) R-Dive·History-Dive·People-Dive·one-page-thesis 보고서는
+  `reports/`에 올리되 `<meta name="vault-unlisted" content="1">`를 달고 `index.html`에 카드를 넣지 않는다 — 같은 종목 Deep-Dive 본문 최상단
+  「하위 Dive 모음」(`<!--dive-hub:start-->` … `<!--dive-hub:end-->`, `<body>` 바로 뒤) 상대 링크로만 연다. chart-dive 보고서는 `reports/`에도 올리지 않는다.
