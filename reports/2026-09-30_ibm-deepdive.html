@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IBM Deep-Dive — 양자산업 중심 (2차) — 2026-09-30</title>
+<meta name="vault-stage" content="Dive">
+<meta name="vault-skill" content="Deep-Dive">
+<meta name="vault-topic" content="IBM">
+<meta name="vault-date" content="2026-09-30">
+<meta name="description" content="IBM 2차 Deep-Dive — Anderon은 자회사·초전도 한정으로 곡괭이 하향, IonQ 경쟁 파운드리 등장, 양자 우위 선언에 반론. 7축 ⭐3.9 · 밸류 ⚪ · 판사 ⚪ 관망.">
+
+<style>body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Apple SD Gothic Neo','Segoe UI',sans-serif;line-height:1.65;margin:0;padding:32px 12px;}
+.container{max-width:1000px;margin:0 auto;background:#FDF6E3;border-radius:14px;padding:36px 44px;box-shadow:0 2px 16px rgba(80,60,20,.12);}
+h1{font-size:1.7em;border-bottom:3px solid #c44;padding-bottom:10px;margin-top:0;}
+h2{font-size:1.3em;border-bottom:1px solid #d9cfb3;padding-bottom:6px;margin-top:32px;}
+h3{font-size:1.08em;margin-top:22px;color:#7a3a10;}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.9em;}
+th,td{border:1px solid #ddd0ad;padding:7px 10px;text-align:left;vertical-align:top;}
+thead th{background:#efe6cb;}
+tbody tr:nth-child(even) td{background:#f7efd9;}
+blockquote{background:#f5edd6;border-left:4px solid #c9a84a;margin:14px 0;padding:12px 16px;border-radius:0 6px 6px 0;font-size:.95em;}
+blockquote.explain{background:#eef3e6;border-left:4px solid #6b8e4e;color:#2e3a24;}
+blockquote.explain strong:first-child{color:#3f5f2e;}
+a{color:#0a66c2;text-decoration:none;} a:hover{text-decoration:underline;}
+ul{padding-left:22px;} li{margin:4px 0;}
+hr{border:none;border-top:1px solid #e0d6b8;margin:24px 0;}
+strong{color:#3a2c10;} em{color:#5c4a00;}
+code{background:#efe6cb;padding:1px 5px;border-radius:4px;font-size:.9em;}
+del{color:#8a7a5a;}
+@media print{body{background:#fff;padding:0;}.container{box-shadow:none;max-width:100%;}table,blockquote{break-inside:avoid;}}
+  tr.sig-r td { background: #f8ded8 !important; }
+  tr.sig-o td { background: #fbe7cf !important; }
+  tr.sig-y td { background: #f8f0cc !important; }
+  tr.sig-g td { background: #e3f0de !important; }
+  h2.sig-r, h3.sig-r, h4.sig-r { border-left: 5px solid #c0392b; padding-left: 10px; }
+  h2.sig-o, h3.sig-o, h4.sig-o { border-left: 5px solid #d9822b; padding-left: 10px; }
+  h2.sig-y, h3.sig-y, h4.sig-y { border-left: 5px solid #b89400; padding-left: 10px; }
+  .guard { background: #f8ded8; border-left: 4px solid #c0392b; padding: 8px 12px; border-radius: 0 6px 6px 0; margin: 8px 0; }
+  @media print { tr[class^="sig-"] td { background: #fff !important; } }
+</style>
+<style>/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+</style>
+<meta name="vault-published" content="2026-09-30">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<!--dive-hub:start-->
+<nav id="dive-hub" aria-label="하위 Dive 모음" style="max-width:1100px;margin:12px auto 18px;padding:12px 16px;background:#F3EBD6;border:1px solid #e8e1cf;border-radius:10px;font:14px/1.6 'Pretendard','Noto Sans KR',sans-serif;color:#1f2328">
+<div style="font-weight:700;margin-bottom:4px">🤿 IBM 하위 Dive 모음 <span style="font-weight:400;font-size:12px;color:#6b6457">— 이 Deep-Dive가 참고한 개별 보고서</span></div>
+<ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px">
+<li><a href="2026-09-30_ibm-rdive.html" title="IBM R-Dive — 양자 사업 중심 제품·수익모델 해부 (첫 실행) — 2026-09-30" style="color:#1F6F8B;font-weight:600;text-decoration:none">💰 R-Dive</a> <span style="font-size:12px;color:#6b6457">제품·수익모델 · 09/30</span></li>
+<li><a href="2026-09-30_historydive-ibm.html" title="History-Dive — IBM (International Business Machines · NYSE: IBM) — 2026-09-30" style="color:#1F6F8B;font-weight:600;text-decoration:none">📜 History-Dive</a> <span style="font-size:12px;color:#6b6457">기업 역사 · 09/30</span></li>
+<li style="color:#8a8270">👤 People-Dive <span style="font-size:12px">사람·리더 — 미수행</span></li>
+<li style="color:#8a8270">📈 chart-dive <span style="font-size:12px">타이밍 — 🔒 로컬 전용 · 09/30</span></li>
+<li style="color:#8a8270">📄 One-Pager <span style="font-size:12px">1p 압축 — 미수행</span></li>
+</ul>
+</nav>
+<!--dive-hub:end-->
+
+<div class="container">
+<h1>🔷 IBM Deep-Dive — 양자산업 중심 (2차)</h1>
+<p><strong>기준일</strong> 2026-09-30 · <strong>대상</strong> International Business Machines Corp. (NYSE: IBM) · <strong>모드</strong> <code>--full</code> · <strong>초점</strong> 양자 사업 중심(그 외 사업은 요약) · <strong>직전 실행</strong> 2026-07-26</p>
+<p><strong>방법론 stamp</strong> DD-v1.7 · <strong>7축 종합 ⭐3.9</strong> (직전 3.8 · 사업·thesis 매력도 · 밸류 멀티플 미반영)</p>
+<p><strong>선행 Dive</strong> <strong>R-Dive</strong> · <strong>History-Dive</strong> · <strong>People-Dive (Krishna)</strong> — 모두 2026-09-30 산출</p>
+<hr>
+<h2>📌 한 장 요약</h2>
+<ul>
+<li><strong>⭐ 종합 3.9 / 5</strong> — 날씨 4.0 · 산 4.0 · 숲 4.5 · 나무 <strong>3.5</strong>(↓0.5) · 옆의나무 3.5 · 사람 <strong>3.5</strong>(↑0.5) · 숫자 3.5. 점수는 거의 그대로지만 <strong>무엇이 강하고 무엇이 약한지의 내용이 바뀌었다.</strong></li>
+<li>🔴 <strong>Anderon은 "분리되는 독립 회사"가 아니라 "IBM 자회사(Anderon LLC)"였고, 지금 만드는 것은 초전도 웨이퍼뿐이다.</strong> 9/16 상무부 보조금 10억 달러는 확정됐다. 그러나 외부 고객·가격·정부 지분 조건은 하나도 공개되지 않았다. 직전 보고서의 "IBM 양자 자산 중 유일한 진성 곡괭이"는 <strong>"계획 단계의 곡괭이"</strong>로 한 단계 내린다.</li>
+<li>🔴 <strong>같은 달 경쟁 파운드리가 생겼다.</strong> IonQ 자회사 SkyWater가 9/8 <strong>모든 방식(트랩이온·중성원자·광자·초전도)</strong>의 양자칩을 위탁 생산하는 사업을 시작했고, 같은 날 초전도 업체 Qolab과 다년 제조계약을 맺었다. "누가 이기든 웨이퍼는 Anderon이 판다"는 구도가 성립하지 않는다.</li>
+<li>🔴 <strong>"2026년 양자 우위"는 7/30에 제때 선언됐고, 약 2주 뒤 반론이 나왔다.</strong> 싱가포르기술디자인대 연구진이 IBM이 공개한 결과를 GPU 256개로 37.3분 만에 정확히 계산했다는 논문을 올렸다(동료 검토 전·원문 미확인). 판정 게시판은 IBM이 다른 세 기관과 <strong>함께 만든</strong> 공동 운영판이다.</li>
+<li>🟠 <strong>시장은 IBM을 양자주로 보지 않는다.</strong> 최근 60일 주가 움직임이 가장 비슷한 쪽은 IT서비스 회사 Accenture(상관 0.49)이고, 양자주와의 상관은 거의 0이다(IonQ 0.01·양자 ETF −0.08). 7/24 이후 IBM <strong>+3.4%</strong> vs Microsoft <strong>+33.6%</strong>·Accenture +20.5%·Oracle +19.8%.</li>
+<li>🟠 <strong>양자 약속은 "칩 한 장은 지키고, 칩을 잇는 규모는 미룬다."</strong> 날짜를 박은 약속 18건 중 14건(78%)을 지켰다. 그런데 지킨 것은 전부 칩 한 장·품질·소프트웨어였고, 여러 칩을 묶는 규모 약속 4건은 전부 평균 24개월 늦었다. 이 기록을 적용해 <strong>2029년 Starling은 기본 시나리오에서 2030년 말</strong>로 잡는다.</li>
+<li>🟠 <strong>5년 기댓값 약 1.43배</strong>(직전 1.48배) — Bull 22% 2.08x / Base 55% 1.40x / Bear 23% 0.87x(배당 포함). ⚠️ 1.5배 미만 = thesis 약함 flag. "저베타 배당주 + 양자 옵션" 프레임은 그대로다.</li>
+<li>🟠 <strong>사람 축은 올라갔다.</strong> Krishna는 IBM 주식 약 37.2만 주(약 8,180만 달러)를 직접 들고 있고 2015년 이후 83건 공시에서 시장 매도가 0건이다. 직전 "Skin in the Game 거의 없음" 판정은 지분율만 본 오판이었다. 반면 <strong>대형 거래 마감을 맡은 최고영업책임자는 8/26 직접 보유분의 34%를 재량 매도</strong>했다.</li>
+<li>🔴 <strong>다음 판별점은 10/22 3분기 실적이다.</strong> CEO가 7/30에 말한 "연기된 거래의 40%는 이미 마감, 취소가 아니라 지연"이 숫자로 맞는지, IBM Z 감소 폭이 줄었는지가 모든 렌즈의 swing이다.</li>
+</ul>
+<p><strong>별도 렌즈 (7축 점수 미합산 · 매력도 ≠ 매수신호)</strong></p>
+<ul>
+<li><strong>밸류 〔§H.7〕: ⚪ 적정</strong> ‖ 신뢰도 중간(하단) ‖ 아키타입 Ⓑ(주)+Ⓓ(부) · 역-DCF <strong>상단의존(fragile)</strong> · §H.1 재평가 의존 Base 36%·Bull 63% ‖ swing = <strong>인수 제외 유기 성장률</strong> ‖ 🎯 매수 적정성 = <strong>⚪ 관망</strong>($195 이하 또는 10/22 3분기에서 RPO 반등·인수 제외 성장 플러스·추가 대형 차입 인수 없음 시 재고 · 낮은 신뢰도 · 최종 판단 사용자)</li>
+<li><strong>BRCR 〔§H.7.6〕: ⚪ 적정</strong> · EV/총이익 🟢 ↔ EV/EBITDA ⚪ 불일치 · 구속 병목 = <strong>R(렌트 실현) 0.55</strong> · <code>[소유]</code>(양자만 <code>[소유·미과금]</code>) · 약한 신호</li>
+<li><strong>0to1 〔§H.6〕: Track A 3/7 → 📖 "불운 위험"</strong> ‖ ⭐3.9 ‖ tell = 혼재 · 직전 4/7에서 ③ 독점이 YES→⚠️(경쟁 파운드리)</li>
+<li><strong>CAE·Edge Grid 〔§H.5〕</strong>: 무게중심 A(정책·자본) · 엣지 G↑(시장이 양자 가설을 전혀 안 씀) · 분면 "강하고 싼" 경계 · <strong>3 잠금장치 중 2개 미통과(변동 없음)</strong></li>
+<li><strong>내구성 〔§G.8〕: ⚪ 조건부(유지)</strong> ‖ 신뢰도 중간 ‖ 금리 🟢(약정 7.6~10.9배 vs 약정선 2.2배 — 7/26 미결점 해소) · 물가 ⚪(임금 +1% = 영업이익 −4.0%) · 결합 = <strong>약정 🟢 / 배당 🔴(부족 30억~43억 달러가 먼저 깨짐)</strong> ‖ swing = 인건비 vs AI 생산성 ‖ 🎯 <strong>버틴다(조건부)</strong></li>
+</ul>
+<hr>
+<h2>🧑‍⚖️ 종합 매수 판단 (전-축 통합 판사 · Step 7.5)</h2>
+<blockquote>🔴 <strong>낮은 신뢰도 종합 콜이다.</strong> 타이밍 적중률은 약점이고 강점은 구조 분석이다. <strong>enforcement 아니며 최종 판단·실행은 사용자.</strong> 7축 ⭐3.9는 사업 매력도이지 매수신호가 아니다. 판정 원문은 Fable 5.1 판사(신선 컨텍스트)가 작성했고 아래는 그 발췌다(의역 없음).</blockquote>
+<p><strong>verdict: ⚪ 관망</strong> — 다섯 렌즈가 전부 ⚪로 모였고 7월보다 한 칸씩 불리해졌다(역-DCF 균형→상단의존 · 기댓값 1.48→1.43x · 곡괭이 강→계획 단계 · 0to1 4/7→3/7). 양자 옵션이 가격에 0으로 계상된 것은 여전하나, 그 옵션 자체의 질이 두 달 사이 내려간 상태라 서두를 근거가 없다 — <strong>$195 이하</strong> 또는 <strong>10/22 Q3에서 (a) RPO 반등 (b) 인수 제외 성장 플러스 (c) 추가 대형 차입 인수 없음</strong> 확인 시 재고. 양자 고유 trigger(양자 매출 별도 공시·Anderon 외부 고객)는 가격 trigger와 동격 유지.</p>
+<p><strong>요약 1줄:</strong> ⚪ 관망 — 밸류 ⚪·EV 1.43x·내구성 ⚪·0to1 3/7이 전부 7월보다 한 칸 악화됐고 swing은 10/22 Q3에 공개된다(낮은 신뢰도·최종 판단 사용자).</p>
+<p><strong>근거</strong></p>
+<ul>
+<li><strong>[전-축 통합 read — 결합 형세]</strong> §H.7.3 밸류 ⚪ 적정(신뢰도 중간 하단·역-DCF <strong>상단의존 fragile</strong> — 할인율 0.8%p·FCF 정의 하나에 뒤집힘) + §H.1 5년 기댓값 <strong>1.43x</strong>(&lt;1.5 flag·2년 1.02x) + §H.5 "강하고 싼" 경계이나 <strong>3 잠금장치 중 2개 미통과</strong> + §H.6 Track A <strong>3/7 "불운 위험"</strong> + §G.8 ⚪ 조건부(약정 🟢 확정·<strong>배당 🔴 먼저 깨짐</strong>) 다섯 입력이 한 방향으로 모인다 — <em>"사업은 강하지만(7축 ⭐3.9) 보상이 얇고(연 약 7.4% ≈ 자기자본비용 8.6% 미만·10년물 +2.2%p), 7월보다 옵션의 질이 내려갔으며, 답이 3주 뒤 공개된다."</em> 매력적인 자산 + 얇은 보상 + 임박한 관측점의 결합은 "지금 사야 할 이유"가 아니라 "기다릴 여유"다. (브리프 D 전항 · H7 §H.7.3 · G8 §G.8.4 · 직전 DD §H.1)</li>
+<li><strong>[델타 — 7월 대비 무엇이 바뀌었나]</strong> 양자 쪽 "좋은 사건"이 실제로 일어났는데(HRL 종결 8/26·Anderon 확정 9/16·양자 우위 선언 7/30) <strong>사건마다 조건이 붙었다</strong>: Anderon은 독립 회사가 아니라 IBM 자회사·초전도 한정·외부 고객 0(브리프 C.1·draft §L.1 — 직전 DD §L.1 정정), 같은 달 IonQ 자회사 SkyWater가 <strong>전 방식</strong> 위탁 파운드리를 먼저 열었고(브리프 C.2·draft §L.2), 우위 선언에 약 2주 뒤 고전 계산 반론이 붙었다(브리프 C.5·draft §K.4c ❓). 그 결과 §D.5 곡괭이 "강한"→"계획 단계 🟡", §H.6 ③ 독점 YES→⚠️, §C.1 병목 경도 H 2→1. <strong>7월 verdict의 "양자 자산 🟢 / 주식 ⚪" 구도에서 앞 항이 🟢→🟡으로 내려온 것</strong>이 이번 판정의 핵심 델타다 — 옵션 논리로 관망을 뒤집을 힘이 7월보다 약해졌다. (직전 판사 근거 3 · draft 종합 판정)</li>
+<li><strong>[엇갈림 명시 ① — 엣지 최대 vs 잠금장치 미통과, 봉합하지 않음]</strong> 시장은 IBM을 <strong>IT서비스로 가격 매긴다</strong>(60일 상관 ACN 0.49 1위·IonQ 0.01·QTUM −0.08 · 브리프 C.8·draft §L.4) — 내 가설(양자 옵션)과 시장 가설이 완전히 다르니 §H.5 엣지 G=3은 최대치다. 그러나 §H.5 D=1(컨센 buy 22명·목표 평균 $240.59)이라 "시장이 틀렸다"는 반증 여지는 작고, 시장이 가설을 갈아탈 계기로 §H.5가 지목한 <strong>양자 매출 첫 공시</strong>는 R-Dive 정량으로 340여 기관 전부 프리미엄 최소 계약 가정해도 <strong>약 $84.9M = 매출 0.13%</strong>(브리프 C.9)라 근시일 재분류의 정량 기반이 없다. G=3은 <em>신호</em>가 아니라 <em>버텨야 할 거리</em>다.</li>
+<li><strong>[엇갈림 명시 ② — 밸류 렌즈 내부의 수렴이 좋은 소식이 아니다]</strong> 7월의 "이익 렌즈 싸다 ↔ 매출 렌즈 안 싸다" 분열은 <strong>이익 렌즈 쪽 여유가 금리 상승(10년물 4.68→5.26%)으로 줄면서</strong> 가운데로 수렴했다 — FCF 수익률 스프레드 +129→+58bp, 컨센 리비전 FY26 −1.2%·FY27 −2.3% 하향(브리프 A.3·D §H.7). 🟢 저평가 발화 <strong>0/3</strong>(7월 1/3). 2026 상반기 (배당+인수)÷FCF <strong>187%</strong> → 성장은 차입으로 샀고 순차입 +$7.0B·장기부채 $56.2B(브리프 A.4). swing = <strong>인수 제외 유기 성장률</strong>(H7 §H.7.3) — 0~1%면 "4% 성장"은 인수로 산 것이고 envelope 밖이다.</li>
+<li><strong>[구조 — 완충의 순서가 바뀌었다]</strong> §G.8 델타: 신용한도 분자가 "EBITDA − 설비·SW 투자"로 확인돼 약정은 7.6~10.9배 vs 2.20배로 풀렸으나(G8 D3), 결합 기준 시나리오에서 <strong>먼저 깨지는 것은 은행이 아니라 배당($3.0~4.3B 부족)</strong>이다(G8 기둥 3). 삭감 가능 완충재는 Lightwell 하나로 좁아졌고 2027 상반기 만기 약 $5.3B가 Z 저점 직후 고점권 금리에서 차환된다. "배당 3.06% 받으며 기다리는 안전지대"라는 통념과 달리 <strong>주주가 첫 충격 흡수층</strong>이다 — 배당 축이 옵션 델타를 더 낮춘다.</li>
+<li><strong>[시간 — 10/22가 모든 렌즈의 swing]</strong> CEO 7/30 "연기 거래 40% 마감·취소 아님" 주장이 숫자로 맞는지, IBM Z −42%가 −20%대로 줄었는지, RPO $68B가 반등하는지 — §H.7·§G.8·§F ③·§H.3 전부가 같은 날을 가리킨다. 그 4주 뒤 <strong>대형 거래 마감 책임자(CRO)가 직접 보유 34%를 10b5-1 없이 재량 매도</strong>(브리프 C.7·draft §L.5)한 것은 1차 증거 방향이 컨센보다 보수적임을 한 번 더 시사한다(H7 렌즈 ④ variant 승격 ❌).</li>
+<li><strong>[tie-break 명시]</strong> §H.7.3 🎯 ⚪ 관망(밸류 관점)·§H.5 "정찰 이상 승격 근거 부족"(규율 관점)·본 전-축 통합 ⚪ — <strong>방향 일치</strong>. 엇갈림은 렌즈 사이(근거 3·4)에 있고 최종 행동판정 사이에는 없다. 단 §H.5가 열어둔 정찰성 소액은 규율 위반이 아니며, 특히 "옵션 0 계상"에 동의하는 경우의 정찰은 사용자 재량이다.</li>
+<li><strong>[재고 trigger — 7월 것을 승계·한 줄 갱신]</strong> ① 가격 <strong>$195 이하</strong>(P/S 2.66x·FCF 수익률 6.6% = 국채 +134bp) · 더 싸게 = $180선 ② 본업 <strong>10/22 Q3 (a) RPO 반등 (b) 인수 제외 성장 플러스 (c) 추가 대형 차입 인수 없음</strong>(H7 §H.7.3 — 7월의 "IBM Z −25% 이내·총이익률 58%"를 대체) ③ 양자 고유 — <strong>양자 매출·수주 별도 공시</strong> 또는 <strong>Anderon 외부 고객 첫 발표</strong>(§C.1 지불자 경로 <code>경로 불명</code> 해소점) ④ 감시 — 우위 반론 논문 동료 검토 게재 여부(§K.4c ❓→🔴 전환 시 §H.3 검증 훼손 발동) · 2029~2030 창(스왑 cliff·Starling·캐나다채 만기).</li>
+</ul>
+<p><strong>Steelman</strong></p>
+<ul>
+<li><strong>본 분석</strong>: ⚪ 관망 — 다섯 렌즈 전부 ⚪·7월 대비 한 칸 악화·swing이 3주 뒤 공개되므로 $195 또는 Q3 확인까지 기다린다.</li>
+<li><strong>자기 반박 (데이터 + 시간지평 2축)</strong>: 이 관망은 <strong>엣지가 가장 클 때 팔짱을 끼는 판정</strong>일 수 있다. 데이터 축 — 시장이 IBM을 IT서비스로 분류해 양자 상관 0(브리프 C.8), YTD −24% vs S&amp;P +12%, 7/24 이후 MSFT +33.6%·ORCL +19.8% 대비 IBM +3.4%(브리프 A.1): "내 가설 ≠ 시장 가설"의 거리가 지금 최대이며, 이것이 §H.5가 정의한 엣지 G=3의 문자 그대로의 의미다. IBM 정의 FCF $14.7B를 쓰면 FCF 수익률 7.1%·요구 CAGR 2.5%로 envelope <strong>중앙</strong>이라 렌즈①이 🟢 쪽으로 기운다(H7 §H.7.5 데이터 축). 시간지평 축 — 옵션 가치 0인 자산의 재평가는 <strong>불연속적</strong>으로 온다. Q3에서 "40% 마감"이 숫자로 확인되면 $195를 기다리던 사이 갭업으로 진입 기회가 사라진다 — <strong>Intel $40 대기 → $100 급등 사고의 정확한 재현 구조</strong>다. 게다가 "잠금장치 2개 미통과"는 7월과 변동 없음이니, 관망의 근거가 새로 강해진 게 아니라 같은 근거를 반복하고 있을 뿐이다.</li>
+<li><strong>유지 / 수정 / 철회 → 유지, 단 조건부.</strong> ① G=3은 <em>거리</em>이지 <em>신호</em>가 아니다 — 시장이 갈아탈 계기(양자 매출 공시)는 정량 기반이 매출 0.13%(브리프 C.9)라 근시일 없고, 컨센 D=1이라 "시장이 틀렸다"는 반증도 얇다. ② 갭업 위험은 실재하나 <strong>대칭이 아니다</strong> — 1차 증거(RPO 2분기 감소·CRO 재량 매도·리비전 하향)는 전부 하방 기울기이고, H7이 variant 승격을 명시적으로 기각했다. 갭 위험은 양방향인데 증거는 한 방향이다. ③ 결정적으로 <strong>7월과 달리 양자 자산 자체가 한 단계 내려갔다</strong>(곡괭이 하향·경쟁 파운드리·우위 반론·3/7). 옵션 논리로 관망을 뒤집으려면 옵션의 질이 같거나 좋아져야 하는데 반대다. ④ IBM 정의 FCF 채택은 (배당+인수)÷FCF 99~187% 소진이라는 사실을 바꾸지 못한다(H7 §H.7.5). <strong>반박이 남긴 실제 수정분</strong>: 근거 8의 trigger ②를 "가격 $195 미달이어도 Q3 (a)(b)(c) 충족 시 재고"로 <strong>OR 관계임을 명시</strong>했고, 정찰성 소액을 규율 위반으로 단정하지 않는다는 단서를 근거 7에 남겼다 — 갭업 시나리오에 대한 최소 보험이다.</li>
+</ul>
+<p><strong>한계</strong></p>
+<ul>
+<li>양자 매출·수주·마진 미공시(6개 분기 자료 전수) — <strong>"양자 옵션" 판정의 정량 기반 부재</strong>. Anderon 정부 대가 조건(지분·회수 조항)·HRL 인수가 미공시 → 양자 수직통합의 <em>주주 귀속분</em> 계산 불가.</li>
+<li>양자 우위 반론 논문 원문 미확인(arXiv 검색 실패·동료 검토 전·2차 보도) — §K.4c ❓ 상태라 "검증 훼손"을 확정 근거로 쓰지 않았다.</li>
+<li>9/15~9/18 −11%·거래량 2.5배의 원인 미확인 · 옵션 OI·IV·DSO·캐나다채 통화 헤지 지정 여부 미수집.</li>
+<li><strong>Q3 실적(10/22) 미도래 — 본 verdict의 최대 swing이 관측 불가. 판정 유효기간은 사실상 3주.</strong></li>
+<li>브리프 불일치 소소 1건: A.1 "7/24 이후 +3.4%"는 직전 DD §G.1 기준가 $214.19로 계산하면 +2.7% — 기준일 차이로 보이며 verdict에 영향 없음. 각 섹션 판정값은 원본(H7·G8·draft·raw JSON)과 대조해 재계산 없이 그대로 소비했다.</li>
+<li>사용자 비전축 ⭐ 미입력(§F ⑤).</li>
+</ul>
+<hr>
+<h2>🧭 읽기 위한 최소 용어</h2>
+<blockquote>💡 <strong>곡괭이</strong> — 골드러시에서 금을 캐는 대신 장비를 파는 사업. 누가 이기든 돈을 번다.<br>💡 <strong>파운드리</strong> — 남의 설계를 받아 칩(웨이퍼)을 대신 만들어 주는 공장.<br>💡 <strong>양자 우위</strong> — 양자컴퓨터가 어떤 일을 최고의 일반 컴퓨터보다 확실히 잘하는 첫 사례. 판정이 까다로워 반론이 자주 따른다.<br>💡 <strong>논리 큐비트</strong> — 오류가 잦은 물리 큐비트 여러 개를 묶어 믿고 쓸 수 있게 만든 큐비트.<br>💡 <strong>지연 계수</strong> — 과거 약속이 얼마나 늦게 지켜졌는지를 배수로 표현한 값(×1.3 = 약속 기간의 1.3배가 걸림).</blockquote>
+<hr>
+<h2>🌦️ Section A. 날씨 — 지정학 + 거시 (가중 3.0) — ⭐4.0 (변동 없음)</h2>
+<ul>
+<li><strong>변동 없음</strong> — 미·중 패권 수혜·정부 우선순위 직결은 그대로다. CHIPS 양자 보조금이 실제로 집행되기 시작했다(IBM Anderon 10억 달러 9/16 확정, 동종 6곳 확정). 이는 🟢 판정을 강화하나 점수 상한이라 변화는 없다.</li>
+<li><strong>금리·부채 노출 🔴 유지</strong> — 장기부채가 2024년 말 499억 달러에서 2026년 6월 562억 달러로 늘었고, 8월에 캐나다달러 채권 27.5억 C$를 추가로 냈다. <a href="https://www.wsj.com/finance/investing/bond-yields-keep-rising-despite-drop-in-oil-price-dovish-fed-speech-49aeab91">WSJ 9/29</a>에 따르면 장기 국채금리는 24년 최고다. Warsh 이중 전략(정책금리 인하·실질 차환금리 불변) 아래서 차환 비용이 내려오지 않는 구간이다.</li>
+</ul>
+<table><thead><tr><th>항목</th><th>등급</th><th>⭐</th></tr></thead><tbody>
+<tr class="sig-g"><td>미·중 패권 수혜측</td><td>🟢</td><td>5</td></tr>
+<tr class="sig-g"><td>정부 우선순위 직결도</td><td>🟢</td><td>5</td></tr>
+<tr class="sig-y"><td>수출통제·관세·환 tail risk</td><td>🟡</td><td>4</td></tr>
+<tr class="sig-r"><td>금리·부채 노출</td><td>🔴</td><td>1</td></tr>
+<tr class="sig-y"><td>경기 사이클 민감도</td><td>🟡</td><td>4</td></tr>
+<tr><td><strong>평균</strong></td><td></td><td><strong>⭐4.0</strong></td></tr>
+</tbody></table>
+<p><strong>▶ Flip</strong> — 🟢: 장기금리 하향 안정 · 🔴: 차환 시점에 신용스프레드 확대</p>
+<hr>
+<h2>⛰️ Section B. 산 — 산업 (가중 1.5) — ⭐4.0 (변동 없음)</h2>
+<ul>
+<li><strong>정부 자본이 연달아 들어왔다.</strong> 상무부 CHIPS 양자 보조금이 9곳 중 6곳 확정됐다(IBM Anderon 10억·GlobalFoundries 3.75억·PsiQuantum·Quantinuum·D-Wave·Rigetti 각 1억). DOE는 9/17 <strong>논리 큐비트 100개 이상</strong> 시스템을 겨냥한 최대 2.15억 달러 경쟁을 신설했다(<a href="https://www.quantum.gov/news/">quantum.gov</a>).</li>
+<li><strong>반대 방향 데이터도 있다.</strong> NEC는 "상용화까지 시간 대비 회수 불가"를 이유로 양자 하드웨어 개발을 멈췄다(<a href="https://thequantuminsider.com/2026/09/06/nec-halts-development-of-quantum-computer-hardware/">TQI 9/6</a>). 기술 방향은 확인됐으나 민간 자본이 감당할 시간표는 아직 아니라는 신호다.</li>
+</ul>
+<table><thead><tr><th>항목</th><th>등급</th><th>⭐</th></tr></thead><tbody>
+<tr><td>B.1 세상 바꿈</td><td>혼합</td><td>4</td></tr>
+<tr class="sig-g"><td>B.2 패권 자본</td><td>🟢</td><td>5</td></tr>
+<tr class="sig-r"><td>B.3 내러티브 5축</td><td>🔴등급</td><td>5</td></tr>
+<tr><td>B.4 CAGR·TAM (양자 高 / 그룹 低)</td><td>⚪</td><td>2.5</td></tr>
+<tr><td><strong>평균</strong></td><td></td><td><strong>⭐4.0</strong></td></tr>
+</tbody></table>
+<hr>
+<h2>🌲 Section C. 숲 — 섹터 (가중 1.5) — ⭐4.5 (변동 없음 · 내용 변화)</h2>
+<h3>C.1 병목 시점 매트릭스 — 🆕 유지 기간·해소 경로</h3>
+<table><thead><tr><th>시점</th><th>병목</th><th>IBM 위치</th><th>유지 기간</th><th>해소 경로</th></tr></thead><tbody>
+<tr><td>🕐 T0</td><td>실시간 오류 정정 속도</td><td>480나노초 해독 달성(최전선)</td><td>1~2년</td><td>IonQ가 일반 CPU 한 대로 도는 실시간 해독기 발표(<a href="https://thequantuminsider.com/2026/09/23/ionq-demonstrates-industrys-first-end-to-end-real-time-quantum-error-decoder/">TQI 9/23</a>) · Riverlane 개방형 해독 규격</td></tr>
+<tr><td>🕑 T+6~24M</td><td><strong>양자 웨이퍼 제조 capa</strong></td><td>Anderon(초전도 한정)</td><td><strong>1~2년</strong></td><td>🔴 <strong>SkyWater 위탁 생산 출범(9/8)</strong> · GlobalFoundries 3.75억 달러 확정(9/21) · Anderon 자체 증설 = <strong>세 공급원이 동시에 늘어난다</strong></td></tr>
+<tr><td>🕒 T+2~5Y</td><td>결함내성 논리 큐비트 규모</td><td>Starling(2029 목표 · 지연 계수 적용 시 2030 말)</td><td>3~5년</td><td>여러 칩을 잇는 모듈 연결 기술 — IBM이 가장 자주 미룬 영역</td></tr>
+</tbody></table>
+<p><strong>🆕 지불자 경로</strong> (라벨 · 게이트 아님)</p>
+<ul>
+<li><strong>양자 시스템·클라우드</strong>: 큰손 = <strong>정부·국책 연구기관</strong>(DOE·RIKEN·스위스 국방조달청 절충교역) → 막힘 = <em>이미 산 양자 접근으로 쓸모 있는 계산 결과를 아직 못 뽑는 것</em>(오류율·규모) → 경로 = <strong><code>직접</code></strong>. 🔴 동반 병기: 고객 검증 <strong>B~C</strong>(§D.0.5) · 정부 쏠림(R-Dive C.6) · 가격 인상 테스트 <strong>🟡</strong>(양자 클라우드는 물량이 늘면 분당 값이 절반까지 내려감). 큰손이 결함내성 기계를 직접 원하면 <strong>다른 방식 업체로 갈아타는 것</strong>이 해소 경로다.</li>
+<li><strong>Anderon 웨이퍼</strong>: 큰손 = 다른 양자 하드웨어 회사 → 막힘 = <em>300mm 초전도 웨이퍼 공정을 스스로 못 갖춘 것</em> → 경로 = <strong><code>경로 불명</code></strong>(외부 고객 발표 0 · 첫 수요처로 명시된 곳은 IBM 로드맵 자신).</li>
+</ul>
+<h3>C.2 4중 필터</h3>
+<table><thead><tr><th>필터</th><th>등급</th><th>비고</th></tr></thead><tbody>
+<tr class="sig-y"><td>① 수요/공급</td><td>🟡</td><td>변동 없음</td></tr>
+<tr class="sig-y"><td>② 경쟁사 수</td><td>🟡 과점</td><td>🆕 파운드리 층에 IonQ(SkyWater)가 진입 — 과점 판정은 유지하되 곡괭이 독점성은 약해짐</td></tr>
+<tr><td>③ 섹터 1~2등</td><td>⭐5</td><td>배포 규모·Qiskit 약 70%</td></tr>
+<tr class="sig-g"><td>④ 마진</td><td>🟢</td><td>그룹 GM 58.1%(양자 자체 마진 미공시)</td></tr>
+</tbody></table>
+<table><thead><tr><th>항목</th><th>⭐</th></tr></thead><tbody>
+<tr><td>C.1 병목 정렬</td><td>5</td></tr>
+<tr><td>① 수요/공급</td><td>4</td></tr>
+<tr><td>② 경쟁사 수</td><td>4</td></tr>
+<tr><td>③ 섹터 순위</td><td>5</td></tr>
+<tr><td>④ 마진</td><td>5</td></tr>
+<tr><td><strong>평균</strong></td><td><strong>⭐4.5</strong></td></tr>
+</tbody></table>
+<p><strong>▶ Flip</strong> — 🟢: Anderon 첫 외부 고객 발표 · 🔴: 초전도 업체가 SkyWater·GF를 주 파운드리로 선택하는 발표</p>
+<hr>
+<h2>🌳 Section D. 나무 — 기업 (가중 1.0) — ⭐3.5 (↓0.5)</h2>
+<h3>D.0 제품·수익모델 — R-Dive 요약</h3>
+<blockquote>제품·수익모델 상세는 <strong>R-Dive 2026-09-30</strong>이 owner다. 여기서는 요약만 적는다.</blockquote>
+<ul>
+<li><strong>아키타입</strong>: 그룹 = 소프트웨어 구독형(매출 44%·세그먼트 이익 61%) + 소프트웨어 쪽 믹스 전환. 양자 = 정부 주도형 + 사용량 과금, 매출 미공시.</li>
+<li><strong>양자의 과금표는 공개돼 있는데 매출은 없다.</strong> 클라우드 접속은 분당 96→72→48달러, 가장 큰 연간 구독도 최소 약 25만 달러다. 340여 기관이 전부 이 최소 계약을 맺어도 약 8,490만 달러로 그룹 매출의 0.13%다.</li>
+<li><strong>치명 함정 두 개</strong>: ① 헤드라인 숫자(90대 이상 시스템·340여 기관·개발자 70%·100억 달러)가 전부 <em>투입</em>이다 ② 양자 비용을 대는 본업 현금이 빠듯하다 — 2025년 인수 83억 + 배당 63억 ≈ 잉여현금흐름 147억 달러.</li>
+</ul>
+<h3>D.0.5 🆕 고객 검증 등급</h3>
+<table><thead><tr><th>고객 관계</th><th>등급</th><th>근거</th></tr></thead><tbody>
+<tr><td>양자 시스템 설치처(RIKEN·Cleveland Clinic·스위스 ETH 허브 등)</td><td><strong>B~C</strong></td><td>고객명·설치 사실은 공개 · 계약 금액·반복 매출은 미공시</td></tr>
+<tr><td>Anderon 외부 고객</td><td><strong>해당 없음</strong></td><td>외부 고객 발표 0</td></tr>
+<tr><td>그룹 본업</td><td>A~B</td><td>단일 고객 10% 이상 없음 · 대형 기업 고객 기반 공시</td></tr>
+</tbody></table>
+<h3>D.5 곡괭이 판정 — 🆕 Anderon 하향</h3>
+<table><thead><tr><th>자산</th><th>판정</th><th>변화</th></tr></thead><tbody>
+<tr class="sig-y"><td><strong>Anderon 파운드리</strong></td><td>🟡 <strong>계획 단계 곡괭이</strong></td><td>⬇ 직전 "강한 곡괭이" — 자회사·초전도 한정·외부 고객 0·경쟁 파운드리 등장</td></tr>
+<tr><td>Qiskit</td><td>✅ 소프트웨어 곡괭이</td><td>변동 없음(단 가격 0)</td></tr>
+<tr class="sig-y"><td>HRL 자산</td><td>🟡 내부 곡괭이</td><td>8/26 인수 종결 · 인수가·매출 기여 미공시 · 8-K 없음</td></tr>
+<tr><td>IBM 양자 프로세서</td><td>❌</td><td>방식 베팅 그 자체</td></tr>
+</tbody></table>
+<p><strong>곡괭이 질 = (A) 자가조달형 유지</strong> — 단 인수·배당이 잉여현금흐름과 거의 같아 여유가 줄었다(§G).</p>
+<h3>D.6 해자 — 🆕 유형 4종 + 가격 인상 테스트</h3>
+<table><thead><tr><th>유형</th><th>판정</th><th>근거</th></tr></thead><tbody>
+<tr><td>① 네트워크 효과</td><td>⚠️</td><td>Qiskit 개발자 약 70%로 <strong>규모는 크다.</strong> 그러나 통행료(렌트)가 0이라 규모×렌트 동행을 판정할 수 없다</td></tr>
+<tr><td>② 브랜드</td><td>⚠️</td><td>대기업 IT의 신뢰 브랜드이나 가격 프리미엄을 보여 주는 1차 정량이 없다</td></tr>
+<tr><td>③ 전환 비용</td><td>✅</td><td>메인프레임 거래처리 원장 — 대체 불가(R-Dive C.5)</td></tr>
+<tr><td>④ 비용 우위</td><td>❌</td><td>구조적 원가 우위 근거 없음</td></tr>
+<tr class="sig-y"><td><strong>가격 인상 테스트</strong></td><td><strong>🟡</strong></td><td>강한 영역(Z·거래처리 SW·Red Hat)은 있으나 <strong>판가를 올리고 물량을 지켰다는 명시적 공시가 없다</strong>. 양자 클라우드는 물량 할인 최대 50%</td></tr>
+</tbody></table>
+<ul>
+<li>D.6-a: ✅ 1개 → ⭐3 (가격 테스트 🟡 상한 ⭐3) · D.6-b(Durable↔Variable) ⭐5 변동 없음 → <strong>D.6 ⭐4.0</strong>(직전 5.0)</li>
+</ul>
+<h3>D.7 · D.8 — 변동 없음</h3>
+<ul>
+<li>수직통합 ⭐4 — HRL 종결로 제어·패키징·극저온까지 한 회사에 모였다.</li>
+<li>하방 닫힘 🟢 / 상방 제한 🔴 — 시총 약 2,073억 달러 → ×10 = 약 2.07조 달러.</li>
+</ul>
+<div class="dd-fig"><p class="cap">시총 10배 사다리 — 규모 좌표 (가격 예측 아님 · 단위 10억 달러)</p><div id="fig-ladder"></div><p class="dd-ladder-sentence" id="sent-ladder"></p></div>
+<h3>D.9 ⭐ 산출 근거</h3>
+<table><thead><tr><th>항목</th><th>등급</th><th>⭐</th></tr></thead><tbody>
+<tr class="sig-y"><td>D.0 수익모델</td><td>🟡</td><td>4</td></tr>
+<tr class="sig-y"><td>D.5 곡괭이 (Anderon 계획 단계로 하향)</td><td>🟡</td><td>4</td></tr>
+<tr><td>D.6 해자 (a ⭐3 + b ⭐5)</td><td>—</td><td>4</td></tr>
+<tr><td>D.7 수직통합</td><td>⭐4</td><td>4</td></tr>
+<tr><td>D.8 하방닫힘/상방제한</td><td>⚪</td><td>2.5</td></tr>
+<tr><td><strong>평균</strong></td><td></td><td><strong>3.7 → ⭐3.5</strong></td></tr>
+</tbody></table>
+<p><strong>▶ Flip</strong> — 🟢: 양자 매출 별도 공시 · Anderon 외부 수주 · 🔴: Anderon 첫 수요처가 IBM 단독으로 고착</p>
+<hr>
+<h2>🌲🌳 Section E. 옆의 나무 — 경쟁 (가중 1.0) — ⭐3.5 (변동 없음)</h2>
+<table><thead><tr><th>항목</th><th>IBM</th><th>IonQ</th><th>Quantinuum</th><th>Google</th></tr></thead><tbody>
+<tr><td>방식</td><td>초전도</td><td>트랩이온</td><td>트랩이온</td><td>초전도</td></tr>
+<tr><td>🆕 이번 창 핵심</td><td>양자 우위 선언(7/30) · Anderon 확정</td><td><strong>SkyWater 위탁 파운드리(9/8)</strong> · Superion 256 · CPU 실시간 해독기</td><td>Helios에서 Helix 부호 시연 · CHIPS 1억 달러(정부 지분)</td><td>(이번 창 1차 확인 없음)</td></tr>
+<tr><td>파운드리</td><td>Anderon(자회사·초전도)</td><td>SkyWater(자회사·전 방식)</td><td>GF 300mm 협력</td><td>자체</td></tr>
+<tr><td>고객 검증 등급</td><td>B~C</td><td>B</td><td>B</td><td>—</td></tr>
+<tr><td>양자 매출 공시</td><td>❌ 없음</td><td>✅ 있음</td><td>✅ 있음(상장)</td><td>❌</td></tr>
+</tbody></table>
+<ul>
+<li><strong>최대 위협</strong>: IonQ다. IonQ는 <strong>파운드리를 전 방식에 열어</strong> 경쟁 초전도 업체(Qolab)까지 고객으로 받았다. 반면 Anderon은 초전도만 만든다. "모든 방식의 곡괭이" 자리는 지금 IonQ 쪽이 먼저 차지했다.</li>
+<li>IBM의 우위는 여전히 <strong>배포 규모·Qiskit 표준·풀스택</strong>이다. 열위는 <strong>양자 매출 공시 부재</strong> — 경쟁사들은 매출을 보여 주는데 IBM은 보여 주지 않는다.</li>
+</ul>
+<hr>
+<h2>👤 Section F. 사람 — 경영진 (가중 1.5) — ⭐3.5 (↑0.5)</h2>
+<blockquote>상세 = <strong>People-Dive — Arvind Krishna</strong>.</blockquote>
+<table><thead><tr><th>축</th><th>평가</th><th>⭐</th></tr></thead><tbody>
+<tr><td>① 약력</td><td>변동 없음</td><td>5</td></tr>
+<tr><td>② 명성</td><td>변동 없음</td><td>4</td></tr>
+<tr><td>③ 능력</td><td>유지 — 10/22 3분기 실적이 재평가 시점(“연기된 거래 40% 마감” 주장 검증)</td><td>2.5</td></tr>
+<tr><td>④ 도덕성</td><td>본인 소송·제재·회계 문제 없음. 7/14 실패를 먼저 인정한 서한</td><td>4</td></tr>
+<tr><td>⑤ 비전</td><td>🚨 사용자 ⭐ 대기 · 💬 양자 확신은 11년 일관. 다만 "고객 가치 수천억 달러(이번 10년 말)"가 "1조 달러(2030년대 말)"로 <strong>목표 연도가 약 10년 밀리면서 숫자가 커졌다</strong></td><td>—</td></tr>
+<tr><td>⑥ Skin in the Game</td><td>🆕 <strong>2.5</strong>(직전 1) — 직접 보유 약 37.2만 주(약 8,180만 달러 · 2025년 총보수의 2.2배) · 2015년 이후 83건 공시에서 <strong>시장 매도 0건</strong> · 8/27 이연보상 200만 달러를 IBM 주가 연동 계좌로 이동. 단 스스로 산 기록은 없다</td><td>2.5</td></tr>
+<tr><td>⑦ 거버넌스</td><td>회장·CEO 겸직 유지 · 2026 장기성과보상 계획 <strong>반대 24.2%</strong></td><td>2.5</td></tr>
+<tr><td>⑧ 외부 평가</td><td>🆕 Glassdoor CEO 지지율 74% · WSJ 비판 칼럼 · 양자 우위 반론 1건</td><td>3</td></tr>
+<tr><td><strong>객관 7축 평균</strong></td><td></td><td><strong>3.36 → ⭐3.5</strong></td></tr>
+</tbody></table>
+<ul>
+<li>🟠 <strong>엇갈린 내부자 신호</strong> — CEO는 IBM 쪽으로 돈을 옮겼고(8/27), <strong>대형 거래 마감 책임자 Robert Thomas는 8/26 2.5만 주(약 576만 달러·직접 보유의 34%)를 사전 계획 없이 팔았다.</strong> CEO의 "40% 마감" 발언 4주 뒤다.</li>
+<li>핵심 인재 — <strong>Jay Gambetta</strong>(2025-10부터 IBM Research 전체 총괄): 2020년 로드맵 전부 이행, 2022년 로드맵 규모 약속 4건 전부 지연. Form 4 대상 임원이 아니라 지분 확인 불가.</li>
+<li>🔧 정밀화 — DOE 차관 Darío Gil은 <strong>전 IBM 연구소장</strong>(2025-09-26 차관 취임)이고 그 자리를 Gambetta가 이었다. 부정의 증거는 아니다.</li>
+</ul>
+<p><strong>▶ Flip</strong> — 🟢: 3분기에 연기 거래 마감 확인 · 회장·CEO 분리 · 🔴: 영업 총책 추가 매도 · Gambetta 역할 축소</p>
+<hr>
+<h2>🔢 Section G. 숫자 — 재무건전성 (가중 1.0) — ⭐3.5 (변동 없음)</h2>
+<h3>G.1 기본 정량 (2026-09-29 종가 · yfinance)</h3>
+<table><thead><tr><th>항목</th><th>값</th><th>직전(7/24)</th></tr></thead><tbody>
+<tr><td>주가 · 시총</td><td>$219.99 · 약 2,073억 달러</td><td>$212.66 · 약 2,018억</td></tr>
+<tr><td>52주 범위</td><td>$199.19 ~ $332.46</td><td></td></tr>
+<tr><td>2026 연초 대비</td><td><strong>−24.2%</strong> (S&amp;P 500 +12.1%)</td><td></td></tr>
+<tr><td>선행 PER · EV/EBITDA</td><td>16.7x · 16.1x</td><td></td></tr>
+<tr><td>배당수익률</td><td>3.06%</td><td></td></tr>
+<tr><td>현금 · 총부채</td><td>81.3억 · 652.7억 달러</td><td></td></tr>
+</tbody></table>
+<h3>🆕 G.1-b 잉여현금흐름 — 정의 3종 병기 (R-Dive C.1 정정)</h3>
+<table><thead><tr><th>정의</th><th>2025년 값</th><th>차이의 원인</th></tr></thead><tbody>
+<tr><td><strong>IBM 정의</strong></td><td>147억 달러</td><td>금융 자회사 대출채권 변동(−32억)을 영업현금에서 빼고 봄</td></tr>
+<tr><td>영업현금 − 설비투자</td><td>121억 달러</td><td>GAAP 그대로</td></tr>
+<tr><td>직전 보고서 사용값</td><td>114.6억 달러</td><td>순설비투자 정의 차이</td></tr>
+</tbody></table>
+<blockquote>🔴 이 보고서는 <strong>IBM 정의 147억 달러</strong>를 기본으로 쓰되, 자기조달 여력 판정에는 보수적인 121억 달러를 함께 본다. 2025년 인수 83억 + 배당 63억 = 146억 달러 ≈ IBM 정의 잉여현금흐름 전액이다.</blockquote>
+<h3>G.3 4축 — 변동 없음(새 분기 없음 · 10/22 3분기 실적 대기)</h3>
+<ul>
+<li>① 성장 🟡(2026 상반기 +4.9%) · ② 마진 🟡 · ③ 현금 🟢(상반기 영업현금 +27.9%) · ④ 고금리 내구성 — §G.8 참조</li>
+</ul>
+<h3>G.6 실물 병목 7카테고리 — 변동 없음 (AI 생산성 · 국방·안보 · 공급망 재편)</h3>
+<h3>G.8 🌡️ 고금리·고물가 내구성 정밀 진단 〔전담 서브에이전트 산출 · overlay(7축·④축 미합산) · soft-flag〕</h3>
+<p><strong>[모드: embedded]</strong> · 델타 실행 · 종목 IBM(CIK 0000051143) · 현재가 $219.99(2026-09-29) · 시총 약 $207.3B</p>
+<blockquote>📌 <strong>요약 상단 1줄</strong>: <code>내구성 〔G.8〕: ⚪조건부(유지) ‖ 신뢰도 중간 ‖ 금리{🟢 유지 · 12개월 만기 약 $6B는 현금+캐나다채 선조달+리볼버로 2.5배 이상 커버 · 차환 "중립~유리"→"완만한 불리"로 전환(2030까지 연 +$3.6~5.3억) · 헤지 cliff 2029 중반 · covenant 분자 = "EBITDA − capex − 소프트웨어 투자" 확인 → 현재 7.6~10.9배 vs 약정 2.20배} 물가{⚪ 유지 · 인건비 축 🔴(임금+1% = 영업이익 −4.0%) · 신규 데이터 없음 · 인플레 부호 −(약)} 스태그{결합 기준 시나리오 covenant **미결 → 여유(3.0~3.9배) 확정** · 먼저 깨지는 건 약정이 아니라 **배당·자기조달**(부족 $30~43억) · 절벽 = EBIT ≈ $0.4B 근처} ‖ swing = 인건비 단가 vs AI 생산성 경주 ‖ 🎯버티는가 = ⚪ 버틴다(조건부) — 약정은 풀렸고, 남은 약한 고리는 배당 · 낮은 신뢰도 · 최종 판단 사용자 · 별도 렌즈(점수 미합산) · 장기 thesis 종목 stop sign ❌</code></blockquote>
+<hr>
+<h4>0. 델타 1차 확인 원장 (7/26 이후)</h4>
+<table><thead><tr><th>#</th><th>사실</th><th>1차 출처</th><th>판정 영향</th></tr></thead><tbody>
+<tr><td>D1</td><td><strong>캐나다달러 채권 C$27.5억 신규 발행</strong> — C$17.5억 <strong>4.100% 2030-08-15 만기</strong>(발행가 99.993%) + C$10억 <strong>4.750% 2034-08-15 만기</strong>(발행가 99.711%) · 결제 2026-08-17 · 순조달 약 C$27.36억 · 용도 = "일반 기업 목적" · 선순위 무담보 · 비상장 · 조기상환 make-whole(par call 만기 1개월 전)</td><td>424B5 2026-08-11 (acc 0001104659-26-094038) · 예비 424B3 2026-08-10 (acc 0001104659-26-093078) = 같은 거래 · 8-K 2026-08-14 item 9.01 (acc 0001104659-26-097089: 인수계약 Ex1.1 · 채권 양식 Ex4.1/4.2 · 법률의견 Ex5.1)</td><td>만기 사다리 2030·2034 증가 · <strong>새 통화(CAD) 노출</strong> · 이자 연 약 C$1.19억(≈US$0.84억)</td></tr>
+<tr><td>D2</td><td><strong>통화 헤지 여부 = ❌ 미확인</strong> — 투자설명서에 스왑·통화스왑 언급 0건(“hedg” 1회 = 인수단 업무 설명뿐). 6/30 10-Q 부채표에 캐나다달러 줄 없음 → 이번이 <strong>첫 CAD 채권</strong></td><td>424B5 본문 전수 검색 · 10-Q 6/30 Note 12</td><td>순투자헤지 지정 또는 통화스왑 여부는 <strong>Q3 10-Q(10/22 실적 직후)</strong> 에서 확인</td></tr>
+<tr><td>D3</td><td><strong>신용한도 약정의 분자 정의 확보</strong> (7/26 유일한 미결점) — “순이자비용 비율” = <strong>조정 현금흐름 ÷ 순이자비용</strong>, 4분기 합산 기준 ≥ 2.20배. <strong>조정 현금흐름 = 세전이익(사업 매각 손익·비경상 비현금 손익 제외) + 순이자비용 + 감가상각 + 무형자산상각 + 구조조정 비용 − 구조조정 현금지출 − 설비투자(처분대금 차감) − 소프트웨어 투자</strong>. 순이자비용 = 총이자비용 − 이자수익</td><td>5년 신용한도 계약 원문 2021-06-25 8-K Ex10.2 (acc 0000950157-21-000696) §7.4 · 개정 1호 2022-07-01 8-K Ex10.2 (acc 0000950157-22-000765, 비현금 손익 제외 추가) · 2026-06-23 8-K item 1.01 (acc 0000051143-26-000061) = 3년·5년 계약 <strong>만기 연장 확인서 2건</strong>(이미지 문서 · 정의 변경 여부 본문 미판독 → 2022 정의 유지 가정)</td><td>🔴🔴 <strong>EBIT도 EBITDA도 아닌 "EBITDA − 설비·소프트웨어 투자"</strong> → 결합 기준 시나리오 covenant <strong>미결 → 여유</strong></td></tr>
+<tr><td>D4</td><td><strong>장기 금리 기준선 상승</strong> — 미 10년물 4.64%(7/27) → <strong>5.26%(9/29), +62bp</strong> · 5년물 4.40% → <strong>5.06%, +66bp</strong></td><td>yfinance ^TNX·^FVX</td><td>USD 트랜치 차환이 "중립~유리"에서 <strong>"불리"로 전환</strong> (금리 레짐 판정 ❌ · 측정 기준선만 갱신)</td></tr>
+<tr><td>D5</td><td><strong>Anderon CHIPS $10억 최종 확정(9/16)</strong> — 5월 의향서 → 본계약. IBM 별도 $10억 투자 명시 · 첫 웨이퍼 가동</td><td>IBM 뉴스룸 2026-09-16</td><td>삭감 순서 1순위였던 "Anderon 10억(의향서·구속력 약)"이 <strong>구속력 강화</strong> → 삭감 가능 완충재 축소</td></tr>
+<tr><td>D6</td><td>HRL 인수 종결 8/26(금액 미공개) · Logiq Consulting(영국) 인수 9/24(금액 미공개)</td><td>IBM 뉴스룸 · recent_changes 8/26</td><td>현금 유출 ❌ 미수집(금액 미공시) — Q3 10-Q</td></tr>
+<tr><td>D7</td><td>7/26 이후 IBM의 부채 관련 신규 공시 = D1·D3(기존 공시 재발견)뿐. 신용등급 변경·약정 개정·waiver 8-K <strong>0건</strong></td><td>SEC submissions JSON (7/20~9/30 전수)</td><td>등급 트리거 없음 유지</td></tr>
+</tbody></table>
+<hr>
+<h4>G.8.1 아키타입 소비 1줄</h4>
+<p>주 Ⓑ 소프트웨어 구독(매출 44%·세그먼트 이익 61%) + 부 Ⓓ 메인프레임 사이클·금융 자회사 · §D.5 = (A) 자가조달형(P형 아님 → 제4 제도 리스크 축 <strong>미적용</strong> · Anderon CHIPS 보조금은 자회사 R&amp;D 자금이지 IBM 마진 원천이 아님 1줄) · §D.0.3 가격결정력 Z·거래처리 SW·Red Hat 강 / 컨설팅·양자 클라우드 약 — 전부 소비만.</p>
+<hr>
+<h4>기둥 (1) 금리 — 🟢 견딤 (유지 · 단 "차환 유리" 서술은 철회)</h4>
+<p><strong>① 만기 사다리 (2026-06-30 10-Q pre-swap + 캐나다채 반영 · 캐나다달러 환산 0.7053 · 2026-09-30)</strong></p>
+<table><thead><tr><th>만기</th><th>6/30 기준</th><th>+ CAD</th><th>갱신 후</th><th>비고</th></tr></thead><tbody>
+<tr><td>잔여 2026</td><td>$4.37억</td><td>—</td><td>$4.37억</td><td></td></tr>
+<tr><td>2027</td><td>$67.1억</td><td>—</td><td>$67.1억</td><td>🔴 6/30 "1년 내 만기" = $57.7억 → <strong>2027 상반기에 약 $53억 집중</strong></td></tr>
+<tr><td>2028</td><td>$60.0억</td><td>—</td><td>$60.0억</td><td>유로 변동금리채 약 $9억 포함</td></tr>
+<tr><td>2029</td><td>$55.8억</td><td>—</td><td>$55.8억</td><td>스왑 cliff 2029 중반</td></tr>
+<tr><td>2030</td><td>$44.5억</td><td><strong>+$12.3억</strong></td><td><strong>$56.8억</strong></td><td>캐나다 4.10%</td></tr>
+<tr><td>이후</td><td>$398.9억</td><td>+$7.1억(2034)</td><td>$406.0억</td><td></td></tr>
+<tr><td>합계</td><td>$630.8억</td><td>+$19.4억</td><td><strong>약 $650억</strong></td><td></td></tr>
+</tbody></table>
+<ul>
+<li>🔴 <strong>7/26 서술 정정 — "12개월 만기 절벽 사실상 부재"는 달력 연도 착시였다.</strong> 6/30 시점 "1년 내 만기"가 이미 $57.7억이었고, 오늘(9/30) 기준 12개월 창(2026-10~2027-09)에는 약 <strong>$58~67억</strong>이 들어온다. = IBM 정의 FCF $147억의 40~46% · OCF−capex $121억의 48~55%.</li>
+<li><strong>유동성 채널 = 🟢</strong>: 현금 $71.7억(6/30) + 캐나다채 순조달 약 US$19.3억 + 리볼버 $100억 전액 미사용(2029·2031 만기) = <strong>약 $191억 vs 12개월 만기 $58~67억 → 2.9~3.3배</strong>. 캐나다채는 용도가 "일반 기업 목적"이지만 시점상 <strong>2027 상반기 만기 선조달</strong>로 읽는 것이 자연스럽다([추론] — 공시 문구 아님). HRL·Logiq 인수대금은 미공시(❌).</li>
+<li><strong>수익성 채널(재차환 충격) — 2030까지 고정금리 트랜치만</strong>:</li>
+<li>달러(2027~2030 고정 $130.8억): 신규 발행금리 5.6~6.3%(5년물 5.06% + A−급 스프레드 0.6~1.2%p 밴드) 가정 → <strong>연 +$2.5~3.4억</strong></li>
+<li>유로(2027~2030 고정 약 $74억, 2028년 변동금리채 제외): 신규 3.0~4.0%(2026-02 IBM 유로채 실제 3.0~3.85%) 가정 → <strong>연 +$1.1~1.8억</strong></li>
+<li>합계 <strong>연 +$3.6~5.3억 = 영업이익(약 $124.6억)의 2.9~4.2% · ΔInterest/FCF 2.4~3.6%</strong></li>
+<li>7/26 기준선(+$2.18억 = 1.75%)의 1.7~2.4배. 7/26이 스트레스로 얹었던 "term premium +100~300bp → 3.5~6.9%" 밴드의 <strong>아래쪽 절반이 두 달 만에 실제 기준선이 됐다.</strong> 여전히 수익성 절벽은 아님.</li>
+<li>🔴 <strong>달러 트랜치 "차환 중립~유리"(2028년물 4.8%→4.4%) 서술은 철회</strong> — 지금은 모든 달러 트랜치가 쿠폰보다 높은 금리로 차환된다.</li>
+<li><strong>캐나다채의 금리 효과</strong>: 발행 시점 달러 5년물 4.39% + 스프레드 ≈ 5.2% 대비 캐나다 4.10% → 명목 약 1.1%p 싸게 조달했고, 그 뒤 달러 금리가 +66bp 올라 <strong>타이밍상 유리하게 잠갔다</strong>. 단 통화스왑으로 달러화했다면 이 차이는 대부분 사라진다(❌ 헤지 미확인).</li>
+<li>🔴 <strong>Warsh 이중전략 정합 1줄</strong>: 7/27→9/29 사이 장기 금리가 +62bp 올랐다 — "정책금리↓라도 실질 차환금리는 안 내려간다"는 baseline이 <strong>현실 데이터로 확인된 구간</strong>이다(레짐 판정 ❌ · 측정 기준선만).</li>
+</ul>
+<p><strong>② net 변동금리 + 헤지 cliff</strong> — 신규 데이터 없음 · 7/26 값 소비: native 변동 0.8% · post-swap 변동 11.8% · 헤지 cliff ≈ 2029 중반 · §A.5 "+100bp 즉시 → 영업이익 −0.6%" 값 소비(재산출 ❌). 🆕 캐나다채는 <strong>고정금리 발행</strong> → native 변동 비중 불변. 공정가치 헤지 스왑을 새로 붙였는지는 ❌ 미확인.</p>
+<p><strong>③ covenant 전수 — 🆕 분자 정의 확보 (7/26 유일한 미결점 해소)</strong></p>
+<table><thead><tr><th>항목</th><th>값</th></tr></thead><tbody>
+<tr><td>종류</td><td>순이자비용 비율(최소 보상배율형) · <strong>신용한도 계약에만 적용</strong>(채권 indenture엔 없음)</td></tr>
+<tr><td>한도</td><td>조정 현금흐름 ÷ 순이자비용 <strong>≥ 2.20배</strong> · 4분기 합산</td></tr>
+<tr><td>분자</td><td>세전이익 + 순이자 + 감가상각 + 무형자산상각 + (구조조정 비용 − 현금 구조조정) − 설비투자 − 소프트웨어 투자 ≈ <strong>"EBITDA − 투자"</strong></td></tr>
+<tr><td>실측(TTM 2025-Q3~2026-Q2, SEC XBRL 계산)</td><td>분자(이자 가산 전) 약 $139억[세전 $104.4억 + 감가 $22.6억 + 상각 $29.4억 − 설비 $11.0억 − 소프트웨어 약 $6.3억(연간치 = 상반기×2 추정) · 구조조정 순효과 ≈ 0 가정]</td></tr>
+<tr><td>분모</td><td>좁게(이자비용 − 이자수익) $14.1억 / 넓게(금융 부문 조달비용 포함) $18.3억</td></tr>
+<tr><td><strong>비율</strong></td><td><strong>8.6~10.9배</strong> (TTM) · 🆕 <strong>선행 7.6~9.3배</strong>(캐나다채 이자 +$0.84억 · 현금 반감으로 이자수익 연 $3.4억 수준 반영 → 순이자 $16.8~21.0억)</td></tr>
+<tr><td><strong>trip까지 거리</strong></td><td>이자 가산 전 분자가 <strong>82~86% 줄어야</strong> 발동 (매출 기준 아님 — 분자 기준)</td></tr>
+<tr><td>기타</td><td>담보부채·세일앤리스백 순유형자산 10% 한도 · 교차부도 $5억 이상 · 등급 트리거 없음 · waiver 이력 없음 · 2026-06-22 만기 연장(확인서)</td></tr>
+</tbody></table>
+<ul>
+<li>🔴 <strong>7/26 stress "매출 −16.5~−34.6%에서 2.20배"는 EBIT/EBITDA 두 정의 사이 밴드였다.</strong> 실제 정의는 EBITDA 쪽에 훨씬 가깝다(분자 = EBIT + 약 $35억). 투자 차감($17억)이 감가·상각 가산($52억)보다 작기 때문.</li>
+</ul>
+<p><strong>④ WACC 2차 충격</strong> — 곡괭이 질 (A) · 자산 경량 → 7/26 판정 유지(해당 약함). 🆕 Anderon $10억이 본계약으로 굳어 재투자 약정의 구속력↑(아래 자본배분 참조).</p>
+<p><strong>⑤ 주식 자금조달 압박</strong> — 해당 없음(ATM·전환사채 없음) · 유지.</p>
+<p><strong>⑥ float 비대칭</strong> — 금융 자회사(대출채권) 부 Ⓓ: 금융 부문 부채 $130.5억(6/30)은 고객 대출과 만기 매칭형 → 부호 중립 추정(7/26 유지 · 정량 ❌).</p>
+<p><strong>금리 기둥 레짐 부호</strong>: <code>[고금리 지속]</code> 약한 (−) — 차환 비용이 서서히 오르나 절벽 없음 / <code>[금리 완화]</code> (+) 약 — 2027 상반기 대규모 차환이 싸진다.</p>
+<hr>
+<h4>기둥 (2) 물가 — ⚪ 조건부 (유지 · 인건비 축만 🔴)</h4>
+<ul>
+<li><strong>7/26 이후 신규 1차 데이터 없음</strong>(Q3 실적 10/22). 7/26 값 전부 소비: 인건비 연동 비용 = 총비용 87.2% · 임금 +1% = 영업이익 −4.0%(금리 100bp의 6.8배) · 선수수익 $204억(매출 30%)이 약 12개월 가격 고정 · 원자재 민감도 N/A 확정 · 재고 평균원가법(후입선출 ❌) · 인플레 부호 = 피해자(−1, 약).</li>
+<li>🆕 <strong>Logiq Consulting 인수(9/24)</strong> — 컨설팅 = 인건비 노출이 가장 큰 부문에 인력 추가(규모 미공시 · 영향 미미 추정).</li>
+<li>🆕 <strong>통화 × 수입원가</strong>: 캐나다달러 부채가 새로 생겼다. 캐나다 사업 순자산의 순투자헤지로 지정됐다면 7/26의 "외화부채 $164억 자연상쇄" 구조가 확장된 것이고, 아니라면 환 손익 변동원이 하나 늘었다(❌ 미확인). 발행 이후 캐나다달러 −1.7% → 달러 환산 부채 약 −$0.3억(유리).</li>
+<li><strong>레짐 부호</strong>: <code>[고물가 지속]</code> (−) 주범 = 임금 / <code>[디스인플레]</code> (+) — 반복매출 80%의 하방 경직 가격 → 마진 확대.</li>
+</ul>
+<hr>
+<h4>기둥 (3) 스태그플레이션 결합 — ⚪ (미결 → <strong>해소: 약정은 견디고 배당이 먼저 깨진다</strong>)</h4>
+<p>7/26 시나리오 표의 영업이익·FCF−배당 값은 <strong>소비만</strong>(재계산 ❌). 🆕 covenant 열만 확인된 정의로 교체:</p>
+<table><thead><tr><th>시나리오</th><th>영업이익(소비)</th><th>FCF − 배당(소비)</th><th>7/26 covenant</th><th>🆕 확인된 정의 (EBIT + 약 $34.7억) ÷ 순이자 약 $17.5억</th></tr></thead><tbody>
+<tr><td>경미</td><td>$71.0~78.4억</td><td>+$2.6~8.9억</td><td>4.14~4.57</td><td><strong>여유</strong> (약 6.0~6.5배)</td></tr>
+<tr><td><strong>기준(스태그)</strong></td><td>$17.9~33.4억</td><td><strong>−$29.6~−42.8억</strong></td><td>1.02~1.92(EBIT) ↔ 3.77~4.66(EBITDA) <strong>미결</strong></td><td><strong>3.0~3.9배 → 🟢 여유 확정</strong> (2.20 대비 +0.8~1.7배)</td></tr>
+<tr><td>심각(1970s형)</td><td>−$52.5~−86.4억</td><td>−$102.8~−131.6억</td><td>음수</td><td><strong>음수 → 🔴 위반</strong> (불변)</td></tr>
+<tr><td>디플레형 침체</td><td>$70.3~95.7억</td><td>+$2.2~23.8억</td><td>4.14~5.63</td><td><strong>여유</strong></td></tr>
+</tbody></table>
+<ul>
+<li>🔴🔴 <strong>새 임계점</strong>: 약정 발동선 = <strong>영업이익 약 $3.8억</strong>(= 2.20 × 17.5 − 34.7). 기준 시나리오 하단($17.9억)보다 약 $14억 아래 — 선형 보간 시 대략 <strong>원가 +12%·금리 +220bp·물량 −12%</strong> 부근(거친 보간 · 밴드로만 읽을 것).</li>
+<li>🔴🔴 <strong>순서가 바뀌었다</strong>: 7/26엔 "기준 시나리오에서 약정이 먼저 깨질 수도"였다. 이제는 <strong>배당 미충당(기준 시나리오부터 $30~43억 부족) → 자기조달 gap → 한참 뒤 약정</strong> 순서다. 즉 결합충격 시 IBM이 먼저 맞는 것은 <strong>은행이 아니라 주주(배당)</strong> 다.</li>
+<li>2차 효과 갱신: (a) 만기 × Z 사이클 저점 중첩 — 🔴 <strong>7/26 "중첩 없음" 수정</strong>: 2026이 Z 저점인데, <strong>2027 상반기 만기 약 $53억</strong>이 저점 직후 회복 초입과 겹친다. 캐나다 선조달로 유동성은 막혔으나 <strong>차환 금리는 고점권</strong>에서 확정될 가능성. (b) 영업레버리지 역회전 실증(Q2 인프라 매출 −7.4% → 이익 −13.4%) 유지. (c) 고객 IT 예산 "재배분" 유지. (d) 환 × 해외매출 — 자연상쇄 구조에 CAD 추가(헤지 지정 여부 ❌).</li>
+<li><strong>1970s analog</strong>: 7/26 채점 소비 — 5개 중 취약 1.5개(인건비 ✅ · 가격전가 ⚠️) → 3.5/5 ⚪~🟢 경계. 🆕 ④ 부채 듀레이션: 5년 내 만기 비중 36.8% → 캐나다 2030물 추가로 소폭↑, 판정 불변.</li>
+</ul>
+<p><strong>🔴 자본배분 충돌 — 갱신</strong></p>
+<table><thead><tr><th>순위</th><th>항목</th><th>7/26</th><th>🆕 9/30</th></tr></thead><tbody>
+<tr><td>—</td><td>자사주</td><td>깎을 것 없음(2019 중단)</td><td>불변 · 재개 공시 0건</td></tr>
+<tr><td>1st</td><td>M&amp;A / Anderon $10억</td><td>🟢 먼저(의향서)</td><td>🔻 <strong>⚪ — CHIPS 본계약(9/16)으로 IBM $10억 구속력↑</strong> · HRL(8/26)·Logiq(9/24) 인수는 이미 집행</td></tr>
+<tr><td>2nd</td><td>Lightwell $50억</td><td>🟢 높음</td><td>🟢 유지(9/9 LTM 협업 = 생태계 확장 중)</td></tr>
+<tr><td>3rd</td><td>양자 연 $20억</td><td>⚪</td><td>⚪</td></tr>
+<tr><td>4th</td><td>배당 $62.6억</td><td>🔴 마지막·성역 아님</td><td>🔴 <strong>결합 기준 시나리오에서 약정보다 먼저 깨지는 항목으로 격상</strong></td></tr>
+</tbody></table>
+<p>→ 삭감 가능 완충재가 <strong>Lightwell 하나로 좁아졌다.</strong> 자기조달 여력(7/26: FCF $147억 기준 +$47.8억)은 캐나다채 이자(연 −$0.84억)·차환 증분(2030까지 연 −$3.6~5.3억)을 반영해 <strong>+$42~43억 수준</strong>으로 소폭 축소([추론] · 단순 차감).</p>
+<hr>
+<h4>G.8.4 종합 verdict</h4>
+<blockquote>### 🏷️ ⚪ 조건부 (유지) — 금리 🟢 / 물가 ⚪(인건비 🔴) / 결합 <strong>미결 → ⚪ (약정 🟢 확정 · 배당 🔴)</strong><br><br><strong>🎯 "고금리·고물가를 버티는가" 한 줄 — 버틴다(조건부). 7/26의 유일한 미결점(은행 약정)은 풀렸고 여유가 크다. 결합충격에서 먼저 무너지는 건 은행 약정이 아니라 배당이며, 진짜 변수는 여전히 IBM Z 수요와 인건비다.</strong> (낮은 신뢰도 · enforcement 아님 · 최종 판단 사용자)<br><br><strong>신뢰도: 중간</strong> (미수집 4건 중 1건 해소 · 신규 미수집 2건: 캐나다채 통화 헤지 지정 여부 · HRL/Logiq 인수대금) · <strong>풀 DD 승격 우선순위: 낮음</strong>(Q3 10-Q 대기)<br><br><strong>swing 변수 = 인건비 단가 vs AI 생산성 경주</strong> (불변) — 약정이 풀리면서 swing의 역할이 "약정 임계 매출"에서 <strong>"배당 미충당 시작점"</strong> 으로 옮겨갔다.<br><br><strong>금리 레짐 조건부 부호</strong> — <code>[고금리·고물가 지속]</code> 약한 (−), 주범은 임금 · 금리는 2027 상반기 차환 비용으로 서서히 / <code>[저금리·디스인플레]</code> (+), 단 물량 −20% 침체 동반 시 상쇄.<br><br><strong>엇갈림(봉합 ❌)</strong>: 단기(12개월) 유동성 🟢 — 선조달·리볼버로 막힘 / 중기(2027~2030) 수익성 ⚪ — 차환 비용 계단식 상승 + 2029~2030 스왑 cliff·Starling·<strong>2030 만기 확대(캐나다채)</strong> 겹침 → 7/26 "2029 트리플 컨플루언스"를 <strong>"2029~2030 창"</strong> 으로 확장.<br><br><strong>회복 trigger</strong>: Q3(10/22) IBM Z 감소율 −42% → −20%대 · 캐나다채 순투자헤지 지정 확인. <strong>악화 trigger</strong>: 신용등급 A− → BBB+ · Q3 순이자비용 분기 $4.5억 초과(분모 급증) · 컨설팅 이익률 −1%p↓.</blockquote>
+<p><strong>직전(7/26) 대비 판정 변화</strong></p>
+<ul>
+<li>종합 ⚪ <strong>유지</strong>. 금리 🟢 <strong>유지</strong>(단 "차환 유리" 서술 철회·12개월 만기 착시 정정). 물가 ⚪ <strong>유지</strong>.</li>
+<li>결합: <strong>"분모 의존적·미결" → "⚪ — 약정 여유 확정, 배당이 먼저 깨짐"</strong>. 7/26 Flip 트리거 "EBITDA 정의 확인 → 결합 ⚪→🟢"는 <strong>약정 하위축에만 발동</strong>시키고 결합 라벨 전체는 🟢로 올리지 않았다(아래 Steelman 구조 축 참조).</li>
+</ul>
+<hr>
+<h4>G.8.5 의무 라벨 4종</h4>
+<ul>
+<li><strong>낮은 신뢰도 참고</strong> — 신뢰도 중간(상한). 차환금리 밴드·결합 시나리오·소프트웨어 투자 연간치·2023~2026 연장 확인서 본문 미판독(정의 불변 가정)에 민감. 확정 결론 사용 금지.</li>
+<li><strong>🎯 버티는가 직접 한 줄 · enforcement 아님</strong> — 진단 요약이지 매매 규칙 아님 · 최종 판단 사용자.</li>
+<li><strong>장기 thesis 종목 stop sign ❌</strong> — 배당 미충당·2030 만기 확대도 §H.3 Thesis 리스크 신호 입력일 뿐, 하드게이트·매도신호 ❌.</li>
+<li><strong>점수 미반영</strong> — 7축 가중평균·레이더·§G.3 ④축 합산 ❌. §A.5·§G.4·§D.5·§H.1 값 소비만(재계산 ❌).</li>
+</ul>
+<h4>G.8 Steelman 3축</h4>
+<ul>
+<li><strong>데이터 축 — "약정 정의는 2021·2022 문서다. 2026 확인서가 정의를 바꿨을 수 있다"</strong> → <strong>유지(범위 한정).</strong> 2026-06-23 8-K 첨부는 "만기 연장 확인서"라는 제목의 짧은 이미지 문서 2건이고 본계약 전면 개정본이 아니다. 정의 변경은 통상 "Amendment"로 공시된다(2022 개정 1호처럼). 다만 이미지 본문을 판독하지 않았으므로 <strong>"2022 정의 유지"는 가정</strong>으로 표기. 또 소프트웨어 투자 연간치($6.3억)는 상반기×2 추정 — 비율에 주는 영향은 ±0.1배 수준이라 결론 불변.</li>
+<li><strong>구조 축 — "약정이 풀렸는데 결합 라벨을 🟢로 안 올리는 건 사후 골대 이동(goalpost moving) 아니냐"</strong> → <strong>수정.</strong> 7/26 Flip 트리거는 분명히 "EBITDA 기준 확인 시 결합 ⚪→🟢"라고 적었다. 사전 약속을 지키지 않는 것은 확증편향의 반대 방향 버전이다. 그러나 같은 표의 기준 시나리오에 <strong>FCF−배당 −$30~43억</strong>이 이미 있었고, 7/26은 그 축을 약정 미결에 묻어 판정에 쓰지 않았다. 약정이 풀린 지금 결합 시나리오의 최약 고리는 배당이다. → <strong>약정 하위축은 사전 약속대로 🟢로 뒤집고</strong>, 결합 라벨은 배당 축 때문에 ⚪로 두되 그 이유를 명시(위 G.8.4)하는 것으로 수정. 사전 약속 미이행이 아니라 <strong>약속 범위의 정직한 한정</strong>임을 기록.</li>
+<li><strong>시간 지평 축 — "금리 +62bp는 두 달치 움직임이다. 차환 증분을 오늘 금리로 고정하면 2030까지의 경로를 한 점에 결박한다"</strong> → <strong>유지(밴드로 처리).</strong> 그래서 차환 증분을 5.6~6.3%(달러)·3.0~4.0%(유로) 밴드로 냈고, 결론(수익성 절벽 아님 · 영업이익 2.9~4.2%)은 밴드 양 끝에서 모두 성립한다. 금리가 되돌아가면 🟢가 더 강해질 뿐 부호는 안 바뀐다. 반대로 <strong>2027 상반기 $53억 차환이 금리 고점권에서 확정되는 경로</strong>는 시간 지평상 가장 가까운 실제 비용 — 이것이 7/26 "중첩 없음"을 수정한 이유.</li>
+</ul>
+<h4>▶ Flip 트리거 (관측 가능 신호 · 레짐 falsifier 포함)</h4>
+<table><thead><tr><th>트리거</th><th>방향</th><th>뒤집는 지점</th></tr></thead><tbody>
+<tr class="sig-g"><td>Q3 10-Q: 캐나다채 <strong>순투자헤지 지정</strong> 확인</td><td>🟢</td><td>통화 노출 자연상쇄 확장</td></tr>
+<tr><td>Q3 10-Q: 캐나다채 <strong>통화스왑으로 달러화</strong></td><td>⚪</td><td>조달금리 이점 소멸(판정 영향 작음)</td></tr>
+<tr class="sig-r"><td>신용한도 확인서/개정에서 <strong>정의 변경</strong> 발견</td><td>🔴/🟢</td><td>약정 하위축 재판정</td></tr>
+<tr class="sig-r"><td>2027 상반기 만기 <strong>차환 발행 금리 ≥ 6.5%</strong></td><td>🔴</td><td>수익성 채널 ⚪로 하향</td></tr>
+<tr class="sig-r"><td>배당 인상률 0% 또는 <strong>삭감</strong></td><td>🔴</td><td>결합 배당 축 현실화</td></tr>
+<tr class="sig-g"><td>IBM Z Q3 감소율 <strong>−20%대 축소</strong></td><td>🟢</td><td>결합 물량 축 정상화 → 종합 🟢 검토</td></tr>
+<tr class="sig-r"><td>신용등급 <strong>A− → BBB+</strong></td><td>🔴</td><td>조달비용 + 파생 해지 노출</td></tr>
+<tr class="sig-g"><td><strong>레짐 falsifier</strong>: 디스인플레 + 장기금리 하락 2분기</td><td>🟢🟢</td><td>부호 (−) → (+) 반전</td></tr>
+<tr><td><strong>레짐 falsifier</strong>: 2029~2030 창(스왑 cliff·Starling·2030 만기 $56.8억)</td><td>⚠️</td><td>5년 창 판정의 시간 지평 한계</td></tr>
+</tbody></table>
+<hr>
+<hr>
+<h2>Section H. 시나리오 · Catalyst</h2>
+<h3>H.1 Bull / Base / Bear (배당 포함 · 🆕 지연 계수 적용)</h3>
+<table><thead><tr><th>시나리오</th><th>확률</th><th>2년</th><th>3년</th><th>5년 시총(배수)</th><th>핵심 가정</th></tr></thead><tbody>
+<tr class="sig-g"><td>🟢 Bull</td><td><strong>22%</strong>(↓3)</td><td>1.27x</td><td>1.46x</td><td>약 4,000억 달러 (<strong>2.08x</strong>)</td><td>5년 매출 약 880억·영업마진 20% · 양자 우위 외부 검증 통과 · Starling <strong>2029 제때</strong> · Anderon 외부 수주 · <strong>시장이 가설을 IT서비스에서 양자로 갈아탐</strong></td></tr>
+<tr class="sig-y"><td>🟡 Base</td><td>55%</td><td>1.02x</td><td>1.12x</td><td>약 2,600억 달러 (<strong>1.40x</strong>)</td><td>5년 매출 약 800억·마진 18% · 우위는 좁고 논쟁적 · <strong>Starling 2030 말(지연 계수 ×1.3)</strong> · Anderon은 IBM 물량 위주</td></tr>
+<tr class="sig-r"><td>🔴 Bear</td><td><strong>23%</strong>(↑3)</td><td>0.78x</td><td>0.78x</td><td>약 1,500억 달러 (<strong>0.87x</strong>)</td><td>5년 매출 약 650억·마진 14% · Z 구조적 쇠퇴 · <strong>Starling 2032~33(×1.7)</strong> · 양자 투자 축소 압력</td></tr>
+</tbody></table>
+<p><strong>기댓값</strong> — 2년 <strong>약 1.02x</strong> · 3년 <strong>약 1.12x</strong> · <strong>5년 약 1.43x</strong> (직전 1.48x)</p>
+<blockquote>⚠️ <strong>5년 1.43x &lt; 1.5x = thesis 약함 flag.</strong> ⚠️ Base 2년 1.02x &lt; 2.0x = bull tail 의존 flag.<br>🔧 <strong>확률 조정 근거</strong> — Bull −3%p: Anderon 곡괭이 판정 하향 + 경쟁 파운드리 등장으로 "Anderon 외부 수주" 경로가 좁아졌다. Bear +3%p: 2027년 EPS 컨센서스가 90일간 −2.3% 내려갔고 시장이 IBM을 AI 수혜 바구니에서 뺐다.<br><strong>암묵 exit 멀티플 역산</strong> — Base 5년 P/S 3.25x(현재 3.00x) = 재평가 의존 낮음 · Bull 4.55x = 재평가 의존 중간~높음(양자가 멀티플에 반영돼야 함).</blockquote>
+<div class="dd-fig"><p class="cap">5년 시나리오 — 확률 배분과 배수(배당 포함)</p><div id="fig-h1"></div><div id="badge-h1"></div></div>
+<h3>H.2 Catalyst 캘린더</h3>
+<table><thead><tr><th>시점</th><th>이벤트</th><th>영향</th></tr></thead><tbody>
+<tr><td><del>2026 Q3 말</del></td><td><del>HRL 인수 종결</del> → <strong>8/26 완료</strong></td><td>✅</td></tr>
+<tr><td><del>2026 하반기</del></td><td><del>Anderon 최종 계약</del> → <strong>9/16 10억 달러 확정</strong></td><td>✅</td></tr>
+<tr><td><del>2026년 말</del></td><td><del>양자 우위 선언</del> → <strong>7/30 선언</strong> · 반론 대기</td><td>✅/❓</td></tr>
+<tr><td><strong>2026-10-22</strong></td><td><strong>3분기 실적 — IBM Z 감소 폭 · "연기 거래 40% 마감" 검증</strong></td><td>🔴</td></tr>
+<tr><td>2026 하반기</td><td>양자 우위 반론 논문 동료 검토 결과 · IBM 대응</td><td>🔴</td></tr>
+<tr><td>수시</td><td>Anderon 첫 외부 고객 발표</td><td>🔴</td></tr>
+<tr><td>2027</td><td>Cockatoo(칩 간 양자 연결 — 2024 약속에서 약 36개월 지연)</td><td>🟡</td></tr>
+<tr><td><strong>2029</strong></td><td>Starling 목표(기본 시나리오 2030 말)</td><td>🔴</td></tr>
+</tbody></table>
+<h3>H.3 ⚠️ Thesis 리스크 신호 (조기경보 · 매매 행동 아님)</h3>
+<table><thead><tr><th>신호</th><th>관측 trigger</th><th>이번 상태</th></tr></thead><tbody>
+<tr><td>자금 여력 훼손</td><td>FCF가 배당을 못 덮는 분기</td><td>⏳ 3분기 대기</td></tr>
+<tr><td>성장 훼손</td><td>그룹 매출 YoY 0% 이하 2분기</td><td>⏳</td></tr>
+<tr><td>기술 훼손</td><td>Starling 공식 지연 발표</td><td>⏳</td></tr>
+<tr><td>🆕 <strong>검증 훼손</strong></td><td>양자 우위 선언이 고전 계산으로 재현</td><td>🟠 <strong>반론 논문 등장</strong>(동료 검토 전)</td></tr>
+<tr><td>🆕 <strong>곡괭이 훼손</strong></td><td>Anderon 외부 고객 0이 1년 지속 / 경쟁 파운드리 선택</td><td>🟠 경쟁자 등장</td></tr>
+<tr><td>🆕 <strong>영업 실행</strong></td><td>3분기에 "지연이지 취소 아님" 주장 불일치 · 영업 총책 추가 매도</td><td>🟠 1차 매도 발생</td></tr>
+<tr><td>사람 리스크</td><td>Gambetta 이탈·역할 축소</td><td>⏳</td></tr>
+<tr><td>자본배분 충돌</td><td>FCF −35%에서 자기조달 gap</td><td>⏳</td></tr>
+<tr><td>인건비 인플레</td><td>임금 +1% = 영업이익 −4.0%</td><td>⏳ (§G.8)</td></tr>
+</tbody></table>
+<h3>H.3-0 보유 종목 가설 신선도 — 해당 없음(미보유)</h3>
+<h3>H.5 🧭 CAE · Edge Grid 좌표</h3>
+<p>〔CAE C=제약 / A=조정 / E=표현〕 〔중요도 L 다층성·R 비가역성·H 병목경도 / 엣지 G 선반영격차·P 연료잔량·D 컨센서스반증, 각 0~3〕</p>
+<ul>
+<li><strong>(a) CAE</strong> — C(제조·극저온)+A(정책·자본)+E(소프트웨어) 3층 · 무게중심 <strong>A</strong> · 🔴 약한 고리 = <strong>R(가격 전환)</strong>: 병목을 가져도 돈으로 못 바꾼다.</li>
+<li><strong>(b) 프로파일</strong> — 중요도 L=3·R=2·H=<strong>1</strong>(↓ 경쟁 파운드리로 제조 병목 경도 하락) → 中 / 엣지 G=<strong>3</strong>·P=2·D=1 → 中</li>
+<li>🆕 <strong>G 입력 — 시장이 보는 가설</strong>: 60일 상관 1위 = IT서비스(ACN 0.49), 소프트웨어 ETF 0.23·MSFT 0.15로 약해지는 중, 양자 0.01·−0.08. <strong>내 가설(양자 옵션)과 시장 가설(IT서비스)이 다르다</strong> → 괴리 = 엣지이자 <em>버텨야 할 거리</em>. 시장이 가설을 갈아탈 계기 = <strong>양자 매출 첫 공시</strong>(§H.1 Bull catalyst). 애널리스트 비교군도 IT서비스·소프트웨어 중심이라 방향이 같다.</li>
+<li><strong>(c) 분면</strong> — "강하고 싼" 경계(변동 없음)</li>
+</ul>
+<div class="dd-fig"><p class="cap">Edge Grid 2×2 — IBM (중요도 中上 × 엣지 中)</p><svg viewBox="0 0 320 240" width="320" height="240" xmlns="http://www.w3.org/2000/svg" style="background:#fff;border:1px solid #e8e1cf"><rect x="40" y="10" width="130" height="100" fill="#fde7c4"/><rect x="170" y="10" width="130" height="100" fill="#d8f0d8"/><rect x="40" y="110" width="130" height="100" fill="#e3e3e3"/><rect x="170" y="110" width="130" height="100" fill="#d6e6f7"/><text x="105" y="30" font-size="11" text-anchor="middle">강한데 비싼</text><text x="235" y="30" font-size="11" text-anchor="middle">강하고 싼</text><text x="105" y="200" font-size="11" text-anchor="middle">약하고 비싼</text><text x="235" y="200" font-size="11" text-anchor="middle">약하고 싼</text><circle cx="185" cy="70" r="7" fill="#1f2328"/><text x="198" y="74" font-size="11" font-weight="700">IBM</text><text x="170" y="232" font-size="10" text-anchor="middle">← 엣지 소진 · 엣지 잔량 →</text><text x="14" y="110" font-size="10" transform="rotate(-90 14 110)" text-anchor="middle">중요도</text></svg></div>
+<ul>
+<li><strong>(d) 판정</strong> — <strong>3 잠금장치 중 2개 미통과(변동 없음)</strong>: ① 실현확률 교차 — 양자 상업화 확률 여전히 정성 ② D 게이트 — 컨센서스 buy(22명·목표 평균 $240.59)라 반증 여지 작음 ③ 유효범위 — 통과. → 정찰 이상 승격 근거 부족.</li>
+<li><strong>(e) 🆕 과목 적합도</strong> — IBM thesis = <strong>혼합</strong>(배당·현금은 수학형, 양자는 문학형). 지금 시장의 과목 = <strong>판정 불가</strong>(최신 Expect-daily 9/30·macro-weekly 9/26에 과목 판정 미산출). 레버리지 ETF 노출은 유통 시총의 0.04%로 무시 가능(§I.3b).</li>
+</ul>
+<h3>H.6 💎 0to1 독점 판정 (틸 7문)</h3>
+<table><thead><tr><th>문항</th><th>판정</th><th>⭐</th><th>근거</th></tr></thead><tbody>
+<tr><td>① 기술 10배</td><td>⚠️</td><td>3</td><td>변동 없음</td></tr>
+<tr><td>② 시기</td><td>YES</td><td>5</td><td>변동 없음</td></tr>
+<tr><td>③ 독점</td><td><strong>⚠️</strong>(↓)</td><td>3</td><td>🆕 Qiskit 지배는 그대로이나 곡괭이 층(파운드리)에 IonQ가 전 방식으로 먼저 진입 — "작은 시장 지배"가 소프트웨어 층에만 남음</td></tr>
+<tr><td>④ 사람</td><td>⚠️</td><td>3</td><td>객관축 3.5로 상향이나 이진 판정 기준(충분)에는 미달</td></tr>
+<tr><td>⑤ 유통</td><td>YES</td><td>5</td><td>변동 없음</td></tr>
+<tr><td>⑥ 존속성</td><td>⚠️</td><td>3</td><td>변동 없음</td></tr>
+<tr><td>⑦ 숨겨진 비밀</td><td>YES</td><td>5</td><td>"양자의 병목은 제조" — 단 같은 진실에 IonQ도 베팅하기 시작해 <em>숨겨진</em> 정도가 줄었다</td></tr>
+<tr><td>〔보조〕 시장정의 tell</td><td>혼재</td><td>—</td><td>양자 매출 미공시로 '말=숫자' 교차검증 불가</td></tr>
+</tbody></table>
+<blockquote><strong>0to1 종합: Track A 〔3/7 YES〕 → 📖 "불운 위험" ‖ Track B 〔⭐3.9〕 ‖ tell = 혼재</strong> — 직전 4/7에서 하락. Track A·B 괴리 soft-flag 유지.</blockquote>
+<h3>H.7 💰 밸류에이션 정밀 판정 〔전담 서브에이전트 산출 · overlay(7축 미합산) · soft-flag〕</h3>
+<p><strong>[모드: embedded]</strong> · 종목 IBM · 기준가 $219.99(2026-09-29 종가) · 작성 2026-09-30</p>
+<blockquote><strong>요약 1줄</strong> — IBM $219.99는 <strong>⚪ 적정</strong>이지만 7월보다 한 칸 불리해졌다. 주가는 7/24 대비 +2.7%로 거의 그대로인데 <strong>10년물이 4.68% → 5.26%로 올라</strong> 현금흐름 수익률의 국채 대비 여유가 +129bp → <strong>+58bp</strong>(OCF−capex 기준)로 줄었고, 성장의 상당 부분이 <strong>차입으로 산 인수(Confluent $11.6B)</strong>라는 점이 드러났다. 역-DCF는 할인율 7.7%면 현실 범위, 8.5%면 인수 없이 연 4.8% 성장을 요구해 <strong>상단의존·fragile</strong>.</blockquote>
+<hr>
+<h4>H.7.1 아키타입 소비 (재분류 ❌)</h4>
+<p><strong>주 Ⓑ 구조적 컴파운더</strong>(소프트웨어 구독 — 매출 44%·세그먼트 이익 61%) <strong>+ 부 Ⓓ 자산/현금흐름형</strong>(메인프레임 사이클·금융 자회사) · 양자 = Ⓔ 성격이나 매출 미공시 → <strong>그룹 밸류에 대체 분모 적용 불가, 옵션가치로만</strong>. R-Dive = ⑥ 구독형(주)+① 믹스 전환(부). §D.5 = (A) 자가조달형(단서 있음 — 아래 ②Ⓓ).</p>
+<ul>
+<li>🔴 직전 DD(7/26)는 Ⓓ 주 + Ⓑ 부였다. 이번 주/부 순서는 orchestrator 확정값을 그대로 소비한다(재분류 ❌). 경계 종목이므로 <strong>Ⓑ·Ⓓ 두 방법을 모두 돌려 병기</strong>한다.</li>
+<li><strong>전환 falsifier 1줄</strong>: Software <strong>인수 효과를 뺀</strong> 성장률이 연 7% 이상으로 2분기 연속 확인되면 Ⓑ 주 판정이 굳어진다. 반대로 인수 효과를 빼면 0~1%대에 머물면 실질은 Ⓓ(현금흐름형) + 인수로 산 성장이다.</li>
+</ul>
+<blockquote>💡 <strong>역-DCF</strong> = 주가를 거꾸로 풀어 "이 가격이 정당하려면 미래에 무엇이 참이어야 하나"를 구하는 법 · <strong>envelope</strong> = 산업·해자가 허용하는 현실 가능 상·하한 · <strong>mid-cycle 정규화</strong> = 사이클 평균으로 깐 이익력 · <strong>percentile</strong> = 자기 과거 분포에서 현재 위치 · <strong>Z(σ)</strong> = 과거 평균에서 표준편차 몇 배 떨어졌는지 · <strong>재평가(re-rating)</strong> = 같은 매출에 시장이 더 높은 배수를 매기는 것.</blockquote>
+<hr>
+<h4>1차 수집 · 교차검증</h4>
+<table><thead><tr><th>항목</th><th>값</th><th>출처</th></tr></thead><tbody>
+<tr><td>현재가·시총·발행주식</td><td>$219.99 · $207.26B · 942.13M주</td><td>yfinance <code>info</code> (https://finance.yahoo.com/quote/IBM) — orchestrator 입력과 일치 ✅</td></tr>
+<tr><td>EV</td><td>$264.49B(yfinance · 리스 포함 총부채 $65.27B − 현금 $8.13B) / SEC 기준 재구성 $261.1B(장단기 차입 $61.99B − 현금·유가증권 $8.13B)</td><td>yfinance + SEC XBRL (https://data.sec.gov/api/xbrl/companyfacts/CIK0000051143.json)</td></tr>
+<tr><td>TTM 매출</td><td><strong>$69.096B</strong>(SEC 분기 4개 합: Q3'25 16.33 + Q4'25 19.69 + Q1'26 15.92 + Q2'26 17.16) = yfinance $69.095B ✅ 이중 검증 통과</td><td>SEC XBRL <code>Revenues</code></td></tr>
+<tr><td>2026 Q2 매출</td><td>$17.162B · <strong>+1.1% YoY</strong>(환율 조정 +1%)</td><td>10-Q (https://www.sec.gov/Archives/edgar/data/51143/000005114326000078/ibm-20260630.htm)</td></tr>
+<tr><td>2026 Q2 Software</td><td>$7.761B <strong>+5.1%</strong>(환율 조정 +4.6%) — Hybrid Cloud +11.2% · Automation +3.6% · <strong>Data +18.9%</strong> · <strong>Transaction Processing −8.1%</strong></td><td>10-Q MD&amp;A</td></tr>
+<tr class="sig-r"><td>🔴 10-Q 원문</td><td>경영진 자인: <em>"revenue performance was below our expectations, recent acquisitions delivered a strong contribution"</em></td><td>10-Q MD&amp;A (Software)</td></tr>
+<tr><td>Confluent 인수</td><td>2026-03-17 완료 · <strong>총 인수가 $11.602B</strong>(영업권 $7.238B) · 인수 전환사채 $1.1B는 4/15 상환</td><td>10-Q 주석 5</td></tr>
+<tr><td>RPO(잔여 수행의무)</td><td>$71B(2025-12) → $69B(2026-03) → <strong>$68B(2026-06)</strong> 2분기 연속 감소</td><td>SEC XBRL <code>RevenueRemainingPerformanceObligation</code></td></tr>
+<tr><td>순차입(SEC 정의)</td><td>$46.84B(2025-12) → $54.58B(2026-03) → <strong>$53.86B(2026-06)</strong> · 반기 +$7.0B</td><td>SEC XBRL</td></tr>
+<tr><td>인수 현금</td><td>2021 $3.29B · 2022 $2.35B · 2023 $5.08B · 2024 $3.29B · <strong>2025 $8.29B</strong> · <strong>2026 상반기 $10.48B</strong> · 5년 평균 $4.46B</td><td>SEC XBRL <code>PaymentsToAcquireBusinessesNetOfCashAcquired</code></td></tr>
+<tr><td>배당</td><td>FY2025 $6.26B · 2026 상반기 $3.17B · 수익률 3.07%($6.76)</td><td>SEC XBRL · yfinance</td></tr>
+<tr><td>10년물</td><td><strong>5.26%</strong>(7/26 DD 시점 4.68%)</td><td>yfinance <code>^TNX</code></td></tr>
+<tr><td>컨센서스</td><td>목표가 평균 <strong>$240.59</strong> · 중앙 $240.50 · 고 $297 · 저 $174 · <strong>n=22</strong></td><td>yfinance</td></tr>
+</tbody></table>
+<p><strong>🔴 FCF 정의 3종 병기 (전 렌즈 공통 · 표마다 어느 정의인지 명시)</strong></p>
+<table><thead><tr><th>정의</th><th>FY2025 값</th><th>시총 대비 수익률</th><th>10년물 5.26% 대비</th><th>배당 ÷ FCF</th><th>(배당+인수) ÷ FCF</th></tr></thead><tbody>
+<tr><td><strong>A. IBM 정의</strong></td><td>$14.7B</td><td><strong>7.09%</strong></td><td>+183bp</td><td>43%</td><td><strong>99%</strong></td></tr>
+<tr><td><strong>B. OCF−capex</strong> (SEC: OCF $13.19B − 유형자산 투자 $1.09B)</td><td>$12.1B</td><td><strong>5.84%</strong></td><td><strong>+58bp</strong></td><td>52%</td><td><strong>120%</strong></td></tr>
+<tr><td><strong>C. 직전 DD (R-Dive C.1)</strong></td><td>$11.46B</td><td>5.53%</td><td>+27bp</td><td>55%</td><td>127%</td></tr>
+</tbody></table>
+<ul>
+<li>본 산출의 <strong>기준값 = B(OCF−capex)</strong>. A는 상단 밴드, C는 하단 밴드. 이유: A는 금융 자회사 채권 변동 등 IBM 자체 조정이 들어간 비GAAP이고, B는 SEC 원천 두 줄로 재현 가능하다.</li>
+<li>참고: TTM(Q3'25~Q2'26) OCF $14.89B − 유형자산 $1.10B = $13.79B / yfinance TTM FCF $12.05B(소프트웨어 자본화 포함 추정).</li>
+<li>🔴 <strong>2026 상반기 (배당 $3.17B + 인수 $10.48B) = $13.65B ÷ 상반기 OCF−capex $7.31B = 187%</strong> → 모자란 부분은 부채로 메웠다(순차입 반기 +$7.0B · 8월 C$2.75B 채권). §D.5 (A) 판정은 "경상 사업만 보면 자가조달"이고, <strong>"성장까지 포함하면 차입 조달"</strong>이다.</li>
+</ul>
+<hr>
+<h4>렌즈 ① 역-DCF — 현재 EV $264.5B가 요구하는 미래</h4>
+<p><strong>설정</strong>: 매출 앵커 FY2025 $67.5B · 영업마진 앵커 18.5%(§G.5/§G.3 그대로) · 무차입 FCF = FCF + 세후 이자 $1.64B · 10년 명시 기간 + 터미널 · 영업마진은 현재 → 터미널 값으로 선형 이동.</p>
+<p><strong>할인율 밴드</strong>: 스킬 기본 9~12% + <strong>CAPM 기준점 7.7%</strong>(무위험 5.26% + 베타 0.708 × 위험프리미엄 4.75% = 자기자본비용 8.6%, 세후 차입비용 4.5%, 시가 가중 77:23) + 8.0/8.5% 중간값. 터미널 g 2.5~3.5%.</p>
+<p><strong>1-1 요구 10년 매출 CAGR (B. OCF−capex 기준 · 터미널 g 2.5%)</strong></p>
+<table><thead><tr><th>WACC</th><th>터미널 마진 17.25%(mid-cycle)</th><th>18.5%(현재·z17 피크)</th></tr></thead><tbody>
+<tr><td><strong>7.7% (CAPM)</strong></td><td>2.91%</td><td>2.20%</td></tr>
+<tr><td>8.0%</td><td>3.64%</td><td>2.92%</td></tr>
+<tr><td><strong>8.5%</strong></td><td><strong>4.79%</strong></td><td><strong>4.06%</strong></td></tr>
+<tr><td>9.0%</td><td>5.88%</td><td>5.15%</td></tr>
+<tr><td>10% (g 3.0%)</td><td>7.38%</td><td>6.64%</td></tr>
+<tr><td>12% (g 3.5%)</td><td>10.78%</td><td>10.01%</td></tr>
+</tbody></table>
+<table><thead><tr><th>FCF 정의별 (WACC 8.5%/7.7%, 터미널 마진 17.25%)</th><th>A. IBM 정의</th><th>B. OCF−capex</th><th>C. 직전 DD</th></tr></thead><tbody>
+<tr><td>요구 CAGR</td><td>2.51% / 0.70%</td><td><strong>4.79% / 2.91%</strong></td><td>5.41% / 3.52%</td></tr>
+</tbody></table>
+<ul>
+<li><strong>요구 터미널 영업마진</strong>(B, CAGR 3.5% 가정): 7.7%→약 13.6% · 8%→<strong>17.5%</strong> · 9%→<strong>20.4%</strong> · 10%→24.8%</li>
+<li><strong>요구 고성장 지속 기간</strong>(B, 4.5% 성장 후 터미널, 마진 18.5%): 8%→2년 · 9%→<strong>10년</strong> · 10%→40년 안에 불가</li>
+<li>🔴 <strong>인수 스트레스 테스트</strong>(B에서 인수 현금을 준-capex로 영구 차감): 5년 평균 $4.46B 차감 시 8%→요구 CAGR 7.9% / 2025 수준 $8.3B 차감 시 14.8%. <strong>영구 차감은 과도한 가정</strong>(터미널에서 인수 필요액은 줄어든다)이라 판정에 쓰지 않고 상한 스트레스로만 기록.</li>
+</ul>
+<p><strong>1-2 envelope 독립 도출</strong> (역산값 보기 전)</p>
+<table><thead><tr><th>envelope</th><th>도출</th><th>범위</th></tr></thead><tbody>
+<tr><td>매출 CAGR — <strong>유기(인수 제외)</strong></td><td>Software 44% × 유기 6~8%(Q2 인수 제외 약 +1%가 하단 경고) + 컨설팅 약 30% × 0~2% + 인프라 약 22% × 0%(사이클)</td><td>중앙 <strong>2.0~3.5%</strong> · 천장 약 4.5%</td></tr>
+<tr><td>매출 CAGR — <strong>인수 포함</strong></td><td>2021→2025 실적 CAGR 4.17%(인수·환율 포함) · 컨센 FY26 +4.2%/FY27 +3.9%</td><td>중앙 3.5~4.5% · 천장 약 6% (<strong>단 인수비는 FCF에서 차감돼야 짝이 맞음</strong>)</td></tr>
+<tr><td>터미널 영업마진</td><td>현재 18.5% = z17 피크 · mid-cycle 17.0~17.5% · Software 비중 55%+ 시 상한</td><td>중앙 17~17.5% · 천장 약 21%</td></tr>
+<tr><td>지속 기간</td><td>D.6-b Durable ⭐5이나 D.6-a ✅는 전환비용 1종뿐 · 가격 인상 테스트 🟡</td><td>10~15년</td></tr>
+</tbody></table>
+<p><strong>1-3 distance 판정</strong></p>
+<table><thead><tr><th>변수</th><th>역산값(요구)</th><th>envelope(현실)</th><th>거리</th></tr></thead><tbody>
+<tr><td>① 매출 CAGR</td><td>7.7%: 2.2~2.9% / 8.5%: <strong>4.1~4.8%</strong></td><td>유기 중앙 2.0~3.5% · 천장 4.5%</td><td>7.7% = 범위 내 / 8.5% = <strong>유기 천장 초과 🔴</strong>(인수 포함 envelope 안이지만 그러면 FCF가 줄어 짝이 안 맞음)</td></tr>
+<tr><td>② 터미널 마진</td><td>CAGR 3.5%면 8%: 17.5% / 9%: 20.4%</td><td>mid-cycle 17~17.5% · 천장 21%</td><td>8% = 달성 이력 / 9% = <strong>천장 근접</strong></td></tr>
+<tr><td>③ 지속 기간</td><td>8%: 2년 / 9%: 10년</td><td>10~15년</td><td>해자 내 ~ 경계</td></tr>
+</tbody></table>
+<blockquote><strong>종합 3택 = 상단의존 (fragile)</strong> — 7월 [균형]에서 한 칸 악화. 원인 두 가지: (1) 10년물 +58bp로 기계적 CAPM 할인율이 약 6.6%(7월 DD 산출) → 7.7%로 상승 (2) 매출 성장의 상당 부분이 인수라는 점이 10-Q로 확인돼, <strong>짝이 맞는 envelope는 "유기 성장 + 인수 전 FCF"</strong>가 됨. 할인율 7.7%면 범위 내, 8.5%면 유기 천장 초과 — <strong>할인율 0.8%p 하나에 결론이 뒤집힌다 → "역산 fragile" flag.</strong> 둘 이상 동시 상한 초과는 9% 이상에서만 발생("복수 낙관 가정의 곱"은 9%+ 조건부).</blockquote>
+<hr>
+<h4>렌즈 ② 아키타입별 판정</h4>
+<p><strong>Ⓑ 구조적 컴파운더 (주)</strong></p>
+<table><thead><tr><th>지표</th><th>IBM</th><th>비교</th><th>판정</th></tr></thead><tbody>
+<tr><td>성장조정 EV/매출 (EV/S ÷ FY1 매출 성장%)</td><td>3.83 ÷ 4.2 = <strong>0.907</strong></td><td>peer 6사 중앙 0.352 · SAP 0.591 · MSFT 0.647</td><td>🔴 peer 중 <strong>최고(= 가장 비쌈)</strong> — 7월 0.901과 동일</td></tr>
+<tr><td>Rule of 40 (성장% + FCF마진%)</td><td>TTM 성장 +7.9%(인수 포함) + 20.0% = 27.9 / FY26E +4.2% + 17.4% = 21.6</td><td>40</td><td>미달 (컷오프로 실격 처리 ❌)</td></tr>
+<tr><td>Software만</td><td>Q2 +5.1% 중 Data +18.9%가 Confluent 효과. <strong>인수 제외 Software 약 +1%</strong>[추정: Confluent 분기 매출 약 $0.3B 가정 — 10-Q에 기여 금액 미공시]</td><td>SAP +9.4%</td><td>⚠️ Ⓑ 근거 약화</td></tr>
+<tr><td>Net retention / 반복성</td><td>RPO $71B → $68B 2분기 감소</td><td>—</td><td>⚠️</td></tr>
+</tbody></table>
+<p>→ <strong>Ⓑ 판정: 비싸 쪽 적정 — 낮은 신뢰도 참고.</strong> 멀티플 3배 자체는 비싸지 않다(Intel 실수 회피). 비싼 부분은 <strong>"Ⓑ로 값을 매기려면 필요한 성장이 인수 없이는 안 보인다"</strong>는 점이다.</p>
+<p><strong>Ⓓ 자산/현금흐름형 (부)</strong></p>
+<table><thead><tr><th>지표</th><th>값</th><th>판정</th></tr></thead><tbody>
+<tr><td>EV/EBITDA (TTM)</td><td>yfinance <strong>16.05배</strong>(EBITDA $16.47B) / SEC 재구성 14.86배(세전이익+이자+감가+무형상각 $17.57B · EV $261.1B)</td><td>5년 중간 이하(아래 ③-다)</td></tr>
+<tr><td>FCF 수익률 (시총 기준)</td><td>A 7.09% / <strong>B 5.84%</strong> / C 5.53%</td><td>B 기준 국채 대비 <strong>+58bp</strong> — 7월 +129bp에서 절반 이하 🔴</td></tr>
+<tr><td>배당 지속성</td><td>배당 ÷ FCF 43~55%</td><td>✅ 배당 자체는 안전</td></tr>
+<tr><td>(배당+인수) ÷ FCF</td><td>2025: 99~127% · 2026 상반기: <strong>187%</strong>(B)</td><td>🔴 성장 투자가 차입에 의존</td></tr>
+<tr><td>Ⓓ 함정 점검</td><td>감가상각+무형상각 TTM $5.40B vs 유형자산 투자 $1.10B → 격차 약 $4.3B의 상당 부분이 인수 무형자산 상각. FCF가 높아 보이는 이유가 "capex가 인수 항목으로 옮겨간 것"</td><td>⚠️ 7월 지적 그대로 유지, 올해 인수 규모 확대로 강화</td></tr>
+</tbody></table>
+<p>→ <strong>Ⓓ 판정: 적정 — 낮은 신뢰도 참고.</strong> IBM 정의로는 싸 보이나(7.1%), SEC 원천 기준으로는 국채와 거의 붙었고, 인수를 성장 비용으로 보면 비싸다.</p>
+<p><strong>Ⓔ 양자 (옵션가치 · 그룹 분모 적용 ❌)</strong>: 양자 매출 미공시 → EV/큐비트 등 대체 분모를 그룹 밸류에 섞지 않는다. 규모 감각만: 순수 양자 참고 종목 IONQ EV $15.7B = IBM EV의 약 5.9%(주당 약 $17 상당). <strong>현재 가격에 이 옵션이 얼마나 들어 있는지는 판별 불가</strong> — 시장 가설 상관(IONQ 0.01·QTUM −0.08)은 "거의 0"을 시사.</p>
+<hr>
+<h4>렌즈 ③ 상대가치 (2026-09-29 · 분모 시점 = <strong>TTM</strong> · 회계 기준 = <strong>GAAP</strong>(yfinance) · 선행 PER만 yfinance <code>forwardPE</code>로 기준 연도·회계 기준 불투명 → 참고 열로 분리)</h4>
+<p><strong>(가) peer 멀티플</strong> — 🔴 SAP은 재무통화 EUR → <strong>EURUSD 1.1365로 USD 환산 후</strong> 계산(원값 혼합 오류 차단)</p>
+<table><thead><tr><th>종목</th><th>P/S (TTM)</th><th>EV/EBITDA (TTM)</th><th>EV/총이익 (TTM)</th><th>FCF 수익률 (yfinance TTM)</th><th>매출 성장 (최근 분기 YoY)</th><th>FY1 매출 성장 컨센</th><th>총이익률 / 영업마진</th><th>선행 PER (참고·기준 불투명)</th></tr></thead><tbody>
+<tr><td><strong>IBM</strong></td><td><strong>3.00</strong></td><td><strong>16.05</strong></td><td><strong>6.59</strong></td><td>5.81%</td><td>+1.1%</td><td>+4.2%</td><td>58.1% / 16.5%</td><td>16.7</td></tr>
+<tr><td>Accenture (열위 peer)</td><td>1.48</td><td>8.24</td><td>4.56</td><td>11.15%</td><td>+5.6%</td><td>+5.6%</td><td>32.0% / 17.0%</td><td>12.1</td></tr>
+<tr><td>Oracle</td><td>5.82</td><td>15.97</td><td>11.98</td><td>−10.98%</td><td>+29.6%</td><td>+34.3%</td><td>64.0% / 35.6%</td><td>12.5</td></tr>
+<tr><td>Microsoft 🚨대장주(앵커 ❌)</td><td>11.39</td><td>19.72</td><td>16.99</td><td>0.44%</td><td>+17.7%</td><td>+17.8%</td><td>67.9% / 45.1%</td><td>21.5</td></tr>
+<tr><td>SAP 🔴USD 환산</td><td>5.61</td><td>18.07</td><td>7.55</td><td>4.25%</td><td>+9.4%</td><td>+9.4%</td><td>73.7% / 27.6%</td><td>21.8</td></tr>
+<tr><td>Cisco</td><td>6.66</td><td>23.44</td><td>10.69</td><td>2.65%</td><td>+17.6%</td><td>+15.5%</td><td>64.5% / 27.7%</td><td>19.0</td></tr>
+<tr><td>HPE (Juniper 인수 착시)</td><td>1.95</td><td>13.89</td><td>6.24</td><td>5.81%</td><td>+33.7%</td><td>+35.5%</td><td>36.6% / 12.6%</td><td>13.4</td></tr>
+<tr><td>IONQ (양자 참고만)</td><td>72.2</td><td>N/A(적자)</td><td>206.8</td><td>−0.49%</td><td>+286.8%</td><td>+250%</td><td>30.9% / 적자</td><td>N/A</td></tr>
+<tr><td><strong>peer 6사 중앙값(IONQ 제외)</strong></td><td>5.71</td><td>17.02</td><td>9.12</td><td>3.45%</td><td>—</td><td>16.7%</td><td>64.2% / 27.7%</td><td>—</td></tr>
+</tbody></table>
+<p>출처: yfinance <code>info</code>·<code>revenue_estimate</code> (각 https://finance.yahoo.com/quote/{티커}). 🔴 이 표는 전 열 TTM GAAP로 통일, 선행 PER 열은 다른 열과 직접 비교하지 않는다.</p>
+<p><strong>(나) 프리미엄/할인 정당성</strong></p>
+<table><thead><tr><th>항목</th><th>값</th><th>판정</th></tr></thead><tbody>
+<tr><td>peer 중앙값 대비</td><td>P/S −47% · EV/총이익 −28% · EV/EBITDA −6%</td><td><strong>discount</strong></td></tr>
+<tr><td>성장</td><td>FY1 +4.2% vs 중앙 16.7% (6사 중 최하)</td><td>discount <strong>정당</strong> (성장 열위)</td></tr>
+<tr><td>마진</td><td>영업마진 16.5% vs 27.7% · 총이익률 58.1% vs 64.2%</td><td>discount <strong>정당</strong></td></tr>
+<tr><td>질(반복성·해자)</td><td>전환비용 ✅ 1종 · RPO 감소 · 인수 의존</td><td>⚠️ 부분</td></tr>
+<tr><td>열위 peer Accenture 대비</td><td>EV/EBITDA <strong>+95%</strong> · EV/총이익 +45% 프리미엄</td><td>총이익률 58 vs 32로 <strong>부분 정당</strong>, 성장은 IBM이 낮아 <strong>과함</strong></td></tr>
+</tbody></table>
+<blockquote><strong>판정: "정당한 할인"</strong> — 할인은 성장·마진 열위로 전부 설명된다. <strong>저평가 후보 아님.</strong> 🔴 단, 시장 가설 상관 1위가 ACN(0.49)이다 — 시장이 IBM을 "IT 서비스"로 묶어 거래하고 있으며, 그 기준(ACN EV/EBITDA 8.2배)으로 보면 IBM은 오히려 프리미엄이다.<br>⚠️ peer 집합 맥락: 7/24 이후 MSFT +33.6%·ACN +20.5%·ORCL +19.8% vs IBM +3.4%. peer가 올라 할인폭이 커진 것이지 IBM이 싸진 것이 아니다.</blockquote>
+<p><strong>(다) 자기 역사 percentile + Z(σ)</strong> — 월말 스냅샷 · 시점 기준 TTM · SEC 분기 재구성(가격 = 비조정 종가, 주식수 = SEC 표지 발행주식수, 분기 공시 25일 후 반영)</p>
+<table><thead><tr><th>배수</th><th>구간 [최저–최고]</th><th>평균</th><th>현재</th><th>percentile / Z</th></tr></thead><tbody>
+<tr><td><strong>P/S (정합 분모)</strong></td><td>1.80 – 4.41</td><td>2.86</td><td><strong>3.00</strong></td><td><strong>56pct / Z = N/A (n=57개월 · 분모=TTM 매출 · 시점기준=TTM)</strong></td></tr>
+<tr><td>EV/매출</td><td>2.52 – 5.15</td><td>3.57</td><td>3.78</td><td>58pct / Z = N/A</td></tr>
+<tr><td>EV/총이익</td><td>4.66 – 8.94</td><td>6.36</td><td>6.50</td><td>54pct / Z = N/A</td></tr>
+<tr><td>EV/EBITDA (GAAP 재구성)</td><td>11.74 – 25.99</td><td>18.11</td><td>14.86</td><td>32pct / Z = N/A — ⚠️ 2022 Q3($5.9B)·2024 Q3 연금정산 비현금 비용이 과거 EBITDA를 눌러 과거 배수를 부풀림 → <strong>현재 percentile이 낮게 나오는 편향</strong> · 참고만</td></tr>
+<tr><td>PER (GAAP TTM)</td><td>18.7 – 106.7</td><td>37.5</td><td>19.3</td><td>9pct / <strong>PER Z = N/A</strong> — 같은 연금정산 왜곡(2022 Q3 순손실) · 참고만</td></tr>
+</tbody></table>
+<ul>
+<li>🔴 <strong>Z = N/A (사업모델 전환 — 과거 분포 무효)</strong>: 가드 ③ tell (c) — <strong>2021-11 Kyndryl 분할</strong>(분할 전 IBM 총매출의 약 26% 규모)이 5년 창 안(4년 11개월 전)에 있다. 그래서 창을 <strong>분할 후 재작성 매출로 온전히 채워지는 2022-01~2026-09 = 57개월</strong>로 한정했고, percentile은 <strong>"분포 전환 후 57개월 구간만 유효"</strong> 라벨로 유지(≥24개월이라 percentile 신뢰도 클램프는 해당 없음). 🔴 이 tell은 2026-11에 5년 창 밖으로 나가지만, 분할 전 데이터는 여전히 다른 회사 기준이다.</li>
+<li><strong>압축/확장 원인 1줄</strong>: P/S는 2022~23년 1.8~2.2배 → 2025-10 4.41배(AI·양자 기대 + 마진 58%) → 2026-02 3.3배 → 현재 3.0배. <strong>2026년 하락은 이익 전망 훼손(FY27 EPS 90일 −2.3%)보다 배수 축소가 주도</strong> — 7월 판단과 동일.</li>
+<li><strong>펀더 동반 여부</strong>: 56pct 중간 + 리비전 하향(아래 ④) → re-rating 정당 쪽도 value trap 쪽도 강하지 않음, <strong>약한 value trap 기울기</strong>.</li>
+</ul>
+<hr>
+<h4>렌즈 ④ 컨센서스</h4>
+<table><thead><tr><th>항목</th><th>내용</th><th>출처</th></tr></thead><tbody>
+<tr><td>컨센 목표가·추정치</td><td>평균 <strong>$240.59</strong>(현재가 대비 +9.4%) · 중앙 $240.50 · FY2026 매출 $70.38B(+4.2%) · FY2027 $73.10B(+3.9%) · FY2026 EPS $12.31(+6.2%) · FY2027 $13.15(+6.8%) · Q3(10/22) EPS $2.87 · 매출 $16.84B(+3.1%)</td><td>yfinance <code>info</code>·<code>earnings_estimate</code>·<code>revenue_estimate</code></td></tr>
+<tr><td><strong>컨센 메타데이터 (v1.20)</strong></td><td>커버 <strong>n=22</strong> (≥3 → 컨센서스 요건 충족) · 추정 고/저 <strong>$297 / $174</strong>(평균 대비 +23% / −28%) · 분산 51%(7월 72%에서 축소)</td><td>yfinance <code>numberOfAnalystOpinions</code>·<code>targetHighPrice/LowPrice</code></td></tr>
+<tr class="sig-r"><td><strong>리비전 방향 (v1.20)</strong></td><td>🔴 <strong>하향</strong>. 추정치 90일 변화: FY2026 EPS 12.456 → 12.310(<strong>−1.2%</strong>) · FY2027 13.458 → 13.148(<strong>−2.3%</strong>) · Q3 2.928 → 2.871(−2.0%). 대부분 90→60일 구간(7월 말 Q2 실적 직후)에 발생, 최근 30일은 −0.1%로 <strong>정체</strong>. 30일 상향/하향 건수 FY2027 11/10(엇갈림). 목표가 평균 $245.33(7월) → $240.59(−1.9%)</td><td>yfinance <code>eps_trend</code>·<code>eps_revisions</code></td></tr>
+<tr><td>컨센이 가격에 깐 가정</td><td>"Confluent 포함 연 4% 매출 성장 + 연 6~7% EPS 성장이 지속되고, IBM Z 하강은 한두 분기 사이클이다"</td><td></td></tr>
+<tr><td>내 thesis 핵심 변수</td><td>(1) <strong>인수 제외 유기 성장</strong>(Q2 약 −0.7% 추정) (2) IBM Z 사이클 마진 (3) RPO 방향</td><td></td></tr>
+<tr><td><strong>선반영 / variant 판정</strong></td><td><strong>선반영 (하방 기울기)</strong> — 1차 증거(10-Q 경영진 "기대 이하" 자인 · RPO 2분기 감소 · Transaction Processing −8.1%)가 컨센보다 <strong>보수적 방향</strong>이다. 컨센보다 낙관할 1차 근거가 없어 <strong>variant 승격 ❌</strong>, 목표가 +9.4% upside를 매수 논거로 쓰지 않는다.</td><td></td></tr>
+</tbody></table>
+<ul>
+<li>③-다 교차: percentile 중간(56pct) + 리비전 하향 → <strong>value trap 쪽 약한 증거</strong>. re-rating 정당 증거 없음.</li>
+</ul>
+<hr>
+<h4>렌즈 ⑤ §H.1 소비 (재계산 ❌ · §H.1 입력값 그대로 분해만)</h4>
+<p>§H.1 입력: 5년 목표 시총 Base $260B / Bull $400B / Bear $150B · 5년 추정 매출 $80B / $88B / $65B → 암묵 P/S <strong>3.25x / 4.55x / 2.31x</strong> · 확률 22/55/23 · 5년 배수(배당 포함) 2.08x / 1.40x / 0.87x · 기댓값 약 1.43x.</p>
+<table><thead><tr><th></th><th>매출 배수 (TTM $69.1B 대비)</th><th>멀티플 배수 (현재 P/S 3.00x 대비)</th><th><strong>재평가 의존도</strong>(로그 기여 비중)</th><th>exit P/S의 분할 후 역사 위치</th></tr></thead><tbody>
+<tr><td>Base</td><td>1.158</td><td>1.083</td><td><strong>36% (중간)</strong></td><td>67pct</td></tr>
+<tr><td>Bull</td><td>1.274</td><td>1.517</td><td><strong>63% (높음)</strong> 🔴</td><td><strong>100pct — 분할 후 월말 최고 4.41x 초과</strong></td></tr>
+<tr><td>Bear</td><td>0.941</td><td>0.770</td><td>(멀티플 −23%가 하락 대부분)</td><td>39pct</td></tr>
+</tbody></table>
+<ul>
+<li><strong>렌즈①과 방향 교차</strong>: §H.1 Base 매출 CAGR(FY25 $67.5B → $80B) = 연 3.46%. 렌즈①이 요구하는 값은 할인율 8%에서 3.6%(mid-cycle 마진), 8.5%에서 4.8%. → <strong>8% 이하면 Base 매출만으로 현재가 정당화 · 8.5%면 모자라 exit 재평가 +8%가 메움.</strong></li>
+<li><strong>종합 1줄</strong>: <strong>Base = "매출 성장 + 배당으로 대부분 도달, 재평가 의존 중간(36%)" / Bull = "진입·청산 양 끝 낙관 의존"</strong>(분할 후 역사 최고 배수 초과 재현 필요 · 7월 판단 유지).</li>
+<li>참고: 기댓값 1.43x = 연 약 7.4% ≈ CAPM 자기자본비용 8.6%보다 낮고 10년물 5.26%보다 약 2.2%p 높을 뿐 → <strong>위험 대비 보상이 얇다</strong>.</li>
+</ul>
+<hr>
+<h4>H.7.3 종합 판정</h4>
+<table><thead><tr><th>렌즈 입력</th><th>결과</th><th>신호</th></tr></thead><tbody>
+<tr><td>① 역-DCF distance</td><td><strong>상단의존 (fragile — 할인율 0.8%p·FCF 정의에 뒤집힘)</strong></td><td>⚪</td></tr>
+<tr><td>② 아키타입별 판정</td><td>Ⓑ 비싸 쪽 적정 / Ⓓ 적정</td><td>⚪</td></tr>
+<tr><td>③-나 상대가치</td><td>정당한 할인(저평가 아님) · ACN 대비는 프리미엄</td><td>⚪</td></tr>
+<tr><td>③-다 역사 percentile + Z</td><td><strong>P/S 56pct / Z = N/A (n=57 · TTM · Kyndryl 분할 전환)</strong> · 펀더 동반 약함</td><td>⚪</td></tr>
+<tr><td>④ 컨센서스</td><td>선반영(하방 기울기) · n=22 · 리비전 하향</td><td>⚪</td></tr>
+<tr><td>⑤ §H.1 재평가 의존</td><td>Base 중간(36%) · Bull 높음(63%)</td><td>⚪</td></tr>
+</tbody></table>
+<blockquote>### 🏷️ ⚪ 적정 ‖ 신뢰도 밴드: 중간(하단) ‖ 풀 DD 승격 우선순위: 중간<br><br>여섯 칸이 모두 ⚪로 모인다 — 7월의 "분모 의존적" 분열(이익 렌즈 싸다 ↔ 매출 렌즈 안 싸다)은 <strong>이익 렌즈 쪽 여유가 금리 상승으로 줄면서 가운데로 수렴</strong>했다. 싸지도 비싸지도 않지만, 7월보다 <strong>할인율 상승 + 인수 의존 확인</strong>만큼 불리해졌다.<br><br><strong>🎯 매수 적정성 한 줄 — ⚪ 관망.</strong> <strong>$195 이하</strong>(P/S 2.66x = 분할 후 47pct · OCF−capex FCF 수익률 6.6% = 국채 +134bp · 7월 가격 trigger 유지) <strong>또는</strong> 10/22 Q3 실적에서 <strong>(a) RPO가 $68B에서 반등 + (b) 인수 효과를 뺀 매출 성장이 플러스 + (c) 추가 대형 차입 인수 없음</strong>이 확인되면 재고. 현재 $219.99는 컨센 저가 $174(−21%)와 평균 $240.59(+9.4%) 사이에서 <strong>하방이 더 두꺼운 비대칭</strong>이다.<br><strong>더 싸게 사는 trigger 1개</strong>: Q3에서 인수 제외 성장이 다시 마이너스 + FY2027 EPS 컨센 추가 하향 시 <strong>$180선(P/S 2.45x = 42pct)</strong> 재테스트 가능 — 그 구간이 실질 진입 지점.<br>🔴 이건 <strong>Claude의 낮은 신뢰도 가격 콜</strong>이다(Intel $40 대기 → $100 급등 사고). 최종 판단·실행은 사용자 · 정찰성 소액 진입은 규율 위반이 아니다.<br><br><strong>핵심 swing 변수 1개 = 인수 제외 유기 성장률.</strong> 연 $8~10B 차입 인수 없이 매출이 3.5~4% 자라면 렌즈①은 할인율 8.5%에서도 범위 내로 돌아가고 Ⓑ 판정이 굳는다. 0~1%에 머물면 "4% 성장"은 인수로 산 것이고, 짝이 맞는 FCF는 인수비를 뺀 값이라 <strong>envelope 밖</strong>으로 넘어간다. (보조 swing: 10년물 — 5%대 고착이면 할인율 8.5% 쪽이 기준이 된다.)</blockquote>
+<p><strong>🟢 저평가 적극 발화 체크 — 0/3 → 발화 ❌</strong></p>
+<table><thead><tr><th>조건</th><th>결과</th></tr></thead><tbody>
+<tr><td>① 역-DCF envelope 하단</td><td>❌ 상단의존(할인율 7.7%에서만 범위 내 중앙)</td></tr>
+<tr><td>② 역사 percentile 하위 약 20% (+ Z ≤ −1σ)</td><td>❌ P/S 56pct (20pct = P/S 2.04x ≈ 주가 약 $150) · Z = N/A라 percentile 단독 판정</td></tr>
+<tr><td>③ peer 대비 성장조정 discount</td><td>❌ 역방향 — 성장조정 EV/매출 0.907로 peer 최고</td></tr>
+</tbody></table>
+<p>🔴 <strong>가격 anchor 차단</strong>: "2026년 −24.2%", "52주 고점 $332 대비 −34%"는 저평가 근거가 아니다. 위 3조건이 그 anchor를 기각한다.</p>
+<hr>
+<h4>H.7.6 🧭 BRCR 병목 렌트 괴리 (overlay · 약한 신호 · 신규 수집 ❌)</h4>
+<table><thead><tr><th>축</th><th>점수</th><th>근거 (소비만)</th></tr></thead><tbody>
+<tr><td><strong>S</strong> 병목 강도</td><td>0.70</td><td>메인프레임 전환비용 ✅(진짜 hard lock-in) · D.6-a ✅는 이 1종뿐 · Qiskit = 규모↑·렌트 0(⚠️) · 7월 0.72에서 소폭 하향</td></tr>
+<tr><td><strong>R</strong> 렌트 실현</td><td><strong>0.55</strong></td><td>가격 인상 테스트 🟡 · Q2 총이익률 −1.04%p · Transaction Processing −8.1% · 인수 제외 Software 약 +1% · RPO 2분기 감소 (7월 0.58 → 하향)</td></tr>
+<tr><td><strong>D</strong> 내구성</td><td>0.62</td><td>D.6-b Durable ⭐5 · 단 ✅ 유형 1종 · AI 코딩 에이전트의 COBOL 이전 비용 인하 위험</td></tr>
+<tr><td><strong>C</strong> 포획 효율</td><td>0.60</td><td>§D.5 (A) 자가조달 · 단 (배당+인수)÷FCF 99~187% · 장기부채 $49.9B→$56.2B · 순차입 반기 +$7.0B (7월 0.70 → 하향)</td></tr>
+</tbody></table>
+<p><strong>BRCR = 0.70 × 0.55 × 0.62 × 0.60 = 0.143 → 정규화 0.615</strong></p>
+<ul>
+<li>y축(렌즈③(가) 재사용 · 유니버스 = IBM + peer 6사, USD 정규화 완료, n=7): <strong>EV/총이익 백분위 33%</strong>(IBM 6.59x, 7개 중 3위, peer 중앙 9.12x) → 괴리 <strong>+0.28 🟢</strong></li>
+<li>교차: <strong>EV/EBITDA 백분위 50%</strong>(IBM 16.05x, 7개 중 4위, peer 중앙 17.02x) → 괴리 <strong>+0.12 ⚪</strong></li>
+<li>🔴 IBM 총이익률 58%로 저-GM 종목은 아니지만, <strong>두 분모가 🟢 ↔ ⚪로 엇갈림</strong> + peer EV/총이익이 AI 프리미엄 종목(MSFT 17.0x·ORCL 12.0x·CSCO 10.7x)에 끌려 올라가 있음 → <strong>EV/총이익 단독 🟢 승격 ❌ → BRCR 종합 = ⚪ 적정</strong>(7월 "정합~미세 고평가"에서 peer 재평가로 한 칸 이동, 봉합 없이 양쪽 병기).</li>
+<li>🔴 <strong>구속 병목 1줄 — R(렌트 실현) 0.55가 4축 최저(7월과 동일).</strong> 병목을 소유했지만 가격으로 전환하지 못한다. 이번엔 <strong>C(0.60)가 바짝 뒤따른다</strong> — 렌트 부족을 차입 인수로 메우는 구조.</li>
+<li>태그: <strong><code>[소유]</code></strong> (메인프레임·Red Hat·Qiskit 직접 소유) · 양자만 <strong><code>[소유·미과금]</code></strong>. 약한 신호(조건부) · 7축 미합산 · soft-flag.</li>
+</ul>
+<hr>
+<h4>H.7.4 의무 라벨 4종</h4>
+<ul>
+<li><strong>낮은 신뢰도 참고</strong> — 신뢰도 중간(하단). Claude 밸류·타이밍 콜은 문서화된 약점(Intel $40 대기 → $100 급등)이며 강점은 구조 분석이다. 역-DCF가 할인율 0.8%p에 뒤집히는 fragile 상태.</li>
+<li><strong>🎯 매수 적정성 = ⚪ 관망</strong>($195 이하 또는 10/22 Q3 RPO 반등+인수 제외 성장 플러스+추가 차입 인수 없음 시 재고) — 직접 답하되 <strong>enforcement 아님, 최종 판단은 사용자</strong>, 정찰성 소액 진입은 규율 위반 아님.</li>
+<li><strong>장기 thesis 종목에 stop sign ❌</strong> — 관망은 진입 차단·매도 신호가 아니라 §H.3 Thesis 리스크 신호의 입력일 뿐.</li>
+<li><strong>점수 미반영</strong> — 7축 ⭐ 가중평균·레이더에 합산하지 않음.</li>
+</ul>
+<p>soft-flag 발생: "역-DCF 상단의존(fragile)" · "Bull 재평가 의존 높음(63%)" · "성장의 차입 인수 의존" → 모두 §H.3 입력으로만 roll-up.</p>
+<hr>
+<h4>H.7.5 Steelman 3축</h4>
+<ul>
+<li><strong>본 분석</strong>: 여섯 칸이 ⚪로 수렴하고, 7월 대비 악화 요인은 금리(+58bp)와 인수 의존 확인 두 가지다 → ⚪ 적정·관망.</li>
+<li><strong>자기 반박 (데이터 축) — "기준 FCF를 너무 보수적으로 골랐다"</strong>: IBM 정의 FCF $14.7B를 쓰면 FCF 수익률 7.1%(국채 +183bp)이고, 할인율 8.5%에서도 요구 CAGR은 2.5%로 <strong>유기 envelope 중앙</strong>이다. IBM 정의의 차이(금융 자회사 채권 변동 제외 등)는 실제로 스스로 청산되는 현금이라 경제적으로 정당한 면이 있다. 이 정의를 채택하면 판정은 🟢 쪽으로 기운다. → <strong>유지.</strong> 이유: (1) SEC 원천 두 줄로 재현되는 값을 기준으로 해야 감사가 가능하다 (2) 어느 정의를 쓰든 <strong>(배당+인수)가 FCF를 99~187% 소진</strong>한다는 사실은 바뀌지 않는다. 대신 IBM 정의를 상단 밴드로 표에 병기했다.</li>
+<li><strong>자기 반박 (구조 축) — "시장 가설과 아키타입이 정반대다"</strong>: orchestrator 확정 아키타입은 Ⓑ(소프트웨어 이익 61%)인데, 시장은 IBM을 ACN과 0.49 상관으로 묶어 IT 서비스로 거래한다. 시장이 옳다면 비교 기준은 ACN EV/EBITDA 8.2배이고, IBM 16.05배는 <strong>거의 2배 프리미엄 = 🔴 고평가</strong>다. 반대로 Ⓑ가 옳다면 비교 기준은 SAP 18.1배이고 IBM은 할인이다. ⚪는 두 극단의 평균일 뿐일 수 있다. → <strong>수정(하방 기울기 명시).</strong> 인수 제외 Software가 약 +1%라면 SAP 배수를 받을 근거가 약하므로 <strong>⚪를 유지하되 "하방이 더 두꺼운 비대칭"을 매수 적정성 문장에 반영</strong>했다.</li>
+<li><strong>자기 반박 (시간 지평 축) — "가장 가까운 관측점이 3주 뒤다"</strong>: 10/22 Q3 실적이 swing 변수(인수 제외 성장·RPO)를 직접 공개한다. 3주 뒤 공개될 답을 앞질러 판정할 엣지가 없다. 반대로 5~10년 지평에서는 양자 옵션(IONQ EV 규모 기준 IBM EV의 약 6%)이 가격에 거의 반영 안 됐고, 이런 옵션은 연속이 아니라 <strong>이벤트에서 불연속적으로</strong> 재평가된다 — 관망이 그 불연속을 놓칠 수 있다. → <strong>유지.</strong> 옵션 델타는 배당·인수로 FCF가 소진되는 한 낮고, 관망은 정찰까지 막지 않는다. 불연속 재평가 가능성은 Flip 🟢 트리거에 반영.</li>
+<li>🔴 <strong>Z(σ) 고유 반박 해당 없음</strong> — 이번엔 Z를 산출하지 않았다(Kyndryl 분할 N/A). 참고로 분할 후 57개월만으로 계산해도 "평균 회귀" 서사는 쓰지 않는다.</li>
+</ul>
+<p><strong>▶ Flip 트리거 (관측 가능 신호만)</strong></p>
+<table><thead><tr><th>방향</th><th>조건</th></tr></thead><tbody>
+<tr class="sig-g"><td>🟢 강화 (과지불 위험↓)</td><td>인수 제외 매출 성장이 연 3.5% 이상으로 2분기 연속 · RPO가 $68B에서 반등 · 인수 없이 순차입 감소 · FY2027 EPS 컨센 상향 전환 · 10년물 4.7% 이하 복귀(할인율 7.7% 이하 → 렌즈① 범위 내) · 양자 매출 첫 공시(옵션 → 숫자 전환)</td></tr>
+<tr class="sig-r"><td>🔴 훼손 (→ §H.3 입력 · 보유 아님 · 매도 신호 아님)</td><td>Q3 인수 제외 성장 마이너스 지속 · RPO 3분기 연속 감소 · 추가 $5B+ 차입 인수 · 총이익률 57% 하회(z17 피크 소멸 확정) · FY2027 EPS 추가 −3% 하향 · 배당+인수가 FCF를 3분기 연속 초과</td></tr>
+</tbody></table>
+<hr>
+<hr>
+<h2>Section I. 자금흐름 · 지분구조</h2>
+<ul>
+<li><strong>I.0</strong> — 변동 없음(기관 66.6% · 내부자 0.105%). Dual-class ❌.</li>
+<li><strong>I.2 🆕 내부자(7/20 이후)</strong> — Krishna 8/27 이연보상 200만 달러를 IBM 주가 연동 계좌로 이동(매도 아님) · <strong>Robert Thomas(소프트웨어 수석부사장 겸 최고영업책임자) 8/26 Form 144·Form 4 — 2.5만 주 약 576만 달러 재량 매도, 직접 보유의 34%, 10b5-1 아님.</strong></li>
+<li><strong>I.3 🆕 공매도</strong> — 2,244만 주 · 유통 주식의 2.65% · 커버 4.6일(9/15 결제).</li>
+<li><strong>I.3b 🆕 레버리지 ETF</strong> — IBX(2배 롱) 1종 · 명목 8,170만 달러 = 유통 시총의 <strong>0.04%</strong> · 하루 ±10% 시 리밸런싱 약 820만 달러 = 20일 평균 거래대금의 0.6%. 발견 목록은 하한.</li>
+<li>⚠️ I.4 옵션 OI·IV — ❌ 미수집.</li>
+</ul>
+<hr>
+<h2>Section J. 산업 · 규제 · 정책 risk</h2>
+<ul>
+<li><strong>J.1</strong> — <strong>History-Dive</strong> 요약: IBM은 위기마다 <strong>범용화된 제조를 팔고 플랫폼을 사 왔다.</strong> 2014년 15억 달러를 얹어 주고 떠난 반도체 제조에 2026년 보조금 10억 달러를 들고 돌아왔다. 재무 숫자 목표는 5건 중 2건(40%)만 지켰다.</li>
+<li><strong>J.2</strong> — 7/14 급락 관련 법무법인 조사 공고는 확인했으나 실제 증권 소송 제기 여부는 미확인.</li>
+<li><strong>J.3</strong> — 🆕 CHIPS 양자 보조금 <strong>표준 양식</strong>: 동종 3사(Quantinuum·Rigetti·D-Wave)는 보조금 대가로 <strong>정부에 신주를 9/4 종가의 85%에 발행</strong>했고, 마일스톤 미달 시 부채로 회수하는 조항이 붙었다. <strong>Anderon의 대가 조건(정부 지분·회수 조항)은 공개되지 않았다</strong> — 자회사 지분이 정부로 가는지가 IBM 주주 귀속분을 바꾼다.</li>
+</ul>
+<hr>
+<h2>Section K. 공시 · 가이던스</h2>
+<ul>
+<li><strong>K.1·K.3</strong> — 새 실적 없음(3분기 10/22). CEO 7/30 발언: <em>"연기된 거래의 40%가 이미 마감됐다 — 취소가 아니라 연기"</em>(People-Dive 1차 인용).</li>
+<li><strong>K.4 8-K·등록 (7/26 이후)</strong> — <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0000051143&amp;type=S-8">S-8 POS 7/29</a> · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0000051143&amp;type=424B">424B3 8/10·424B5 8/11</a> — 캐나다달러 채권 · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0000051143&amp;type=8-K">8-K 8/14</a> item 9.01. <strong>HRL 종결·Anderon 확정에는 8-K가 없다</strong> — IBM이 둘 다 중요 거래로 보지 않는다는 뜻이다.</li>
+<li><strong>K.4b AI 밸류체인 이익 귀착</strong> — 2026 상반기 매출 +4.9%에 영업현금 +27.9%로 방향 일치 🟢 · 매출채권 회수일수(DSO) ❌ 미수집.</li>
+</ul>
+<h3>K.4c 🆕 외부 비판 리포트 분해표</h3>
+<table><thead><tr><th>#</th><th>주장</th><th>가설 자산을 치나?</th><th>비중</th><th>1차 검증</th><th>회사 반박</th><th>분류</th></tr></thead><tbody>
+<tr><td>1</td><td>IBM 7/30 양자 우위 결과 전부의 정확한 확률을 GPU 256개로 37.3분에 계산(싱가포르기술디자인대 · <a href="https://www.technology.org/2026/09/07/ibm-quantum-advantage-verified-classical-response/">technology.org 9/7</a>)</td><td><strong>예</strong> — §H.1 Bull 가정 "양자 우위 외부 검증 통과"를 직접 친다</td><td>매출 0%(양자 매출 미공시)</td><td>❌ 논문 원문 미확인(arXiv 검색 실패) · 동료 검토 전</td><td>❌ 확인 안 됨</td><td><strong>❓ 미확인</strong></td></tr>
+</tbody></table>
+<blockquote>확인되면 🔴 가설을 침 → §H.3 "검증 훼손" 발동. 관측 trigger = 동료 검토 게재 여부 + IBM의 공개 반박.</blockquote>
+<hr>
+<h2>Section L. 동적 발견</h2>
+<h4>L.1 🔧 Anderon은 "분리되는 독립 회사"가 아니라 IBM 자회사다 (직전 L.1 정정)</h4>
+<ul>
+<li><strong>발견 트리거</strong>: 9/16 <a href="https://newsroom.ibm.com/2026-09-16-anderon,-an-ibm-company,-finalizes-agreement-with-the-u-s-department-of-commerce-for-a-1-billion-chips-award-to-accelerate-r-d-for-u-s-based-pure-play-quantum-foundry">Anderon 확정 보도자료</a> — <em>"Anderon LLC, an IBM company"</em></li>
+<li><strong>중요도</strong>: 🔴 · <strong>결론 영향</strong>: §D.5 곡괭이 하향. 지금 품목 = 초전도 큐비트 배열·입출력 신호·판독 부품 웨이퍼.</li>
+</ul>
+<h4>L.2 IonQ가 모든 방식의 양자칩 위탁 파운드리를 먼저 열었다</h4>
+<ul>
+<li><strong>발견 트리거</strong>: <a href="https://thequantuminsider.com/2026/09/08/skywater-launches-quantum-semiconductor-manufacturing-business/">TQI 9/8</a></li>
+<li><strong>중요도</strong>: 🔴 · <strong>결론 영향</strong>: §C.2②·§H.6③ 하향. 곡괭이 자산이 완성품 업체 안으로 수직통합되는 같은 패턴이 두 회사에서 동시에 나타났다.</li>
+</ul>
+<h4>L.3 양자 우위 선언(7/30)과 반론(약 2주 뒤)</h4>
+<ul>
+<li><strong>중요도</strong>: 🔴 · <strong>결론 영향</strong>: §H.3 검증 훼손 🟠 · §K.4c ❓. 🔧 직전 "판정 게시판을 IBM 자신이 운영"은 <strong>"IBM이 Flatiron·BlueQubit·Algorithmiq와 함께 만든 공동 운영판"</strong>으로 정밀화(History-Dive).</li>
+</ul>
+<h4>L.4 시장은 IBM을 IT서비스로 가격 매긴다</h4>
+<ul>
+<li><strong>발견 트리거</strong>: 60일 상관(ACN 0.49 vs IonQ 0.01)</li>
+<li><strong>중요도</strong>: 🟠 · <strong>결론 영향</strong>: §H.5 G↑. 양자 옵션은 가격에 거의 없다 — 이것이 엣지이자, 시장이 끝까지 안 바꾸면 영원히 실현되지 않는 거리다.</li>
+</ul>
+<h4>L.5 대형 거래 마감 책임자의 재량 매도</h4>
+<ul>
+<li><strong>중요도</strong>: 🟠 · <strong>결론 영향</strong>: §H.3 영업 실행 신호. 10/22 실적과 함께 읽는다.</li>
+</ul>
+<h3>L.deferred</h3>
+<ul>
+<li>양자 우위 반론 논문 원문(arXiv ID) · IBM 공식 대응</li>
+<li>9/15~9/18 주가 −11%·거래량 2.5배의 원인(뉴스 목록 보존 기간 밖)</li>
+<li>Anderon 정부 대가 조건(지분·회수 조항) · HRL 인수가</li>
+<li>옵션 OI·IV · 매출채권 회수일수(DSO)</li>
+</ul>
+<hr>
+<h2 class="sig-r">🔴 종합 판단</h2>
+<h3>7축 종합</h3>
+<table><thead><tr><th>축</th><th>⭐</th><th>가중</th><th>기여</th></tr></thead><tbody>
+<tr><td>🌦️ 날씨</td><td>4.0</td><td>3.0</td><td>12.00</td></tr>
+<tr><td>⛰️ 산</td><td>4.0</td><td>1.5</td><td>6.00</td></tr>
+<tr><td>🌲 숲</td><td>4.5</td><td>1.5</td><td>6.75</td></tr>
+<tr><td>🌳 나무</td><td>3.5</td><td>1.0</td><td>3.50</td></tr>
+<tr><td>🌲🌳 옆의 나무</td><td>3.5</td><td>1.0</td><td>3.50</td></tr>
+<tr><td>👤 사람</td><td>3.5</td><td>1.5</td><td>5.25</td></tr>
+<tr><td>🔢 숫자</td><td>3.5</td><td>1.0</td><td>3.50</td></tr>
+<tr><td><strong>가중평균</strong></td><td></td><td><strong>10.5</strong></td><td><strong>40.50 ÷ 10.5 = ⭐3.9</strong></td></tr>
+</tbody></table>
+<blockquote><strong>종합 ⭐3.9 = 사업·thesis 매력도(가중평균) · 밸류 멀티플 미반영.</strong></blockquote>
+<div class="dd-fig"><p class="cap">확신도 7축 레이더 — 이번(실선) vs 직전 7/26(점선)</p><div id="fig-score7"></div><div class="dd-legend" id="leg-score7"></div></div>
+<h3>시간 지평별 결론</h3>
+<table><thead><tr><th>지평</th><th>결론</th></tr></thead><tbody>
+<tr class="sig-r"><td>단기 (0~6개월)</td><td>🔴 3분기 실적 전까지 본업 저점 미확인 · 시장이 AI 수혜 바구니에서 뺐다</td></tr>
+<tr><td>중기 (6개월~3년)</td><td>⚪ 양자 우위가 반론을 견디는지, Anderon이 외부 고객을 얻는지가 서사를 가른다. 양자 매출이 공시되지 않는 한 밸류에 반영되지 않는다</td></tr>
+<tr class="sig-g"><td>장기 (3~10년)</td><td>🟢 → 🟡 풀스택은 여전히 유일에 가깝다. 다만 <strong>곡괭이 층은 IonQ와 나눠 갖게 됐고</strong>, 규모 약속은 평균 24개월 늦어 온 기록이 있다</td></tr>
+</tbody></table>
+<h3>종합 판정</h3>
+<p><strong>유지 (관찰).</strong> 이번 두 달의 변화는 대부분 <strong>양자 쪽의 "좋은 사건"이 실제로 일어났는데(HRL 종결·Anderon 확정·양자 우위 선언), 그 사건마다 조건이 붙었다</strong>는 것이다. 곡괭이는 자회사·단일 방식이었고, 경쟁 파운드리가 같은 달 나왔으며, 우위 선언에는 반론이 따라붙었다. 시장은 이 모든 소식에 반응하지 않고 IBM을 IT서비스 회사로 계속 가격 매겼다.</p>
+<hr>
+<h2>📋 수집 상태 (실패·불완전 항목만)</h2>
+<ul>
+<li>⚠️ 양자 우위 반론 논문 원문 — ❌ 미확인(2차 기사만)</li>
+<li>⚠️ 9/15~9/18 하락 원인 — ❌ 미확인</li>
+<li>⚠️ §I.4 옵션 OI·IV · 매출채권 회수일수 — ❌ 미수집</li>
+<li>⚠️ 양자 매출·수주·마진 · Anderon 대가 조건 · HRL 인수가 — ❌ IBM 미공시</li>
+<li>⚠️ §F ⑤ 비전축 — 사용자 ⭐ 미입력</li>
+</ul>
+<h2>다음 실행 시 보완 목록</h2>
+<ul>
+<li>10/22 3분기 실적 — IBM Z·연기 거래 마감·RPO·FCF</li>
+<li>양자 우위 반론의 동료 검토 결과와 IBM 대응</li>
+<li>Anderon 첫 외부 고객·정부 대가 조건</li>
+<li>영업 총책 추가 매도 여부(Form 4)</li>
+</ul>
+<hr>
+<h3>📎 주요 출처 (1차 우선)</h3>
+<ul>
+<li><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0000051143&amp;type=&amp;dateb=&amp;owner=include&amp;count=40">IBM SEC 공시 목록</a> · <a href="https://www.sec.gov/Archives/edgar/data/51143/000005114326000078/ibm-20260630.htm">2026 2분기 10-Q</a></li>
+<li><a href="https://newsroom.ibm.com/2026-09-16-anderon,-an-ibm-company,-finalizes-agreement-with-the-u-s-department-of-commerce-for-a-1-billion-chips-award-to-accelerate-r-d-for-u-s-based-pure-play-quantum-foundry">Anderon CHIPS 10억 달러 확정 (IBM 뉴스룸 9/16)</a></li>
+<li><a href="https://www.ibm.com/quantum/blog/quantum-advantage">IBM 양자 우위 블로그</a> · <a href="https://www.ibm.com/roadmaps/quantum/">IBM 양자 로드맵</a></li>
+<li><a href="https://thequantuminsider.com/2026/09/08/skywater-launches-quantum-semiconductor-manufacturing-business/">SkyWater 양자 파운드리 출범 (TQI 9/8)</a> · <a href="https://thequantuminsider.com/2026/09/21/globalfoundries-375m-chips-award-quantum-rd/">GlobalFoundries $375M 확정 (TQI 9/21)</a></li>
+<li><a href="https://thequantuminsider.com/2026/09/23/ionq-demonstrates-industrys-first-end-to-end-real-time-quantum-error-decoder/">IonQ 실시간 해독기 (TQI 9/23)</a> · <a href="https://thequantuminsider.com/2026/09/06/nec-halts-development-of-quantum-computer-hardware/">NEC 양자 하드웨어 중단 (TQI 9/6)</a></li>
+<li>시세·컨센서스: yfinance (2026-09-29)</li>
+</ul>
+<hr>
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+const VIZ={"score7": {"axes": ["🌦️ 날씨", "⛰️ 산", "🌲 숲", "🌳 나무", "🌲🌳 옆나무", "👤 사람", "🔢 숫자"], "max": 5, "label": "확신도 7축", "series": [{"name": "2026-09-30", "color": "#1f5fa8", "scores": [4.0, 4.0, 4.5, 3.5, 3.5, 3.5, 3.5]}, {"name": "2026-07-26", "color": "#999999", "dash": true, "scores": [4.0, 4.0, 4.5, 4.0, 3.5, 3.0, 3.5]}]}, "scenario": {"horizonLabel": "5년", "cases": [{"label": "Bull", "tone": "bull", "prob": 0.22, "mult": 2.08}, {"label": "Base", "tone": "base", "prob": 0.55, "mult": 1.4}, {"label": "Bear", "tone": "bear", "prob": 0.23, "mult": 0.87}]}, "landmark": {"current": {"label": "IBM 현재", "mcap": 207.3}, "target": {"label": "×10", "mcap": 2073}, "refs": [{"name": "Accenture", "mcap": 108.4}, {"name": "Oracle", "mcap": 417.7}, {"name": "Microsoft", "mcap": 3779.3}], "sentence": "×10(약 2.07조 달러)은 현존 최대 기업군 규모 — 규모 좌표일 뿐 가격 예측 아님.", "warn": true}};
+DDViz.renderRadar("fig-score7","leg-score7",VIZ.score7);DDViz.renderScenario("fig-h1","badge-h1",VIZ.scenario);DDViz.renderMcapLadder("fig-ladder","sent-ladder",VIZ.landmark);</script>
+</body>
+</html>
