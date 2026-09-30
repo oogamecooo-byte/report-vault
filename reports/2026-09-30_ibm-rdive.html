@@ -1,0 +1,1118 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta name="vault-unlisted" content="1"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>IBM R-Dive — 양자 사업 중심 제품·수익모델 해부 (첫 실행) — 2026-09-30</title>
+<style>
+:root{--bg:#EBE4D3;--card:#FDF6E3;--ink:#1f2328;--muted:#5b5346;--line:#e0d8c4;--accent:#7a5c2e;--good:#27ae60;--warn:#d68910;--bad:#c0392b;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;line-height:1.72;font-size:15px}
+.wrap{max-width:1040px;margin:24px auto;padding:0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:30px 36px;box-shadow:0 1px 3px rgba(60,50,30,.06)}
+@media(max-width:720px){.card{padding:20px 16px}}
+h1{font-size:25px;margin:.1em 0 .4em;letter-spacing:-.4px;line-height:1.35}
+h2{font-size:20px;margin:1.6em 0 .6em;padding-bottom:.26em;border-bottom:2px solid var(--accent);color:#3a2f1c}
+h3{font-size:16.5px;margin:1.3em 0 .4em;color:#4a3c22}
+h4{font-size:15px;margin:1.1em 0 .35em;color:#5a4a2c}
+a{color:#1f6feb;text-decoration:none} a:hover{text-decoration:underline}
+table{border-collapse:collapse;width:100%;margin:.7em 0;font-size:13px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:#f3ebd6;font-weight:700}
+tr:nth-child(even) td{background:#fbf3df}
+.tldr{background:#f6efda;border-left:5px solid var(--bad);border-radius:8px;padding:10px 20px;margin:.6em 0}
+.tldr li{margin:.35em 0}
+blockquote{margin:.6em 0;background:#f2ecdc;border-left:4px solid #b9a77f;border-radius:6px;padding:6px 14px;font-size:13.2px;color:#3d3526;page-break-inside:avoid}
+blockquote p{margin:.25em 0}
+details{background:#f6efda;border-radius:8px;padding:8px 14px;margin:.8em 0}
+details summary{cursor:pointer}
+hr{border:none;border-top:1px solid var(--line);margin:1.4em 0}
+ul,ol{padding-left:1.3em}
+@media print{body{background:#fff}.card{box-shadow:none;border-color:#ddd}blockquote,.tldr,details{background:#fff}}
+
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+</style><meta name="vault-stage" content="Dive">
+<meta name="vault-topic" content="IBM">
+<meta name="vault-skill" content="R-Dive">
+<meta name="vault-date" content="2026-09-30">
+<meta name="vault-published" content="2026-09-30">
+<meta name="description" content="IBM R-Dive — 양자 사업 중심 제품·수익모델 해부 (첫 실행) — 2026-09-30">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body><div class="wrap"><div class="card">
+<h1>IBM R-Dive — 양자 사업 중심 제품·수익모델 해부 (첫 실행)</h1>
+<p><strong>작성일</strong> 2026-09-30 · <strong>대상</strong> International Business Machines (NYSE: IBM) · <strong>모드</strong> 선행 모드(Deep-Dive Step 1.5) · <strong>초점</strong> 양자 사업의 수익모델·과금 구조·매출 포착 여부 (그룹 4개 세그먼트는 뼈대만)
+<strong>1차 자료</strong> <a href="https://www.sec.gov/Archives/edgar/data/51143/000005114326000078/ibm-20260630.htm">2026 2분기 10-Q (7/23 제출)</a> · <a href="https://www.sec.gov/Archives/edgar/data/51143/000005114326000010/ibm-20251231_d2.htm">2025 연차보고서(10-K 편입 본문)</a> · <a href="https://www.sec.gov/Archives/edgar/data/51143/000005114326000047/ibm-20260528.htm">8-K 2026-05-28 (양자 100억 달러)</a> · <a href="https://data.sec.gov/api/xbrl/companyfacts/CIK0000051143.json">SEC XBRL 재무 수치</a> · <a href="https://www.ibm.com/quantum/products">IBM 양자 가격표</a> · <a href="https://newsroom.ibm.com/2026-09-16-anderon,-an-ibm-company,-finalizes-agreement-with-the-u-s-department-of-commerce-for-a-1-billion-chips-award-to-accelerate-r-d-for-u-s-based-pure-play-quantum-foundry">Anderon 보도자료 9/16</a> · 실적 발표 자료 2024년 4분기~2026년 2분기 6개 분기
+<strong>시세 기준</strong> 2026-09-29 종가 $219.99 · 시가총액 약 2,073억 달러 (yfinance)</p>
+<hr />
+<h2>📄 한 장 요약</h2>
+<div class="tldr"><ul>
+<li>🔴 <strong>아키타입: 그룹은 ⑥ 소프트웨어 구독형(주)과 ① 소프트웨어 쪽으로의 믹스 전환(부)이다. 양자는 ③ 정부 주도형과 ⑥ 사용량 과금을 섞은, 아직 매출을 공시하지 않는 옵션이다.</strong> 소프트웨어가 2025년 매출의 44%, 세그먼트 이익의 61%를 낸다. 양자는 4개 세그먼트 어디에도 숫자가 없다.</li>
+<li>🔴 <strong>양자의 과금표는 공개돼 있는데 매출은 없다.</strong> 클라우드 접속은 분당 96→72→48달러로 쓸수록 싸진다. 가장 큰 연간 구독(프리미엄)도 최소 계약이 연 약 25만 달러다. 그런데 10-K·10-Q·실적 발표 6개 분기 자료 어디에도 양자 매출·수주 숫자가 없다. 생성형 AI 누적 수주는 125억 달러로 따로 공개하는 회사가 양자는 숫자 하나 안 낸다.</li>
+<li>🔴 <strong>돈이 들어가는 쪽은 숫자가 크고 분명하다.</strong> 5년간 100억 달러 이상(연 약 20억 달러)을 양자에 쓴다(8-K). 2025년 연구개발비 83억 달러의 약 24%, 회사 정의 잉여현금흐름 147억 달러의 약 14%에 해당한다.</li>
+<li>🟠 <strong>Qiskit은 공짜 깔때기다.</strong> 양자 개발자 약 70%가 쓰지만 도구 자체는 무료다. 돈이 되는 문은 유료 플랜 전용 부가 기능(Qiskit Functions)과 그 뒤의 양자컴퓨터 사용 시간이다. 이 깔때기가 실제로 얼마를 돈으로 바꾸는지는 공시가 없다.</li>
+<li>🟠 <strong>Anderon은 '곡괭이 계획'이지 아직 '곡괭이 사업'이 아니다.</strong> 9/16 상무부 보조금 10억 달러가 확정됐고 첫 웨이퍼가 공장을 돌고 있다. 그러나 지금 만드는 것은 초전도 웨이퍼뿐이다. 다른 방식은 "향후 확장"이고 외부 고객·가격·정부 지분 조건은 공개되지 않았다. 직전 Deep-Dive의 '유일한 진성 곡괭이' 판정을 한 단계 낮춘다.</li>
+<li>🟠 <strong>HRL 인수(8/26 종결)는 가격도 매출 기여도 공시되지 않았다.</strong> 8-K도 없다. IBM이 중요하지 않은 거래로 본다는 뜻이다. 얻은 것은 실리콘 스핀 큐비트·극저온·제어 전자·패키징 기술이지 매출원이 아니다.</li>
+<li>🔴 <strong>치명 함정 ① 헤드라인 숫자가 전부 '투입'이다(C.3·C.4).</strong> 90대 이상 시스템, 340여 기관, 개발자 70%, 100억 달러, 보조금 10억 달러 — 모두 쓰는 돈이나 사용자 수다. 게다가 회계상 계약 잔고(RPO)는 정부 계약과 해지 가능한 서비스 계약을 빼고 센다. 양자 매출이 생겨도 잔고 숫자로는 보이지 않는 구조다.</li>
+<li>🔴 <strong>치명 함정 ② 양자 비용을 대는 본업 현금이 흔들린다(C.1·C.10).</strong> 2분기 IBM Z 매출 −42%, 계약 잔고 710억→680억 달러로 2분기 연속 감소. 2026 상반기 인수에 105억 달러를 썼다. 양자 연 20억 달러는 이 현금에서 나온다.</li>
+<li><strong>한 줄 판정</strong>: IBM 양자는 "세계 최대 사용자 기반 + 공개된 요금표 + 공시 매출 0"이다. 기술 해자는 깊지만 아직 가격으로 바뀌지 않았다. 첫 양자 매출·수주 숫자 공시, 또는 Anderon의 첫 외부 고객 발표가 이 판정을 바꿀 방아쇠다.</li>
+</ul></div>
+<details>
+<summary><b>배경 (접이식)</b> — 이 보고서가 다루는 범위와 직전 Deep-Dive(7/26) 이후 바뀐 사실</summary>
+<p>IBM은 매출 675억 달러(2025년)의 기업용 IT 회사다. 공시 세그먼트는 소프트웨어·컨설팅·인프라·파이낸싱 4개다. 양자컴퓨터는 이 중 어느 세그먼트의 줄로도 따로 잡히지 않는다. 이 보고서는 그룹의 수익 구조를 뼈대로만 짚고, 양자 사업이 <strong>무엇을 팔고, 어떻게 값을 매기고, 그 돈이 장부에 잡히는지</strong>를 가장 깊게 판다.</p>
+<p>직전 Deep-Dive(2026-07-26) 이후 1차 자료로 바뀐 사실:
+- <strong>HRL 인수 종결</strong> — 3분기 말 예정이던 것이 8/26에 끝났다. 인수가는 여전히 비공개, 8-K 없음.
+- <strong>Anderon 보조금 확정</strong> — 5월 의향서 → 9/16 10억 달러 확정. 회사 형태는 "IBM에서 분리되는 독립 회사"가 아니라 <strong>"Anderon LLC, IBM 자회사(an IBM company)"</strong>로 표기됐다. 현재 제품은 초전도 웨이퍼이고, 다른 방식은 "향후 확장 계획"이다.
+- <strong>스위스 첫 IBM 양자컴퓨터(9/10)</strong> — 록히드마틴의 스위스 국방조달청 절충교역 약정을 통해 설치된다. 정부 돈이 시스템 설치를 끌어오는 구조가 한 건 더 늘었다.
+- <strong>잉여현금흐름 정의 정정</strong> — 직전 보고서는 114.6억 달러(영업현금−설비투자)를 썼다. IBM이 스스로 정의한 잉여현금흐름은 147억 달러다. 차이는 금융 자회사의 대출채권 변동을 빼느냐다(C.1에서 설명).</p>
+</details>
+<hr />
+<h2>Part A — 아키타입</h2>
+<p><strong>한 줄로 말하면</strong>: 그룹은 "해마다 다시 들어오는 소프트웨어 돈"이 몸통이고 메인프레임 교체 주기가 그 위에 파도를 만든다. 양자는 몸통 옆에 붙은, 정부와 연구기관이 주로 사 주는 초기 사업이다.</p>
+<h3>A.1 분류 결과</h3>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>아키타입</th>
+<th>근거 (1차)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>그룹 주</strong></td>
+<td>⑥ 구독 소프트웨어형</td>
+<td>소프트웨어 2025년 매출 299.6억 달러(세그먼트 합계의 44.4%) · 세그먼트 이익의 60.6% · 소프트웨어 매출의 약 80%가 반복 매출(10-Q MD&amp;A) · 연간 반복 매출(ARR) 약 240억 달러(4Q25 실적 통화)</td>
+</tr>
+<tr>
+<td><strong>그룹 부</strong></td>
+<td>① 믹스 시프트형 (소프트웨어 쪽으로)</td>
+<td>소프트웨어 비중 40.8%(2023) → 43.3%(2024) → 44.4%(2025) → 44.9%(2026 상반기)</td>
+</tr>
+<tr>
+<td><strong>그룹 파도</strong></td>
+<td>⑥ 하드웨어 일회 판매</td>
+<td>IBM Z: 2025년 +51.7%(z17 출시) → 2026년 2분기 −42.0%</td>
+</tr>
+<tr>
+<td><strong>양자 주</strong></td>
+<td>③ 정부 주도형</td>
+<td>스위스 설치 = 국방 절충교역 재원 · Anderon = 상무부 보조금 · 투자 발표 자체가 정부 행사와 묶임</td>
+</tr>
+<tr>
+<td><strong>양자 부</strong></td>
+<td>⑥ 사용량 과금 + 연간 구독</td>
+<td>분당 과금(96·72·48달러) + 프리미엄 연간 구독 + 온프레미스 견적 판매</td>
+</tr>
+</tbody>
+</table>
+<h3>A.2 확정과 자동 점검 함정</h3>
+<ul>
+<li><strong>확정</strong>: 그룹 = ⑥(주) + ①(부). 양자 = ③ + ⑥, 매출 공시 전 단계. 제품 실체(B.0)를 채운 뒤에도 바뀌지 않았다.</li>
+<li><strong>자동 가중 함정</strong>: ⑥ → C.2 반복매출 · C.3 발표 숫자와 장부 격차 · C.9 운영 레버리지 / ① → C.11 주당 희석 · C.12 전환 신호 / ③ → C.4 잔고 품질 · C.6 집중도 · C.1 마진 분모. 양자에서는 <strong>C.3(사용자 수와 매출의 격차)</strong>과 <strong>C.4(투입 숫자를 잔고로 착각)</strong>가 가장 무겁다.</li>
+<li><strong>시간 지평</strong>: 지금의 양자는 ③이지만, IBM이 그리는 2029년 이후 모습은 "결함내성 컴퓨터의 사용 시간 판매(⑥)"다. 지금 분류는 현재 스냅숏이다.</li>
+</ul>
+<hr />
+<h2>Part B — 제품·서비스 이해 + 수익모델 해부</h2>
+<h3>B.0 제품·서비스·기술</h3>
+<p><strong>한 줄로 말하면</strong>: IBM은 양자에서 "칩 → 컴퓨터 → 클라우드 접속 → 개발 도구 → 웨이퍼 공장"까지 전부 직접 한다. 그중 요금표가 공개된 것은 클라우드 접속 하나다.</p>
+<h4>B.0.1-a 그룹 주력 3개 (뼈대)</h4>
+<p><strong>① 하이브리드 클라우드(Red Hat) — 가장 빨리 크는 반복 매출.</strong> 기업이 자기 서버와 여러 클라우드를 한 방식으로 운영하게 해 주는 소프트웨어다. 2026년 2분기 매출 20.0억 달러, 전년 대비 +11.2%. 한 번 표준으로 깔리면 바꾸기 어렵다. 소프트웨어 세그먼트의 매출총이익률은 82.6%다.</p>
+<p><strong>② IBM Z 메인프레임과 그 위의 거래처리 소프트웨어 — 가장 강한 락인, 가장 큰 파도.</strong> 은행·카드사의 결제 원장이 도는 대형 컴퓨터다. 기계는 몇 년에 한 번 바뀌는 신형 주기를 따라 크게 출렁인다(2025년 +51.7% → 2026년 2분기 −42.0%). 그 위의 거래처리 소프트웨어(2분기 20.3억 달러, −8.1%)는 대형 기업 라이선스 계약이 많다. 10-Q는 소프트웨어 매출의 20%가 이런 일회성 거래이고 "주로 IBM Z와 연결돼 있다"고 쓴다.</p>
+<p><strong>③ 컨설팅 — 가장 큰 인력 사업, 가장 얇은 마진.</strong> 2025년 매출 210.6억 달러, 세그먼트 이익률 11.7%. 생성형 AI 누적 수주 125억 달러 중 105억 달러 이상이 컨설팅이다. 양자에서는 "양자 액셀러레이터"(사용 사례 발굴 서비스)가 여기 들어간다.</p>
+<h4>B.0.1-b 양자 제품 5개 (깊게)</h4>
+<p><strong>① 양자컴퓨터 클라우드 접속(Quantum Compute 서비스) — 요금표가 공개된 유일한 양자 상품</strong></p>
+<ul>
+<li><strong>무엇</strong>: 인터넷으로 IBM 양자컴퓨터를 빌려 쓰는 서비스다. 형태는 사용량 과금과 연간 구독의 혼합이다.</li>
+<li><strong>어떻게</strong>: 사용자가 Qiskit으로 짠 양자 회로를 IBM 데이터센터의 초전도 양자 칩(현재 주력 Heron, 최신 Nighthawk)으로 보낸다. 칩은 절대영도 가까이 식힌 냉동기 안에 있다. 요금은 <strong>칩을 실제로 쓴 시간(초 단위)</strong>으로 매긴다.</li>
+<li><strong>누구·왜</strong>: 대학·국립연구소·제약·금융·자동차 연구조직. 아직 "지금 돈을 버는 계산"이 아니라, 양자 알고리즘을 미리 익히고 쓸 곳을 찾으려고 산다. IBM 가격 페이지의 사례도 오크리지 국립연구소·클리블랜드 클리닉·올스테이트·RIKEN 등 연구 과제다.</li>
+<li><strong>차별점</strong>: IBM 자료 기준 90대 이상 배치, 340여 기관 사용(블로그)·8-K 기준 "포춘 500 기업 325곳 이상과 스타트업·대학·정부기관". 경쟁사 합계보다 많은 대수라는 것이 회사 주장이다. 가장 오래, 가장 많이 돌려 본 함대라는 점이 강점이다.</li>
+<li><strong>매출 위치</strong>: ❌ 미공시. 어느 세그먼트에 잡히는지도 공개되지 않는다.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>🔤 초전도 큐비트</strong> — 극저온에서 전기 저항이 0이 되는 회로를 양자 정보의 최소 단위로 쓰는 방식. IBM·구글이 쓰는 방식이다.</p>
+</blockquote>
+<p><strong>② 온프레미스 양자 시스템(IBM Quantum System Two) — 한 대씩 파는 큰 계약</strong></p>
+<ul>
+<li><strong>무엇</strong>: 양자 칩·냉동기·제어 장비·고전 서버를 묶은 시스템을 고객 건물에 설치하는 상품이다. 가격은 "견적 필요"로만 표기된다.</li>
+<li><strong>어떻게</strong>: IBM이 설치하고 유지보수까지 맡는다(가격 페이지: "IBM Quantum이 서비스·유지보수"). 스위스 건처럼 <strong>설치 후에도 IBM이 운영</strong>하는 경우도 있다.</li>
+<li><strong>누구·왜</strong>: 나라 단위 고객이 많다. 9/10 발표된 스위스 첫 시스템은 스위스 국립 슈퍼컴퓨팅센터(루가노)에 2026년 말까지 설치된다. 재원은 <strong>록히드마틴이 스위스 국방조달청과 맺은 절충교역 약정</strong>이다. 나라가 "우리도 자체 양자컴퓨터가 있어야 한다"는 이유로 산다.</li>
+<li><strong>차별점</strong>: 클라우드 대신 자기 땅에 기계를 두려는 수요(주권·보안·슈퍼컴퓨터 연결)를 IBM만큼 여러 번 채운 회사가 드물다.</li>
+<li><strong>매출 위치</strong>: ❌ 미공시. 계약 금액도 건별로 공개되지 않았다.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>🔤 절충교역(offset)</strong> — 무기를 수입하는 나라가 판매국 기업에게 "대신 우리나라에 이만큼 투자·기술이전을 하라"고 요구하는 약정. 스위스 건은 록히드마틴이 이 의무를 IBM 양자컴퓨터 설치로 채우는 구조다.</p>
+</blockquote>
+<p><strong>③ Qiskit과 Qiskit Functions — 공짜 표준과 유료 문</strong></p>
+<ul>
+<li><strong>무엇</strong>: Qiskit은 양자 회로를 짜는 오픈소스 개발 도구다. Qiskit Functions는 그 위에서 쓰는 완성형 기능 모음(오류 억제, 최적화 풀이, 화학 계산 등)이다.</li>
+<li><strong>어떻게</strong>: Qiskit 자체는 누구나 무료로 쓴다. 반면 <strong>Qiskit Functions는 프리미엄·플렉스·온프레미스 요금제 사용자만</strong> 쓸 수 있다(IBM 문서). 기능 공급자는 IBM과 외부 회사(Algorithmiq, Q-CTRL, ColibriTD 등)다.</li>
+<li><strong>누구·왜</strong>: 양자 전문가가 아닌 화학·재료·금융 연구자가 "회로를 몰라도 결과를 받게" 해 준다.</li>
+<li><strong>차별점</strong>: 양자 개발자 약 70%가 쓰는 사실상의 표준이다. 외부 회사들이 자기 기능을 여기에 올려 팔기 시작해 <strong>앱스토어처럼</strong> 변하고 있다.</li>
+<li><strong>매출 위치</strong>: Qiskit 자체 매출은 없다. Functions는 유료 요금제 안에 묶여 있고 외부 기능의 수익 배분 조건은 ❌ 미공시다.</li>
+</ul>
+<p><strong>④ Anderon — 300mm 양자 웨이퍼 파운드리(자회사)</strong></p>
+<ul>
+<li><strong>무엇</strong>: 양자 칩을 새기는 웨이퍼를 대신 만들어 주는 공장이다. 뉴욕 올버니에 있고, 법인은 "Anderon LLC, IBM 자회사"다. CEO는 무케시 카레(Mukesh Khare).</li>
+<li><strong>어떻게</strong>: 반도체 업계 표준인 300mm 대형 웨이퍼 공정을 양자 칩에 적용한다. 9/16 보도자료 기준 제공 품목은 <strong>초전도 큐비트 배열용 웨이퍼, 양자 입출력 신호 부품, 판독 신호 체인 부품</strong>이다. 다른 방식은 "향후 확장 계획"이다. <strong>첫 웨이퍼가 이미 공장을 돌고 있다.</strong></li>
+<li><strong>누구·왜</strong>: 회사 설명상 "생태계 전체의 고객"이다. 그러나 같은 보도자료에서 IBM 연구 총괄 제이 감베타(Jay Gambetta)는 "IBM의 양자 로드맵에 필요한 제조 기반"이라고 말한다. <strong>첫 고객은 IBM 자신</strong>이다.</li>
+<li><strong>차별점</strong>: 양자 전용 300mm 순수 파운드리는 지금 이 한 곳뿐이다(회사 주장). 경쟁 형태는 IonQ가 산 SkyWater의 양자 위탁 사업부다.</li>
+<li><strong>매출 위치</strong>: 매출 발생 전. 자금 = 상무부 CHIPS 보조금 10억 달러(연구개발 가속용으로 명시) + IBM 현금 10억 달러. 고객·가격·정부 지분 조건 ❌ 미공시.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>🔤 파운드리</strong> — 설계는 남이 하고 제조만 맡아 주는 공장. 반도체의 TSMC 같은 역할이다.</p>
+</blockquote>
+<p><strong>⑤ HRL Laboratories — 기술 자산(8/26 인수 종결)</strong></p>
+<ul>
+<li><strong>무엇</strong>: 캘리포니아 말리부의 연구소. 보잉과 GM이 공동 소유하던 곳이다.</li>
+<li><strong>어떻게</strong>: IBM 발표상 얻은 역량은 실리콘 스핀 큐비트, 양자 센서, 양자 소재, 극저온, 제어 전자, 패키징, 배선 기술이다. 실리콘 스핀 제조는 Anderon과 협업할 기회로 명시됐다.</li>
+<li><strong>누구·왜</strong>: 외부 판매용이 아니라 <strong>IBM 자신의 병목(제어 전자·배선·패키징)을 안에서 풀기 위한</strong> 인수다. 보잉·GM은 인수 뒤에도 IBM·HRL과 양자 응용을 계속 협력한다.</li>
+<li><strong>차별점</strong>: IBM은 초전도 방식 1위인데, 이번 인수로 두 번째 방식(실리콘 스핀)까지 손에 넣었다.</li>
+<li><strong>매출 위치</strong>: ❌ 인수가·매출 모두 미공시. 8-K도 없다.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>🔤 실리콘 스핀 큐비트</strong> — 일반 반도체와 같은 실리콘 칩 안에 전자 하나를 가둬 그 회전 방향을 정보로 쓰는 방식. 기존 반도체 공장을 활용할 수 있다는 점이 매력이다.</p>
+</blockquote>
+<h3>B.0.2 핵심 기술·IP·해자</h3>
+<ul>
+<li><strong>기반 기술</strong>: 초전도 칩 설계·300mm 제조·극저온 시스템·실시간 오류 해독(480나노초, 2025-11 발표)·qLDPC 오류정정 부호. 8/31에는 칩 위 리셋 소자로 초당 회로 처리량을 이전 세대의 25배로 올렸다(IBM 블로그, 로컬 기록 기준).</li>
+<li><strong>재현 난이도</strong>: 칩·냉동기·소프트웨어·클라우드 운영을 모두 한 회사가 10년 가까이 돌린 곳은 드물다. 90대 이상 함대 운영 경험 자체가 따라오기 어려운 자산이다.</li>
+<li><strong>IP</strong>: 양자 특허 수는 이번에 수집하지 못했다(❌). 2025년 IBM 전체 지식재산 수입(라이선스·로열티)은 2.65억 달러로 전년보다 19.3% 줄었다. 양자 몫은 구분되지 않는다.</li>
+<li><strong>R&amp;D</strong>: 그룹 연구개발비 2025년 83.2억 달러(매출의 12.3%), 2026년 상반기 44.9억 달러(+10.8%). 10-Q는 증가 이유로 "AI, 하이브리드 클라우드, 양자"를 든다.</li>
+<li><strong>마케팅 표현 vs 실증</strong>: "2026년 양자 우위" 판정은 IBM이 운영하는 게시판에서 이뤄진다(직전 Deep-Dive). "양자 개발자 70%"는 IBM 자료의 주장이며 외부 조사 원문은 확인하지 못했다.</li>
+</ul>
+<h3>B.0.3 제품 → 수익모델 연결</h3>
+<table>
+<thead>
+<tr>
+<th>제품</th>
+<th style="text-align: center;">과금 유형</th>
+<th style="text-align: center;">아키타입</th>
+<th style="text-align: center;">가격 결정력</th>
+<th style="text-align: center;">전환비용·락인</th>
+<th style="text-align: center;">운영 레버리지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>클라우드 접속</td>
+<td style="text-align: center;">사용량 + 구독</td>
+<td style="text-align: center;">⑥</td>
+<td style="text-align: center;">🟡 목록가 공개·물량 할인 50%</td>
+<td style="text-align: center;">🟡 Qiskit 코드 재사용</td>
+<td style="text-align: center;">🟢 높음(함대 고정비)</td>
+</tr>
+<tr>
+<td>온프레미스 시스템</td>
+<td style="text-align: center;">하드웨어 + 서비스</td>
+<td style="text-align: center;">③·⑥</td>
+<td style="text-align: center;">🟢 견적(희소)</td>
+<td style="text-align: center;">🟢 설치 후 교체 어려움</td>
+<td style="text-align: center;">🟡 건별</td>
+</tr>
+<tr>
+<td>Qiskit</td>
+<td style="text-align: center;">무료</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">🔴 가격 0</td>
+<td style="text-align: center;">🟢 개발자 습관</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>Qiskit Functions</td>
+<td style="text-align: center;">유료 요금제 부속</td>
+<td style="text-align: center;">⑥</td>
+<td style="text-align: center;">❓ 미공시</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>Anderon</td>
+<td style="text-align: center;">위탁 제조(예정)</td>
+<td style="text-align: center;">③(보조금) → ⑥</td>
+<td style="text-align: center;">❓ 고객 0 공개</td>
+<td style="text-align: center;">🟡 공정 인증 후 락인</td>
+<td style="text-align: center;">🔴 설비 고정비 큼</td>
+</tr>
+<tr>
+<td>HRL</td>
+<td style="text-align: center;">내부 자산</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">해당 없음</td>
+<td style="text-align: center;">해당 없음</td>
+<td style="text-align: center;">—</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>해자가 돈으로 바뀌는 칸</strong>: 지금은 <strong>"전환비용" 칸에만</strong> 쌓이고 "가격 결정력" 칸은 비어 있다. 개발자 70%가 Qiskit을 쓰는 해자는 강하지만, 그 해자가 가격으로 전환되는 길은 <strong>유료 요금제의 사용 시간 하나</strong>다. 그 사용 시간의 규모가 공시되지 않으므로 "해자 → 돈" 다리는 아직 증명되지 않았다. 🚩</li>
+</ul>
+<hr />
+<h3>B.1 매출 스트림 분해</h3>
+<p><strong>한 줄로 말하면</strong>: 돈의 절반 가까이를 소프트웨어가 벌고, 이익은 60% 이상을 소프트웨어가 낸다. 양자는 표에 줄이 없다.</p>
+<table>
+<thead>
+<tr>
+<th>세그먼트</th>
+<th style="text-align: right;">2025 매출 ($M)</th>
+<th style="text-align: center;">비중</th>
+<th style="text-align: center;">2023→2025</th>
+<th style="text-align: center;">2025 YoY</th>
+<th style="text-align: center;">세그먼트 이익률</th>
+<th style="text-align: center;">과금</th>
+<th style="text-align: center;">반복성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>소프트웨어</td>
+<td style="text-align: right;">29,962</td>
+<td style="text-align: center;">44.4%</td>
+<td style="text-align: center;">↑</td>
+<td style="text-align: center;">+10.6%</td>
+<td style="text-align: center;">33.1%</td>
+<td style="text-align: center;">구독·라이선스</td>
+<td style="text-align: center;">🟢 약 80%</td>
+</tr>
+<tr>
+<td>컨설팅</td>
+<td style="text-align: right;">21,055</td>
+<td style="text-align: center;">31.2%</td>
+<td style="text-align: center;">→</td>
+<td style="text-align: center;">+1.8%</td>
+<td style="text-align: center;">11.7%</td>
+<td style="text-align: center;">용역</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>인프라</td>
+<td style="text-align: right;">15,718</td>
+<td style="text-align: center;">23.3%</td>
+<td style="text-align: center;">↕ (Z 주기)</td>
+<td style="text-align: center;">+12.1%</td>
+<td style="text-align: center;">22.0%</td>
+<td style="text-align: center;">하드웨어 + 지원</td>
+<td style="text-align: center;">🔴 Z / 🟢 지원</td>
+</tr>
+<tr>
+<td>파이낸싱</td>
+<td style="text-align: right;">737</td>
+<td style="text-align: center;">1.1%</td>
+<td style="text-align: center;">→</td>
+<td style="text-align: center;">+3.3%</td>
+<td style="text-align: center;">70.7%</td>
+<td style="text-align: center;">이자</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td><strong>세그먼트 합계</strong></td>
+<td style="text-align: right;"><strong>67,472</strong></td>
+<td style="text-align: center;">100%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">+7.9%</td>
+<td style="text-align: center;">24.3%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td>양자</td>
+<td style="text-align: right;">❌ 미공시</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">사용량·구독·HW</td>
+<td style="text-align: center;">—</td>
+</tr>
+</tbody>
+</table>
+<p>출처: 2025 연차보고서 세그먼트 표(세그먼트 합계 674.7억 달러는 연결 매출 675.35억 달러와 약간 다르다 — 기타 항목 차이).</p>
+<p><strong>2026년 2분기(최신)</strong> — 총매출 171.6억 달러(+1.1%).</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th style="text-align: right;">2Q26 ($M)</th>
+<th style="text-align: center;">YoY</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>하이브리드 클라우드(Red Hat)</td>
+<td style="text-align: right;">1,998</td>
+<td style="text-align: center;">+11.2%</td>
+</tr>
+<tr>
+<td>자동화</td>
+<td style="text-align: right;">1,951</td>
+<td style="text-align: center;">+3.6%</td>
+</tr>
+<tr>
+<td>데이터</td>
+<td style="text-align: right;">1,782</td>
+<td style="text-align: center;">+18.9%</td>
+</tr>
+<tr>
+<td>거래처리</td>
+<td style="text-align: right;">2,030</td>
+<td style="text-align: center;"><strong>−8.1%</strong></td>
+</tr>
+<tr>
+<td>컨설팅</td>
+<td style="text-align: right;">5,327</td>
+<td style="text-align: center;">+0.2%</td>
+</tr>
+<tr>
+<td>하이브리드 인프라 (IBM Z −42.0% · 분산 인프라 +37.3%)</td>
+<td style="text-align: right;">2,570</td>
+<td style="text-align: center;"><strong>−10.3%</strong></td>
+</tr>
+<tr>
+<td>인프라 지원</td>
+<td style="text-align: right;">1,265</td>
+<td style="text-align: center;">−0.8%</td>
+</tr>
+<tr>
+<td>파이낸싱</td>
+<td style="text-align: right;">186</td>
+<td style="text-align: center;">+12.2%</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>지역</strong>: 2025년 미국 매출 268.9억 달러(39.8%). 나머지 60%가 해외라 환율 노출이 크다.</li>
+<li><strong>믹스 방향</strong>: 소프트웨어 쪽으로 천천히 이동 중(C.12). 단 2026년 2분기에는 메인프레임과 묶인 거래처리 소프트웨어가 같이 빠졌다. 10-Q는 "6월 마지막 몇 주에 대형 거래 여러 건이 제때 체결되지 못했다"고 적었다. 고객들이 가격 인상 전에 서버·스토리지·메모리부터 사느라 예산을 돌렸다는 설명이다.</li>
+</ul>
+<h3>B.2 과금·가격 모델 + 정량</h3>
+<p><strong>한 줄로 말하면</strong>: 그룹은 구독·라이선스가 주력이다. 양자는 "분 단위 사용료"가 유일하게 공개된 단가다.</p>
+<table>
+<thead>
+<tr>
+<th>정량 메트릭</th>
+<th>산식</th>
+<th>IBM 값</th>
+<th>해석</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Take rate</td>
+<td>수수료 ÷ 거래액</td>
+<td>해당 없음</td>
+<td>거래 중개형 아님</td>
+</tr>
+<tr>
+<td>Implied fee rate</td>
+<td>매출 ÷ 운용자산</td>
+<td>해당 없음</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Float yield</td>
+<td>이자수익 ÷ 예치자산</td>
+<td>해당 없음</td>
+<td>파이낸싱은 대출 사업(C.8)</td>
+</tr>
+<tr>
+<td>라이선스 %</td>
+<td>로열티 ÷ 라이선시 매출</td>
+<td>❌ 산출 불가</td>
+<td>지식재산 수입 2.65억 달러(2025) 절대액만 공시</td>
+</tr>
+<tr>
+<td><strong>양자 분당 단가</strong></td>
+<td>목록가</td>
+<td>96 / 72 / 48 달러</td>
+<td>쓸수록 절반까지 싸짐</td>
+</tr>
+<tr>
+<td><strong>양자 최소 계약액</strong></td>
+<td>최소 분 × 단가</td>
+<td>플렉스 400분 = 2.88만 달러 · 프리미엄 5,200분 = 24.96만 달러/년</td>
+<td>대형 연간 구독도 최소 25만 달러 수준</td>
+</tr>
+<tr>
+<td><strong>양자 시간당 목록가</strong></td>
+<td>96 × 60</td>
+<td>5,760달러</td>
+<td>종량제 기준</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡 <strong>📐 분당 과금 사다리</strong> — 종량제 분당 96달러, 연 400분 이상 선구매 72달러, 연 5,200분 이상 연간 구독 48달러. 많이 살수록 분당 값이 절반까지 내려간다. 무료 요금제는 월 10분이다(IBM 가격 페이지).</p>
+</blockquote>
+<p><strong>규모 감각 산수 (추정 아님)</strong> — IBM이 말하는 340여 기관이 <strong>전부</strong> 프리미엄 최소 계약을 맺었다고 쳐도 340 × 24.96만 달러 = 약 8,490만 달러다. 2025년 매출 675억 달러의 <strong>0.13%</strong>다. 양자가 매출의 1%(6.75억 달러)가 되려면 프리미엄 최소 계약 약 2,700건어치가 필요하다. 반대로 온프레미스 시스템은 한 대 값이 공개되지 않아 이 산수에 들어가지 않는다. 이 계산은 <strong>실제 매출 추정이 아니라</strong> "공개 단가로 본 규모의 자릿수"다.</p>
+<div class="dd-fig"><p class="cap"><b>세그먼트 매출 합계(왼쪽 축, 백만 달러)와 소프트웨어 비중·소프트웨어 이익 비중(오른쪽 축, %)</b> — 2025 연차보고서 세그먼트 표. 양자는 공시 매출이 없어 선을 그릴 수 없다.</p><div id="fig-rate"></div><div class="dd-legend" id="leg-rate"></div></div>
+
+<table>
+<thead>
+<tr>
+<th>연도</th>
+<th style="text-align: right;">세그먼트 매출 합계 ($M)</th>
+<th style="text-align: right;">소프트웨어 매출 비중</th>
+<th style="text-align: right;">소프트웨어 이익 비중</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2023</td>
+<td style="text-align: right;">61,229</td>
+<td style="text-align: right;">40.8%</td>
+<td style="text-align: right;">58.5%</td>
+</tr>
+<tr>
+<td>2024</td>
+<td style="text-align: right;">62,510</td>
+<td style="text-align: right;">43.3%</td>
+<td style="text-align: right;">64.2%</td>
+</tr>
+<tr>
+<td>2025</td>
+<td style="text-align: right;">67,472</td>
+<td style="text-align: right;">44.4%</td>
+<td style="text-align: right;">60.6%</td>
+</tr>
+<tr>
+<td>2026 상반기 (참고)</td>
+<td style="text-align: right;">32,979</td>
+<td style="text-align: right;">44.9%</td>
+<td style="text-align: right;">—</td>
+</tr>
+</tbody>
+</table>
+<p>2025년에 소프트웨어 매출 비중은 올랐는데 이익 비중은 내려갔다. 인프라 이익이 z17 주기로 41% 늘었기 때문이다. 즉 2025년 이익 개선의 일부는 <strong>구조가 아니라 주기</strong>였다.</p>
+<h3>B.3 단위 경제학</h3>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>IBM 값</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>소프트웨어 연간 반복 매출(ARR)</td>
+<td>약 240억 달러, 한 자릿수 후반 성장</td>
+<td>4Q25 실적 통화</td>
+</tr>
+<tr>
+<td>생성형 AI 누적 수주</td>
+<td>125억 달러 이상 (소프트웨어 20억+, 컨설팅 105억+)</td>
+<td>4Q25 발표문</td>
+</tr>
+<tr>
+<td>소프트웨어 매출총이익률</td>
+<td>82.6% (2Q26, −1.3%p)</td>
+<td>10-Q</td>
+</tr>
+<tr>
+<td>인프라 매출총이익률</td>
+<td>58.4% (2Q26, −3.1%p)</td>
+<td>10-Q</td>
+</tr>
+<tr>
+<td>양자 고객당 매출</td>
+<td>❌ 미공시</td>
+<td>—</td>
+</tr>
+<tr>
+<td>양자 계약 수·갱신율</td>
+<td>❌ 미공시</td>
+<td>—</td>
+</tr>
+<tr>
+<td>LTV/CAC</td>
+<td>❌ 미공시</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡 <strong>🔤 ARR(연간 반복 매출)</strong> — 지금 맺어 둔 구독 계약이 1년 동안 자동으로 만들어 낼 매출. 구독 사업의 체력 지표다.</p>
+</blockquote>
+<p>같은 회사가 생성형 AI는 누적 수주를, 소프트웨어는 ARR을 숫자로 공개한다. 양자만 숫자가 없다. 이 비대칭 자체가 정보다.</p>
+<h3>B.4 매출 품질 + 집중도</h3>
+<ul>
+<li><strong>반복성</strong>: 소프트웨어 매출의 약 80%가 반복 매출. 나머지 20%는 대형 기업 라이선스(ELA) 등 일회성이며 IBM Z와 엮여 있다.</li>
+<li><strong>계약 잔고(RPO)</strong>: 2025년 말 710억 달러 → 2026년 3월 690억 → 6월 <strong>680억 달러</strong>. 2분기 연속 감소. 6월 잔고의 69%가 2년 안에 매출이 된다.</li>
+<li>🔴 <strong>RPO가 세지 않는 것</strong>: 10-Q 원문은 RPO에서 "고객이 큰 위약금 없이 해지할 수 있는 계약, 예컨대 일부 서비스형(as-a-service)·<strong>정부</strong>·기간제 라이선스·서비스 계약"을 뺀다고 적는다. 양자 수요의 중심인 <strong>정부 계약과 클라우드 접속이 바로 여기에 해당</strong>할 가능성이 크다. 양자 매출이 생겨도 잔고 숫자에는 드러나지 않는 구조다.</li>
+<li><strong>고객 집중</strong>: "2025·2024·2023년 모두 단일 고객이 매출 10% 이상인 경우 없음"(연차보고서). 그룹 차원 집중 위험은 낮다.</li>
+<li><strong>양자 안의 집중</strong>: 공개된 설치·자금 사례(스위스 국방 절충교역, 상무부 보조금, DARPA 벤치마크 프로그램, 에너지부 사업)가 대부분 정부 쪽이다. 고객 목록 전체는 비공개다.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>🔤 RPO(잔여 이행 의무)</strong> — 이미 계약했지만 아직 매출로 잡지 않은 금액. 회사가 "앞으로 받을 돈이 예약돼 있다"는 증거로 쓰는 숫자다.</p>
+</blockquote>
+<h3>B.5 가치사슬에서 돈을 떼는 자리</h3>
+<p>양자 돈의 흐름을 한 줄로 그리면 이렇다.</p>
+<p><strong>정부(보조금·연구 과제·절충교역) + 기업 연구조직 → IBM(클라우드 분당 사용료 · 시스템 판매·운영 · 컨설팅) → Anderon(웨이퍼, IBM 자기 수요 우선) → HRL(제어·패키징 기술, 내부 사용)</strong></p>
+<ul>
+<li>IBM은 이 사슬의 <strong>거의 모든 칸을 스스로 갖고 있다</strong>. 외부 공급자에게 떼어 줄 몫이 적다는 장점이 있지만, 동시에 모든 칸의 비용을 혼자 진다.</li>
+<li>돈을 떼는 길목은 두 곳이다. <strong>(1) 클라우드 사용 시간</strong> — 목록가 공개, 규모 미공개. <strong>(2) 나라 단위 시스템 설치</strong> — 희소성 있음, 건별 금액 미공개.</li>
+<li>🔴 가격 결정력은 (2)에 있고 (1)은 약하다. (1)은 아마존 브라켓·마이크로소프트 애저 같은 클라우드 양자 창구와 경쟁한다.</li>
+</ul>
+<hr />
+<h2>Part C — 12 함정 체크리스트</h2>
+<h3>C.1 마진 분모 🚩</h3>
+<ul>
+<li><strong>그룹</strong>: 같은 해 현금 창출력이 분모에 따라 세 가지로 나온다. <strong>IBM 정의 잉여현금흐름 147억 달러</strong> / 영업현금 132억 − 설비투자 11억 = <strong>121억 달러</strong> / 직전 Deep-Dive가 쓴 <strong>114.6억 달러</strong>. IBM 정의는 금융 자회사가 고객에게 빌려준 돈(대출채권)의 변동 −32억 달러를 영업현금에서 빼고 본다. 2025년에는 이 차이가 특히 컸다.</li>
+<li><strong>세그먼트 이익 vs 세전이익</strong>: 2025년 세그먼트 이익 합계 163.6억 달러, 연결 세전이익 103.3억 달러. 약 60억 달러가 본사 비용·인수 무형자산 상각·연금 등으로 세그먼트 밖에 있다. "세그먼트 이익률 24.3%"는 회사 전체 이익률이 아니다.</li>
+<li><strong>양자</strong>: 비용(연 약 20억 달러)은 연구개발비·설비투자에 흩어져 있고 매출은 없다. <strong>양자 마진이라는 분모 자체가 존재하지 않는다.</strong></li>
+<li><strong>🚩 판정</strong>: 있음. 외부 사이트의 "잉여현금흐름"을 볼 때 어느 정의인지 반드시 확인해야 한다.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>🔤 IBM 정의 잉여현금흐름</strong> — 영업현금흐름에서 금융 자회사의 대출채권 증감을 빼고, 순설비투자를 뺀 값. 금융 사업은 대출이 늘면 현금이 줄어 보이므로 그 효과를 제거한 회사 자체 기준이다.</p>
+</blockquote>
+<h3>C.2 반복매출 프리미엄 — 없음 (그룹) / 양자는 미확인</h3>
+<ul>
+<li>소프트웨어 약 80% 반복, ARR 약 240억 달러. 그룹의 반복성은 높다.</li>
+<li>양자는 프리미엄 연간 구독이 반복형이지만 규모 미공시. 온프레미스는 일회성 + 유지보수.</li>
+</ul>
+<h3>C.3 발표 숫자 ↔ 장부 매출 격차 🚩 (양자 최대 함정)</h3>
+<ul>
+<li><strong>발표 숫자</strong>: 90대 이상 시스템 · 340여 기관 · 포춘 500 325곳 이상 · 개발자 약 70% · 5년 100억 달러 이상 투자.</li>
+<li><strong>장부 매출</strong>: ❌ 0건 공시. 2024년 4분기부터 2026년 2분기까지 6개 분기 발표문·통화 기록에 양자 매출·수주 숫자가 한 번도 없다. 2Q26 통화에서 양자는 "Anderon 의향서, 100억 달러 투자, IDC 평가 1위"로만 언급됐다.</li>
+<li>🔎 <strong>확인 못 한 숫자</strong>: 시장에 "IBM 양자 누적 수주 10억 달러 돌파"라는 말이 돈다. 이번에 읽은 IBM 공식 발표문(4Q24~2Q26)에서는 찾지 못했다. 1차 근거가 확인되기 전까지 쓰지 않는다.</li>
+<li><strong>🚩 판정</strong>: 있음. 격차를 줄일 일정도 제시되지 않았다.</li>
+</ul>
+<h3>C.4 잔고 품질 — 확정 vs 천장 🚩</h3>
+<ul>
+<li>그룹 RPO 680억 달러는 확정 계약이다. 다만 2분기 연속 줄고 있다.</li>
+<li>양자 쪽 큰 숫자는 <strong>잔고가 아니다</strong>. 100억 달러는 IBM이 쓸 돈, 10억 달러 보조금은 받을 연구개발 지원금이다. 둘 다 매출 약속이 아니다.</li>
+<li>정부·서비스형 계약이 RPO에서 빠지므로(B.4) 양자 수주는 잔고로도 확인할 수 없다.</li>
+<li><strong>🚩 판정</strong>: 있음(양자). 헤드라인 숫자가 전부 투입 쪽이다.</li>
+</ul>
+<h3>C.5 가격 결정력 🚩</h3>
+<ul>
+<li><strong>강한 곳</strong>: IBM Z·거래처리 소프트웨어(대체 불가 원장), Red Hat.</li>
+<li><strong>약한 곳</strong>: 컨설팅(이익률 11.7%·인건비 노출), 양자 클라우드(목록가 공개·물량 할인 50%·클라우드 경쟁).</li>
+<li><strong>가격 0</strong>: Qiskit. 70% 점유를 가격으로 못 바꾼다.</li>
+<li><strong>🚩 판정</strong>: 있음(양자). 해자(표준 점유)가 가격으로 전환되지 않는다.</li>
+</ul>
+<h3>C.6 고객·유통 집중도 — 없음 (그룹) / 양자는 정부 쏠림</h3>
+<ul>
+<li>그룹: 단일 고객 10% 이상 없음. 유통 비용을 쥔 단일 파트너도 없다.</li>
+<li>양자: 공개 사례가 정부 재원 중심. 정부 예산·정책이 바뀌면 설치 계약이 흔들린다. ⚠️ 관찰.</li>
+</ul>
+<h3>C.7 매크로 민감도 — 외부 변수 하나</h3>
+<ul>
+<li><strong>그룹</strong>: 고객의 IT 설비투자 우선순위. 2분기에 고객이 가격 인상 전 서버·메모리 확보로 예산을 돌리자 Z와 거래처리 소프트웨어 거래가 밀렸다.</li>
+<li><strong>양자</strong>: 정부의 양자 예산(미국 CHIPS·에너지부, 각국 주권 수요).</li>
+<li>단일 변수에 매출 50% 이상 노출은 아니다. 🟡</li>
+</ul>
+<h3>C.8 금리 비대칭 — 해당 없음</h3>
+<ul>
+<li>예치금 이자로 버는 모델이 아니다. 파이낸싱 세그먼트(매출 7.4억 달러)는 대출 사업이다. 연차보고서 기준 금리가 10% 불리하게 움직이면 금융상품 공정가치가 약 11억 달러 줄어드는 정도다.</li>
+</ul>
+<h3>C.9 운영 레버리지 — 없음 (그룹은 확인됨)</h3>
+<ul>
+<li>2025년 소프트웨어 매출 +10.6%에 세그먼트 이익 +14.2%. 레버리지가 작동한다.</li>
+<li>양자는 함대·팹 고정비가 커서 <strong>매출이 붙으면 레버리지는 클 구조</strong>다. 지금은 매출이 없어 레버리지가 거꾸로(비용만) 작동한다.</li>
+</ul>
+<h3>C.10 현금 전환 🟡</h3>
+<table>
+<thead>
+<tr>
+<th>($B)</th>
+<th style="text-align: right;">2023</th>
+<th style="text-align: right;">2024</th>
+<th style="text-align: right;">2025</th>
+<th style="text-align: right;">2026 상반기</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>순이익</td>
+<td style="text-align: right;">7.50</td>
+<td style="text-align: right;">6.02</td>
+<td style="text-align: right;">10.59</td>
+<td style="text-align: right;">3.38</td>
+</tr>
+<tr>
+<td>영업현금흐름(GAAP)</td>
+<td style="text-align: right;">13.93</td>
+<td style="text-align: right;">13.45</td>
+<td style="text-align: right;">13.19</td>
+<td style="text-align: right;">7.77 (+27.9%)</td>
+</tr>
+<tr>
+<td>IBM 정의 잉여현금흐름</td>
+<td style="text-align: right;">11.2</td>
+<td style="text-align: right;">12.7</td>
+<td style="text-align: right;">14.7</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>인수 지출</td>
+<td style="text-align: right;">5.08</td>
+<td style="text-align: right;">3.29</td>
+<td style="text-align: right;">8.29</td>
+<td style="text-align: right;">10.48</td>
+</tr>
+<tr>
+<td>배당 지급</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">6.26</td>
+<td style="text-align: right;">3.17</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>순이익보다 영업현금이 늘 크다(감가상각·주식보상 등 비현금 비용 때문). 현금 전환 자체는 건강하다.</li>
+<li>🔴 그러나 <strong>인수 + 배당이 잉여현금흐름을 넘는다</strong>. 2025년 인수 83억 + 배당 63억 = 146억 달러 ≈ 잉여현금흐름 147억. 2026년 상반기엔 인수만 105억 달러(Confluent 등). 여기에 양자 연 20억 달러가 얹힌다. 장기 부채는 2024년 말 499억 → 2026년 6월 562억 달러, 8월에는 캐나다달러 채권 27.5억 C$를 새로 냈다(8-K 8/14).</li>
+<li>AI 밸류체인 조건부 점검: 2025년 매출 +7.6%에 영업현금 −1.9%로 엇갈렸다. 2026년 상반기엔 매출 +4.9%에 영업현금 +27.9%로 돌아섰다. 매출채권 회수일수(DSO)는 이번에 수집하지 못했다(⚠️).</li>
+</ul>
+<h3>C.11 주당 희석 — 없음</h3>
+<ul>
+<li>희석 주식 수 9.12억(2022) → 9.49억(2025) = 3년 +4.0%. 같은 기간 주당 매출 66.4 → 71.2달러 = +7.3%. 주당 가치가 주식 증가보다 빨랐다.</li>
+<li>다만 주식보상 비용이 9.9억 → 17.2억 달러로 3년 +74% 늘었다. 인수로 들어온 인력 보상이 커지는 중이다. ⚠️ 관찰.</li>
+</ul>
+<h3>C.12 모델 전환 신호 — 아직 미발동</h3>
+<ul>
+<li><strong>그룹</strong>: 소프트웨어 비중 상승은 진행 중이나 느리다(연 1~2%p).</li>
+<li><strong>양자 긍정 방아쇠 (모두 아직 없음)</strong>: ① 실적 발표에 양자 매출·수주 숫자가 처음 등장 ② Anderon의 첫 외부 고객 공개 ③ 외부가 검증한 양자 우위 사례. 아빈드 크리슈나 CEO는 방송 인터뷰에서 "2028~29년에 매출에 측정 가능한 영향"을 말했다(로컬 기록 경유, 원문 미재확인). 이 말이 맞다면 전환 변곡은 빨라도 2년 뒤다.</li>
+<li><strong>부정 방아쇠</strong>: 본업 현금이 약해질 때 양자 투자 속도를 늦춘다는 발언.</li>
+</ul>
+<hr />
+<h2>Part D — 종합 판정</h2>
+<h3>D.1 자가점검 (막힌 칸 = 아직 모르는 것)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>질문</th>
+<th>답</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>주력 제품을 5가지 관점으로 서술했나, 제품이 어떻게 돈이 되나?</td>
+<td>✅ 그룹 3 + 양자 5. 양자는 "과금 방식"까지는 알고 "규모"는 모름</td>
+</tr>
+<tr>
+<td>1</td>
+<td>누가 왜 사나?</td>
+<td>✅ 그룹 = 대기업·은행 / 양자 = 정부·연구조직</td>
+</tr>
+<tr>
+<td>2</td>
+<td>매출 주머니 몇 개, 비중·추세?</td>
+<td>✅ 4개 세그먼트 / 양자 ❌</td>
+</tr>
+<tr>
+<td>3</td>
+<td>주력 과금 모델?</td>
+<td>✅ 구독·라이선스 / 양자 = 분당 사용료 + 구독 + 시스템 판매</td>
+</tr>
+<tr>
+<td>4</td>
+<td>반복매출 비중?</td>
+<td>✅ 소프트웨어 80% / 양자 ❌</td>
+</tr>
+<tr>
+<td>5</td>
+<td>집중도?</td>
+<td>✅ 단일 고객 10% 미만 / 양자 = 정부 쏠림(정성)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>마진 분모?</td>
+<td>✅ 잉여현금흐름 정의 3종 구분</td>
+</tr>
+<tr>
+<td>7</td>
+<td>외부 변수 하나?</td>
+<td>✅ 고객 IT 예산 / 양자 = 정부 예산</td>
+</tr>
+<tr>
+<td>8</td>
+<td>발표 숫자 vs 장부?</td>
+<td>🔴 양자 = 격차 최대, 좁힐 일정 없음</td>
+</tr>
+<tr>
+<td>9</td>
+<td>믹스 방향?</td>
+<td>✅ 소프트웨어 쪽으로 천천히</td>
+</tr>
+</tbody>
+</table>
+<h3>D.2 수익모델 등급</h3>
+<table>
+<thead>
+<tr>
+<th>차원</th>
+<th style="text-align: center;">그룹</th>
+<th style="text-align: center;">양자</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>예측 가능성</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">🔴</td>
+<td>반복 매출 80%·RPO 680억 / 양자 숫자 0</td>
+</tr>
+<tr>
+<td>수익성</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">🔴</td>
+<td>소프트웨어 매출총이익률 82.6% / 양자는 비용만</td>
+</tr>
+<tr>
+<td>과금 강도</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">🔴</td>
+<td>Z·Red Hat 강함, 컨설팅 약함 / Qiskit 가격 0</td>
+</tr>
+<tr>
+<td>고객 락인</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">🟡</td>
+<td>메인프레임 원장 / 개발자 습관은 있으나 가격 미전환</td>
+</tr>
+</tbody>
+</table>
+<h3>D.3 종합 판정</h3>
+<ul>
+<li><strong>아키타입 확정</strong>: 그룹 = ⑥ 구독 소프트웨어(주) + ① 소프트웨어 쪽 믹스 전환(부), 메인프레임 주기가 파도. 양자 = ③ 정부 주도 + ⑥ 사용량 과금, 매출 공시 전 단계.</li>
+<li><strong>핵심 강점 하나</strong>: 양자에서 IBM은 <strong>가격표를 가진 유일한 대형 사업자</strong>다. 무료 도구(Qiskit)로 사람을 모으고, 유료 요금제 전용 기능(Qiskit Functions)으로 사용 시간 판매에 연결하는 깔때기가 이미 설계돼 있다. 결함내성 컴퓨터가 나오면 이 깔때기가 그대로 매출 통로가 된다.</li>
+<li><strong>치명 함정 둘</strong>: ① 양자의 모든 헤드라인 숫자가 투입(사용자 수·투자액·보조금)이고, 회계 잔고조차 정부·서비스형 계약을 세지 않아 매출이 생겨도 드러나지 않는다(C.3·C.4). ② 양자 연 20억 달러를 대는 본업 현금이 메인프레임 주기 하락과 대형 인수로 빠듯해지고 있다(C.1·C.10).</li>
+<li><strong>thesis 함의</strong>: IBM을 "양자 수혜주"로 볼 근거는 기술과 사용자 기반이지 매출이 아니다. 지금 주가에 양자 몫이 있다면 그것은 <strong>2028년 이후의 옵션값</strong>이다. 첫 양자 매출 숫자 공시가 이 옵션을 현금 흐름으로 바꿔 읽게 할 첫 증거가 된다.</li>
+<li>🔧 <em>반박 반영</em>: 직전 Deep-Dive의 "Anderon = IBM 양자 자산 중 유일한 진성 곡괭이" 판정은 <strong>"계획 단계의 곡괭이(현재는 IBM 전속에 가까움)"로 낮춘다.</strong> 근거 = 현재 품목 초전도 한정, 첫 수요처로 IBM 로드맵이 명시됨, 외부 고객 0 공개, 그리고 경쟁사들이 제조 층을 스스로 사들이는 흐름(IonQ→SkyWater 등) 속에서 경쟁사 소유 팹에 칩을 맡길 유인이 불확실함.</li>
+</ul>
+<hr />
+<h2>📋 12 함정 요약</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>함정</th>
+<th style="text-align: center;">결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C.1</td>
+<td>마진 분모</td>
+<td style="text-align: center;">🚩 있음 (FCF 정의 3종 · 양자 마진 분모 부재)</td>
+</tr>
+<tr>
+<td>C.2</td>
+<td>반복매출 프리미엄</td>
+<td style="text-align: center;">없음 (그룹) · 양자 미확인</td>
+</tr>
+<tr>
+<td>C.3</td>
+<td>발표 숫자 ↔ 장부</td>
+<td style="text-align: center;">🚩 있음 (양자 매출 공시 0)</td>
+</tr>
+<tr>
+<td>C.4</td>
+<td>잔고 품질</td>
+<td style="text-align: center;">🚩 있음 (양자 헤드라인 = 투입 · RPO 제외 구조)</td>
+</tr>
+<tr>
+<td>C.5</td>
+<td>가격 결정력</td>
+<td style="text-align: center;">🚩 있음 (Qiskit 가격 0 · 클라우드 물량 할인)</td>
+</tr>
+<tr>
+<td>C.6</td>
+<td>집중도</td>
+<td style="text-align: center;">없음 (그룹) · 양자 정부 쏠림 관찰</td>
+</tr>
+<tr>
+<td>C.7</td>
+<td>매크로 1변수</td>
+<td style="text-align: center;">🟡 관찰 (고객 IT 예산 / 정부 예산)</td>
+</tr>
+<tr>
+<td>C.8</td>
+<td>금리 비대칭</td>
+<td style="text-align: center;">해당 없음</td>
+</tr>
+<tr>
+<td>C.9</td>
+<td>운영 레버리지</td>
+<td style="text-align: center;">없음 (소프트웨어 작동 확인)</td>
+</tr>
+<tr>
+<td>C.10</td>
+<td>현금 전환</td>
+<td style="text-align: center;">🟡 관찰 (인수+배당 ≈ FCF, 양자 추가 부담)</td>
+</tr>
+<tr>
+<td>C.11</td>
+<td>주당 희석</td>
+<td style="text-align: center;">없음 (주식보상 +74% 관찰)</td>
+</tr>
+<tr>
+<td>C.12</td>
+<td>모델 전환 신호</td>
+<td style="text-align: center;">미발동 (긍정 방아쇠 대기)</td>
+</tr>
+</tbody>
+</table>
+<h2>⚠️ 수집 실패·불완전 항목</h2>
+<ul>
+<li>⚠️ 양자 매출·수주·고객 수·세그먼트 귀속 — ❌ IBM 미공시 (10-K·10-Q·6개 분기 발표 자료 확인)</li>
+<li>⚠️ "양자 누적 수주 10억 달러" 설 — ❌ IBM 1차 자료에서 미확인 (4Q24 통화 전문 문서가 발표 페이지에 없음)</li>
+<li>⚠️ HRL 인수가·HRL 매출 — ❌ 미공시 (8-K 없음 · 3분기 10-Q는 10월 말 예정)</li>
+<li>⚠️ Anderon 정부 지분·외부 고객·웨이퍼 가격·연결 회계 — ❌ 미공시</li>
+<li>⚠️ Qiskit Functions 외부 공급사 수익 배분 조건 — ❌ 미공시</li>
+<li>⚠️ IBM 양자 특허 수 · 매출채권 회수일수(DSO) — ❌ 이번 실행 미수집</li>
+</ul>
+<h2>📎 주요 출처</h2>
+<ul>
+<li><a href="https://www.sec.gov/Archives/edgar/data/51143/000005114326000078/ibm-20260630.htm">IBM 2026 2분기 10-Q</a> — 세그먼트·제품별 매출, RPO 680억 달러와 제외 범위, 양자 투자 서술</li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/51143/000005114326000010/ibm-20251231_d2.htm">IBM 2025 연차보고서 (10-K 편입 본문)</a> — 세그먼트 표 2023~2025, 잉여현금흐름 정의, 단일 고객 10% 미만, 시장위험, "양자에서 초기 상업 성과"</li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/51143/000005114326000010/ibm-20251231.htm">IBM 2025 10-K 본문</a> — 위험요인(양자 상업화 실패 위험)</li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/51143/000005114326000047/ibm-20260528.htm">8-K 2026-05-28</a> — 5년 100억 달러 이상 양자 투자, 90대 이상 시스템, 포춘 500 325곳 이상</li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/51143/000110465926097089/tm2623193d1_8k.htm">8-K 2026-08-14</a> — 캐나다달러 채권 27.5억 C$</li>
+<li><a href="https://data.sec.gov/api/xbrl/companyfacts/CIK0000051143.json">SEC XBRL 재무 수치</a> — 매출·순이익·영업현금·설비투자·인수·주식 수·RPO 시계열</li>
+<li><a href="https://www.ibm.com/quantum/products">IBM 양자 요금제 페이지</a> — 분당 96/72/48달러, 최소 400·5,200분, 온프레미스 견적</li>
+<li><a href="https://quantum.cloud.ibm.com/docs/en/guides/functions">Qiskit Functions 문서</a> — 프리미엄·플렉스·온프레미스 전용, 외부 공급사</li>
+<li><a href="https://www.ibm.com/quantum/blog/10-billion-investment-faq">IBM 양자 블로그 — 100억 달러 FAQ (6/2)</a> — 90대 이상, 340여 기관, 개발자 약 70%</li>
+<li><a href="https://newsroom.ibm.com/2026-09-16-anderon,-an-ibm-company,-finalizes-agreement-with-the-u-s-department-of-commerce-for-a-1-billion-chips-award-to-accelerate-r-d-for-u-s-based-pure-play-quantum-foundry">Anderon CHIPS 10억 달러 확정 (9/16)</a> — 자회사 형태, 초전도 웨이퍼, 첫 웨이퍼 가동</li>
+<li><a href="https://newsroom.ibm.com/2026-09-10-ibm,-lockheed-martin-announce-swiss-quantum-innovation-hub-at-eth-zurich,-anchored-by-switzerlands-first-ibm-quantum-computer">IBM·록히드마틴 스위스 양자 허브 (9/10)</a> — 절충교역 재원, IBM 운영, 2026년 말 설치</li>
+<li><a href="https://thequantuminsider.com/2026/08/26/ibm-completes-acquisition-hrl-laboratories/">TQI — IBM, HRL 인수 완료 (8/26)</a> — IBM 보도자료 전재, 획득 역량, 금액 미기재</li>
+<li><a href="https://www.ibm.com/investor/events/earnings-2q26">IBM 2026 2분기 실적 발표 자료</a> · <a href="https://www.ibm.com/investor/events/earnings-4q25">2025 4분기</a> · <a href="https://www.ibm.com/investor/events/earnings-1q26">2026 1분기</a> · <a href="https://www.ibm.com/investor/events/earnings-3q25">2025 3분기</a> · <a href="https://www.ibm.com/investor/events/earnings-2q25">2025 2분기</a> · <a href="https://www.ibm.com/investor/events/earnings-4q24">2024 4분기</a> — 양자 수치 부재 확인, ARR·생성형 AI 누적 수주</li>
+<li>시세: yfinance (2026-09-29 종가)</li>
+</ul>
+<hr />
+<p><em>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</em></p>
+</div></div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>const VIZ={"trajectory": {"periods": ["FY23", "FY24", "FY25"], "forecastFrom": 3, "series": [{"key": "rev", "label": "세그먼트 매출 합계 ($M)", "axis": "left", "color": "#2980b9", "values": [61229, 62510, 67472]}, {"key": "swshare", "label": "소프트웨어 매출 비중(%)", "axis": "right", "color": "#c0392b", "values": [40.8, 43.3, 44.4]}, {"key": "swprofit", "label": "소프트웨어 이익 비중(%)", "axis": "right", "color": "#f39c12", "values": [58.5, 64.2, 60.6]}]}};
+DDViz.renderTrajectory('fig-rate','leg-rate',VIZ.trajectory);</script>
+</body></html>
