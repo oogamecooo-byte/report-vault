@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASST (Strive, Inc.) R-Dive — 제품·수익모델 정밀 해부 (첫 실행) — 2026-10-07</title>
+<meta name="description" content="Strive(ASST) 제품·수익모델 해부 — 우선주(SATA 13%)로 조달해 비트코인 29,462개를 사는 조달 스프레드형. 고정 지출이 영업 매출의 약 20배, 우선주 차감 시 주당 비트코인 증가 63%→약 20%">
+<meta name="vault-stage" content="Dive">
+<meta name="vault-skill" content="R-Dive">
+<meta name="vault-topic" content="ASST">
+<meta name="vault-date" content="2026-10-07">
+<meta name="vault-unlisted" content="1">
+<style>/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Apple SD Gothic Neo','Segoe UI',sans-serif;line-height:1.65;margin:0;padding:32px 12px;}
+.container{max-width:1000px;margin:0 auto;background:#FDF6E3;border-radius:14px;padding:36px 44px;box-shadow:0 2px 16px rgba(80,60,20,.12);}
+h1{font-size:1.7em;border-bottom:3px solid #c44;padding-bottom:10px;margin-top:0;}
+h2{font-size:1.3em;border-bottom:1px solid #d9cfb3;padding-bottom:6px;margin-top:32px;}
+h3{font-size:1.08em;margin-top:22px;color:#7a3a10;}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.9em;}
+th,td{border:1px solid #ddd0ad;padding:7px 10px;text-align:left;vertical-align:top;}
+thead th{background:#efe6cb;}
+tbody tr:nth-child(even) td{background:#f7efd9;}
+blockquote{background:#f5edd6;border-left:4px solid #c9a84a;margin:14px 0;padding:12px 16px;border-radius:0 6px 6px 0;font-size:.95em;}
+blockquote.explain{background:#eef3e6;border-left:4px solid #6b8e4e;color:#2e3a24;}
+blockquote.explain strong:first-child{color:#3f5f2e;}
+blockquote.simple{background:#F3F7E9;border-left:4px solid #7FA650;color:#2f3a24;}
+blockquote.simple strong:first-child{color:#4E6B2C;}
+a{color:#0a66c2;text-decoration:none;} a:hover{text-decoration:underline;}
+ul{padding-left:22px;} li{margin:4px 0;}
+hr{border:none;border-top:1px solid #e0d6b8;margin:24px 0;}
+strong{color:#3a2c10;} em{color:#5c4a00;}
+code{background:#efe6cb;padding:1px 5px;border-radius:4px;font-size:.9em;}
+del{color:#8a7a5a;}
+@media print{body{background:#fff;padding:0;}.container{box-shadow:none;max-width:100%;}table,blockquote{break-inside:avoid;}}
+  tr.sig-r td { background: #f8ded8 !important; }
+  tr.sig-o td { background: #fbe7cf !important; }
+  tr.sig-y td { background: #f8f0cc !important; }
+  tr.sig-g td { background: #e3f0de !important; }
+  h2.sig-r, h3.sig-r, h4.sig-r { border-left: 5px solid #c0392b; padding-left: 10px; }
+  h2.sig-o, h3.sig-o, h4.sig-o { border-left: 5px solid #d9822b; padding-left: 10px; }
+  h2.sig-y, h3.sig-y, h4.sig-y { border-left: 5px solid #b89400; padding-left: 10px; }
+  .guard { background: #f8ded8; border-left: 4px solid #c0392b; padding: 8px 12px; border-radius: 0 6px 6px 0; margin: 8px 0; }
+  @media print { tr[class^="sig-"] td { background: #fff !important; } }
+</style>
+
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+<meta name="vault-published" content="2026-10-07">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="container">
+<header class="rp-head"><h1>ASST (Strive, Inc.) R-Dive — 제품·수익모델 정밀 해부 (첫 실행)</h1>
+<p><strong>작성일</strong> 2026-10-07</p>
+<p><strong>모드</strong> 선행 모드(Deep-Dive 하위 실행 · 기존 보고서 없음)</p>
+<p><strong>기준 시점</strong> 보유 현황은 10월 2일 8-K, 재무제표는 6월 말 10-Q, 주가는 10월 6일 종가($29.75)다.</p>
+<p><strong>1차 자료</strong> — <a href="https://www.sec.gov/Archives/edgar/data/1920406/000162828026019879/asst-20251231.htm">10-K 2025</a></p>
+<p><a href="https://www.sec.gov/Archives/edgar/data/1920406/000162828026054985/asst-20260630.htm">10-Q 2026 2분기</a> · <a href="https://www.sec.gov/Archives/edgar/data/1920406/000162828026034805/asst-20260331.htm">10-Q 2026 1분기</a></p>
+<p><a href="https://www.sec.gov/Archives/edgar/data/1920406/000162828026064753/asst-20261005.htm">8-K 10월 5일 보유 현황</a> · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0001920406">EDGAR 공시 목록(CIK 0001920406)</a></p>
+<hr></header>
+<section class="card"><h2>📄 한 장 요약</h2>
+<ul>
+<li>🔴 <strong>아키타입 = "우선주로 빌려 비트코인을 사는 자본 구조 회사"(⑤ 이자형의 거울상)가 주력이다.</strong> 영업 매출(자산운용 수수료 51% · 의료기기 47%)은 연 1,200만 달러 수준이다. 회사 가치의 거의 전부는 비트코인 29,462개와 그것을 사기 위해 낸 SATA 우선주에서 나온다.</li>
+<li>🔴 <strong>핵심 강점 하나: 빚 없이 돈을 계속 끌어오는 장치를 만들었다.</strong> SATA는 만기 없는 우선주다. 매 영업일 배당을 주고, 시장에서 상시로 판다(판매 한도 26억 달러). 회사는 부채 0·담보 0을 유지한다. Semler 인수로는 비트코인을 시가보다 싸게 가져왔다(염가매수이익 6,670만 달러).</li>
+<li>🔴 <strong>치명 함정 ① 고정 지출이 영업 매출의 약 20배다.</strong> SATA 연 배당 1억 7,550만 달러 + 현금 운영비 약 6,300만 달러(매출 차감 후)다. 합계는 비트코인 가치의 9.5%다. 영업으로는 못 낸다. 새 주식·우선주를 계속 팔아야 낸다. 현금·STRC 3.35억 달러는 약 1.4년치다.</li>
+<li>🔴 <strong>치명 함정 ② 회사가 내세우는 "비트코인 수익률"이 주주 몫을 부풀린다.</strong> 올해 주당 비트코인은 63% 늘었다고 발표했다. 그러나 우선주에 먼저 갚아야 할 몫을 빼고 다시 재면 약 20%다. 증가분의 상당 부분이 우선주 발행(선순위 청구권 증가)에서 나왔다.</li>
+<li>🟠 <strong>보통주는 순자산의 약 2배에 거래된다.</strong> 비트코인 가치 대비 시가총액(mNAV)은 1.19배다. 우선주까지 넣은 기업가치 기준으로는 1.59배다. 우선주를 빼고 남는 보통주 순자산 대비로는 2.05배다.</li>
+<li>🟠 <strong>영업 사업 둘 다 이익을 못 낸다.</strong> 운용 수수료는 펀드 비용과 거의 같다(2025년 순 −44만 달러). 의료기기 매출은 1년 전보다 83% 줄었다(분기 140만 달러). DOJ 합의와 수가 변화 때문이다.</li>
+<li><strong>한 줄 판정</strong>: 매출을 내는 사업은 곁가지다. 이 회사의 "제품"은 SATA라는 조달 장치이고, 성패는 비트코인 상승률이 약 9.5%의 연간 고정 부담을 넘느냐에 달려 있다.</li>
+</ul>
+<blockquote><strong>배경</strong> — 운용사 Strive Enterprises가 2025년 9월 나스닥 상장사 Asset Entities와 역합병해 상장했다. 회계상 인수자는 Strive이고, 옛 Asset Entities 티커 ASST를 이어 쓴다. 상장과 동시에 PIPE로 7.5억 달러를 모아 비트코인 매입을 시작했다.<br><br>2026년 1월 16일 비트코인을 보유한 의료기기사 Semler Scientific을 전주식으로 인수했다(Semler 1주당 Strive 21.05주, 병합 전 기준). 2026년 2월 6일 1:20 주식 병합을 했다.<br><br>본사는 텍사스 댈러스, 2025년 말 정규직 28명이다. 운영 대시보드는 strive.com/treasury이고 매주 월요일 8-K로 보유 현황을 낸다. 맥락에서 제시된 사실(합병·Semler 인수·SATA·병합)은 모두 SEC 원문으로 확인됐다.</blockquote>
+<hr></section>
+<section class="card"><h2>Part A — 아키타입</h2>
+<h3>A.1 분류 결과</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 6개 틀 어디에도 딱 맞지 않는다. 가장 가까운 것은 "이자형의 거울상"이다. 남의 돈을 맡아 이자를 버는 대신, 고정 배당으로 돈을 빌려 값이 변하는 자산을 산다.</blockquote>
+<table><thead><tr><th>구분</th><th>아키타입</th><th>이 회사에서의 모습</th><th>영업 매출 비중</th></tr></thead><tbody>
+<tr><td>주</td><td><strong>⑤ 이자형의 거울상</strong> (조달 스프레드형)</td><td>SATA로 연 13% 고정 배당을 내고 비트코인을 산다. 비트코인 상승률이 조달 비용보다 높으면 보통주가 남는다</td><td>0% (가치는 영업외)</td></tr>
+<tr><td>부</td><td><strong>② AUM형</strong></td><td>Strive 자산운용(SAM)이 ETF 하위자문 등으로 운용자산의 일정 비율을 받는다</td><td>51%</td></tr>
+<tr><td>소</td><td><strong>⑥ 하드웨어·라이선스형</strong></td><td>Semler의 혈류 검사기 QuantaFlo 라이선스·검사당 과금</td><td>47%</td></tr>
+<tr><td>지난 전환</td><td><strong>① 믹스 시프트형</strong> (완료)</td><td>운용사 → 비트코인 트레저리. 2025년 9월 상장과 함께 끝났다</td><td>—</td></tr>
+</tbody></table>
+<p>수치는 2026년 2분기 매출 294만 달러 기준이다(운용 151만 · 의료기기 139만 · 기타 4만). 회사 스스로 자신을 "구조화 금융 회사"라고 부른다(10-Q Note 1).</p>
+<h3>A.2 확정과 자동 점검 함정</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 이자형 틀에서 따라오는 금리·분모 함정과, 트레저리 회사 특유의 주당 희석 함정을 가장 무겁게 본다.</blockquote>
+<ul>
+<li><strong>⑤에서 따라오는 점검</strong> → C.8 금리 비대칭 · C.1 마진 분모 · C.6 비용 쏠림을 🔴 우선으로 봤다. 거울상이라 방향이 반대다. 금리가 오르면 수익이 아니라 비용이 늘어난다.</li>
+<li><strong>②에서 따라오는 점검</strong> → C.5 가격 결정력 · C.9 운영 레버리지.</li>
+<li><strong>이 회사에서 따로 무거운 것</strong> → C.11 주당 희석. 비트코인을 주식 발행으로 사는 구조라 "1주당 몇 개인가"가 유일하게 의미 있는 성적표다.</li>
+<li><strong>시간 지평</strong>: 지금은 비트코인 값이 오르는 구간(6월 말 58,631달러 → 9월 말 83,577달러)이다. 이 판정은 주가가 비트코인 가치보다 비싸게 거래되어 증자가 이득인 동안만 성립한다. 주가가 비트코인 가치 밑으로 내려가면 같은 장치가 거꾸로 돈다. B.0 제품 실체를 채운 뒤에도 분류는 그대로다.</li>
+</ul>
+<hr></section>
+<section class="card"><h2>Part B — 제품·서비스 이해 + 수익모델 해부</h2>
+<h3>B.0 제품·서비스·기술</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 이 회사가 파는 것은 넷이다. 그중 돈의 흐름을 정하는 것은 손님에게 파는 상품이 아니라 투자자에게 파는 증권(SATA·보통주)이다.</blockquote>
+<p>매출·전략 중요도가 아니라 <strong>가치 기여</strong> 순으로 4개를 본다. 이 회사에서는 매출이 없는 쪽이 가치의 대부분이다.</p>
+<h4>① 비트코인 트레저리 — 대차대조표 자체가 상품</h4>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 주식시장에서 돈을 모아 비트코인을 사서 쌓는다. 매출은 0이고, 손익은 분기마다 비트코인 시세로 결정된다.</blockquote>
+<ul>
+<li><strong>무엇</strong> — 10월 2일 현재 비트코인 29,462개를 들고 있다. 평균 취득가는 9월 말 기준 개당 90,170달러다. 지금까지 한 개도 판 적이 없다(10-K Item 1).</li>
+<li><strong>작동</strong> — 돈이 들어오는 길은 셋이다. 보통주를 시장에서 조금씩 파는 상시 발행(ATM), SATA 우선주 상시 발행, 그리고 비트코인을 가진 회사를 주식으로 인수하는 M&amp;A다. 회사는 앞의 둘을 "베타", M&amp;A를 "알파"라고 부른다. 비트코인은 미국 기관급 수탁기관 여러 곳에 콜드(오프라인) 보관하며, 회사는 개인키를 직접 보지 않는다.</li>
+<li><strong>고객·용도</strong> — 이 "상품"을 사는 사람은 보통주 투자자다. 비트코인을 직접 사는 대신, 우선주로 레버리지를 얹은 비트코인 노출을 주식 계좌로 사는 셈이다.</li>
+<li><strong>차별점</strong> — 부채 0, 담보로 묶인 비트코인 0, 마진콜 0이다(2분기 실적 발표). 같은 업종의 다른 회사들이 전환사채·담보대출을 쓸 때 이 회사는 우선주만 쓴다. 빚이 없으니 비트코인 급락에도 강제 매각 조항이 없다.</li>
+<li><strong>매출 위치</strong> — 매출 아님. 비트코인 시세 변동은 "디지털자산 미실현 평가손익"으로 영업손익 아래 투자손익에 잡힌다(ASU 2023-08 공정가치 회계).</li>
+</ul>
+<blockquote>💡 <strong>🔤 ATM(At-the-Market) 발행</strong> — 한 번에 큰 공모를 하지 않고, 증권사를 통해 장중 시세로 조금씩 신주를 파는 방식. 주가가 높을 때 많이 팔 수 있다.</blockquote>
+<h4>② SATA — 매 영업일 배당을 주는 영구 우선주 (주력 조달 장치)</h4>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 회사의 진짜 주력 제품이다. 연 13% 현금흐름을 원하는 투자자에게 팔고, 그 돈으로 비트코인을 산다. 대신 그 13%는 영원히 내야 한다.</blockquote>
+<ul>
+<li><strong>무엇</strong> — 액면 100달러짜리 변동금리 누적 영구 우선주다. 나스닥 티커 SATA. 만기가 없고, 투자자가 상환을 요구할 수 없다(회사 지배권 변동 같은 "근본적 변화" 때만 예외).</li>
+<li><strong>작동</strong> — 배당률은 회사가 매달 다시 정한다. 목표는 SATA 값을 99~101달러에 묶어 두는 것이다(10-K Item 7A). 값이 100달러 밑으로 빠지면 배당률을 올리고, 위로 가면 더 판다. 2026년 6월 16일부터 매 영업일 배당을 나눠 준다. 회사는 이를 "미국 상장증권 최초"라고 주장한다.</li>
+<li><strong>고객·용도</strong> — 높은 현금 수익을 원하고, 비트코인을 담보 삼은 신용위험을 받아들일 투자자다. 보통주보다 먼저 배당과 청산 대금을 받는다.</li>
+<li><strong>차별점</strong> — 배당률 인하에 제한이 걸려 있다. 한 달에 0.25%포인트(+ SOFR 하락분)보다 많이 못 내리고, 1개월 SOFR보다 낮게도 못 내린다(10-Q Note 12). 투자자에게는 "갑자기 깎이지 않는다"는 약속이고, 회사에게는 "내리기 어렵다"는 족쇄다.</li>
+<li><strong>매출 위치</strong> — 비용 쪽이다. 배당은 손익계산서에서 순손실 아래 "보통주 귀속 손실"에서 빠진다. 2026년 2분기 선언 배당은 2,621만 달러였다.</li>
+</ul>
+<blockquote>💡 <strong>🔤 누적(cumulative) 배당</strong> — 회사가 배당을 미뤄도 사라지지 않고 쌓이는 배당. SATA는 미룬 배당에 월복리 가산 배당까지 붙는다.</blockquote>
+<h4>③ Strive 자산운용(SAM) — ETF 하위자문 수수료</h4>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 회사의 뿌리이자 반복 매출이지만, 받는 수수료와 펀드 비용이 거의 같아 남는 돈이 없다.</blockquote>
+<ul>
+<li><strong>무엇</strong> — SEC 등록 투자자문사 Strive Asset Management가 Strive 이름의 ETF에 하위자문을 하고, 별도계좌·집합신탁(CIT)도 운용한다. 운용자산(AUM)은 2025년 말 24억 달러 이상, 2026년 6월 말 28억 달러 이상이다.</li>
+<li><strong>작동</strong> — 운용자산의 일정 비율을 수수료로 받는다. 종목 선택 재량은 있지만 매매 주문은 내지 않는다. 지수 데이터·수탁·펀드 회계 같은 펀드 비용 일부를 회사가 직접 낸다(10-K 수익 인식 주석).</li>
+<li><strong>고객·용도</strong> — 증권사·자문사 같은 중개기관을 거쳐 들어오는 투자자다(10-K). 상품별 운용 철학·고객층은 공시에 나오지 않는다.</li>
+<li><strong>차별점</strong> — 공시로 확인되는 차별점은 약하다. 하위자문 계약은 상위 자문사가 사전 통지로 SAM을 바꿀 수 있다(10-K). 회사는 2026년부터 이 부문을 "한 자릿수 백만 달러 적자~흑자 범위"로 운영하겠다고만 했다.</li>
+<li><strong>매출 위치</strong> — 2025년 운용 수수료 568만 달러(2024년 359만 달러에서 +58%). 2026년 상반기 286만 달러로 전년 동기와 비슷하다. 자산관리(wealth management) 사업부는 매각 예정이다.</li>
+</ul>
+<h4>④ Semler Scientific QuantaFlo — 줄어드는 의료기기 사업</h4>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 비트코인을 얻으려고 산 회사에 딸려 온 사업이다. 매출이 급감했고 분기마다 적자를 낸다.</blockquote>
+<ul>
+<li><strong>무엇</strong> — 발가락과 손가락에 집게 센서를 끼워 4분 만에 혈류를 재는 검사기다. FDA 510(k) 허가를 받았고, 말초동맥질환(다리 혈관이 좁아지는 병) 선별에 쓴다.</li>
+<li><strong>작동</strong> — 집게에서 나온 적외선이 혈관 속 적혈구에 반사되어 돌아온다. 이 빛의 변화를 알고리즘이 혈류 파형으로 그린다. 기기를 팔기보다 라이선스(정액)와 검사당 과금으로 빌려준다. 생산은 외부 위탁이다.</li>
+<li><strong>고객·용도</strong> — 메디케어 어드밴티지 보험사, 병원 네트워크, 의원, 방문 위험평가 업체다. 보험사가 환자 위험도를 기록하는 데 써 왔다.</li>
+<li><strong>차별점 약화</strong> — 핵심 특허는 1건이고 2027년 12월 11일 만료다. 2024년 메디케어 어드밴티지 수가 개편으로 사용이 줄었다.</li>
+<li><strong>법적 부담</strong> — 2025년 9월 Semler는 허위청구법 소송을 2,980만 달러에 합의했고, 5년간 기업준법협약(CIA)을 맺었다. 10-K는 "대형 고객 여럿이 검사를 중단하겠다고 통보했다"고 적었다.</li>
+<li><strong>매출 위치</strong> — Semler 단독 매출은 2023년 6,818만 달러가 정점이었다.</li>
+<li><strong>편입 후</strong> — 2025년 2분기 822만 달러에서 Strive 편입 후 2026년 2분기 139만 달러로 −83%다.</li>
+<li><strong>부문 손익</strong> — 부문 영업손실은 2분기 −522만 달러다.</li>
+</ul>
+<h3>B.0.2 기술·지식재산·재현 난이도</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 기술 해자는 없다. 남들이 따라 하기 어려운 것은 증권 설계와 자본시장 접근성이고, 그것도 이미 경쟁자가 같은 길을 가고 있다.</blockquote>
+<ul>
+<li><strong>기반 "기술"</strong> — 이 회사의 핵심 역량은 증권 설계와 조달 실행이다. 매 영업일 배당, SOFR 바닥이 있는 변동 배당률, 10일 평균가에 연동되는 청산우선액이 SATA 설계의 요소다. 보통주·SATA 상시 발행 한도는 6월 5일 각각 25.5억·26억 달러로 늘었다(증권사 8곳).</li>
+<li><strong>지식재산</strong> — 회사는 "핵심 사업에 특허 기술에 기대지 않는다"고 밝혔다(10-K). 등록 상표 STRIVE와 Semler 특허 1건(2027년 만료)이 전부다.</li>
+<li><strong>재현 난이도</strong> — 낮다. 같은 구조(영구 우선주로 비트코인 매입)는 Strategy Inc.가 먼저 했다. Strive는 Strategy의 우선주 STRC를 50만 5천 주(공정가치 5,020만 달러) 들고 있기까지 하다. 경쟁의 축은 기술이 아니라 "누가 더 싸게 돈을 모으나"다.</li>
+<li><strong>R&amp;D</strong> — 별도 R&amp;D 비용 항목은 없다. 의료기기는 확장 적응증(심장 기능 이상)에 새 510(k)를 신청 중이다.</li>
+<li><strong>주장과 실증 구분</strong> — "매 영업일 배당 최초"는 회사 주장이다. "부채 0·담보 0"은 6월 말 재무제표와 10월 8-K(부채 원금 0)로 확인된다.</li>
+</ul>
+<h3>B.0.3 제품 → 수익모델 연결 (R-Dive 고유)</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 돈이 되는 길은 하나뿐이다. SATA·보통주로 싸게 조달해 비트코인을 사고, 비트코인이 그 비용보다 더 오르는 것이다.</blockquote>
+<table><thead><tr><th>제품</th><th>과금 방식</th><th>아키타입</th><th>가격 결정력</th><th>전환비용·고착</th><th>운영 레버리지 기여</th></tr></thead><tbody>
+<tr><td>비트코인 트레저리</td><td>해당 없음(자본 이득)</td><td>⑤ 거울상</td><td>없음 — 시장가</td><td>없음</td><td>큼(보유량이 늘어도 관리비 거의 고정)</td></tr>
+<tr><td>SATA 우선주</td><td>비용 측(배당 13%)</td><td>⑤ 거울상</td><td><strong>역방향</strong> — 회사가 가격을 받아들이는 쪽</td><td>투자자 쪽 고착 없음</td><td>음(발행할수록 고정 지출 증가)</td></tr>
+<tr><td>자산운용</td><td>수수료(AUM %)</td><td>②</td><td>약함</td><td>약함(하위자문 교체 가능)</td><td>작음(펀드 비용이 수수료와 같이 움직임)</td></tr>
+<tr><td>QuantaFlo</td><td>라이선스·사용량</td><td>⑥</td><td>약화 중</td><td>약화 중(고객 이탈)</td><td>음(매출 감소 &gt; 비용 감소)</td></tr>
+</tbody></table>
+<ul>
+<li><strong>해자 → 수익 전환</strong>: 기술 해자가 없으니 전환할 것도 없다. 실제로 돈이 되는 "해자"는 <strong>주가가 비트코인 가치보다 비싸게 거래된다는 사실(mNAV &gt; 1)</strong> 하나다. 그 프리미엄이 있는 동안 보통주를 팔면 1주당 비트코인이 늘어난다. 이 프리미엄은 회사가 통제하지 못한다. 🚩</li>
+</ul>
+<blockquote>💡 <strong>📐 mNAV</strong> — 시가총액 ÷ 보유 비트코인 가치. 1보다 크면 시장이 비트코인 가치보다 비싸게 쳐 주는 것이고, 이때 증자해서 비트코인을 사면 기존 주주의 1주당 비트코인이 는다.</blockquote>
+<h3>B.1 매출 스트림 분해</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 영업 매출은 회사 크기에 비해 아주 작고, 두 스트림 모두 수익을 남기지 못한다. 회사의 손익은 비트코인 평가손익이 지배한다.</blockquote>
+<table><thead><tr><th>매출 스트림</th><th>2026 상반기</th><th>비중</th><th>2025 연간</th><th>추세</th><th>과금</th><th>반복성</th><th>출처</th></tr></thead><tbody>
+<tr><td>운용 수수료</td><td>286만 달러</td><td>50%</td><td>568만 달러</td><td>→ (전년 동기 290만)</td><td>수수료</td><td>🟢</td><td>10-Q Note 7</td></tr>
+<tr><td>의료기기</td><td>276만 달러</td><td>48%</td><td>—(1월 편입)</td><td>↓ (Semler 단독 대비 −83%)</td><td>라이선스·사용량</td><td>🟡</td><td>10-Q Note 7</td></tr>
+<tr><td>기타</td><td>8만 달러</td><td>2%</td><td>5만 달러</td><td>→</td><td>—</td><td>—</td><td>10-Q Note 7</td></tr>
+<tr><td><strong>합계</strong></td><td><strong>570만 달러</strong></td><td>100%</td><td><strong>573만 달러</strong></td><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
+<ul>
+<li>2025년 합계는 승계 전(1월 1일~9월 11일) 422만 달러와 승계 후(9월 12일~12월 31일) 151만 달러를 더한 값이다.</li>
+<li>2024년 연간 매출은 365만 달러였다.</li>
+<li>yfinance 최근 12개월 매출 850만 달러는 2025년 하반기와 2026년 상반기를 이은 값으로 공시와 크게 어긋나지 않는다.</li>
+<li>지역은 전부 미국이다. 10% 이상 매출 고객은 없다(10-Q Note 7).</li>
+<li><strong>손익 지배 항목</strong>: 2026년 상반기 비트코인 미실현 평가손실이 5억 2,381만 달러다. 영업 매출의 약 92배다. 순손실 5억 2,351만 달러 대부분이 여기서 나왔다. 3분기에는 비트코인 값이 다시 올라 큰 평가이익이 날 가능성이 있다(10-Q 미발표 — 수치 추정 안 함).</li>
+<li><strong>믹스 방향</strong>: 의료기기는 줄고 운용은 정체다. 영업 매출 믹스가 "저품질 → 고품질"로 가는 신호는 없다.</li>
+</ul>
+<h3>B.2 과금·가격 모델 + 정량</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 운용 쪽 통행세율은 0.2%대로 낮고 줄고 있다. 진짜 가격 지표는 조달 쪽, 즉 SATA 배당률 13%다.</blockquote>
+<ul>
+<li><strong>주력 모델</strong> — 자본 구조 스프레드(비트코인 기대수익 − SATA 배당률). 매출 모델로는 ② 수수료(운용) + ⑥ 라이선스·사용량(의료기기)이 2차다.</li>
+</ul>
+<table><thead><tr><th>정량 지표</th><th>산식</th><th>값</th><th>해석</th></tr></thead><tbody>
+<tr><td><strong>운용 통행세율</strong> (implied fee rate)</td><td>운용 수수료 ÷ 기말 AUM</td><td>2025년 0.24% → 2026년 2분기 연환산 0.22%</td><td>기말 AUM을 써서 실제보다 낮게 나올 수 있다. 하락 방향은 가격 압박 또는 저보수 상품 비중 증가 신호</td></tr>
+<tr><td><strong>운용 순 통행세</strong></td><td>(수수료 − 펀드 비용) ÷ AUM</td><td>2025년 약 −0.02%</td><td>수수료를 받아 펀드 비용으로 다 낸다</td></tr>
+<tr><td><strong>조달 금리</strong> (SATA 배당률)</td><td>연 배당 ÷ 액면</td><td>12.00%(2025.11 발행) → 13.00%(2026.5~)</td><td>값을 액면에 묶으려고 계속 올렸다</td></tr>
+<tr><td><strong>증폭 비율</strong> (amplification)</td><td>SATA 액면 ÷ 비트코인 가치</td><td>9월 말 55.3%(회사) · 10월 6일 53.5%(계산)</td><td>경영진 목표는 "비트코인 10만 달러 미만인 동안 60% 이상"</td></tr>
+<tr><td><strong>연간 배당 부담</strong></td><td>SATA 액면 × 13%</td><td>1억 7,550만 달러(10월 2일 13,498,082주 기준)</td><td>비트코인 2,051개분 = 보유량의 7.0%</td></tr>
+</tbody></table>
+<blockquote>💡 <strong>📐 증폭 비율</strong> — 우선주 액면 ÷ 비트코인 가치. 비트코인 100원어치마다 우선주로 얼마를 끌어왔나. 높을수록 보통주에 걸린 레버리지가 크다.</blockquote>
+<blockquote>💡 <strong>📐 implied fee rate</strong> — 운용 매출 ÷ 운용자산. 맡긴 돈 100원당 회사가 떼는 통행세율. 패시브 ETF는 보통 0.03~0.5% 범위다(교육용 일반 범위).</blockquote>
+<div class="dd-fig"><p class="cap"><b>SATA 연 배당 부담(좌, 백만 달러)·영업 매출 연환산(좌)·SATA 배당률(우, %)</b> — 배당 부담 = 그 시점 SATA 주식 수 × 액면 × 배당률. 매출의 첫 점은 2025년 연간, 다음 두 점은 분기 × 4. 마지막 점(점선)은 10-Q 전이라 배당은 8-K 잠정치, 매출은 직전 분기 값을 둔 가정이다.</p><div id="fig-rate"></div><div class="dd-legend" id="leg-rate"></div></div>
+<p>차트가 보여 주는 것은 하나다. 영업 매출은 연 1,000만 달러 안팎에서 멈춰 있고, 배당 부담은 9개월 만에 약 7배가 됐다. 배당률도 같은 기간 12.25%에서 13.00%로 올랐다. "부담 ↑ + 금리 ↑"가 함께 움직였다.</p>
+<h3>B.3 단위 경제학</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 이 회사의 단위는 "보통주 1주"다. 1주당 비트코인은 늘었지만, 1주가 떠안은 우선주 부담도 함께 늘었다.</blockquote>
+<table><thead><tr><th>지표</th><th>값</th><th>단위</th><th>출처·계산</th></tr></thead><tbody>
+<tr><td>1주당 비트코인 (회사 기준)</td><td>27,801</td><td>사토시(1억분의 1 BTC) / 희석 주식</td><td>9월 30일 8-K</td></tr>
+<tr><td>1주당 비트코인 (10월 2일)</td><td>28,407</td><td>사토시 / 희석 주식</td><td>29,462개 ÷ 1억 371만 주</td></tr>
+<tr><td>1주당 연간 SATA 배당 부담</td><td>약 1.69달러</td><td>달러 / 희석 주식</td><td>1억 7,550만 ÷ 1억 371만 주</td></tr>
+<tr><td>1주당 보통주 순자산</td><td>약 14.52달러</td><td>달러 / 희석 주식</td><td>(비트코인 + 현금·STRC − SATA 액면) ÷ 희석 주식</td></tr>
+<tr><td>보통주 순자산 0이 되는 비트코인 값</td><td>약 34,448달러</td><td>달러 / BTC</td><td>(SATA 액면 − 현금·STRC) ÷ 보유량</td></tr>
+<tr><td>고객당 매출·LTV/CAC</td><td>❌ 미공시</td><td>—</td><td>운용·의료기기 모두 공시 없음</td></tr>
+</tbody></table>
+<blockquote>💡 <strong>🔤 희석 주식(ADSO)</strong> — 회사가 쓰는 "가정 완전희석 주식 수". 보통주 A·B + 옵션 + 미확정 주식보상이다. 행사가 27달러짜리 전통 워런트 2,325만 주는 빠져 있다.</blockquote>
+<h3>B.4 매출 품질 + 집중도</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 매출 고객 쏠림은 없다. 대신 돈을 대는 쪽, 즉 자본시장과 SATA 투자자에게 회사 전체가 기대고 있다.</blockquote>
+<ul>
+<li><strong>반복성</strong> — 운용 수수료(매출의 약 50%)는 반복형이지만 AUM 시세에 따라 출렁인다. 의료기기 라이선스도 반복형이지만 고객이 떠나고 있다. 비트코인 평가손익은 반복 매출이 아니다.</li>
+<li><strong>계약 잔고</strong> — 백로그·계약 잔고(RPO) 공시 없음. 대신 "쓸 수 있는 조달 한도"가 있다. 6월 말 보통주·SATA 상시 발행 잔여 한도 합계 44억 달러다. 이는 약속된 돈이 아니라 <strong>팔 수 있는 천장</strong>이다.</li>
+<li><strong>고객 집중도</strong> — 10% 이상 매출 고객 없음(10-Q Note 7).</li>
+<li><strong>비용·통제권 집중</strong> — ① 하위자문 계약은 상위 자문사가 통지로 해지할 수 있다. ② 상시 발행은 Cantor 등 증권사 8곳에 기댄다. ③ 비트코인 수탁은 여러 곳을 쓰지만 "때때로 한 곳에 몰릴 수 있다"고 10-K가 적었다.</li>
+</ul>
+<h3>B.5 가치사슬 내 수익 포착 지점</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 이 회사는 "수익률을 원하는 투자자"와 "비트코인 상승에 걸고 싶은 투자자"를 이어 주고, 그 사이의 위험을 보통주가 진다.</blockquote>
+<p>돈의 흐름: <strong>SATA 투자자 →(현금)→ Strive →(현금)→ 비트코인 시장</strong>, 그리고 <strong>Strive →(매일 배당 13%)→ SATA 투자자</strong>. 남는 몫(비트코인 상승분 − 배당 − 운영비)은 보통주 주주에게 간다. 모자라는 몫도 보통주가 진다.</p>
+<ul>
+<li>회사가 마진을 떼는 길목은 없다. 길목이 있다면 "보통주 프리미엄(mNAV &gt; 1)을 비트코인으로 바꾸는 창구"다.</li>
+<li>그 길목의 가격 결정력은 시장이 쥐고 있다. 보통주 프리미엄도, SATA가 액면에 머무는 데 필요한 배당률도 회사가 정하지 못한다.</li>
+</ul>
+<hr></section>
+<section class="card"><h2>Part C — 12 함정 체크리스트</h2>
+<h3>C.1 마진 분모 — 🚩 있음 (자동 가중 ⑤)</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 매출 대비 이익률은 아무 뜻이 없다. 이 회사를 재는 올바른 분모는 "비트코인 가치"이고, 그 분모로 보면 연 9.5%의 고정 부담이 있다.</blockquote>
+<ul>
+<li>2026년 2분기 영업비용 2,440만 달러는 매출 294만 달러의 8.3배다.</li>
+<li>순손실 2억 5,760만 달러의 94%는 비트코인·STRC 평가손실이었다(2분기 실적 발표).</li>
+<li>회사의 비-GAAP "조정 순손실"(2분기 −2억 7,500만 달러)도 평가손익을 그대로 둔다. 비-GAAP가 손익을 좋게 보이게 하지는 않는다.</li>
+<li><strong>올바른 분모</strong>: (SATA 연 배당 1억 7,550만 + 현금 운영비 7,480만 − 영업 매출 1,180만) ÷ 비트코인 가치 25억 2,070만 = <strong>약 9.5%</strong>.</li>
+<li>현금 운영비는 2분기 영업비용에서 주식보상 568만 달러를 빼고 4를 곱했다. 비트코인이 1년에 이만큼 올라야 보통주 순자산이 제자리다.</li>
+<li>🚩 외부 사이트의 "매출 850만 달러·직원 28명"은 회사를 설명하지 못한다. 직원 수는 Semler 편입 전 2025년 말 숫자다.</li>
+</ul>
+<h3>C.2 반복매출 프리미엄 — 🚩 있음</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 반복 매출은 있지만 너무 작아 프리미엄의 근거가 될 수 없다. 반복되는 것은 오히려 배당 지출이다.</blockquote>
+<ul>
+<li>반복형 매출(운용 + 라이선스)은 연 약 1,200만 달러다. 시가총액 30억 달러의 0.4%다.</li>
+<li>반대로 "반복되는 지출"인 SATA 배당은 영구적이다. 누적형이라 미뤄도 사라지지 않는다.</li>
+</ul>
+<h3>C.3 발표 숫자 ↔ 장부 숫자 — 🚩 있음</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 회사가 내세우는 "비트코인 수익률 63%"는 우선주로 산 비트코인까지 보통주 몫처럼 센다. 우선주 몫을 빼면 약 20%다.</blockquote>
+<table><thead><tr><th>항목</th><th>2025년 12월 31일</th><th>2026년 9월 30일</th><th>변화</th></tr></thead><tbody>
+<tr><td>비트코인 보유</td><td>7,627개</td><td>28,000개</td><td>+267%</td></tr>
+<tr><td>희석 주식</td><td>약 4,477만 주</td><td>1억 72만 주</td><td>+125%</td></tr>
+<tr><td>1주당 비트코인 (회사 발표 방식)</td><td>17,035 사토시</td><td>27,801 사토시</td><td><strong>+63.2%</strong></td></tr>
+<tr><td>SATA 액면</td><td>2억 130만 달러</td><td>12억 9,406만 달러</td><td>+543%</td></tr>
+<tr><td>1주당 순 비트코인 (우선주 차감·현금 포함)</td><td>13,626 사토시</td><td>16,406 사토시</td><td><strong>약 +20%</strong></td></tr>
+</tbody></table>
+<ul>
+<li>순 비트코인 = 보유량 + (현금·STRC − SATA 액면) ÷ 그날 비트코인 값. 12월 말 주식 수는 회사가 낸 연초 대비 수익률로 거꾸로 구했다. 비트코인 값을 두 시점 모두 9월 말 값으로 고정해도 약 +22%다.</li>
+<li>회사도 8-K에서 "이 지표는 우선주의 선순위 청구권을 반영하지 않는다"고 적었다. 즉 공시는 정직하지만, 헤드라인 숫자는 그 단서를 빼고 읽힌다.</li>
+<li>비슷한 예: 2026년 연초 이후 "주당 비트코인 달러 이익"은 9.00달러로 발표됐다. 같은 기간 GAAP로는 상반기에만 1주당 −8.22달러 손실이었다.</li>
+</ul>
+<blockquote>💡 <strong>🔤 비트코인 수익률(BTC Yield)</strong> — 회사가 정의한 지표. 기간 초 대비 1주당 비트코인 개수의 증가율. 이름과 달리 투자 수익률이 아니다.</blockquote>
+<h3>C.4 백로그 품질 — 확정 대 천장 — ⚠️ 변형 적용</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 백로그는 없다. 대신 "조달 한도 44억 달러"가 비슷한 착시를 준다. 이는 받기로 된 돈이 아니라 팔 수 있다면 팔 수 있는 한도다.</blockquote>
+<ul>
+<li>상시 발행 한도는 증권사와 맺은 판매 계약일 뿐 투자자의 매수 약속이 아니다. 실제로 팔리는 양은 보통주 프리미엄과 SATA 수요에 달렸다.</li>
+<li>6월 말 이후 3분기에 SATA는 약 511만 주(액면 5.1억 달러)가 더 팔렸다. 아직 수요는 있다.</li>
+</ul>
+<h3>C.5 가격 결정력 — 🚩 있음</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 회사는 가격을 정하는 쪽이 아니라 받아들이는 쪽이다. 사는 자산(비트코인)도, 조달 금리(SATA)도, 운용 보수도 시장이 정한다.</blockquote>
+<ul>
+<li>자산 쪽: 보유 자산의 약 88%가 비트코인 하나다(10월 2일 기준 비트코인 25.2억 ÷ 비트코인+현금+STRC 28.6억). 시장가 100%다.</li>
+<li>조달 쪽: SATA 배당률은 출시 12.00% → 12.25%(12월 말) → 12.75%(3월) → 13.00%(5월~)로 올랐다. 내리는 데는 규정상 한 달 0.25%포인트 제한이 걸려 있다.</li>
+<li>운용 쪽: 통행세율이 0.2%대로 낮고 정체다.</li>
+</ul>
+<h3>C.6 고객·유통 집중도 — ⚠️ 부분</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 매출 고객 쏠림은 없다. 쏠림은 자금 조달 쪽에 있다. SATA 수요가 끊기면 회사 엔진 전체가 선다.</blockquote>
+<ul>
+<li>매출: 10% 이상 고객 없음.</li>
+<li>조달: 2026년 상반기 재무활동 현금 7억 270만 달러 중 보통주 3억 620만 · SATA 순조달이 대부분이다.</li>
+<li>3분기 비트코인 매입 6억 4,190만 달러(8,137개 × 78,885달러)도 대부분 증권 발행·워런트 행사 현금으로 냈다.</li>
+<li>운용: 하위자문은 상위 자문사의 통지 해지 대상이다. 펀드별 AUM 공시가 없어 상품 쏠림은 ❌ 미공시다.</li>
+</ul>
+<h3>C.7 매크로 민감도 — 🚩 있음</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 비트코인 값 하나가 회사의 거의 모든 것을 흔든다. 비트코인이 약 34,000달러로 떨어지면 보통주 순자산이 0이 된다.</blockquote>
+<ul>
+<li>단일 변수: 비트코인 값. 자산의 약 88%, 손익 변동의 90% 이상이다(2분기 순손실 94%가 평가손실).</li>
+<li>2차 변수: 보통주 프리미엄(mNAV)과 SATA 신용 스프레드. 둘 다 비트코인 값이 떨어질 때 함께 나빠진다. 증자 이득이 사라지는 순간 조달 비용이 오르는 구조다.</li>
+<li>비트코인 값이 10% 내리면(10월 6일 기준 약 −2.5억 달러) 보통주 순자산은 약 −17% 움직인다. 증폭 비율 53.5%가 만든 레버리지다.</li>
+</ul>
+<h3>C.8 금리 비대칭 — 🚩 있음 (자동 가중 ⑤)</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 이자형 회사의 거울상이라 금리가 오르면 비용이 는다. 내리는 것은 규정상 천천히만 가능하다.</blockquote>
+<ul>
+<li><strong>올라가는 쪽</strong>: SATA 배당률 바닥은 1개월 SOFR이다. 시장 금리가 오르거나 비트코인 신용이 나빠지면 배당률을 올려야 SATA가 액면을 지킨다.</li>
+<li><strong>시뮬레이션</strong> (10월 2일 SATA 액면 13억 4,981만 달러 기준):</li>
+</ul>
+<table><thead><tr><th>배당률 변화</th><th>연간 배당</th><th>변화액</th><th>비트코인 가치 대비</th></tr></thead><tbody>
+<tr><td>−1%포인트 (12%)</td><td>1억 6,198만 달러</td><td>−1,350만 달러</td><td>6.4%</td></tr>
+<tr><td>현재 (13%)</td><td>1억 7,548만 달러</td><td>—</td><td>7.0%</td></tr>
+<tr><td>+1%포인트 (14%)</td><td>1억 8,897만 달러</td><td>+1,350만 달러</td><td>7.5%</td></tr>
+</tbody></table>
+<ul>
+<li>내려가는 쪽은 한 달 0.25%포인트 + SOFR 하락분까지만 가능하다. SOFR가 그대로라면 1%포인트 인하에 최소 4개월이 걸린다. 올리는 데는 제한이 없다.</li>
+<li>🚩 10-K Item 7A는 2026년 3월 "금리 위험이 중요하지 않다"고 적었다. 그때 SATA는 약 4.4억 달러였다. 지금은 3배 이상 커졌다. 같은 판단을 지금 그대로 쓸 수는 없다.</li>
+</ul>
+<h3>C.9 운영 레버리지 — ⚠️ 형태가 다름</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 비트코인이 늘어도 관리비는 거의 그대로라 그 점은 유리하다. 하지만 비트코인을 늘리는 데 쓰는 우선주가 고정비를 키운다.</blockquote>
+<ul>
+<li>비트코인 관리비(수탁·인건비)는 보유량과 거의 무관하다. 2분기 본사 부문 영업비용은 1,413만 달러였다.</li>
+<li>반면 SATA로 산 비트코인 1개마다 비트코인 값이 그대로라면 매년 약 0.13개 가치의 배당이 붙는다. 운영 레버리지가 아니라 <strong>재무 레버리지</strong>다.</li>
+<li>운용 부문은 펀드 비용이 수수료와 같이 움직여 레버리지가 거의 없다. 의료기기는 매출이 줄며 역레버리지가 났다(분기 매출 139만 · 비용 660만 달러).</li>
+</ul>
+<h3>C.10 현금 전환 — 🚩 있음</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 영업으로 현금이 나오지 않는다. 모든 지출과 비트코인 매입이 증권 발행 현금으로 돌아간다.</blockquote>
+<table><thead><tr><th>2026년 상반기</th><th>금액</th></tr></thead><tbody>
+<tr><td>순손실</td><td>−5억 2,351만 달러</td></tr>
+<tr><td>영업활동 현금흐름</td><td>−3,940만 달러</td></tr>
+<tr><td>비트코인 매입</td><td>−5억 4,056만 달러</td></tr>
+<tr><td>우선주 배당 현금 지급</td><td>−3,322만 달러</td></tr>
+<tr><td>재무활동 현금흐름</td><td>+7억 274만 달러</td></tr>
+</tbody></table>
+<ul>
+<li>순손실과 영업현금의 차이는 비현금 평가손실(5억 2,381만 달러)과 염가매수이익(−6,670만 달러), 주식보상(1,221만 달러)이다. 적자의 "이유"는 대부분 시세 평가지만, 영업현금 자체도 반기 −3,940만 달러로 마이너스다.</li>
+<li>영업현금 − 배당 = 반기 약 −7,260만 달러가 "보통주 주주에게 남는 현금"이다.</li>
+<li>AI 밸류체인 종목이 아니어서 운전자본 전가 점검은 해당 없음.</li>
+</ul>
+<h3>C.11 주당 희석 — 🚩 있음 (치명)</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 주식 수가 9개월 만에 두 배가 넘었다. 비트코인이 더 빨리 늘어 아직은 1주당 몫이 늘었지만, 우선주 몫을 빼면 증가 폭이 크게 줄고 대기 중인 워런트도 많다.</blockquote>
+<table><thead><tr><th>항목</th><th>2025년 12월 31일</th><th>2026년 6월 30일</th><th>2026년 9월 30일</th></tr></thead><tbody>
+<tr><td>보통주(A+B)</td><td>4,471만 주</td><td>8,194만 주</td><td>9,801만 주</td></tr>
+<tr><td>비트코인</td><td>7,627개</td><td>19,864개</td><td>28,000개</td></tr>
+<tr><td>SATA 주식</td><td>201만 주</td><td>783만 주</td><td>1,294만 주</td></tr>
+</tbody></table>
+<ul>
+<li>보통주 +119%, 비트코인 +267%다(2025년 말 → 9월 말). 1주당 비트코인 개수만 보면 늘었다.</li>
+<li>3분기 한 분기에 보통주는 +20%, 비트코인은 +41%였다. 3분기에 주가가 11달러대에서 29달러대로 오르며 보통주 프리미엄이 커진 덕이다.</li>
+<li><strong>대기 중인 희석</strong>: 행사가 27달러 전통 워런트 2,325만 주(10월 2일). 주가가 27달러를 넘어 행사되는 중이다.</li>
+<li>행사 속도: 9월 25일~10월 2일 한 주에 210만 주가 줄었다(약 5,670만 달러 유입).</li>
+<li>다 행사되면 보통주는 약 22% 늘고 현금 약 6.3억 달러가 들어온다.</li>
+<li>공매도 잔고가 유통주식의 28%다(yfinance). 워런트·SATA 차익거래 헤지일 수 있다(원인 미확인).</li>
+</ul>
+<h3>C.12 모델 전환 신호 — ⚠️ 전환 완료 · 다음 변곡 대기</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 운용사에서 비트코인 회사로의 전환은 끝났다. 다음 변곡은 보통주 프리미엄이 1배 아래로 내려가는 순간이다. 그때 이 장치는 거꾸로 돈다.</blockquote>
+<ul>
+<li><strong>완료된 전환</strong>: 2025년 9월 상장과 함께 운용사 → 비트코인 트레저리로 바뀌었다. 영업 사업은 이제 곁가지다(자산관리 사업부 매각 예정, 운용 부문은 손익분기 목표).</li>
+<li><strong>긍정 변곡 후보</strong>: ① 워런트 행사 현금(최대 약 6.3억 달러)이 우선주 없이 비트코인을 늘린다. ② Semler 같은 할인 인수 추가. Semler 건은 비트코인 5,048개를 주식 3억 1,118만 달러에 가져왔다(개당 약 61,600달러 상당 — 단 부채 1.1억 달러 인수 포함).</li>
+<li><strong>부정 변곡 신호</strong>: ① 보통주 mNAV가 1배 아래로 내려감 → 증자가 1주당 비트코인을 줄임. ② SATA가 액면 밑에서 머묾 → 배당률 추가 인상. 회사는 10월 5일 SATA 재매입 한도 5억 달러를 마련했다고 밝혔다. 방어 장치를 미리 깔아 둔 것이다.</li>
+<li><strong>경영진 목표</strong>: "비트코인이 10만 달러 미만인 동안 증폭 비율을 60% 이상으로 높이고 유지" + "부채 없는 상태 유지"(10월 5일 8-K). 우선주 비중을 더 키우겠다는 뜻이다.</li>
+</ul>
+<hr></section>
+<section class="card"><h2>Part D — 종합 판정</h2>
+<h3>D.1 자가점검</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 10개 질문 중 8개는 1차 자료로 답했다. 펀드별 운용자산과 3분기 매출만 공시 전이라 비어 있다.</blockquote>
+<table><thead><tr><th>#</th><th>질문</th><th>답</th><th>1차 자료</th></tr></thead><tbody>
+<tr><td>0</td><td>주력 제품을 문단으로 풀었나 · 각각 어떻게 돈이 되나</td><td>트레저리·SATA·운용·QuantaFlo 4개. 돈이 되는 길은 조달 스프레드 하나</td><td>10-K Item 1</td></tr>
+<tr><td>1</td><td>무엇을 누구에게 파나</td><td>보통주·우선주를 투자자에게(B2C·기관). 영업 매출은 ETF 투자자·의료기관</td><td>10-K · 10-Q</td></tr>
+<tr><td>2</td><td>매출 주머니와 추세</td><td>운용 50%(정체) · 의료기기 48%(급감)</td><td>10-Q Note 7</td></tr>
+<tr><td>3</td><td>주력 과금 모델</td><td>매출 기준 수수료. 가치 기준 자본 이득</td><td>MD&amp;A</td></tr>
+<tr><td>4</td><td>내년에도 들어오나</td><td>운용 수수료는 들어온다. 의료기기는 불확실</td><td>MD&amp;A · 10-K 위험요인</td></tr>
+<tr><td>5</td><td>집중도</td><td>매출 쏠림 없음 · 조달 쏠림 큼</td><td>10-Q Note 7 · Note 11~12</td></tr>
+<tr><td>6</td><td>마진 분모</td><td>매출이 아니라 비트코인 가치. 고정 부담 연 9.5%</td><td>손익계산서 · 8-K</td></tr>
+<tr><td>7</td><td>흔드는 외부 변수 하나</td><td>비트코인 값</td><td>10-K Item 7A</td></tr>
+<tr><td>8</td><td>발표 숫자 vs 장부</td><td>비트코인 수익률 63% vs 우선주 차감 약 20%</td><td>8-K · 재무상태표</td></tr>
+<tr><td>9</td><td>믹스 방향</td><td>영업은 정체·축소. 가치 믹스는 우선주 비중 확대 쪽</td><td>Segment Note · 8-K</td></tr>
+</tbody></table>
+<h3>D.2 수익모델 등급</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 네 차원 모두 약하다. 예측 가능한 것은 지출(배당)뿐이고, 수입(비트코인 상승)은 예측할 수 없다.</blockquote>
+<table><thead><tr><th>차원</th><th>등급</th><th>근거</th></tr></thead><tbody>
+<tr class="sig-r"><td>예측가능성</td><td>🔴</td><td>영업 매출은 작고, 가치는 비트코인 시세에 달렸다. 고정 지출만 예측 가능하다</td></tr>
+<tr class="sig-r"><td>수익성</td><td>🔴</td><td>두 영업 부문 모두 적자. 고정 부담이 비트코인 가치의 9.5%</td></tr>
+<tr class="sig-r"><td>과금 강도</td><td>🔴</td><td>운용 통행세율 0.2%대 · 조달 금리는 시장이 정함</td></tr>
+<tr class="sig-y"><td>고객 stickiness</td><td>🟡</td><td>SATA 투자자는 매일 배당에 묶여 있지만, 언제든 시장에서 팔 수 있다</td></tr>
+</tbody></table>
+<h3>D.3 종합 판정</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 비트코인이 연 9.5% 넘게 오르고 보통주 프리미엄이 유지되는 동안은 잘 도는 장치다. 둘 중 하나가 꺾이면 보통주가 먼저 다친다.</blockquote>
+<ul>
+<li><strong>아키타입 확정</strong>: ⑤ 이자형의 거울상(조달 스프레드형)이 주력이다. ② AUM형과 ⑥ 라이선스형은 매출을 만들지만 가치에서는 곁가지다.</li>
+<li><strong>핵심 강점 하나</strong>: 부채 없이 상시로 돈을 모으는 SATA 장치. 영구·누적형이라 배당을 미뤄도 부도가 아니다. 비트코인 급락에도 강제 매각 조항이 없다.</li>
+<li><strong>치명 함정</strong>: ① 연 2.4억 달러 수준의 고정 지출이 영업 매출의 약 20배이고, 전부 자본시장에서 메워야 한다(C.1·C.10). ② 헤드라인 비트코인 수익률 63%가 우선주 몫을 빼면 약 20%로 줄어든다(C.3·C.11). ③ 금리·비트코인 하락 때 배당률이 오르기 쉽고 내리기 어렵다(C.8).</li>
+<li><strong>수정 1줄</strong>: 처음에는 "현금이 1.4년치뿐이라 자금 절벽"으로 봤다. SATA가 누적형이라 배당을 미뤄도 부도가 나지 않는다는 점을 반영해 "부도 위험"이 아니라 "조달 장치 신뢰 훼손 위험"으로 고쳤다. 배당을 미루는 순간 SATA의 상품 가치(매일 받는 현금)가 깨지고 상시 발행이 멈춘다.</li>
+<li><strong>이 수익모델이 투자 판단에 주는 함의</strong>: 이 종목은 영업 실적으로 볼 회사가 아니다. 보통주는 "비트코인 상승률 − 9.5%"에 약 2배 레버리지를 얹은 옵션에 가깝고, 그 위에 시장이 붙인 프리미엄(보통주 순자산의 약 2배)이 얹혀 있다. Deep-Dive에서는 보통주 프리미엄의 지속 조건과 SATA 수요의 주체를 산업·자금흐름 축에서 확인해야 한다.</li>
+</ul>
+<hr></section>
+<section class="card"><h2>12 함정 🚩 요약</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 12개 중 8개가 적신호, 4개가 부분·변형 적용이다. 깨끗하게 통과한 항목은 없다.</blockquote>
+<table><thead><tr><th>#</th><th>함정</th><th>결과</th><th>한 줄</th></tr></thead><tbody>
+<tr><td>C.1</td><td>마진 분모</td><td>🚩</td><td>올바른 분모는 비트코인 가치 · 고정 부담 9.5%</td></tr>
+<tr><td>C.2</td><td>반복매출</td><td>🚩</td><td>반복 매출 시총 대비 0.4% · 반복 지출이 더 큼</td></tr>
+<tr><td>C.3</td><td>발표 vs 장부</td><td>🚩</td><td>비트코인 수익률 63% vs 우선주 차감 약 20%</td></tr>
+<tr><td>C.4</td><td>백로그 품질</td><td>⚠️</td><td>백로그 없음 · 조달 한도 44억 달러는 천장</td></tr>
+<tr><td>C.5</td><td>가격 결정력</td><td>🚩</td><td>자산·조달·보수 모두 시장가</td></tr>
+<tr><td>C.6</td><td>집중도</td><td>⚠️</td><td>매출 쏠림 없음 · 조달 쏠림 큼</td></tr>
+<tr><td>C.7</td><td>매크로 민감도</td><td>🚩</td><td>비트코인 값 하나 · 34,000달러대에서 보통주 순자산 0</td></tr>
+<tr><td>C.8</td><td>금리 비대칭</td><td>🚩</td><td>SOFR 바닥 · 인하 속도 제한</td></tr>
+<tr><td>C.9</td><td>운영 레버리지</td><td>⚠️</td><td>관리비는 고정 · 실체는 재무 레버리지</td></tr>
+<tr><td>C.10</td><td>현금 전환</td><td>🚩</td><td>영업현금 반기 −3,940만 · 전부 발행 현금 의존</td></tr>
+<tr><td>C.11</td><td>주당 희석</td><td>🚩</td><td>보통주 +119% · 워런트 2,325만 주 대기</td></tr>
+<tr><td>C.12</td><td>모델 전환</td><td>⚠️</td><td>전환 완료 · 다음 변곡 = 프리미엄 1배 하회</td></tr>
+</tbody></table>
+<p><strong>핵심 정량 한눈에 (10월 2일 보유 · 10월 6일 시세 기준)</strong></p>
+<table><thead><tr><th>지표</th><th>값</th></tr></thead><tbody>
+<tr><td>비트코인 보유 / 평균 취득가(9월 말)</td><td>29,462개 / 90,170달러</td></tr>
+<tr><td>비트코인 가치(85,558달러 적용)</td><td>25억 2,070만 달러</td></tr>
+<tr><td>시가총액 / 희석 시가총액</td><td>30억 290만 / 30억 8,550만 달러</td></tr>
+<tr><td>mNAV (시총 ÷ 비트코인)</td><td>1.19배 (희석 1.22배)</td></tr>
+<tr><td>기업가치 mNAV (시총 + SATA − 현금·STRC)</td><td>1.59배 (워런트 포함 1.65배)</td></tr>
+<tr><td>보통주 주가 ÷ 1주당 순자산</td><td>2.05배</td></tr>
+<tr><td>SATA 액면 / 배당률 / 연 배당</td><td>13억 4,981만 달러 / 13% / 1억 7,550만 달러</td></tr>
+<tr><td>현금 + STRC</td><td>2억 8,470만 + 5,020만 달러</td></tr>
+<tr><td>영업 매출 (2026 상반기)</td><td>570만 달러 (운용 50% · 의료기기 48%)</td></tr>
+<tr><td>비트코인 수익률 (회사 · 분기 / 연초 / 12개월)</td><td>18.5% / 63.2% / 99.4%</td></tr>
+</tbody></table>
+<hr></section>
+<section class="card"><h2>⚠️ 수집 불완전 항목</h2>
+<ul>
+<li>❌ Strive ETF 상품별 라인업·AUM 분해 — 회사 IR·대시보드를 Chrome으로 열려 했으나 Chrome 확장 미연결(2회 재시도 실패). 10-K·10-Q에 펀드별 공시 없음.</li>
+<li>❌ 2026년 3분기 매출·손익 — 10-Q 발표 전(10월 5일 8-K는 보유 현황·잠정 재무상태만).</li>
+<li>❌ 전통 워런트 만기 — 10-K·10-Q 본문에서 확인하지 못했다.</li>
+<li>⚠️ Semler 2025년 4분기 단독 매출 — 합병으로 Semler 10-K가 나오지 않아 2025년 3분기까지만 있다.</li>
+</ul></section>
+<section class="card"><h2>📚 출처</h2>
+<ul>
+<li>10-K 2025 회계연도 (2026-03-19): https://www.sec.gov/Archives/edgar/data/1920406/000162828026019879/asst-20251231.htm</li>
+<li>10-Q 2026 1분기 (2026-05-14): https://www.sec.gov/Archives/edgar/data/1920406/000162828026034805/asst-20260331.htm</li>
+<li>10-Q 2026 2분기 (2026-08-10): https://www.sec.gov/Archives/edgar/data/1920406/000162828026054985/asst-20260630.htm</li>
+<li>8-K 2분기 실적 발표문 EX-99.1 (2026-08-10): https://www.sec.gov/Archives/edgar/data/1920406/000162828026054984/striveincq22026earningsrel.htm</li>
+<li>8-K 비트코인 보유 현황 (2026-10-05): https://www.sec.gov/Archives/edgar/data/1920406/000162828026064753/asst-20261005.htm</li>
+<li>8-K 비트코인 보유 현황 (2026-09-28): https://www.sec.gov/Archives/edgar/data/1920406/000162828026063653/asst-20260928.htm</li>
+<li>8-K Semler 합병 완료 (2026-01-16): https://www.sec.gov/Archives/edgar/data/1920406/000095010326000616/dp240082_8k.htm</li>
+<li>8-K 1:20 주식 병합 (2026-02-03): https://www.sec.gov/Archives/edgar/data/1920406/000095010326001560/dp240990_8k.htm</li>
+<li>8-K SATA 매 영업일 배당 정관 변경 (2026-05-14): https://www.sec.gov/Archives/edgar/data/1920406/000162828026034802/asst-20260513.htm</li>
+<li>8-K 상시 발행 한도 확대 (2026-06-08): https://www.sec.gov/Archives/edgar/data/1920406/000162828026041348/asst-20260605.htm</li>
+<li>Semler Scientific XBRL 매출 이력 (SEC companyfacts): https://data.sec.gov/api/xbrl/companyfacts/CIK0001554859.json</li>
+<li>시세 — yfinance (ASST·SATA·BTC-USD 10월 6일 종가)</li>
+</ul>
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p></section>
+</div>
+<script>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+const VIZ={"trajectory": {"periods": ["25.12", "26.3", "26.6", "26.9"], "forecastFrom": 3, "series": [{"key": "div", "label": "SATA 연 배당 부담 ($M)", "axis": "left", "color": "#c0392b", "values": [24.7, 55.8, 101.8, 168.2]}, {"key": "rev", "label": "영업 매출 연환산 ($M)", "axis": "left", "color": "#2980b9", "values": [5.7, 11.0, 11.8, 11.8]}, {"key": "rate", "label": "SATA 배당률 (%)", "axis": "right", "color": "#8e44ad", "values": [12.25, 12.75, 13.0, 13.0]}]}};
+DDViz.renderTrajectory("fig-rate","leg-rate",VIZ.trajectory);
+</script>
+</body>
+</html>
