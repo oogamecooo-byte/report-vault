@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hyperliquid Strategies (PURR) Deep-Dive — 빚 없는 HYPE 상자, 그러나 주식이 두 배로 느는 동안 1주당 HYPE는 줄었다 — 2026-10-09</title>
+<meta name="vault-stage" content="Dive"><meta name="vault-skill" content="Deep-Dive"><meta name="vault-topic" content="PURR"><meta name="vault-topics" content="온체인"><meta name="vault-date" content="2026-10-09">
+<meta name="description" content="Hyperliquid Strategies(PURR) 첫 Deep-Dive — 빚 없는 HYPE 상자, 그러나 주식 수가 두 배가 되는 동안 1주당 HYPE는 줄었다">
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --page-bg:#EBE4D3; --card-bg:#FDF6E3; --ink:#1f2328; --ink-2:#57534a; --ink-3:#8a8578;
+    --accent:#0068b5; --accent-dark:#00477e; --line:#e8e1cf; --line-2:#d9d0b8;
+    --up:#137333; --down:#b3261e; --amber:#5c4a00; --quote-bg:#f7efd8;
+    --red:#c0392b; --green:#27ae60; --yellow:#b8860b;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--page-bg);color:var(--ink);font-family:"Apple SD Gothic Neo","Noto Sans KR","Pretendard",-apple-system,"Helvetica Neue",sans-serif;line-height:1.72;padding:26px 14px 60px;font-size:15.5px;}
+  .card{max-width:1000px;margin:0 auto;background:var(--card-bg);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 14px rgba(90,75,40,.10);padding:44px 50px 56px;}
+  @media(max-width:720px){.card{padding:26px 18px 40px;}body{padding:10px 5px 30px;}}
+  .kicker{color:var(--accent-dark);font-weight:700;font-size:.82rem;letter-spacing:.08em;margin-bottom:8px;}
+  h1{font-size:1.75rem;line-height:1.32;font-weight:800;margin-bottom:8px;}
+  .sub{color:var(--ink-2);font-size:.94rem;margin-bottom:16px;}
+  .meta{font-size:.83rem;color:var(--ink-3);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px 2px;margin-bottom:26px;}
+  .meta a{color:var(--accent);text-decoration:none;}
+  h2.sec{font-size:1.28rem;font-weight:800;border-left:5px solid var(--accent);padding-left:12px;margin:50px 0 16px;}
+  h3{font-size:1.05rem;font-weight:800;margin:26px 0 9px;color:var(--accent-dark);}
+  h4{font-size:.96rem;font-weight:800;margin:18px 0 6px;color:var(--ink);}
+  p{margin-bottom:12px;}
+  .muted{color:var(--ink-2);font-size:.88rem;}
+  .fn{font-size:.8rem;color:var(--ink-3);}
+  ul,ol{margin:0 0 14px 22px;}
+  li{margin-bottom:7px;}
+  /* callout */
+  .judge{background:#eef4ec;border:1px solid #cddcc8;border-left:5px solid var(--green);border-radius:10px;padding:18px 22px;margin:14px 0 28px;font-size:.93rem;}
+  .judge b{color:#1e3d32;}
+  .summary{background:var(--quote-bg);border:1px solid var(--line-2);border-radius:11px;padding:20px 26px;margin-bottom:20px;}
+  .summary ul{margin:8px 0 0 20px;}
+  .summary li{margin-bottom:8px;}
+  .verdict-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;}
+  .vchip{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:.82rem;flex:1;min-width:150px;}
+  .vchip .l{font-size:.72rem;color:var(--ink-3);font-weight:600;display:block;margin-bottom:2px;}
+  .vchip .v{font-weight:800;font-size:.92rem;}
+  /* stat grid */
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:9px;margin:14px 0;}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:9px;padding:12px 14px;}
+  .stat .l{font-size:.74rem;color:var(--ink-3);font-weight:600;margin-bottom:2px;}
+  .stat .v{font-size:1.18rem;font-weight:800;line-height:1.15;}
+  .stat .s{font-size:.76rem;color:var(--ink-2);margin-top:2px;}
+  .up{color:var(--up);font-weight:700;} .down{color:var(--down);font-weight:700;}
+  .tbl{overflow-x:auto;margin:12px 0 18px;}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;background:#fff;border:1px solid var(--line);}
+  th{background:#f3ecd4;text-align:left;padding:8px 11px;border-bottom:2px solid var(--line-2);font-size:.82rem;white-space:nowrap;}
+  td{padding:7px 11px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .fig{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;margin:16px 0;text-align:center;}
+  .fig figcaption{font-size:.8rem;color:var(--ink-3);margin-top:8px;}
+  .box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 19px;margin:14px 0;font-size:.9rem;}
+  .warn{background:#fdf1d8;border:1px solid #e6d3a3;border-radius:10px;padding:13px 18px;margin:14px 0;font-size:.89rem;color:var(--amber);}
+  .steel{background:#f6f0e0;border-left:4px solid var(--ink-3);border-radius:0 8px 8px 0;padding:11px 16px;margin:12px 0;font-size:.87rem;color:var(--ink-2);}
+  .steel b{color:var(--ink);}
+  .flip{font-size:.85rem;color:var(--ink-2);margin:8px 0 4px;}
+  .star{color:#c8851a;letter-spacing:1px;}
+  .glossary{background:#fbf6e6;border:1px dashed var(--line-2);border-radius:8px;padding:11px 16px;margin:14px 0;font-size:.82rem;color:var(--ink-2);}
+  .glossary b{color:var(--ink);}
+  .footer{margin-top:44px;padding-top:15px;border-top:1px solid var(--line);font-size:.81rem;color:var(--ink-3);}
+  .footer a{color:var(--accent);}
+  .toc{background:var(--quote-bg);border:1px solid var(--line-2);border-radius:10px;padding:15px 22px;margin-bottom:30px;font-size:.9rem;columns:2;column-gap:30px;}
+  .toc a{color:var(--accent-dark);text-decoration:none;}
+  @media(max-width:600px){.toc{columns:1;}}
+  @media print{body{background:#fff;padding:0;}.card{box-shadow:none;border:none;background:#fff;max-width:100%;padding:10mm;}.stat,table,.box,.fig{background:#fff;}.summary,.judge,.warn{background:#f8f5ec;}}
+
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+</style>
+
+<style>
+.star-box{background:#f7efd8;border:1px dashed #d9d0b8;border-radius:8px;padding:9px 14px;margin:14px 0;font-size:.86rem;color:#57534a}
+blockquote{background:#f7efd8;border-left:4px solid #c8b98f;border-radius:6px;padding:10px 16px;margin:12px 0 18px;color:#1f2328}
+blockquote p:last-child{margin-bottom:0}
+.summary ul{margin:6px 0 4px 20px}
+</style>
+
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+<meta name="vault-published" content="2026-10-10">
+</head><body>
+<!--dive-hub:start-->
+<nav id="dive-hub" aria-label="하위 Dive 모음" style="max-width:1100px;margin:12px auto 18px;padding:12px 16px;background:#F3EBD6;border:1px solid #e8e1cf;border-radius:10px;font:14px/1.6 'Pretendard','Noto Sans KR',sans-serif;color:#1f2328">
+<div style="font-weight:700;margin-bottom:4px">🤿 PURR 하위 Dive 모음 <span style="font-weight:400;font-size:12px;color:#6b6457">— 이 Deep-Dive가 참고한 개별 보고서</span></div>
+<ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px">
+<li style="color:#8a8270">💰 R-Dive <span style="font-size:12px">제품·수익모델 — 미수행</span></li>
+<li><a href="2026-10-09_historydive-hyperliquidstrategies.html" title="History-Dive — Hyperliquid Strategies Inc (PURR) — 2026-10-09" style="color:#1F6F8B;font-weight:600;text-decoration:none">📜 History-Dive</a> <span style="font-size:12px;color:#6b6457">기업 역사 · 10/09</span></li>
+<li style="color:#8a8270">👤 People-Dive <span style="font-size:12px">사람·리더 — 미수행</span></li>
+<li style="color:#8a8270">📈 chart-dive <span style="font-size:12px">타이밍 — 🔒 로컬 전용 · 10/09</span></li>
+<li><a href="2026-10-10_purr-specificdive.html" title="PURR (Hyperliquid Strategies) Specific-Dive — 빚 없는 HYPE 트레저리 전문가 체크리스트 보완 — 2026-10-10" style="color:#1F6F8B;font-weight:600;text-decoration:none">🔎 Specific-Dive</a> <span style="font-size:12px;color:#6b6457">업종 특수 점검 · 10/10</span></li>
+<li style="color:#8a8270">📄 One-Pager <span style="font-size:12px">1p 압축 — 미수행</span></li>
+</ul>
+</nav>
+<!--dive-hub:end-->
+<div class="card">
+<div class="kicker">DEEP-DIVE · 단일 종목 심층 · v1.37 --full · 첫 실행</div>
+
+<h1>Hyperliquid Strategies (PURR) Deep-Dive — 빚 없는 HYPE 상자, 그러나 주식이 두 배로 느는 동안 1주당 HYPE는 줄었다</h1>
+<p class="sub">2026-10-09 · 주가 $11.16 · 시총 $3.10B · 순자산의 92%가 HYPE 3,852만 개 · 세전 mNAV 약 0.95배(회사 표기 세후 1.08배) · 미보유</p>
+
+<div class="meta">1차 자료: <a href="https://www.sec.gov/Archives/edgar/data/2078856/000119312526370281/purr-20260630.htm">10-K FY26</a> · <a href="https://www.sec.gov/Archives/edgar/data/2078856/000119312526399511/d168095d424b3.htm">424B3(9/23)</a> · <a href="https://www.sec.gov/Archives/edgar/data/2078856/000149315225025886/form8-k.htm">종결 8-K</a> · <a href="https://www.sec.gov/Archives/edgar/data/1106838/000149315225019759/formdefm14a.htm">합병 위임장</a> · <a href="https://hypestrat.xyz/dashboard">회사 대시보드</a> · <a href="https://api.hyperliquid.xyz/info">Hyperliquid info API</a> · yfinance · 동종 트레저리 회사 공시 · 기초자산 = HYPE Deep-Dive 2026-10-09</div>
+
+<div class="judge" style="border-left-color:#c0392b;background:#fbefe9;border-color:#ecd2c8">
+<h3>🧑‍⚖️ 종합 매수 판단 (Fable 판사 · Step 7.5)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 판사는 지금 가격에서의 진입을 보류했다. 안에 든 HYPE의 판정을 그대로 물려받고, 상자만의 엔진은 멈춰 있기 때문이다. HYPE 판정이 풀리고 회사의 발행 규율이 확인되면 가격과 무관하게 다시 본다.</p>
+</blockquote>
+<p><strong>verdict:</strong> 🔴 현재가 진입 보류 — PURR는 1주당 HYPE 0.1381로 HYPE를 1배 담은 상자이고, 그 상자 안의 HYPE가 같은 날 🔴(진입 보류)를 받았다. 상자 자체가 독립적으로 매수 이유를 만들려면 "할인에 사서 프리미엄 증자로 1주당 HYPE를 늘리는" 엔진이 돌아야 하는데, 그 엔진은 지금 정지(세전 mNAV 0.95 &lt; 손익분기 1.026)해 있고 상장 뒤 한 번도 1주당 HYPE를 늘린 적이 없다(3월 이후 −5%). 그 결과 기댓값은 5년 1.25x·2년 0.95x로 Bull 꼬리 하나에 기대며, 하락장(쿠션 소멸·mNAV 압축 1.1~1.35배)과 강세장(세후 지표 희석 발행 구간 11%) 양쪽에서 HYPE 직접 보유자보다 불리한 구조가 발행 규율로 증명되기 전까지 남는다. 재고 = (a) 가격 PURR $8.5~9 또는 HYPE 그대로라도 세전 mNAV ≤0.85 (b) 비가격: HYPE 판사 비가격 ⚪ 재판정(11월 팀 인출 ≤50만 + AQA 2회차 ≥$13M) <strong>그리고</strong> 11월 중순 10-Q에서 발행 규율 확인(7~9월 평균 발행가 세전 순자산 ≥1.03배 또는 분기 말 1주당 HYPE ≥0.1390) 동시 충족 → 가격 무관 ⚪ 재판정.</p>
+<p><strong>요약 1줄:</strong> 🔴 현재가 진입 보류 — 기초자산 HYPE 🔴를 그대로 물려받는 1배 래퍼라 5년 EV 1.25x(&lt;1.5x)에 그치는 것이 결정적 · 낮은 신뢰도 참고</p>
+<p><strong>근거:</strong></p>
+<ol>
+<li><strong>전-축 통합 read — 여섯 렌즈가 전부 한 방향이고, 그 방향의 뿌리는 하나(HYPE 판정)다.</strong> §H.7 🔴 고평가(약·기초자산 상속 · D1) · §H.1 5y 1.25x&lt;1.5x·2y 0.95x·Base 0.99x(D2) · §H.5 「약하고 비싼~약하고 싼」 경계·중요도 下·엣지 下(D3) · §H.6 0to1 1/7(D4) · §G.8 🟢 회사/⚪ 주주 몫(D5) · chart-dive Sell −0.158·타이밍 🔴(D6 · 참고 read) · 기초자산 HYPE 판사 🔴(D7). HYPE 2회차 판사 근거 1이 "다섯 렌즈가 하나의 변수(팀 분배 속도)로 수렴"이었다면, PURR는 그 위에 <strong>래퍼 층 변수 하나(세전 mNAV 대비 발행 규율 · H.7.3 swing · G.8.4 swing)</strong>를 더 얹은 2변수 구조다. 두 변수 모두 지금 미확정·불리 쪽이다. 반대편에 서는 것은 D.8 하방 닫힘 ⭐4(무부채·강제 매각 조항 0)와 G.8 지급능력 🟢뿐인데, 이 둘은 "회사가 망하지 않는다"이지 "주주가 HYPE 직접 보유보다 낫다"가 아니다(G.8 Steelman 데이터 축 그대로).</li>
+<li><strong>두 층이 동시에 상단에 있다 — 낙관 가정의 곱(H.7.2 ①).</strong> 래퍼 층 세전 mNAV 0.951은 구조 적정 밴드 0.85~0.95의 맨 위로, "이연법인세를 영영 안 낸다(0%) + 워런트 외 희석 없음"이 동시에 맞아야 정당화된다. 세금 50%만 반영해도 적정가 $10.5~10.7(−4~6%)이고, CVR 주식 지급(규모 미공시)은 아직 빼지도 않았다(H.7.2 ②). 기초자산 층은 HYPE H.7 「상단의존~envelope밖」(밴드 $49~70)을 상속해 PURR 환산 $6.1~9.2(D1). 동종 8사 세전 mNAV 중앙값 0.73·무차입 대형 ETH 2사 0.83~0.92·ETF ≈1.0 사이에서 PURR 0.95는 8사 중 7사보다 높고(C12 · H.7.2 ③), 그 프리미엄을 설명할 성장(1주당 HYPE −5% · C1)이 없다. 즉 <strong>지금 가격은 "HYPE가 이 값을 지키고 + 상자가 세금을 영영 안 내는" 두 가정을 함께 산다.</strong></li>
+<li><strong>상자의 유일한 독립 엔진(프리미엄 증자 → 1주당 HYPE 증가)은 정지 상태이고, 실현 전례가 0건이다.</strong> G.8 (1)⑤ 엔진 여유 = −0.08~−0.09(현재) · 모든 스트레스 행에서 −0.08~−0.38 정지 · 잔여 ChEF 14억 달러를 지금 mNAV에서 다 쓰면 1주당 HYPE −2.5~−3.2%. History-Dive 약속 이행 중 유일한 ❌가 CEO 12/8 "1주당 HYPE 늘리기"(C6)이고, 손익분기 위에 있던 달은 11개월 중 3개월(H.7.2 ③-다)뿐이다. §H.1이 Bull 가정에 "프리미엄 증자로 0.177"을 넣으면서도 "한 번도 실현되지 않은 약속이라 Bull 확률을 올리지 않았다"고 스스로 적었다 — 그런데도 5y 1.25x 중 Bull 20%(3.46x) 기여가 약 0.69로 절반 이상이다. <strong>Bull 꼬리를 빼면 기댓값은 본전 아래</strong>이며, H.1 자체의 "Bull 꼬리 의존" 플래그와 정합한다.</li>
+<li><strong>양방향 열위 — 하락장 cliff와 강세장 역설이 같은 구조(세후 vs 세전)에서 나온다(G.8 (3) · C11).</strong> 하락장: HYPE $47.12(−45%) 아래에서 이연법인세 쿠션 소멸 → 세전=세후 1:1 · 주가 = HYPE 낙폭 1.1~1.35배(프리미엄이 레버리지 역할) · 자사주 잔여 ~$2.2M·12/5 만료라 방어 수단 0. 강세장: 회사가 쓰는 세후 mNAV(1.08)로 발행을 판단하면 "세후 ≥1.0인데 세전 &lt;1.026"인 희석 발행 구간이 HYPE가 높을수록 넓다(@$85 11.3%). 3월 이후 −5%는 이 (b) 해석과 정합하나 10-Q 전엔 판별 불가(G.8.4 엇갈림). → HYPE 보유자는 HYPE 가격 변수 하나를 지면 되는데, PURR 보유자는 <strong>그 위에 발행 규율 변수를 하나 더 지고, 그 변수가 자기에게 불리하게 설계된 이해관계(자문사 워런트=주가 연동 · 증자 보상권=발행 규모 연동 · G.8 Steelman 구조 축 · C10·C20)</strong>를 안고 있다.</li>
+<li><strong>4분기 공급 군집이 래퍼 층 swing을 단기적으로 불리 쪽에 고정한다(H.2 · C11 · C19).</strong> 11/4 주총 = $12.02 미만 4,264만 주(19.99%) 한도 해제 안건이 <strong>세전 mNAV&lt;1 상태에서</strong> 표결된다 → 가결되면 "할인 발행 지속"이 가능해지는 날이고 §H.3 🟠 신호 2개(1주당 HYPE 훼손·할인 증자)가 🔴로 넘어갈 수 있는 경로다. 자문사 주식 776만 주는 Specific-Dive가 12/2가 아니라 <strong>9/16~17 조기 해제 조건 충족·구성원 분배와 같은 날</strong>로 바로잡았다(C19 · L.4) — 매도 감시가 "두 달 뒤"가 아니라 "지금부터"다. 12/5 자사주 만료 뒤 새 한도가 없으면 할인 교정 장치가 사라진다(C21 · S 새로 안 것 4). H.7 Steelman 시간축이 적은 대로, 이 군집은 "보류 후 대기"가 trigger를 만들 확률을 높이는 쪽이다.</li>
+<li><strong>대체재 비교에서 상자의 존재 이유가 약하다 — 이것이 "약하고 싼"이 value trap 칸인 이유다(§H.5 (d) · §E.2 · H.7.3).</strong> HYPE 현물 ETF 3종(2종은 스테이킹 상품 · C13)이 "주식 계좌로 HYPE" 병목을 2026-05~06에 해소했고, 세금 부채·자문사 희석·증자 리스크 없이 프리미엄 ≈1.0에 같은 노출을 준다. 스테이킹 +2.2%는 HYPE 직접 보유자도 같은 보상률로 받으므로 초과분이 아니다(H.7.2 ① 기준점 · R-Dive C.2). 시장도 이미 그렇게 본다 — 60일 상관 0.83(A9)·"HYPE 대용품" 가격 책정(H.5 (b)) → 선반영 격차 0. 따라서 PURR가 ETF·직접 보유보다 나은 자리는 <strong>세전 할인이 세금·워런트 차감(5~15%)을 넘어서거나, 발행 규율이 1주당 HYPE 증가를 실측으로 보여줄 때</strong>뿐이고 지금은 둘 다 아니다.</li>
+<li><strong>타이밍 뉘앙스 1줄(참고 read · 승격 ❌):</strong> chart-dive Sell −0.158(Hold 경계 0.008 차)·4축 1/4·현재가 손익비 0.85:1·PURR÷HYPE 가격비 20일 −10.5%(D6) — "토큰보다 주식이 더 약했다"는 방향이 §H.7 "프리미엄 = HYPE 모멘텀의 그림자"와 같은 쪽이다. 받침 $10.5~11.0 2트랜치는 정찰을 택할 경우의 참고일 뿐 종목 결정 입력으로 쓰지 않는다.</li>
+<li><strong>엇갈림 명시(봉합 ❌).</strong> (a) 세전 0.94~0.95(약간 싸다) vs 세후 1.03~1.04(약간 비싸다) — 같은 상자가 기준에 따라 반대 신호(C2 · L.1). 본 verdict는 증자 판단 기준인 <strong>세전</strong>을 소비한다(H.7 ③ 정의 주의). (b) §H.7 ②SOTP·③자기 역사 30pct "적정" vs ③동종 88pct·①밴드 상단 "약간 비쌈" vs ④컨센 평균 $22.3(HYPE $162 가정 · 4명 중 1명 증자 상대) "두 배" — 컨센은 HYPE 가정 위의 숫자라 소비하지 않는다(H.7.2 ④). (c) §G.8 회사 🟢 vs 주주 몫 ⚪ — 본 verdict는 주주 관점이라 ⚪를 소비한다. (d) <strong>같은 수치 세전 mNAV ≤0.85가 §H.7에서는 "재고 trigger", §H.3에서는 "할인 고착+교정 장치 부재" 🔴 신호(60거래일+새 한도 없음)</strong> — 할인 자체가 아니라 <strong>할인에 대응하는 회사 행동(새 자사주 한도·할인 인수)이 동반되는가</strong>가 둘을 가른다. 그래서 ≤0.85 단독은 ⚪ 재고까지만이고, 🟢(래퍼 층)는 H.7 Flip대로 "할인 지속 + 1주당 HYPE 증가 행동 동반"을 요구한다. (e) §H.5 분면 "약하고 싼" 쪽 경계 vs 종합 🔴 — 분면은 중요도×엣지 입력이고 "약하고 싼"은 value trap 다발 칸(H.5 (d))이라 방향 충돌이 아니다.</li>
+<li><strong>왜 ⚪ 관망이 아니라 🔴인가.</strong> HYPE 판사 🔴와 같은 논리 — 가장 가까운 판별 신호가 가격이 아니라 <strong>정보</strong>(11/1·11/6 HYPE 관측 · 11/4 주총 결과 · 11월 중순 10-Q 발행 단가)로 4~6주 안에 오고, 2y EV 0.95x·Base 0.91x는 기다림의 비용이 낮다는 뜻이다. 가격 trigger $8.5~9는 현재가 −19~−24%라 멀지만, PURR는 HYPE보다 재고 경로가 하나 더 있다 — <strong>HYPE가 그대로여도 세전 mNAV ≤0.85(≈$10.0 · −10%)</strong> 가 4분기 공급 군집에서 나올 수 있다(H.7 Steelman 시간축). 그래서 재고 조건에 가격 2개 + 비가격 1개를 두고, 비가격 경로에는 HYPE 조건 <strong>그리고</strong> 발행 규율 확인을 함께 걸어 "HYPE가 좋아져도 상자가 새는" 경우를 거른다. 🔴는 thesis 부정이 아니라 Thesis 리스크 신호 입력이며, 정찰성 소액은 관망과 양립한다.</li>
+</ol>
+<p><strong>Steelman:</strong></p>
+<ul>
+<li><strong>본 분석</strong>: HYPE 🔴를 1배로 물려받는 상자인데 상자의 독립 엔진(프리미엄 증자)은 정지·미실현이고 4분기 공급 군집이 그 swing을 불리 쪽에 고정하며, 대체재(ETF)가 같은 노출을 더 싸게 준다 → 🔴 현재가 진입 보류.</li>
+<li><strong>자기 반박 (구조 축 · 가장 강한 것)</strong>: <strong>본 verdict는 "무부채 할인 상자"가 약세장에서 갖는 유일한 알파를 0으로 놓았다.</strong> G.8 (3)의 결합표에서 세전 mNAV가 깊어질수록 자사주 방어 효과가 커지고(심각형 +6.7~+11.2% · 역주기 장치), $47 아래에서는 HYPE 매각 자사주의 세금 마찰도 0이 된다. 동종 레버리지 DATCO(MSTR·ASST·DFDV·UPXI)와 HYPD(0.31)가 하락장에서 강제 매도·청산에 몰릴 때, 부채 0·현금 $263.5M·스테이킹이 운영비 2.5~4.6배를 덮는 PURR는 <strong>"순자산보다 싼 HYPE 상자를 주식으로 사는 인수자"</strong>가 될 수 있다(10-K 선택지 · R-Dive C.12 인수 = 긍정 변곡). 그 경우 1주당 HYPE는 증자가 아니라 할인 인수로 늘고, 지금의 세전 0.95는 "그 옵션을 공짜로 주는 가격"이다. 또 §H.1 EV5 1.25x &gt; HYPE 1.01x이고 Bull 3.46x는 회사식 역대 최고 1.23 재현(5/6 실측)이라 공상이 아니다. HYPE에 긍정적인 사람에게 ETF가 아니라 PURR를 고를 이유가 바로 이것인데, 본 verdict는 그 옵션을 "실행 0건"으로 깎았다.</li>
+<li><strong>자기 반박 (데이터 축)</strong>: 세전 0.95를 "밴드 상단"으로 읽는 것 자체가 밴드 설계의 산물이다. 세후 1.04 vs ETF 1.00의 차이는 4%에 불과하고(H.7.5 데이터 축), 자기 역사 30pct·일별 중앙값 0.98(n=214)로는 지금이 오히려 역사적으로 싼 쪽이다. 동종 중앙값 0.73은 레버리지 회사를 섞은 값이라 무차입 3사(0.83·0.92·0.31)만 보면 표본이 3개다. 세전·세후 어느 기준으로도 "약간 싸다~약간 비싸다" 사이의 ±5%를 두고 🔴를 쓰는 것은 과잉이며, 무게가 전부 HYPE 층이라면 PURR 판정은 HYPE 판정의 복사본일 뿐 독립 판정이 아니다.</li>
+<li><strong>자기 반박 (시간지평 축)</strong>: 4분기 군집은 두 달짜리다. 5년 지평에서는 스테이킹이 1주당 HYPE를 +11% 쌓고(H.1 Base 0.1381→0.154), 11/4 안건이 가결되더라도 발행을 "하느냐"는 회사 재량이라 안건 가결 ≠ 희석 확정이다. CEO 유형이 "버티기 ✅·키우기 ❌"(C8)라면 바로 그 성향이 "할인에서 발행하지 않는" 규율로 작동할 수도 있다 — 7월 할인 때 증자 정지·자사주 전환(C5 기계적 반응 2회)이 그 정황이다.</li>
+<li><strong>유지 / 수정 / 철회 → 유지(🔴) · 수정 2건.</strong> 반박이 뒤집지 못하는 세 가지: ① 구조 축의 "할인 인수자" 옵션은 <strong>실탄과 실행 양쪽이 비어 있다</strong> — 자사주 잔여 ~$2.2M·12/5 만료(C21), 인수 실행 0건(D.7 · 약속 15·16번), 현금은 HYPE 매입 대기 자금이라 3~6월 2.82억→1.13억으로 줄었던 전례(G.8 Steelman 데이터 축). 옵션이 "공짜"인지는 새 자사주 한도가 승인될 때 비로소 말할 수 있다 → 이것을 재고 조건 (b)의 발행 규율 확인에 포함한다. ② 데이터 축의 "±5%는 과잉"은 래퍼 층 단독에 대해서는 맞고 §H.7도 그래서 래퍼 층을 ⚪로 뒀다 — 그러나 본 verdict의 🔴는 래퍼 ±5%가 아니라 <strong>기초자산 🔴 상속 + 양방향 열위 구조 미증명</strong>에서 오고, 래퍼 층이 ⚪라는 사실은 "HYPE가 ⚪로 바뀌면 PURR도 ⚪로 바뀐다"는 비가격 경로로 이미 반영했다. ③ 시간 축의 "CEO 규율 정황"(C5·C8)은 반대 정황(3월 이후 −5% · 7~8월 자사주와 증자 $117.1M 동시 진행 · C22 "자사주 가동 중 증자 안 함" 정책 위반)과 상쇄되어 10-Q 전엔 판별 불가다. <strong>수정 ①</strong>: 구조 축을 받아 재고 조건 (b)에 "새 자사주 한도 승인(≥$100M · G.8 회복 trigger)"을 발행 규율 확인의 대체 충족 요건으로 추가한다 — 할인 인수자 옵션이 실탄을 얻으면 가격 무관 ⚪ 재판정. <strong>수정 ②</strong>: 데이터 축을 받아 "세전 mNAV ≤0.85"를 ⚪ 재고로만 두고 🟢 승격엔 1주당 HYPE 증가 행동 동반을 요구한다(근거 8-(d)). 신뢰도 <strong>낮음</strong>(§H.7 "낮음"·§G.8 "낮음~중간"·기초자산 판정 "낮음"의 곱).</li>
+</ul>
+<p><strong>한계:</strong></p>
+<ol>
+<li><strong>chart-dive 원문은 Read했으나(<code>Chart_Reports/purr_2026-10-09.md</code>) 장중 미완결봉 기준</strong>($11.155 · 미국장 40분 지점) — 완결봉(10/8)으로도 Sell −0.158 동일이라 verdict 영향 없음. 참고 read·종목 결정 입력 아님.</li>
+<li><strong>§G.8 원문의 "12/2 자문사 신주 776만 주 락업 만료"는 Specific-Dive(C19 · L.4)로 정정됨</strong> — G.8 작성(00:02)이 Specific-Dive(01:15)보다 앞서 4분기 공급 군집 서술에 stale 날짜가 남아 있다. 브리프 C11이 "자문사 주식은 이미 해제"로 보정했고 본 verdict도 보정값을 썼다. roll-up 시 G.8 2차 효과 문단 수정 권고.</li>
+<li><strong>§G.8 운영비 커버 4.6x vs Specific-Dive 세금 꼬리 반영 2.2~2.5배(D8)</strong> — 스테이킹 수령 시 과세 확정 여부(Rev. Rul. 2023-14 1차 미확인 · 382조 결손금 제한 미확인 · C23)에 따라 갈린다. cliff 없음 판정은 어느 쪽이든 유지.</li>
+<li><strong>mNAV 수치가 보고서 간 미세 불일치</strong> — 브리프 A3 세후 "1.03" vs H.7 원장 1.041 vs HYPE 판사 근거 5 "PURR mNAV 1.08(이연법인세 되돌리면 0.98)" vs PURR H.7 세전 0.951. 주식 수 정의(yfinance 2억 7,827만 vs 대시보드 3억 128만)·시점 차이로 추정되나 재계산은 owner 침범이라 하지 않았다. 방향은 전부 "세전 &lt;1 · 세후 &gt;1"로 동일.</li>
+<li><strong>§H.1 Bull 1주당 HYPE 0.177의 전제(프리미엄 증자)가 실현 전례 0건</strong> — H.1이 스스로 Bull 확률을 올리지 않았다고 적었으나 배수 자체는 유지되어 EV5 1.25x가 낙관 쪽일 수 있다. 재계산 없이 "Bull 꼬리 의존" 플래그만 소비.</li>
+<li><strong>공매도 2,459만 주(8.8%) 주체 미확인</strong>(C15·C18) — Chardan 헤지 가설은 계약상 배제됐으나 대체 가설(mNAV 차익 · 방향성)은 검증 불가. 수급 축을 verdict에 넣지 않았다.</li>
+<li><strong>E1~E5 공백 그대로</strong> — 7~9월 증자 단가·주식 수(11월 10-Q 전) · 우선주 전환 현황 · CVR 지급 규모 · 자문사 락업 조기 해제 조건 원문 · 이전 실적 설명회 녹취. 특히 E1은 래퍼 층 swing(발행 규율)의 직접 증거라 판정 신뢰도를 "낮음"에 묶는 원인이다.</li>
+<li><strong>시장 과목 인용 as-of 9/29</strong>(C16 · tenbagger 9/30) — 10/9 기준 재인용 없음. Expect-daily 10/9(공포 38)는 보조로만.</li>
+</ol>
+<p class="judge-foot">판사 반환문 발췌(의역 없음 · 개인 규율 점검표와 내부 메모 1건만 제외) · 낮은 신뢰도 종합 콜 · enforcement 아님 · 최종 판단·실행은 사용자</p>
+</div>
+<h2 class="sec">한 장 요약</h2>
+<div class="summary">
+<ul>
+<li>🔴 <strong>이 주식은 HYPE를 거의 1대1로 담은 상자다.</strong> 순자산의 92%가 HYPE이고, HYPE와 60일 상관이 0.83이다. 그래서 같은 날 나온 HYPE 판정(🔴 진입 보류)을 그대로 물려받는다.</li>
+<li>🔴 <strong>상자만의 엔진은 아직 한 번도 돌지 않았다.</strong> 트레저리 회사의 존재 이유는 "주가가 순자산보다 비쌀 때 주식을 팔아 코인을 더 사서 1주당 코인을 늘리는 것"이다. 그런데 3월 이후 주식 수가 두 배가 되는 동안 1주당 HYPE(현금 포함)는 5% 줄었다. CEO의 "1주당 HYPE를 늘리겠다"는 약속은 이행 실패로 판정됐다.</li>
+<li>🔴 <strong>프리미엄은 재는 기준에 따라 반대로 보인다.</strong> 회사는 세금 부채를 뺀 기준으로 1.08배라고 표기한다. 증자 판단에 맞는 세전 기준은 약 0.95배다. 증권사 할인까지 넣으면 세전 1.026배를 넘어야 증자가 주주 몫을 늘린다. 지금은 증자할수록 1주당 HYPE가 준다.</li>
+<li>🟠 <strong>망하기는 어렵다.</strong> 금융부채 0, 현금 2.64억 달러, 스테이킹 보상이 운영비의 약 4.6배다. HYPE가 얼마로 떨어져도 강제로 팔 일이 없다. 대신 할인을 고칠 장치도 약하다. 자사주 한도가 거의 다 썼고 12/5에 끝나며, 이사회는 교차 임기로 바꾸기 어렵다.</li>
+<li>🟠 <strong>동종보다 약간 비싸고, 대체재가 있다.</strong> 동종 트레저리 8곳의 세전 mNAV 중앙값이 0.73배인데 이 회사는 0.95배다. 같은 HYPE 노출을 현물 ETF(프리미엄 약 0, 세금 부채·증자 희석 없음)가 판다.</li>
+<li>🟠 <strong>이해상충 스위치가 경영진 쪽에 있다.</strong> CEO가 운영하는 자문사가 증자 때마다 신주 5% + 워런트 15%를 받을 권리가 있다. 지금은 포기했지만 2주 통지로 되살릴 수 있다. 계약은 회사가 일방 해지할 수 없다. 이사 8명 중 5명이 스폰서 Atlas 쪽 사람이다.</li>
+<li>🟠 <strong>일정은 희석 쪽에 몰려 있다.</strong> 11/4 주총은 12.02달러 미만 대량 발행을 승인하는 안건을 다룬다. 자문사 주식 776만 주의 락업은 9월 중순에 이미 풀렸다. 자사주 프로그램은 12/5에 끝난다.</li>
+<li><strong>7축 종합 ⭐2.6</strong> — 사업·thesis 매력도(가중평균) · 밸류 멀티플 미반영(HYPE ⭐3.7보다 낮음). <strong>5년 기댓값 1.25x</strong>(HYPE 1.01x · Bull 꼬리 의존) · <strong>분면 = 약한 쪽 경계</strong> · <strong>0to1 = 1/7·⭐2.5</strong> · <strong>밸류 = 🔴 약한 고평가(기초자산 상속 · 신뢰도 낮음) · 다시 볼 조건 PURR $8.5~9 또는 세전 mNAV 0.85배 이하</strong> · <strong>내구성 = 🟢 회사 / ⚪ 주주 1주당 HYPE</strong> · <strong>🧑‍⚖️ 판사 = 🔴 현재가 진입 보류</strong>(비가격 재고 = HYPE 판정 ⚪ 전환 + 11월 10-Q 발행 규율 확인 또는 새 자사주 한도 승인).</li>
+</ul>
+</div>
+<figure class="fig dd-fig"><p class="cap"><b>확신도 7축</b> — 사업·thesis 매력도(가중평균 · 날씨 가중 3.0) · 밸류 멀티플 미반영 · 기초자산 HYPE와 겹쳐 봄</p><div id="fig-score7"></div><div class="dd-legend" id="leg-score7"></div></figure>
+
+<div class="toc"><a href="#a">A 날씨</a><br><a href="#b">B 산(산업)</a><br><a href="#c">C 숲(섹터)</a><br><a href="#d">D 나무(기업)</a><br><a href="#e">E 옆의 나무</a><br><a href="#f">F 사람</a><br><a href="#g">G 숫자</a><br><a href="#h">H 시나리오·렌즈</a><br><a href="#i">I 자금흐름</a><br><a href="#j">J 산업·규제</a><br><a href="#k">K 공시·약속</a><br><a href="#l">L 동적 발견</a><br><a href="#s">S Specific-Dive</a><br><a href="#z">종합 판단</a></div>
+
+<blockquote>
+<p><strong>배경 (1회만)</strong> — Hyperliquid Strategies(HSI)는 2025년 7월 스폰서 Atlas Merchant Capital과 Paradigm·Galaxy·Pantera 등이 세운 HYPE 트레저리 회사다. 12월 2일 자본 미달 상태의 나스닥 상장 바이오 회사 Sonnet BioTherapeutics를 흡수 합병해 상장했다(티커 PURR). 출자자들이 HYPE 1,252만 개를 넣었고, 같은 날 PIPE로 현금 3억 달러가 들어왔다. 이후 증권사 Chardan과 맺은 상시 증자 약정(ChEF)으로 주식을 팔아 HYPE를 더 샀다. 회계연도는 6월 말에 끝나고, 직원은 5명이다. CEO는 David Schamis, 의장은 Bob Diamond(전 Barclays CEO)다. <strong>트레저리 회사(DATCO)</strong> 는 코인을 대차대조표에 쌓는 상장사를, <strong>mNAV</strong> 는 주가를 1주당 순자산으로 나눈 배수를 말한다. 1배보다 높으면 프리미엄, 낮으면 할인이다.</p>
+</blockquote>
+<h2 class="sec" id="a">Section A. 🌦️ 날씨 — 지정학 + 거시 (장기 구조) ⭐2.5</h2>
+<h3>A.1~A.2 지정학 — HYPE의 미국 편입 경로에 그대로 노출된다</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이 회사의 지정학 노출은 거의 전부 HYPE를 통해 들어온다. 미국 정부가 크립토에 우호적인 것은 순풍이지만, "미국 상장 주식이 역외 프로토콜 토큰을 쌓는다"는 구조 자체가 규제 꼬리 위험을 품고 있다.</p>
+</blockquote>
+<ul>
+<li><strong>HYPE 쪽 노출 그대로 상속</strong> — 미국 편입 경로(CFTC · Payward/Bitnomial 구조), CME 소송, 북한 자금 이동 보도, 내부 지갑 위임 67.8% 같은 HYPE 고유 위험은 이 회사의 순자산 92%에 그대로 걸린다(HYPE Deep-Dive 10/9).</li>
+<li><strong>미국 상장 트레저리 회사 고유 노출</strong> — ① 지수: 이 회사는 MSCI 디지털자산 트레저리 회사 명단에 <strong>비편입</strong>(non-constituent)으로 올라 있다(유동 조정 시총이 발행사 시총의 13%로 잡힘) — 그래서 10/16 결과가 이 주식의 기계적 매도를 만들지는 않는다. 대신 비영업 회사 판단 5비율에 FY26 숫자가 모두 해당하고 1월부터 신규 편입이 유예돼, <strong>편입 길이 막혀 있다</strong>. 남은 경로는 Strategy가 빠질 때의 업종 심리다 〔Specific-Dive〕. 러셀·S&amp;P 편입 여부는 미확인. ② 투자회사 분류: 자산 대부분이 단일 토큰인 회사가 "투자회사"로 분류되면 증자·레버리지가 막힌다(10-K 위험요인이 직접 언급). ③ 수탁: HYPE 거의 전부를 연방 인가 디지털자산 은행 Anchorage 한 곳에 맡긴다.</li>
+<li><strong>이 회사만의 순풍</strong> — 미국 기관이 HYPE를 직접 들 수 없던 시기의 "주식 계좌 통로"였다. 그러나 2026년 5~6월 HYPE 현물 ETF 3종이 상장하면서 그 통로 가치가 크게 줄었다(C절).</li>
+</ul>
+<h3>A.3 거시</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — HYPE 값과 거의 1대1로 움직이고, 그 위에 트레저리 회사 프리미엄의 출렁임이 더해진다. 크립토가 식으면 HYPE보다 더 빠질 수 있다.</p>
+</blockquote>
+<ul>
+<li><strong>베타</strong> — HYPE와 60일 상관 0.83, 120일 베타 0.96(yfinance 일간). 60일 변동성은 104%로 HYPE(80%)보다 크다 — 프리미엄(mNAV)이 함께 흔들리기 때문이다.</li>
+<li><strong>트레저리 회사 섹터의 프리미엄 압축</strong> — 2025년 하반기 이후 코인 트레저리 회사 대부분이 순자산 근처나 그 아래로 거래되는 국면이다(동종 비교는 H.7). 이 국면에서는 "주식을 비싸게 팔아 코인을 더 산다"는 사업 모델 자체가 멈춘다.</li>
+<li><strong>금리</strong> — 현금 2.64억 달러에 이자가 붙는다(FY26 이자 수익 약 270만 달러). 금리 인하 시 이 수익은 줄지만 크기는 작다. 오히려 금리 인하 → 위험선호 회복 → 프리미엄 확대 경로가 더 크다.</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>매크로 변수</th>
+<th>이 회사로 들어오는 경로</th>
+<th style="text-align: center;">방향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HYPE 가격</td>
+<td>순자산의 92%</td>
+<td style="text-align: center;">+ (베타 약 1)</td>
+</tr>
+<tr>
+<td>크립토 위험선호</td>
+<td>프리미엄(mNAV) 확대·축소</td>
+<td style="text-align: center;">+ (증폭)</td>
+</tr>
+<tr>
+<td>단기금리 +1%p</td>
+<td>현금 이자 연 +260만 달러 / 위험선호 −</td>
+<td style="text-align: center;">혼재(작음)</td>
+</tr>
+<tr>
+<td>HYPE 스테이킹 총량</td>
+<td>보상률(스테이킹 매출) 변화</td>
+<td style="text-align: center;">− (스테이킹이 늘면 보상률↓)</td>
+</tr>
+</tbody>
+</table></div>
+<p class="star-box"><b>⭐ 산출 근거</b> — 미국 크립토 정책 🟡4 · HYPE 미국 편입 노출 🟡4 · 트레저리 회사 규제·지수 위험 🔴1 · 금리(작은 혼재) ⚪2.5 · 위험선호 베타 증폭 ⚪2.5 · 제재 꼬리(HYPE 경유) 🔴1 → 평균 2.5 → <b>⭐2.5</b></p>
+
+<p><strong>▶ Flip 트리거</strong> — 🟢: MSCI가 코인 보유 회사의 편입 유예 해제 · CFTC가 HYPE 연동 미국 perp 구조 승인 / 🔴: MSCI 비영업 회사 제외 채택 + Strategy 제외(업종 심리) · SEC가 단일 토큰 보유 회사를 투자회사로 해석 · OFAC가 Hyperliquid 관련 지정.</p>
+<h2 class="sec" id="b">Section B. ⛰️ 산 — 산업 (상장 디지털자산 트레저리 회사) ⭐2.0</h2>
+<h3>B.1 세상을 바꾸는 산업인가 — ❌</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 코인 트레저리 회사는 새 기술을 만드는 산업이 아니라 "주식으로 코인을 사게 해 주는 금융 포장" 산업이다. 현물 ETF가 같은 일을 더 싸게 하면서 존재 이유가 좁아지고 있다.</p>
+</blockquote>
+<ul>
+<li><strong>바꾸는 쪽 근거</strong> — Strategy(MSTR)가 2020~25년 "주식·전환사채로 비트코인을 사는 회사"라는 모델로 전통 자본시장 돈을 코인으로 옮겼다. 2025년 여름 이 모델이 이더리움·솔라나·HYPE로 복제되며 수십 개 회사가 생겼다.</li>
+<li><strong>바꾸지 않는 쪽 근거</strong> — 이 회사들이 하는 일(코인 보유 + 스테이킹)은 현물 ETF·직접 보유로 대체된다. 프리미엄이 사라지면 "코인 상자"만 남는다. 이 회사의 10-K도 가치 원천을 "개인이 따라 할 수 없는 복리 수익"이라고 적었지만, 실제 수익은 누구나 받는 스테이킹뿐이다(History-Dive 약속 16번 진행 중).</li>
+<li>판정 ❌ — HYPE 자체(온체인 파생 거래소)는 ⚠️였지만, 그 토큰을 쌓는 회사는 산업 혁신이 아니다.</li>
+</ul>
+<h3>B.2~B.4 정책 자본 · 내러티브 · 산업 크기</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이 산업을 받치는 서사는 "자본 흐름" 하나뿐이다. 그 흐름이 식은 국면이라 산업 성장도 멈춰 있다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>내러티브 축</th>
+<th style="text-align: center;">✅/△/❌</th>
+<th style="text-align: center;">깊이 ⭐</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔧 기술</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">1</td>
+<td>자체 기술 없음 · 검증자 운영도 외부(Unit)가 맡음</td>
+</tr>
+<tr>
+<td>👥 사회</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">2</td>
+<td>"주식 계좌로 코인 사기" 수요 — ETF가 대체</td>
+</tr>
+<tr>
+<td>🏛️ 정책</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">2</td>
+<td>크립토 우호 정책은 순풍, 지수·투자회사 분류는 역풍</td>
+</tr>
+<tr>
+<td>🌐 지정학</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">1</td>
+<td>직접 노출 없음(HYPE 경유만)</td>
+</tr>
+<tr>
+<td>💰 자본</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">4</td>
+<td>스폰서(Paradigm·Galaxy·Pantera 등)·기관 45% 보유·증자 약정 25억 달러</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>1축 ✅ → 진입 기준(2축 이상) 미달.</strong> 산업 서사가 자본 흐름 하나에 기대고 있어, 흐름이 식으면 받칠 다른 축이 없다.</li>
+<li><strong>산업 크기</strong> — HYPE 트레저리 회사는 사실상 이 회사 하나다(HYPD 185만 개 · Lion 23만 개 대비 이 회사 3,852만 개). 미국 HYPE 현물 ETF 3종 순자산 4.54억 달러는 이 회사 시총(31억 달러)의 7분의 1이다. 이 산업의 성장 = HYPE 값 + 프리미엄이고, 독립적인 수요 성장 지표가 없다.</li>
+</ul>
+<figure class="fig dd-fig"><p class="cap"><b>내러티브 5축</b> — 산업 서사가 몇 겹으로 받쳐지는가 (확신도 7축과 별개)</p><div id="fig-c3"></div><div class="dd-legend" id="leg-c3"></div></figure>
+
+<p class="star-box"><b>⭐ 산출 근거</b> — B.1 ❌1 · B.2 정책 자본 ⚠️3 · B.3 내러티브 1축(진입 미달) 1.5 · B.4 독립 성장 지표 없음 ⚪2.5 → 평균 2.0 → <b>⭐2.0</b></p>
+
+<p><strong>▶ Flip 트리거</strong> — 🟢: 트레저리 회사 섹터 프리미엄이 1.3배 이상으로 재확대 · HYPE ETF가 스테이킹 보상을 못 주는 규제 확정(래퍼 차별화) / 🔴: ETF 순자산이 이 회사 HYPE 보유 가치를 넘음 · 섹터 합병·청산 확산.</p>
+<h2 class="sec" id="c">Section C. 🌲 숲 — 섹터 (HYPE 트레저리 회사) ⭐3.0</h2>
+<h3>C.1 병목 시점 매트릭스 — "주식 계좌로 HYPE" 통로는 이미 넓어졌다</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이 회사가 처음 쥐었던 병목(미국 기관이 HYPE를 사는 통로)은 현물 ETF 상장으로 풀렸다. 지금 남은 차별점은 "가장 큰 HYPE 상자"라는 규모뿐이다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>시점</th>
+<th>병목</th>
+<th>이 회사 위치</th>
+<th>가격 반영도</th>
+<th style="text-align: center;">유지 기간</th>
+<th>해소 경로</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025-12 ~ 2026-05</td>
+<td>미국 상장 증권으로 HYPE 노출</td>
+<td>사실상 유일</td>
+<td>상장 첫날 −38% → 이후 프리미엄 회복</td>
+<td style="text-align: center;">단기(약 6개월)</td>
+<td><strong>해소됨</strong> — 2026-05~06 HYPE 현물 ETF 3종 상장</td>
+</tr>
+<tr>
+<td>T0 (0~6M)</td>
+<td>스테이킹 포함 HYPE 노출</td>
+<td>경쟁 중</td>
+<td>낮음(mNAV 약 1)</td>
+<td style="text-align: center;">단기</td>
+<td>ETF 2종(THYP·HYPG)도 스테이킹 상품</td>
+</tr>
+<tr>
+<td>T+6~24M</td>
+<td>HYPE 생태계 자산 묶음(검증자·인수)</td>
+<td>후보</td>
+<td>낮음</td>
+<td style="text-align: center;">추정 불가</td>
+<td>다른 트레저리 인수·검증자 외부 위탁 확대가 실제로 나오는지</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>지불자 경로</strong> — 큰손 = 주식 계좌로만 코인을 살 수 있는 기관·개인. 막힘 = "HYPE를 직접 보관·스테이킹할 수 없는 규정·운영 제약". 경로 = <strong>직접</strong>(주식을 그들에게 판다). 🔴 <code>직접</code>이므로 병기: 증자 창구가 Chardan 한 곳(FY26 조달의 68%) · 가격 결정력 N/A(할인율·보상률 모두 남이 정함). 그리고 그 막힘을 ETF가 먼저 풀었다.</li>
+<li><code>⚫ 단순 테마</code> 여부 — 테마는 아니다. 그러나 수요의 증거가 "주가 프리미엄" 하나뿐이고, 그것이 1배 근처라 병목성이 약하다.</li>
+</ul>
+<h3>C.2 4중 필터</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — HYPE 트레저리 중에서는 압도적 1위다. 그러나 그 자리를 지켜 주는 장벽은 약하다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>필터</th>
+<th style="text-align: center;">등급</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">⚪</td>
+<td>프리미엄 1배 근처 = 수요와 공급(증자)이 균형 · 섹터 전반 식음</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">🟡 과점</td>
+<td>HYPE 트레저리는 사실상 독주 · 대체재(ETF 3종)까지 넣으면 소수 경쟁</td>
+</tr>
+<tr>
+<td>③ 섹터 1~2등</td>
+<td style="text-align: center;">⭐⭐⭐⭐⭐</td>
+<td>HYPE 3,852만 개 = 2위 HYPD의 약 21배</td>
+</tr>
+<tr>
+<td>④ 마진</td>
+<td style="text-align: center;">⚪</td>
+<td>스테이킹 순수익이 순자산의 약 +1.5%/년 · 매출 자체는 작다</td>
+</tr>
+</tbody>
+</table></div>
+<p class="star-box"><b>⭐ 산출 근거</b> — C.1 병목성 🔴1(해소됨) · ① ⚪2.5 · ② 과점 4 · ③ 5 · ④ ⚪2.5 → 평균 3.0 → <b>⭐3.0</b></p>
+
+<p><strong>▶ Flip 트리거</strong> — 🟢: 다른 HYPE 트레저리 인수(할인 매수로 1주당 HYPE 증가) · 검증자 외부 위탁 HYPE가 보유분 이상으로 증가 / 🔴: HYPE ETF 순자산 급증 · 경쟁 트레저리 신설.</p>
+<h2 class="sec" id="d">Section D. 🌳 나무 — 기업 ⭐2.5</h2>
+<h3>D.0 제품·수익모델 — R-Dive 요약 (R-Dive 선행 모드)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚 없는 HYPE 상자에 주식 발행 엔진을 붙인 회사다. 상자는 튼튼하지만, 엔진이 주주 몫을 늘리지 못했다.</p>
+</blockquote>
+<p>전문 = R-Dive 보고서 「Hyperliquid Strategies (PURR) — 제품·수익모델 해부」(2026-10-09). 재작성하지 않고 요약만 옮긴다.</p>
+<ul>
+<li><strong>(a) 아키타입</strong> — <strong>무레버리지 토큰 래퍼 + 증자 차익형(주 · 가치)</strong> · <strong>⑤ 이자형 변형(주 · 매출 = 자기 HYPE 스테이킹 99.5%)</strong> · ② 검증자 수수료(소 · 0.5%). 바이오 → HYPE 전환은 2026-03 바이오 자산 이전으로 끝났다.</li>
+<li><strong>(b) 돈의 흐름</strong> — 주식 투자자 → Chardan(시세보다 2.5~5% 싸게 사 감) → 회사 → HYPE 시장. 그리고 프로토콜 → 스테이킹 보상(HYPE) → 회사. 회사가 마진을 떼는 길목은 "주가 − 순자산" 차이 하나다.</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>지표(10/8 대시보드 · 10/9 시세)</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>보유 HYPE / 평균 원가(6월 말)</td>
+<td>3,852만 개 / 약 $46.6</td>
+</tr>
+<tr>
+<td>순자산 세전 / 세후</td>
+<td>약 35.3억 / 32.3억 달러</td>
+</tr>
+<tr>
+<td>1주당 순자산 세전 / 세후</td>
+<td>약 $11.73 / $10.71</td>
+</tr>
+<tr>
+<td>mNAV 세전 / 세후</td>
+<td>약 0.94배 / 1.03배</td>
+</tr>
+<tr>
+<td>연 스테이킹(추정)</td>
+<td>약 82.7만 개(약 7,000만 달러)</td>
+</tr>
+<tr>
+<td>증자 약정 잔여</td>
+<td>약 14억 달러</td>
+</tr>
+</tbody>
+</table></div>
+<figure class="fig dd-fig"><p class="cap"><b>순자산 구성(세전 · 억 달러)</b> — 대시보드 10/8 · 시세 10/9 · HYPE 한 자산이 92%</p><div id="fig-d0"></div></figure>
+
+<ul>
+<li><strong>(c) 치명 함정 3개</strong> — ① 3월 말 이후 주식 수 +100%, 1주당 HYPE(현금 포함) −5% ② 회사식 세후 mNAV(1배 위)와 증자 판단에 맞는 세전 mNAV(1배 아래)가 반대 신호 — 증자 손익분기는 세전 1.026~1.053배다 ③ 자문사(CEO 운영)의 증자 보상(신주 5% + 워런트 15%)이 2주 통지로 되살아날 수 있다.</li>
+<li><strong>(d) 숫자 함정</strong> — DefiLlama "Hyperliquid Strategies HYPE Staking" 30일 수수료 521만 달러는 이 회사 매출이 아니라 그 검증자에 맡겨진 모든 HYPE의 보상 합계다. 검증자가 실제로 뗀 수수료는 30일 10.4만 달러다.</li>
+<li><strong>고객 검증 등급</strong> — 해당 없음(매출 고객 없음 · 프로토콜 보상). 대신 의존 상대가 넷: 수탁(Anchorage) · 증자 창구(Chardan) · 검증자 운영(Unit) · 지배 구조(자문사).</li>
+</ul>
+<h3>D.5 곡괭이 판정 — 곡괭이 아님 · 조달이 곧 사업</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 누가 이기든 버는 구조가 아니다. HYPE가 이겨야 이기고, 주가 프리미엄이 있어야 성장한다. 다만 빚이 없어 버티는 힘은 크다.</p>
+</blockquote>
+<ul>
+<li>곡괭이 아님 — 수익이 HYPE 한 자산의 값과 프리미엄에 달려 있다.</li>
+<li><strong>곡괭이 질 4축(참고)</strong> — ① 마진: 출처 = 프로토콜 보상(가격결정력 아님 · 정부 이전지출 아님) → P형 아님 ② 설비투자 0 ③ 외부 조달 의존 🔴 매우 높음(성장 = 증자) ④ 현금 전환: 영업현금 −1,915만 달러(보상이 HYPE로 들어와 현금화 안 함). → <strong>(B) 자본갈증형의 성격</strong> — 단, 부채가 아니라 주식으로 조달해 하방이 닫혀 있다.</li>
+</ul>
+<h3>D.6 해자</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 해자는 사실상 없다. 같은 노출을 ETF가 팔고, 회사가 정할 수 있는 가격도 없다.</p>
+</blockquote>
+<h4>D.6-a 해자 유형 4종 + 가격 인상 테스트</h4>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>유형</th>
+<th style="text-align: center;">작동</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 네트워크 효과</td>
+<td style="text-align: center;">❌</td>
+<td>보유량이 커져도 주주 1명에게 돌아가는 가치는 커지지 않는다</td>
+</tr>
+<tr>
+<td>② 브랜드</td>
+<td style="text-align: center;">⚠️</td>
+<td>"미국 상장사 최대 HYPE 보유"(위임장·10-K) — 그러나 프리미엄으로 이어지지 않음(mNAV 약 1)</td>
+</tr>
+<tr>
+<td>③ 전환 비용</td>
+<td style="text-align: center;">❌</td>
+<td>주주는 ETF·직접 보유로 언제든 갈아탄다</td>
+</tr>
+<tr>
+<td>④ 비용 우위</td>
+<td style="text-align: center;">⚠️</td>
+<td>직원 5명·운영비 연 약 1,400만~1,800만 달러(순자산의 약 0.5%)로 ETF 보수와 비슷한 수준 · 대신 스테이킹 보상을 회사가 갖는다</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>가격 인상 테스트 N/A</strong> — 판매하는 "가격"이 없다(증자 할인율·보상률 모두 상대방·프로토콜이 정함). → ✅ 0개 = <strong>D.6-a ⭐1</strong></p>
+<h4>D.6-b Durable ↔ Variable</h4>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>분류</th>
+<th>보유</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Durable</td>
+<td>보유 HYPE 3,852만 개(시장가 자산 · 해자 아님) · 자체 검증자 위임 3,788만 개</td>
+<td style="text-align: center;">약함</td>
+</tr>
+<tr>
+<td>Variable</td>
+<td>없음(기술 개발 없음)</td>
+<td style="text-align: center;">없음</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>⭐2(Durable only)</strong> → <strong>D.6 = (1+2)÷2 = ⭐1.5</strong> · 해자 내구성 = <code>추정 불가</code>(지켜야 할 초과수익이 없다).</p>
+<h3>D.7 수직 통합·확장성 — ⭐2</h3>
+<p>트레저리 → 자체 검증자(2026-05 · Unit 운영) 한 걸음. 10-K는 다른 HYPE 트레저리 인수·DeFi 활용을 선택지로 적었지만 실행 0건이다(History-Dive 약속 15·16번). 단일 자산·단일 제품.</p>
+<h3>D.8 하방 닫힘 / 상방 열림 — ⭐4</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — HYPE가 크게 빠져도 회사가 강제로 팔 일은 없다. 이것이 이 회사의 가장 큰 장점이다.</p>
+</blockquote>
+<ul>
+<li><strong>하방</strong> — 금융부채 0 · 우선주 배당 의무 없음(우선주는 보통주와 똑같이 나누는 전환형) · 스테이킹이 운영비를 몇 배 넘게 번다 → HYPE 값이 얼마로 떨어져도 강제 매각 조항이 없다. 같은 업종 Strive(ASST)는 매년 비트코인 가치의 약 9.5%를 우선주 배당·운영비로 내야 한다. 🔴 하방 꼬리 = 수탁사 사고(Anchorage 단일) · HYPE 프로토콜 사고.</li>
+<li>🔴 <strong>이면: 할인을 고치는 장치도 약하다</strong> 〔Specific-Dive〕 — 자사주 잔여 한도 약 220만 달러·12/5 만료 · HYPE를 팔아 자사주를 사는 조건은 할인 폭이 아니라 "HYPE 시세가 회사 추정 가치보다 높을 때" · 3클래스 교차 임기 이사회·해임은 사유 + 2/3·서면 동의 금지·특별 주총 소집권 이사회 쪽·DGCL 203·백지 우선주 → 행동주의 주주가 할인을 고치기 어렵다. 원가 $46.6 묶음을 $85에 팔면 대금의 약 9.5%가 세금이다. 📌 증자 판단은 세전 mNAV, 코인을 팔아 자사주를 사는 판단은 세후 mNAV가 맞다. 업종 선례 = ETHZilla(ETH 매각 → 자사주 → 사명 변경) · HYPD(HYPE 매도 → 자사주).</li>
+<li><strong>상방</strong> — HYPE 값 × (프리미엄 재확대 시 증자로 1주당 HYPE 증가). 둘 다 회사 밖 변수다.</li>
+</ul>
+<p class="star-box"><b>⭐ 산출 근거</b> — D.0 수익모델 2.75(R-Dive 4차원: 예측가능성 🟡4 · 수익성 🟢5 · 과금 강도 🔴1 · 고객 묶임 🔴1) · D.5 곡괭이 아님 2 · D.6 1.5 · D.7 2 · D.8 4 → 평균 2.45 → <b>⭐2.5</b></p>
+
+<p><strong>▶ Flip 트리거</strong> — 🟢: 세전 mNAV 1.05배 이상에서 증자해 1주당 HYPE가 분기 기준 증가 · 할인된 트레저리 인수 / 🔴: 자문사 증자 보상 부활 통지 · 수탁사 사고.</p>
+<h2 class="sec" id="e">Section E. 🌲🌳 옆의 나무 — 경쟁·대체재 ⭐3.0</h2>
+<h3>E.0~E.1 비교 대상과 매트릭스</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이 회사의 진짜 경쟁자는 다른 트레저리 회사가 아니라 HYPE 현물 ETF와 HYPE 그 자체다. 빚이 없다는 구조는 동종보다 낫지만, 주주가 이 회사를 택할 이유는 약하다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>PURR</th>
+<th>HYPE 현물 ETF 3종</th>
+<th>HYPD(Hyperion DeFi)</th>
+<th>ASST(Strive · BTC)</th>
+<th>MSTR(Strategy · BTC · 대장주)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>시총·순자산</td>
+<td>$3.10B</td>
+<td>순자산 $0.45B</td>
+<td>$0.05B</td>
+<td>$2.94B</td>
+<td>$61.2B</td>
+</tr>
+<tr>
+<td>보유 자산</td>
+<td>HYPE 3,852만 개</td>
+<td>HYPE(약 530만 개 상당)</td>
+<td>HYPE 185만 개</td>
+<td>BTC</td>
+<td>BTC</td>
+</tr>
+<tr>
+<td>레버리지·선순위</td>
+<td>없음</td>
+<td>없음</td>
+<td>대출 상환 완료</td>
+<td>우선주 대량</td>
+<td>전환사채·우선주</td>
+</tr>
+<tr>
+<td>스테이킹 수익</td>
+<td>회사가 가짐(연 약 2.2%)</td>
+<td>THYP·HYPG 스테이킹 상품</td>
+<td>있음</td>
+<td>해당 없음</td>
+<td>해당 없음</td>
+</tr>
+<tr>
+<td>9/28 이후 주가</td>
+<td>−6.5%</td>
+<td>−4% 안팎</td>
+<td>−14.0%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>최근 행동</td>
+<td>증자로 HYPE 매입</td>
+<td>11일 순유출 −610만 달러</td>
+<td>HYPE 20만 개 매도 → 자사주 매입</td>
+<td>우선주 조달</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>출처: yfinance 10/8~10/9 · SoSoValue 10/8 · HYPD 3분기 보도자료(10/3) · ASST Deep-Dive(10/7). 동종 mNAV 비교는 H.7(전담 서브에이전트 수집).</li>
+<li><strong>본 종목이 열위인 비교 대상</strong> = HYPE 현물 ETF(같은 노출을 증자 희석·자문사 보상 없이 제공).</li>
+</ul>
+<figure class="fig dd-fig"><p class="cap"><b>PURR vs 대체재·동종</b> — yfinance 10/8~10/9 · 미공시는 회색</p><div id="fig-e1"></div></figure>
+
+<h3>E.2 종합 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 구조는 동종보다 안전하고, 대체재보다 나을 이유는 아직 없다.</p>
+</blockquote>
+<ul>
+<li><strong>(a) 수익 모델</strong> — 동종 트레저리보다 <strong>우위</strong>(빚·고정 지출 없음 · 스테이킹이 비용을 덮음). ETF 대비 <strong>동등~열위</strong> — 스테이킹은 ETF도 하고, 이 회사엔 증자 희석·자문사 보상이 붙는다.</li>
+<li><strong>(b) 정부 vs 민간</strong> — 해당 없음.</li>
+<li><strong>(c) 경쟁 포지션</strong> — HYPE 트레저리 1위(압도적). 최대 위협 = ETF 순자산 확대(지금 7분의 1) · 발현 시점 = 프리미엄이 1배 아래로 오래 머무를 때.</li>
+</ul>
+<p class="star-box"><b>⭐ 산출 근거</b> — 구조 우월성(무부채) 🟡4 · 대체 가능성(ETF 동일 노출) 🔴1 · HYPE 트레저리 1위 🟡4 → 평균 3.0 → <b>⭐3.0</b></p>
+
+<p><strong>▶ Flip 트리거</strong> — 🟢: ETF 순유출 지속 속에 이 회사 프리미엄 유지(래퍼 차별화 증명) / 🔴: ETF 순자산이 이 회사 HYPE 가치의 절반을 넘음.</p>
+<h2 class="sec" id="f">Section F. 👤 사람 ⭐2.5 (객관 7축 · 비전축 사용자 ⭐ 대기)</h2>
+<h3>F.1 임원 8축 — CEO David Schamis (People-Dive 요약)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 망하지 않게 운전하는 규율형 금융인이다. 그러나 주주 몫을 키우는 능력은 아직 증명되지 않았고, 이해상충 스위치가 그의 손에 있다.</p>
+</blockquote>
+<p>전문 = People-Dive 보고서 「David Schamis」(2026-10-09).</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">판정</th>
+<th>핵심 근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 약력</td>
+<td style="text-align: center;">🟢</td>
+<td>예일대 → Salomon(1995~2000) → J.C. Flowers 창립 멤버·경영위원회(2000~2014) → Atlas Merchant Capital 공동창업·최고투자책임자</td>
+</tr>
+<tr>
+<td>② 명성</td>
+<td style="text-align: center;">🟡</td>
+<td>전통 금융에선 탄탄 · 크립토에선 2025-09 이후 신규</td>
+</tr>
+<tr>
+<td>③ 능력</td>
+<td style="text-align: center;">⚠️</td>
+<td>할인 국면 두 번을 빚 없이 넘김(버티기 ✅) · 현금 포함 1주당 HYPE −13%(키우기 ❌) — 본인도 성과는 "거의 HYPE 덕"이라고 인정</td>
+</tr>
+<tr>
+<td>④ 도덕성</td>
+<td style="text-align: center;">🟠 조건부</td>
+<td>개인 제재·사기 판결은 찾지 못함 · MF Global(2011 파산) 감사·위험위원회 이사로 주주 집단소송 피고(2015년 6,450만 달러 합의 · 보험 재원 · 책임 인정 없음) · 위임장 약력에서 Concord(Atlas 계열 스팩) 이사직 누락으로 보임</td>
+</tr>
+<tr>
+<td>⑤ 비전</td>
+<td style="text-align: center;">사용자 ⭐ 대기</td>
+<td>💬 Claude 의견: "HYPE에 닿는 가장 좋은 상장 통로"라는 좁고 현실적인 비전. 말과 실행의 간격은 작지만, 성과가 HYPE 자체의 성공에 기댄다. 사명 문구가 이틀 사이 "1차 책임은 주주"(Fortune 10/5) ↔ "최우선은 Hyperliquid의 전통 금융 노출 확대"(X 10/6)로 갈렸다 — 둘이 부딪힐 때 어느 쪽이 이기는지는 아직 관측되지 않았다</td>
+</tr>
+<tr>
+<td>⑥ Skin in the Game</td>
+<td style="text-align: center;">🔴</td>
+<td>주식 약 51만 주 + 워런트 161만 주(1% 미만) — 전부 자문사 분배·보상으로 받음 · 자기 돈 매수 기록 없음</td>
+</tr>
+<tr>
+<td>⑦ 거버넌스</td>
+<td style="text-align: center;">🔴</td>
+<td>이사 8명 중 5명이 Atlas 사람(주총 뒤 6명) · 3년 교차 임기 이사회 · 의장 아들 고용 · 자문사 이사 지명권</td>
+</tr>
+<tr>
+<td>⑧ 외부 평가</td>
+<td style="text-align: center;">⚪</td>
+<td>실적 설명회 질문 증권사 3곳 중 1곳이 증자 상대 Chardan · 비판 글 거의 없음(우호 편향)</td>
+</tr>
+</tbody>
+</table></div>
+<h3>F.2 이해상충 · 핵심 인재</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 가장 큰 사람 리스크는 자문사 보상권이다. 지금은 꺼져 있고, 꺼 둔 것 자체가 돈이 드는 신호지만, 다시 켜는 스위치도 같은 사람에게 있다.</p>
+</blockquote>
+<ul>
+<li><strong>자문사 증자 보상권</strong> — Schamis가 관리하는 Rorschach Advisors는 증자 때마다 신주 5% + 워런트 15%를 받을 권리가 있다(5년 계약). 지금은 포기했지만 2주 통지로 되살릴 수 있고, 증자 결정은 그가 이끄는 재무위원회(CEO·CFO·COO)가 한다. 포기는 실재하는 비용이다 — 상장 뒤 발행 약 1.5억 주에 붙었다면 신주만 약 750만 주(10/9 종가 약 8,500만 달러)였다(People-Dive 계산). 단 자문사 워런트의 가치는 1주당 HYPE가 아니라 주가에 붙는다.</li>
+<li><strong>자문 계약 조건</strong> 〔Specific-Dive〕 — 5년(2030-12-02) · <strong>회사 일방 해지 불가</strong>(중대 위반 30일 미치유 또는 합의만) · 현금 보수 없음(이사회 재량 추가 보상 가능) · <strong>합병 시 인수자가 승계</strong> · 이사 지명권은 보유 10% 유지 조건.</li>
+<li><strong>기타 연결고리</strong> — 계열사 공유 서비스·사무실 전대(FY26 40만 달러) · 의장 아들이 대외협력 책임자 · 증자 상대 Chardan이 처음 거래를 가져온 자문사이기도 함.</li>
+<li><strong>보수</strong> — FY26 118.6만 달러(임원 중 최저) · FY27 기본급 60만 + 목표 상여 100% + 주식 200만~300만 달러.</li>
+<li><strong>Bob Diamond(의장)</strong> — Atlas CEO·최대 주인 · PURR 지분 1.9% · 2012년 LIBOR 사태로 Barclays CEO 사임(영국 의회 재무위원회: 증언이 "때때로 매우 선택적") · 2024년 Triller Group 의장 사임 — 이 이력이 위임장 약력에서 빠진 것으로 보인다(People-Dive 판단).</li>
+<li><strong>Jeroen Nieuwkoop(COO)</strong> — 보수 426만 달러(CEO의 3.6배) · 본인 지배 회사로 지급 · 직전 5년 Diamond가 의장이던 AGBA·Triller 출신.</li>
+</ul>
+<p class="star-box"><b>⭐ 산출 근거</b> — 객관 7축: ① 🟢5 · ② 🟡4 · ③ ⚠️3 · ④ 🟠2.5 · ⑥ 🔴1 · ⑦ 🔴1 · ⑧ ⚪2.5 → 평균 2.71 → <b>⭐2.5</b>(0.5 단위 반올림) · ⑤ 비전축 사용자 ⭐ 대기</p>
+
+<ul>
+<li>🔴 Survivorship 경계 — 규율·절제는 지금까지 HYPE 상승장에서 관측됐다. 하락장에서 자문사 보상 스위치가 꺼진 채로 남는지는 아직 시험받지 않았다.</li>
+</ul>
+<p><strong>▶ Flip 트리거</strong> — 🟢: 자기 돈으로 주식 매수(Form 4) · 자문사 보상권 영구 포기 계약 개정 · 독립 이사 과반 / 🔴: 보상권 부활 통지 · 12/2 락업 만료 전후 경영진 처분 · Atlas 연결 이사 추가.</p>
+<h2 class="sec" id="g">Section G. 🔢 숫자 — 재무건전성 ⭐3.5</h2>
+<h3>G.1 기본 정량 (SEC 10-K FY26 · 6월 결산 · 대시보드 10/8)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚이 없고 현금이 10년 넘게 버틸 만큼 있다. 순이익은 크지만 거의 전부 HYPE 평가이익이라 영업 실력을 말해 주지 않는다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>값</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>주가 · 시총</td>
+<td>$11.16 · $3.10B(발행 2억 7,827만 주)</td>
+<td>yfinance 10/9</td>
+</tr>
+<tr>
+<td>매출 FY26</td>
+<td>946만 달러(스테이킹 941만 · 검증자 수수료 약 5만)</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/2078856/000119312526370281/purr-20260630.htm">10-K</a></td>
+</tr>
+<tr>
+<td>순이익 FY26</td>
+<td>3.06억 달러 — HYPE 미실현 평가이익 7.10억 − 출자 HYPE 평가손실 1.69억 − 바이오 자산 상각 0.36억 − 이연법인세 1.83억</td>
+<td>10-K</td>
+</tr>
+<tr>
+<td>영업현금흐름 FY26</td>
+<td>−1,915만 달러</td>
+<td>10-K</td>
+</tr>
+<tr>
+<td>재무활동 FY26</td>
+<td>+9.34억 달러(증자·PIPE)</td>
+<td>10-K</td>
+</tr>
+<tr>
+<td>현금</td>
+<td>2.64억 달러(10/8 대시보드) · 6월 말 1.38억</td>
+<td>대시보드 · 10-K</td>
+</tr>
+<tr>
+<td>금융부채</td>
+<td>0</td>
+<td>10-K</td>
+</tr>
+<tr>
+<td>이연법인세 부채</td>
+<td>1.83억 달러(6월 말) = HYPE 평가이익분 1.225억 + 케이맨 자회사 미배당 이익분 0.638억 · 당기 법인세 0(전부 이연) · 실효세율 37.5% · 연방 결손금 1.171억(382조 사용 제한 분석 미완료 · 전액 평가충당) 〔Specific-Dive〕</td>
+<td>10-K</td>
+</tr>
+<tr>
+<td>판관비 FY26</td>
+<td>약 1,395만 달러(바이오 정리 비용 포함)</td>
+<td>10-K</td>
+</tr>
+<tr>
+<td>직원</td>
+<td>5명(6월 말)</td>
+<td>10-K</td>
+</tr>
+</tbody>
+</table></div>
+<h3>G.1.5 🎯 시총 10배 랜드마크</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금 크기는 Strive와 비슷하다. 열 배가 되려면 Strategy의 절반 크기가 돼야 한다. 규모 비교일 뿐이다.</p>
+</blockquote>
+<figure class="fig dd-fig"><div id="fig-g15"></div><div id="sent-g15" class="dd-ladder-sentence"></div></figure>
+
+<h3>G.3 4축 매트릭스 + G.4 경량 내구성</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 망할 위험은 매우 낮다. 대신 성장은 주식 발행에서만 나오고, 그 성장이 주주 1주 몫을 키우지 못했다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>축</th>
+<th>측정</th>
+<th style="text-align: center;">등급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 성장</td>
+<td>스테이킹 매출 분기 50만 → 263만 → 633만 달러(보유량·가격 상승) · 1주당 HYPE(현금 포함)는 0.159 → 0.138개로 감소</td>
+<td style="text-align: center;">🟡(매출↑ · 주당 몫↓)</td>
+</tr>
+<tr>
+<td>② 마진</td>
+<td>순 스테이킹 수익(보상 − 운영비) 순자산 대비 약 +1.5%/년 · 스테이킹 보상이 수령 시 과세되면(회사 위험요인) 최대 연 약 1,470만 달러 현금 세금 → 최악 약 +1.1% 〔Specific-Dive〕 · GAAP 이익은 평가손익이 지배</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>③ 현금 창출</td>
+<td>영업현금 음수(보상이 HYPE로 들어와 현금화 안 함) · 현금 2.64억 ÷ 연 운영비 약 1,800만 = 10년 이상</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>④ 고금리 내구성</td>
+<td>무차입 — 이자보상·만기·변동금리·약정 모두 N/A · 즉시 유동성 🟢</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>G.4-a</strong> — 무차입이라 차환 위험이 구조적으로 없다. 🔴 단 무차입 ≠ 조달 부재: 성장 자금은 상시 증자(ChEF)이고, 자문사 워런트 2,739만 주·옛 Sonnet 워런트 126만 주·CVR 주식 지급이 잠재 희석이다(아래 I.0.5).</li>
+<li><strong>G.4-b</strong> — 원가·재고 없음. 인플레 부호 = HYPE 가격을 통한 간접(+). 디스인플레·위험회피 국면엔 프리미엄 축소로 부호 반전.</li>
+</ul>
+<p class="star-box"><b>⭐ 산출 근거</b> — ① 🟡4 · ② ⚪2.5 · ③ ⚪2.5 · ④ 🟢5 → 평균 3.5 → <b>⭐3.5</b> (1주당 희석은 4축 밖이라 G.5 표로 본다 — 이 점수는 희석을 과소평가한다)</p>
+
+<h3>G.5 궤적 — 주식 수·1주당 HYPE·순자산</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 1주당 순자산은 두 배가 됐지만, 그 상승은 HYPE 값이 만든 것이다. 주주 1주가 담은 HYPE는 상장 직후보다 적다.</p>
+</blockquote>
+<figure class="fig dd-fig"><p class="cap"><b>주식 수(좌·백만 주)와 1주당 HYPE 환산(우·천분의 1개)</b> — 10-Q·10-K·대시보드 · 1주당 HYPE 환산 = (보유 HYPE + 현금 ÷ 그날 HYPE 값) ÷ 주식 수(우선주 전환분 포함)</p><div id="fig-g5"></div><div class="dd-legend" id="leg-g5"></div></figure>
+
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>시점</th>
+<th style="text-align: right;">주식 수(우선주 포함)</th>
+<th style="text-align: right;">보유 HYPE</th>
+<th style="text-align: right;">현금</th>
+<th style="text-align: right;">1주당 HYPE 환산</th>
+<th style="text-align: right;">HYPE 값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025-12 말</td>
+<td style="text-align: right;">1억 5,068만</td>
+<td style="text-align: right;">1,286만 개</td>
+<td style="text-align: right;">2.82억 달러</td>
+<td style="text-align: right;">0.1589</td>
+<td style="text-align: right;">약 $25.9</td>
+</tr>
+<tr>
+<td>2026-03 말</td>
+<td style="text-align: right;">1억 5,081만</td>
+<td style="text-align: right;">1,883만 개</td>
+<td style="text-align: right;">1.13억</td>
+<td style="text-align: right;">0.1453</td>
+<td style="text-align: right;">$36.61</td>
+</tr>
+<tr>
+<td>2026-06 말</td>
+<td style="text-align: right;">2억 2,714만</td>
+<td style="text-align: right;">2,928만 개</td>
+<td style="text-align: right;">1.50억</td>
+<td style="text-align: right;">0.1390</td>
+<td style="text-align: right;">$65.04</td>
+</tr>
+<tr>
+<td>2026-10 초</td>
+<td style="text-align: right;">3억 128만</td>
+<td style="text-align: right;">3,852만 개</td>
+<td style="text-align: right;">2.64억</td>
+<td style="text-align: right;">0.1381</td>
+<td style="text-align: right;">$84.97</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>출처: R-Dive C.11(10-Q·10-K 재무상태표·XBRL·대시보드).</li>
+<li><strong>증자 단가</strong> — 4~6월 약정 판매 7,606만 주 평균 약 $8.50~8.70 · 자사주는 평균 $4.80에 580만 주를 샀다. 싸게 사고 비싸게 판 순서는 맞았다. 그러나 판 시점의 세전 프리미엄이 대부분 0.8~1.08배라, 증권사 할인을 빼면 1주당 HYPE를 늘릴 여지가 거의 없었다(History-Dive D.2).</li>
+<li><strong>3월 → 10월</strong> — 주식 수 +100% · 보유 HYPE +105% · 1주당 HYPE 환산 −5% · 1주당 순자산 $5.32 → $11.74(HYPE 값 2.3배 효과).</li>
+</ul>
+<h3>G.8 고금리·고물가 내구성 정밀 진단 〔서브에이전트 위임 · 점수 미합산〕</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚도 고정 지출도 없어 회사는 어떤 거시 조합에서도 버틴다. 무너질 수 있는 것은 회사가 아니라 주주 1주가 담은 HYPE이고, 그것은 회사가 언제 주식을 파느냐에 달려 있다.</p>
+</blockquote>
+<p><code>[모드: embedded]</code> · 사전 게이트 = 무차입(순현금) → 「부채 차환 위험 구조적 부재」. 대신 주식 발행 압박·이연법인세·현금 이자·HYPE 베타를 결합 시나리오로 번역했다. 원문 = 내부 작업 파일 G8.</p>
+<ul>
+<li><strong>금리 기둥 🟢</strong> — 부채·만기·약정 0. 순현금 2.64억 달러 → 금리 1%포인트당 이자 ±260만 달러(작은 + 부호).</li>
+<li><strong>물가 기둥 🟢</strong> — 원가 없음 · 회사 자체는 인플레 중립 · HYPE의 부호를 상속.</li>
+<li><strong>결합 시나리오</strong>(HYPE 가격·금리는 HYPE 내구성 진단에서 · mNAV 밴드는 가정)</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th>HYPE</th>
+<th style="text-align: center;">세전 mNAV</th>
+<th>함의 주가</th>
+<th style="text-align: center;">(스테이킹+이자)÷운영비</th>
+<th style="text-align: center;">현금 runway</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기준점</td>
+<td>$85</td>
+<td style="text-align: center;">0.94~0.95</td>
+<td>$11.03~11.14</td>
+<td style="text-align: center;">4.6배</td>
+<td style="text-align: center;">13년 이상</td>
+</tr>
+<tr>
+<td>경미(−20% · 금리 +1%p)</td>
+<td>$68</td>
+<td style="text-align: center;">0.85~0.90</td>
+<td>−23~−27%</td>
+<td style="text-align: center;">4.1배</td>
+<td style="text-align: center;">18년 이상</td>
+</tr>
+<tr>
+<td>기준 스태그(−40% · +2%p)</td>
+<td>$51</td>
+<td style="text-align: center;">0.78~0.85</td>
+<td>−44~−48%</td>
+<td style="text-align: center;">3.6배</td>
+<td style="text-align: center;">29년 이상</td>
+</tr>
+<tr>
+<td>심각 1970s형(−60% · +3%p)</td>
+<td>$34</td>
+<td style="text-align: center;">0.65~0.75</td>
+<td>−65~−70%</td>
+<td style="text-align: center;">3.0배</td>
+<td style="text-align: center;">사실상 무한</td>
+</tr>
+<tr>
+<td>디플레 침체(−50% · −1%p)</td>
+<td>$43</td>
+<td style="text-align: center;">0.70~0.80</td>
+<td>−55~−61%</td>
+<td style="text-align: center;">2.7배</td>
+<td style="text-align: center;">19년 이상</td>
+</tr>
+<tr>
+<td>🔴 가격 탈동조(0% · −1%p)</td>
+<td>$85</td>
+<td style="text-align: center;">0.85~0.95</td>
+<td>0~−11%</td>
+<td style="text-align: center;">4.5배</td>
+<td style="text-align: center;">12년 이상</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>지급능력 cliff 없음</strong> — 어떤 조합에서도 운영비 대비 수입 2.5배 이상, 현금 12년 이상.</li>
+<li><strong>주주 몫의 임계점 두 개</strong> — ① HYPE가 $47.12(지금보다 −45%) 아래로 가면 평가이익에 붙은 이연법인세 쿠션(손실의 21%를 받아 줌)이 사라진다 ② 프리미엄이 함께 압축돼 주가는 HYPE 낙폭의 1.1~1.35배로 빠진다 — 빚이 없어도 프리미엄이 레버리지처럼 작동한다.</li>
+<li><strong>강세장 쪽 역설</strong> — 회사식(세후) mNAV로는 1배 위인데 세전으로는 손익분기(1.026배) 아래인 구간이 있다. 여기서 발행하면 1주당 HYPE가 준다. HYPE 값이 높을수록 이 구간이 넓다(순자산 대비 $85에서 11.3%).</li>
+<li><strong>4분기 공급 일정 군집</strong> — 10/16 MSCI(비편입이라 업종 심리 경로) → 11/4 주총(발행 한도 해제) → 11월 10-Q → 12/2 자문사 워런트 락업 → 12/5 자사주 프로그램 만료가 약 7주 안에 몰린다. 자문사 주식은 9/16~17 이미 해제됐다(Specific-Dive).</li>
+<li><strong>1970s 생존 특성</strong> — 저부채·자산 경량·짧은 만기 ✅ · 가격결정력·해자 ❌ → 3/5.</li>
+</ul>
+<blockquote>
+<p>🏷️ <strong>종합 내구성: 🟢 견딤(회사 지급능력 · 레짐 무관) / ⚪ 조건부(주주 1주당 HYPE) ‖ 신뢰도 낮음~중간 ‖ 풀 DD 승격 낮음</strong>
+🎯 <strong>버티는가: 🟢 회사는 버팀 / ⚪ 세전 mNAV가 1.026배 아래일 때 발행을 멈추는지가 관건.</strong> 악화 trigger = 11월 10-Q에서 1주당 HYPE 환산이 6월 말(0.1390) 아래인데 증자 지속 · 자문사 보상 부활 통지(손익분기가 1.07~1.18배로 상승) / 회복 trigger = 12/5 전후 새 자사주 한도 승인 + 세전 1.05배 이상에서만 발행. 금리 레짐 부호 = [고금리 🟢(현금 이자) / 금리 인하 ⚪(위험선호 회복 시 프리미엄 확대는 +)].
+<strong>swing 변수</strong> = 세전 mNAV 대비 발행 여부(지금 세전 0.94~0.95배 · 손익분기보다 0.08 낮음).
+꼬리 주석 〔Specific-Dive〕: 스테이킹 보상이 수령 시 과세되면 (스테이킹+이자)÷운영비 배수가 4.6배 → 약 2.2~2.5배로 내려간다(추정) — 지급능력 cliff 없음 결론은 유지.
+라벨: ① 낮은 신뢰도 참고(7~9월 증자 단가·382조 분석 미완료·동종 mNAV 일부 8-K 대체) ② 버티는가 직접 답·enforcement 아님·최종 판단 사용자 ③ 장기 thesis stop sign ❌ ④ 7축·4축 점수 미반영.</p>
+</blockquote>
+<h3>G.6 실물 병목 7카테고리 — 해당 없음</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 전력·산업재 같은 실물 병목과는 무관한 금융 래퍼다.</p>
+</blockquote>
+<p>성상현 실물 병목 7카테고리 모두 ⚪ 해당 없음.</p>
+<p><strong>▶ Flip 트리거</strong> — 🟢: 분기 1주당 HYPE 환산 증가(+2% 이상) · 영업현금 흑자(검증자 수수료 확대) / 🔴: 1주당 HYPE 환산 분기 −3% 이상 · 자문사 워런트·CVR 주식 지급 확정.</p>
+<h2 class="sec" id="h">Part 2 — Section H. 시나리오 · Catalyst · 렌즈</h2>
+<h3>H.1 Bull / Base / Bear (확률 가중 · 2/3/5년 · 주당)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이 주식의 기댓값은 HYPE의 기댓값에 프리미엄 옵션이 얹힌 모양이다. 스테이킹이 1주당 HYPE를 조금씩 늘리고, 강세장에서 프리미엄이 다시 열리면 HYPE보다 더 오른다. 약세장에서는 할인까지 겹쳐 HYPE보다 더 빠진다.</p>
+</blockquote>
+<p><strong>계산 방식</strong> — 주당 가치 = 1주당 HYPE(현금 환산 포함) × HYPE 가격 × (1 − 평가이익에 붙는 이연법인세 21%) × mNAV(세후 기준). HYPE 가격·확률은 HYPE Deep-Dive(10/9) 시나리오를 그대로 소비했다(재계산 ❌). 1주당 HYPE는 스테이킹 연 약 2.2% 복리 + 시나리오별 증자·자사주 효과.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: center;">확률</th>
+<th style="text-align: center;">2년</th>
+<th style="text-align: center;">3년</th>
+<th>5년 주가 (배수)</th>
+<th>가정</th>
+<th>catalyst</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🟢 Bull</td>
+<td style="text-align: center;">20%</td>
+<td style="text-align: center;">2.05x</td>
+<td style="text-align: center;">2.32x</td>
+<td>$38.6 (3.46x)</td>
+<td>HYPE $208 · 1주당 HYPE 0.177(스테이킹 + 프리미엄 증자) · mNAV 1.25</td>
+<td>HYPE 미국 편입 · 섹터 프리미엄 재확대</td>
+</tr>
+<tr>
+<td>🟡 Base</td>
+<td style="text-align: center;">50%</td>
+<td style="text-align: center;">0.91x</td>
+<td style="text-align: center;">0.93x</td>
+<td>$11.1 (0.99x)</td>
+<td>HYPE $78 · 1주당 HYPE 0.154(스테이킹만) · mNAV 1.0</td>
+<td>프리미엄 1배 근처 유지</td>
+</tr>
+<tr>
+<td>🔴 Bear</td>
+<td style="text-align: center;">30%</td>
+<td style="text-align: center;">0.27x</td>
+<td style="text-align: center;">0.22x</td>
+<td>$2.2 (0.19x)</td>
+<td>HYPE $19 · 1주당 HYPE 0.162(할인 자사주) · mNAV 0.70</td>
+<td>HYPE 규제 차단 · 섹터 청산</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>기댓값</strong> — 2년 0.95x · 3년 약 1.0x · 5년 1.25x(HYPE 자체 1.01x) → 🔴 <strong>5년 1.5x 미만 = ⚠️ 현재 가격에서 thesis 약함.</strong> ⚠️ Base 2년 0.91x &lt; 2.0x → "Bull 꼬리 의존" 플래그.</p>
+<ul>
+<li><strong>HYPE보다 기댓값이 높은 이유</strong> — 두 가지다. ① 스테이킹이 5년간 1주당 HYPE를 약 11% 늘린다(HYPE 직접 보유자도 스테이킹하면 같은 효과 — 회사의 실력이 아니다) ② Bull에서 프리미엄이 1.25배로 열리는 옵션. 반대로 Bear에서는 할인(0.70배)이 HYPE 하락에 겹친다. <strong>이 주식 = HYPE + 스테이킹 + 프리미엄 옵션 − 증자 희석 위험.</strong></li>
+<li><strong>History-Dive 지연 계수</strong> — 회사가 혼자 정하는 날짜는 1.0배로 지킨다. 그러나 Bull 가정의 "프리미엄 증자로 1주당 HYPE 증가"는 지금까지 한 번도 실현되지 않은 약속(❌)이라 Bull 확률을 올리지 않았다.</li>
+<li><strong>암묵 exit 배수 역산</strong> — 이 회사의 exit "배수"는 mNAV다. Base 1.0배 · Bull 1.25배. 이 산식의 mNAV는 세후 기준이고, 세후 기준 상장 후 최고치가 1.23배(5/6)다 → Base 1.0배는 역사 범위 안, Bull 1.25배는 <strong>역대 최고점 재현</strong> 가정 → Bull은 재평가 의존 중간. bottom-up(1주당 HYPE × 가격 × mNAV)이라 동어반복은 아니다.</li>
+</ul>
+<figure class="fig dd-fig"><p class="cap"><b>5년 시나리오 + 비대칭 손익</b> — 1.0x 본전선 · 기댓값 = Σ(확률×배수)</p><div id="fig-h1"></div><div id="badge-h1"></div></figure>
+
+<h3>H.2 Catalyst 캘린더</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 11월 4일 주총(저가 대량 발행 승인)이 다음 두 달의 가장 큰 일정이다. 자문사 주식의 락업은 이미 풀려 매도 감시는 지금부터다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>일시</th>
+<th>이벤트</th>
+<th style="text-align: center;">영향</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-16</td>
+<td>MSCI 코인 보유 비영업 회사 협의 결과 — 이 회사는 비편입이라 기계적 매도 없음 · Strategy 제외 시 업종 심리</td>
+<td style="text-align: center;">🟡</td>
+<td>Specific-Dive</td>
+</tr>
+<tr>
+<td>2026-11-01·06 전후</td>
+<td>HYPE 이자 매입 2회차 · HYPE 팀 월 인출(순자산 92%의 변수)</td>
+<td style="text-align: center;">🟠</td>
+<td>HYPE Deep-Dive</td>
+</tr>
+<tr>
+<td>2026-11-04</td>
+<td>주총 — 12.02달러 미만 대량 발행(19.99% 한도 해제) 승인 안건</td>
+<td style="text-align: center;">🔴</td>
+<td>위임장(10/2)</td>
+</tr>
+<tr>
+<td>2026-11 중순(추정)</td>
+<td>7~9월 10-Q — 9월 증자 단가·주식 수 공개</td>
+<td style="text-align: center;">🟠</td>
+<td>History-Dive</td>
+</tr>
+<tr>
+<td>이미(9/16~17)</td>
+<td>자문사 주식 776만 주 락업 조기 해제 조건 충족(분배와 같은 날) — 매도 감시는 지금부터</td>
+<td style="text-align: center;">🔴</td>
+<td>Specific-Dive · 자문 계약 4.1</td>
+</tr>
+<tr>
+<td>2026-12-02</td>
+<td>자문사 워런트 락업(해석에 따라 이미 해제) · 검증자 분산·비주식 조달 약속 12개월 기한</td>
+<td style="text-align: center;">🟠</td>
+<td>History-Dive</td>
+</tr>
+<tr>
+<td>2026-12-31</td>
+<td>대형 가속 신고자 판정일 → FY27 첫 내부통제 감사인 인증</td>
+<td style="text-align: center;">🟡</td>
+<td>Specific-Dive</td>
+</tr>
+<tr>
+<td>2026-12-05</td>
+<td>자사주 매입 프로그램 만료(한도 거의 소진)</td>
+<td style="text-align: center;">🟡</td>
+<td>10-K</td>
+</tr>
+<tr>
+<td>2028-12-02</td>
+<td>CVR 기간·증자 약정 만기</td>
+<td style="text-align: center;">🟡</td>
+<td>종결 8-K</td>
+</tr>
+</tbody>
+</table></div>
+<h3>H.3 ⚠️ Thesis 리스크 신호 (최초 정의 — 종목 Memory 없음)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지켜볼 신호는 1주당 HYPE와 세전 프리미엄 두 개로 모인다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>신호</th>
+<th>관측 trigger</th>
+<th style="text-align: center;">10/9 상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1주당 HYPE 훼손</td>
+<td>분기 1주당 HYPE 환산 −3% 이상</td>
+<td style="text-align: center;">🟠 3월 이후 −5%(누적)</td>
+</tr>
+<tr>
+<td>할인 증자</td>
+<td>세전 mNAV 1.026배 미만에서 증자 지속</td>
+<td style="text-align: center;">🟠 세전 약 0.94배</td>
+</tr>
+<tr>
+<td>자문사 보상 부활</td>
+<td>증자 보상(5% 신주 + 15% 워런트) 부활 통지</td>
+<td style="text-align: center;">아님</td>
+</tr>
+<tr>
+<td>저가 대량 발행 승인</td>
+<td>11/4 주총 안건 2번 가결</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>내부자 매도</td>
+<td>자문사·Diamond·Schamis·Tuder의 시장 매도(Form 4 · 주식 락업 이미 해제)</td>
+<td style="text-align: center;">감시 중</td>
+</tr>
+<tr>
+<td>수탁 집중</td>
+<td>Anchorage 사고·계약 변경</td>
+<td style="text-align: center;">아님</td>
+</tr>
+<tr>
+<td>HYPE 리스크 상속</td>
+<td>HYPE Deep-Dive 리스크 신호(팀 분배 가속 · 내부 위임 67.8%)</td>
+<td style="text-align: center;">🟠 2건</td>
+</tr>
+<tr>
+<td>🆕 업종 지수 충격</td>
+<td>MSCI 10/16 비영업 회사 제외 채택 + Strategy 제외</td>
+<td style="text-align: center;">대기 〔Specific-Dive〕</td>
+</tr>
+<tr>
+<td>🆕 할인 고착 + 교정 장치 부재</td>
+<td>세전 mNAV ≤0.85배 60거래일 이상 + 12/5 이후 새 자사주 한도 없음</td>
+<td style="text-align: center;">아님</td>
+</tr>
+<tr>
+<td>🆕 스테이킹 현금 세금(약)</td>
+<td>당기 법인세 &gt; 0 또는 스테이킹 수령 시 과세 확정 규정</td>
+<td style="text-align: center;">아님</td>
+</tr>
+<tr>
+<td>🆕 첫 내부통제 인증(약)</td>
+<td>FY27 10-K 중대한 취약점</td>
+<td style="text-align: center;">2027</td>
+</tr>
+</tbody>
+</table></div>
+<h3>H.3-0 보유 종목 가설 신선도 — 해당 없음(미보유)</h3>
+<h3>H.5 🧭 CAE · Edge Grid 좌표</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 중요도가 약한 자산이 적정~비싼 가격에 있다. 이 주식만의 엣지는 거의 없고, HYPE를 사는 다른 방법 중 하나에 가깝다.</p>
+</blockquote>
+<p>〔범례 — CAE: C=제약 · A=조정 · E=표현, 번호=세부층 / 중요도 L 다층성 · R 비가역성 · H 병목경도 · 엣지 G 선반영격차 · P 연료잔량 · D 컨센서스반증, 각 0~3〕</p>
+<ul>
+<li><strong>(a) CAE 분류</strong> — 걸친 층 = A2(금융 포장·조달) · E3(투자 접근성 표현층). 무게중심 = 조정층(A) · 🔴 약한 고리 = HYPE 자체(순자산 92%)와 ETF 대체.</li>
+<li><strong>(b) Edge Grid</strong> — 중요도 L1 · R0 · H0 = 下 / 엣지 G1 · P1 · D1 = 下. G 입력 — 시장이 보는 가설: HYPE와 60일 상관 0.83(가장 강함) → 시장은 이 주식을 "HYPE 대용품"으로 가격 매기는 중이고, 이 보고서의 진단(HYPE 1배 래퍼)과 같다 → 선반영 격차 없음. D(컨센서스 반증) 입력: 커버 증권사 4곳 중 1곳이 증자 상대다(Specific-Dive).</li>
+<li><strong>(c) 분면</strong> — 「약하고 비싼」~「약하고 싼」 경계(세전 mNAV 0.94배는 약간 싸고, 세후 1.03배는 약간 비싸다).</li>
+</ul>
+<p><svg viewBox="0 0 320 220" width="320" height="220" role="img" aria-label="Edge Grid 분면: PURR는 약한 쪽 가운데"><rect x="40" y="10" width="130" height="95" fill="#f6e3c4"/><rect x="170" y="10" width="130" height="95" fill="#dcefd9"/><rect x="40" y="105" width="130" height="95" fill="#ececec"/><rect x="170" y="105" width="130" height="95" fill="#dce8f5"/><text x="105" y="28" font-size="11" text-anchor="middle" fill="#5c4a00">강한데 비싼</text><text x="235" y="28" font-size="11" text-anchor="middle" fill="#1e6b30">강하고 싼</text><text x="105" y="195" font-size="11" text-anchor="middle" fill="#555">약하고 비싼</text><text x="235" y="195" font-size="11" text-anchor="middle" fill="#1f4e79">약하고 싼</text><circle cx="168" cy="160" r="7" fill="#c0392b"/><text x="181" y="164" font-size="11" fill="#1f2328">PURR</text><text x="170" y="216" font-size="10" text-anchor="middle" fill="#57534a">엣지 → (소진 · 비싼 ← → 잔량 · 싼)</text><text x="14" y="105" font-size="10" text-anchor="middle" fill="#57534a" transform="rotate(-90 14 105)">중요도 ↑</text></svg></p>
+<ul>
+<li><strong>(d) 판정</strong> — 약한 쪽 경계 → 정찰 또는 회피 칸. "약하고 싼"에 가까워도 value trap 다발 칸이라, 1주당 HYPE 증가가 증명되기 전엔 HYPE 직접 보유·ETF보다 나을 근거가 없다.</li>
+<li><strong>(e) 과목 적합도</strong> — thesis = <strong>수학형</strong>(순자산·mNAV로 설명). 지금 시장의 과목 = 📐 수학 쪽 기울기(tenbagger 9/30 인용 · as-of 9/29) → <strong>일치</strong> — 가격이 순자산 근처에 붙어 있는 것과 맞는다.</li>
+</ul>
+<h3>H.6 💎 0to1 독점 판정 (틸 7문)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 피터 틸의 7개 질문 중 통과한 것이 하나뿐이다. 남이 만든 것을 담는 상자라 0에서 1을 만드는 회사가 아니다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>문항</th>
+<th style="text-align: center;">판정</th>
+<th style="text-align: center;">⭐</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 기술(10배)</td>
+<td style="text-align: center;">NO</td>
+<td style="text-align: center;">1</td>
+<td>자체 기술 없음</td>
+</tr>
+<tr>
+<td>② 시기</td>
+<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">3</td>
+<td>상장 시점엔 "유일한 통로"였으나 ETF 상장으로 6개월 만에 창이 닫힘</td>
+</tr>
+<tr>
+<td>③ 독점</td>
+<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">3</td>
+<td>HYPE 트레저리 압도적 1위 · 그러나 ETF가 같은 시장을 먹음</td>
+</tr>
+<tr>
+<td>④ 사람</td>
+<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">3</td>
+<td>실행은 보수적·약속 67% · 이해상충 구조(People-Dive)</td>
+</tr>
+<tr>
+<td>⑤ 유통</td>
+<td style="text-align: center;">YES</td>
+<td style="text-align: center;">5</td>
+<td>나스닥 상장 · 기관 45% · 증자 약정이라는 배포 채널</td>
+</tr>
+<tr>
+<td>⑥ 존속성</td>
+<td style="text-align: center;">NO</td>
+<td style="text-align: center;">1</td>
+<td>10~20년 방어 근거 없음(해자 ⭐1.5)</td>
+</tr>
+<tr>
+<td>⑦ 숨겨진 비밀</td>
+<td style="text-align: center;">NO</td>
+<td style="text-align: center;">1</td>
+<td>"HYPE를 주식으로" — 이미 합의된 통념</td>
+</tr>
+<tr>
+<td>〔보조〕 시장정의 tell</td>
+<td style="text-align: center;">혼재</td>
+<td style="text-align: center;">—</td>
+<td>"최대 HYPE 트레저리"(교집합 화법)인데 프리미엄 1배 = 말과 숫자가 맞지 않음</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>0to1 종합: Track A 1/7 YES → 불운 위험 ‖ Track B ⭐2.4 → ⭐2.5 ‖ tell = 혼재</strong> · 별도 렌즈(7축 미합산) · 매력도 ≠ 매수 신호</p>
+</blockquote>
+<h3>H.7 💰 밸류에이션 정밀 판정 〔서브에이전트 위임 · 점수 미합산〕</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 상자 자체는 순자산과 비슷한 값(동종보다는 약간 비싼 쪽)에 팔린다. 그 안의 HYPE가 비싸다는 판정을 그대로 물려받아 종합은 "약한 고평가"다.</p>
+</blockquote>
+<p><code>[모드: embedded]</code> · 원문 = 내부 작업 파일 H7(전담 서브에이전트). 아키타입 = Ⓓ 자산형(NAV). 🔴 회사가 쓰는 세후 mNAV(1.08)가 아니라, 동종 대시보드와 기준이 같은 <strong>세전 mNAV(0.95)</strong> 로 판정했다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>회사(코인)</th>
+<th style="text-align: right;">시총 ÷ 세전 순자산</th>
+<th style="text-align: right;">EV ÷ 코인 가치</th>
+<th>레버리지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PURR (HYPE)</strong></td>
+<td style="text-align: right;"><strong>0.95</strong></td>
+<td style="text-align: right;"><strong>0.95</strong></td>
+<td>없음</td>
+</tr>
+<tr>
+<td>MSTR (BTC)</td>
+<td style="text-align: right;">0.84</td>
+<td style="text-align: right;">1.12</td>
+<td>부채+우선주 $19.9B</td>
+</tr>
+<tr>
+<td>BMNR (ETH)</td>
+<td style="text-align: right;">0.92</td>
+<td style="text-align: right;">0.91(하한)</td>
+<td>우선주(액면 미수집)</td>
+</tr>
+<tr>
+<td>SBET (ETH)</td>
+<td style="text-align: right;">0.83</td>
+<td style="text-align: right;">≈0.83</td>
+<td>없음</td>
+</tr>
+<tr>
+<td>ASST (BTC)</td>
+<td style="text-align: right;">1.06</td>
+<td style="text-align: right;">1.62</td>
+<td>우선주 $1.35B</td>
+</tr>
+<tr>
+<td>Metaplanet (BTC)</td>
+<td style="text-align: right;">0.63</td>
+<td style="text-align: right;">0.84</td>
+<td>부채+우선주 $849M</td>
+</tr>
+<tr>
+<td>DFDV (SOL)</td>
+<td style="text-align: right;">0.55</td>
+<td style="text-align: right;">1.26</td>
+<td>약 $200M</td>
+</tr>
+<tr>
+<td>UPXI (SOL)</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">1.23</td>
+<td>있음</td>
+</tr>
+<tr>
+<td>HYPD (HYPE)</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.24</td>
+<td>9월 부채 상환</td>
+</tr>
+<tr>
+<td>HYPE 현물 ETF 3종</td>
+<td style="text-align: right;">≈1.00</td>
+<td style="text-align: right;">≈1.00</td>
+<td>없음</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>가격 10/9 미국 장중 · 보유량 각 회사 최신 공시(MSTR·ASST는 대시보드 대신 10/5 8-K). 시총 기준은 기본주식·세전(이연법인세·부채·우선주 미차감), EV 기준은 시총 + 부채 + 우선주 액면 − 현금. 두 기준을 섞지 않았다.</li>
+<li><strong>동종 8사 중앙값 0.73배 · PURR는 8사 중 7사보다 높다</strong>(ASST만 위). 빚 없는 대형 이더리움 트레저리 2사가 0.83~0.92배다.</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>렌즈</th>
+<th>결과</th>
+<th style="text-align: center;">신호</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 가격이 요구하는 것</td>
+<td>세전 0.95배 = 구조상 적정 범위(0.85~0.95 · 이연법인세를 끝내 안 내고 자문사 워런트 외 희석 없음 가정) 상단</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>② 순자산 합산(SOTP)</td>
+<td>HYPE + 현금 + Guidant 지분 − 부채 ≈ 시총</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>③ 동종 대비</td>
+<td>상위 약 88번째 백분위 — 무부채라 정당한 부분이 있으나, ETF(≈1.0) 대비 증자 희석·자문사 보상이 붙음</td>
+<td style="text-align: center;">🔴(약)</td>
+</tr>
+<tr>
+<td>③ 자기 역사</td>
+<td>월말 세전 mNAV 0.85~1.10(n=11) 중 30번째 백분위 · Z는 상장 전후 사업 전환으로 N/A · 신뢰도 낮음</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>④ 컨센서스</td>
+<td>4명 · 평균 $22.3 = HYPE 약 $162(세전 mNAV 1.0)를 깐 숫자 · 증자 상대 Chardan의 목표가 $17 · 목표가가 HYPE 시세를 따라감 → 역베팅(낮은 신뢰)</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>⑤ 시나리오 정합</td>
+<td>exit mNAV Base 1.0 · Bull 1.25 — Bull은 회사식 역대 최고치(1.23배 · 5/6)와 같은 높이</td>
+<td style="text-align: center;">⚪/🟢</td>
+</tr>
+<tr>
+<td>기초자산</td>
+<td>HYPE 밸류 🔴 고평가(HYPE Deep-Dive · 재판정 없이 소비) → HYPE 적정 밴드 $49~70을 PURR로 바꾸면 $6.1~9.2</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>병목 렌트 지도(약한 신호)</strong> — 괴리 −0.72 · <a href="HYPE에 올라탄 래퍼">올라탐</a> → 저점수를 회피 신호로 쓰지 않는다.</li>
+</ul>
+<blockquote>
+<p>🏷️ <strong>밸류에이션 판정: 🔴 고평가(약 · 기초자산 상속) ‖ 신뢰도 낮음 ‖ 풀 DD 승격 낮음</strong> — 래퍼 층은 ⚪ 적정 상단, 무게는 HYPE 판정에서 온다.
+🎯 <strong>매수 적정성 한 줄: 🔴 현재가 진입 보류</strong> — 다시 볼 조건 = <strong>PURR $8.5~9</strong>(HYPE $70 × 1주당 HYPE 0.1381 × 세전 mNAV 0.90) 또는 HYPE가 그대로여도 <strong>세전 mNAV 0.85배 이하</strong>(주가 약 $10.0). 같은 HYPE 노출이면 현물 ETF(프리미엄 약 0 · 세금 부채·자문사 희석 없음)가 비교 기준점이다.
+<strong>swing 변수</strong> = 세전 mNAV 위치 — 무부채 동종 수준(0.83~0.92)으로 내려가면 HYPE가 그대로여도 주가 −3~13% · 증자 손익분기(1.026~1.053) 위로 열리면 1주당 HYPE 증가 엔진이 다시 돈다.
+라벨: ① 낮은 신뢰도 참고(가격·타이밍 콜은 Claude의 약점) ② 매수 적정성 직접 답·enforcement 아님·최종 판단 사용자·정찰성 소액 진입을 규율 위반으로 단정 ❌ ③ 장기 thesis stop sign ❌ ④ 7축 점수 미반영.
+⚠️ 엇갈림(봉합 ❌): 순자산 합산·자기 역사는 "적정", 동종 대비는 "약간 비쌈", 컨센서스는 "두 배" — 컨센서스는 HYPE가 두 배가 된다는 가정 위의 숫자다.</p>
+</blockquote>
+<p><strong>▶ Flip</strong> — 🟢: 세전 mNAV 1.05배 이상에서 증자 → 1주당 HYPE 증가 · HYPE 판정 개선 · PURR $9 이하 / 🔴: 동종 평균 수준으로 할인 확대 없이 저가 대량 발행 승인 · 자문사 보상 부활.</p>
+<h3>H.4 Section H 종합 — Flip 트리거</h3>
+<p>🟢 강화: 세전 mNAV 1.05배 이상에서 증자 → 1주당 HYPE 분기 증가 · 할인 트레저리 인수 · HYPE 판정 개선(11월 팀 인출 복귀) / 🔴 훼손: 11/4 저가 대량 발행 승인 후 1배 미만 증자 · 자문사·구성원 시장 매도 · 자문사 보상 부활 · 할인 고착.</p>
+<h2 class="sec" id="i">Section I. 자금흐름 · 내부정보</h2>
+<h3>I.0 지분구조</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 5% 넘게 가진 큰 주주가 거의 없고, 자문사(CEO 운영)가 지분보다 큰 지배력을 가진다. 자문사 주식의 락업은 9월 중순에 이미 풀렸다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>주체</th>
+<th>보유</th>
+<th>출처</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>자문사 Rorschach Advisors(CEO 운영)</td>
+<td>9.99% → 3.87%(13G) · 신주 776만 + 워런트 2,739만</td>
+<td><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0002078856&amp;type=SC%2013G">13G 목록</a> · Form 4</td>
+<td>8/31·9/17 구성원(Diamond·Schamis·Tuder)에게 분배 · 🔴 <strong>주식 묶음은 조기 해제 조건(종가가 취득가 150% 이상, 30거래일 중 20일)이 9/16~17 이미 충족</strong>(분배와 같은 날) · 워런트는 해석에 따라 6/16 또는 12/2 〔Specific-Dive〕</td>
+</tr>
+<tr>
+<td>BlackRock</td>
+<td>7.3%(13G)</td>
+<td>13G</td>
+<td>패시브</td>
+</tr>
+<tr>
+<td>D1 Capital</td>
+<td>6.3% → 3.2%(13G)</td>
+<td>13G</td>
+<td>축소</td>
+</tr>
+<tr>
+<td>전략 투자자(Paradigm·Galaxy·Pantera·Republic Digital·683 Capital)</td>
+<td>각 5% 미만</td>
+<td>위임장</td>
+<td>보유 변화 비공개</td>
+</tr>
+<tr>
+<td>기관 합계 · 내부자 합계</td>
+<td>45.3% · 3.7%</td>
+<td>yfinance</td>
+<td></td>
+</tr>
+<tr>
+<td>자사주</td>
+<td>580만 주</td>
+<td>10-K 후속 사건</td>
+<td>평균 $4.80</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>차등의결권 없음</strong> — 단일 보통주. 단 자문 계약상 자문사가 보유 지분 비율만큼 이사(최소 1명, 의장 포함)를 지명한다. 이사회 세 위원회를 맡은 3명 중 2명이 스폰서 Atlas의 운영 파트너다(History-Dive).</li>
+<li><strong>유통 주식</strong> — 1억 9,543만 주(yfinance) · 상장 때 PIPE·HYPE 출자자 몫 약 1.55억 주는 락업이 없었다.</li>
+<li><strong>SPAC 아님</strong> — 상장 바이오 회사와의 역합병.</li>
+</ul>
+<h3>I.0.5 잠재 희석</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 남은 증자 한도와 자문사 워런트가 큰 잠재 희석이다. 11월 4일 주총이 저가 대량 발행의 문을 연다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>잔액</th>
+<th style="text-align: right;">추가 주식</th>
+<th>조건</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>증자 약정(ChEF) 잔여</td>
+<td>약 14억 달러</td>
+<td style="text-align: right;">현재가 기준 약 1.3억 주</td>
+<td>할인 2.5~5% · 12.02달러 미만은 4,264만 주까지(11/4 주총이 해제 안건)</td>
+</tr>
+<tr>
+<td>자문사 워런트</td>
+<td>2,739만 주</td>
+<td style="text-align: right;">2,739만(자사주 매입법 순증 약 143만)</td>
+<td>행사가 $9.375 / $12.50 / $18.75 · 2030-12</td>
+</tr>
+<tr>
+<td>옛 Sonnet 워런트</td>
+<td>126만 주</td>
+<td style="text-align: right;">126만</td>
+<td>—</td>
+</tr>
+<tr>
+<td>자문사 증자 보상(포기 중)</td>
+<td>—</td>
+<td style="text-align: right;">증자분의 5% 신주 + 15% 워런트</td>
+<td>2주 통지로 부활</td>
+</tr>
+<tr>
+<td>CVR 주식 지급</td>
+<td>미공시</td>
+<td style="text-align: right;">미공시</td>
+<td>2028-12까지</td>
+</tr>
+</tbody>
+</table></div>
+<h3>I.1~I.4 기관 · 내부자 · 공매도 · 옵션</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 공매도가 발행 주식의 9% 가까이 쌓여 있고, 증자 상대는 계약상 공매도를 못 하니 다른 누군가의 하락 베팅일 가능성이 크다. 애널리스트 넷 중 하나는 증자 상대다.</p>
+</blockquote>
+<ul>
+<li><strong>기관</strong> — BlackRock 7.3%(패시브) · 커버 증권사 4곳 = Cantor · Compass Point · Chardan · Maxim(yfinance 집계 평균 $22.3 · 고 $34.3 · 저 $17 · 개별 목표가는 발표 시점이 달라 집계와 맞지 않음 — 보고서별 확인값 Cantor $34.2 · Compass Point $18 · Chardan $17 · Maxim $10). 🔴 <strong>Chardan은 증자 상대이자 합병 자문사·옛 Sonnet 주관사</strong>이고, 증권신고서(424B3)가 이해상충(FINRA 5121)을 명시한다 〔Specific-Dive〕.</li>
+<li><strong>내부자</strong> — 8/31·9/17 자문사 몫(워런트·주식)이 구성원에게 분배됐다(Form 4) · 시장 매도 기록은 확인 범위에서 없다.</li>
+<li><strong>공매도</strong> — 2,459만 주(발행 8.8% · 유통 12.6% · 직전 달 2,394만) · 거래일 기준 약 0.9일. 증자 약정이 <strong>Chardan의 순매도 공매도·헤지를 금지</strong>하므로 "증자 상대의 헤지"로 보기는 어렵다 — 주체 미확인 〔Specific-Dive〕.</li>
+<li><strong>레버리지·인버스 단일종목 ETF</strong> — 발견 0개(하한).</li>
+<li><strong>옵션</strong> — 2026-03 상장 · 세부 미수집.</li>
+</ul>
+<p><strong>▶ Flip 트리거</strong> — 🟢: 자문사·구성원 몫 시장 매도 없음(지금부터 Form 4 감시) · 새 자사주 한도 승인 / 🔴: 자문사·Diamond·Schamis·Tuder 시장 매도(Form 4) · 공매도 비율 15% 초과.</p>
+<h2 class="sec" id="j">Section J. 산업 · 규제 · 정책 risk</h2>
+<h3>J.1 역사 — 변곡점 (History-Dive 요약)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 자본 미달 바이오 회사의 껍데기에서 출발해, 10개월 만에 HYPE 31억 달러 상자가 됐다. 그 과정의 거래는 대부분 같은 스폰서 네트워크 안에서 이뤄졌다.</p>
+</blockquote>
+<p>전문 = History-Dive 보고서 「Hyperliquid Strategies」(2026-10-09).</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>날짜</th>
+<th>사건</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025-05-30</td>
+<td>Sonnet BioTherapeutics 나스닥 자본 미달 통보(<a href="https://www.sec.gov/Archives/edgar/data/1106838/000164117225013264/form8-k.htm">8-K</a>)</td>
+</tr>
+<tr>
+<td>2025-07-11/14</td>
+<td>8.88억 달러 합병 발표 — HYPE 1,260만 개 출자(<a href="https://www.sec.gov/Archives/edgar/data/1106838/000164117225018877/ex99-1.htm">발표문</a>)</td>
+</tr>
+<tr>
+<td>2025-12-02/03</td>
+<td>종결·상장 — 첫날 종가 $3.90(거래 가격 $6.25 대비 −38%)(<a href="https://www.sec.gov/Archives/edgar/data/2078856/000149315225025886/form8-k.htm">종결 8-K</a>)</td>
+</tr>
+<tr>
+<td>2026-03-31</td>
+<td>바이오 자산 대부분 Guidant로 이전, 지분 40% 수령</td>
+</tr>
+<tr>
+<td>2026-04~06</td>
+<td>증자 약정으로 6.47억 달러 조달 · 5/13 자체 검증자 가동</td>
+</tr>
+<tr>
+<td>2026-07</td>
+<td>세전 mNAV 0.81~0.84배 → 자사주 재매입 · HYPE 매입 정지</td>
+</tr>
+<tr>
+<td>2026-09-01</td>
+<td>증자 약정 10억 → 25억 달러 확대(<a href="https://www.sec.gov/Archives/edgar/data/2078856/000119312526378589/purr-20260901.htm">8-K</a>)</td>
+</tr>
+<tr>
+<td>2026-10-08</td>
+<td>HYPE 팀 물량 장외 매수자 소문 CEO 부인(<a href="https://x.com/dschamis/status/2107986353367437823">X</a>)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>DNA 패턴 3개</strong> — ① 거래가 스폰서 네트워크 안에서 닫힌다(합병 중개사 = 증자 상대 Chardan · 위원회 3명 중 2명이 Atlas 운영 파트너 · 자문사 몫 구성원 분배) ② 주가 프리미엄에 기계처럼 반응한다(할인 → 자사주·HYPE 매입 정지 / 프리미엄 → 대량 발행, 두 번 반복) ③ 말은 넓게, 실행은 좁고 보수적으로("즉시 2.65억 달러 매입" → 약 6개월 · "검증자 3~5곳 분산" → 자체 검증자로 집중 · 인수·전환사채·DeFi 0건).</p>
+<h3>J.2 규제·법적 risk</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회사 자체의 소송·제재는 확인되지 않았다. 위험은 지수 규칙·투자회사 분류·HYPE 쪽 규제처럼 바깥에 있다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+<th>성격</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>회사 소송·제재</td>
+<td>확인 범위에서 없음</td>
+<td>—</td>
+</tr>
+<tr>
+<td>지수 규칙</td>
+<td>MSCI 명단 비편입 · 비영업 5비율 모두 해당 · 신규 편입 유예 → 10/16 결과는 기계적 매도가 아니라 업종 심리 경로 〔Specific-Dive〕</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>🆕 공시 등급</td>
+<td>2026-12-31 비계열 시총 기준 대형 가속 신고자 전환 판정(지금 약 $2.2B · 손익분기 주가 약 $3.6) → FY27 10-K(2027-08 말 추정)에 경영진 내부통제 평가 + 감사인 인증 첫 적용 · 감사인 CBIZ · 직원 5명 〔Specific-Dive〕</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>🆕 스테이킹 운영</td>
+<td>자동 슬래싱 없음(감옥 = 보상 중단) · 위임 1일 잠금 + 이체 7일 · 자체 검증자 월 가동률 99.97% · Anchorage 검증자 실수령 보상률 2.12% vs 자체 2.19% · 재단 검증자 4곳 43.8%(체인 정지 가능선 1/3 초과) 〔Specific-Dive〕</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>🆕 수탁</td>
+<td>분리·파산 격리 계좌 · 보험 금액 미공시 〔Specific-Dive〕</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>투자회사 분류</td>
+<td>10-K 위험요인 · 회사 근거 = HYPE 비증권 판단 + 비연결 기준 40% 시험</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>바이오 잔여</td>
+<td>CVR 주식 지급 2028-12까지 · Guidant 지분 40%</td>
+<td>🟡 희석</td>
+</tr>
+<tr>
+<td>HYPE 경유</td>
+<td>CFTC 규칙(Regulation CTX·CAM) · 내부 지갑 위임 67.8% · 북한 자금 보도</td>
+<td>🟠(HYPE Deep-Dive)</td>
+</tr>
+</tbody>
+</table></div>
+<h3>J.3 정책 sensitivity</h3>
+<p>미국 크립토 정책이 우호적일수록 순풍이지만, 그 우호는 "등록된 형태로"다. HYPE의 미국 편입이 지수·원자재 칸에서만 열리고(HYPE Deep-Dive Specific-Dive), 미국 등록 거래소가 지수 perp를 먼저 내면 HYPE 성장 상한이 낮아지고 이 회사 순자산도 같이 움직인다.</p>
+<p><strong>▶ Flip 트리거</strong> — 🟢: 지수 편입 유예 해제 · 투자회사 분류 위험 해소 / 🔴: MSCI 비영업 회사 제외 + Strategy 제외 · CVR 대량 주식 지급 · FY27 내부통제 중대한 취약점.</p>
+<h2 class="sec" id="k">Section K. 공시 · 가이던스 · 약속 이행</h2>
+<h3>K.1~K.3 약속 이행 이력 (History-Dive)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회사가 혼자 정하는 날짜는 지켰다. 주주에게 가장 중요한 약속인 "1주당 HYPE 늘리기"는 지키지 못했다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>구분</th>
+<th>이행</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>판정 가능 12건</td>
+<td>✅ 8 · ⚠️ 3 · ❌ 1 → 완전 이행률 67%</td>
+</tr>
+<tr>
+<td>❌ 실패</td>
+<td>CEO 2025-12-08 "현금으로 주주의 1주당 HYPE 노출을 가장 효율적으로 늘리겠다"(<a href="https://www.sec.gov/Archives/edgar/data/2078856/000119312525310714/d79611dex991.htm">보도자료</a>) → 현금 포함 1주당 HYPE −13%</td>
+</tr>
+<tr>
+<td>진행 중 4건</td>
+<td>검증자 3~5곳 분산(역방향) · 비주식 조달 검토 · 트레저리 인수 · "개인이 따라 할 수 없는 복리 수익"</td>
+</tr>
+<tr>
+<td>지연 계수</td>
+<td>회사 단독 날짜 1.0배 · "즉시" 약 6개월 · 계약상 행정 기한 5.7배 · 기한 없는 검토 5.4개월</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>실적 설명회 녹취가 없어 구두 약속은 추적하지 못했다. 회사의 "가이던스"는 대시보드(매주 1주 지연)와 보도자료다.</li>
+<li><strong>발언 패턴</strong> — 반복 키워드 "HYPE per share", "largest", "compounding". 누락 키워드: 세전 mNAV · 자문사 보상 부활 조건.</li>
+</ul>
+<h3>K.4 8-K·주요 사건 12개월</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지난 1년의 큰 공시는 대부분 "더 많이 팔 수 있게 하는" 쪽이었다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>일자</th>
+<th>내용</th>
+<th style="text-align: center;">영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025-12-02</td>
+<td>합병 종결 8-K</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2025-12-05</td>
+<td>자사주 3,000만 달러 승인</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>2026-08-27</td>
+<td>FY26 실적·HYPE 매입 현황 보도자료(<a href="https://www.sec.gov/Archives/edgar/data/2078856/000119312526369668/purr-ex99_1.htm">8-K 첨부</a>)</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>2026-09-01 · 14 · 15</td>
+<td>증자 약정 확대·할인 축소·12.02달러 미만 상한</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2026-10-02</td>
+<td>연차보고서·위임장(11/4 주총)</td>
+<td style="text-align: center;">🟠</td>
+</tr>
+</tbody>
+</table></div>
+<h3>K.4c 외부 비판 리포트 — 해당 없음</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 최근 12개월 안에 무게 있는 공매도·평가 리포트는 찾지 못했다.</p>
+</blockquote>
+<p>공매도 잔고는 높지만 공개 공매도 리포트는 확인되지 않았다.</p>
+<h2 class="sec" id="l">Section L. 동적 발견</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이번에 새로 찾은 것은 숫자를 읽는 방법에 관한 것이 많다. 프리미엄을 어느 기준으로 재느냐에 따라 결론이 반대가 된다.</p>
+</blockquote>
+<h4>L.1 🔴 mNAV 기준 두 개가 반대 신호를 낸다</h4>
+<ul>
+<li>발견 트리거: 대시보드 1.08배(세후) vs 세전 계산 0.94배</li>
+<li>중요도: 🔴 · why: 증자가 1주당 HYPE를 늘리는지는 세전 기준 + 증자 할인(손익분기 1.026~1.053배)이 정한다. 회사 표기만 보면 증자가 이득처럼 보인다</li>
+<li>결론 영향: H.7 분모 정의 · H.3 신호</li>
+</ul>
+<h4>L.2 🔴 DefiLlama "521만 달러"는 이 회사 매출이 아니다</h4>
+<ul>
+<li>발견 트리거: DefiLlama "Hyperliquid Strategies HYPE Staking" 30일 수수료</li>
+<li>중요도: 🟠 · why: 검증자 전체 보상 합계(회사 매출의 수십 배)를 매출로 오독하기 쉽다</li>
+<li>결론 영향: D.0 각주</li>
+</ul>
+<h4>L.3 🟠 HYPE 팀 장외 매각 물량이 이 회사 검증자에 스테이킹됐다</h4>
+<ul>
+<li>발견 트리거: HYPE Deep-Dive 10/9 — 10/7 HYPE 팀 375만 개 장외 매각 → 받은 주소가 312.5만 개를 "Hyperliquid Strategies x Unit"에 위임</li>
+<li>중요도: 🟠 · why: CEO는 "100% 우리 아니다"라고 부인했다. 이 검증자는 PURR·Unit·TradeXYZ 공동 운영이라 제3자 위탁일 수 있다. 위탁이라면 검증자 수수료(2%)가 늘 뿐 보유 HYPE는 변하지 않는다</li>
+<li>결론 영향: 없음(정보 라벨) · 다음 10-Q에서 보유량 변화로 교차 확인</li>
+</ul>
+<h4>L.4 🔴 본문 서술 3건이 반대로 확인됐다 〔Specific-Dive〕</h4>
+<ul>
+<li>발견 트리거: Specific-Dive 업종 체크리스트(지수·증자 계약·락업)</li>
+<li>중요도: 🔴 · why: ① MSCI 명단 비편입 → 10/16 기계적 매도 없음, 대신 편입 차단 ② 증자 계약이 Chardan의 공매도·헤지 금지 → 공매도 주체 미확인 ③ 자문사 주식 락업 조기 해제 조건 9/16~17 충족 → "12/2 만료"가 아니라 이미 매도 가능</li>
+<li>결론 영향: A·H.2·H.3·I·J 수정 · ⭐ 변경 없음</li>
+</ul>
+<h4>L.5 🟠 스테이킹 보상의 현금 세금 위험</h4>
+<ul>
+<li>발견 트리거: 10-K 세금 주석 · 위험요인</li>
+<li>중요도: 🟠 · why: 당기 세금 0은 "보상을 받을 때 과세 안 됨"을 전제로 한다. 과세 확정 시 최대 연 약 1,470만 달러 — 순 스테이킹 수익이 약 +1.5% → +1.1%로 준다</li>
+<li>결론 영향: G.3 ② · G.8 꼬리 주석</li>
+</ul>
+<h4>L.deferred</h4>
+<ul>
+<li>7~9월 증자 단가·주식 수(11월 중순 10-Q) · 우선주 전환 현황 · 자체 검증자 외부 위탁 총량</li>
+<li>자문사 락업 조기 해제 조건 충족 여부(원문 확인) · CVR 지급 규모</li>
+<li>동종 트레저리 회사 mNAV 시계열(서브에이전트 수집분 외)</li>
+</ul>
+<h2 class="sec" id="s">Section S. 🔎 Specific-Dive — 업종 전문가 체크리스트 보완</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚 없는 HYPE 트레저리 전문가가 먼저 볼 질문 15개 중 10개가 덜 다뤄졌거나 빠져 있었다. 채워 보니 판정 별점은 그대로지만, 지수 위험의 방향·공매도 해석·락업 날짜가 달라진다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th>체크 항목</th>
+<th style="text-align: center;">판정</th>
+<th>결론 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td>mNAV 세전·세후 · 증자 손익분기</td>
+<td style="text-align: center;">✅</td>
+<td>— (동적 발견 1번)</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td>세금: 스테이킹 보상 과세 · 케이맨 자회사 · 결손금 · 코인 매각 세금</td>
+<td style="text-align: center;">◐→조사</td>
+<td>유지 · 숫자 절 각주 · 약한 신호 1</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td>수탁(분리 보관 · 보험)</td>
+<td style="text-align: center;">◐→조사</td>
+<td>유지 · 규제 절 한 줄</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td>스테이킹 운영(슬래싱 · 감옥 · 검증자 집중)</td>
+<td style="text-align: center;">◐→조사</td>
+<td>유지 · 규제 절 한 줄</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td>우선주 조건</td>
+<td style="text-align: center;">✅</td>
+<td>— (해당 약함 · 선순위 청구 0)</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td>증자 약정 · 커버 애널리스트 겹침</td>
+<td style="text-align: center;">◐→조사</td>
+<td><strong>공매도 = Chardan 헤지 가설 약화 · 겹침 확인</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td>자문사 락업 문구</td>
+<td style="text-align: center;">◐→조사</td>
+<td><strong>12/2 일괄 해제 → 주식 묶음 9/16 조기 해제 조건 충족</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td>투자회사법 40% 시험</td>
+<td style="text-align: center;">◐→조사</td>
+<td>유지</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td>지수 편입·제외 규칙</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>MSCI 비편입 → 제외 충격 없음 · 편입 길 막힘</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td>공시 등급 전환 · 첫 감사인 인증</td>
+<td style="text-align: center;">❌→조사</td>
+<td>일정 추가(2026-12-31 판정 · 2027-08 말 추정)</td>
+</tr>
+<tr>
+<td style="text-align: center;">11</td>
+<td>할인 고착 경로 · 바깥 교정 장치</td>
+<td style="text-align: center;">◐→조사</td>
+<td>하방 칸 보강 · 신호 1 추가</td>
+</tr>
+<tr>
+<td style="text-align: center;">12</td>
+<td>우선주 액면 이탈 악순환</td>
+<td style="text-align: center;">✅</td>
+<td>— (해당 없음)</td>
+</tr>
+<tr>
+<td style="text-align: center;">13</td>
+<td>현금 ÷ 운영비</td>
+<td style="text-align: center;">✅</td>
+<td>— (고금리 진단)</td>
+</tr>
+<tr>
+<td style="text-align: center;">14</td>
+<td>외부 자문 계약(해지 · 양도 · 보수)</td>
+<td style="text-align: center;">◐→조사</td>
+<td>사람 절 보강</td>
+</tr>
+<tr>
+<td style="text-align: center;">15</td>
+<td>지배주주 · 경쟁사 겸직</td>
+<td style="text-align: center;">✅</td>
+<td>— (사람 절 · People-Dive)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>새로 안 것</strong></p>
+<ol>
+<li><strong>MSCI 위험은 "빠지는" 위험이 아니라 "못 들어가는" 위험이다.</strong> PURR는 MSCI 트레저리 회사 명단에 비편입으로 올라 있다(7/20 자료). 10/16 결과가 PURR 주식의 기계적 매도를 만들지 않는다. 대신 1월부터 신규 편입이 유예됐고, 제안된 비영업 회사 다섯 비율에 2026 회계연도 숫자가 모두 걸린다. 남는 경로는 Strategy 제외가 업종 심리로 번지는 것이다.</li>
+<li><strong>공매도 2,459만 주는 Chardan의 헤지가 아니다.</strong> 증자 약정이 Chardan과 계열의 순매도 공매도·헤지를 금지한다. 커버 4곳(Cantor·Chardan·Maxim·Compass Point) 중 Chardan이 증자 상대이자 합병 자문사·옛 Sonnet 주관사이고, 재판매 설명서가 "이해상충"을 명시한다.</li>
+<li><strong>락업은 12월 2일 하루에 풀리지 않는다.</strong> 계약서는 "종가가 취득가의 150% 이상인 날이 30거래일 중 20일이면 그 묶음부터 해제"라고 쓴다. 자문사 주식 776만 주(간주가 6.25달러)는 9/16에 이 조건을 채웠고, 9/17에 구성원 분배가 있었다. 워런트는 해석에 따라 6/16 또는 12/2다.</li>
+<li><strong>할인이 굳으면 고칠 장치가 약하다.</strong> 자사주 한도는 거의 소진됐고 12/5 만료다. 3년 교차 임기, "사유 + 3분의 2" 해임 요건, 서면 동의 금지, 일방 해지 불가 자문 계약(5년 · 합병 시 승계)이 행동주의 교정을 늦춘다. 업종 선례로 ETHZilla는 할인 국면에 ETH를 팔아 자사주를 샀다.</li>
+<li><strong>세금은 지금 0이지만 상한이 있다.</strong> 스테이킹 보상이 받는 순간 과세되면 최대 연 약 1,470만 달러(운영비와 비슷)다. HYPE를 팔아 자사주를 사면 오래된 묶음은 매각 대금의 약 9.5%가 세금으로 빠진다. 증자 판단은 세전 순자산, 코인 매각 자사주 판단은 세후 순자산이 맞는 잣대다.</li>
+</ol>
+<p>상세: 이 보고서 상단 하위 Dive 링크 모음의 Specific-Dive.</p>
+<h2 class="sec" id="z">🔴 종합 판단</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 튼튼하지만 특별하지 않은 HYPE 상자다. HYPE를 사고 싶다면 이 상자가 HYPE 직접 보유나 ETF보다 나은 이유는 아직 증명되지 않았다.</p>
+</blockquote>
+<ul>
+<li><strong>7축 가중평균 종합 ⭐2.6</strong> — 날씨 2.5 · 산 2.0 · 숲 3.0 · 나무 2.5 · 옆의 나무 3.0 · 사람 2.5 · 숫자 3.5. 사업·thesis 매력도이고 밸류 멀티플은 반영하지 않았다. 별도 렌즈(분면·0to1·밸류)는 점수 밖이다.</li>
+<li><strong>구조 결론</strong> — 빚과 고정 지출이 없어 하방이 닫혀 있다(가장 큰 장점). 그러나 가치를 키우는 유일한 길인 "프리미엄 증자로 1주당 HYPE 늘리기"는 상장 후 한 번도 실현되지 않았고, 할인을 고치는 장치(자사주 한도·주주 권리)도 약하다. 그래서 이 주식 = HYPE + 스테이킹 + 프리미엄 옵션 − 증자 희석 위험이다.</li>
+<li><strong>시간 지평</strong> — 0~6개월: 11/4 주총(저가 대량 발행 승인), 11월 10-Q(9월 증자 단가), 12/5 자사주 만료, HYPE 쪽 11월 관측이 판정을 움직인다. 6개월~3년: 프리미엄이 다시 손익분기(세전 1.026~1.053배) 위로 열리는지, 할인된 다른 트레저리를 인수하는지. 3~10년: HYPE 자체의 성패와 ETF 대비 존재 이유.</li>
+<li><strong>리스크 신호 집계</strong> — 🟠 1주당 HYPE 훼손(3월 이후 −5%) · 🟠 할인 증자(세전 약 0.95배) · 🟠 HYPE 리스크 상속 2건 · 감시 중: 내부자 시장 매도(락업 이미 해제) · 대기: 11/4 안건·MSCI 업종 충격.</li>
+<li><strong>종합 판정: 추가 검증</strong> — 첫 Deep-Dive라 판정을 바꿀 직접 증거는 11월 10-Q(7~9월 발행 단가와 분기 말 1주당 HYPE)다.</li>
+</ul>
+<h2 class="sec">수집 상태 (실패·불완전 항목만)</h2>
+<ul>
+<li>⚠️ 7~9월 증자 단가·주식 수 · 우선주 전환 현황 · 자체 검증자 외부 위탁 총량 — 11월 10-Q 전 미공시</li>
+<li>⚠️ 자문사 안 CEO 개인 경제적 몫 — 비공개(Skin in the Game은 하한값)</li>
+<li>⚠️ CVR 지급 규모 · 382조 결손금 사용 제한 분석 — 회사도 미완료</li>
+<li>⚠️ 동종 MSTR·ASST 대시보드 — 화면 멈춤·이용 고지 미수락으로 최근 8-K로 대체</li>
+<li>⚠️ 이전 분기(2026-02·05) 실적 설명회 녹취 · 러셀·S&amp;P 편입 여부</li>
+</ul>
+<h2 class="sec">다음 실행 보완 일정</h2>
+<ul>
+<li>11/4 주총 결과(안건 2번) · 11월 중순 10-Q(7~9월 평균 발행가 ÷ 세전 순자산, 분기 말 1주당 HYPE 0.1390 기준)</li>
+<li>12/5 전후 새 자사주 한도 승인 여부 · 자문사·구성원 Form 4</li>
+<li>HYPE 11/1(이자 매입 2회차)·11/6(팀 인출) 관측 — HYPE 판정이 바뀌면 이 종목 판정도 함께 재검토</li>
+</ul>
+<div class="footer"><p>1차 자료: SEC EDGAR(10-K FY26·10-Q·8-K·424B3·DEFM14A·DEF 14A·Form 4·13G) · Hyperliquid Strategies 대시보드(입력값 API) · Hyperliquid info API(validatorSummaries) · DefiLlama · yfinance(PURR·HYPE32196-USD·동종 트레저리·ETF, 10/8~10/9) · SoSoValue ETF 집계 · 인용 보도(링크 본문) · 선행 Dive(R-Dive·History-Dive·People-Dive·chart-dive 2026-10-09 · chart-dive 비공개) · HYPE Deep-Dive 2026-10-09(기초자산 판정 소비) · 위임 모듈(H.7·G.8·Specific-Dive·Fable 판사).</p>
+<p>방법론 stamp DD-v1.7(7축 ⭐ 기계 환산) · 스킬 Deep-Dive v1.37 · 첫 Deep-Dive.</p>
+<p><b>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</b></p></div>
+</div>
+<script>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+const VIZ = {"score7": {"label": "확신도 7축", "max": 5, "axes": ["🌦️날씨", "⛰️산", "🌲숲", "🌳나무", "🌲🌳옆나무", "👤사람", "🔢숫자"], "series": [{"name": "PURR 10/9", "color": "#0068b5", "scores": [2.5, 2.0, 3.0, 2.5, 3.0, 2.5, 3.5]}, {"name": "HYPE 10/9(기초자산)", "color": "#b8a37a", "scores": [3.5, 4.0, 4.0, 4.0, 3.5, 3.5, 3.5]}]}, "narrative": {"label": "내러티브 5축", "max": 5, "axes": ["🔧기술", "👥사회", "🏛️정책", "🌐지정학", "💰자본"], "series": [{"name": "코인 트레저리 회사", "color": "#8e44ad", "scores": [1, 2, 2, 1, 4]}]}, "trajectory": {"periods": ["2025-12", "2026-03", "2026-06", "2026-10 초"], "forecastFrom": 4, "series": [{"label": "주식 수(백만 주·우선주 포함)", "axis": "left", "color": "#2980b9", "values": [150.7, 150.8, 227.1, 301.3]}, {"label": "1주당 HYPE 환산(천분의 1개)", "axis": "right", "color": "#c0392b", "values": [158.9, 145.3, 139.0, 138.1]}]}, "peers": {"metrics": [{"key": "mcap", "label": "시총", "unit": "$B", "better": "neutral"}, {"key": "mnav", "label": "시총÷세전 순자산", "unit": "x", "better": "low"}, {"key": "ev", "label": "EV÷코인 가치", "unit": "x", "better": "low"}, {"key": "r", "label": "9/28 이후 주가", "unit": "%", "better": "high"}], "rows": [{"name": "PURR", "subject": true, "note": "HYPE · 무부채", "vals": {"mcap": 3.1, "mnav": 0.95, "ev": 0.95, "r": -6.5}}, {"name": "HYPE ETF 3종", "note": "대체재", "vals": {"mcap": 0.45, "mnav": 1.0, "ev": 1.0, "r": -4.2}}, {"name": "HYPD", "note": "HYPE", "vals": {"mcap": 0.05, "mnav": 0.31, "ev": 0.24, "r": -14.0}}, {"name": "SBET", "note": "ETH · 무부채", "vals": {"mcap": 1.89, "mnav": 0.83, "ev": 0.83, "r": null}}, {"name": "BMNR", "note": "ETH", "vals": {"mcap": 14.6, "mnav": 0.92, "ev": 0.91, "r": null}}, {"name": "ASST", "note": "BTC · 우선주", "vals": {"mcap": 2.94, "mnav": 1.06, "ev": 1.62, "r": null}}, {"name": "MSTR", "note": "BTC · 대장주", "vals": {"mcap": 61.2, "mnav": 0.84, "ev": 1.12, "r": null}}]}, "scenario": {"horizonLabel": "5년", "threshold": 1.5, "cases": [{"label": "Bull", "tone": "bull", "prob": 0.2, "mult": 3.46}, {"label": "Base", "tone": "base", "prob": 0.5, "mult": 0.99}, {"label": "Bear", "tone": "bear", "prob": 0.3, "mult": 0.19}]}, "landmark": {"current": {"label": "PURR 현재", "mcap": 3.1}, "target": {"label": "×10", "mcap": 31}, "refs": [{"name": "SBET", "mcap": 1.89}, {"name": "ASST", "mcap": 2.94}, {"name": "BMNR", "mcap": 14.6}, {"name": "HYPE(온체인 유통)", "mcap": 25.8}, {"name": "MSTR", "mcap": 61.2}], "sentence": "💡 지금은 Strive(ASST·$2.9B)와 비슷한 크기 → 텐배거면 $31B = Strategy(MSTR·$61.2B)의 절반이자 HYPE 유통 시총($25.8B)보다 크다. 순자산의 92%가 HYPE라, 주식 열 배는 사실상 HYPE 열 배를 뜻한다. (규모 비교일 뿐)", "warn": false}, "bars": {"title": "순자산 구성 (세전 · 억 달러 · 대시보드 10/8)", "mode": "bar", "unit": "억 달러", "items": [{"label": "HYPE 3,852만 개", "value": 32.73}, {"label": "현금", "value": 2.64}, {"label": "기타(Guidant 지분 등)", "value": 0.03}]}};
+DDViz.renderRadar('fig-score7','leg-score7',VIZ.score7);
+DDViz.renderRadar('fig-c3','leg-c3',VIZ.narrative);
+DDViz.renderTrajectory('fig-g5','leg-g5',VIZ.trajectory);
+DDViz.renderHeatmap('fig-e1',VIZ.peers);
+DDViz.renderScenario('fig-h1','badge-h1',VIZ.scenario);
+DDViz.renderMcapLadder('fig-g15','sent-g15',VIZ.landmark);
+DDViz.renderBars('fig-d0',VIZ.bars);
+</script>
+</body></html>
