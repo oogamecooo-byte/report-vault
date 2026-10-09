@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hyperliquid (HYPE) Deep-Dive — 수요·공급 해부: 사는 쪽은 바닥을 지켰고, 내놓는 쪽의 열쇠는 팀이 쥐고 있다 — 2026-10-09</title>
+<meta name="vault-stage" content="Dive"><meta name="vault-skill" content="Deep-Dive"><meta name="vault-topic" content="HYPE"><meta name="vault-topics" content="온체인"><meta name="vault-date" content="2026-10-09">
+<meta name="description" content="Hyperliquid(HYPE) 2회차 Deep-Dive — 수요·공급 해부: 매입은 바닥을 지켰고 이자 매입이 켜졌지만, 공급의 열쇠는 팀 몫 인출 속도다(10월 375만 개 기관 장외 매각)">
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --page-bg:#EBE4D3; --card-bg:#FDF6E3; --ink:#1f2328; --ink-2:#57534a; --ink-3:#8a8578;
+    --accent:#0068b5; --accent-dark:#00477e; --line:#e8e1cf; --line-2:#d9d0b8;
+    --up:#137333; --down:#b3261e; --amber:#5c4a00; --quote-bg:#f7efd8;
+    --red:#c0392b; --green:#27ae60; --yellow:#b8860b;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--page-bg);color:var(--ink);font-family:"Apple SD Gothic Neo","Noto Sans KR","Pretendard",-apple-system,"Helvetica Neue",sans-serif;line-height:1.72;padding:26px 14px 60px;font-size:15.5px;}
+  .card{max-width:1000px;margin:0 auto;background:var(--card-bg);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 14px rgba(90,75,40,.10);padding:44px 50px 56px;}
+  @media(max-width:720px){.card{padding:26px 18px 40px;}body{padding:10px 5px 30px;}}
+  .kicker{color:var(--accent-dark);font-weight:700;font-size:.82rem;letter-spacing:.08em;margin-bottom:8px;}
+  h1{font-size:1.75rem;line-height:1.32;font-weight:800;margin-bottom:8px;}
+  .sub{color:var(--ink-2);font-size:.94rem;margin-bottom:16px;}
+  .meta{font-size:.83rem;color:var(--ink-3);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px 2px;margin-bottom:26px;}
+  .meta a{color:var(--accent);text-decoration:none;}
+  h2.sec{font-size:1.28rem;font-weight:800;border-left:5px solid var(--accent);padding-left:12px;margin:50px 0 16px;}
+  h3{font-size:1.05rem;font-weight:800;margin:26px 0 9px;color:var(--accent-dark);}
+  h4{font-size:.96rem;font-weight:800;margin:18px 0 6px;color:var(--ink);}
+  p{margin-bottom:12px;}
+  .muted{color:var(--ink-2);font-size:.88rem;}
+  .fn{font-size:.8rem;color:var(--ink-3);}
+  ul,ol{margin:0 0 14px 22px;}
+  li{margin-bottom:7px;}
+  /* callout */
+  .judge{background:#eef4ec;border:1px solid #cddcc8;border-left:5px solid var(--green);border-radius:10px;padding:18px 22px;margin:14px 0 28px;font-size:.93rem;}
+  .judge b{color:#1e3d32;}
+  .summary{background:var(--quote-bg);border:1px solid var(--line-2);border-radius:11px;padding:20px 26px;margin-bottom:20px;}
+  .summary ul{margin:8px 0 0 20px;}
+  .summary li{margin-bottom:8px;}
+  .verdict-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;}
+  .vchip{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:.82rem;flex:1;min-width:150px;}
+  .vchip .l{font-size:.72rem;color:var(--ink-3);font-weight:600;display:block;margin-bottom:2px;}
+  .vchip .v{font-weight:800;font-size:.92rem;}
+  /* stat grid */
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:9px;margin:14px 0;}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:9px;padding:12px 14px;}
+  .stat .l{font-size:.74rem;color:var(--ink-3);font-weight:600;margin-bottom:2px;}
+  .stat .v{font-size:1.18rem;font-weight:800;line-height:1.15;}
+  .stat .s{font-size:.76rem;color:var(--ink-2);margin-top:2px;}
+  .up{color:var(--up);font-weight:700;} .down{color:var(--down);font-weight:700;}
+  .tbl{overflow-x:auto;margin:12px 0 18px;}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;background:#fff;border:1px solid var(--line);}
+  th{background:#f3ecd4;text-align:left;padding:8px 11px;border-bottom:2px solid var(--line-2);font-size:.82rem;white-space:nowrap;}
+  td{padding:7px 11px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .fig{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;margin:16px 0;text-align:center;}
+  .fig figcaption{font-size:.8rem;color:var(--ink-3);margin-top:8px;}
+  .box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 19px;margin:14px 0;font-size:.9rem;}
+  .warn{background:#fdf1d8;border:1px solid #e6d3a3;border-radius:10px;padding:13px 18px;margin:14px 0;font-size:.89rem;color:var(--amber);}
+  .steel{background:#f6f0e0;border-left:4px solid var(--ink-3);border-radius:0 8px 8px 0;padding:11px 16px;margin:12px 0;font-size:.87rem;color:var(--ink-2);}
+  .steel b{color:var(--ink);}
+  .flip{font-size:.85rem;color:var(--ink-2);margin:8px 0 4px;}
+  .star{color:#c8851a;letter-spacing:1px;}
+  .glossary{background:#fbf6e6;border:1px dashed var(--line-2);border-radius:8px;padding:11px 16px;margin:14px 0;font-size:.82rem;color:var(--ink-2);}
+  .glossary b{color:var(--ink);}
+  .footer{margin-top:44px;padding-top:15px;border-top:1px solid var(--line);font-size:.81rem;color:var(--ink-3);}
+  .footer a{color:var(--accent);}
+  .toc{background:var(--quote-bg);border:1px solid var(--line-2);border-radius:10px;padding:15px 22px;margin-bottom:30px;font-size:.9rem;columns:2;column-gap:30px;}
+  .toc a{color:var(--accent-dark);text-decoration:none;}
+  @media(max-width:600px){.toc{columns:1;}}
+  @media print{body{background:#fff;padding:0;}.card{box-shadow:none;border:none;background:#fff;max-width:100%;padding:10mm;}.stat,table,.box,.fig{background:#fff;}.summary,.judge,.warn{background:#f8f5ec;}}
+
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+</style>
+
+<style>
+.star-box{background:#f7efd8;border:1px dashed #d9d0b8;border-radius:8px;padding:9px 14px;margin:14px 0;font-size:.86rem;color:#57534a}
+blockquote{background:#f7efd8;border-left:4px solid #c8b98f;border-radius:6px;padding:10px 16px;margin:12px 0 18px;color:#1f2328}
+blockquote p:last-child{margin-bottom:0}
+.summary ul{margin:6px 0 4px 20px}
+</style>
+
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+<meta name="vault-published" content="2026-10-09">
+</head><body>
+<!--dive-hub:start-->
+<nav id="dive-hub" aria-label="하위 Dive 모음" style="max-width:1100px;margin:12px auto 18px;padding:12px 16px;background:#F3EBD6;border:1px solid #e8e1cf;border-radius:10px;font:14px/1.6 'Pretendard','Noto Sans KR',sans-serif;color:#1f2328">
+<div style="font-weight:700;margin-bottom:4px">🤿 HYPE 하위 Dive 모음 <span style="font-weight:400;font-size:12px;color:#6b6457">— 이 Deep-Dive가 참고한 개별 보고서</span></div>
+<ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px">
+<li><a href="2026-09-28_hype-rdive.html" title="Hyperliquid (HYPE) — 제품·수익모델 해부 (R-Dive) — 2026-09-28" style="color:#1F6F8B;font-weight:600;text-decoration:none">💰 R-Dive</a> <span style="font-size:12px;color:#6b6457">제품·수익모델 · 09/28</span></li>
+<li><a href="2026-09-28_historydive-hyperliquid.html" title="History-Dive — Hyperliquid (HYPE) — 2026-09-28" style="color:#1F6F8B;font-weight:600;text-decoration:none">📜 History-Dive</a> <span style="font-size:12px;color:#6b6457">기업 역사 · 09/28</span></li>
+<li><a href="2026-09-28_peopledive-jeffyan.html" title="제프 얀 — Hyperliquid를 이끄는 사람은 누구인가 — 2026-09-28" style="color:#1F6F8B;font-weight:600;text-decoration:none">👤 People-Dive</a> <span style="font-size:12px;color:#6b6457">사람·리더 · 09/28</span></li>
+<li style="color:#8a8270">📈 chart-dive <span style="font-size:12px">타이밍 — 🔒 로컬 전용 · 10/09</span></li>
+<li><a href="2026-10-09_hype-specificdive.html" title="Hyperliquid (HYPE) Specific-Dive — 온체인 파생 거래소 토큰 전문가 체크리스트 보완 — 2026-10-09" style="color:#1F6F8B;font-weight:600;text-decoration:none">🔎 Specific-Dive</a> <span style="font-size:12px;color:#6b6457">업종 특수 점검 · 10/09</span></li>
+<li style="color:#8a8270">📄 One-Pager <span style="font-size:12px">1p 압축 — 미수행</span></li>
+</ul>
+</nav>
+<!--dive-hub:end-->
+<div class="card">
+<div class="kicker">DEEP-DIVE · 단일 자산 심층 · v1.37 --full · 🪙 비상장 크립토 적응판 · 2회차</div>
+
+<h1>Hyperliquid (HYPE) Deep-Dive — 수요·공급 해부: 사는 쪽은 바닥을 지켰고, 내놓는 쪽의 열쇠는 팀이 쥐고 있다</h1>
+<p class="sub">2026-10-09 · 가격 $85.51 · 유통 시총 $19.0~25.8B(유통량 정의에 따라) · 완전희석 $85.5B · 직전 Deep-Dive 2026-09-28 대비 델타 중심</p>
+
+<div class="meta">1차 자료(주식의 SEC 공시 대신): <a href="https://api.hyperliquid.xyz/info">Hyperliquid info API</a>(토큰 상세·위임·원장 — 팀 잠금 지갑·Assistance Fund·재단 예산 지갑·10/7 장외 매수 주소, 10/9 조회) · <a href="https://hyperliquid.gitbook.io/hyperliquid-docs/llms.txt">Hyperliquid 공식 문서</a>(AQA·HIP-3·HIP-4·스테이킹·수수료·우선 수수료) · <a href="https://api.llama.fi/summary/fees/hyperliquid?dataType=dailyHoldersRevenue">DefiLlama 수수료·수익 API</a> · <a href="https://www.coingecko.com/en/coins/hyperliquid">CoinGecko API</a> · yfinance · <a href="https://sosovalue.com/assets/etf/us-hype-spot">SoSoValue ETF 집계</a> · <a href="https://hypestrat.xyz/dashboard">Hyperliquid Strategies 대시보드</a> · <a href="https://www.sec.gov/Archives/edgar/data/2078856/000119312526399511/d168095d424b3.htm">PURR 424B3</a></div>
+
+<div class="judge" style="border-left-color:#c0392b;background:#fbefe9;border-color:#ecd2c8">
+<h3>🧑‍⚖️ 종합 매수 판단 (Fable 판사 · Step 7.5)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 판사는 지금 가격에서의 진입을 이번에도 보류했다. 다만 다음 달 팀 인출과 이자 매입 지급이 좋게 나오면 가격과 무관하게 다시 판단하는 길을 열었다.</p>
+</blockquote>
+<p><strong>verdict:</strong> 🔴 현재가 진입 보류 — 9/28 재고 조건 ①(AQAv2 첫 지급 연환산 ≥$135M)은 실측 $138~177M으로 충족됐지만, 같은 11일 사이 팀 잠금 분배가 월 43만 → 375만 개(8.7배)로 뛰어 호재를 상쇄했고 5년 EV는 1.02x → 1.01x(본전)로 그대로다. 결론은 이제 "팀 분배 속도"라는 관측 1개월짜리 변수 하나에 걸려 있으며, 그 판별 신호(11/1 AQA 2회차 · 11/6 팀 인출)가 가격이 아니라 정보로 4주 안에 온다. 재고 = (a) 가격 $60 안팎(밴드 $49~70) 또는 (b) 11월 팀 분배 ≤50만 개 + AQA 2회차 30일 주기 ≥$13M <strong>동시</strong> 충족(가격 무관 ⚪ 재판정) 또는 (c) 3M×4 보유자 몫(AQA 포함) ≥$1.0B 2분기 연속.</p>
+<p><strong>요약 1줄:</strong> 🔴 현재가 진입 보류 — AQA 실측 호재를 10월 팀 분배 375만 개가 상쇄해 5년 EV 1.01x(본전)가 그대로인 것이 결정적 · 낮은 신뢰도 참고</p>
+<p><strong>근거:</strong></p>
+<ol>
+<li><strong>전-축 통합 read — 다섯 렌즈가 9/28처럼 같은 방향이되, 이번엔 전부 <em>하나의 변수</em>로 수렴한다.</strong> §H.7 밸류 🔴(강도 약화 · D1) · §H.1 EV 5y 1.01x·2y 0.88x(D2) · §H.5 「강한데 비싼」·엣지 下·과목 불일치(D3) · §G.8 보유자 몫 ⚪ 조건부(D5) · chart-dive Sell −0.25·타이밍 🔴(D6 · 참고 read)가 모두 보류 쪽이고, 반대편엔 0to1 ⭐4.0(D4)·프로토콜 내구성 🟢(D5)·7축 ⭐3.7(B)이 선다. 9/28과 다른 점은 swing 변수의 통일이다 — §H.7(H.7.3 "핵심 swing 변수 1개: 팀 분배 속도")·§G.8(G.8.0 ③ "새 swing = 팀 분배 속도")·§H.1(민감도 표 300M 1.62x / 480M 1.01x / 520M 0.93x)·§H.3(🆕 팀 분배 가속 신호 맨 위)이 전부 같은 변수를 가리킨다. 즉 이 종목은 "강한 사업을 비싼 가격에, 팀이 꺼내는 속도를 모르는 채로" 사는 구조이고, 그 속도는 외부에서 규칙인지 재량인지 알 수 없다(C3 일정표 비공개).</li>
+<li><strong>9/28 재고 조건 판정 = ① 충족 · ② 미충족 → 조건 미완성, 그러나 "기다림의 비용 0"이 실측으로 확인됐다.</strong> ① AQAv2 첫 지급 USDC 14,580,774.69(10/4 · A4 · G.8 (1)⑥) → 연환산 하단 $138M으로도 ≥$135M 충족. ② 가격 $85.51 vs 9/28 밴드 $48~62(갱신 $49~70) 미달, 3M×4 보유자 몫 AQA 포함 $727~764M &lt; $1.0B(H.7.2 ③ 참고 행). 핵심은 결과의 모양이다 — 9/28 Steelman이 걱정한 "정보가 긍정으로 오면 가격이 먼저 반영돼 더 높은 가격에서 같은 판단을 다시 한다"(Intel형 실패)가 <strong>일어나지 않았다</strong>: 정보는 긍정(AQA 밴드 상단 근접), 가격은 −6.3%(A1), 재고 밴드는 +$8 위로 이동(H.7.3). 양쪽에서 거리가 좁혀졌는데도 EV가 1.02→1.01x로 멈춘 이유는 §H.1이 "바꾼 가정 두 개" — Bear 바닥 4.0→4.5억(AQA 호재) vs 5년 유통량 4.4→4.8억(팀 분배 악재) — 가 서로 지운 탓이다.</li>
+<li><strong>밸류 🔴는 약해졌지만 뒤집히지 않았다 — 뒤집히는 프레임은 "팀 몫을 비용으로 안 넣는" 프레임뿐이다.</strong> H.7.2 ① 1-3 distance: CG 유통(222.4M)은 현실범위내~상단의존으로 들어왔으나, 희석 Base 480M은 5년차 보유자 몫 $2.8~5.2B 요구 vs envelope 상한 $3.2B(상한 근접~초과 🔴), FDV는 2~3.5배 밖. fragile 점검은 "희석 프레임 1개로 상단의존↔envelope밖이 갈리나, 현실범위내로 뒤집으려면 팀 237.87M을 무시하는 CG 정의가 필요 → 경제적으로 정당하지 않음". H.7.2 ② 순 수익률 = 9월 속도 ≈0% / 10월 속도 −13%(총 수익률은 CME·ICE 수준 4.1~4.4%인데 <strong>새는 몫을 빼면 남는 게 0~음수</strong>). ③-다 percentile 95(n=20 · 전환 후 13개월 · 낮음 클램프)·펀더 역행(+96% vs −50%)은 바닥 횡보로 완화됐으나 반등은 아직(9월 월 $56.2M = 6월 이후 최고). BRCR −0.23(유통)/−0.56(FDV) 🔴 사칭 · 구속 인자 D(지속성 2~3년).</li>
+<li><strong>공급 측(사용자 요청의 절반) — 새 사실 세 개가 모두 하방 꼬리를 키우는 쪽이다.</strong> (a) 10월 팀 375만 개 장외 매각(A7·C2 · L.2): 83%가 즉시 "Hyperliquid Strategies x Unit" 검증자에 스테이킹돼 <strong>시장 매도 압력 ≈0이지만 토큰당 희석은 전량</strong>이고(G.8 (1)⑤ · G.8.4 엇갈림 "매도 압력 ≠ 몫 희석"), "팀이 몫을 시장 밖에서 현금화하는 통로"가 처음 확인됐다(C2). (b) 증권신고서·외부 일정표(월 992만) vs 실인출(월 14~53만) 괴리 → "풀렸지만 안 꺼낸" ~1.1억 개(C3 · L.5) — 확정 불가라 밴드로만 성립하나, 이 토큰의 가장 큰 잠재 공급이다. (c) 〔Specific-Dive〕 담보로 묶인 HYPE ~1,985만 개 = 프로토콜 월 매입 약 24개월분 · 평소엔 "팔지 않고 빌리는" 수요, 급락 땐 반감기 10분 분할 매도의 기계적 공급(C16~C19 · S 새로 안 것 1). 평균 청산선 −56~−66%($29~38)는 재고 밴드 $49~70과 직접 충돌하지 않지만(D7), 계정별 분포가 비공개라 <strong>밴드 도달 경로가 비선형일 수 있다</strong> — "밴드에서 산다"는 계획이 안전한 바닥을 전제하지 못한다.</li>
+<li><strong>수요 측 — 두 번째 수도꼭지는 열렸지만, 가격을 받쳐 온 흐름 수요는 식고 있다.</strong> AQA 실측(연 $138~177M · 보유자 몫 ~17~21%)은 거래량 사이클과 무관한 수입이고(H.7 ③-다 가드 ③ tell), 9월 수수료는 1월 이후 최고(A3)다. 반면 ETF 누적 순유입 11일 −$6.1M·10/8 하루 −$9.7M(A9·C9), PURR mNAV 1.08(이연법인세 되돌리면 0.98 · C6·L.6)로 한 달 최대 매수자가 프리미엄 1배 근처, HYPD는 이미 HYPE 매도→자사주 매입. 트레저리·ETF 수요는 경기 순응형이라 9/28 Steelman의 "토큰 가격은 DCF가 아니라 흐름 수요가 정한다" 논리가 이번엔 <em>하방</em>으로도 같은 크기로 작동 중이다. 60일 상관 ETH 0.73 &gt; COIN 0.69(A11·H.5(b)) — 시장은 아직 이 자산을 알트코인 베타로 매긴다(COIN 상관 상승은 초기 신호일 뿐·상관≠인과·C14).</li>
+<li><strong>거버넌스·규제 — 집중은 더 크게, 미국 편입 Bull은 더 좁게 재측정됐다.</strong> 내부 지갑(팀 잠금 237.87M + 재단 예산 60.49M) 위임 67.8% &gt; 정족수 2/3(C5 · L.4 · F ⑦) — 9/28 "재단 47%"는 출처 오독이었고, 같은 2/3 합의가 예치금 장부 무결성과 AQA 기준금리 산정에도 쓰인다(S 새로 안 것 3). AQAv2는 배포자 6개월 통지로 중단 가능하고 트레저리 배포자 Coinbase는 미국 perp 경쟁자다(C21). TradeXYZ OI 55%가 개별 주식 = SEC 관할 → CFTC 경로 미국 편입은 지수·원자재 칸만(C22 · H.1 Bull 각주¹) — §H.1 Bull 20%(5y 보유자 몫 $4.0B)는 확률·배수를 바꾸지 않았으나 H.7 독립 envelope 상한 $3.2B를 넘는다(H.7.2 ⑤ cross-ref). 탈중앙·코드 공개 0/3 그대로(C11).</li>
+<li><strong>타이밍 뉘앙스 1줄(참고 read · 승격 ❌):</strong> chart-dive Buy(+0.467)→Sell(−0.25)·타이밍 ⚪→🔴·손익비 0.37:1·20일선 아래(C8·D6) — "지금은 추격 자리가 아니다"에서 "하락 추세 안"으로 한 칸 내려갔고, 하락 일부는 크립토 전반이다(BTC도 Strong Buy→Hold). 종목 결정 입력으로 쓰지 않는다.</li>
+<li><strong>엇갈림 명시(봉합 ❌).</strong> (a) §G.8 프로토콜 🟢 vs 보유자 몫 ⚪ — 같은 기계가 USD와 HYPE 수량 단위에서 반대로 움직이며(G.8.4), 본 verdict는 토큰 보유자 관점이라 ⚪를 소비한다. (b) §H.7 ② 총 수익률 peer 수준(⚪) vs ① 희석 프레임 envelope 밖(🔴) — "지금 받는 현금은 동종 수준이지만 팀 분배로 새는 몫을 빼면 0에 가깝다"는 같은 진단의 양면(H.7.3 엇갈림). (c) §H.1 민감도 300M → <strong>1.62x</strong>: 팀이 9월 속도로 돌아가면 thesis가 1.5x를 넘는다 — 즉 이번 🔴는 "구조적 유출의 🔴"(9/28)가 아니라 <strong>"팀 변수 미확정의 🔴"</strong> 다. (d) 밸류 🔴·분면 관망·chart 🔴 vs 0to1 ⭐4.0·프로토콜 🟢·7축 ⭐3.7 — "강한 사업·비싼 가격" 그대로.</li>
+<li><strong>왜 ⚪ 관망이 아니라 🔴 유지인가.</strong> 가장 가까운 판별 신호가 다시 가격이 아니라 <strong>정보</strong>(H.2: 11/1 전후 AQA 2회차 30일분 ≥$13M 여부 · 11/6 전후 팀 월 인출 43만 복귀 vs 375만 반복)이고, 2y EV 0.88x·Base 0.89x는 기다림의 비용이 낮다는 뜻이다. 가격 trigger $49~70은 현재가에서 −18~−43% 아래라 가격 재고는 멀고, 4주 뒤 정보 재고가 더 가깝다. 그래서 재고 조건에 <strong>비가격 ⚪ 승격 경로</strong>(b)를 명시한다 — 11월 두 관측이 긍정이면 가격이 올라도 ⚪로 재판정해 Intel형 실패 경로를 닫는다. 🔴는 thesis 부정이 아니며, 정찰성 소액(현물 ETF 형태 포함)은 관망과 양립한다.</li>
+</ol>
+<p><strong>Steelman:</strong></p>
+<ul>
+<li><strong>본 분석</strong>: AQA 호재가 왔지만 팀 분배 가속·일정표 괴리·담보 청산 조건부 공급이 하방 꼬리를 키워 5년 EV가 본전(1.01x)에 멈췄고, 결론을 정하는 변수(팀 속도)는 4주 뒤 정보로 판별된다 → 🔴 현재가 진입 보류.</li>
+<li><strong>자기 반박 (데이터 축 · 가장 강한 것)</strong>: 10월 375만 개는 <strong>공급 악재가 아니라 수요 호재일 수 있다.</strong> 원장 모양(9/29 신규 주소 → 5개 분할 → 1주소 집결 → 83% 즉시 특정 검증자 스테이킹 · 체결 0건 · G.8 (3) 임계점 4-(a))은 정기 베스팅보다 "기관 한 곳이 ~$85에 블록을 받아 장기 보유로 묶은 일회성 장외 거래"에 가깝다. 그렇다면 이 사건은 (i) 현재가 근처에 블록 수요가 있음을, (ii) 미래 오버행 375만 개가 시장 밖에서 소화됐음을 동시에 증명하고, A 가정(9월 속도 · 순발행 ≈0 · §H.1 300M → 1.62x)이 기본값이어야 한다. 여기에 AQA는 밴드 상단($177M 쪽 · DefiLlama 일별 중앙값 $0.485M ≈ 연 $177M · H.7 원장 4) 근거가 더 많고, 9월 수수료는 1월 이후 최고, 30일 연환산($667M) &gt; 90일($587M)로 바닥 반등 초입, 가격은 −6.3%에 시장 심리는 공포(F&amp;G 38 · A.3). "펀더는 좋아지고 가격은 빠지는" 전형적 매수 국면에서 11/6 데이터를 기다리는 것은 — 데이터가 긍정이면 그 사실이 가격에 먼저 반영된다는 점에서 — 9/28이 스스로 경고한 Intel형 실패의 재현일 수 있다.</li>
+<li><strong>자기 반박 (구조 축)</strong>: 재고 밴드 $49~70은 "안전한 진입 가격"이 아니라 <strong>청산 연쇄가 시작되는 구간의 입구</strong>일 수 있다. 담보 1,985만 개(S 1)의 평균 청산선은 $29~38이지만 분포가 비공개라 일부 계정은 밴드 안에서 먼저 청산되고, 그 기계적 매도가 반감기 10분으로 쏟아지면 밴드는 바닥이 아니라 가속 구간이 된다. 그렇다면 "지금 보류하고 $60에 산다"는 계획은 "지금 소액 분할로 들어가고 밴드에서 추가한다"보다 실행 가능성이 낮다 — 즉 🔴의 실행 전제(밴드 대기)가 구조적으로 약하다.</li>
+<li><strong>자기 반박 (시간지평 축)</strong>: 1~2년은 팀 잠금 237.87M의 분배 경로가 전부를 정하지만, 5년 지평에서 잠금분 해소는 속도만 다른 기정사실이고 그 뒤엔 일반 스테이커 발행 4.5M vs 매입만 남아 팀 제외 손익분기 $162~188(G.8 (3) 손익분기 · A8 "팀 0 $188") — 장기로는 <strong>순흡수 구조</strong>다. 5년 보유자에게 지금의 팀 cliff는 진입 가격의 문제일 뿐 thesis의 문제가 아니다.</li>
+<li><strong>유지 / 수정 / 철회 → 유지(🔴) · 수정 2건.</strong> 반박이 뒤집지 못하는 세 가지: ① 블록 매수자가 스테이킹했다는 사실은 "시장 매도 압력"을 지우지만 "토큰당 몫 희석 375만 개 전량"은 지우지 못하며(G.8.4 엇갈림), 매수 기관 신원·잠금 조건은 미확인(E1)이고 잔여 팀 잠금 237.87M + 일정표 괴리 1.1억 개(C3)가 남아 있다 — 1개월 관측으로 A 가정을 기본값으로 쓰는 것은 B 가정을 기본값으로 쓰는 것과 같은 과잉이다(G.8 Steelman 결론 "판별 대기"). ② AQA는 금리 인하 사이클에 정면 노출된 float 수입(−$40~75M/100bp · A.3)이라 거래 수수료와 같은 배수를 받을 수 없고, 바닥 반등이 있어도 30일+AQA 상단 $844M으로 희석 Base 요구치 $2.8B+까지 3.3배가 남는다(H.7.5 유지 근거 ③). ③ 흐름 수요 논리는 ETF 순유출·PURR mNAV 1배 근접(C6·C9)으로 이번엔 하방 쪽에 서 있다. <strong>수정 ①</strong>: 데이터 축 반박을 받아 재고 조건에 <strong>비가격 ⚪ 승격 경로</strong>(11월 팀 ≤50만 + AQA 2회차 ≥$13M 동시)를 명시한다 — 긍정 정보가 오면 가격과 무관하게 재판정한다. <strong>수정 ②</strong>: 구조 축 반박을 받아 "밴드 대기"를 유일한 실행 경로로 쓰지 않는다 — 정찰성 소액 분할(11/1·11/6 전후)은 관망과 양립하며 규율 위반으로 단정하지 않는다. 신뢰도는 <strong>낮음</strong>(§H.7 "낮음"·§G.8 "낮음~중간"과 정합 · 결론이 관측 1개월짜리 재량 변수에 걸려 있음).</li>
+</ul>
+<p><strong>한계:</strong></p>
+<ol>
+<li><strong>chart-dive 원문 미Read</strong> — <code>_work1009/</code>에 chart-dive 산출 파일이 없어 브리프 C8·D6 요약을 그대로 소비했다. 참고 read·낮은 신뢰도라 종목 결정 입력으로 쓰지 않았으므로 verdict 영향 없음.</li>
+<li><strong>AQA 연환산 밴드 불일치</strong> — 브리프 A4는 "문서 규정 30일 구간 → 약 $177M"으로 확정 서술하나, §G.8 원문은 "정산 기간 미확정 → 연 $138M(38.5일분)~$177M(30일분)"으로 밴드 유지. 재고 조건 ① 충족 판정은 하단 $138M으로도 성립하지만 여유가 $3M에 불과하다. 2회차 지급(11/1 전후)이 판별.</li>
+<li><strong>팀 분배 임계값이 모듈마다 다르다</strong> — §H.3 "월 300만 이상 3개월 연속" · §G.8 악화 trigger "≥3M 2개월 연속" · §H.7 🔴 훼손 "월 ≥2M 2개월 연속". 방향은 같으나 roll-up 시 단일화가 필요하다. 본 verdict는 §G.8·§H.7의 "11월 ≤50만 복귀"(🟢 측)를 재고 조건에 썼다.</li>
+<li><strong>§H.1 Bull 5y 보유자 몫 $4.0B &gt; §H.7 독립 envelope 상한 $3.2B</strong> (H.7.2 ⑤ cross-ref) — Bull 20%가 envelope 밖이라 EV 1.01x 자체가 낙관 쪽일 수 있다. 재계산은 owner 침범이라 하지 않았다.</li>
+<li><strong>Section E 배수 30.4x vs §H.7 온체인 TTM 36.5x</strong> — 분모 정의 차이(E = ex-AQA TTM $674M + AQA 연환산 / H.7 = DefiLlama 신 정의 $707M). 방향 동일, 숫자만 다름 — 발행 전 각주 통일 권고.</li>
+<li><strong>E1~E8 공백 그대로</strong> — 매수 기관 신원·공동창업자 디스코드 원문(2차 요약만)·팀 공식 분배 일정·62.5만 HyperEVM 이동분 행방·AQA 비용 차감 방식(정액/비례 → 금리 민감도 $40~75M/100bp 밴드)·언스테이킹 대기열·컨센 분산·THYP AUM. 특히 E1·E2는 swing 변수 그 자체라 판정 신뢰도를 "낮음"에 묶는 직접 원인이다.</li>
+<li><strong>담보 청산선 계정별 분포 비공개</strong>(C19) — 재고 밴드 $49~70 도달 경로의 비선형성을 추정할 수 없어 Steelman 구조 축을 정량으로 닫지 못했다.</li>
+<li><strong>시장 과목 인용 as-of 9/29</strong>(tenbagger Phase 0-C · C15) — 10/9 기준 재인용 없음. Expect-daily 10/9 공포 38은 보조로만 썼다.</li>
+<li><strong>9/28 한계 1번(서브에이전트 입력 stale "요율 인상 0")은 해소</strong> — INPUT_for_subagents에 2회 인상 정정값이 들어가 §H.7 질 ❌→⚠️·§G.8 1970s ① ❌→△로 반영됨(확인). 9/28 한계 2번(§H.1 EV 수치 불일치)도 해소 — H.7 렌즈⑤가 §H.1과 같은 1.01x를 인용한다.</li>
+</ol>
+<p class="judge-foot">판사 반환문 발췌(의역 없음 · 개인 규율 점검표와 내부 메모 1건만 제외) · 낮은 신뢰도 종합 콜 · enforcement 아님 · 최종 판단·실행은 사용자</p>
+</div>
+<h2 class="sec">한 장 요약</h2>
+<div class="summary">
+<ul>
+<li>🔴 <strong>희석의 열쇠는 스테이킹이 아니라 팀 몫이다(9/28 정정).</strong> 스테이킹 보상의 절반 이상은 팀 잠금 지갑 안에 쌓여 시장에 나오지 않는다. 시장 기준으로 다시 세면 9월까지는 사들이는 양과 새로 나오는 양이 거의 같았다. 남은 변수는 팀이 얼마나 빨리 꺼내느냐 하나다.</li>
+<li>🔴 <strong>그 팀 몫이 10월에 크게 움직였다.</strong> 10/7 375만 개(약 3.3억 달러)가 나왔다. 9월(43만 개)의 8.7배다. 공동창업자가 "기관 한 곳에 장외로 넘기고 공개 시장에선 팔지 않는다"고 미리 공지했다. 실제로 83%가 바로 다시 스테이킹됐다. 시장 매도 압력은 거의 없었지만 유통량은 그만큼 늘었다.</li>
+<li>🔴 <strong>더 큰 잠재 공급은 "풀렸지만 안 꺼낸" 팀 몫이다.</strong> 증권신고서 문구와 외부 일정표는 2025-11부터 매달 약 992만 개가 풀린다고 본다. 실제 인출은 그 일부였다. 일정표가 맞다면 약 1.1억 개를 팀이 언제든 꺼낼 수 있다. 공식 일정은 공개된 적이 없다.</li>
+<li>🟠 <strong>두 번째 매입 엔진이 실제로 돈을 냈다.</strong> 10/4 예치 USDC의 국채 이자 1,458만 달러(30일분)가 매입 기금에 들어왔다. 연환산 약 1.77억 달러다. 9/28 재고 조건 하나(연 1.35억 이상)를 충족했다. 다만 배포자가 6개월 통지로 끌 수 있고, 금리가 내리면 줄어든다.</li>
+<li>🟠 <strong>수수료 매입은 바닥을 지켰다.</strong> 3분기 1.46억 달러로 2분기와 같다. 9월 수수료는 1월 이후 가장 많았다. 그러나 가격이 올라 같은 돈으로 사는 토큰 개수는 1월의 28%다.</li>
+<li>🟠 <strong>기관 래퍼 수요는 갈렸다.</strong> 상장 트레저리 회사 PURR가 한 달에 530만 개를 늘렸다(프로토콜 매입의 6배 이상). ETF는 11일 동안 소폭 순유출이다. PURR의 주가 프리미엄이 1배 근처라, 이 수요는 시장이 식으면 매도로 바뀔 수 있다.</li>
+<li>🟠 <strong>급락 때만 켜지는 공급이 있다.</strong> HYPE 약 1,985만 개가 대출 담보로 묶여 있다(프로토콜 매입 약 24개월분). 평소엔 수요이고, 급락하면 시스템이 기계적으로 판다.</li>
+<li><strong>7축 종합 ⭐3.7</strong>(변동 없음) — 사업·thesis 매력도(가중평균) · 밸류 멀티플 미반영. <strong>5년 기댓값 1.01x</strong>(9/28 1.02x) — 팀이 9월처럼 천천히 꺼내면 1.62x, 일정표대로면 0.93x · <strong>분면 = 「강한데 비싼」</strong> · <strong>0to1 = 4/7·⭐4.0</strong> · <strong>밸류 = 🔴 고평가(강도 약화·신뢰도 낮음) · 다시 볼 가격 $60 안팎(밴드 $49~70)</strong> · <strong>내구성 = 🟢 프로토콜 / ⚪ 보유자 몫(관건 = 팀 분배 속도)</strong> · <strong>🧑‍⚖️ 판사 = 🔴 현재가 진입 보류</strong>(재고 = 가격 밴드 또는 11월 팀 분배 50만 개 이하 + 이자 매입 2회차 1,300만 달러 이상).</li>
+</ul>
+</div>
+<h3>9/28 대비 바뀐 것</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>9/28</th>
+<th>10/9</th>
+<th style="text-align: center;">방향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>가격</td>
+<td>$91.28</td>
+<td>$85.51</td>
+<td style="text-align: center;">↓</td>
+</tr>
+<tr>
+<td>이자 매입(AQAv2)</td>
+<td>추정 연 1.35~2억</td>
+<td>실측 1,458만(30일분) · 연 약 1.77억</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>분기 수수료 매입</td>
+<td>3분기 추정 1.45억</td>
+<td>3분기 확정 1.46억</td>
+<td style="text-align: center;">→</td>
+</tr>
+<tr>
+<td>희석 판단</td>
+<td>스테이킹 발행 &gt; 매입(순발행)</td>
+<td>시장 기준 균형 · 변수 = 팀 인출 속도</td>
+<td style="text-align: center;">정정</td>
+</tr>
+<tr>
+<td>팀 월 분배</td>
+<td>43만</td>
+<td>375만(장외)</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>스테이킹 표 집중</td>
+<td>재단 47%</td>
+<td>내부 지갑 위임 67.8%</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>차트 등급</td>
+<td>Buy · 타이밍 ⚪</td>
+<td>Sell · 타이밍 🔴</td>
+<td style="text-align: center;">↓</td>
+</tr>
+<tr>
+<td>판사</td>
+<td>🔴 진입 보류</td>
+<td>🔴 진입 보류(비가격 재고 경로 추가)</td>
+<td style="text-align: center;">→</td>
+</tr>
+</tbody>
+</table></div>
+<figure class="fig dd-fig"><p class="cap"><b>확신도 7축</b> — 사업·thesis 매력도(가중평균 · 날씨 가중 3.0) · 밸류 멀티플 미반영 · 9/28과 동일</p><div id="fig-score7"></div><div class="dd-legend" id="leg-score7"></div></figure>
+
+<div class="toc"><a href="#p0">Part 0 수요·공급 해부</a><br><a href="#a">A 날씨</a><br><a href="#b">B 산(산업)</a><br><a href="#c">C 숲(섹터)</a><br><a href="#d">D 나무(프로토콜)</a><br><a href="#e">E 옆의 나무</a><br><a href="#f">F 사람</a><br><a href="#g">G 숫자</a><br><a href="#h">H 시나리오·렌즈</a><br><a href="#i">I 토큰 분포·자금흐름</a><br><a href="#j">J 산업·규제</a><br><a href="#k">K 공지·거버넌스</a><br><a href="#l">L 동적 발견</a><br><a href="#s">S Specific-Dive</a><br><a href="#z">종합 판단</a></div>
+
+<blockquote>
+<p><strong>배경 (1회만)</strong> — Hyperliquid는 만기 없는 선물(무기한선물·perp)을 주로 거래하는 탈중앙 거래소이자, 그 거래소를 돌리려고 직접 만든 블록체인이다. 거래 수수료의 대부분으로 HYPE를 시장에서 사들이는 <strong>Assistance Fund(매입 기금)</strong> 가 있고, 사들인 토큰은 소각된 것으로 취급한다. 벤처 투자자 몫이 0이고 팀 몫이 23.8%다. 🪙 이 보고서는 주식용 Deep-Dive 틀을 크립토에 맞게 옮긴 판이다 — 10-K 대신 공식 문서와 온체인 원장을, "매출" 대신 보유자 몫(매입 기금으로 가는 돈)을, "희석" 대신 토큰 발행·잠금 해제를 쓴다. 9/28 첫 Deep-Dive에서 바뀌지 않은 판단은 "변동 없음" 한 줄로 줄였다.</p>
+</blockquote>
+<h2 class="sec" id="p0">Part 0 — 🔎 HYPE 수요·공급 해부</h2>
+<blockquote>
+<p><strong>왜 이 절이 맨 앞인가</strong> — 토큰 가격은 결국 "누가 얼마나 사고, 누가 얼마나 내놓느냐"로 움직인다. 주식이라면 자사주 매입·증자·락업 해제·기관 수급이 흩어져 있을 내용을 여기 한곳에 모았다. 개수(토큰 수)와 달러를 같이 쓴다 — 매입은 달러로 정해지고 발행은 개수로 정해지기 때문이다.</p>
+</blockquote>
+<h3>0.1 10억 개는 지금 어디에 있나 — 재고 지도</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 10억 개 중 시장에서 실제로 사고팔 수 있는 물량은 1억 개 안팎이다. 나머지는 미래 발행 몫, 팀 잠금, 재단, 매입 기금, 스테이킹에 묶여 있다. 그래서 작은 물량 변화가 가격에 크게 작용한다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: right;">수량(10/9)</th>
+<th style="text-align: right;">비중</th>
+<th>시장에 나올 수 있나</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>미래 배출 몫(스테이킹 보상 재원)</td>
+<td style="text-align: right;">4.109억</td>
+<td style="text-align: right;">41.1%</td>
+<td>스테이킹 보상으로 조금씩</td>
+<td>tokenDetails <code>futureEmissions</code></td>
+</tr>
+<tr>
+<td>팀(핵심 기여자) 잠금 지갑</td>
+<td style="text-align: right;">2.379억</td>
+<td style="text-align: right;">23.8%</td>
+<td>매월 분배분만</td>
+<td>지갑 0x43e9…a251</td>
+</tr>
+<tr>
+<td>Assistance Fund(매입 기금)</td>
+<td style="text-align: right;">0.479억</td>
+<td style="text-align: right;">4.8%</td>
+<td>안 나온다(소각 취급)</td>
+<td>지갑 0xfefe…fefe</td>
+</tr>
+<tr>
+<td>재단 예산 지갑</td>
+<td style="text-align: right;">0.605억</td>
+<td style="text-align: right;">6.1%</td>
+<td>재단 결정 시(22개월간 출금 약 180만 개)</td>
+<td>지갑 0xd57e…de5d</td>
+</tr>
+<tr>
+<td>일반 보유자 — 스테이킹</td>
+<td style="text-align: right;">약 1.42억</td>
+<td style="text-align: right;">14.2%</td>
+<td>해제 신청 후 7일</td>
+<td>총 스테이킹 − 팀 − 재단</td>
+</tr>
+<tr>
+<td><strong>일반 보유자 — 즉시 거래 가능</strong></td>
+<td style="text-align: right;"><strong>약 1.00억</strong></td>
+<td style="text-align: right;"><strong>10.0%</strong></td>
+<td><strong>지금</strong></td>
+<td>온체인 유통 − 재단 − 일반 스테이킹</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>🔴 <strong>스테이킹 4.40억 개 중 2.38억 개(54%)가 팀 잠금 지갑이다.</strong> 9/28 보고서는 이것을 "시장에 풀린 스테이킹"처럼 계산했다(아래 0.4 정정).</li>
+<li>🆕 <strong>즉시 거래 가능 1억 개 중 1,391만 개(14%)는 거래소 차입 기능에 담보로 맡겨져 있다.</strong> 일반 스테이킹 1.42억 개 중 약 1,394만 개(10%)는 다시 거래되는 유동 스테이킹 토큰(kHYPE·stHYPE 등)이다 〔Specific-Dive〕.</li>
+<li>즉시 거래 가능 물량 1억 개는 약 85억 달러다. 하루 거래대금(HYPE perp만 5.5억 달러, 중앙화 거래소 포함 수십억 달러)에 비해 크지 않다. 기관 래퍼(ETF·상장 트레저리 회사)의 보유분도 이 칸과 스테이킹 칸 안에 들어 있다.</li>
+</ul>
+<h3>0.2 수요측 요인 — 누가, 얼마나, 무엇에 비례해서 사나</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 사는 쪽은 세 갈래다. 프로토콜이 자동으로 사는 돈(수수료·이자), 스테이킹으로 묶이는 수요, 기관이 래퍼를 통해 사는 돈. 첫째는 바닥을 다졌고, 셋째는 시장 분위기에 따라 들쭉날쭉하다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th>수요 요인</th>
+<th>규모</th>
+<th>무엇에 비례하나</th>
+<th style="text-align: center;">9/28 대비</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">①</td>
+<td>수수료 매입(Assistance Fund)</td>
+<td>연 5.9~6.7억 달러 · 월 약 65만 개</td>
+<td>거래대금 × 요율 × 환원 비율</td>
+<td style="text-align: center;">→ 바닥 유지</td>
+</tr>
+<tr>
+<td style="text-align: center;">②</td>
+<td>이자 매입(AQAv2)</td>
+<td>1회 1,458만 달러 · 연 약 1.77억</td>
+<td>예치 USDC × 단기금리 × 90%</td>
+<td style="text-align: center;">🆕 실측</td>
+</tr>
+<tr>
+<td style="text-align: center;">③</td>
+<td>스테이킹 잠금</td>
+<td>일반 약 1.42억 개</td>
+<td>수익률 약 2.2% · 수수료 할인 · 배포 보증금</td>
+<td style="text-align: center;">총 4.41억 → 4.40억(−0.3%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">④</td>
+<td>기관 래퍼(ETF·트레저리)</td>
+<td>ETF 순자산 4.54억 달러(약 530만 개) · PURR 3,850만 개 · HYPD 185만 · Lion 23만</td>
+<td>주식시장 자금 유입 · 프리미엄(mNAV)</td>
+<td style="text-align: center;">ETF 순유출 · PURR 순매입</td>
+</tr>
+<tr>
+<td style="text-align: center;">⑤</td>
+<td>소각·가스 등 기타</td>
+<td>우선 주문 수수료 소각 누적 약 1,300만 달러(4/13~)</td>
+<td>사용량</td>
+<td style="text-align: center;">→</td>
+</tr>
+<tr>
+<td style="text-align: center;">⑥</td>
+<td>투기 수요(파생)</td>
+<td>HYPE perp 미결제 2,004만 개 · 펀딩 약한 음수</td>
+<td>위험선호</td>
+<td style="text-align: center;">식음</td>
+</tr>
+<tr>
+<td style="text-align: center;">⑦</td>
+<td>🆕 담보 수요(팔지 않고 빌리기)</td>
+<td>약 1,985만 개(거래소 1,391만 + HyperEVM 대출 약 594만)</td>
+<td>가격 · 차입 수요</td>
+<td style="text-align: center;">🆕 〔Specific-Dive〕</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>① 수수료 매입 — 수요의 본체.</strong> 거래 수수료의 약 76%가 매일 시장에서 HYPE를 산다. 9/28 이후 확인된 것은 두 가지다. 3분기 매입액이 2분기와 같은 높이로 마감됐고(1.46억 달러), 9월 수수료가 1월 이후 가장 많았다. 다만 매입 <strong>개수</strong>는 가격에 반비례해서, 지금 가격이면 월 65만 개 안팎이다. 이 엔진의 약점은 R-Dive가 짚은 대로 새 사업(빌더 배포 시장·결과 시장)일수록 통행세가 낮다는 점이다.</p>
+<p><strong>② 이자 매입 — 거래량과 무관한 두 번째 엔진.</strong> 10/4 00:00(UTC) 시스템 주소에서 Assistance Fund로 USDC 14,580,774.69가 들어왔고, 10/3에는 2 USDC 시험 송금이 있었다(온체인 원장 직독). 공식 문서 규정은 "활성화일부터 30일 단위로 이자를 쌓고, 각 구간이 끝난 8일 뒤 자동 송금"이다(<a href="https://hyperliquid.gitbook.io/hyperliquid-docs/hypercore/aligned-quote-assets.md">AQA 문서</a>). 8/26 활성화 → 첫 구간 8/26~9/24 → 10/3~4 지급으로 맞아떨어진다. 그래서 1,458만 달러는 <strong>30일분</strong>이고 연환산 약 1.77억 달러다. 돈이 모자라면 배포자(Coinbase)의 스테이킹 50만 개를 하루 2%씩 깎는 장치까지 붙어 있다. 거래가 줄어도 예치 달러와 금리가 유지되면 이 돈은 나온다. 반대로 금리 인하에는 그대로 노출된다(1%포인트당 연 4,000만~7,500만 달러). 🔴 <strong>그리고 끌 수 있다</strong> — 두 배포자 모두 6개월 전에 알리면 중단할 수 있고, 트레저리 배포자 Coinbase는 미국에서 perp를 파는 경쟁자다. 지급 기준금리도 검증자가 온체인에 올린다. 미국 스테이블코인법(GENIUS Act)의 이자 금지는 "발행사 → 보유자" 지급을 막는 문언이라 이 구조에 바로 걸리지는 않는다[추론] 〔Specific-Dive〕.</p>
+<p><strong>③ 스테이킹 잠금 — 묶이는 수요.</strong> 스테이킹은 사는 행위가 아니라 <strong>파는 물량을 줄이는</strong> 수요다. 해제에 7일이 걸린다. 묶이는 이유는 셋 — 연 약 2.2%의 보상, 거래 수수료 할인(최대 40%), 그리고 빌더 배포 시장·결과 시장을 열려는 배포자의 보증금. 보증금 규정은 공식 문서 기준으로 이렇다 — 빌더 배포 시장(HIP-3) 50만 개·최소 183일 유지·슬래싱 대상(<a href="https://hyperliquid.gitbook.io/hyperliquid-docs/hyperliquid-improvement-proposals-hips/hip-3-builder-deployed-perpetuals.md">HIP-3 문서</a>), 결과 시장(HIP-4) 별도 50만 개(보도 · 문서엔 수량 없음), 이자 매입 배포자 Coinbase·Circle 각 50만 개, 검증자 자기 스테이킹 1만 개·1년 잠금(<a href="https://hyperliquid.gitbook.io/hyperliquid-docs/hypercore/staking.md">스테이킹 문서</a>). 사업 하나가 붙을 때마다 50만 개(약 4,300만 달러)가 6개월 이상 묶이는 구조다. 다만 지금 배포자 수가 10곳 안팎이라 이 몫은 합쳐도 수백만 개 수준이다.</p>
+<p><strong>④ 기관 래퍼 — 주식시장 돈이 들어오는 문.</strong> 주식 계좌로 HYPE를 사게 해 주는 통로가 두 종류 있다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>래퍼</th>
+<th>보유</th>
+<th>9/28 이후</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>미국 현물 ETF 3종(HYPG·BHYP·THYP)</td>
+<td>순자산 4.54억 달러 · 누적 순유입 3.36억</td>
+<td>누적 순유입 −610만 달러(10/8 하루 −970만, THYP)</td>
+<td><a href="https://sosovalue.com/assets/etf/us-hype-spot">SoSoValue</a> 10/8</td>
+</tr>
+<tr>
+<td>Hyperliquid Strategies(나스닥 PURR)</td>
+<td><strong>3,850만 개</strong> · 현금 2.64억 달러 · 조정 순자산 대비 1.08배(이연법인세 되더하면 0.98배)</td>
+<td>9/8 3,320만 → 10/8 3,850만 개(+530만)</td>
+<td><a href="https://hypestrat.xyz/dashboard">회사 대시보드</a> 10/8 · <a href="https://www.sec.gov/Archives/edgar/data/2078856/000119312526399511/d168095d424b3.htm">424B3</a> 9/23</td>
+</tr>
+<tr>
+<td>Hyperion DeFi(HYPD)</td>
+<td>185만 개</td>
+<td>3분기 <strong>20만 개 매도</strong>(대출 상환·자사주 매입)</td>
+<td><a href="https://www.theglobeandmail.com/investing/markets/stocks/HYPD/pressreleases/4943391/hyperion-defi-highlights-debt-free-balance-sheet-and-buybacks/">보도자료 요약</a> 10/3</td>
+</tr>
+<tr>
+<td>Lion Group(LGHL)</td>
+<td>약 23.3만 개</td>
+<td>솔라나·비트코인 팔고 3.8만 개 매입</td>
+<td><a href="https://www.prnewswire.com/news-releases/lion-group-holding-ltd-announces-strategic-treasury-reallocation-toward-hyperliquid-hype-302893878.html">PR Newswire</a> 9/30</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>한 달 기준으로 가장 큰 매수자는 PURR였다.</strong> 한 달 +530만 개는 프로토콜 매입(월 약 82만 개)의 6배가 넘는다. 회사 대시보드는 주간 항목이 1주 늦게 반영되므로 정확한 매입 시점은 미확정이다.</li>
+<li>🔴 <strong>트레저리 회사 수요는 주가 프리미엄에 매달려 있다.</strong> PURR의 주가 ÷ 보유 자산 비율(mNAV)이 1.08배, 세금 효과를 되돌리면 0.98배로 이미 1배 근처다. 1배 아래면 새 주식을 팔아 HYPE를 사는 구조가 멈추고, 반대로 HYPE를 팔아 자기 주식을 사는 쪽이 이득이 된다. HYPD가 3분기에 실제로 그렇게 했다. 이 수요는 오를 때 사고 내릴 때 파는 <strong>경기 순응형</strong>이다.</li>
+<li>ETF는 11일 동안 소폭 순유출이다. 9월에 비트코인·이더리움보다 약하게 들어오던 흐름이 공포 장세에서 멈췄다.</li>
+</ul>
+<p><strong>⑤ 소각·가스·우선 주문 수수료.</strong> HyperEVM 가스(기본·우선 수수료)와 HyperCore 우선 주문 수수료(0~8bp · 읽기 경매 최소 0.1 HYPE)는 HYPE로 걷혀 <strong>소각</strong>된다(<a href="https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/priority-fees.md">우선 수수료 문서</a> · 4/13 시행). 누적 소각은 약 1,300만 달러로 집계된다(공식이 아닌 커뮤니티 계정 수치 · <a href="https://x.com/HyperliquidNews/status/2107083128711917950">X 10/5</a>). 월 200만 달러 안팎이라 수수료 매입의 4% 정도다 — 방향은 맞지만 크기는 작다.</p>
+<p><strong>⑥ 투기 수요.</strong> HYPE 자체 perp의 미결제약정은 2,004만 개(17.1억 달러, 9/28 18.9억)이고 펀딩비가 약한 음수로 돌아섰다(숏이 약간 우세). 차트 등급도 9/28 Buy → 10/9 Sell로 바뀌었다. 단기 매수 수요가 식은 상태다.</p>
+<h3>0.3 공급측 요인 — 무엇이 시장에 새로 나오나</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 새로 나오는 물량은 거의 전부 팀 몫에서 나온다. 스테이킹 보상은 절반 이상이 팀 잠금 지갑으로 다시 들어간다. 10월에는 팀 몫이 기관에 장외로 넘어갔고, 일정표상 "풀렸지만 아직 안 꺼낸" 물량이 더 클 수 있다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th>공급 요인</th>
+<th style="text-align: right;">연간 규모(개)</th>
+<th>시장 유입 여부</th>
+<th style="text-align: center;">9/28 대비</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">①</td>
+<td>스테이킹 보상 — 일반 스테이커 몫</td>
+<td style="text-align: right;">약 450만(그중 재단 지갑 몫 약 135만)</td>
+<td>일부(보상 수령자 재량)</td>
+<td style="text-align: center;">정정</td>
+</tr>
+<tr>
+<td style="text-align: center;">①</td>
+<td>스테이킹 보상 — 팀 잠금 지갑 몫</td>
+<td style="text-align: right;">약 530만</td>
+<td>❌ 잠금 지갑에 쌓임</td>
+<td style="text-align: center;">🆕 발견</td>
+</tr>
+<tr>
+<td style="text-align: center;">②</td>
+<td>팀 분배</td>
+<td style="text-align: right;">9월까지 월 14만~53만 · <strong>10월 375만 개(기관 장외 매각)</strong></td>
+<td>10월분은 장외 → 재스테이킹</td>
+<td style="text-align: center;">🔴 급증</td>
+</tr>
+<tr>
+<td style="text-align: center;">③</td>
+<td>재단 예산 지갑</td>
+<td style="text-align: right;">22개월 누적 출금 약 180만</td>
+<td>거의 없음</td>
+<td style="text-align: center;">→</td>
+</tr>
+<tr>
+<td style="text-align: center;">④</td>
+<td>미래 배출 몫(커뮤니티 보상)</td>
+<td style="text-align: right;">현재는 스테이킹 보상으로만 사용(연 약 980만)</td>
+<td>계획 공지 시</td>
+<td style="text-align: center;">→</td>
+</tr>
+<tr>
+<td style="text-align: center;">⑤</td>
+<td>초기 보유자·펀드 매도</td>
+<td style="text-align: right;">HYPD 3분기 20만 · 장기 보유 지갑 13만(10/8)</td>
+<td>✅</td>
+<td style="text-align: center;">→</td>
+</tr>
+<tr>
+<td style="text-align: center;">⑥</td>
+<td>🆕 담보 청산(조건부)</td>
+<td style="text-align: right;">평소 0 · 급락 시 최대 약 1,985만</td>
+<td>✅ 시스템이 기계적으로 매도</td>
+<td style="text-align: center;">🆕 〔Specific-Dive〕</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>① 스테이킹 보상 — 절반 이상은 시장에 안 나온다.</strong> 미래 배출 몫이 9/28 이후 11.9일 동안 32만 개 줄었다. 연 980만 개 속도이고, 총 스테이킹 4.40억 개에 연 약 2.2%다. 그런데 이 보상은 맡긴 비율대로 나뉜다. 팀 잠금 지갑이 스테이킹의 54%를 차지하니 보상의 절반 이상(연 약 530만 개)이 <strong>잠금 지갑 안에 쌓인다.</strong> 증거: 팀 잠금 지갑은 제네시스에 2.38억 개로 시작해 지금까지 954만 개를 나눠 줬는데, 잔고는 2.379억 개다. 나눠 준 만큼 보상이 다시 채웠다.</p>
+<p><strong>② 팀 분배 — 10월 375만 개는 기관 장외 매각이었다.</strong> 팀 분배는 매월 초 잠금 지갑의 스테이킹을 풀어 여러 주소로 보내는 방식으로 이뤄진다(온체인 원장).</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>월</th>
+<th style="text-align: right;">2025-11</th>
+<th style="text-align: right;">2026-01</th>
+<th style="text-align: right;">2026-04</th>
+<th style="text-align: right;">2026-06</th>
+<th style="text-align: right;">2026-08</th>
+<th style="text-align: right;">2026-09</th>
+<th style="text-align: right;"><strong>2026-10</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>분배(만 개)</td>
+<td style="text-align: right;">175</td>
+<td style="text-align: right;">113</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;"><strong>375</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>10/7 흐름(온체인 원장 직독)은 이랬다. 잠금 지갑이 375만 개를 스테이킹에서 풀었다 → 처음 보는 주소 5곳에 1개씩 시험 송금 → 37.5만 개씩 두 번(주소당 75만) 송금 → 다섯 곳 모두 같은 날 한 주소(0x8757…31d1, 9/29 생성)로 모았다 → 그 주소는 312.5만 개를 "Hyperliquid Strategies x Unit" 검증자에 스테이킹하고 62.5만 개를 HyperEVM으로 옮겼다.</p>
+<p><strong>무슨 거래였나</strong> — 공동창업자 iliensinc가 9/30 디스코드에서 "375만 개를 기관 한 곳에 장외(OTC)로 넘기고 공개 시장에서는 팔지 않는다 · 9/30 언스테이킹 시작 · 10/7 배분"이라고 공지했다(디스코드 원문은 직접 확인 못 함 · <a href="https://x.com/0xMaxs/status/2105323524982546866">X 요약 9/30</a>). 매수자는 공개되지 않았다. 받은 주소가 맡긴 검증자가 PURR·Unit·TradeXYZ 공동 운영이라 PURR 매수설이 돌았지만, PURR CEO David Schamis가 "100% 우리 아니다"라고 부인했다(<a href="https://x.com/dschamis/status/2107986353367437823">X 10/8</a>). 하락 보도도 "장외 물량이 하락 원인이라는 증거는 없다"고 적었다(<a href="https://finance.biggo.com/news/df3e607d-a0a9-4452-85bc-47104ef72064">biggo 10/8</a>).</p>
+<ul>
+<li>📌 <strong>시장 매도 압력은 거의 없었다</strong> — 장외로 넘어갔고, 그중 312.5만 개(83%)는 다시 스테이킹으로 묶였다. 받은 주소의 거래 체결 기록은 0건이다. 그래도 <strong>유통량은 375만 개 늘었다</strong>(토큰 1개당 몫은 그만큼 엷어진다). 그리고 팀이 몫을 시장 밖에서 현금으로 바꾸는 통로가 처음 확인됐다.</li>
+<li>🔴 <strong>더 큰 문제는 "일정표와 실제 인출의 차이"다.</strong> PURR 증권신고서(424B3)는 팀 몫이 "1년 잠금 후 2025-11부터 매달 풀려 2027~2028년까지 이어진다"고 적었다(<a href="https://www.sec.gov/Archives/edgar/data/2078856/000119312526399511/d168095d424b3.htm">424B3 9/23</a>). Blockworks 일정표로는 한 달 992만 개다(<a href="https://blockworks.com/token-transparency/filing/hyperliquid">Blockworks 9/21</a>). 그런데 실제 인출은 9월까지 월 14만~53만 개, 10월도 일정표 몫의 38%였다. 일정표가 맞다면 지금까지 약 1.1억 개가 <strong>"풀렸지만 지갑에 남아 있는"</strong> 상태이고, 팀은 이것을 언제든 꺼낼 수 있다. 공식 일정이 공개된 적이 없어 확정할 수는 없다 — 그러나 이 물량이 이 토큰의 가장 큰 잠재 공급이다.</li>
+</ul>
+<p><strong>③ 재단 예산 지갑.</strong> 6,054만 개 중 6,049만 개가 스테이킹돼 있고, 22개월 동안 나간 것은 약 180만 개(정책센터 기부 등)다. 온체인 "유통량"에는 포함되지만 실제 매도 압력은 거의 없다. 유통량 정의가 출처마다 다른 가장 큰 이유가 이 지갑이다.</p>
+<p><strong>④ 미래 배출 몫.</strong> 4.11억 개는 지금 스테이킹 보상으로만 쓰인다. 이 속도면 40년 넘게 걸린다. 시즌2 에어드롭 같은 대량 배출 공식 공지는 찾지 못했다. 🔴 다만 이 몫의 사용처는 재단·검증자 결정에 달려 있고, 한 번 공지가 나오면 팀 분배보다 큰 공급이 될 수 있다 — 지금은 잠재 위험으로만 둔다.</p>
+<p><strong>⑤ 초기 보유자 매도.</strong> 9/28 이후 확인된 매도 흔적은 작다. 2년 보유한 지갑이 1주일 동안 13.1만 개(1,177만 달러)를 Kraken에 입금했고(<a href="https://x.com/lookonchain/status/2108124152523849806">Lookonchain 10/8</a>), HYPD가 3분기에 20만 개를 팔았다. 9/24 보도된 Multicoin의 Coinbase Prime 이동(약 2.85억 달러) 이후 후속 보도는 찾지 못했다. 이 토큰엔 벤처 투자자 몫이 0이라, 주식처럼 "VC 락업 해제"라는 큰 매도 축이 없다 — 그 자리를 팀 몫이 차지한다.</p>
+<p><strong>⑥ 담보 청산 — 급락 때만 켜지는 공급</strong> 〔Specific-Dive〕. 거래소는 HYPE를 담보로 0.65 비율까지 인정한다(비트코인 0.5보다 후하다). 상한은 전체 2,500만 개·계정당 100만 개이고, 지금 1,391만 개(상한의 56%)가 들어와 있다. 이를 맡기고 빌린 달러가 거래소 약 3.1억~4.1억 + HyperEVM 대출 앱 약 0.96억 달러다. 평균 청산선은 가격 −56~−66%로 추산되지만 계정별 분포는 공개되지 않는다. 청산되면 시스템 계정이 넘겨받아 반감기 10분으로 나눠 판다. 묶인 약 1,985만 개는 프로토콜 매입 약 24개월분이다. 자기 토큰을 담보로 받는 거래소의 대표 사고가 Mango Markets(2022 · <a href="https://www.cftc.gov/PressRoom/PressReleases/8647-23">CFTC 8647-23</a>)다. Hyperliquid는 상한과 "세 가격의 중앙값" 오라클로 이를 완화한다.</p>
+<h3>0.4 순흐름 — 사는 양과 나오는 양의 저울 (9/28 정정 포함)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 팀 분배가 9월처럼 작으면 사는 양과 나오는 양이 거의 같다. 10월처럼 크면 한 달에 유통량이 1% 넘게 늘어난다. 저울의 한쪽은 자동이고, 다른 쪽은 팀이 정한다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>유통량 기준(만 개/월)</th>
+<th style="text-align: right;">9월 실측</th>
+<th style="text-align: right;">10월(장외 블록 반영)</th>
+<th style="text-align: right;">팀이 일정표대로 꺼낸다면</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매입(수수료 + 이자)</td>
+<td style="text-align: right;">−82</td>
+<td style="text-align: right;">−82(추정)</td>
+<td style="text-align: right;">−82</td>
+</tr>
+<tr>
+<td>일반 스테이커 보상</td>
+<td style="text-align: right;">+37</td>
+<td style="text-align: right;">+37</td>
+<td style="text-align: right;">+37</td>
+</tr>
+<tr>
+<td>팀 분배</td>
+<td style="text-align: right;">+43</td>
+<td style="text-align: right;"><strong>+375</strong>(장외 · 83% 재스테이킹)</td>
+<td style="text-align: right;">+992</td>
+</tr>
+<tr>
+<td><strong>순(유통량 증감)</strong></td>
+<td style="text-align: right;"><strong>약 −2(균형)</strong></td>
+<td style="text-align: right;"><strong>+330(유통의 +1.1%)</strong></td>
+<td style="text-align: right;">+947</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>⚠️ <strong>9/28 보고서 정정</strong> — 9/28에는 "스테이킹 발행 연 1,000만 개가 매입보다 많아 2026-07부터 순발행"이라고 썼다. 발행 1,000만 개 중 약 530만 개는 팀 잠금 지갑 안에 쌓여 시장에 나오지 않는다. 시장 기준으로 다시 세면 <strong>9월까지는 매입과 신규 공급이 거의 같았다.</strong> 대신 희석의 진짜 변수는 스테이킹이 아니라 <strong>팀 분배 속도 하나</strong>라는 점이 분명해졌다. 결론의 방향(보유자에게 새는 구조)은 같고, 원인의 위치가 바뀌었다.</p>
+</blockquote>
+<ul>
+<li><strong>손익분기로 보면</strong> — 현재 매입 규모(연 약 8.4억 달러)로 시장 공급을 정확히 상쇄하는 가격은 팀 분배 속도에 따라 이렇게 갈린다: 팀 분배 0이면 $188 · 9월 속도면 약 $87(현재가와 거의 같다) · 10월 규모가 매달 이어지면 약 $17. 지금 가격은 "팀이 9월처럼 천천히 꺼낸다"는 가정 위에서만 저울이 맞는다. 📌 10월처럼 장외로 넘기고 산 쪽이 스테이킹하면 <strong>시장 매도 압력</strong>은 작지만, <strong>토큰당 몫의 희석</strong>은 그대로다 — 두 가지를 섞지 말아야 한다.</li>
+</ul>
+<h3>0.5 가격에 가장 큰 변수 순위</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 가격을 움직이는 힘의 크기는 팀 분배 속도, 기관 래퍼 자금, 프로토콜 매입 순이다. 프로토콜 매입은 가장 꾸준하지만 가장 작다. 앞의 둘은 서로 맞물린다 — 팀이 내놓은 몫을 기관이 받아 간 것이 10월이다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th style="text-align: center;">순위</th>
+<th>변수</th>
+<th style="text-align: right;">월 영향(만 개 · 현재가)</th>
+<th>누가 정하나</th>
+<th>관측 수단</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td>팀 분배 속도</td>
+<td style="text-align: right;">43 ~ 992</td>
+<td>팀(비공개 일정)</td>
+<td>잠금 지갑 원장 · 매월 초</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td>기관 래퍼 순유입</td>
+<td style="text-align: right;">−7(ETF) ~ +530(PURR)</td>
+<td>주식시장 투자자</td>
+<td>ETF 순유입 · 트레저리사 공시</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td>프로토콜 매입(수수료+이자)</td>
+<td style="text-align: right;">82</td>
+<td>거래량·금리(자동)</td>
+<td>DefiLlama · AF 잔고</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td>일반 스테이커 보상</td>
+<td style="text-align: right;">37</td>
+<td>공식(자동)</td>
+<td>미래 배출 몫 감소</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>📌 <strong>순위 밖 꼬리 변수 = 담보 청산</strong> — 평소 0이지만 급락 땐 프로토콜 매입 약 24개월분(약 1,985만 개)이 한꺼번에 나올 수 있다 〔Specific-Dive〕.</li>
+<li>🔴 <strong>보유자가 통제할 수 없는 변수가 1위다.</strong> 팀 분배 일정은 공개된 적이 없고, 9월까지의 "느린 인출"이 규칙인지 재량인지 외부에서 알 수 없다. 10월은 "큰 물량은 장외로, 기관이 받아 간다"는 첫 사례다. 같은 방식이 반복되면 시장 충격은 작아도 유통량은 계단식으로 늘어난다.</li>
+</ul>
+<h3>0.6 다음에 볼 계기판</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매월 초 팀 지갑, 매월 초 이자 지급액, 매주 기관 래퍼 유입 — 이 세 개만 보면 저울이 어느 쪽으로 기우는지 안다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>계기</th>
+<th>기준선</th>
+<th>경고</th>
+<th>확인 경로</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀 월 분배(매월 6~7일)</td>
+<td>9월 43만 개</td>
+<td>3개월 연속 300만 개 이상</td>
+<td>잠금 지갑 원장</td>
+</tr>
+<tr>
+<td>이자 매입(매월 3~4일)</td>
+<td>1,458만 달러</td>
+<td>1,000만 달러 미만</td>
+<td>Assistance Fund USDC 입금</td>
+</tr>
+<tr>
+<td>기관 래퍼 순유입</td>
+<td>ETF 누적 순유입 3.36억 달러 · PURR 3,850만 개</td>
+<td>4주 연속 순유출</td>
+<td>ETF 집계 · 트레저리사 공시</td>
+</tr>
+<tr>
+<td>수수료 매입(월)</td>
+<td>5,590만 달러</td>
+<td>4,000만 달러 미만</td>
+<td>DefiLlama(이자 분리)</td>
+</tr>
+<tr>
+<td>10/7 장외 매수 주소</td>
+<td>312.5만 개 스테이킹</td>
+<td>해제 신청 또는 거래소 이동</td>
+<td>주소 0x8757…31d1</td>
+</tr>
+<tr>
+<td>PURR 주가 ÷ 보유 자산(mNAV)</td>
+<td>1.08배</td>
+<td>1배 미만 2주 지속</td>
+<td>회사 대시보드</td>
+</tr>
+<tr>
+<td>🆕 HYPE 담보 공급량</td>
+<td>1,391만 개 · USDC 차입 이용률 74.5%</td>
+<td>2,000만 개 이상 또는 이용률 90% 이상</td>
+<td>info API <code>allBorrowLendReserveStates</code> 〔Specific-Dive〕</td>
+</tr>
+<tr>
+<td>🆕 이자 매입 배포자 상태</td>
+<td>정상</td>
+<td>6개월 중단 통지 · 기준금리 산정 방식 변경 투표</td>
+<td>공식 문서 · 검증자 투표</td>
+</tr>
+</tbody>
+</table></div>
+<h2 class="sec" id="a">Section A. 🌦️ 날씨 — 지정학 + 거시 (장기 구조) ⭐3.5</h2>
+<h3>A.2~A.4 지정학·thesis 노출 — 변동 없음</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 미국이 이 거래소를 "들여오겠다"는 쪽이고, 제재·자금세탁 꼬리 위험도 그대로다. 11일 사이 구조가 바뀐 사건은 없다.</p>
+</blockquote>
+<p>미국 편입 경로(CFTC · Payward/Bitnomial 구조), CME 소송, 북한 자금 이동 보도, 24시간 원자재 perp가 지정학 충격의 배출구라는 판단은 9/28과 같다. 진행 상황은 아래 J절에 모았다.</p>
+<h3>A.3 거시 — 위험선호가 식었고, 금리 쪽 엔진이 실제로 돌기 시작했다</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 크립토 전반이 식으면서 같이 빠졌다. 대신 예치 달러의 이자로 토큰을 사는 장치가 처음 실제 돈을 냈다. 금리가 내려가면 이 장치는 줄어든다.</p>
+</blockquote>
+<ul>
+<li><strong>위험선호</strong> — 9/28 → 10/9 HYPE −6.3%, 같은 기간 이더리움·솔라나 −7.2%, 비트코인 −0.7%, Coinbase 주식 −10.3%. 하락 대부분은 알트코인 시장 전체의 움직임이다. 시장 심리 지수(공포·탐욕)는 10/8 기준 38로 "공포" 구간이다(Expect-daily 10/9 인용).</li>
+<li><strong>금리 경로가 숫자로 들어왔다.</strong> 10/4 Assistance Fund에 USDC 1,458만 달러가 들어왔다(아래 Part 0). 예치 USDC 69억 달러의 국채 이자 90%가 토큰 매입 재원이 된다. 단기금리 1%포인트가 내리면 이 재원은 기계식으로 연 약 6,200만 달러(69억 × 1% × 90%) 줄어든다. 실제 지급액이 기계식 상한의 55~71%라, 발행사 비용 차감 방식에 따라 실제 민감도는 연 4,000만~7,500만 달러 사이로 본다. 반대로 금리가 높게 머물수록 거래량과 무관하게 매입이 이어진다.</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>변수</th>
+<th>경로</th>
+<th style="text-align: center;">방향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>크립토 위험선호</td>
+<td>가격·거래량·미결제약정 동시</td>
+<td style="text-align: center;">+ (변동성 비트코인의 약 1.9배)</td>
+</tr>
+<tr>
+<td>단기금리 +1%p</td>
+<td>이자 매입 연 +4,000만~7,500만 달러 / 레버리지 수요 −</td>
+<td style="text-align: center;">혼재</td>
+</tr>
+<tr>
+<td>변동성 급등</td>
+<td>거래량↑ / 극단 시 금고 손실·자동 디레버리징 · HYPE 담보 청산 매도(최대 약 1,985만 개) 〔Specific-Dive〕</td>
+<td style="text-align: center;">+, 꼬리 −</td>
+</tr>
+</tbody>
+</table></div>
+<p class="star-box"><b>⭐ 산출 근거</b> — 항목 판정 변동 없음(미국 정책 🟢5 · 달러/스테이블코인 정합 🟢5 · 지정학 변동성 🟡4 · 제재 꼬리 🔴1 · 금리 ⚪2.5 · 위험선호 베타 ⚪2.5) → 평균 3.33 → <b>⭐3.5</b></p>
+
+<p><strong>▶ Flip 트리거</strong> — 🟢: CFTC가 Payward/Bitnomial 구조 승인 · CME 소송 각하 / 🔴: OFAC가 무허가 perp 거래소를 제재 인프라로 지정 · 정책금리 인하가 빨라져 이자 매입 재원이 1억 달러 아래로.</p>
+<h2 class="sec" id="b">Section B. ⛰️ 산 — 산업 ⭐4.0</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 실물자산을 추종하는 24시간 파생 거래는 계속 크고 있고, 이것이 "세상을 바꾸는 산업"인지 "잘 만든 카지노"인지는 여전히 열려 있다. 판정은 그대로다.</p>
+</blockquote>
+<p>내러티브 5축(기술 ✅4 · 사회 △2 · 정책 ✅4 · 지정학 △2 · 자본 ✅5), 실물자산 참조 perp 월 거래대금 1월 850억 → 6월 4,700억 달러(<a href="https://www.theblock.co/news/defi/2026-07-22-tokenized-equity-perps-drive-rwa-trading-boom-to-470-billion-monthly-volume-408961">The Block 7/22</a>) 판단은 9/28과 같다. 🔴 산업 성장률과 토큰 보유자 몫 성장률이 다르다는 경고도 유지한다 — 산업이 커지는 칸(빌더 배포 시장)은 수수료를 나눠 주는 칸이다. 🆕 그리고 성장 칸마다 미국의 법적 문이 다르다 — 원자재·지수는 CFTC, 개별 주식은 SEC 관할이다 〔Specific-Dive〕.</p>
+<figure class="fig dd-fig"><p class="cap"><b>내러티브 5축</b> — 산업 서사가 몇 겹으로 받쳐지는가 (확신도 7축과 별개 · 9/28과 동일)</p><div id="fig-c3"></div><div class="dd-legend" id="leg-c3"></div></figure>
+
+<p class="star-box"><b>⭐ 산출 근거</b> — B.1 ⚠️3 · B.2 ⚠️3 · B.3 🟡4 · B.4 🟢5 → 평균 3.75 → <b>⭐4.0</b> (변동 없음)</p>
+
+<h2 class="sec" id="c">Section C. 🌲 숲 — 섹터 (탈중앙 perp 거래소) ⭐4.0</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이 섹터의 병목은 "두꺼운 호가"이고, Hyperliquid가 그것을 쥐고 있다. 수수료 기준 독주는 계속됐다. 다만 빌려 올 수 있는 병목이라는 약점도 그대로다.</p>
+</blockquote>
+<ul>
+<li><strong>수수료 점유</strong> — 온체인 perp 30일 수수료(DefiLlama 10/9): Hyperliquid 8,780만 달러(이자 매입분 포함) · Jupiter 840만 · Aster 540만. 이자 매입분을 빼도 7,000만 달러대로 2위의 8배 수준이다.</li>
+<li><strong>빌더 배포 시장(HIP-3)</strong> — 10개 배포자 중 6곳은 여전히 전 종목 폐지 상태이고, 미결제약정 36.8억 달러의 97%가 TradeXYZ 한 곳이다(온체인 10/9). 지불자 경로 라벨(<code>직접</code>)과 병기 사항(배포자 집중 · 가격 인상 테스트 🟢 할인 동반)은 9/28과 같다.</li>
+</ul>
+<p class="star-box"><b>⭐ 산출 근거</b> — C.1 병목성 ⚪3 · ① 🟡4 · ② 과점 4 · ③ 5 · ④ 🟢5 → 평균 4.2 → <b>⭐4.0</b> (변동 없음)</p>
+
+<h2 class="sec" id="d">Section D. 🌳 나무 — 프로토콜 ⭐4.0</h2>
+<h3>D.0 제품·수익모델 — 변동 없음 (R-Dive 요약)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 수수료를 거의 전부 토큰 보유자에게 돌려주는 거래소라는 구조는 그대로다. 새로 붙은 것은 예치 달러의 이자를 토큰 매입에 쓰는 두 번째 수도꼭지가 실제로 열렸다는 점이다.</p>
+</blockquote>
+<p>전문 = R-Dive 보고서 「Hyperliquid (HYPE) — 제품·수익모델 해부」(2026-09-28, 90일 재사용 범위). 아키타입은 <strong>② 곡괭이 통행세형(주) + ⑤ 이자형(부)</strong>, 치명 함정은 ① 달러로 고정된 매입 vs 개수로 고정된 발행 ② 새 수도꼭지일수록 통행세가 낮다는 것. 이번 실행의 델타 두 가지:</p>
+<ol>
+<li><strong>⑤ 이자형이 "태동"에서 "실측"으로</strong> — 10/4 첫 지급 1,458만 달러(Part 0 수요 ②).</li>
+<li>🔴 <strong>함정 ①의 크기 정정</strong> — "발행 개수"의 절반 이상이 팀 잠금 지갑에 쌓이는 보상이라, 시장으로 나오는 발행은 9/28 계산의 절반 이하다. 함정의 본체는 스테이킹이 아니라 <strong>팀 분배 속도</strong>다(Part 0 공급 ②).</li>
+</ol>
+<figure class="fig dd-fig"><p class="cap"><b>온체인 perp 거래소 30일 수수료</b> — DefiLlama 10/9 · Hyperliquid는 이자 매입분 포함</p><div id="fig-d0"></div></figure>
+
+<h3>D.5~D.8 곡괭이·해자·확장성 — 변동 없음</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚 없이 스스로 돈을 버는 구조, 기술 리드에 기댄 짧은 해자, 빠른 사업 확장이라는 판정은 그대로다.</p>
+</blockquote>
+<p>곡괭이 질 <strong>(A) 자가조달형</strong>(비용이 토큰 희석으로 숨어 있음) · 해자 D.6-a ⭐3(✅ 비용 우위 1개 · 가격 인상 테스트 🟢 할인 동반 — 2024-03·2025-05 두 번 인상) · D.6-b ⭐2 → D.6 ⭐2.5 · 해자 내구성 2~3년 · 수직 통합 ⭐5 · 하방 닫힘 ⭐4. ① 네트워크 효과 판정(⚠️ 규모 정체)도 같다 — 3분기 거래대금은 1년 전보다 적고, 미결제약정만 늘었다.</p>
+<p class="star-box"><b>⭐ 산출 근거</b> — D.0 3.5 · D.5 4 · D.6 2.5 · D.7 5 · D.8 4 → 평균 3.8 → <b>⭐4.0</b> (변동 없음)</p>
+
+<p><strong>▶ Flip 트리거</strong> — 🟢: 수수료 중 보유자 몫(이자 매입 제외) 80% 회복 · 빌더 시장에서 수수료를 올려도 거래 유지 / 🔴: 코어 요율 인하 · 금고 대형 손실.</p>
+<h2 class="sec" id="e">Section E. 🌲🌳 옆의 나무 — 경쟁사 ⭐3.5</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 상장 거래소와 비교한 그림은 바뀌지 않았다. 수익 대비 가격은 여전히 미국 대형 거래소보다 비싸고, 성장률은 낮다.</p>
+</blockquote>
+<figure class="fig dd-fig"><p class="cap"><b>상장 거래소 vs HYPE</b> — yfinance 10/8 종가 · HYPE는 온체인 유통 기준 시총 ÷ 보유자 몫(수수료 TTM + 이자 매입 연환산)</p><div id="fig-e1"></div></figure>
+
+<div class="tbl"><table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;">HYPE</th>
+<th style="text-align: right;">COIN</th>
+<th style="text-align: right;">HOOD</th>
+<th style="text-align: right;">CME</th>
+<th style="text-align: right;">ICE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>시총</td>
+<td style="text-align: right;">$25.8B(유통)</td>
+<td style="text-align: right;">$45.4B</td>
+<td style="text-align: right;">$96.2B</td>
+<td style="text-align: right;">$99.4B</td>
+<td style="text-align: right;">$87.2B</td>
+</tr>
+<tr>
+<td>수익 대비 배수</td>
+<td style="text-align: right;">30.4x</td>
+<td style="text-align: right;">7.5x</td>
+<td style="text-align: right;">19.5x</td>
+<td style="text-align: right;">14.7x</td>
+<td style="text-align: right;">8.3x</td>
+</tr>
+<tr>
+<td>9/28 이후 주가</td>
+<td style="text-align: right;">−6.3%</td>
+<td style="text-align: right;">−10.3%</td>
+<td style="text-align: right;">−8.1%</td>
+<td style="text-align: right;">+5.0%</td>
+<td style="text-align: right;">+1.6%</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>HYPE 30.4배 = 온체인 유통 시총 ÷ (수수료 매입 TTM 6.74억 + 이자 매입 연환산 1.77억). H.7의 36.5배는 DefiLlama 새 정의 TTM(7.07억 · 이자 매입 발생분 일부 포함)으로 나눈 값이라 숫자가 다르다 — 방향은 같다.</li>
+<li>상장 거래소 배수는 매출 기준(P/S), HYPE는 보유자 몫 기준이라 같은 저울이 아니다. 보유자 몫이 사실상 순이익에 가깝다는 점을 감안하면 CME 이익 배수(약 22배)와 비교하는 편이 공정하다 — 그래도 HYPE가 높다.</li>
+<li>동종 비교에서 새로 볼 것은 <strong>상관의 이동</strong>이다. HYPE와 Coinbase의 60일 상관이 0.69로 올라왔다(120일 0.50). 시장이 HYPE를 "알트코인"과 "상장 거래소" 사이 어딘가로 옮겨 보기 시작했다(H.5 참조).</li>
+</ul>
+<p class="star-box"><b>⭐ 산출 근거</b> — 수익 모델 우월성 🟡4 · 정부·민간(해당 없음 2.5) · 경쟁 포지션 🟡4 → 평균 3.5 → <b>⭐3.5</b> (변동 없음)</p>
+
+<h2 class="sec" id="f">Section F. 👤 사람 — 핵심 기여자 ⭐3.5</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 실행력은 강하고 권한을 내려놓는 약속은 안 지켰다는 판정은 그대로다. 새로 드러난 것은 의결권 쪽 집중이 생각보다 크다는 점이다.</p>
+</blockquote>
+<p>전문 = People-Dive 「Jeff Yan」(2026-09-28, 90일 재사용 범위). 객관 7축 판정은 변동 없음. 거버넌스(⑦)에 새 관측 1건:</p>
+<ul>
+<li><strong>스테이킹 표의 67.8%를 내부 지갑 두 개가 어디에 맡길지 정한다.</strong> 총 스테이킹 4.40억 개 중 팀 잠금 지갑 2.38억 개와 재단 예산 지갑 0.60억 개가 위임 중이다(온체인 delegations 10/9). 이 두 지갑의 위임만으로 검증자 투표 정족수(2/3)를 넘는다. 재단 이름의 검증자 5곳에 실린 2.08억 개 중 약 1.89억 개가 이 두 지갑에서 왔다. 9/28에 "재단 47%"로 쓴 수치는 <strong>표의 출처를 재단 자체 보유로 잘못 읽은 것</strong>이다. 같은 2/3 합의가 예치 달러 장부의 무결성과 이자 매입 기준금리 산정에도 쓰인다 〔Specific-Dive〕. 📌 위임 선택권이 곧 검증자 투표 지시권은 아니다 — 외부 검증자 18곳에도 나눠 맡겼고, 위임을 옮기려면 잠금 기간이 있다.</li>
+</ul>
+<p class="star-box"><b>⭐ 산출 근거</b> — 객관 7축 평균 3.5(⑦ 거버넌스 ⭐2.5 유지 — 집중은 이미 ⭐2.5에 반영, 정도가 더 심하다는 근거가 추가됨) · ⑤ 비전축 사용자 ⭐ 대기 → <b>⭐3.5</b></p>
+
+<p><strong>▶ Flip 트리거</strong> — 🟢: 노드 코드 공개 · 내부 지갑 위임 비중 50% 아래 / 🔴: 내부 위임을 재단 검증자로 몰아 단독 정족수 형성 · 검증자 투표로 시장 강제 정산 재발.</p>
+<h2 class="sec" id="g">Section G. 🔢 숫자 — 재무건전성 (보유자 몫·희석) ⭐3.5</h2>
+<h3>G.1 기본 정량</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚은 없고 수익은 바닥을 지켰다. 다만 유통량을 어떻게 세느냐에 따라 시총이 크게 달라져, 모든 배수는 범위로만 읽어야 한다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>10/9</th>
+<th>9/28</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>가격</td>
+<td>$85.51</td>
+<td>$91.28</td>
+<td>yfinance · 온체인</td>
+</tr>
+<tr>
+<td>온체인 유통량</td>
+<td>3.022억 개</td>
+<td>2.987억 개</td>
+<td>tokenDetails</td>
+</tr>
+<tr>
+<td>재단 예산 제외 유통량</td>
+<td>2.416억 개</td>
+<td>—</td>
+<td>재단 지갑 0xd57e… 차감</td>
+</tr>
+<tr>
+<td>CoinGecko 유통량</td>
+<td>2.224억 개(갱신 없음)</td>
+<td>2.224억 개</td>
+<td>CoinGecko API</td>
+</tr>
+<tr>
+<td>유통 시총</td>
+<td>$25.8B / $20.7B / $19.0B</td>
+<td>$27.3B / — / $20.3B</td>
+<td>계산(위 세 정의 순)</td>
+</tr>
+<tr>
+<td>완전희석 가치</td>
+<td>$85.5B</td>
+<td>$91.3B</td>
+<td>10억 개 기준</td>
+</tr>
+<tr>
+<td>보유자 몫(수수료 매입) TTM</td>
+<td>6.74억 달러</td>
+<td>6.88억</td>
+<td>DefiLlama(이자 매입분 제외)</td>
+</tr>
+<tr>
+<td>이자 매입(AQAv2) 연환산</td>
+<td>약 1.77억 달러</td>
+<td>추정만</td>
+<td>10/4 실지급 ÷ 30일</td>
+</tr>
+<tr>
+<td>부채</td>
+<td>0</td>
+<td>0</td>
+<td>프로토콜</td>
+</tr>
+<tr>
+<td>금고(HLP)</td>
+<td>1.80억 달러 · 연 4.0%</td>
+<td>1.83억</td>
+<td>vaultDetails</td>
+</tr>
+<tr>
+<td>예치 USDC</td>
+<td>69.1억 달러 — Circle 직접 발행 65.3억(94.5%) · 옛 Arbitrum 브리지 3.8억(5.5%) 〔Specific-Dive〕</td>
+<td>73.6억</td>
+<td>DefiLlama</td>
+</tr>
+</tbody>
+</table></div>
+<p>🔴 <strong>9/28 이후 DefiLlama가 수치를 소급 수정했다.</strong> 8/16부터 "보유자 몫"에 이자 매입 발생분(일 42~56만 달러)을 날마다 더해 넣고, 우선 주문 수수료 소각 항목을 새로 만들었다(<a href="https://api.llama.fi/summary/fees/hyperliquid-perps?dataType=dailyHoldersRevenue">DefiLlama 방법론</a>). 그래서 같은 9월 보유자 몫이 9/28 조회 4,960만(27일치) → 10/9 조회 7,410만 달러로 보인다. 이 보고서는 <strong>수수료 매입과 이자 매입을 분리</strong>해 쓴다 — 섞으면 "수수료가 반등했다"는 착시가 생긴다.</p>
+<h3>G.1.5 🎯 시총 10배 랜드마크</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금 크기는 Coinbase의 절반 남짓이다. 열 배가 되려면 이더리움 시총에 가까워져야 한다. 규모 비교일 뿐 가치 판단은 아니다.</p>
+</blockquote>
+<figure class="fig dd-fig"><div id="fig-g15"></div><div id="sent-g15" class="dd-ladder-sentence"></div></figure>
+
+<h3>G.3 4축 매트릭스</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 망할 위험은 낮고 성장은 여전히 약하다. 수수료 매입은 두 분기째 같은 높이에 머물렀다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>축</th>
+<th>측정</th>
+<th style="text-align: center;">등급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 성장</td>
+<td>수수료 매입 분기: Q3'25 2.90억 → Q4 2.26억 → Q1'26 1.65억 → Q2 1.49억 → <strong>Q3 1.46억 달러</strong>(전년 대비 −50%)</td>
+<td style="text-align: center;">🔴 감속(바닥 형성)</td>
+</tr>
+<tr>
+<td>② 마진</td>
+<td>수수료 중 보유자 몫(이자 제외) 3분기 74% · 9월 77% · 9/28 판정과 같다</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>③ 현금 창출</td>
+<td>부채 0 · 매입 매일 자동 실행 · 이자 매입 추가</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>④ 고금리 내구성</td>
+<td>무차입 → 차환 위험 없음</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+</tbody>
+</table></div>
+<p class="star-box"><b>⭐ 산출 근거</b> — ① 🔴1 · ② ⚪2.5 · ③ 🟢5 · ④ 🟢5 → 평균 3.375 → <b>⭐3.5</b> (변동 없음 · 희석은 4축 밖이라 Part 0 표로 본다)</p>
+
+<h3>G.5 궤적 — 수익·환원·매입 개수</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 수수료는 9월에 올해 들어 가장 많았지만, 가격이 올라 같은 돈으로 사는 토큰 개수는 1년 전의 3분의 1이다. 이자 매입이 그 감소분 일부를 메웠다.</p>
+</blockquote>
+<figure class="fig dd-fig"><p class="cap"><b>분기 수수료·보유자 몫·환원 비율</b> — DefiLlama 일별 합산 · 이자 매입분 제외 · Q3'26 확정</p><div id="fig-g5"></div><div class="dd-legend" id="leg-g5"></div></figure>
+
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>월</th>
+<th style="text-align: right;">수수료 매입</th>
+<th style="text-align: right;">매입 개수</th>
+<th style="text-align: right;">이자 매입</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025-10</td>
+<td style="text-align: right;">9,720만 달러</td>
+<td style="text-align: right;">169만 개</td>
+<td style="text-align: right;">—</td>
+<td>1년 전</td>
+</tr>
+<tr>
+<td>2026-01</td>
+<td style="text-align: right;">5,980만</td>
+<td style="text-align: right;">232만</td>
+<td style="text-align: right;">—</td>
+<td>가격 저점(1/20 $21)</td>
+</tr>
+<tr>
+<td>2026-07</td>
+<td style="text-align: right;">3,840만</td>
+<td style="text-align: right;">61만</td>
+<td style="text-align: right;">—</td>
+<td>바닥</td>
+</tr>
+<tr>
+<td>2026-08</td>
+<td style="text-align: right;">5,150만</td>
+<td style="text-align: right;">76만</td>
+<td style="text-align: right;">발생 시작</td>
+<td></td>
+</tr>
+<tr>
+<td>2026-09</td>
+<td style="text-align: right;">5,590만</td>
+<td style="text-align: right;">65만</td>
+<td style="text-align: right;">약 17만 개 상당</td>
+<td>수수료 1월 이후 최고</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>수익 궤적</strong> — 수수료 매입이 3분기 1.46억 달러로 2분기(1.49억)와 거의 같다. 4분기 연속 하락이 멈췄다.</li>
+<li><strong>매입 개수 궤적</strong> — 9월 매입 개수 65만 개는 1월(232만)의 28%다. 원인은 수익 감소보다 <strong>가격 상승</strong>이다(같은 기간 평균 가격이 3배 넘게 올랐다).</li>
+<li><strong>이자 매입</strong> — 10/4 1,458만 달러가 들어와 그 주에 토큰 매입으로 바뀌었다(Assistance Fund USDC 잔고 10/9 약 2,600달러). 월 17만 개 안팎이 더해진다.</li>
+</ul>
+<h3>G.8 고금리·고물가 내구성 정밀 진단 〔서브에이전트 위임 · 점수 미합산〕</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚도 원가도 없어 고금리·고물가에서 프로토콜은 버틴다. 이자 매입은 금리가 높을수록 커진다는 것이 실제 지급으로 확인됐다. 보유자 몫을 무너뜨리는 길은 이제 거시가 아니라 팀 분배 가속이다.</p>
+</blockquote>
+<p><code>[모드: embedded]</code> · 사전 게이트 = 무차입 → 「부채 차환 위험 구조적 부재」. 대신 크립토 대응물(토큰 희석 · 금고 · 이자 공유의 금리 부호 · 거래량 베타)을 수행했다. 원문 = 내부 작업 파일 G8.</p>
+<ul>
+<li><strong>금리 기둥 🟢</strong> — 부채·만기벽·약정 0. 이자 매입이 10/4 실제로 지급돼 "금리 + 부호"가 1회 확인됐다(연환산 1.38~1.77억 달러 = 국채 이자 90% 기계식 상한의 55~71%). 비용 차감이 정액형인지 비례형인지에 따라 금리 1%포인트 민감도가 연 4,000만~7,500만 달러로 갈린다(2회차 지급으로 판별).</li>
+<li><strong>물가 기둥 🟢</strong> — 원가·임금·재고 노출 없음 · 인플레에 약하게 유리 · 디스인플레·금리 인하 시 부호 반전.</li>
+<li><strong>결합 시나리오</strong> — 기준: 보유자 몫 연 7.9억 달러(수수료 6.3억 + 이자 1.6억) · 가격 $85.51 · 일반 스테이커 발행 연 450만 개. 팀 분배 가정 3개를 열로 나눴다.</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: right;">보유자 몫</th>
+<th style="text-align: right;">매입(개/년)</th>
+<th style="text-align: right;">순공급: 팀 9월 속도</th>
+<th style="text-align: right;">팀 10월 속도 지속</th>
+<th style="text-align: right;">팀 문서 속도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>현재</td>
+<td style="text-align: right;">$790M</td>
+<td style="text-align: right;">920만</td>
+<td style="text-align: right;">+50만 (+0.2%)</td>
+<td style="text-align: right;"><strong>+4,030만 (+13%)</strong></td>
+<td style="text-align: right;">+1.14억 (+38%)</td>
+</tr>
+<tr>
+<td>기준 스태그(원가+10%·금리+2%p·물량−10%)</td>
+<td style="text-align: right;">$830M</td>
+<td style="text-align: right;">1,620만</td>
+<td style="text-align: right;">−650만</td>
+<td style="text-align: right;">+3,330만</td>
+<td style="text-align: right;">+1.07억</td>
+</tr>
+<tr>
+<td>디플레형 침체</td>
+<td style="text-align: right;">$564M</td>
+<td style="text-align: right;">1,320만</td>
+<td style="text-align: right;">−350만</td>
+<td style="text-align: right;">+3,630만</td>
+<td style="text-align: right;">+1.10억</td>
+</tr>
+<tr>
+<td>🔴 가격 탈동조(금리↓·거래량−20%·가격 유지)</td>
+<td style="text-align: right;">$576M</td>
+<td style="text-align: right;">670만</td>
+<td style="text-align: right;">+300만</td>
+<td style="text-align: right;">+4,280만</td>
+<td style="text-align: right;">+1.17억</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>임계점 이동</strong> — 9/28의 cliff는 "금리 인하 + 거래량 감소 + 가격 유지"였다. 지금은 팀 분배 가정을 9월 → 10월 속도로 바꾸는 차이(약 4,000만 개)가 거시 조합 사이의 매입 차이(약 1,600만 개)보다 2.5배 크다. <strong>보유자 몫의 지배 변수가 금리·물가 레짐 밖에 있다.</strong></li>
+<li><strong>순공급 0이 되는 가격</strong> — 팀 분배 0: $162~188 · 9월 속도: $75~87(현재가 근처) · 10월 속도: $15~17.</li>
+<li><strong>꼬리 주석</strong> 〔Specific-Dive〕 — ① 이자 매입은 금리뿐 아니라 배포자의 6개월 중단 통지로도 0이 될 수 있다 ② 급락 결합 시나리오에는 HYPE 담보 청산 매도(최대 약 1,985만 개)가 더해진다. 둘 다 위 표에 넣지 않은 꼬리다.</li>
+<li><strong>1970s 생존 특성 3.5/5</strong>(9/28 3/5 — 가격결정력을 ❌ → △로 정정: 요율 두 번 인상 이력 반영).</li>
+<li><strong>10월 분배의 두 해석(봉합 ❌)</strong> — 다섯 주소에 정확히 75만 개씩 → 한 주소 집결 → 83% 즉시 재스테이킹은 정기 분배보다 <strong>특정 장기 보유 주체에게 넘긴 일회성 블록</strong>의 모양에 가깝다[추론]. 그렇다면 9월 속도가 기본값이다. 11월 분배량이 판별한다. 📌 웹 조사로 공동창업자의 "기관 장외 매각" 공지가 확인돼, 일회성 블록 해석 쪽 증거가 하나 더 생겼다(공지 원문은 2차 출처).</li>
+</ul>
+<blockquote>
+<p>🏷️ <strong>종합 내구성: 🟢 견딤(프로토콜 · 고금리·고물가 레짐 한정) / ⚪ 조건부(토큰 보유자 몫) ‖ 신뢰도 낮음~중간 ‖ 풀 DD 승격 중간</strong>(9/28 낮음)
+🎯 <strong>버티는가: 🟢 프로토콜은 버팀 / ⚪ 보유자 몫은 팀 분배 속도가 관건.</strong> 악화 trigger = 11월 팀 분배 300만 개 이상(2개월 연속) · 회복 trigger = 11월 팀 분배 50만 개 이하 + 이자 매입 2회차가 30일 간격·1,300만 달러 이상. 금리 레짐 부호 = [고금리 지속 🟢 / 금리 인하·디스인플레 ⚪] · 팀 분배 변수는 레짐과 무관.
+라벨: ① 낮은 신뢰도 참고(정산 기간·비용 차감 형태·분배 일정 미확정) ② 버티는가 직접 답·enforcement 아님·최종 판단 사용자 ③ 장기 thesis stop sign ❌ ④ 7축·4축 점수 미반영.</p>
+</blockquote>
+<h3>G.6 실물 병목 — 변동 없음</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 전력·산업재 같은 실물 병목과는 무관한 자산이라는 판단은 그대로다.</p>
+</blockquote>
+<p>성상현 실물 병목 7카테고리 모두 ⚪ 해당 없음(9/28과 같음).</p>
+<p><strong>▶ Flip 트리거</strong> — 🟢: 분기 수수료 매입 2억 달러 회복 · 이자 매입 월 1,500만 달러 이상 유지 / 🔴: 분기 수수료 매입 1.2억 달러 아래 · 팀 월 분배 300만 개 이상 2개월 연속.</p>
+<h2 class="sec" id="h">Part 2 — Section H. 시나리오 · Catalyst · 렌즈</h2>
+<h3>H.1 Bull / Base / Bear (확률 가중 · 2/3/5년)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이자 매입이 확인돼 바닥 수익은 조금 올랐지만, 팀 분배가 빨라져 미래 유통량 가정도 올라갔다. 둘이 상쇄해 기댓값은 9/28과 거의 같다 — 현재 가격에서 본전 근처다.</p>
+</blockquote>
+<p><strong>계산 방식</strong> — 토큰당 가치 = (연간 보유자 몫 × 배수) ÷ 유통량. 보유자 몫 = 수수료 매입 + 이자 매입. 배수는 동종 거래소 이익 배수(CME 약 22배 ~ HOOD 약 50배) 범위. 🔴 <strong>이번 실행에서 바꾼 가정 두 개</strong> — ① Bear 바닥 수익 4억 → 4.5억 달러(이자 매입 실측분) ② 5년 유통량 4.4억 → 4.8억 개(10월 팀 분배 반영).</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: center;">확률</th>
+<th style="text-align: center;">2년</th>
+<th style="text-align: center;">3년</th>
+<th>5년 가격 (배수)</th>
+<th>가정</th>
+<th>catalyst</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🟢 Bull</td>
+<td style="text-align: center;">20%</td>
+<td style="text-align: center;">1.71x</td>
+<td style="text-align: center;">1.85x</td>
+<td>$208 (2.44x)</td>
+<td>미국 편입 성공¹ — 보유자 몫 5년 40억 달러 × 25배 · 고객 검증 B</td>
+<td>CFTC 승인 · 결과 시장 대형화</td>
+</tr>
+<tr>
+<td>🟡 Base</td>
+<td style="text-align: center;">50%</td>
+<td style="text-align: center;">0.89x</td>
+<td style="text-align: center;">0.89x</td>
+<td>$78 (0.91x)</td>
+<td>실물자산 perp 성장 + 이자 매입 — 15억 달러 × 25배</td>
+<td>이자 매입 정착 · 빌더 시장 성숙</td>
+</tr>
+<tr>
+<td>🔴 Bear</td>
+<td style="text-align: center;">30%</td>
+<td style="text-align: center;">0.32x</td>
+<td style="text-align: center;">0.26x</td>
+<td>$19 (0.22x)</td>
+<td>미국 등록 거래소가 흡수 — 4.5억 달러 × 20배</td>
+<td>등록 거래소 주식 perp · 규제 차단</td>
+</tr>
+</tbody>
+</table></div>
+<p>¹ 〔Specific-Dive〕 빌더 배포 시장 1위 TradeXYZ 미결제약정의 55%가 개별 주식·24%가 원자재·15%가 지수다. 단일 증권 기반 스왑은 SEC 관할이라, CFTC 경로로 따라 들어갈 수 있는 것은 지수·원자재 칸일 가능성이 높다[추론]. 지수 칸은 CFTC가 10/5 미국 등록 거래소의 지수 perp 전환을 허용해(<a href="https://www.cftc.gov/PressRoom/PressReleases/9308-26">CFTC 9308-26</a>) 미국 안 경쟁이 먼저 온다. 확률·배수는 바꾸지 않았다.</p>
+<p><strong>기댓값</strong> — 2년 0.88x · 3년 0.89x · 5년 1.01x(9/28 1.02x) → 🔴 <strong>5년 1.5x 미만 = ⚠️ 현재 가격에서 thesis가 약함.</strong> ⚠️ Base 2년 0.89x &lt; 2.0x → "Bull 꼬리 의존" 플래그.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>5년 유통량 가정</th>
+<th>근거</th>
+<th style="text-align: center;">5년 기댓값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3.0억 개</td>
+<td>팀이 9월 속도 유지 · 매입이 신규 공급 상쇄</td>
+<td style="text-align: center;">1.62x</td>
+</tr>
+<tr>
+<td>4.8억 개(본표)</td>
+<td>10월 같은 장외 블록이 간헐적으로 반복</td>
+<td style="text-align: center;">1.01x</td>
+</tr>
+<tr>
+<td>5.2억 개</td>
+<td>증권신고서 문구대로 2027~28년에 대부분 분배</td>
+<td style="text-align: center;">0.93x</td>
+</tr>
+</tbody>
+</table></div>
+<p>→ 🔴 <strong>9/28과 달라진 점</strong> — 세 가정 중 하나(팀이 느리게 꺼냄)에서는 기댓값이 1.5x를 넘는다. 즉 <strong>결론이 이제 팀 분배 속도 하나에 걸려 있다.</strong> 10월은 팀이 큰 물량을 기관에 장외로 넘긴 첫 사례라 "느린 인출"이 계속될지를 흐리게 만든다. 본표(4.8억)는 이런 장외 블록이 간헐적으로 반복된다는 가정이다.</p>
+<ul>
+<li><strong>History-Dive 지연 계수</strong> — 날짜를 건 회사 약속은 지킨다(1.0배) · AQAv2 첫 지급도 예정일(10/3)에 나왔다(4건 → 5건 연속). 미국 편입은 규제 일정이라 회사 계수로 못 잰다. 지연 보정 후 기댓값 변동 없음.</li>
+<li><strong>암묵 exit 배수 역산</strong> — 5년 Base 목표 시총 $37.4B(= $78 × 4.8억) ÷ 보유자 몫 15억 달러 = 25배 · Bull 25배. 동종 성숙 거래소(CME·ICE 약 22배)와 비슷 → 재평가 의존 낮음. 결론은 여전히 "배수가 올라야 한다"가 아니라 <strong>"수익이 지금의 2~5배가 돼야 현재 가격이 정당화된다"</strong> 이다.</li>
+</ul>
+<figure class="fig dd-fig"><p class="cap"><b>5년 시나리오 + 비대칭 손익</b> — 1.0x 본전선 · 기댓값 = Σ(확률×배수)</p><div id="fig-h1"></div><div id="badge-h1"></div></figure>
+
+<h3>H.2 Catalyst 캘린더</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 다음 한 달 안에 판정을 움직일 일정은 매월 초 두 개다 — 팀 지갑 인출과 이자 매입 2회차.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>일시</th>
+<th>이벤트</th>
+<th style="text-align: center;">영향</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-11-01 전후</td>
+<td>이자 매입 2회차(9/25~10/24분 · 구간 종료 8일 뒤 지급) — 30일분이 1,300만 달러 이상인지</td>
+<td style="text-align: center;">🟠</td>
+<td><a href="https://hyperliquid.gitbook.io/hyperliquid-docs/hypercore/aligned-quote-assets.md">AQA 문서</a></td>
+</tr>
+<tr>
+<td>2026-11-03</td>
+<td>미국 중간선거 — 온쇼어링 정책 연속성</td>
+<td style="text-align: center;">🟠</td>
+<td>—</td>
+</tr>
+<tr>
+<td>2026-11-06 전후</td>
+<td>팀 월 인출 — 9월 속도(43만)로 돌아가나, 10월 규모가 반복되나</td>
+<td style="text-align: center;">🔴</td>
+<td>잠금 지갑 원장</td>
+</tr>
+<tr>
+<td>2026-10-16</td>
+<td>MSCI 비영업(코인 보유) 회사 협의 결과 — PURR 해당 여부 미확인 〔Specific-Dive〕</td>
+<td style="text-align: center;">🟡</td>
+<td>—</td>
+</tr>
+<tr>
+<td>2026-10-20</td>
+<td>CFTC 지수 perp 전환 무조치 의견 만료 — 미국 등록 거래소의 지수 perp 출시 여부</td>
+<td style="text-align: center;">🟠</td>
+<td><a href="https://www.cftc.gov/PressRoom/PressReleases/9308-26">CFTC 9308-26</a></td>
+</tr>
+<tr>
+<td>연방관보 게재 후 60일(게재일 미확인)</td>
+<td>CFTC Regulation CTX·CAM 사전 의견 수렴 마감 — 등록 거래소의 개인 레버리지 크립토 거래 규칙 〔Specific-Dive〕</td>
+<td style="text-align: center;">🟠</td>
+<td><a href="https://www.cftc.gov/PressRoom/PressReleases/9307-26">CFTC 9307-26</a> · <a href="https://www.cftc.gov/PressRoom/SpeechesTestimony/seligstatement100526">Selig 의장 기고</a></td>
+</tr>
+<tr>
+<td>미정</td>
+<td>CFTC의 Payward/Bitnomial 구조 승인</td>
+<td style="text-align: center;">🔴</td>
+<td><a href="https://www.theblock.co/news/markets/2026-08-31-hyperliquid-eyes-us-entry-kraken-parent-payward-perpetual-futures-deal-bloomberg-413129">The Block 8/31</a></td>
+</tr>
+<tr>
+<td>미정</td>
+<td>CME v. CFTC 소송 결과</td>
+<td style="text-align: center;">🟠</td>
+<td>9/28 보고서</td>
+</tr>
+<tr>
+<td>미정</td>
+<td>결과 시장(HIP-4) 무허가 배포 확대 — 보도는 8/30 배포 시작, 문서는 아직 "테스트넷 전용" 표기</td>
+<td style="text-align: center;">🟡</td>
+<td><a href="https://www.kucoin.com/news/flash/hyperliquid-hip-4-deployment-begins-outcome-becomes-first-builder">KuCoin 8/30</a> · <a href="https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/hip-4-deployer-actions.md">HIP-4 문서</a></td>
+</tr>
+</tbody>
+</table></div>
+<h3>H.3 ⚠️ Thesis 리스크 신호</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 9/28 신호표에 팀 분배 속도를 맨 위로 올렸다. 10월 장외 매각이 그 경계선을 처음 넘었다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>신호</th>
+<th>관측 trigger</th>
+<th style="text-align: center;">10/9 상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🆕 <strong>팀 분배 가속</strong></td>
+<td>월 300만 개 이상 2개월 연속(내구성 진단 악화 trigger와 같은 기준)</td>
+<td style="text-align: center;">🟠 1개월째(10월 375만 · 장외 매각)</td>
+</tr>
+<tr>
+<td>수익 훼손</td>
+<td>분기 수수료 매입 1.2억 달러 미만 2분기</td>
+<td style="text-align: center;">아님(1.46억)</td>
+</tr>
+<tr>
+<td>환원 비율 훼손</td>
+<td>수수료 중 보유자 몫 70% 미만(이자 제외)</td>
+<td style="text-align: center;">아님(약 76%)</td>
+</tr>
+<tr>
+<td>🆕 이자 매입 축소</td>
+<td>월 지급 1,000만 달러 미만</td>
+<td style="text-align: center;">아님(1,458만)</td>
+</tr>
+<tr>
+<td>순발행 가속</td>
+<td>온체인 유통량 연 +15%</td>
+<td style="text-align: center;">10월 한 달 +1.1%</td>
+</tr>
+<tr>
+<td>점유 훼손</td>
+<td>온체인 perp 30일 수수료 점유 60% 미만</td>
+<td style="text-align: center;">아님</td>
+</tr>
+<tr>
+<td>사건 리스크</td>
+<td>금고 단일 손실 2천만 달러 · 검증자 투표 강제 정산</td>
+<td style="text-align: center;">없음</td>
+</tr>
+<tr>
+<td>규제</td>
+<td>OFAC 지정 / 미국 등록 강제</td>
+<td style="text-align: center;">아님 — CFTC가 10/5 등록 거래소의 개인 레버리지 크립토 규칙 추진(1차). "베스팅·바이백 언급"은 2차 보도·1차 미확인</td>
+</tr>
+<tr>
+<td>🆕 담보 레버리지 과열</td>
+<td>HYPE 담보 공급 2,000만 개 이상 또는 USDC 차입 이용률 90% 이상</td>
+<td style="text-align: center;">아님(1,391만 · 74.5%) 〔Specific-Dive〕</td>
+</tr>
+<tr>
+<td>🆕 담보 청산 사건</td>
+<td>하루 HYPE 담보 청산 100만 개 이상</td>
+<td style="text-align: center;">없음</td>
+</tr>
+<tr>
+<td>🆕 이자 매입 배포자 이탈</td>
+<td>6개월 중단 통지 · 기준금리 방식 변경 투표 · 유통 파트너 보상을 막는 입법</td>
+<td style="text-align: center;">아님</td>
+</tr>
+<tr>
+<td>🆕 미국 지수 perp 경쟁 개시</td>
+<td>미국 등록 거래소의 지수 perp 출시</td>
+<td style="text-align: center;">🟡 무조치 의견 발효 · 출시 미확인</td>
+</tr>
+<tr>
+<td>중앙화</td>
+<td>🆕 내부 지갑(팀+재단) 위임 비중 2/3 이상 — 같은 합의가 예치금 장부·이자 기준금리도 정한다</td>
+<td style="text-align: center;">🟠 67.8%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>H.3-0 보유 종목 가설 신선도 — 해당 없음(미보유)</h3>
+<h3>H.5 🧭 CAE · Edge Grid 좌표</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 강한 사업이 비싼 가격에 있는 자리라는 판정은 그대로다. 시장이 이 토큰을 상장 거래소처럼 보기 시작한 신호가 하나 생겼지만, 아직은 알트코인 쪽에 더 가깝다.</p>
+</blockquote>
+<p>〔범례 — CAE: C=제약 · A=조정 · E=표현, 번호=세부층 / 중요도 L 다층성 · R 비가역성 · H 병목경도 · 엣지 G 선반영격차 · P 연료잔량 · D 컨센서스반증, 각 0~3〕</p>
+<ul>
+<li><strong>(a) CAE 분류 — 변동 없음.</strong> 걸친 층 = A2(금융 결제·청산 레일) · E3(24시간 거래 표현층) · C2(규제). 무게중심 = 조정층(A) · 🔴 약한 고리 = 규제(C).</li>
+<li><strong>(b) Edge Grid</strong> — 중요도 L2 · R1 · H2 = 中 / 엣지 G1 · P1 · D1 = 下. 변화 1개: G(선반영 격차)의 입력인 "시장이 보는 가설"이 움직였다. 60일 상관 이더리움 0.73 · 솔라나 0.70 · <strong>Coinbase 0.69(120일 0.50에서 상승)</strong> · 비트코인 0.64 · Robinhood 0.50(상승) · CME −0.03. 1위와 2위 차이 0.05 → 판정 <strong>혼재</strong>. 이 보고서의 thesis(수수료를 돌려주는 거래소)와 시장 가설(알트코인 베타)이 아직 다르다 → 괴리가 엣지이자 버텨야 할 거리다. 시장이 가설을 갈아타는 계기 후보 = 이자 매입이 3개월 연속 1,400만 달러 이상 찍히는 것(거래량과 무관한 현금 흐름의 증명).</li>
+<li><strong>(c) 분면</strong> — 「강한데 비싼」(9/28과 같음).</li>
+</ul>
+<p><svg viewBox="0 0 320 220" width="320" height="220" role="img" aria-label="Edge Grid 분면: HYPE는 강한데 비싼 칸"><rect x="40" y="10" width="130" height="95" fill="#f6e3c4"/><rect x="170" y="10" width="130" height="95" fill="#dcefd9"/><rect x="40" y="105" width="130" height="95" fill="#ececec"/><rect x="170" y="105" width="130" height="95" fill="#dce8f5"/><text x="105" y="28" font-size="11" text-anchor="middle" fill="#5c4a00">강한데 비싼</text><text x="235" y="28" font-size="11" text-anchor="middle" fill="#1e6b30">강하고 싼</text><text x="105" y="195" font-size="11" text-anchor="middle" fill="#555">약하고 비싼</text><text x="235" y="195" font-size="11" text-anchor="middle" fill="#1f4e79">약하고 싼</text><circle cx="95" cy="80" r="7" fill="#c0392b"/><text x="108" y="84" font-size="11" fill="#1f2328">HYPE</text><text x="170" y="216" font-size="10" text-anchor="middle" fill="#57534a">엣지 → (소진 · 비싼 ← → 잔량 · 싼)</text><text x="14" y="105" font-size="10" text-anchor="middle" fill="#57534a" transform="rotate(-90 14 105)">중요도 ↑</text></svg></p>
+<ul>
+<li><strong>(d) 판정</strong> — 강한데 비싼 → 신규 진입 회피·관망 칸. 3 잠금장치는 강하고 싼 칸이 아니라 해당 없음.</li>
+<li><strong>(e) 과목 적합도</strong> — thesis = <strong>혼합</strong>(현재 수수료·매입으로 설명되는 수학형 + 미국 편입·모든 자산 거래소라는 문학형). 가격이 요구하는 것은 5년 이상 고성장이라 문학 쪽에 기운다. 지금 시장의 과목 = <strong>📐 수학 쪽 기울기</strong>(tenbagger 9/30 Phase 0-C 인용 · as-of 9/29). 불일치 → 가격 반영이 늦어지거나 낮게 매겨질 수 있다.</li>
+</ul>
+<h3>H.6 💎 0to1 독점 판정 — 변동 없음</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 피터 틸의 7개 질문 중 4개를 통과해 "불운 위험" 경계에 있다는 판정은 그대로다.</p>
+</blockquote>
+<p>Track A 4/7(기술 10배 ✅ · 시기 ✅ · 독점 ⚠️ · 사람 ✅ · 유통 ⚠️ · 존속성 ❌ · 숨겨진 비밀 ✅) → 불운 위험(≤4) 경계 · Track B ⭐4.0 · 시장정의 화법 = 혼재. 7축 미합산 · 매력도 ≠ 매수 신호.</p>
+<h3>H.7 💰 밸류에이션 정밀 판정 〔서브에이전트 위임 · 점수 미합산〕</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 여전히 비싸다는 판정이지만 9/28보다 덜 비싸다. 이자 매입이 확인돼 거리가 좁혀졌고, 이제 결론이 팀 분배 속도 하나에 걸려 있어 신뢰도를 낮췄다.</p>
+</blockquote>
+<p><code>[모드: embedded]</code> · 원문 = 내부 작업 파일 H7(전담 서브에이전트). 아키타입 = 주 Ⓓ 현금흐름형(+이자 매입이라는 예치금 수입) + 부 Ⓐ 사이클형.</p>
+<p><strong>9/28 대비 무엇이 바뀌었나</strong> — ① 가격 −6.3% ② 이자 매입 실측으로 보유자 몫 연환산 5.75억 → 7.27~8.44억 달러 ③ 순발행 정정(9월 속도면 시장 순공급 0) ④ 10월 팀 분배 8.7배 ⑤ 그래서 9/28 "세 분자 정의 모두 같은 방향"의 근거가 깨졌다 — 가장 관대한 유통 정의(CoinGecko)에서는 현실 범위 안으로 들어왔다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>렌즈</th>
+<th>결과</th>
+<th style="text-align: center;">신호</th>
+<th style="text-align: center;">9/28</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 역산(가격이 요구하는 미래)</td>
+<td>5년 뒤 보유자 몫 — CoinGecko 유통 12~23억 · 온체인 유통 17~32억 · 희석 반영(4.8억 개) 28~52억 · 완전희석 60~113억 달러 vs 현실 상한 32억 → <strong>상단의존</strong>(희석 반영 시 상한 밖)</td>
+<td style="text-align: center;">🔴(약화)</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>② 현금흐름형 판정</td>
+<td>지금 받는 현금 수익률은 CME·ICE 수준, 팀 분배로 새는 몫을 빼면 0~−13%</td>
+<td style="text-align: center;">⚪/🔴</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>③ 동종 대비 프리미엄</td>
+<td>이익 배수 중앙값(23.4배) 대비 +15%(CoinGecko) ~ +56%(온체인) ~ +417%(완전희석) · 성장 ❌ · 마진 ⚠️ · 질 ⚠️</td>
+<td style="text-align: center;">🔴(약화)</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>③ 자기 역사 위치</td>
+<td>완전희석 ÷ 수수료 매입(3개월×4) 143~146배 = 20개월 중 95번째 백분위 · 표준편차 거리(Z)는 사업모델 전환으로 계산 안 함 · 전환 후 13개월만 유효(신뢰도 낮음)</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>④ 컨센서스</td>
+<td>공개 목표가 1건(이해당사자 가능) → "컨센서스 아님" · 리비전 미수집</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>⑤ 시나리오 정합</td>
+<td>exit 25배 &lt; 현재 배수 → 재평가 의존 낮음 · 5년 기댓값 1.01x = 기대 수익 약 0%</td>
+<td style="text-align: center;">🟢/⚪</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>역사 위치의 의미</strong> — 2025-10 말 대비 가격은 +96%, 수수료 매입(3개월×4)은 −50%다. 멀티플만 오르고 펀더는 역행했다. 🆕 다만 수수료 매입은 5월 이후 같은 높이에서 옆으로 가고 있다 — 하락은 멈췄고 반등은 아직이다.</li>
+<li><strong>병목 렌트 지도(BRCR · 약한 신호)</strong> — 4인자 곱 정규화 0.44(9/28 0.40) · 동종 이익 배수 백분위 대비 괴리 −0.23(유통) / −0.56(완전희석) → 🔴 "병목 사칭" 쪽(유통은 경계 근처). 구속 인자 = 지속성(해자 2~3년). [소유] 태그.</li>
+</ul>
+<blockquote>
+<p>🏷️ <strong>밸류에이션 판정: 🔴 고평가(강도 약화) ‖ 신뢰도 낮음 ‖ 풀 DD 승격 중간</strong>
+🎯 <strong>매수 적정성 한 줄: 🔴 현재가 진입 보류</strong> — 팀 몫을 비용으로 넣으면 가격이 해자 수명(2~3년)보다 긴 고성장을 요구한다. 다시 볼 가격 = <strong>$60 안팎(밴드 $49~70)</strong>: 하단 = 시나리오 기댓값을 요구수익률 9~12%로 할인한 값 · 상단 = 온체인 유통 × exit 25배 × 연환산 보유자 몫(9/28 밴드 $48~62에서 이자 매입만큼 위로 이동).
+<strong>swing 변수</strong> = 팀 분배 속도 — 월 45만 개(9월)면 같은 가격이 요구하는 5년 뒤 보유자 몫이 17~31억 달러(상단의존), 10월 속도(375만)가 이어지면 30~57억(상한 밖).
+라벨: ① 낮은 신뢰도 참고(가격·타이밍 콜은 Claude의 약점 — 강점은 구조 분석) ② 매수 적정성 직접 답·enforcement 아님·최종 판단 사용자·정찰성 소액 진입을 규율 위반으로 단정 ❌ ③ 장기 thesis stop sign ❌(리스크 신호 입력일 뿐) ④ 7축 점수 미반영.
+⚠️ 엇갈림(봉합 ❌): 유통 기준 현금 수익률은 CME 수준(⚪)인데 희석 반영 역산은 상한 밖(🔴) — "지금 받는 현금은 동종 수준이지만, 팀 분배로 새는 몫을 빼면 남는 게 거의 없다"는 같은 진단의 양면이다.</p>
+</blockquote>
+<p><strong>▶ Flip</strong> — 🟢: 11·12월 팀 분배가 월 50만 개 이하로 복귀 · 이자 매입 2회차 30일 주기 1,300만 달러 이상 · 가격 $70 이하 / 🔴: 팀 분배 월 200만 개 이상 2개월 · 보유자 몫(이자 포함 3개월×4) 6억 달러 미만 · 금리 인하로 이자 매입 연 1억 달러 미만.</p>
+<h3>H.4 Section H 종합 — Flip 트리거</h3>
+<p>🟢 강화: 이자 매입 3개월 연속 1,400만 달러 이상 + 팀 분배가 월 50만 개 이하로 복귀 · 분기 수수료 매입 2억 달러 회복 / 🔴 훼손: 팀 분배 월 300만 개 이상 2개월 · 10/7 집결 물량이 거래소로 이동 · 이자 매입 1,000만 달러 미만.</p>
+<h2 class="sec" id="i">Section I. 토큰 분포 · 자금흐름</h2>
+<h3>I.0 토큰 분포 — 제네시스 배분 변동 없음, 위임 구조 재측정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 벤처 몫이 0인 배분은 그대로다. 새로 본 것은 스테이킹 표의 3분의 2를 내부 지갑이 맡기고 있다는 점이다.</p>
+</blockquote>
+<p>제네시스 배분(에어드롭 31.0% · 미래 배출 38.888% · 팀 23.8% · 재단 6.0% · 사모·거래소·마켓메이커 0%)은 9/28과 같다(<a href="https://www.theblock.co/news/ecosystems/2024-11-28-hyperliquid-plans-to-launch-hype-token-in-nov-29-genesis-event-328631">The Block 2024-11-28</a>). Assistance Fund 보유분은 2025-12-24 검증자 투표(스테이크 85% 찬성)로 소각 취급이 확정됐고, 이후 들어오는 물량도 같은 취급이다(<a href="https://blockworks.com/token-transparency/filing/hyperliquid">Blockworks</a>) — 9/28의 "가결 추정"을 확정으로 정정한다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>스테이킹 4.40억 개의 출처</th>
+<th style="text-align: right;">수량</th>
+<th style="text-align: right;">비중</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀 잠금 지갑 위임</td>
+<td style="text-align: right;">2.379억</td>
+<td style="text-align: right;">54.1%</td>
+</tr>
+<tr>
+<td>재단 예산 지갑 위임</td>
+<td style="text-align: right;">0.605억</td>
+<td style="text-align: right;">13.7%</td>
+</tr>
+<tr>
+<td>그 밖(일반·ETF·트레저리·배포자 보증금)</td>
+<td style="text-align: right;">약 1.42억</td>
+<td style="text-align: right;">32.2%</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>내부 두 지갑의 위임 = <strong>67.8%</strong>(정족수 2/3 초과). 재단 이름 검증자 5곳 스테이크 2.08억 개 중 약 1.89억 개가 이 두 지갑에서 왔다(F절).</li>
+<li>참고로 이자 매입 장치(AQAv2) 승인 투표는 검증자 26곳 중 19곳·스테이크 69.08%로 통과했다 — 내부 위임 비중과 거의 같은 크기다.</li>
+</ul>
+<h3>I.1 기관 보유 (13F 대응)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — ETF는 11일 동안 조금 빠져나갔고, 상장 트레저리 회사 PURR가 한 달 사이 크게 샀다. 세부는 Part 0 수요 ④에 있다.</p>
+</blockquote>
+<p>ETF 3종 순자산 4.54억 달러(누적 순유입 9/28 대비 −610만) · PURR 3,850만 개(한 달 +530만) · HYPD 185만(3분기 20만 매도) · Lion 23.3만. 6월 말 13F 공개 보유자(UBS·Jane Street 등 합계 7,490만 달러) 이후 새 분기 13F는 아직 나오지 않았다(11월 중순 공개).</p>
+<h3>I.2 내부자 (Form 4 대응) — 10월 팀 장외 매각</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 팀이 처음으로 큰 물량을 기관에 넘겼다. 시장에서 판 것은 아니지만, 유통량은 늘었다.</p>
+</blockquote>
+<p>375만 개(약 3.3억 달러) · 9/30 공동창업자 공지 → 10/7 배분 · 매수자 미공개 · 받은 쪽 83% 재스테이킹. 상세 원장은 Part 0 공급 ②. 주식이라면 "임원 지분의 블록 매각"에 해당한다.</p>
+<h3>I.3 공매도 대응 — 펀딩비·미결제약정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 레버리지로 HYPE 상승에 거는 돈이 줄고, 하락 쪽이 약간 우세해졌다.</p>
+</blockquote>
+<p>HYPE perp 미결제약정 17.1억 달러(9/28 18.9억) · 펀딩비 시간당 −0.0020%(9/28 +0.00125%) · 프리미엄 −0.12%. 9/28 롱 우세 평상 상태에서 숏 약간 우세로 바뀌었다.</p>
+<h3>I.3b · I.4 레버리지 ETF · 옵션 — 변동 없음</h3>
+<p>레버리지·인버스 단일종목 ETF 발견 0개(하한 · 스크립트 10/9) · HYPE 자체 옵션 데이터 ❌ 미수집.</p>
+<p><strong>▶ Flip 트리거</strong> — 🟢: ETF 순자산 10억 달러 돌파 · 내부 위임 비중 50% 미만 / 🔴: PURR mNAV 1배 미만 2주 · 팀 장외 블록 재발 · ETF 4주 연속 순유출.</p>
+<h2 class="sec" id="j">Section J. 산업 · 규제 · 정책 risk</h2>
+<h3>J.1~J.3 — 역사·정책 판단 변동 없음, 사건 2건 추가</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 규제가 가장 큰 변수라는 판단은 그대로다. 미국 규제 당국이 토큰 상장 심사에서 "베스팅·보유 집중"을 보겠다고 밝혀, 이 토큰의 약점과 직접 맞닿았다.</p>
+</blockquote>
+<p>History-Dive 변곡점 8개·DNA 패턴 3개(공지 → 시제품 → 축소판 메인넷 / 위기 때 지급능력 우선 / 성장이 필요할 때마다 보유자 몫을 떼어 줌)는 그대로다. 9/28 이후 사건:</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>시점</th>
+<th>사건</th>
+<th>성격</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-05</td>
+<td>CFTC Regulation CTX·CAM 사전 의견 수렴 시작(연방관보 게재 후 60일) — 등록 거래소가 개인에게 레버리지 크립토 거래를 허용하는 규칙 (<a href="https://www.cftc.gov/PressRoom/PressReleases/9307-26">CFTC 9307-26</a> · <a href="https://www.cftc.gov/PressRoom/SpeechesTestimony/seligstatement100526">Selig 의장 기고</a>). "상장 심사 요소로 베스팅·보유 집중·바이백 언급"은 2차 보도(<a href="https://crypto.news/cftc-seeks-public-input-on-crypto-trading-rules/">crypto.news</a>)이며 1차 원문에서 확인되지 않음 〔Specific-Dive〕</td>
+<td>🟠 미국 안 등록 경쟁자가 생기는 길</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td>CFTC 무조치 의견 — 미국 등록 거래소가 광범위 지수 선물을 진짜 perp로 바꾸는 것 허용(10/20 만료 · <a href="https://www.cftc.gov/PressRoom/PressReleases/9308-26">CFTC 9308-26</a>)</td>
+<td>🟠 지수 perp 칸에 미국 경쟁</td>
+</tr>
+<tr>
+<td>2026-06-15(확인)</td>
+<td>사용 약관 — 운영사 Hyperliquid Corp. · 미국·온타리오 거주자 제한 · VPN 우회 금지 · 영국법·LCIA 중재 〔Specific-Dive〕</td>
+<td>⚪</td>
+</tr>
+<tr>
+<td>2022(전례)</td>
+<td>Ooki DAO — CFTC가 토큰 투표자를 비법인 단체로 기소(<a href="https://www.cftc.gov/PressRoom/PressReleases/8590-22">CFTC 8590-22</a>)</td>
+<td>🟡 장기 꼬리</td>
+</tr>
+<tr>
+<td>2026-10-08</td>
+<td>크립토 전반 하락 — 비트코인 한 달 저점 근처·청산 약 10억 달러 (<a href="https://www.coindesk.com/markets/2026/10/08/crypto-crumbles-as-anniversary-of-flash-crash-nears">CoinDesk</a>)</td>
+<td>🟡 HYPE 하락의 주원인</td>
+</tr>
+</tbody>
+</table></div>
+<p>해킹·검증자 강제 정산 같은 프로토콜 고유 사건은 9/28 이후 찾지 못했다.</p>
+<p><strong>▶ Flip 트리거</strong> — 🟢: CFTC 승인 · CME 소송 각하 / 🔴: OFAC 지정 · CME 승소 · CFTC 규칙에 베스팅 공시 의무화.</p>
+<h2 class="sec" id="k">Section K. 공지 · 거버넌스 · 로드맵</h2>
+<h3>K.1~K.3 — 약속 이행 기록 1건 추가</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 날짜를 건 약속은 또 지켰다. 팀 물량 처분은 사전에 공지했다는 점에서 투명성은 조금 나아졌다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>일자</th>
+<th>내용</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-09-30</td>
+<td>공동창업자, 팀 몫 375만 개 기관 장외 매각 사전 공지(공개 시장 매도 없음)</td>
+<td>실행(10/7 · 원장 일치)</td>
+</tr>
+<tr>
+<td>2026-10-03~04</td>
+<td>이자 매입 첫 지급(문서상 "구간 종료 8일 뒤")</td>
+<td><strong>예정대로 실행</strong></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>날짜를 건 회사 약속 이행: 4건 → <strong>5건 연속</strong>. 탈중앙·코드 공개 약속은 여전히 0/3.</li>
+<li>발언 패턴: 환원 비율 하락·팀 분배 일정에 대한 공식 설명은 이번에도 없다(누락 키워드 유지).</li>
+</ul>
+<h3>K.4c 외부 비판 리포트 — 변동 없음</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 9/28 이후 새로 나온 무게 있는 비판 리포트는 없다.</p>
+</blockquote>
+<p>9/28 분해표(🔴 가설을 침 3건 — 미국 등록 거래소의 유동성 흡수 · 탈중앙성 · 실물자산 perp가 보유자 몫을 갉아먹음)를 그대로 유지한다.</p>
+<h2 class="sec" id="l">Section L. 동적 발견</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이번 실행에서 새로 찾은 것은 대부분 공급 쪽이다. 9/28 계산의 정정, 팀 몫의 장외 매각과 일정표 괴리, 담보로 묶인 토큰이 핵심이다.</p>
+</blockquote>
+<h4>L.1 🔴 9/28 희석 계산 정정 — 스테이킹 보상의 절반 이상은 팀 잠금 지갑에 쌓인다</h4>
+<ul>
+<li>발견 트리거: 팀 잠금 지갑 잔고가 10개월 분배(954만 개) 후에도 제네시스 2.38억 개와 거의 같음 → 위임 조회 결과 지갑 전량 2.379억 개가 스테이킹 중</li>
+<li>중요도: 🔴 · why: 9/28 결론 "2026-07부터 순발행"은 시장에 나오지 않는 보상까지 공급으로 셌다. 시장 기준 순흐름은 9월까지 균형이었다.</li>
+<li>결과: Part 0.4 정정 박스 · 결론의 방향(보유자에게 새는 구조)은 유지, 원인 위치가 "스테이킹" → "팀 분배 속도"로 이동</li>
+<li>결론 영향: <strong>수정</strong></li>
+</ul>
+<h4>L.2 🔴 10월 팀 분배 375만 개 — 9월의 8.7배</h4>
+<ul>
+<li>발견 트리거: 잠금 지갑 잔고 9/28 2.415억 → 10/9 2.379억 개</li>
+<li>중요도: 🔴 · why: 희석의 유일한 큰 변수가 처음으로 크게 움직였다</li>
+<li>추가 조사: 수령 경로 5개 주소 → 단일 주소 집결 → 83% 재스테이킹("Hyperliquid Strategies x Unit" 검증자) · 거래 체결 0건 · 17% HyperEVM 이동</li>
+<li>결론 영향: H.1 5년 유통량 가정 상향 · H.3 신호 신설 · G.8 swing 변수 교체</li>
+</ul>
+<h4>L.3 🟠 DefiLlama 소급 수정 — 보유자 몫에 이자 매입 발생분이 섞였다</h4>
+<ul>
+<li>발견 트리거: 같은 8~9월 수치가 9/28 조회보다 10/9 조회에서 월 1,000만~1,700만 달러 많음</li>
+<li>중요도: 🟠 · why: 분리하지 않으면 "수수료 반등"으로 오독된다</li>
+<li>결과: 이 보고서의 모든 수수료 매입 수치는 이자 매입을 뺀 값</li>
+<li>결론 영향: 유지(방법만 바꿈)</li>
+</ul>
+<h4>L.4 🟠 의결권 집중 재측정 — 내부 지갑 위임 67.8%</h4>
+<ul>
+<li>발견 트리거: 재단 검증자 스테이킹 2.08억 개의 출처 확인</li>
+<li>중요도: 🟠 · why: 9/28 "재단 47%"는 재단 자체 보유로 읽은 오류. 실제로는 팀 잠금분이 대부분이고, 팀+재단 위임만으로 정족수 2/3를 넘는다</li>
+<li>결론 영향: F ⑦ 거버넌스 근거 보강(⭐ 유지) · H.3 중앙화 신호 기준 교체</li>
+</ul>
+<h4>L.5 🔴 팀 몫 "일정표 vs 실제 인출" 괴리 — 풀렸지만 안 꺼낸 물량</h4>
+<ul>
+<li>발견 트리거: 웹 조사 — 증권신고서 문구(2025-11부터 매달) · Blockworks 일정표(월 992만) vs 원장 실측(월 14만~53만 · 10월 375만)</li>
+<li>중요도: 🔴 · why: 일정표가 맞다면 약 1.1억 개가 언제든 나올 수 있는 상태다. 이 토큰의 가장 큰 잠재 공급이다</li>
+<li>추가 조사: 공식 문서에 일정 문구 없음 · 일정 변경 공지 없음</li>
+<li>Steelman: 일정표 자체가 외부 추정이다 — 실제 계약이 "인출 시점 과세·재량 인출"이라면 느린 인출은 의도된 장기 보유일 수 있다</li>
+<li>결론 영향: H.1 5년 유통량 민감도 · Part 0.3 ②</li>
+</ul>
+<h4>L.6 🟠 트레저리 회사 수요는 주가 프리미엄에 매달려 있다</h4>
+<ul>
+<li>발견 트리거: PURR 조정 순자산 대비 1.08배(세금 효과 되돌리면 0.98배) · HYPD 3분기 HYPE 20만 개 매도 후 자사주 매입</li>
+<li>중요도: 🟠 · why: 한 달 기준 최대 매수자(PURR +530만 개)가 프리미엄 1배 근처에 있다. 1배 아래면 매수자가 매도자로 바뀌는 구조다</li>
+<li>결론 영향: Part 0.2 ④ · 계기판에 mNAV 추가</li>
+</ul>
+<h4>L.7 🔴 담보로 묶인 HYPE 약 1,985만 개 — Part 0 저울의 빠진 칸 〔Specific-Dive〕</h4>
+<ul>
+<li>발견 트리거: Specific-Dive 업종 체크리스트 9번(자기 토큰 담보·청산)</li>
+<li>중요도: 🔴 · why: 평소엔 수요(팔지 않고 빌림), 급락 땐 기계적 공급 — 프로토콜 매입 약 24개월분</li>
+<li>결론 영향: Part 0.2 ⑦ · 0.3 ⑥ · H.3 신호 2개 신설 · ⭐ 변경 없음</li>
+</ul>
+<h4>L.deferred</h4>
+<ul>
+<li>10/7 집결 주소의 주체 확인(공시·보도) — 매수 기관 미공개 · PURR CEO 부인 · 공동창업자 디스코드 공지 원문 미확인(X 요약만)</li>
+<li>62.5만 개 HyperEVM 이동분의 이후 행방 — HyperEVM 탐색기(purrsec·hyperevmscan)에서 0x8757…31d1 추적</li>
+<li>이자 매입 비용 차감 방식(정액형 vs 비례형) — 11월 2회차 지급액으로 판별</li>
+<li>언스테이킹 대기열 규모 — 공개 대시보드 확보 시 공급 계기판에 추가</li>
+<li>HYPE 담보 계정별 레버리지 분포 · 옛 브리지 출금 서명 구조 · PURR의 MSCI 명단 등재 여부 · TradeXYZ 약관의 미국인 제한 문구</li>
+</ul>
+<h2 class="sec" id="s">Section S. 🔎 Specific-Dive — 업종 전문가 체크리스트 보완</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 온체인 파생 거래소 토큰 전문가가 먼저 볼 질문 14개 중 8개가 덜 다뤄졌거나 빠져 있었다. 채워 보니 별점은 그대로지만, 수요·공급 저울에 "급락 때만 켜지는 담보 청산 공급"이 새로 생긴다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th>체크 항목</th>
+<th style="text-align: center;">판정</th>
+<th>결론 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td>수수료·보유자 몫 정의 · 집계사 소급 수정</td>
+<td style="text-align: center;">✅</td>
+<td>— (G.1·L.3)</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td>유통량 · 팀 일정표 vs 실제 인출</td>
+<td style="text-align: center;">✅</td>
+<td>— (Part 0·L.5)</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td>거래량 품질(워시·포인트 거래)</td>
+<td style="text-align: center;">❌→조사</td>
+<td>유지 · 거래대금 ÷ 미결제약정 0.72배</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td>예치 달러의 보관 구조</td>
+<td style="text-align: center;">◐→조사</td>
+<td><strong>G.1 정정: 94.5% Circle 직접 발행 · 브리지 5.5%</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td>이자 매입 계약 조건 · 이자 금지 조항</td>
+<td style="text-align: center;">◐→조사</td>
+<td><strong>Part 0.2 ② 보강: 6개월 통지로 중단 가능</strong> · 신호 1</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td>미국인 접근 · 운영 주체 · 집행 전례</td>
+<td style="text-align: center;">❌→조사</td>
+<td>J 행 추가 · 캘린더 날짜 수정</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td>빌더 배포 시장 기초자산의 법적 분류</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>H.1 Bull 각주: 미국 편입은 지수·원자재 칸만</strong> · 신호 1</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td>토큰 규제 분류 · 시장구조법</td>
+<td style="text-align: center;">◐→조사</td>
+<td>Clarity Act 10월 상원 진전 실패로 갱신</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td>자기 토큰 담보 · 청산 · 대출 순환</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>Part 0 신규 칸: 담보 청산(조건부 공급)</strong> · 신호 2</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td>지급능력 폭포(청산→금고→디레버리징)</td>
+<td style="text-align: center;">✅</td>
+<td>— (9/28 G.8·J.2)</td>
+</tr>
+<tr>
+<td style="text-align: center;">11</td>
+<td>오라클 조작 · 검증자 개입</td>
+<td style="text-align: center;">✅</td>
+<td>— (History-Dive·D.8)</td>
+</tr>
+<tr>
+<td style="text-align: center;">12</td>
+<td>0수수료·포인트 경쟁</td>
+<td style="text-align: center;">✅</td>
+<td>— (C·History-Dive)</td>
+</tr>
+<tr>
+<td style="text-align: center;">13</td>
+<td>규칙 변경 권한 · 위임 집중</td>
+<td style="text-align: center;">✅</td>
+<td>— (F·I.0) · 의미 보강(예치금 장부·이자 기준금리)</td>
+</tr>
+<tr>
+<td style="text-align: center;">14</td>
+<td>트레저리 래퍼 수요 구조 · 지수 규칙</td>
+<td style="text-align: center;">◐</td>
+<td>MSCI 10/16 확인 필요(미수집)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>새로 안 것</strong></p>
+<ol>
+<li><strong>HYPE 약 1,985만 개가 담보로 묶여 있다.</strong> 거래소 자체 차입 기능에 1,391만 개(약 11.9억 달러), HyperEVM 대출 앱에 약 594만 개다. 이를 담보로 빌린 달러는 약 4.1억~5.1억 달러다. 거래소는 자기 토큰을 비트코인보다 높은 비율(0.65 vs 0.5)로 담보 인정한다. 평소엔 "팔지 않고 빌리는" 수요지만 급락 때는 시스템이 기계적으로 파는 공급이 된다 — 프로토콜 매입 약 24개월분 크기다. 상한(2,500만 개)과 세 가격의 중앙값 오라클이 Mango Markets형 사고를 막는 장치다.</li>
+<li><strong>이자 매입은 6개월 통지로 끌 수 있다.</strong> 배포자가 6개월 전에 알리면 그만둘 수 있고, 트레저리 배포자 Coinbase는 미국 perp 경쟁자다. 미국 스테이블코인법의 이자 금지는 "발행사 → 보유자" 지급을 막는 문언이라 지금 구조에 바로 걸리지는 않는다[추론].</li>
+<li><strong>예치 달러 69억 달러 중 94.5%는 Circle이 직접 발행한 USDC다.</strong> 브리지 해킹형 위험은 3.8억 달러로 줄었다. 대신 장부의 안전은 검증자 2/3 합의, 곧 내부 위임 67.8%와 같은 축에 있다.</li>
+<li><strong>빌더 배포 시장 1위 TradeXYZ 미결제약정의 55%가 개별 기업 주식이다.</strong> 미국법상 단일 증권 기반 스왑은 SEC 관할이다. 지수(15%)는 CFTC가 10/5 미국 등록 거래소에 perp 전환을 허용해 경쟁이 먼저 온다. "미국 편입" 시나리오가 데려가는 것은 산업 성장의 일부다.</li>
+<li><strong>CFTC 일정·근거 정정.</strong> CTX·CAM 의견 마감은 "10/5부터 60일"이 아니라 연방관보 게재 후 60일이다. "위원장이 베스팅·바이백을 상장 심사 요소로 언급"은 CFTC 원문에서 확인되지 않았다. 원문으로 확인된 것은 등록 거래소가 개인에게 레버리지 크립토 거래를 허용하는 규칙을 만든다는 점이다.</li>
+</ol>
+<p>상세 = 이 보고서 맨 위 하위 Dive 링크 모음의 Specific-Dive 보고서(2026-10-09).</p>
+<h2 class="sec" id="z">🔴 종합 판단</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 강한 사업을 비싼 가격에 사는 구조는 그대로다. 달라진 것은 결론을 쥔 변수다 — 이제 팀이 몫을 얼마나 빨리 꺼내느냐 하나로 좁혀졌고, 그 답은 다음 한 달 안에 일부 나온다.</p>
+</blockquote>
+<ul>
+<li><strong>7축 가중평균 종합 ⭐3.7</strong> — 날씨 3.5 · 산 4.0 · 숲 4.0 · 나무 4.0 · 옆의 나무 3.5 · 사람 3.5 · 숫자 3.5. 사업·thesis 매력도이고 밸류 멀티플은 반영하지 않았다. 별도 렌즈 세 개(분면·0to1·밸류)는 점수 밖이다.</li>
+<li><strong>수요·공급의 결론</strong> — 프로토콜이 자동으로 사는 힘(수수료 + 이자, 월 약 82만 개)은 꾸준하지만 작다. 시장 쪽 신규 발행(일반 스테이커 보상 월 약 37만 개)은 그보다 작다. 그래서 <strong>팀이 아무것도 꺼내지 않으면 이 토큰은 순흡수 구조</strong>다. 반대로 팀 몫(잠금 2.38억 개, 일정표상 "풀렸지만 안 꺼낸" 약 1.1억 개 가능)이 움직이면 그 크기가 다른 모든 흐름을 압도한다. 10월의 장외 매각은 그 문이 열려 있다는 증거다. 기관 래퍼(PURR·ETF)는 그 몫을 받아 줄 수 있지만, 프리미엄이 1배 근처라 시장이 식으면 반대로 움직인다. 급락 땐 담보 청산이 꼬리 공급으로 더해진다.</li>
+<li><strong>시간 지평</strong> — 0~6개월은 팀 인출 속도와 이자 매입 2회차가 판정을 움직인다(11/1·11/6 전후). 6개월~3년은 빌더 배포 시장의 통행세와 미국 편입 경로(지수·원자재는 CFTC, 개별 주식은 SEC)가 수익 상한을 정한다. 3~10년은 팀 몫 해소가 끝난 뒤의 순흡수 구조와, 해자 2~3년이라는 짧은 수명 중 어느 쪽이 이기느냐다.</li>
+<li><strong>리스크 신호 집계</strong> — 🟠 팀 분배 가속(1개월째) · 🟠 내부 위임 67.8% · 🟡 미국 지수 perp 경쟁 · 나머지 정상.</li>
+<li><strong>종합 판정: 부분 수정</strong> — 9/28의 "보유자에게 새는 구조"라는 방향은 유지한다. 원인을 "스테이킹 발행"에서 "팀 몫 인출 속도"로 옮기고, 이자 매입 실측과 담보 청산 공급을 저울에 더했다.</li>
+</ul>
+<h2 class="sec">수집 상태 (실패·불완전 항목만)</h2>
+<ul>
+<li>⚠️ 10/7 장외 매수 기관 신원 · 공동창업자 디스코드 공지 원문 — 2차 요약(X)만 확인</li>
+<li>⚠️ 팀 공식 분배 일정 — 비공개(일정표는 외부 추정)</li>
+<li>⚠️ 언스테이킹 대기열 규모 — 대시보드 값 추출 실패</li>
+<li>⚠️ 62.5만 개 HyperEVM 이동분 이후 행방 — 미추적</li>
+<li>⚠️ 컨센서스 분산·리비전 — 보유자 몫 추정치 자체가 없음</li>
+<li>⚠️ THYP 순자산 — yfinance 미제공(SoSoValue 3종 합계로 대체)</li>
+</ul>
+<h2 class="sec">다음 실행 보완 일정</h2>
+<ul>
+<li>11/1 전후 이자 매입 2회차 금액·간격 → 비용 차감 방식(정액·비례) 판별 · 11/6 전후 팀 인출량 → 판사 비가격 재고 경로 판정</li>
+<li>PURR 3분기 10-Q의 HYPE 매입 경로(시장 vs 장외) · MSCI 10/16 결과 대상 여부</li>
+<li>담보 계정별 레버리지 분포(공개 시) · 언스테이킹 대기열 대시보드 확보</li>
+<li>11월 중순 공개되는 3분기 13F에서 HYPE ETF 기관 보유자 변화</li>
+</ul>
+<div class="footer"><p>1차 자료: Hyperliquid info API(tokenDetails·delegations·delegatorSummary·userNonFundingLedgerUpdates[팀 잠금 지갑·Assistance Fund·재단 예산 지갑·10/7 장외 매수 주소]·metaAndAssetCtxs·perpDexs·vaultDetails·validatorSummaries, 2026-10-09 조회) · Hyperliquid 공식 문서(AQA·HIP-3·HIP-4·스테이킹·수수료·우선 수수료) · DefiLlama 수수료·수익·브리지·방법론 API · CoinGecko API · yfinance(HYPE32196-USD·BTC·ETH·SOL·COIN·HOOD·CME·ICE·PURR·HYPD·ETF, 10/8~10/9) · SoSoValue ETF 집계 · Hyperliquid Strategies 대시보드·424B3 · 인용 보도(링크 본문) · 선행 Dive(R-Dive·History-Dive·People-Dive 2026-09-28 재사용 · chart-dive 2026-10-09 비공개) · 위임 모듈(H.7·G.8·Specific-Dive·Fable 판사).</p>
+<p>방법론 stamp DD-v1.7(7축 ⭐ 기계 환산) · 스킬 Deep-Dive v1.37 · 🪙 비상장 크립토 적응(§G.2-C) · 2회차(직전 2026-09-28).</p>
+<p><b>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</b></p></div>
+</div>
+<script>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+const VIZ = {"score7": {"label": "확신도 7축", "max": 5, "axes": ["🌦️날씨", "⛰️산", "🌲숲", "🌳나무", "🌲🌳옆나무", "👤사람", "🔢숫자"], "series": [{"name": "HYPE 10/9", "color": "#0068b5", "scores": [3.5, 4.0, 4.0, 4.0, 3.5, 3.5, 3.5]}, {"name": "9/28", "color": "#b8a37a", "scores": [3.5, 4.0, 4.0, 4.0, 3.5, 3.5, 3.5]}]}, "narrative": {"label": "내러티브 5축", "max": 5, "axes": ["🔧기술", "👥사회", "🏛️정책", "🌐지정학", "💰자본"], "series": [{"name": "온체인 24h 파생", "color": "#8e44ad", "scores": [4, 2, 4, 2, 5]}]}, "trajectory": {"periods": ["Q1'25", "Q2'25", "Q3'25", "Q4'25", "Q1'26", "Q2'26", "Q3'26"], "forecastFrom": 7, "series": [{"label": "수수료($M·이자 제외)", "axis": "left", "color": "#2980b9", "values": [139.7, 180.4, 356.7, 295.0, 217.5, 201.8, 196.0]}, {"label": "수수료 매입($M)", "axis": "left", "color": "#8e44ad", "values": [132.0, 169.8, 289.8, 226.1, 165.3, 148.6, 145.8]}, {"label": "환원 비율(%)", "axis": "right", "color": "#c0392b", "values": [94.5, 94.2, 81.3, 76.6, 76.0, 73.6, 74.4]}]}, "peers": {"metrics": [{"key": "mcap", "label": "시총(유통)", "unit": "$B", "better": "neutral"}, {"key": "g", "label": "매출 YoY", "unit": "%", "better": "high"}, {"key": "om", "label": "영업마진", "unit": "%", "better": "high"}, {"key": "ps", "label": "수익 대비 배수", "unit": "x", "better": "low"}, {"key": "pe", "label": "이익 배수(P/E)", "unit": "x", "better": "low"}], "rows": [{"name": "HYPE", "subject": true, "note": "온체인 perp 1위 · 보유자 몫(수수료+이자) 기준", "vals": {"mcap": 25.8, "g": -49.7, "om": null, "ps": 30.4, "pe": 30.4}}, {"name": "COIN", "note": "미국 크립토 거래소", "vals": {"mcap": 45.4, "g": -17.3, "om": -13.9, "ps": 7.5, "pe": null}}, {"name": "HOOD", "note": "리테일 브로커", "vals": {"mcap": 96.2, "g": 32.3, "om": 43.9, "ps": 19.5, "pe": 47.1}}, {"name": "CME", "note": "대장주·파생", "vals": {"mcap": 99.4, "g": 0.8, "om": 65.0, "ps": 14.7, "pe": 23.4}}, {"name": "ICE", "note": "거래소·청산", "vals": {"mcap": 87.2, "g": 4.8, "om": 52.6, "ps": 8.3, "pe": 21.9}}]}, "scenario": {"horizonLabel": "5년", "threshold": 1.5, "cases": [{"label": "Bull", "tone": "bull", "prob": 0.2, "mult": 2.44}, {"label": "Base", "tone": "base", "prob": 0.5, "mult": 0.91}, {"label": "Bear", "tone": "bear", "prob": 0.3, "mult": 0.22}]}, "landmark": {"current": {"label": "HYPE 현재(온체인 유통)", "mcap": 25.8}, "target": {"label": "×10", "mcap": 258}, "refs": [{"name": "COIN", "mcap": 45.4}, {"name": "SOL", "mcap": 64.9}, {"name": "HOOD", "mcap": 96.2}, {"name": "CME", "mcap": 99.4}, {"name": "ETH", "mcap": 304}], "sentence": "💡 지금은 Coinbase($45.4B)의 약 57% → 텐배거면 $258B = 이더리움($304B)의 85%. 완전희석 기준($85.5B)이면 이미 CME에 가깝다. (규모 비교일 뿐)", "warn": false}, "bars": {"title": "온체인 perp 거래소 30일 수수료 ($M · DefiLlama 10/9)", "mode": "bar", "unit": "$M", "items": [{"label": "Hyperliquid Perps(이자 매입 제외)", "value": 70.9}, {"label": "Jupiter Perps", "value": 8.4}, {"label": "tradeXYZ(HIP-3·HL 위)", "value": 6.0}, {"label": "Aster", "value": 5.4}, {"label": "Lighter(+로빈후드)", "value": 5.7}, {"label": "GMX Solana", "value": 4.4}, {"label": "edgeX", "value": 3.9}, {"label": "Pacifica", "value": 3.8}]}};
+DDViz.renderRadar('fig-score7','leg-score7',VIZ.score7);
+DDViz.renderRadar('fig-c3','leg-c3',VIZ.narrative);
+DDViz.renderTrajectory('fig-g5','leg-g5',VIZ.trajectory);
+DDViz.renderHeatmap('fig-e1',VIZ.peers);
+DDViz.renderScenario('fig-h1','badge-h1',VIZ.scenario);
+DDViz.renderMcapLadder('fig-g15','sent-g15',VIZ.landmark);
+DDViz.renderBars('fig-d0',VIZ.bars);
+</script>
+</body></html>
