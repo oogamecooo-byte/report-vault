@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="vault-unlisted" content="1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QS (QuantumScape) R-Dive — 제품·수익모델 정밀 해부 — 2026-10-14</title>
+<style>body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Apple SD Gothic Neo','Segoe UI',sans-serif;line-height:1.65;margin:0;padding:32px 12px;}
+.container{max-width:1000px;margin:0 auto;background:#FDF6E3;border-radius:14px;padding:36px 44px;box-shadow:0 2px 16px rgba(80,60,20,.12);}
+h1{font-size:1.7em;border-bottom:3px solid #c44;padding-bottom:10px;margin-top:0;}
+h2{font-size:1.3em;border-bottom:1px solid #d9cfb3;padding-bottom:6px;margin-top:32px;}
+h3{font-size:1.08em;margin-top:22px;color:#7a3a10;}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.9em;}
+th,td{border:1px solid #ddd0ad;padding:7px 10px;text-align:left;vertical-align:top;}
+thead th{background:#efe6cb;}
+tbody tr:nth-child(even) td{background:#f7efd9;}
+blockquote{background:#f5edd6;border-left:4px solid #c9a84a;margin:14px 0;padding:12px 16px;border-radius:0 6px 6px 0;font-size:.95em;}
+blockquote.explain{background:#eef3e6;border-left:4px solid #6b8e4e;color:#2e3a24;}
+blockquote.explain strong:first-child{color:#3f5f2e;}
+blockquote.simple{background:#F3F7E9;border-left:4px solid #7FA650;color:#2f3a24;}
+blockquote.simple strong:first-child{color:#4E6B2C;}
+a{color:#0a66c2;text-decoration:none;} a:hover{text-decoration:underline;}
+ul{padding-left:22px;} li{margin:4px 0;}
+hr{border:none;border-top:1px solid #e0d6b8;margin:24px 0;}
+strong{color:#3a2c10;} em{color:#5c4a00;}
+code{background:#efe6cb;padding:1px 5px;border-radius:4px;font-size:.9em;}
+del{color:#8a7a5a;}
+@media print{body{background:#fff;padding:0;}.container{box-shadow:none;max-width:100%;}table,blockquote{break-inside:avoid;}}
+  tr.sig-r td { background: #f8ded8 !important; }
+  tr.sig-o td { background: #fbe7cf !important; }
+  tr.sig-y td { background: #f8f0cc !important; }
+  tr.sig-g td { background: #e3f0de !important; }
+  h2.sig-r, h3.sig-r, h4.sig-r { border-left: 5px solid #c0392b; padding-left: 10px; }
+  h2.sig-o, h3.sig-o, h4.sig-o { border-left: 5px solid #d9822b; padding-left: 10px; }
+  h2.sig-y, h3.sig-y, h4.sig-y { border-left: 5px solid #b89400; padding-left: 10px; }
+  .guard { background: #f8ded8; border-left: 4px solid #c0392b; padding: 8px 12px; border-radius: 0 6px 6px 0; margin: 8px 0; }
+  @media print { tr[class^="sig-"] td { background: #fff !important; } }
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+</style>
+
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+<meta name="vault-stage" content="Dive">
+<meta name="vault-topic" content="QS">
+<meta name="vault-skill" content="R-Dive">
+<meta name="vault-date" content="2026-10-14">
+<meta name="vault-published" content="2026-10-14">
+<meta name="description" content="QS (QuantumScape) R-Dive — 제품·수익모델 정밀 해부 — 2026-10-14">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="container">
+<header class="rp-head"><h1>QS (QuantumScape) R-Dive — 제품·수익모델 정밀 해부</h1>
+<p><strong>작성일</strong> 2026-10-14 (직전 미국장 10월 13일 화요일)</p>
+<p><strong>모드</strong> 선행 모드(Deep-Dive 하위 실행) · 직전 R-Dive 2026-06-21 대비 델타 회차</p>
+<p><strong>기준 시점</strong> 재무는 2026년 6월 말 분기(2분기)까지다. 3분기 실적은 10월 21일(수) 장 마감 뒤 발표된다(회사 공지).</p>
+<p>주가는 10월 13일 종가 $4.12로 52주 최저와 같다(야후 기준).</p>
+<p>7월 17일 발행주식(A·B주 합산 6.19억 주)을 곱한 시가총액은 약 25.5억 달러다.</p>
+<p><strong>1차 자료</strong> — <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526316073/qs-20260630.htm">2026년 2분기 10-Q(7월 24일)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526312423/qs-ex99_1.htm">2분기 주주서한(8-K EX-99.1, 7월 22일)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526312423/qs-20260722.htm">2분기 실적 8-K 본문</a></p>
+<p><a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526312381/qs-20260716.htm">8-K: PowerCo 협력계약 2026 개정(7월 16일 체결 · 7월 22일 제출)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526312381/qs-ex10_1.htm">개정 계약서 원문(EX-10.1 · 일부 가림)</a></p>
+<p><a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526177161/qs-20260331.htm">2026년 1분기 10-Q(4월 24일)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526170507/qs-ex99_1.htm">1분기 주주서한</a> · <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526046623/qs-ex99_1.htm">2025년 4분기 주주서한</a> · <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312525246801/qs-ex99_1.htm">2025년 3분기 주주서한</a></p>
+<p><a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526071556/qs-20251231.htm">2025년 10-K(2월 25일)</a> · <a href="https://data.sec.gov/api/xbrl/companyfacts/CIK0001811414.json">XBRL 재무 사실 묶음(연간 현금흐름·주식수 대조용)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526259632/qs-20260603.htm">8-K: 정기 주총 결과(6월 5일)</a></p>
+<p><a href="https://ir.quantumscape.com/news-releases/news-release-details/quantumscape-announces-agreement-honda-solid-state-battery">보도자료: Honda 공동연구 계약(6월 18일)</a> · <a href="https://ir.quantumscape.com/news-releases/news-release-details/quantumscape-announces-qs-powerblock-rack-energy-storage-ai-data">보도자료: QS PowerBlock — AI 데이터센터용 랙 내장 배터리(10월 8일)</a> · <a href="https://ir.quantumscape.com/news-releases/news-release-details/quantumscape-announces-timing-third-quarter-2026-business">보도자료: 3분기 실적 일정(10월 8일)</a> · <a href="https://ir.quantumscape.com/news-releases/news-release-details/jb-straubel-joins-quantumscape-strategic-advisory-board">보도자료: JB Straubel 자문위원회 이동(6월 3일)</a></p>
+<p><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0001811414&amp;type=&amp;dateb=&amp;owner=include&amp;count=40">EDGAR 공시 목록(CIK 0001811414)</a> · <a href="https://ir.quantumscape.com/news-events/news-releases">QS IR 보도자료 목록</a></p>
+<hr></header>
+<section class="card"><h2>📄 한 장 요약</h2>
+<ul>
+<li>🔴 <strong>PowerCo(폭스바겐 배터리 자회사)에게서 받을 수 있는 개발 대금의 상한이 줄었다.</strong> 7월 16일 개정으로 "든 비용을 돌려받는" 구조가 "목표를 달성할 때마다 받는" 구조로 바뀌었다.</li>
+</ul>
+<p>상한은 2년 1.307억 달러에서 <strong>7,540만 달러(이미 받은 돈 포함)</strong>로 42% 낮아졌다. 지금까지 실제 들어온 돈은 2,990만 달러다.</p>
+<ul>
+<li>🔴 <strong>로열티의 문은 그대로 닫혀 있다.</strong> 라이선스 본계약(연 최대 85GWh · 로열티 선급 1.3억 달러) 조건은 개정되지 않았고, 체결 시점은 여전히 공시되지 않았다. GAAP 매출은 계속 0이다.</li>
+<li>🟠 <strong>고객 우산이 넓어지기 시작했다.</strong> Honda와 다년 공동연구 계약(6월 18일)을 맺어 완성차 상위 10곳 중 고객이 4곳이 됐다. 다만 이 계약은 10-Q에 이름조차 나오지 않을 만큼 금액이 작거나 비공개다.</li>
+<li>🟠 <strong>팔 곳을 자동차 밖으로 넓혔다.</strong> 사업을 전기차·AI 데이터센터·항공우주·국방 3개 부문으로 나눴고, 미국 대형 방산업체에 셀을 보냈으며, 10월 8일 데이터센터용 배터리 설계안(PowerBlock)을 내놨다. 이 부문들이 <strong>어떤 방식으로 돈을 받을지는 공시되지 않았다.</strong></li>
+<li>🟠 <strong>돈 쓰는 속도는 줄였다.</strong> 2026년 설비투자 전망을 4,000만~6,000만 달러에서 2,700만~3,700만 달러로 낮췄고, 6월 말 유동성은 8.59억 달러다. 올해 상반기에는 시장에서 새 주식을 팔지 않았다.</li>
+<li><strong>한 줄 판정</strong>: 아키타입은 여전히 <strong>미래 ② 라이선스·로열티 / 현재 개발 대금(자본 처리)</strong>이다. 달라진 것은 가장 큰 고객의 돈줄이 가늘어지고, 그 빈자리를 "고객 수와 시장 수"로 메우려 한다는 점이다. 둘 다 아직 매출이 아니다.</li>
+</ul>
+<details><br><summary>&lt;b&gt;배경 (접이식)&lt;/b&gt;</summary>
+<p>QuantumScape는 액체 대신 단단한 세라믹 칸막이(세퍼레이터)를 쓰는 전고체 리튬금속 배터리를 개발한다. 제조할 때 음극을 넣지 않고, 첫 충전 때 리튬 금속이 칸막이 위에 쌓여 음극이 된다(무음극 구조).</p>
+<p>2020년 스팩(SPAC)으로 상장했고, 폭스바겐이 최대주주이며 이사 2명을 지명한다. 첫 상용 목표 셀은 약 5암페어시(Ah)짜리 QSE-5다.</p>
+<p>회사는 큰 공장을 직접 짓지 않고, 남(라이선시)이 자기 공장에서 QS 기술로 셀을 만들게 한 뒤 생산량에 비례해 사용료(로열티)를 받는 모델을 택했다. 첫 라이선시 후보가 PowerCo다.</p>
+</details>
+<hr></section>
+<section class="card"><h2>Part A — 아키타입</h2>
+<h3>A.1 분류 결과</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 미래의 돈은 여전히 기술 사용료에서 나오게 설계돼 있다. 이번엔 데이터센터·국방이라는 새 갈래가 생겼는데, 그 갈래가 사용료형인지 제품 판매형인지는 아직 모른다.</blockquote>
+<table><thead><tr><th>구분</th><th>아키타입</th><th>근거(1차)</th><th>현재 실적</th></tr></thead><tbody>
+<tr><td>주(미래)</td><td>② IP 라이선스·GWh 로열티</td><td>PowerCo 라이선스 본계약(체결 전)</td><td>로열티 0</td></tr>
+<tr><td>부(현재)</td><td>③ 개발 대금(마일스톤)</td><td>PowerCo 개정 계약 · 기타 개발 고객</td><td>고객 청구액 분기 약 1,100만 달러</td></tr>
+<tr><td>🆕 갈래</td><td>⑥ 제품·설계안 판매 가능성</td><td>데이터센터·항공우주·국방 부문 신설</td><td>매출 0 · 과금 방식 미공시</td></tr>
+<tr><td>성격</td><td>① 전환 중</td><td>③ → ② (자동차) / ③ → ? (새 시장)</td><td>변곡 미도래</td></tr>
+</tbody></table>
+<blockquote>💡 <strong>🔤 로열티(royalty)</strong> — 남이 내 기술로 물건을 만들어 팔 때, 만든 양에 비례해 받는 사용료. QS는 생산된 배터리 용량(kWh)당 받는 구조를 계획한다.</blockquote>
+<h3>A.2 확정과 직전 대비 변화</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 분류는 유지한다. 다만 "자동차 한 곳의 사용료"에 걸렸던 무게가 "여러 고객·여러 시장"으로 흩어지기 시작했고, 그만큼 수익 방식도 하나로 단정하기 어려워졌다.</blockquote>
+<p>직전 보고서는 "미래 ② / 현재 ③⑥ / 실증 0"으로 정리했다. 이 골격은 그대로다.</p>
+<p>바뀐 점은 두 가지다. 첫째, 현재의 ③(개발 대금)이 비용 보전형에서 성과 연동형으로 바뀌며 상한이 낮아졌다. 둘째, 10-Q가 "자체 공장 운영, 기술 라이선스, 부품 판매, 합작" 등 여러 사업 방식을 열어 두었고, 주주서한은 고객마다 "맞춤형 시장 진입 방식"을 쓰겠다고 했다.</p>
+<p>그래서 데이터센터·국방 갈래는 <strong>② 라이선스의 연장인지 ⑥ 제품 판매인지 판정 보류</strong>로 둔다. 제품 판매라면 자본을 적게 쓰는 모델의 전제가 일부 흔들린다.</p>
+<hr></section>
+<section class="card"><h2>Part B — 제품·서비스 이해 + 수익모델 해부</h2>
+<h3>B.0.1 제품·서비스 카탈로그 — 주력 5군</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 셀(QSE-5)·세퍼레이터 공정(Cobra)·시범 생산라인(Eagle Line)·무음극 구조·특허라는 다섯 기둥은 그대로다. 이번엔 같은 기술을 데이터센터 배터리 설계안으로 포장한 여섯 번째 상품이 더해졌다.</blockquote>
+<p>회사는 제품별 매출을 공시하지 않는다(매출 자체가 0). 아래 "매출 위치"는 어느 돈줄과 연결되는지만 적는다. 1차 공시로 확인되지 않은 성능 주장은 <strong>회사 주장</strong>으로 표시한다.</p>
+<p><strong>① QSE-5 셀 (변화: 시범 라인 생산 확대 · 안전성 시험 확대)</strong></p>
+<p>무엇: QS의 첫 상용 목표 셀로, 용량 약 5Ah·에너지 밀도 800Wh/L 이상·10%→80% 충전 15분 미만인 B-샘플이다(10-Q).</p>
+<p>작동: 리튬 이온은 통과시키고 전기 합선은 막는 세라믹 칸막이 위에 첫 충전 때 리튬 금속이 쌓여 음극이 된다.</p>
+<p>고객·용도: 자동차 회사가 1순위이고, 이번 분기부터 데이터센터 설계 업체와 방산업체가 시험용으로 받는다.</p>
+<p>차별점: 2분기 주주서한은 생산량이 늘어 못 관통·외부 단락·300℃ 열 안정성 시험을 더 큰 규모로 했고, 이전 시제품의 결과가 재현됐다고 밝혔다. 다만 비교 대상이 "소수의 상용 리튬이온 셀"이고 자체 실험실 시험이다(회사 주장).</p>
+<p>매출 위치: 셀 판매 매출 0. 샘플 출하는 고객 청구액(회계상 매출 아님)에 일부 들어간다.</p>
+<p><strong>② Cobra 세퍼레이터 공정 (변화: 더 큰 칸막이 생산 시연)</strong></p>
+<p>무엇: 세라믹 칸막이를 더 빠르게, 더 적은 열로 굽는 QS 고유의 양산 공정이다.</p>
+<p>작동: 2025년 기준 생산에 통합됐다. 2분기 주주서한은 Cobra로 더 넓은 면적의 칸막이를 만들어 용량이 큰 셀 설계에 쓸 수 있음을 시연했다고 밝혔다.</p>
+<p>고객·용도: 내부 생산과, 무라타·코닝 같은 생태계 협력사의 대량 칸막이 생산 준비에 쓰인다.</p>
+<p>차별점: "큰 셀"은 고객 요청에서 나왔다. PowerCo 개정 계약도 "더 큰 규격의 셀"을 목표에 넣었다. 즉 QSE-5 규격 그대로는 자동차 양산 규격이 아닐 수 있다는 뜻이다.</p>
+<p>매출 위치: 직접 매출 없음. 라이선스 가치의 원가 기반이다.</p>
+<p><strong>③ Eagle Line 시범 생산라인 (변화: 가동률 90% 이상 · 하반기 생산 2배 목표)</strong></p>
+<p>무엇: 산호세의 고도 자동화 시범 셀 생산라인이다. 2026년 2월 가동식을 열었다.</p>
+<p>작동: 2분기 주주서한에 따르면 핵심 장비 가동률이 90%를 넘고, 생산성 지표가 목표에 닿았으며, 하반기에 셀 생산량을 다시 2배로 늘리는 것이 목표다.</p>
+<p>고객·용도: 고객 샘플 공급과, 라이선시가 자기 공장에서 복제할 "청사진" 역할이다. QS는 기존 배터리 장비 업체들과 미래 공장의 기초 작업을 같이 하고 있다고 밝혔다.</p>
+<p>차별점: 라이선스 모델은 복제 가능한 생산 방법이 있어야 성립한다. 가동률 수치는 그 방법이 굴러가기 시작했다는 첫 운영 지표다(회사 발표 · 외부 검증 없음).</p>
+<p>매출 위치: 직접 매출 없음. PowerCo 마일스톤(셀 납품·검증)의 실행 수단이다.</p>
+<p><strong>④ 무음극 리튬금속 구조 (변화: 국방 공급망 논리 구체화)</strong></p>
+<p>무엇: 제조 때 음극을 넣지 않는 셀 설계 그 자체다.</p>
+<p>작동: 흑연·실리콘 음극 공정이 통째로 사라진다. 10-Q는 이것이 규모를 갖추면 원가 우위로 이어질 수 있다고 적었다.</p>
+<p>고객·용도: 국방에서는 흑연 음극 원료가 거의 전부 중국산이라는 점이 약점인데, 무음극 구조는 이 공급망 위험을 없앤다는 것이 회사 논리다(2분기 주주서한).</p>
+<p>차별점: 같은 무음극 구조를 액체 전해질로 시도하는 경쟁 방식은 안전 문제가 크다고 회사는 주장한다.</p>
+<p>매출 위치: 매출 항목 아님. 국방 부문(QSAS)의 판매 논리이자 모든 라이선스의 바탕이다.</p>
+<p><strong>⑤ 특허·라이선스 자산 (변화 없음)</strong></p>
+<p>무엇: 세라믹 칸막이 영역에 가장 깊은 미국·해외 특허와 출원 묶음, 그리고 공정 노하우다.</p>
+<p>작동: 라이선시는 특허 없이 합법 생산이 어렵고, 노하우 없이 수율을 내기 어렵다. 이중 잠금 구조다.</p>
+<p>고객·용도: PowerCo가 첫 후보다. 10-Q 위험 요인은 "일부 계약이 다른 고객에게 줄 수 있는 조건을 제한할 수 있다"고 적었다.</p>
+<p>차별점: 정확한 특허 수와 핵심 만료 시점은 여전히 공시되지 않는다.</p>
+<p>매출 위치: 미래 로열티의 법적 근거 그 자체다.</p>
+<p><strong>🆕 ⑥ QS PowerBlock — AI 데이터센터 랙 내장 배터리 설계안 (10월 8일 발표)</strong></p>
+<p>무엇: 서버 랙 안에 넣는 비상·완충용 배터리 시스템의 "참조 설계(reference design)"다. 여러 모듈·선반·랙 형식에 맞출 수 있게 했다.</p>
+<p>작동: QS 셀에 외부 업체의 전력 부품을 짝지어 800V 직류 구조의 1MW급 랙에 전력을 대는 개념이다.</p>
+<p>고객·용도: 데이터센터 운영자와 서버 설계·제조 업체(ODM)다. GPU 학습 부하에서 전력 출렁임을 메우는 용도다.</p>
+<p>차별점: 회사는 데이터센터 업계 표준 규격(OCP 랙 규격) 대비 출력 밀도 4배, 작동 시간 5배를 냈다고 밝혔다. 단 시제품 시험과 <strong>모형 계산을 섞은</strong> 통제된 조건의 결과라고 보도자료 스스로 적었다(회사 주장).</p>
+<p>매출 위치: 매출 0 · 과금 방식 미공시. 셀을 직접 팔지, 설계안을 라이선스할지, 협력사가 만들게 할지 알 수 없다.</p>
+<blockquote>💡 <strong>🔤 참조 설계(reference design)</strong> — 완제품이 아니라 "이렇게 조립하면 된다"는 표준 설계도. 칩 회사가 고객사에 주는 설계 견본과 같은 역할이다.<br><br>💡 <strong>🔤 ODM</strong> — 남의 브랜드로 나갈 제품을 설계부터 생산까지 맡는 업체. 데이터센터에선 서버·랙을 대신 설계하고 만드는 대만계 업체들이 대표적이다.</blockquote>
+<h3>B.0.2 핵심 기술·IP·기술 해자</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 기술의 뼈대는 그대로이고, 늘어난 것은 "더 큰 셀로 넓힐 수 있다"는 시연과 생산라인 운영 지표다. 양산 수율·원가는 여전히 회사 주장 단계다.</blockquote>
+<ul>
+<li><strong>기반 기술</strong>: 산화물 세라믹 고체 칸막이 · 무음극 리튬금속 셀 구조 · Cobra 저열·고속 소성 공정 · Eagle Line 자동화 공정 제어.</li>
+<li><strong>IP</strong>: 세라믹 칸막이 영역 특허가 가장 깊다. 수·만료 시점은 공시되지 않는다.</li>
+<li><strong>재현 난이도</strong>: 산화물 세라믹의 대량 생산 수율은 업계의 오래된 난제다. QS가 이번에 내놓은 근거는 장비 가동률(90% 이상)과 큰 칸막이 시연이지, 수율이나 원가 숫자는 아니다.</li>
+<li><strong>R&amp;D 방향</strong>: 2분기 연구개발비는 8,250만 달러로 1년 전보다 18% 줄었다. 주된 이유는 설비 손상차손 1,360만 달러 감소였다(10-Q). 차세대 방향은 더 큰 셀 · 고체 양극재 · 모듈·팩 설계다.</li>
+<li><strong>회사 주장 vs 실증</strong>: "더 안전하다"·"출력 4배"는 자체 시험·모형 계산이다. 실증된 것은 샘플 출하(자동차·방산), 시범 라인 가동, 2025년 두카티 오토바이 시연 1대다.</li>
+</ul>
+<h3>B.0.3 제품 → 수익모델 연결</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 기술이 돈이 되는 다리는 여전히 "사용료 단가"에서 끊겨 있다. 새로 생긴 데이터센터 다리는 어느 과금 칸에 걸리는지조차 아직 비어 있다.</blockquote>
+<table><thead><tr><th>주력 제품</th><th>과금 방식</th><th>아키타입</th><th>가격 결정력</th><th>묶임(전환비용)</th><th>이익 확대 기여</th></tr></thead><tbody>
+<tr><td>QSE-5 셀</td><td>샘플(일회) → 로열티 단위</td><td>⑥→②</td><td>차별화(주장)</td><td>중간</td><td>낮음(직접 생산 시)</td></tr>
+<tr><td>Cobra 공정</td><td>원가 기반 → 라이선스</td><td>②</td><td>차별화 핵심</td><td>높음(노하우)</td><td>높음</td></tr>
+<tr><td>Eagle Line</td><td>라이선스 발효 방아쇠</td><td>②(방아쇠)</td><td>—</td><td>높음(청사진 종속)</td><td>높음</td></tr>
+<tr><td>무음극 구조</td><td>라이선스 IP</td><td>②</td><td>차별화 · 국방 가산</td><td>높음</td><td>매우 높음</td></tr>
+<tr><td>특허 묶음</td><td>라이선스·로열티</td><td>②</td><td>법적 독점</td><td>매우 높음</td><td>매우 높음</td></tr>
+<tr><td>🆕 PowerBlock</td><td>❌ 미공시</td><td>② 또는 ⑥</td><td>미확인</td><td>미확인</td><td>방식에 따라 정반대</td></tr>
+</tbody></table>
+<p><strong>해자가 돈으로 바뀌는 칸</strong> — 설계상으로는 "가격 결정력"과 "이익 확대" 두 칸이다. 라이선시가 공장 돈을 대고 QS는 사용료만 받으니, 사용료 1달러의 추가 비용이 거의 0이다.</p>
+<p><strong>비어 있는 칸 (🚩 유지)</strong> — 그 사용료 단가(kWh당 몇 달러)가 아직 협상 전이다. 이번 개정에서도 라이선스 본계약 조건은 바뀌지 않았고 단가는 공시되지 않았다.</p>
+<p><strong>새로 비는 칸 (🆕 🚩)</strong> — PowerBlock이 셀 판매형이면, 누군가 셀을 대량으로 만들어야 한다. 그 주체가 QS라면 자본을 적게 쓰는 모델과 충돌하고, 협력사라면 QS 몫은 다시 사용료로 돌아온다. 어느 쪽인지 공시가 없다.</p>
+<h3>B.1 매출 스트림 분해</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — GAAP 매출은 여전히 0이다. 고객 청구액은 분기 1,100만 달러 안팎에서 멈춰 있고, 그중 PowerCo가 실제로 보낸 돈은 매출이 아니라 자본으로 처리된다.</blockquote>
+<table><thead><tr><th>분기</th><th>고객 청구액</th><th>PowerCo 현금 유입(자본 처리)</th><th>GAAP 매출</th><th>출처</th></tr></thead><tbody>
+<tr><td>2025년 3분기</td><td>1,280만 달러</td><td>2025년 연간 합계 1,950만 달러</td><td>0</td><td>3분기 서한 · 10-K</td></tr>
+<tr><td>2025년 4분기</td><td>670만 달러(계산값)</td><td>(위 연간 합계에 포함)</td><td>0</td><td>4분기 서한</td></tr>
+<tr><td>2026년 1분기</td><td>1,100만 달러</td><td>0</td><td>0</td><td>1분기 서한 · 1분기 10-Q</td></tr>
+<tr><td>2026년 2분기</td><td>1,080만 달러</td><td>1,040만 달러</td><td>0</td><td>2분기 서한 · 2분기 10-Q</td></tr>
+</tbody></table>
+<p>4분기 값은 연간 1,950만 달러에서 3분기 값을 뺀 계산값이다. 회사는 "2025년에 첫 고객 청구서를 발행했다"고 밝혔고, 그 전 분기 서한에는 청구액 수치가 없다.</p>
+<p><strong>회계 처리(변화 없음)</strong> — 2분기에 PowerCo에서 받은 1,040만 달러도 매출이 아니라 추가납입자본(APIC)으로 잡혔다. 주식은 발행되지 않았다. 폭스바겐이 큰 지분을 가진 관계사라 "상환 의무가 있다고 추정"되기 때문이다(10-Q 관계사 거래 주석).</p>
+<p><strong>청구액과 현금의 차이</strong> — 4개 분기 청구액 합계는 약 4,130만 달러, PowerCo 현금 유입 합계는 2,990만 달러다. 청구액에는 다른 고객 몫도 섞여 있어 둘을 1대1로 맞출 수는 없다. 개정 계약은 "이미 청구한 PowerCo 대금은 계속 지급 의무가 있다"고 적었다.</p>
+<p><strong>믹스 방향</strong> — 현재 ③(개발 대금) → 미래 ②(로열티) 한 방향에, 새 시장 갈래(②인지 ⑥인지 미정)가 덧붙었다.</p>
+<blockquote>💡 <strong>🔤 고객 청구액(customer billings)</strong> — 회사가 그 기간에 고객·협력사에 보낸 송장 총액. 회계 처리와 무관한 운영 지표라 GAAP 매출을 대신하지 못한다고 회사가 직접 밝힌다.<br><br>💡 <strong>🔤 추가납입자본(APIC)</strong> — 주주가 회사에 넣은 돈 중 액면가를 넘는 부분이 쌓이는 자본 계정. 여기 잡힌 돈은 손익계산서를 거치지 않는다.</blockquote>
+<h3>B.2 과금·가격 모델 + 정량</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 주가가 반토막 나면서 같은 로열티 가정에 붙는 배수가 크게 내려왔다. 그래도 그 가정의 핵심 숫자(kWh당 단가)는 여전히 회사가 공개하지 않은 빈칸이다.</blockquote>
+<p><strong>주력 모델</strong> — 라이선스 + GWh 로열티(본계약 체결 전) · <strong>현재 모델</strong> — 성과 연동 개발 대금(7월 개정 후).</p>
+<p><strong>PowerCo 계약 구조 변화</strong></p>
+<table><thead><tr><th>항목</th><th>직전(2025년 7월 개정)</th><th>지금(2026년 7월 개정)</th></tr></thead><tbody>
+<tr><td>개발 대금 방식</td><td>비용 보전(작업명세서 1호)</td><td>마일스톤 달성 시 지급(작업명세서 2호)</td></tr>
+<tr><td>개발 대금 상한</td><td>2년간 최대 1.307억 달러</td><td><strong>최대 7,540만 달러(이미 받은 돈 포함)</strong></td></tr>
+<tr><td>목표의 초점</td><td>QSE-5 기술 이전</td><td>자동차 셀 개발 · 더 큰 규격 셀 · 미래 기술 로드맵</td></tr>
+<tr><td>기간</td><td>2년</td><td>앞으로 2년(셀 납품·검증)</td></tr>
+<tr><td>시범 차량</td><td>(확인 범위 밖)</td><td>PowerCo가 원하면 QS 기술 셀 최대 500MWh로 시범 차량단 운영 가능</td></tr>
+<tr><td>라이선스 본계약</td><td>연 40+40+5GWh · 선급 1.3억 달러</td><td><strong>변경 없음</strong></td></tr>
+</tbody></table>
+<p>이미 받은 돈을 2,990만 달러(2025년 1,950만 + 2026년 2분기 1,040만)로 보면, 남은 상한은 최대 약 4,550만 달러다. 단 "이미 받은 돈"의 정확한 범위는 계약서의 해당 부분이 가려져 있어 확인할 수 없다.</p>
+<p><strong>로열티 단위경제 시나리오 (단가 ❌ 미공시 · 가정)</strong></p>
+<table><thead><tr><th>가정 단가(kWh당)</th><th>80GWh 가동 시 연 로열티</th><th>시가총액 ÷ 연 로열티</th></tr></thead><tbody>
+<tr><td>0.5달러</td><td>4,000만 달러</td><td>약 64배</td></tr>
+<tr><td>1.0달러</td><td>8,000만 달러</td><td>약 32배</td></tr>
+<tr><td>2.0달러</td><td>1.6억 달러</td><td>약 16배</td></tr>
+</tbody></table>
+<p>직전 보고서 때 시가총액(약 49.5억 달러)으로는 1달러 가정에서 약 60배였다. 지금은 시가총액 약 25.5억 달러 기준 약 32배다.</p>
+<p><strong>정량 메트릭</strong></p>
+<table><thead><tr><th>메트릭</th><th>산식</th><th>값</th><th>해석</th></tr></thead><tbody>
+<tr><td>통행세율·운용 수수료율·예치 수익률</td><td>—</td><td>해당 없음</td><td>거래·예치형 아님</td></tr>
+<tr><td>로열티 단가</td><td>로열티 ÷ 생산 kWh</td><td>❌ 미공시</td><td>핵심 빈칸</td></tr>
+<tr><td>로열티 선급</td><td>계약 명시</td><td>1.3억 달러(본계약 조건부·기간 비례 환수 조항)</td><td>체결 시 현금, 매출 아님</td></tr>
+<tr><td>개발 대금 상한</td><td>계약 명시</td><td>7,540만 달러(종전 1.307억)</td><td>마일스톤 조건부 · 자본 처리</td></tr>
+<tr><td>청구액 ÷ 조정 EBITDA 손실</td><td>분기 청구액 ÷ 분기 손실</td><td>2분기 16.8%</td><td>고객 송장이 현금 소진의 몇 %를 메우나</td></tr>
+</tbody></table>
+<div class="dd-fig"><p class="cap"><b>고객 청구액·조정 EBITDA 손실(좌, 백만 달러)과 청구액 ÷ 손실 비율(우, %)</b><br>분기 값은 주주서한(8-K EX-99.1). 2025년 4분기 청구액은 연간 1,950만 달러 − 3분기 1,280만 달러로 계산한 값이다.<br>GAAP 매출이 0이라 통행세율 같은 단가 축이 없어, 오른쪽 축은 "고객 송장이 현금 소진의 몇 %를 메우나"로 대신했다. 비율이 오르지 않으면 청구액이 버팀목이 되지 못한다는 뜻이다. 전망 점은 없다.</p><div id="fig-rate"></div><div class="dd-legend" id="leg-rate"></div></div>
+<blockquote>💡 <strong>📐 로열티 단위경제</strong> — 연 로열티 = 생산량(GWh) × 100만(kWh/GWh) × kWh당 단가. 80GWh에 1달러면 8,000만 달러다.<br><br>💡 <strong>🔤 마일스톤(milestone)</strong> — 미리 정한 기술·납품 목표. 이를 달성해야 돈이 나오므로, 못 하면 상한이 있어도 받는 돈은 0일 수 있다.<br><br>💡 <strong>🔤 조정 EBITDA</strong> — 순손실에서 이자·세금·감가상각·주식보상비용 등 현금이 안 나가거나 일회성인 항목을 빼서 본 영업 손실. QS의 경우 "매 분기 실제로 태우는 영업 현금"에 가깝다.</blockquote>
+<h3>B.3 단위 경제학</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 매출이 없어 고객당 매출·마진 같은 지표는 여전히 계산할 수 없다. 의미 있는 숫자는 "분기 얼마를 태우고 몇 년 버티나"뿐이다.</blockquote>
+<table><thead><tr><th>지표</th><th>값</th><th>출처</th></tr></thead><tbody>
+<tr><td>고객당 매출·단위당 마진·고객 생애가치</td><td>❌ 해당 없음(매출 0)</td><td>10-Q</td></tr>
+<tr><td>조정 EBITDA 손실(2분기)</td><td>6,420만 달러</td><td>2분기 서한</td></tr>
+<tr><td>2026년 조정 EBITDA 손실 전망</td><td>2.5억~2.75억 달러(유지)</td><td>2분기 서한</td></tr>
+<tr><td>2026년 설비투자 전망</td><td>2,700만~3,700만 달러(종전 4,000만~6,000만)</td><td>2분기·4분기 서한</td></tr>
+<tr><td>6월 말 유동성</td><td>8.59억 달러</td><td>2분기 서한</td></tr>
+</tbody></table>
+<p><strong>버틸 수 있는 기간(단순 계산)</strong> — 상반기 유동성은 9.708억 → 8.59억 달러로 1.118억 달러 줄었다(PowerCo 유입 1,040만 달러 포함). 분기 평균 약 5,600만 달러다.</p>
+<p>같은 속도면 8.59억 달러는 약 15분기, 즉 2030년 초까지다. 회사 전망치(손실 + 설비투자에서 이자수익 차감)로 계산하면 약 3~3.5년이다. 어느 쪽이든 PowerCo·Honda 등 외부 유입이 0이라고 놓은 보수적 계산이다.</p>
+<h3>B.4 매출 품질 + 고객 집중도</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 고객 이름은 늘었지만, 돈이 실제로 들어온 곳은 여전히 PowerCo 하나다. 확정된 잔고는 사실상 0이다.</blockquote>
+<ul>
+<li><strong>반복성</strong>: 반복 매출 0%. 현재 청구액은 전부 개발·샘플 성격이다.</li>
+<li><strong>잔고 품질</strong>: PowerCo 개발 대금 남은 상한(최대 약 4,550만 달러) + 로열티 선급 1.3억 달러 + 연 85GWh 생산 상한 — 전부 마일스톤 또는 본계약 체결 조건부다. 확정 잔고 ≈ 0.</li>
+<li><strong>고객 집중도</strong>: 실제 현금 유입은 PowerCo 100%(2025년~2026년 상반기 확인분). 폭스바겐은 최대주주이고 이사 2명을 지명한다.</li>
+<li><strong>🆕 분산의 씨앗</strong>: 완성차 상위 10곳 중 4곳(PowerCo·Honda·기존 공동개발 2곳)과 추가 완성차 1곳에 셀 출하, 미국 대형 방산업체에 QSE-5 출하, 데이터센터 ODM과 설계 협업. 이 중 계약 금액이 공시된 것은 PowerCo뿐이다.</li>
+<li><strong>비용·통제권 집중</strong>: 10-Q 위험 요인은 라이선스 모델이 커질수록 "제조·상용화 결정의 직접 통제권"을 파트너에게 넘긴다고 적었다. 로열티 금액 확인도 PowerCo의 장부 감사에 의존한다.</li>
+</ul>
+<h3>B.5 가치사슬 내 수익 포착</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 자동차 쪽 돈의 길은 그대로이고, 데이터센터 쪽은 길 자체가 아직 그려지지 않았다.</blockquote>
+<p><strong>자동차</strong> — 완성차 → (셀 구매) → 라이선시(PowerCo, 자기 공장) → (kWh당 로열티) → QS. QS는 공장을 건너뛰고 기술 길목에서만 통행료를 뗀다.</p>
+<p><strong>데이터센터(신규)</strong> — 데이터센터 운영자 → ODM·전력장비 업체 → (?) → QS. QS가 셀 공급자인지 설계 라이선스 제공자인지에 따라 포착 지점이 바뀐다.</p>
+<p><strong>길목의 협상력</strong> — 라이선시가 사실상 1곳일 때 협상은 1대1이다. 이번 PowerCo 개정에서 상한이 낮아진 것은 협상력이 라이선시 쪽에 있다는 방증으로 읽을 수 있다. Honda가 자체 전고체 생산 역량에 크게 투자해 왔다는 점(2분기 서한)은 두 번째 라이선시 후보가 생길 수 있다는 뜻이다.</p>
+<hr></section>
+<section class="card"><h2>Part C — 12 함정 체크리스트</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 강한 적신호는 셋(청구액≠매출, PowerCo 쏠림, 희석)으로 그대로다. 잔고 품질은 상한이 줄어 더 나빠졌고, 모델 전환은 새 갈래가 생겨 판단이 더 어려워졌다.</blockquote>
+<table><thead><tr><th>#</th><th>함정</th><th>QS 적용(이번 회차)</th><th>🚩</th><th>직전</th></tr></thead><tbody>
+<tr><td>C.1</td><td>마진 분모</td><td>매출 0 · 분모가 없다 · 볼 것은 현금 소진과 버틸 기간</td><td>🚩(표기 혼동)</td><td>🚩</td></tr>
+<tr><td>C.2</td><td>반복매출 프리미엄</td><td>반복 매출 0% · "라이선스=반복"을 앞당겨 값 매기면 과대평가</td><td>🚩</td><td>🚩</td></tr>
+<tr><td>C.3</td><td>발표 숫자 ↔ 장부</td><td>청구액 분기 약 1,100만 달러 vs 매출 0 · PowerCo 현금은 자본 처리</td><td>🚩🚩</td><td>🚩🚩</td></tr>
+<tr><td>C.4</td><td>잔고 품질</td><td>개발 대금 상한 1.307억 → 7,540만 달러 · 전부 조건부</td><td>🚩(악화)</td><td>🚩</td></tr>
+<tr><td>C.5</td><td>가격 결정력</td><td>로열티 단가 미정 · 개정에서 상한 축소 = 협상력 라이선시 쪽</td><td>🚩</td><td>🚩(부분)</td></tr>
+<tr><td>C.6</td><td>고객·유통 집중</td><td>현금 유입 PowerCo 100% · 고객 이름은 4곳+α로 확대</td><td>🚩🚩</td><td>🚩🚩</td></tr>
+<tr><td>C.7</td><td>매크로 단일 변수</td><td>폭스바겐 전동화 속도 · 새 시장은 AI 데이터센터 투자</td><td>🚩</td><td>🚩</td></tr>
+<tr><td>C.8</td><td>금리 비대칭</td><td>예치 이자형 아님 · 금리↓ → 이자수익↓(2분기 −7%)</td><td>🚩(약·간접)</td><td>🚩(약)</td></tr>
+<tr><td>C.9</td><td>운영 레버리지</td><td>설계상 극대 · 분자(매출) 0 · 비용은 2분기 −14%</td><td>없음(미실현)</td><td>없음</td></tr>
+<tr><td>C.10</td><td>현금 전환</td><td>상반기 영업현금흐름 −1.163억 · 설비투자 −1,460만 달러</td><td>🚩(약)</td><td>🚩(약)</td></tr>
+<tr><td>C.11</td><td>주당 희석</td><td>가중 주식수 1년 +9.9% · 올해 상반기 시장 증자 0</td><td>🚩</td><td>🚩</td></tr>
+<tr><td>C.12</td><td>모델 전환 신호</td><td>자동차 ③→② 변곡 미도래 · 새 시장 갈래 ②/⑥ 미정</td><td>🚩(양면)</td><td>🚩(양면)</td></tr>
+</tbody></table>
+<p><strong>C.4 잔고 품질 — 무엇이 더 나빠졌나</strong></p>
+<p>종전 계약은 "공동 양산팀이 쓴 비용을 돌려받는" 구조였다. 일을 하면 돈이 나오는 구조라 지급 확실성이 상대적으로 높았다.</p>
+<p>새 계약은 "셀을 납품하고 검증을 통과하면" 지급한다. 상한도 1.307억 → 7,540만 달러로 내려왔다. 확실성과 크기가 동시에 줄었다.</p>
+<p>다만 비용 보전 구조였다는 것은 그만큼 QS가 쓴 비용이 있었다는 뜻이기도 하다. 공동 양산팀 규모가 줄었다면 QS 쪽 비용도 같이 줄었을 수 있다. 이 비용 측 변화는 공시되지 않아 <strong>순현금 효과는 판정할 수 없다.</strong></p>
+<p><strong>C.5 가격 결정력 — 왜 "부분"에서 "있음"으로 바꿨나</strong></p>
+<p>직전엔 "차별화는 맞지만 가격이 비어 있다"는 이유로 부분 적신호였다. 이번엔 유일한 라이선시 후보와의 재협상에서 돈의 상한이 42% 줄었다. 협상력의 무게가 어느 쪽에 있는지 처음으로 숫자가 보였다.</p>
+<p>또 10-Q 위험 요인은 일부 계약이 "특정 고객에게 유리한 조건을 줘야 해 다른 고객과의 협상을 제한할 수 있다"고 적었다. 로열티 단가가 첫 계약에서 낮게 정해지면 뒤따르는 계약의 천장이 될 수 있다.</p>
+<p><strong>C.11 주당 희석 — 좋아진 점과 남은 점</strong></p>
+<p>올해 상반기에는 시장가 분할 증자(ATM)로 판 주식이 0주다(10-Q 재무활동 현금흐름). 그러나 주식보상비용이 상반기 5,780만 달러이고, 아직 인식하지 않은 주식보상 비용이 약 2.03억 달러 남아 있다.</p>
+<p>주가가 4달러대로 내려와, 같은 금액을 조달할 때 필요한 주식 수는 직전 보고서 때(약 8달러)의 2배 가까이 된다. 버틸 기간이 3년 이상이라 당장 증자 압력은 낮지만, 다음 조달의 희석 비용은 커졌다.</p>
+<p><strong>C.12 모델 전환 — 갈래가 하나 더 생겼다</strong></p>
+<p>자동차 갈래의 변곡은 여전히 "PowerCo 마일스톤 → 라이선스 본계약 → 선급 1.3억 달러 → 첫 GWh 로열티" 순서다. 이 중 어느 단계도 아직 오지 않았다.</p>
+<p>새 갈래(데이터센터·국방)는 자동차보다 인증 기간이 짧을 수 있다는 점에서 매출 변곡을 앞당길 후보다. 반대로 과금 방식이 제품 판매라면 QS가 직접 생산 능력을 갖춰야 해, 지금의 자본 경량 모델과 다른 회사가 된다.</p>
+<blockquote>💡 <strong>🔤 ATM(시장가 분할 증자)</strong> — 주식을 한 번에 대량으로 팔지 않고 시장가로 조금씩 계속 팔아 돈을 모으는 방식. 꾸준한 희석을 만든다.<br><br>💡 <strong>🔤 주식보상비용(SBC)</strong> — 임직원에게 현금 대신 주식으로 주는 보상. 현금은 안 나가지만 주식 수를 늘린다.</blockquote>
+<hr></section>
+<section class="card"><h2>Part D — 종합 판정</h2>
+<h3>D.1 자가점검</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 무엇을 만드는지는 설명할 수 있다. 막히는 곳은 "kWh당 얼마 받나"와 "새 시장에서 무엇으로 돈을 받나" 두 가지다.</blockquote>
+<table><thead><tr><th>#</th><th>질문</th><th>답</th><th>막힘</th></tr></thead><tbody>
+<tr><td>0</td><td>주력 제품을 문단으로 설명했나 · 어떻게 돈이 되나</td><td>6군 서술 · 제품→수익 연결표</td><td>PowerBlock 과금 방식 미공시</td></tr>
+<tr><td>1</td><td>무엇을 누구에게 왜 파나</td><td>전고체 셀 기술 → 완성차·라이선시 · 🆕 데이터센터·방산</td><td>—</td></tr>
+<tr><td>2</td><td>매출 주머니와 비중·추세</td><td>GAAP 0 · 청구액 분기 약 1,100만 달러 정체</td><td>—</td></tr>
+<tr><td>3</td><td>주력 과금 방식</td><td>라이선스 + GWh 로열티(본계약 전)</td><td>단가 미공시</td></tr>
+<tr><td>4</td><td>내년에 또 들어오나</td><td>반복 0 · 개발 대금은 마일스톤 조건부</td><td>—</td></tr>
+<tr><td>5</td><td>단일 고객 10% 초과?</td><td>현금 기준 PowerCo 100%</td><td>Honda 등 금액 미공시</td></tr>
+<tr><td>6</td><td>마진 분모는?</td><td>분모 없음 · 현금 소진이 실질 지표</td><td>—</td></tr>
+<tr><td>7</td><td>흔들 외부 변수 하나</td><td>폭스바겐 전동화 · AI 데이터센터 투자</td><td>—</td></tr>
+<tr><td>8</td><td>발표 숫자 vs 장부</td><td>청구액·자본 처리 vs 매출 0</td><td>—</td></tr>
+<tr><td>9</td><td>믹스 방향</td><td>③→②(자동차) + 새 갈래 ②/⑥</td><td>🔴 새 갈래 과금 방식</td></tr>
+</tbody></table>
+<h3>D.2 수익모델 등급</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 예측 가능성은 더 낮아졌고, 나머지는 "설계는 좋지만 숫자 없음" 그대로다.</blockquote>
+<table><thead><tr><th>차원</th><th>등급</th><th>근거</th><th>직전</th></tr></thead><tbody>
+<tr class="sig-r"><td>예측 가능성</td><td>🔴</td><td>반복 0 · 개발 대금이 비용 보전 → 성과 연동으로 바뀌어 더 불확실</td><td>🔴</td></tr>
+<tr><td>수익성</td><td>⚪ 측정 불가</td><td>매출 0 · 로열티는 설계상 마진 ~100%</td><td>⚪</td></tr>
+<tr class="sig-y"><td>과금 강도</td><td>🟡</td><td>이중 잠금 설계 · 단가 미정 · 상한 축소로 협상력 의문</td><td>🟡</td></tr>
+<tr class="sig-y"><td>고객 묶임</td><td>🟡</td><td>본계약 체결 전엔 0 · 고객 수는 확대</td><td>🟡</td></tr>
+</tbody></table>
+<h3>D.3 종합 판정</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — "좋은 설계도를 가진, 아직 매출 없는 기술 회사"라는 판단은 그대로다. 가장 큰 고객의 돈줄은 가늘어졌고, 그 자리를 고객 수·시장 수로 메우는 중이다.</blockquote>
+<p><strong>아키타입</strong> — 미래 ② IP 라이선스·GWh 로열티 / 현재 ③ 성과 연동 개발 대금(자본 처리) / ① 전환 중 + 🆕 새 시장 갈래(② 또는 ⑥ 미정). 실증 0건.</p>
+<p><strong>핵심 강점 하나</strong> — 공장을 짓지 않고 세라믹 칸막이 노하우와 특허로 사용료를 받는 설계. 설비투자 전망을 다시 낮춘 것(2026년 2,700만~3,700만 달러)이 이 설계를 숫자로 지킨다.</p>
+<p><strong>치명 함정 셋</strong> —</p>
+<ul>
+<li><strong>PowerCo 한 곳에 걸린 돈줄(C.4·C.6)</strong> — 실제 현금은 PowerCo에서만 들어왔고, 그 개발 대금 상한이 42% 줄었다. 라이선스 본계약과 선급 1.3억 달러는 여전히 마일스톤 뒤에 있다.</li>
+<li><strong>청구액은 매출이 아니다(C.3)</strong> — 분기 약 1,100만 달러 청구액은 운영 지표이고, PowerCo 현금은 자본으로 처리된다. "매출이 생겼다"는 해석은 틀린다.</li>
+<li><strong>희석 비용 상승(C.11)</strong> — 올해 시장 증자는 멈췄지만, 주가가 직전의 절반이 되어 다음 조달의 주당 희석이 커졌다.</li>
+</ul>
+<p><strong>Thesis 함의</strong> — 이 회사를 볼 때 질문이 하나 늘었다. "PowerCo 로열티가 언제 켜지나"에 더해 "새 시장에서 사용료를 받나, 물건을 파나"다. 다음 확인 창은 10월 21일 3분기 실적의 청구액·PowerCo 현금 유입과 데이터센터 부문 첫 계약 형태다.</p>
+<hr></section>
+<section class="card"><h2>12 함정 요약</h2>
+<table><thead><tr><th>#</th><th>함정</th><th>결과</th></tr></thead><tbody>
+<tr><td>C.1</td><td>마진 분모</td><td>🚩 있음(표기 혼동)</td></tr>
+<tr><td>C.2</td><td>반복매출 프리미엄</td><td>🚩 있음</td></tr>
+<tr><td>C.3</td><td>발표 숫자 ↔ 장부</td><td>🚩🚩 있음</td></tr>
+<tr><td>C.4</td><td>잔고 품질</td><td>🚩 있음(악화)</td></tr>
+<tr><td>C.5</td><td>가격 결정력</td><td>🚩 있음(부분 → 있음)</td></tr>
+<tr><td>C.6</td><td>고객·유통 집중</td><td>🚩🚩 있음</td></tr>
+<tr><td>C.7</td><td>매크로 단일 변수</td><td>🚩 있음</td></tr>
+<tr><td>C.8</td><td>금리 비대칭</td><td>🚩 약함(간접)</td></tr>
+<tr><td>C.9</td><td>운영 레버리지</td><td>없음(미실현)</td></tr>
+<tr><td>C.10</td><td>현금 전환</td><td>🚩 약함</td></tr>
+<tr><td>C.11</td><td>주당 희석</td><td>🚩 있음</td></tr>
+<tr><td>C.12</td><td>모델 전환</td><td>🚩 양면(갈래 추가)</td></tr>
+</tbody></table></section>
+<section class="card"><h2>부록 — 수집 불완전 항목</h2>
+<ul>
+<li>❌ 로열티 단가(kWh당) — 회사 미공시. 라이선스 본계약 미체결.</li>
+<li>⚠️ PowerCo 개정 계약의 마일스톤·지급 일정·"전환 기여금" — 계약서 원문에서 가려짐(EX-10.1 [***]). "이미 받은 돈"의 정확한 범위 확인 불가.</li>
+<li>❌ Honda 공동연구 계약 금액·조건 — 8-K·10-Q 모두 없음(보도자료만).</li>
+<li>❌ 데이터센터(QSDC)·항공우주·국방(QSAS) 부문의 과금 방식·계약 금액 — 미공시.</li>
+<li>❌ 특허 수·핵심 만료 시점 — 미공시.</li>
+<li>⚠️ 2025년 4분기 고객 청구액 — 단독 공시 없음. 연간 값 − 3분기 값으로 계산.</li>
+<li>⚠️ 3분기 실적(10월 21일 발표 예정) — 이번 보고서 작성 시점엔 미발표.</li>
+</ul>
+<hr>
+<p><em>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</em></p></section>
+</div>
+<script>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+const VIZ={"trajectory": {"periods": ["Q3'25", "Q4'25", "Q1'26", "Q2'26"], "forecastFrom": 4, "series": [{"key": "bill", "label": "고객 청구액 ($M)", "axis": "left", "color": "#2980b9", "values": [12.8, 6.7, 11.0, 10.8]}, {"key": "burn", "label": "조정 EBITDA 손실 ($M)", "axis": "left", "color": "#7f8c8d", "values": [61.4, 63.3, 63.2, 64.2]}, {"key": "rate", "label": "청구액 ÷ 조정 EBITDA 손실 (%)", "axis": "right", "color": "#c0392b", "values": [20.8, 10.6, 17.4, 16.8]}]}};
+DDViz.renderTrajectory("fig-rate","leg-rate",VIZ.trajectory);
+</script>
+</body>
+</html>
