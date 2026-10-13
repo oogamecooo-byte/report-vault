@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<meta name="vault-stage" content="Research">
+<meta name="vault-topic" content="토큰화">
+<meta name="vault-topics" content="스테이블코인|CRCL|연준">
+<meta name="vault-date" content="2026-10-13">
+<meta name="description" content="BIS 워킹페이퍼 1382 투자자용 정리 — 예금 금리 1bp 인상 시 스테이블코인 10주 성장률 15%→12%(OLS)·6%(IV), USDC가 USDT보다 민감, 연방기금금리 약 3%의 예금 금리 꺾임, 이자 금지·준비금 예금 규칙의 의미">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>예금 금리가 오르면 스테이블코인이 덜 큰다 — BIS WP 1382 정리 (2026-10-13)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; background: #EBE4D3; color: #1f2328; line-height: 1.72; padding: 24px; }
+  .container { max-width: 1080px; margin: 0 auto; background: #FDF6E3; border-radius: 14px; padding: 44px 50px; box-shadow: 0 3px 18px rgba(70,58,30,0.14); }
+  h1 { font-size: 1.8em; margin: 8px 0 18px; color: #2a2418; border-bottom: 3px solid #b58900; padding-bottom: 10px; }
+  h2 { font-size: 1.36em; margin: 30px 0 14px; color: #36301d; border-bottom: 1px solid #d8cfb8; padding-bottom: 6px; }
+  h3 { font-size: 1.14em; margin: 20px 0 10px; color: #473f26; }
+  h4 { font-size: 1.05em; margin: 14px 0 8px; color: #5c5237; }
+  p { margin: 8px 0; }
+  hr { border: none; border-top: 1px solid #d8cfb8; margin: 26px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13.5px; background: #fffdf6; border: 1px solid #e8e1cf; border-radius: 6px; overflow: hidden; }
+  th { background: #36301d; color: #f4ecd8; padding: 9px 11px; text-align: left; border-right: 1px solid #4a4230; }
+  th:last-child { border-right: none; }
+  td { padding: 9px 11px; border-top: 1px solid #ece4d0; border-right: 1px solid #f0e9d6; vertical-align: top; }
+  td:last-child { border-right: none; }
+  tr:nth-child(even) td { background: #faf4e4; }
+  tr:hover td { background: #f3ead2; }
+  code { background: #efe7d0; padding: 1px 6px; border-radius: 4px; font-size: 13px; font-family: 'SF Mono', Monaco, monospace; color: #a8341f; }
+  pre { background: #efe7d0; padding: 12px; border-radius: 6px; overflow-x: auto; margin: 12px 0; }
+  pre code { background: transparent; padding: 0; color: #36301d; }
+  a { color: #0a6f93; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  blockquote { border-left: 4px solid #b58900; padding: 10px 16px; background: #f6eed6; margin: 14px 0; color: #5c5237; border-radius: 0 8px 8px 0; }
+  blockquote.explain { border-left: 4px solid #6b8e4e; background: #eef3e6; color: #2e3a24; }
+  blockquote.explain strong:first-child { color: #3f5f2e; }
+  blockquote.simple { border-left: 4px solid #7FA650; background: #F3F7E9; color: #2f3a24; }
+  blockquote.simple strong:first-child { color: #4E6B2C; }
+  ul { margin: 8px 0 8px 24px; }
+  li { margin: 4px 0; }
+  strong { font-weight: 700; color: #241f12; }
+  em { color: #5c5237; }
+  del { color: #9a8f70; }
+  .foot { margin-top: 40px; padding-top: 16px; border-top: 1px solid #d8cfb8; color: #5c5237; font-size: 12.5px; }
+  @media print { body { background: #fff; padding: 0; } .container { background: #fff; box-shadow: none; border-radius: 0; padding: 20px; } table { background: #fff; } }
+
+  tr.sig-r td { background: #f8ded8 !important; }
+  tr.sig-o td { background: #fbe7cf !important; }
+  tr.sig-y td { background: #f8f0cc !important; }
+  tr.sig-g td { background: #e3f0de !important; }
+  h2.sig-r, h3.sig-r, h4.sig-r { border-left: 5px solid #c0392b; padding-left: 10px; }
+  h2.sig-o, h3.sig-o, h4.sig-o { border-left: 5px solid #d9822b; padding-left: 10px; }
+  h2.sig-y, h3.sig-y, h4.sig-y { border-left: 5px solid #b89400; padding-left: 10px; }
+  .guard { background: #f8ded8; border-left: 4px solid #c0392b; padding: 8px 12px; border-radius: 0 6px 6px 0; margin: 8px 0; }
+  @media print { tr[class^="sig-"] td { background: #fff !important; } }
+</style>
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+</head>
+<body><div class="container">
+<header class="rp-head"><h1>🏦🪙 예금 금리가 오르면 스테이블코인이 덜 큰다 — BIS 워킹페이퍼 1382 「스테이블코인과 은행 예금은 대체재인가」 투자자용 정리 (2026-10-13)</h1>
+<blockquote>원문: Rashad Ahmed(Andersen Institute)·Iñaki Aldasoro(BIS), 「Are stablecoins and bank deposits substitutes?」, <a href="https://www.bis.org/publications/working-paper-1382-are-stablecoins-and-bank-deposits-substitutes" target="_blank">BIS Working Papers No 1382</a> (2026-10-13 공개 · 초판 2026년 3월 · 34쪽). 저자 개인 견해이고 BIS 공식 입장이 아니다. 이 정리는 원문 PDF 전문을 읽고 썼다. 매수·매도 신호가 아니다.</blockquote>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> 은행이 예금 금리를 올리면 스테이블코인 시가총액이 덜 자란다는 것을 처음으로 데이터로 보였다. 두 돈은 서로를 대신하는 관계다. 효과는 미국 기관과 가까운 USDC가 해외에서 많이 쓰는 USDT보다 두 배 이상 크다. 그래서 스테이블코인이 얼마나 클지는 기술만이 아니라 은행이 예금에 얼마를 주느냐에도 달려 있다.</blockquote></header>
+<section class="card"><h2>📌 한 장 요약</h2>
+<ul>
+<li>🔴 <strong>예금 금리 1bp(0.01%p) 인상 → 10주 성장률 15%가 12%로.</strong> 단순 회귀(OLS) 기준이다. 예금 금리의 &quot;꺾임&quot;을 이용한 도구변수(IV) 추정에서는 6%까지 떨어진다(원문 5.1절).</li>
+<li>🔴 <strong>USDC가 더 민감하다.</strong> 10주 누적 효과가 USDC 약 −5%, USDT 약 −2%다. 저자들은 USDC가 미국 기관·디파이 사용자와 가깝기 때문으로 해석한다(원문 5.2절).</li>
+<li>🟠 <strong>꺾임은 연방기금금리 약 3%다.</strong> 3% 아래에서는 은행이 예금 금리를 거의 안 올린다. 3%를 넘으면 경쟁이 붙어 예금 금리를 빠르게 올린다. 국채 3개월물에는 이런 꺾임이 없다(원문 그림 2).</li>
+<li>🟠 <strong>지금은 꺾임 위쪽이다.</strong> 연준 목표금리 상단은 2026년 9월 17일 3.75%에서 4.00%로 올랐다. 실효 연방기금금리는 3.88%다(FRED, 10/8). 논문의 틀로 보면 은행 예금 가격이 스테이블코인 성장을 가장 세게 누르는 구간이다[추론].</li>
+<li>🟡 <strong>성장이 멈추는 것은 아니다.</strong> 성장 속도가 느려질 뿐이다. 10주 성장을 완전히 지우려면 한 주에 예금 금리가 약 5bp 올라야 하는데, 이는 표준편차 6배짜리 사건이다(원문 5.3절).</li>
+<li>🟡 <strong>정책 레버는 두 개다.</strong> 준비금 일부를 예금으로 들게 하는 규칙, 그리고 발행사가 보유자에게 이자를 줄 수 있느냐다. 두 돈의 경계는 기술보다 &quot;각자 얼마를 줄 수 있느냐&quot;로 정해진다고 저자들은 결론 냈다(원문 6절).</li>
+</ul>
+<hr></section>
+<section class="card"><h2>1. 질문 — 스테이블코인은 예금을 빼앗는가</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> &quot;스테이블코인이 은행 예금을 빼앗는다&quot;는 걱정은 많았지만, 두 돈이 실제로 서로를 대신하는지는 데이터로 확인된 적이 거의 없다. 이 논문은 질문을 바꿔 &quot;예금 이자가 오르면 스테이블코인 보유가 줄어드는가&quot;를 잰다.</blockquote>
+<ul>
+<li>스테이블코인과 요구불 성격의 은행 예금은 닮았다. 값이 안정적이고, 언제든 돌려받을 수 있고, 결제에 쓰이고, 보유자에게 이자를 거의 주지 않는다(원문 1절).</li>
+<li>그래서 스테이블코인이 커지면 은행의 값싼 자금줄이 빠져나가 대출이 줄 수 있다는 걱정이 있다. 기존 연구 대부분은 두 돈이 대체재라고 <strong>가정</strong>하고 출발했다. 실증 근거는 드물고, 설문 결과는 엇갈렸다(같은 출처).</li>
+<li>스테이블코인은 아직 미국 은행 시스템에 비해 작아서 &quot;예금이 얼마나 빠졌나&quot;를 직접 재기 어렵다. 그래서 저자들은 더 근본적인 질문을 던진다. <strong>예금 수익률이 바뀌면 스테이블코인 보유가 반응하는가.</strong> 반응한다면 두 돈은 같은 선택지 안에서 경쟁하는 것이다(같은 출처).</li>
+</ul></section>
+<section class="card"><h2>2. 방법 — 무엇을, 어떻게 쟀나</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> 2019~2025년 6월 미국 주간 데이터로, 예금 금리가 오른 뒤 10주 동안 스테이블코인 시가총액이 어떻게 변하는지 추적했다. 시장금리·달러·비트코인·변동성은 따로 걸러 냈다. 거꾸로 된 인과를 막으려고 예금 금리의 &quot;3% 꺾임&quot;을 이용했다.</blockquote>
+<table><thead><tr><th>항목</th><th>내용</th></tr></thead><tbody>
+<tr><td>기간 · 빈도</td><td>2019년 1월 ~ 2025년 6월 · 주간 339개</td></tr>
+<tr><td>결과 변수</td><td>준비금 담보 스테이블코인 시가총액(USDT·USDC·기타, CoinMarketCap) · 표본 기간 24억 → 2,227억 달러</td></tr>
+<tr><td>핵심 변수</td><td>미국 전국 평균 수시입출금 예금 금리의 주간 변화(RateWatch 6개 상품 평균)</td></tr>
+<tr><td>걸러 낸 것</td><td>연방기금금리 · 국채 3개월물·10년물 · 달러 지수 · 비트코인 값 · VIX</td></tr>
+<tr><td>추정 방법</td><td>국지 투영법(local projection) · 0~10주 누적 반응</td></tr>
+<tr><td>인과 식별</td><td>연방기금금리 3.125% 위·아래에서 달라지는 예금 금리 전달(꺾임)을 도구변수로 사용</td></tr>
+<tr><td>반증 시험</td><td>같은 도구변수로 스테이블코인을 뺀 암호화폐 시가총액을 예측해 봄(플라시보)</td></tr>
+</tbody></table>
+<p>출처: 원문 3·4절, 표 1. 데이터가 2025년 6월에 끝나는 이유는 자료 공급사가 예금 금리 통계 발표를 그때 멈췄기 때문이다(원문 각주 3).</p>
+<p><strong>왜 꺾임을 쓰나.</strong> 그냥 회귀하면 거꾸로 된 인과가 섞인다. 스테이블코인이 커져 예금이 빠지면 은행이 예금 금리를 올려 붙잡는다. 이 경우 &quot;예금 금리 상승&quot;과 &quot;스테이블코인 성장&quot;이 같이 나타나 대체 효과가 작게 보인다(원문 4.2절). 그래서 저자들은 은행 쪽 사정으로만 생기는 변화를 찾았다. 연방기금금리가 약 3%를 넘으면 은행이 예금 금리를 훨씬 공격적으로 올린다. 이 꺾임은 예금 시장에만 있고 국채 금리에는 없다(원문 그림 2).</p>
+<p><strong>작은 모형.</strong> 사람은 재산을 스테이블코인(이자 0·암호화폐 편의), 예금(이자·결제 편의), 국채(이자·편의 없음)에 나눠 둔다. 예금이 늘면 스테이블코인의 추가 편의가 줄어든다고 가정하면(대체 관계), 시장금리를 고정한 채 예금 금리가 오르면 스테이블코인 보유가 준다. 예금 금리 수준이 높을수록 이 효과가 커진다(원문 2절).</p></section>
+<section class="card"><h2>3. 결과 — 얼마나 줄었나</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> 예금 금리가 1bp 오르면 10주 성장률이 15%에서 12%(단순 회귀) 또는 6%(꺾임 이용)로 낮아진다. 암호화폐 전체에는 이런 반응이 없어서, 단순한 크립토 경기 탓은 아니다. USDC가 USDT보다 훨씬 민감하다.</blockquote>
+<figure style="margin:18px 0;overflow-x:auto"><svg viewBox="0 0 760 300" width="100%" style="max-width:760px;font-family:-apple-system,'Apple SD Gothic Neo','Segoe UI',sans-serif" role="img" aria-label="예금 금리 1bp 인상 후 성장률" xmlns="http://www.w3.org/2000/svg"><text x="10.0" y="22.0" font-size="13" fill="#2f2e2a" text-anchor="start" font-weight="700">스테이블코인 시가총액 10주 누적 성장률 (%)</text><line x1="70" x2="740" y1="238.0" y2="238.0" stroke="#6b6a63"/><text x="62.0" y="242.0" font-size="10" fill="#6b6a63" text-anchor="end" font-weight="400">0%</text><line x1="70" x2="740" y1="177.4" y2="177.4" stroke="#e4dcc6"/><text x="62.0" y="181.4" font-size="10" fill="#6b6a63" text-anchor="end" font-weight="400">5%</text><line x1="70" x2="740" y1="116.8" y2="116.8" stroke="#e4dcc6"/><text x="62.0" y="120.8" font-size="10" fill="#6b6a63" text-anchor="end" font-weight="400">10%</text><line x1="70" x2="740" y1="56.1" y2="56.1" stroke="#e4dcc6"/><text x="62.0" y="60.1" font-size="10" fill="#6b6a63" text-anchor="end" font-weight="400">15%</text><g><title>평균: 15%</title><rect x="121.7" y="56.1" width="120.0" height="181.9" rx="4" fill="#9a9486"/></g><text x="181.7" y="50.1" font-size="12.5" fill="#2f2e2a" text-anchor="middle" font-weight="700">15%</text><text x="181.7" y="258.0" font-size="12" fill="#2f2e2a" text-anchor="middle" font-weight="600">평균</text><text x="181.7" y="274.0" font-size="10.5" fill="#6b6a63" text-anchor="middle" font-weight="400">예금 금리 변화 없음</text><g><title>단순 회귀(OLS): 12%</title><rect x="345.0" y="92.5" width="120.0" height="145.5" rx="4" fill="#2a78d6"/></g><text x="405.0" y="86.5" font-size="12.5" fill="#2f2e2a" text-anchor="middle" font-weight="700">12%</text><text x="405.0" y="258.0" font-size="12" fill="#2f2e2a" text-anchor="middle" font-weight="600">단순 회귀(OLS)</text><text x="405.0" y="274.0" font-size="10.5" fill="#6b6a63" text-anchor="middle" font-weight="400">1bp 인상 후</text><g><title>도구변수(IV): 6%</title><rect x="568.3" y="165.2" width="120.0" height="72.8" rx="4" fill="#4a3aa7"/></g><text x="628.3" y="159.2" font-size="12.5" fill="#2f2e2a" text-anchor="middle" font-weight="700">6%</text><text x="628.3" y="258.0" font-size="12" fill="#2f2e2a" text-anchor="middle" font-weight="600">도구변수(IV)</text><text x="628.3" y="274.0" font-size="10.5" fill="#6b6a63" text-anchor="middle" font-weight="400">1bp 인상 후</text><text x="10.0" y="292.0" font-size="10" fill="#6b6a63" text-anchor="start" font-weight="400">출처: BIS WP 1382 그림 3·6, 5.1·5.3절(근사값). 성장률 감소이지 수준 감소가 아니다.</text></svg></figure>
+<ul>
+<li><strong>단순 회귀(OLS)</strong>: 예금 금리 1bp 인상은 10주 누적 시가총액 성장률을 약 3%p 낮춘다. 평균 15%가 약 12%가 된다(원문 5.1절). 1bp는 주간 예금 금리 변화의 약 1.2 표준편차다.</li>
+<li><strong>도구변수(IV)</strong>: 약 9%p 낮춘다. 15%가 약 6%가 된다. 단순 회귀보다 약 3배 크다. 저자들은 거꾸로 된 인과로 단순 회귀가 작게 나왔고, 도구변수가 대체 유인이 가장 센 고금리 구간에 집중하기 때문이라고 본다(같은 출처).</li>
+<li><strong>플라시보</strong>: 같은 도구변수는 스테이블코인을 뺀 암호화폐 시가총액을 예측하지 못한다. 신뢰구간이 0을 끼고 있다. 결과가 크립토 경기의 우연이 아니라는 근거다(같은 출처).</li>
+<li><strong>다른 각도의 증거</strong>: 은행이 고액 머니마켓예금(2만 5천 달러 이상) 금리를 소액 저축예금보다 더 올릴 때도 스테이블코인이 줄었다(10주 약 −0.7%). 시장금리와 무관한 은행 간 예금 경쟁만 뽑아낸 값이라 크기는 작지만 방향이 같다(원문 그림 4).</li>
+</ul>
+<figure style="margin:18px 0;overflow-x:auto"><svg viewBox="0 0 760 280" width="100%" style="max-width:760px;font-family:-apple-system,'Apple SD Gothic Neo','Segoe UI',sans-serif" role="img" aria-label="발행사별 반응" xmlns="http://www.w3.org/2000/svg"><text x="10.0" y="22.0" font-size="13" fill="#2f2e2a" text-anchor="start" font-weight="700">예금 금리 1bp 인상 → 10주 누적 시가총액 반응 (단순 회귀, %)</text><line x1="70" x2="740" y1="218.0" y2="218.0" stroke="#e4dcc6"/><text x="62.0" y="222.0" font-size="10" fill="#6b6a63" text-anchor="end" font-weight="400">-6%</text><line x1="70" x2="740" y1="160.0" y2="160.0" stroke="#e4dcc6"/><text x="62.0" y="164.0" font-size="10" fill="#6b6a63" text-anchor="end" font-weight="400">-4%</text><line x1="70" x2="740" y1="102.0" y2="102.0" stroke="#e4dcc6"/><text x="62.0" y="106.0" font-size="10" fill="#6b6a63" text-anchor="end" font-weight="400">-2%</text><line x1="70" x2="740" y1="44.0" y2="44.0" stroke="#6b6a63"/><text x="62.0" y="48.0" font-size="10" fill="#6b6a63" text-anchor="end" font-weight="400">0%</text><g><title>USDC (Circle): -5%</title><rect x="177.5" y="44.0" width="120.0" height="145.0" rx="4" fill="#c0392b"/></g><text x="237.5" y="204.0" font-size="12.5" fill="#2f2e2a" text-anchor="middle" font-weight="700">-5%</text><text x="237.5" y="240.0" font-size="12" fill="#2f2e2a" text-anchor="middle" font-weight="600">USDC (Circle)</text><g><title>USDT (Tether): -2%</title><rect x="512.5" y="44.0" width="120.0" height="58.0" rx="4" fill="#d9822b"/></g><text x="572.5" y="117.0" font-size="12.5" fill="#2f2e2a" text-anchor="middle" font-weight="700">-2%</text><text x="572.5" y="240.0" font-size="12" fill="#2f2e2a" text-anchor="middle" font-weight="600">USDT (Tether)</text><text x="10.0" y="272.0" font-size="10" fill="#6b6a63" text-anchor="start" font-weight="400">출처: BIS WP 1382 그림 5, 5.2절(근사값). USDC가 미국 기관·디파이 사용자와 더 가깝다는 것이 저자 해석.</text></svg></figure>
+<ul>
+<li><strong>발행사별</strong>: 효과는 USDC(10주 약 −5%)가 이끌고 USDT(약 −2%)는 약하다. 모든 추정 방법에서 같다(원문 그림 5).</li>
+<li>저자들의 해석: USDC는 미국 기관·디파이 사용자가 많이 써 예금과 저울질하기 쉽다. USDT는 해외·개발도상국 사용이 많아 미국 예금 금리보다 다른 힘에 반응한다(원문 5.2·6절).</li>
+<li><strong>디파이에 맡긴 돈도 반응한다.</strong> 대출 프로토콜에 넣어 이자를 받는 스테이블코인도 예금 금리가 오르면 줄었다(추정이 부정확하긴 하다). 디파이 이자가 예금과의 경쟁을 막아 주지 못한다는 뜻이다(원문 5.4절).</li>
+<li><strong>정기예금(CD)도 경쟁 상대다.</strong> 수시입출금 대신 CD 금리를 넣어도 같은 방향이다. CD 의존도가 높은 지역 은행에 특히 의미가 있다고 저자들은 썼다(같은 출처).</li>
+</ul>
+<h3>3-1. 다른 조건에서도 버티나 (원문 표 2)</h3>
+<table><thead><tr><th>조건</th><th>OLS</th><th>IV</th></tr></thead><tbody>
+<tr><td>기본(10주)</td><td>−2.8%</td><td>−9.1%</td></tr>
+<tr><td>암호화폐 거래량 통제</td><td>−3.0%</td><td>−9.0%</td></tr>
+<tr><td>테라·FTX·BUSD 사건 통제</td><td>−2.9%</td><td>−10.3%</td></tr>
+<tr><td>실리콘밸리은행 사태 제외</td><td>−2.4%</td><td>−6.5%</td></tr>
+<tr><td>디파이 이자 통제</td><td>−2.6%</td><td>−6.9%</td></tr>
+<tr><td>수시입출금 대신 CD 금리</td><td>−2.2%</td><td>−15.5%</td></tr>
+<tr><td>더 긴 기간(28주)</td><td>−4.9%</td><td>−13.6%</td></tr>
+<tr><td>선형 추세 포함</td><td>−2.5%</td><td>−4.0%</td></tr>
+<tr><td>꺾임 기준을 바꿈</td><td>—</td><td>−8.4% ~ −10.7%</td></tr>
+</tbody></table>
+<p>예금 금리 1bp 인상에 대한 스테이블코인 시가총액의 누적 반응이다. 방향은 모든 조건에서 같다. 크기는 선형 추세를 넣으면 IV가 −4.0%까지 작아진다.</p></section>
+<section class="card"><h2>4. 크기를 어떻게 읽어야 하나</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> 이 숫자는 &quot;얼마나 줄어드나&quot;가 아니라 &quot;얼마나 덜 크나&quot;다. 성장은 느려질 뿐 거꾸로 가지 않는다. 그래도 고금리 국면이 길게 이어지면 효과가 쌓인다.</blockquote>
+<ul>
+<li>계수는 시가총액 수준이 아니라 <strong>누적 성장률</strong>의 감소다. 예금 금리가 올라도 스테이블코인은 계속 자라지만 더 천천히 자란다(원문 5.3절·그림 6).</li>
+<li>10주 성장(15%)을 단순 회귀 기준으로 다 지우려면 한 주에 예금 금리가 약 5bp 올라야 한다. 표본에서 주간 변화의 최댓값이 3.5bp였으니 드문 일이다(원문 5.3절·표 1).</li>
+<li>그러나 2022~2023년 긴축기에 스테이블코인 시가총액은 약 30% 줄었다. 저자들은 예금 금리 효과가 쌓인 데다 연준 인상·테라 붕괴·FTX 파산이 겹친 결과로 본다(원문 5.3절).</li>
+<li>은행 쪽에서 보면 아직 총량 문제는 아니다. 스테이블코인 준비금도 결국 어딘가에 다시 투자되므로, 스테이블코인 잔액 변화는 예금 총량보다 <strong>어느 은행·어느 예금자에게 예금이 있느냐</strong>를 바꿀 수 있다(원문 5.3절).</li>
+</ul></section>
+<section class="card"><h2>5. 투자자가 알아야 할 7가지</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> 스테이블코인 성장은 금리 수준만이 아니라 은행이 예금에 얼마를 주느냐에 달렸다. 미국 기관 쪽에 가까운 USDC가 이 영향을 가장 많이 받는다. 이자를 주는 토큰화 상품이 커지면 판이 바뀔 수 있다.</blockquote>
+<p><strong>1) 스테이블코인의 경쟁자는 은행 예금이다 — 이제 데이터가 있다.</strong> 저자들은 이것이 &quot;예금 금리 변화가 스테이블코인 흐름에 영향을 준다&quot;는 첫 실증 증거라고 밝힌다(원문 1절). &quot;스테이블코인은 크립토 생태계 안에서만 쓰이는 칩&quot;이라는 반대 가설은 이 데이터와 맞지 않는다.</p>
+<p><strong>2) 금리 국면이 중요하다 — 꺾임은 약 3%다.</strong> 연방기금금리가 3% 위에 있으면 은행이 예금 금리를 빠르게 올려 스테이블코인을 더 세게 누른다. 연준 목표금리 상단은 2025년 12월 3.75%로 내려왔다가 2026년 9월 17일 4.00%로 다시 올랐다(FRED <code>DFEDTARU</code>). 지금은 꺾임 위쪽이다[추론]. 다만 논문이 잰 것은 금리 <strong>변화</strong>의 효과이지 <strong>수준</strong>의 효과가 아니다(원문 5.3절 다섯째 단서).</p>
+<p><strong>3) USDC가 USDT보다 은행 예금에 더 노출돼 있다.</strong> 같은 1bp에 USDC는 약 −5%, USDT는 약 −2%다(원문 그림 5). Circle처럼 USDC 준비금 이자로 돈을 버는 사업은 미국 은행의 예금 가격 정책에 성장 속도가 묶인다[추론].</p>
+<p><strong>4) 고금리는 양날이다[추론].</strong> 금리가 높으면 준비금에서 나오는 이자는 늘지만, 은행이 예금 금리를 올려 USDC 유통량 증가가 느려진다. 발행사 이익은 &quot;1달러당 이자 × 유통량&quot;이라서 두 힘이 서로 반대로 움직인다. 이 논문은 둘째 힘의 크기만 쟀다.</p>
+<p><strong>5) 은행에게도 레버가 있다.</strong> 저자들은 은행이 예금 가격으로 스테이블코인 확산 속도에 어느 정도 영향을 줄 수 있다고 결론 냈다(원문 6절). 은행이 이자를 주는 토큰화 예금을 내놓으면 이 경쟁은 같은 블록체인 위에서 벌어진다. 관련 논쟁은 뉴욕 연은의 Huang·Keister(2026, Staff Report 1179) 「스테이블코인 대 토큰화 예금」이 다룬다(원문 참고문헌).</p>
+<p><strong>6) 이자 금지가 판을 지킨다 — 그래서 그 규칙이 핵심 변수다.</strong> 논문의 추정은 스테이블코인이 보유자에게 이자를 주지 않는 체제에서 나왔다. 이자를 주는 스테이블코인이나 토큰화 머니마켓펀드가 커지면 대체 관계가 달라질 수 있다고 저자들은 썼다(원문 5.3절). 미국 GENIUS법은 결제용 스테이블코인 발행사가 보유자에게 이자를 주지 못하게 한다. 거래소 같은 제3자가 주는 보상까지 어디서 막을지는 규칙 제정의 쟁점이다[추론 — 이 보고서에서 규칙 진행 상황을 새로 확인하지 않았다].</p>
+<p><strong>7) 준비금을 예금으로 두게 하면 다른 위험이 생긴다.</strong> 준비금 일부를 예금으로 들게 하면 은행 자금 유출은 줄지만, 소수 은행에 예금보험 한도를 넘는 큰 예금이 몰리는 취약성이 생긴다(원문 6절). 2023년 3월 USDC가 실리콘밸리은행 예금 때문에 일시적으로 액면을 잃은 일이 그 예다. 저자들은 이 사태를 빼고도 결과가 유지됨을 보였다(원문 5.4절).</p></section>
+<section class="card"><h2>6. 가장 강한 반박과 한계</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> 도구변수가 약간 약하고, 고금리 국면은 표본에 한 번뿐이다. 누가 갈아탔는지는 알 수 없다. 방향은 여러 방법에서 같지만, 크기는 방법에 따라 2~5배 차이가 난다.</blockquote>
+<p><strong>가장 강한 반박.</strong> 고금리 구간(2022~2025)은 연준 인상·테라·FTX·실리콘밸리은행이 한꺼번에 몰린 시기다. &quot;3% 꺾임&quot; 도구변수가 이 시기의 크립토 경기를 대신 잡았을 수 있다. 저자들은 세 가지로 답한다. 암호화폐 플라시보가 0이고, 사건 더미와 거래량을 통제해도 결과가 같고, 은행 간 예금 경쟁(상품별 금리 차이)만 쓴 다른 방법도 같은 방향이다. 그러나 선형 추세를 넣으면 IV 효과가 −9.1%에서 −4.0%로 줄어 크기에는 불확실성이 크다(원문 표 2). <strong>결론: 방향(대체 관계)은 유지, 크기는 범위로 읽는다.</strong></p>
+<p><strong>그 밖의 한계</strong></p>
+<ul>
+<li>1단계 F통계량이 9.78로 관행 기준 10에 조금 못 미친다. 도구변수가 약간 약하다(원문 5.3절).</li>
+<li>총량 데이터라 누가 갈아탔는지, 어느 은행·어느 예금이 영향을 받았는지 알 수 없다(같은 출처).</li>
+<li>고금리 국면은 표본에 한 번(2022~2025)뿐이다(같은 출처).</li>
+<li>보유자에게 이자를 주지 않는 체제의 추정이다. 이자를 주는 상품이 커지면 달라질 수 있다(같은 출처).</li>
+<li>데이터는 2025년 6월에서 끝난다. 그 뒤 스테이블코인 법제화와 시장 성장은 반영되지 않았다.</li>
+<li>스테이블코인 보유자의 지역 분포 데이터가 부족하다. USDT의 약한 반응이 &quot;해외 보유&quot; 때문이라는 해석은 저자들의 추론이다(원문 1·6절).</li>
+<li>저자들은 연구 보조와 문장 다듬기에 AI를 썼다고 밝혔다(원문 첫 쪽 각주).</li>
+</ul></section>
+<section class="card"><h2>7. 무엇을 보면 되나</h2>
+<table><thead><tr><th>지표</th><th>왜</th><th>어디서</th></tr></thead><tbody>
+<tr><td>연방기금금리가 3% 위인가 아래인가</td><td>꺾임 위에서는 예금 금리 경쟁이 스테이블코인을 더 누른다</td><td>FRED <code>DFF</code>·<code>DFEDTARU</code></td></tr>
+<tr><td>은행 예금 금리 변화(특히 고액 머니마켓예금)</td><td>이 논문의 핵심 변수</td><td>FDIC 전국 평균 금리 등(논문이 쓴 RateWatch 통계는 2025년 6월 중단)</td></tr>
+<tr><td>USDC 대 USDT 유통량 증가율 차이</td><td>미국 예금 경쟁이 USDC 쪽에 더 세게 걸린다</td><td>발행사 공시 · 온체인 통계</td></tr>
+<tr><td>이자형 스테이블코인·토큰화 머니마켓펀드 잔액</td><td>대체 관계 자체를 바꿀 수 있는 변수</td><td>발행사 공시 · 온체인 통계</td></tr>
+<tr><td>스테이블코인 이자 금지 규칙의 범위</td><td>두 돈의 경계를 정하는 규칙</td><td>미국 재무부·감독기관 규칙 제정</td></tr>
+<tr><td>은행의 토큰화 예금 출시</td><td>은행이 같은 레일에서 이자로 경쟁하는 길</td><td>은행 발표</td></tr>
+</tbody></table>
+<h3>1차 자료</h3>
+<ul>
+<li>Ahmed, R. and Aldasoro, I. (2026). 「Are stablecoins and bank deposits substitutes?」 — <a href="https://www.bis.org/publications/working-paper-1382-are-stablecoins-and-bank-deposits-substitutes" target="_blank">BIS Working Papers No 1382</a> (2026-10-13 공개 · 본 정리는 원문 PDF 전문 34쪽 기준 · 1~6절, 그림 1~6, 표 1·2 인용)</li>
+<li>FRED — <a href="https://fred.stlouisfed.org/series/DFEDTARU" target="_blank">연방기금 목표금리 상단 DFEDTARU</a> · <a href="https://fred.stlouisfed.org/series/DFF" target="_blank">실효 연방기금금리 DFF</a> (2026-10-08 조회)</li>
+<li>원문이 인용한 관련 연구: Huang, X. and Keister, T. (2026). 「Stablecoins vs. tokenized deposits: The narrow banking debate revisited.」 FRB of New York Staff Report 1179 · Ahmed, R. and Aldasoro, I. (2026b). 「Stablecoins and safe asset prices.」 BIS Working Papers 1270</li>
+</ul>
+<blockquote>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</blockquote></section>
+<div class="foot">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+</div></body></html>
