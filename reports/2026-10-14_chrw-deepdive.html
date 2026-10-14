@@ -1,0 +1,2369 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C.H. Robinson (CHRW) Deep-Dive — AI로 줄인 일손의 이득은 회사에 남았다, 다만 값을 올리는 힘에서 나온 이득은 아니다 — 2026-10-14</title>
+<meta name="vault-stage" content="Dive"><meta name="vault-topic" content="CHRW"><meta name="vault-date" content="2026-10-14">
+<meta name="vault-skill" content="Deep-Dive"><meta name="description" content="CHRW Deep-Dive 2026-10-14">
+<style>/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+
+body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Helvetica Neue','Apple SD Gothic Neo',sans-serif;line-height:1.65;margin:0;padding:0;}
+.container{max-width:940px;margin:24px auto;background:#FDF6E3;padding:36px 44px;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.08);}
+h1{font-size:1.7em;border-bottom:3px solid #c0392b;padding-bottom:.3em;margin-top:.2em;}
+h2{font-size:1.32em;border-bottom:1px solid #c9bfa3;padding-bottom:.24em;margin-top:1.7em;color:#8a2415;}
+h3{font-size:1.1em;margin-top:1.3em;color:#5c4a00;}
+h4{font-size:1.0em;margin-top:1.1em;color:#5c4a00;}
+blockquote{border-left:4px solid #c9a227;background:#f5ecd3;margin:.8em 0;padding:.5em 1em;color:#4a4230;border-radius:0 6px 6px 0;}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.9em;display:block;overflow-x:auto;}
+th,td{border:1px solid #e8e1cf;padding:6px 9px;text-align:left;vertical-align:top;}
+th{background:#efe6cc;color:#5c4a00;font-weight:600;}
+tr:nth-child(even) td{background:#faf4e2;}
+code{background:#efe6cc;padding:1px 5px;border-radius:4px;font-size:.88em;}
+pre{background:#f0e8cf;padding:12px;border-radius:6px;overflow-x:auto;border:1px solid #e8e1cf;}
+a{color:#b0562a;text-decoration:none;} a:hover{text-decoration:underline;}
+hr{border:none;border-top:1px solid #d8cca8;margin:1.6em 0;}
+strong{color:#3a2f18;}
+.judge{background:#f3ead0;border:2px solid #c0392b;border-radius:8px;padding:16px 20px;margin:1.2em 0;}
+.judge h2{border:none;color:#8a2415;margin-top:0;}
+.dd-fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:12px;margin:1em 0;}
+.dd-fig figcaption{font-size:.82em;color:#6b5d3a;margin-top:6px;text-align:center;}
+.footer{margin-top:2em;padding-top:1em;border-top:1px solid #d8cca8;font-size:.85em;color:#6b5d3a;}
+@media print{body{background:#fff;}.container{box-shadow:none;background:#fff;}}
+@media (max-width:640px){.container{padding:20px 16px;}}
+</style>
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+<meta name="vault-published" content="2026-10-14">
+<meta name="robots" content="noindex, nofollow">
+</head><body>
+<!--dive-hub:start-->
+<nav id="dive-hub" aria-label="하위 Dive 모음" style="max-width:1100px;margin:12px auto 18px;padding:12px 16px;background:#F3EBD6;border:1px solid #e8e1cf;border-radius:10px;font:14px/1.6 'Pretendard','Noto Sans KR',sans-serif;color:#1f2328">
+<div style="font-weight:700;margin-bottom:4px">🤿 CHRW 하위 Dive 모음 <span style="font-weight:400;font-size:12px;color:#6b6457">— 이 Deep-Dive가 참고한 개별 보고서</span></div>
+<ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px">
+<li><a href="2026-10-14_chrw-rdive.html" title="CHRW (C.H. Robinson) R-Dive — 제품·수익모델 정밀 해부 — 2026-10-14" style="color:#1F6F8B;font-weight:600;text-decoration:none">💰 R-Dive</a> <span style="font-size:12px;color:#6b6457">제품·수익모델 · 10/14</span></li>
+<li><a href="2026-10-14_historydive-chrobinson.html" title="History-Dive — C.H. Robinson (CHRW) — 2026-10-14" style="color:#1F6F8B;font-weight:600;text-decoration:none">📜 History-Dive</a> <span style="font-size:12px;color:#6b6457">기업 역사 · 10/14</span></li>
+<li style="color:#8a8270">👤 People-Dive <span style="font-size:12px">사람·리더 — 미수행</span></li>
+<li style="color:#8a8270">📈 chart-dive <span style="font-size:12px">타이밍 — 🔒 로컬 전용 · 10/14</span></li>
+<li><a href="2026-10-14_chrw-specificdive.html" title="CHRW (C.H. Robinson) Specific-Dive — 화물 중개 전문가 체크리스트 보완 — 2026-10-14" style="color:#1F6F8B;font-weight:600;text-decoration:none">🔎 Specific-Dive</a> <span style="font-size:12px;color:#6b6457">업종 특수 점검 · 10/14</span></li>
+<li style="color:#8a8270">📄 One-Pager <span style="font-size:12px">1p 압축 — 미수행</span></li>
+</ul>
+</nav>
+<!--dive-hub:end-->
+<div class="container">
+<div class="kicker">DEEP-DIVE · 단일 종목 심층 · v1.42 --full · 첫 실행</div>
+
+<h1>C.H. Robinson (CHRW) Deep-Dive — AI로 줄인 일손의 이득은 회사에 남았다, 다만 값을 올리는 힘에서 나온 이득은 아니다</h1>
+<p class="sub">2026-10-14 ·
+기준가 $137.97(10/13 종가 ·
+52주 고점 $210.33 대비 −34%) ·
+시총 약 161억 달러 ·
+첫 Deep-Dive ·
+다음 실적 10/28(야후 표기)</p>
+
+<div class="meta">
+1차 자료:
+<a href="https://www.sec.gov/Archives/edgar/data/1043277/000104327726000009/chrw-20251231.htm">10-K FY2025(2026-02-13)</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1043277/000104327726000031/chrw-20260630.htm">10-Q 2026년 2분기(7/31)</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1043277/000104327726000027/ex991earningsreleaseq20630.htm">2분기 실적 발표문(8-K EX-99.1 · 7/29)</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1043277/000104327726000027/q22026earningsdeck.htm">2분기 발표 자료(EX-99.2)</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1043277/000119312526413203/d115124d8k.htm">8-K RXO 인수 합의(10/5)</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1043277/000119312526413203/d115124dex991.htm">RXO 인수 보도자료(EX-99.1)</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1043277/000119312526413203/d115124dex992.htm">RXO 인수 설명 자료(EX-99.2)</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1043277/000119312526315034/d149453d8k.htm">8-K 배심 권고 평결 공시(7/24)</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1043277/000104327726000011/chrw-20260323.htm">위임장 DEF 14A(2026-03-23)</a> ·
+<a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001043277&type=8-K&dateb=&owner=include&count=40">EDGAR 8-K 목록</a> ·
+<a href="https://www.scotusblog.com/2026/05/court-rules-freight-brokers-can-face-negligent-hiring-suits-under-state-law/">SCOTUSblog — Montgomery v. Caribe 판결(2026-05)</a> ·
+<a href="https://www.reuters.com/business/ch-robinson-ceo-says-ai-will-drive-freight-brokerage-consolidation-2026-02-23/">Reuters(2026-02-23)</a> ·
+<a href="https://www.investing.com/news/stock-market-news/ch-robinson-stock-tumbles-amid-freight-sector-ai-disruption-fears-4503508">Investing.com(2026-02-12)</a> · yfinance(10/13)</div>
+
+<div class="judge">
+<h4>🧑‍⚖️ 종합 매수 판단 (판사가 직접 쓴 쉬운 말 판정)</h4>
+<p>① <strong>한 줄 답</strong> — ⚪ 관망. 지금 가격은 좋은 가정이 여럿 한꺼번에 맞아야 하고, 큰 인수로 빚도 늘어나기 때문이다.</p>
+<p>② <strong>왜 그렇게 보나</strong>
+- 지금 주가가 맞으려면 이익률이 역대 최고 수준으로 굳어야 합니다. 그런데 트럭 운임에서 회사가 남기는 몫은 운임 상승을 따라가지 못합니다. 운송사에 주는 마일당 값은 29% 올랐고, 회사 몫은 2% 늘었습니다.
+- 같은 업종의 RXO를 빚을 크게 내서 사기로 했습니다. 약속한 비용 절감이 늦어지고 화물까지 줄면, 채권자와 약속한 빚 한도에 가까워집니다. 이만한 크기의 인수는 이 회사가 처음 합니다.
+- 낙관·기본·비관을 섞은 5년 기대치는 지금 가격의 1.37배입니다. 5년을 묶어 둘 보상으로는 넉넉하지 않습니다.</p>
+<p>③ <strong>언제 다시 보나</strong> — 10월 28일로 알려진 3분기 실적에서 이익률이 회복되는지 봅니다(날짜는 회사가 아직 확정하지 않았습니다). 가격으로는 115달러 이하면 다시 볼 만합니다.</p>
+<p>④ <strong>반대로 볼 이유</strong> — 주가는 이미 고점에서 3분의 1 넘게 빠졌습니다. 인원을 줄인 뒤 이익률은 2022년 최고치 근처까지 돌아왔습니다. 운송 계약 가격이 다시 매겨지는 2027년에 마진이 넓어지면, 지금이 가장 싼 때일 수 있습니다.</p>
+<p>⑤ <strong>아직 모르는 것</strong> — 인수 뒤 빚 한도 조건이 어떻게 바뀌는지와 트럭 사고 소송의 최종 배상액은 아직 공개되지 않았습니다.</p>
+<p>낮은 신뢰도의 참고 판단이며, 최종 판단은 독자 몫이다.</p>
+<p>판사 모델 = Opus 5.5 (사용자 지시 · 2026-10-14)</p>
+<blockquote>
+<p>CHRW는 미보유 관찰 종목이다. ⚪는 매수·매도 신호가 아니라 지금 가격에서의 관망이며, 정찰 규모의 소액 진입을 규율 위반으로 보지 않는다. 근거별 출처가 달린 판사 원문은 내부 파일에 따로 있다.</p>
+</blockquote>
+</div>
+<h2>한 장 요약</h2>
+<div class="summary">
+<ul>
+<li><strong>분석 계기</strong> — 사용자 보고서 2건(10/14 「AI로 매출·마진은 키우고 고용은 줄이는 곳은 어디인가 — 1인당 매출 지도」 · 「세션 총정리」)에서 CHRW는 "2022년 이후 생산성 +60%를 AI에 귀속"한 AI <em>사용</em> 기업으로 올랐다. 22V Research·모건스탠리가 "AI 회사가 아닌 섹터의 AI 수혜" 사례로 든 종목이다.</li>
+<li>🔴 <strong>질문 ① 생산성 이득은 지금까지 화주 운임 인하로 새지 않고 회사 손익에 남았다.</strong> 회사 몫 비율(조정 총이익 ÷ 매출)은 2023년 14.8% → 2025년 16.8%로 올랐다.
+  회사 몫 중 영업이익으로 남는 비율은 19.8% → 29.1% → 2026년 2분기 34.7%다. 그러나 이 이득은 <strong>값을 올리는 힘이 아니라 비용을 줄이는 힘</strong>에서 나왔다.
+  운임이 치솟은 2분기에 트럭 차액 비율은 14.8% → 13.1%로 오히려 눌렸다. 그래서 이득이 남아 있는 기간은 "경쟁사가 같은 비용 구조를 따라올 때까지"다. 다만 비교 기준을 같은 불황 국면인 2019년으로 바꾸면 회사 몫 대비 영업이익률은 30.5% → 29.1%로 비슷하다.
+  지금까지의 이득은 2023년 바닥 대비로 남았고, 2019년 대비로는 6년 치 임금 상승을 메웠다〔Specific-Dive〕.</li>
+<li>🔴 <strong>질문 ② 인원은 2022년 → 2025년 28% 줄었다</strong>(평균 1만 7,601명 → 1만 2,733명).
+  이 중 2023년 감원은 호황기 과잉채용과 운임 폭락에 대한 대응이고, 2024~2025년 감원(약 3,300명)은 물량이 그대로인 채 일어나 생산성 몫으로 읽힌다.
+  2019년 기준으로 나누면 2022→2025년 감원의 42%는 팬데믹 증원의 되돌림이고 58%가 2019년 아래로의 추가 감축이다.
+  1인당 인건비가 2019년 대비 +29% 올라 회사 몫 대비 인건비는 2019년과 같은 50.2%다〔Specific-Dive〕. "60%"는 회사가 정의한 1인당 처리 건수 지표이고 산식은 공개되지 않았다.
+  달러 기준 1인당 회사 몫은 2022년 호황 대비 +5%에 그친다.</li>
+<li>🔴 <strong>질문 ③ 운임 사이클 민감도는 여전히 크다.</strong> 2023년 트럭 건당 이익은 약 −32.5%였다.
+  운임 상승 초기에는 사는 값이 파는 값보다 빨리 올라 차액이 눌린다(2분기 매입 +29.0% vs 판매 +25.5%). 2분기 매출 +19.3%는 거의 전부 운임 상승이고, 늘어난 매출의 94.6%가 트럭 회사로 넘어갔다.</li>
+<li>🔴 <strong>세 개의 새 위험이 한꺼번에 왔다.</strong> ① 7/23 댈러스 배심이 운송사 선정 과실로 6억 400만 달러를 평결했고, 회사가 전액 연대책임을 질 수 있다(보험 1건당 1억 5,500만 달러) ② 5월 대법원이 바로 이 회사가 피고인 사건에서 브로커 상대 같은 소송의 길을 열었다(파기·환송) ③ 10/5 RXO 인수(기업가치 약 58억 달러 ·
+  역사상 최대 인수의 약 8.8배)로 약속한 연 3억 달러 비용 절감은 RXO 연간 이익(조정 EBITDA 1.37억 달러)의 2.2배다. 이 회사는 과거에 인수 시너지를 숫자로 약속한 적이 없다.</li>
+<li>🟠 <strong>경영진은 숫자 약속을 지키는 운영형이다.</strong> 2022년 이후 비용·생산성·이익률 약속 4개를 모두 지켰고, CEO는 취임 뒤 장내 매도가 0건이다. 그러나 그 실력은 "자기 집 안"에서만 검증됐다.</li>
+<li>🟠 <strong>업종 체크리스트가 찾은 것(Specific-Dive)</strong> — 대법원 Montgomery 사건의 피고가 바로 C.H. Robinson이었고, Lipe 평결은 연방 최고 등급 운송사를 골랐는데도 책임을 인정했다. 이번 운임 상승은 연방 면허 규제가 운전자를 5년에 걸쳐 줄이는 공급 충격이다.</li>
+<li><strong>7축 종합 59점 / 100 (⭐3.37 병기 · 보통)</strong> · 첫 실행 · 사업·thesis 매력도 · 밸류 멀티플 미반영 · 5점 이내 차이 = 동급</li>
+<li><strong>분면 「약하고 싼」 경계(정찰 영역)</strong> · <strong>0to1 Track A 2/7 · ⭐3.0</strong> · <strong>밸류 🔴 고평가(약 · 신뢰도 낮음 · 회사 몫 대비 이익률 40% 지속 여부에 뒤집힐 수 있음)</strong> ·
+  <strong>🎯 ⚪ 관망 — $115 이하 또는 3·4분기 회사 몫 대비 영업이익률 35% 이상 확인 때 재검토</strong> · <strong>고금리·고물가 내구성 ⚪ 조건부(지금 단독 🟢에 가까움 · RXO 인수 뒤 결합 충격 취약 경로)</strong></li>
+</ul>
+</div>
+<figure class="dd-fig"><div id="fig-score7"></div><div class="dd-legend" id="fig-score7-leg"></div><figcaption id="fig-score7-cap"></figcaption></figure>
+
+<blockquote>
+<p>📎 <strong>하위 Dive</strong> — 이 보고서는 R-Dive(제품·수익모델) · History-Dive(기업 역사·약속 이행) · People-Dive(경영진)를 오늘 새로 돌려 그 결과를 요약해 쓴다. 업종 체크리스트(Specific-Dive)는 본문 초안 뒤에 돌렸다. 링크는 맨 위 모음에 있다.</p>
+</blockquote>
+<p><strong>배경 (1회만)</strong> — C.H. Robinson은 1905년에 세워진 북미 최대 화물 중개회사다. 트럭·배·비행기를 거의 갖지 않고, 7만 5천 곳의 화주(짐을 보내는 회사)에게 운송을 주문받아 45만 곳의 등록 운송사 중 한 곳에 넘긴다. 화주에게 받은 운임 전부를 매출로 잡기 때문에 매출은 운임 수준에 따라 크게 출렁인다. 회사가 실제로 버는 것은 "받은 운임 − 운송사에 준 운임"의 차액이고, 회사는 이것을 조정 총이익이라 부른다. 2023년 아마존 운송 조직 출신 데이브 보즈먼이 CEO로 와서 "린(낭비 제거) + 자체 개발 AI"로 인원을 줄이며 이익률을 올렸다.</p>
+<hr />
+<h2>Part 1 — Top-Down 7계층</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 산업은 성숙했고, 섹터는 극도로 쪼개져 값을 올리기 어렵다. 이 회사가 이기는 칸은 "같은 차액을 더 적은 사람으로 번다"는 비용 칸 하나이고, 사람과 재무가 그 칸을 받친다.</p>
+</blockquote>
+<h2 id="a">Section A. 🌦️ 날씨 — 지정학 + 거시 (장기 구조)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 관세는 통관 수수료를 늘렸고, AI 노동 대체 흐름은 이 회사의 비용 칸에 순풍이다. 금리·화물 사이클·중동 해운 마찰은 양쪽으로 작용한다. 전체로는 중립에서 약간 순풍이다.</p>
+</blockquote>
+<h3>A.1 지정학</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 관세로 국제 물동량은 흔들렸지만 통관 대행 수입은 늘었다. 중동 제재는 해상 운임을 출렁이게 해 좋은 쪽과 나쁜 쪽이 함께 온다.</p>
+</blockquote>
+<ul>
+<li><strong>미·중 관세</strong> — 2025년 통관 부문 조정 총이익은 +23.6%였다.
+  통관 건수는 +1.0%로 건당 수수료가 올랐고, 통관은 전체 회사 몫의 4.9%(1.33억 달러)다〔Specific-Dive〕. 관세가 오를수록 "관세 대납 수수료"가 늘어난다(R-Dive · 10-K). 반대로 해상 물량은 2025년 −4.5%였다. 관세가 국제 물동량은 줄이고 통관 일감은 늘린 셈이다.</li>
+<li><strong>중동·이란 제재</strong> — 8월 이후 제재는 해운·보험 마찰로 먼저 전달되고 있다. 포워딩(국제 운송 주선)에서 운임 급변은 건당 이익을 일시적으로 키우기도, 깎기도 한다. 방향은 양쪽이다.</li>
+<li><strong>국가안보·공급망</strong> — 국방 직결도는 낮다. 미국 정부 계약 매출은 공시되지 않았다.</li>
+</ul>
+<h3>A.2 거시</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금은 빚이 적어 금리에 둔하다. RXO 인수로 빚이 늘면 금리 민감도가 커진다. 화물 불황 3년이 끝나고 운임이 급등하는 국면이다.</p>
+</blockquote>
+<ul>
+<li><strong>금리</strong> — 9/16 FOMC가 기준 금리를 0.25%p 올렸다(3.75~4.00%). 10-K는 금리 1%p 변동 영향이 "중요하지 않다"고 적었다.
+  그러나 RXO 인수 자금으로 최대 45억 달러를 새로 빌리면(브리지 대출 약정 · 8-K) 이 문장은 바뀐다.</li>
+<li><strong>화물 사이클</strong> — 2023~2025년 북미 트럭 운임은 바닥이었다. 2026년 들어 트럭 공급이 줄며 운임이 급등했다(2분기 판매 운임 +25.5%). 10-Q는 "운송사 공급 축소와 경유값 변동으로 비용이 계약 운임 재조정보다 빨리 올랐다"고 적었다. 공급 축소의 한 원인은 규제다.
+  연방 최종규칙(2026-02-13 공포 ·
+  3/16 시행)이 비거주 상업운전면허를 특정 취업 비자로 제한했고, 규칙 본문은 약 19만 4천 명이 면허 갱신 때마다 약 5년에 걸쳐 시장을 떠난다고 추정했다(<a href="https://www.federalregister.gov/d/2026-02965">연방관보</a>). 영어 능력 위반을 운행정지 기준으로 굳히는 규칙은 8/10 제안 단계다(<a href="https://www.federalregister.gov/d/2026-16288">연방관보</a>). 수요가 아니라 공급이 끄는 상승이다 — DAT 물량 지수는 9월 밴 −1%·냉장 −10%·평판 −7%(전년 대비)다〔Specific-Dive〕.</li>
+<li><strong>위험 선호</strong> — 베타는 0.95로 시장과 비슷하게 움직인다. 시장 전체(SPY)와의 60일 상관은 −0.15로 낮다.</li>
+</ul>
+<h3>A.3 thesis anchor 매핑</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 사용자 거시 틀 가운데 이 회사와 직접 맞닿는 것은 "AI가 노동을 대체한다"는 논쟁 하나다. 나머지는 간접이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>틀</th>
+<th style="text-align: center;">정합</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AI 노동 논쟁 3진영(Carnegie)</td>
+<td style="text-align: center;">🟡</td>
+<td>이 회사는 "AI로 인원을 줄이며 이익률을 올린" 실증 사례다(인원 −28%·이익률 상승 · 10-K). 동시에 2/12 "AI가 중개업을 대체한다" 공포 매도의 대상이기도 하다</td>
+</tr>
+<tr>
+<td>성상현 AI 산업혁명 인프라·운영 효율</td>
+<td style="text-align: center;">🟡</td>
+<td>AI를 <em>쓰는</em> 쪽의 비용 절감이 1차 숫자로 확인되는 드문 사례</td>
+</tr>
+<tr>
+<td>Warsh 이중 전략(표면 완화·실질 긴축)</td>
+<td style="text-align: center;">⚪</td>
+<td>9/16 인상 · 인수 뒤 변동금리 차입 증가 예정</td>
+</tr>
+<tr>
+<td>관세·재정(관세 수입 급증)</td>
+<td style="text-align: center;">🟡</td>
+<td>통관 대행 수입 증가 · 국제 물량은 감소</td>
+</tr>
+<tr>
+<td>이란 제재·해운 마찰</td>
+<td style="text-align: center;">⚪</td>
+<td>해상 운임 변동 = 양방향</td>
+</tr>
+<tr>
+<td>대만 억제(Fryman)·달러 패권</td>
+<td style="text-align: center;">⚪</td>
+<td>직접 노출 낮음</td>
+</tr>
+</tbody>
+</table>
+<h3>A.4 매크로 민감도</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이 회사의 이익을 가장 크게 흔드는 거시 변수는 금리가 아니라 북미 트럭 운임 사이클이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>변수</th>
+<th>방향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기준 금리 +1%p</td>
+<td>인수 전 "중요하지 않음"(10-K) · 인수 뒤 변동금리 차입 증가로 연 이자 부담 증가(내구성 정밀 진단 참조)</td>
+</tr>
+<tr>
+<td>트럭 운임 급등 초기</td>
+<td>🔴 차액 압축(2분기 실례)</td>
+</tr>
+<tr>
+<td>트럭 운임 급등 후 계약 재가격</td>
+<td>🟢 차액 회복(과거 2018년 건당 이익 약 +21% · History-Dive)</td>
+</tr>
+<tr>
+<td>운임 폭락</td>
+<td>🔴 건당 이익 급감(2023년 약 −32.5%)</td>
+</tr>
+<tr>
+<td>유가</td>
+<td>⚪ 연료 할증 대부분 통과 → 매출만 출렁, 회사 몫 영향 작음</td>
+</tr>
+<tr>
+<td>관세</td>
+<td>🟡 통관 수입↑ · 국제 물량↓</td>
+</tr>
+<tr>
+<td>계약−스팟 운임 차이(DAT 밴)</td>
+<td>🔴 9월 마일당 0.23달러(1년 전 0.37) — 0 아래로 뒤집히면 2021년형 압박〔Specific-Dive〕</td>
+</tr>
+<tr>
+<td>공급 규제(비거주 면허)</td>
+<td>🟡 다년형 공급 축소 → 상승기 길어짐 · 2027년 계약 재가격 뒤 2018년형 회복 가능〔Specific-Dive〕</td>
+</tr>
+</tbody>
+</table>
+<h3>A.5 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 순풍 칸 둘과 양방향 칸 넷이라 3점이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>관세·공급망 재편(통관↑·국제 물량↓)</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>지정학 이벤트(중동 해운 마찰)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>금리 민감도(인수 뒤 상승)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>화물 사이클(바닥 탈출·초기 압축)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>AI 노동 대체 흐름(사용자 수혜 실증)</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>유동성·위험 선호(저베타)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>⭐3.0 → 12.5 / 25점</strong></td>
+</tr>
+</tbody>
+</table>
+<p>▶ Flip 트리거 — 🟢 강화: 운임 상승기 2개 분기 뒤 트럭 차액 비율이 14%대로 회복 / 🔴 훼손: 금리 추가 인상 + RXO 차입이 변동금리로 남은 채 운임 하강 전환.</p>
+<hr />
+<h2 id="b">Section B. ⛰️ 산 — 산업 (북미 화물 운송·3자 물류)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 화물 운송은 세상을 바꾸는 산업이 아니라 성숙한 산업이다. 바뀌는 것은 산업이 아니라 "산업 안에서 일하는 방식"이다.</p>
+</blockquote>
+<h3>B.1 세상을 바꾸는 산업인가</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 아니다. 물량은 3년째 제자리다. AI가 중개 방식을 바꾸고 있다는 점만 변화다.</p>
+</blockquote>
+<p>⚠️ 불확실. 물류는 경제의 혈관이지만 5~10년 안에 산업 자체가 크게 커질 근거는 없다.
+이 회사 트럭 물량은 2023~2025년 −4.5%~+0.5%였고, 업계 물량 지표(Cass 화물 지수)는 2분기 −3.3%였다(R-Dive). 바뀌는 것은 견적·배차·추적 같은 중개 일손이 AI로 자동화되는 방식이다.</p>
+<h3>B.2 미·중 패권 자본 투입</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 반도체·원자력처럼 국가가 돈을 쏟는 산업이 아니다.</p>
+</blockquote>
+<p>CHIPS·IRA 같은 산업정책 자금이 직접 들어오는 산업이 아니다. 관세와 북미 공급망 재편은 간접 순풍이다 → ⚪.</p>
+<h3>B.3 내러티브 다중성 5축</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 기술(AI 자동화) 한 축만 뚜렷하다. 자본시장은 오히려 2/12에 이 산업을 "AI 피해자"로 읽었다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">판정</th>
+<th style="text-align: center;">깊이</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔧 기술</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">4</td>
+<td>AI 에이전트 100개 이상으로 견적~예약 자동화(RXO 인수 자료)</td>
+</tr>
+<tr>
+<td>👥 사회</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">3</td>
+<td>사무직 감원 · 트럭 운전 인력 부족</td>
+</tr>
+<tr>
+<td>🏛️ 정책</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">2</td>
+<td>관세 · 브로커 책임 판결(Montgomery)</td>
+</tr>
+<tr>
+<td>🌐 지정학</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">2</td>
+<td>북미 공급망 재편</td>
+</tr>
+<tr>
+<td>💰 자본</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">2</td>
+<td>2/12 업종 전체 AI 공포 매도(CHRW −14.5%·RXO −18%·EXPD −13%)</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-c3"></div><div class="dd-legend" id="fig-c3-leg"></div><figcaption id="fig-c3-cap"></figcaption></figure>
+
+<h3>B.4 산업 CAGR + TAM</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 연 30% 성장 산업과는 거리가 멀다. 1차 TAM 수치는 이번에 모으지 못했다.</p>
+</blockquote>
+<ul>
+<li>❌ 미수집: 북미 화물 중개 TAM·성장률의 1차 협회 자료.</li>
+<li>1차로 확인되는 것은 물량 정체(위 B.1)다. 매출 성장은 운임 수준이 정한다. 연 30% 이상 성장의 근거는 없다 → 🔴.</li>
+</ul>
+<h3>B.5 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 성숙 산업이라 2점대다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>세상 바꾸는 산업</td>
+<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td>국가 자본 투입</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>내러티브 다중성(기술 1축)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>성장률·시장 규모</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>⭐2.25 → 3.9 / 12.5점</strong></td>
+</tr>
+</tbody>
+</table>
+<p>▶ Flip 트리거 — 🟢: 북미 물량 지표가 4개 분기 연속 증가 전환 / 🔴: 화주의 직접 디지털 조달이 중개 점유율을 깎는 1차 통계 등장.</p>
+<hr />
+<h2 id="c">Section C. 🌲 숲 — 섹터 (화물 중개 · 자산 경량)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 화물 중개는 병목이 아니라 병목(트럭 용량)을 사서 되파는 자리다. 트럭이 귀해지면 값을 정하는 쪽은 운송사이고, 중개회사의 차액은 눌린다. 이 섹터에서 1등이라는 것이 값을 올리는 힘으로 이어지지 않는다.</p>
+</blockquote>
+<h3>C.1 병목 시점 매트릭스</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금의 병목은 트럭 용량이고 이 회사는 그것을 갖고 있지 않다. 2년 안팎의 병목은 "AI로 중개 일손을 줄이는 능력"인데, 이것은 따라 할 수 있는 능력이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>병목 단계</th>
+<th>CHRW 위치</th>
+<th style="text-align: center;">유지 기간</th>
+<th>해소 경로</th>
+<th style="text-align: center;">렌트 포획</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>지금(0~6개월)</td>
+<td>트럭 용량(운송사 공급 축소)</td>
+<td>용량을 사는 쪽 · 북미 1위 중개</td>
+<td style="text-align: center;">단기</td>
+<td>운임 상승에 따른 운송사 재진입</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>6~24개월</td>
+<td>계약 운임 재가격 + 중개업 통합(RXO)</td>
+<td>통합 주도자</td>
+<td style="text-align: center;">1~2년</td>
+<td>경쟁사 AI 자동화 확산</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2~5년</td>
+<td>AI 운영 역량·데이터 규모</td>
+<td>선두(회사 주장)</td>
+<td style="text-align: center;">추정 불가</td>
+<td>범용 AI 도구로 소형 중개도 같은 효율 확보</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+</tbody>
+</table>
+<p><strong>지불자 경로</strong> — 큰손은 대형 화주(상위 100곳이 매출의 약 40%)다. 이들이 막힌 곳은 "운임이 급등할 때 약속한 날짜에 짐을 실어 줄 트럭을 확보하는 일"이다. CHRW는 그 트럭을 찾아 주는 일을 화주에게 직접 판다 → 경로 <strong>직접</strong>. 직접 경로는 큰손의 협상력에 마진이 눌리는 자리다. 고객 집중도는 최대 고객 약 2%로 낮다(10-K). 가격 인상 테스트는 🔴다(Section D). 즉 고객이 흩어져 있어 한 곳에 휘둘리지는 않지만, 값을 정하는 힘도 없다.</p>
+<p><strong>렌트 포획 — 4문</strong></p>
+<table>
+<thead>
+<tr>
+<th>질문</th>
+<th>답</th>
+<th style="text-align: center;">판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 계약 구조</td>
+<td>화주 쪽 1년 이하 계약 운임(물량 약정 없음) · 운송사 쪽 대부분 스팟 매입(10-K)</td>
+<td style="text-align: center;">시차형(급등기 압축)</td>
+</tr>
+<tr>
+<td>② 구매자 협상력</td>
+<td>최대 고객 2% · 상위 100곳 40% · 고객은 여러 중개를 함께 쓴다</td>
+<td style="text-align: center;">중립</td>
+</tr>
+<tr>
+<td>③ 캐파 소유</td>
+<td>트럭 거의 없음</td>
+<td style="text-align: center;"><strong>상한</strong></td>
+</tr>
+<tr>
+<td>④ 우회 비용</td>
+<td>화주 직접 계약·다른 중개·디지털 중개로 갈아타기 쉬움</td>
+<td style="text-align: center;"><strong>상한</strong></td>
+</tr>
+</tbody>
+</table>
+<p>상한 2개 + 2분기 실현 증거(운임 급등기에 트럭 차액 비율 14.8% → 13.1% · 다만 마일당 회사 몫은 +2%로 명목 금액은 지켰고 운임 인플레이션을 따라가지 못했다)로 <strong>🔴 포획 실패</strong>로 판정했다. 미래 칸은 4문만으로 판정했고, 캐파 미소유가 그대로라 🔴다.</p>
+<h3>C.2 4중 필터</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 섹터 1등이고 회사 몫 대비 이익률은 업계 최상위다. 그러나 경쟁자는 수천 곳이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>필터</th>
+<th style="text-align: center;">등급</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">⚪</td>
+<td>지금 칸 판정을 따름 · 렌트 포획 🔴 상한</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">🔴</td>
+<td>상장·비상장 수천 곳으로 극도로 쪼개짐(TQL·RXO·Uber Freight·Landstar·J.B. Hunt 중개 부문 등) · 기호는 매력도 기준</td>
+</tr>
+<tr>
+<td>③ 섹터 순위</td>
+<td style="text-align: center;">⭐5</td>
+<td>북미 1위 중개 · 13분기 연속 업계 지표보다 물량 우위(회사 발표)</td>
+</tr>
+<tr>
+<td>④ 마진</td>
+<td style="text-align: center;">🟡</td>
+<td>회사 몫 대비 영업이익률 29~35%로 업계 최상위 · 매출 대비는 4.9%</td>
+</tr>
+</tbody>
+</table>
+<h3>C.3 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 렌트 포획 🔴 상한이 시점 칸 셋과 수요/공급 칸을 모두 2.5로 묶었다. 1등 자리와 이익률이 점수를 받쳤다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">원판정</th>
+<th style="text-align: center;">상한 적용 후 ⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>지금(0~6개월)</td>
+<td style="text-align: center;">🟡4 →</td>
+<td style="text-align: center;">⚪2.5(렌트 포획 🔴)</td>
+</tr>
+<tr>
+<td>6~24개월</td>
+<td style="text-align: center;">🟡4 →</td>
+<td style="text-align: center;">⚪2.5(렌트 포획 🔴)</td>
+</tr>
+<tr>
+<td>2~5년</td>
+<td style="text-align: center;">🟡4 →</td>
+<td style="text-align: center;">⚪2.5(렌트 포획 🔴)</td>
+</tr>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">⚪2.5</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">🔴1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>③ 섹터 순위</td>
+<td style="text-align: center;">⭐5</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>④ 마진</td>
+<td style="text-align: center;">🟡4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>⭐2.86 → 5.8 / 12.5점</strong></td>
+</tr>
+</tbody>
+</table>
+<p>▶ Flip 트리거 — 🟢 강화: 운임 상승 국면에서도 트럭 차액 비율이 유지·확대(가격을 지킨 첫 증거) / 🔴 훼손: 3분기에도 트럭 차액 비율 13% 이하 + 업계 지표 대비 물량 우위 소멸.</p>
+<hr />
+<h2 id="d">Section D. 🌳 나무 — 기업</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 돈을 버는 구조는 증명됐고 현금도 잘 남는다. 해자는 "남보다 싸게 일하는 것" 하나이고, 값을 올리는 힘은 없다.</p>
+</blockquote>
+<h3>D.0 제품·수익모델 — R-Dive 요약</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 트럭·소량 화물·국제 운송을 중개해 차액을 떼는 통행세형 사업이다. 바뀌는 것은 매출 구조가 아니라 그 차액을 버는 데 드는 비용 구조다.</p>
+</blockquote>
+<ul>
+<li><strong>아키타입</strong>: 통행세형 중개(운임 차액 · 총액 인식) + 비용 구조 전환(사람 중심 → AI 자동화).</li>
+<li><strong>돈줄</strong>: 2025년 조정 총이익 27.29억 달러 중 북미 육상(트럭+소량 화물) 62.5% · 국제 운송 주선 27.2% · 기타(신선 농산물·화주 대리 관리) 10.3%.</li>
+<li><strong>주력 제품</strong>: 트럭 한 대분 중개(운송 조정 총이익의 40.7%) · 소량 화물 중개(23.6% · 2분기 건당 이익 +19.5%) · 해상·항공 주선과 통관 · 화주 대리 관리(수수료형) · 신선 농산물 매매. 모두 자체 플랫폼 Navisphere 위에서 돈다.</li>
+<li><strong>치명 함정</strong>: ① 차액의 크기는 트럭 시황이 정한다 ② 회사가 정의한 "생산성 60%"를 RXO에 이식하겠다는 약속에 빚과 신주가 걸렸다.</li>
+<li>상세 = R-Dive 2026-10-14(맨 위 링크 모음).</li>
+</ul>
+<h3>D.0.5 고객 검증 등급</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 고객은 7만 5천 곳으로 흩어져 있다. 이름이 공개된 고객은 없지만 업종상 비공개 관행이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>고객</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>화주 전체(상위 100곳 = 매출 약 40%)</td>
+<td style="text-align: center;">B</td>
+<td>10-K 위험 요인에 집중도 수치 기재 · 이름 비공개(업종상 비공개 관행)</td>
+</tr>
+<tr>
+<td>화주 대리 관리 고객(관리 운임 21억 달러)</td>
+<td style="text-align: center;">B</td>
+<td>2분기 발표 자료</td>
+</tr>
+</tbody>
+</table>
+<h3>D.5 곡괭이 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 번 돈으로 스스로 투자하고도 남는 자가조달형이다. 마진이 늘어난 이유는 값이 아니라 비용이다.</p>
+</blockquote>
+<ul>
+<li><strong>곡괭이 질 (A) 자가조달형</strong>: 설비투자는 매출의 0.4%(2025년 7,050만 달러)이고, 잉여현금흐름이 2023년 6.48억 · 2024년 4.35억 ·
+  2025년 8.44억 달러로 순이익보다 많다. 희석 주식 수는 2022년 1.27억 → 2025년 1.22억 주로 줄었다.</li>
+<li><strong>마진 출처 3분해</strong>: (a) 비용 쪽 운영 레버리지(인원 −28% · 영업비용 −7.4%) — 가격결정력 아님 · (b) 정부 이전지출 없음 · (c) 일회성 없음 → 정책렌트형(P) 아님.</li>
+<li>🔴 <strong>RXO 이후 성격 변화</strong>: 현금 대가 57%를 새 빚으로, 43%를 신주(약 11%)로 낸다. 자사주 매입을 멈추고 순부채/EBITDA가 약 2.9배로 오른다(회사 제시). 자가조달형의 틀은 유지되지만 2~3년간 빚을 갚는 데 현금이 묶인다.</li>
+</ul>
+<h3>D.6 해자</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 남보다 싸게 일하는 비용 우위 하나만 작동한다. 트럭 운임은 시장가를 따르므로 가격 인상 테스트는 통과하지 못한다.</p>
+</blockquote>
+<p><strong>D.6-a 해자 유형 4종 + 가격 인상 테스트</strong></p>
+<table>
+<thead>
+<tr>
+<th>유형</th>
+<th style="text-align: center;">작동</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 네트워크 효과</td>
+<td style="text-align: center;">⚠️</td>
+<td>운송사 45만·화주 7만 5천으로 크다. 그러나 물량이 3년 정체라 "커질수록 강해지는지" 검증이 열리지 않는다. 대리 지표(업계 대비 물량 우위·차액 비율 상승)는 긍정이지만 차액 상승의 상당분이 사이클 덕이다</td>
+</tr>
+<tr>
+<td>② 브랜드</td>
+<td style="text-align: center;">❌</td>
+<td>화주가 웃돈을 내는 근거 없음</td>
+</tr>
+<tr>
+<td>③ 전환 비용</td>
+<td style="text-align: center;">❌</td>
+<td>계약 1년 이하 · 물량 약정 없음(10-K) · 화주 대리 관리(조정 총이익 4%)만 예외</td>
+</tr>
+<tr>
+<td>④ 비용 우위</td>
+<td style="text-align: center;">✅</td>
+<td>1인당 조정 총이익 2025년 21.4만 달러 vs RXO 16.4만 달러(회사 자료) · 회사 몫 대비 영업이익률 29.1%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>규모 × 렌트 동행 소표</strong></p>
+<table>
+<thead>
+<tr>
+<th>규모(3년)</th>
+<th>렌트(같은 기간)</th>
+<th style="text-align: center;">판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>트럭 물량 −4.5% → +0.5% → +0.5%(정체)</td>
+<td>회사 몫 비율 14.8% → 16.8%</td>
+<td style="text-align: center;">⚠️ 규모 정체 — 강화 검증이 열리지 않음</td>
+</tr>
+</tbody>
+</table>
+<p><strong>가격 인상 테스트 = 🔴</strong> — 트럭 판매 운임은 시장 운임을 따른다. 운임이 급등한 2분기에 판매 운임(+25.5%)이 매입 운임(+29.0%)을 따라가지 못해 트럭 차액 비율이 1.7%p 내려갔다. 달러로 보면 트럭 1마일당 회사 몫은 +2%였다. 화주 운임을 깎아 내준 흔적은 없지만(명목 방어), 매입 운임 +29%를 따라가지도 못했다(실질 미추종). 비율 하락의 큰 몫은 연료·운임이 분모를 키운 효과다.
+같은 분기 RXO 중개 마진은 14.4% → 10.7%로 CHRW보다 두 배 넘게 눌렸다 — 매입 쪽 상대 우위의 정황이다(정의가 달라 참고 증거)〔Specific-Dive〕. 2023~2025년 차액 비율 상승은 "값을 올린" 결과가 아니라 "싸게 산" 결과다(운임 바닥). 소량 화물 건당 이익 +19.5%·통관 수수료는 부분적 가격 힘이지만 회사 몫의 3분의 1이 안 된다.</p>
+<p>→ ✅ 유형 1개 = ⭐3이지만 가격 테스트 🔴 상한으로 <strong>D.6-a ⭐2</strong>.</p>
+<p><strong>D.6-b Durable ↔ Variable</strong> — 소유한 내구 자산(부지·정부 면허·장기 계약)은 거의 없다. 통관 면허는 있지만 진입 장벽이 낮다. 해자의 기반은 AI·소프트웨어·데이터(Variable)이고, 10-K 스스로 "경쟁사도 AI 배차·자동화로 비용을 낮추고 있다"고 적었다 → <strong>⭐2(Variable 위주)</strong>.</p>
+<p><strong>D.6 ⭐ = (2 + 2) ÷ 2 = 2.0</strong> · 해자 내구성 = 약 3~5년 추정(비용 우위만 작동 · 경쟁사 추격 속도에 달림 · 근거 약함).</p>
+<h3>D.7 확장성 · D.8 하방/상방</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 물류 한 산업 안에서 깊게 판다. 현금을 잘 벌어 하방은 닫혀 있지만, 소송과 인수 빚이 그 문을 조금 연다.</p>
+</blockquote>
+<ul>
+<li><strong>D.7</strong>: 트럭·소량 화물·국제 주선·관리 서비스 = 물류 단일 산업의 깊이 → ⭐3.</li>
+<li><strong>D.8 하방</strong>: 흑자 · 잉여현금흐름 연 4~8억 달러 · 순부채/EBITDA 약 1.6배 → 🟡4. 다만 배심 평결(최대 6억 400만 달러 연대책임 가능)과 인수 차입이 하방을 넓힌다.
+  <strong>캐시카우</strong>: 있음 → 🟢5. <strong>상방</strong>: RXO 시너지 3억 달러가 다 실현되고 운임 상승기 계약 재가격이 겹치면 2028년 이익이 크게 뛸 수 있다(회사는 2028년 조정 주당순이익 10%대 중반 증가를 제시).</li>
+</ul>
+<h3>D.9 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 현금 창출과 자가조달이 점수를 받쳤고, 값을 올리지 못하는 해자가 끌어내렸다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D.0 수익모델(증명된 흑자 · 시황 의존)</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>D.5 곡괭이 질(A 자가조달)</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>D.6 해자(비용 우위만 · 가격 테스트 🔴)</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td>D.7 확장성</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td>D.8 하방 닫힘</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>D.8 캐시카우</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"><strong>⭐3.83 → 8.9 / 12.5점</strong></td>
+</tr>
+</tbody>
+</table>
+<p>▶ Flip 트리거 — 🟢: RXO 통합 첫해 1인당 조정 총이익이 CHRW 수준으로 수렴 · 운임 상승기 차액 비율 유지 / 🔴: 배심 평결 확정 + 보험 한도 초과분 현금 유출 · 경쟁사가 같은 1인당 이익을 공시.</p>
+<hr />
+<h2 id="e">Section E. 🌲🌳 옆의 나무 — 경쟁</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 북미 중개에서는 규모와 비용 효율로 앞선다. 국제 운송 주선의 대장 Expeditors에는 매출 대비 이익률에서 뒤진다. 시장은 이 업종 전체를 같은 바구니로 본다.</p>
+</blockquote>
+<h3>E.1 비교 매트릭스 (yfinance 10/13)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 숫자로 앞서는 칸은 규모와 회사 몫 대비 이익률이다. 매출 대비 이익률과 순현금은 Expeditors·Landstar가 앞선다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>CHRW</th>
+<th>RXO</th>
+<th>LSTR</th>
+<th>EXPD(포워딩 대장)</th>
+<th>JBHT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>모델</td>
+<td>중개(직원형)</td>
+<td>중개(직원형)</td>
+<td>중개(에이전트형)</td>
+<td>국제 주선·통관</td>
+<td>복합운송+중개</td>
+</tr>
+<tr>
+<td>시총(억 달러)</td>
+<td>161</td>
+<td>47</td>
+<td>57</td>
+<td>254</td>
+<td>215</td>
+</tr>
+<tr>
+<td>매출 TTM(억 달러)</td>
+<td>170</td>
+<td>61</td>
+<td>50</td>
+<td>120</td>
+<td>127</td>
+</tr>
+<tr>
+<td>매출 성장(최근 분기)</td>
+<td>+19.3%</td>
+<td>+25.0%</td>
+<td>+18.1%</td>
+<td>+32.1%</td>
+<td>+19.4%</td>
+</tr>
+<tr>
+<td>매출 대비 영업이익률</td>
+<td>5.3%</td>
+<td>0.7%</td>
+<td>4.6%</td>
+<td>10.7%</td>
+<td>7.4%</td>
+</tr>
+<tr>
+<td>순현금(+)/순부채(−)(억 달러)</td>
+<td>−18</td>
+<td>−7</td>
+<td>+2</td>
+<td>+5</td>
+<td>−14</td>
+</tr>
+<tr>
+<td>선행 P/E</td>
+<td>18.4</td>
+<td>44.4</td>
+<td>21.8</td>
+<td>24.2</td>
+<td>23.1</td>
+</tr>
+<tr>
+<td>직원</td>
+<td>11,599</td>
+<td>6,906</td>
+<td>1,300</td>
+<td>20,389</td>
+<td>31,750</td>
+</tr>
+<tr>
+<td>고객 검증(최고)</td>
+<td>B</td>
+<td>B</td>
+<td>B</td>
+<td>B</td>
+<td>B</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-e1"></div><div class="dd-legend" id="fig-e1-leg"></div><figcaption id="fig-e1-cap"></figcaption></figure>
+
+<ul>
+<li>본 종목이 열위인 peer: <strong>EXPD</strong> — 매출 대비 영업이익률 10.7%로 두 배이고 순현금이다. 국제 운송 주선에서 CHRW Global Forwarding보다 크고 이익률이 높다.</li>
+<li>RXO는 인수 대상이다. 같은 직원형 중개인데 매출 대비 영업이익률이 0.7%다. CHRW가 "린 AI로 바꿀 여지"라고 부르는 격차가 이것이다.</li>
+<li>2분기 상대 비교: RXO 중개 마진 14.4% → 10.7%(트럭 스팟 비중 27% → 42%).
+  같은 분기 CHRW 북미 육상은 14.8% → 13.1%(스팟 35% → 30%)였다. 스팟을 늘린 쪽이 더 눌렸다 — 상승 초입 성적은 스팟 비중보다 매입 단가가 갈랐다[추론 ·
+  한 분기]〔Specific-Dive〕.</li>
+<li>비상장 경쟁자(TQL·Uber Freight·Echo 등) 재무는 미공시다.</li>
+<li>yfinance 총마진(CHRW 8.4%)은 회사 10-K 정의와 다르다(R-Dive). 표에 넣지 않았다.</li>
+</ul>
+<h3>E.2 종합 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 수익모델은 업종 평균 이상, 경쟁 포지션은 우위지만, 업종 전체가 같은 AI 공포를 공유한다.</p>
+</blockquote>
+<ul>
+<li>(a) 수익모델: 같은 차액 구조이지만 회사 몫 대비 이익률은 업계 최상위 → 🟡.</li>
+<li>(b) 정부 vs 민간: 모두 민간 화주 → ⚪.</li>
+<li>(c) 경쟁 포지션: 북미 1위 · 물량 점유율 확대 → 🟡. 최대 위협은 범용 AI 도구가 소형 중개의 비용도 같은 수준으로 낮추는 것이다(10-K 위험 요인 · 2/12 매도 계기).</li>
+</ul>
+<p><strong>⭐ = (4 + 2.5 + 4) ÷ 3 = ⭐3.5 → 7.8 / 12.5점</strong></p>
+<hr />
+<h2 id="f">Section F. 👤 사람</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — CEO는 날짜 붙은 비용 약속을 지키는 공장형 운영자이고, 받은 주식을 한 주도 팔지 않았다. 큰 인수를 통합해 본 기록은 없다.</p>
+</blockquote>
+<h3>F.1 임원 8축 (People-Dive 요약)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 약력·능력·본인 돈은 강하다. 도덕성·거버넌스·외부 평가는 "통과지만 작은 흠"이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">보즈먼(CEO · 2023-06~)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 약력</td>
+<td style="text-align: center;">🟢 할리데이비슨 16년 · 캐터필러 · 아마존 운송서비스 · 포드</td>
+</tr>
+<tr>
+<td>② 명성</td>
+<td style="text-align: center;">🟢 3M 이사 · 비즈니스 라운드테이블</td>
+</tr>
+<tr>
+<td>③ 능력</td>
+<td style="text-align: center;">🟢 취임 뒤 비용·생산성 약속 전부 이행 · 2025년 영업이익 +18.8%</td>
+</tr>
+<tr>
+<td>④ 도덕성</td>
+<td style="text-align: center;">🟡 본인 소송·제재 없음 · 공시 속 아마존 직함 표기 차이 1건 · 직원 평가 CEO 지지 42%</td>
+</tr>
+<tr>
+<td>⑥ 본인 돈</td>
+<td style="text-align: center;">🟢 장내 매도 0건 · 장내 매입 2회(약 35만 달러) · 직접 보유 약 1,780만 달러</td>
+</tr>
+<tr>
+<td>⑦ 거버넌스</td>
+<td style="text-align: center;">🟡 독립 의장 · 이사 10명 중 9명 독립 · 행동주의 투자자(Ancora) 쪽 이사 모두 퇴임 · CEO와 아마존 경력이 겹치는 이사가 감사위원</td>
+</tr>
+<tr>
+<td>⑧ 외부 평가</td>
+<td style="text-align: center;">🟡 증권가 회의론 → 수긍 · 직원 신뢰 낮음</td>
+</tr>
+</tbody>
+</table>
+<p>CFO 데이먼 리(2024-08~ · GE 에어로스페이스 출신)는 RXO 시너지·차입 설계를 맡는다.
+전략·혁신 책임자 아룬 라잔은 2026년 5월 750만 달러 특별 주식 보상을 받았다(8-K 6/2).</p>
+<h3>F.2 4대 덕목 · 언행일치</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 숫자 약속은 지켰다. 사람에 대한 메시지와 인수 태도는 말과 행동이 엇갈린다.</p>
+</blockquote>
+<ul>
+<li>비용·생산성 약속 판정 5개 전부 이행(인원 약 −28%).</li>
+<li>사람에 대한 메시지 🟡: 2026년 6월 "대량 해고와 무관"이라고 했지만 실적 발표문은 감원 관련 구조조정 비용을 계속 적었다.</li>
+<li>인수 태도 판정 보류: CFO가 6월 "신중하고 절제된 인수"를 말한 지 4개월 만에 회사 역사상 최대 인수를 발표했다.</li>
+</ul>
+<h3>F.3 내부자 거래 · 보상</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — CEO·CFO는 팔지 않았고, RXO 발표 전후 경영진 장내 거래는 없다. 보상은 이익률과 주당순이익에 묶였고 인수 성과 지표는 없다.</p>
+</blockquote>
+<ul>
+<li>최근 12개월 경영진 매도 약 1,890만 달러는 인사·북미 육상·국제 운송 책임자 4명의 몫이다. CEO와 CFO는 0이다.</li>
+<li>2/12 급락일 경영진 4명 동시 매입(각 10만~20만 달러)은 "대외 메시지 성격"으로 낮춰 읽었다(People-Dive).</li>
+<li>보너스 = 조정 영업이익률 50% + 시장 대비 물량 성장 50%. 장기 주식 보상 = 3년 누적 주당순이익 100%. 인수 시너지·투자 수익률 지표는 없다.</li>
+<li>RXO 인수는 RXO 주주 승인만 필요하다. CHRW 주주는 신주 약 11% 발행에 표결하지 않는다.</li>
+</ul>
+<h3>F.4 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 객관 7축 평균 4.57이다. 비전축은 사용자 몫이라 비워 둔다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 약력</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>② 명성</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>③ 능력</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>④ 도덕성</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>⑥ 본인 돈</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>⑦ 거버넌스</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>⑧ 외부 평가</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"><strong>⭐4.57 → 11.2 / 12.5점</strong></td>
+</tr>
+</tbody>
+</table>
+<p><code>비전축 사용자 ⭐ 대기</code> — Claude 💬 의견: 보즈먼은 사명형이 아니라 운영형이다. "기술을 쓰는 사람의 회사"라는 말을 3년 유지했고, 숫자로 증명했다. 사명과 돈이 갈라지는 순간에 비용을 치른 기록은 아직 없다. 생존편향 주의 — 비용 절감을 잘한 CEO가 큰 인수 통합에서 무너진 사례는 흔하다.</p>
+<p>▶ Flip 트리거 — 🟢: RXO 통합 1년 차 인원·비용 숫자 공개와 시너지 집계 방식 공시 / 🔴: 시너지 집계 방식 변경·목표 하향 · CEO·CFO 장내 매도 시작.</p>
+<hr />
+<h2 id="g">Section G. 🔢 숫자 — 재무건전성</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이익률은 3년째 오르고 현금도 잘 남는다. 빚은 아직 적지만 2027~2028년 만기가 몰려 있고, RXO 인수로 빚이 세 배 가까이 는다.</p>
+</blockquote>
+<h3>G.1 기본 정량</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매출은 운임 따라 줄었다 늘었지만, 영업이익은 2023년 바닥 뒤 계속 늘었다. 올해는 운임 급등으로 현금이 매출채권에 묶였다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목(백만 달러)</th>
+<th style="text-align: right;">2023</th>
+<th style="text-align: right;">2024</th>
+<th style="text-align: right;">2025</th>
+<th style="text-align: right;">2026 상반기</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매출</td>
+<td style="text-align: right;">17,596</td>
+<td style="text-align: right;">17,725</td>
+<td style="text-align: right;">16,233</td>
+<td style="text-align: right;">8,947</td>
+</tr>
+<tr>
+<td>조정 총이익</td>
+<td style="text-align: right;">2,605</td>
+<td style="text-align: right;">2,765</td>
+<td style="text-align: right;">2,729</td>
+<td style="text-align: right;">1,398</td>
+</tr>
+<tr>
+<td>영업이익</td>
+<td style="text-align: right;">515</td>
+<td style="text-align: right;">669</td>
+<td style="text-align: right;">795</td>
+<td style="text-align: right;">431</td>
+</tr>
+<tr>
+<td>순이익</td>
+<td style="text-align: right;">325</td>
+<td style="text-align: right;">466</td>
+<td style="text-align: right;">587</td>
+<td style="text-align: right;">334</td>
+</tr>
+<tr>
+<td>잉여현금흐름</td>
+<td style="text-align: right;">648</td>
+<td style="text-align: right;">435</td>
+<td style="text-align: right;">844</td>
+<td style="text-align: right;">—</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>2026 상반기 영업현금흐름 1.04억 달러(1년 전 3.34억) · 매출채권 +7.04억 달러가 현금을 흡수했다(R-Dive).</li>
+<li>2분기 희석 주당순이익 $1.56(1년 전 $1.26) · 상반기 $2.78(1년 전 $2.37) ·
+  이자 및 기타 비용(순) 상반기 2,690만 달러(10-Q).</li>
+<li>구조조정 비용이 3년 연속 났다(퇴직 관련 2023년 1,840만 · 2024년 2,410만 · 2025년 구조조정 3,040만 달러 ·
+  10-K). 가이던스와 조정 이익률은 이를 뺀 값이라 회사 몫 대비 약 1%p 높게 보인다〔Specific-Dive〕.</li>
+<li>2026년 영업이익 가이던스(구조조정 제외) 9.65억~10.4억 달러 · 상반기 회계 기준 4.31억 달러는 하단의 45%다(History-Dive).</li>
+<li>6/30 부채: 리볼버 3.25억(변동 4.74% · 2027-11 만기 · 한도 10억) ·
+  매출채권 유동화 4.37억(변동 4.55% · 2027-08) · 선순위 노트 5.98억(4.20% ·
+  2028-04) · 시리즈 B 1.5억(4.26% · 2028-08) ·
+  시리즈 C 1.75억(4.60% · 2033-08) → 합계 16.85억 달러 ·
+  현금 1.55억 달러. 리볼버 약정은 최대 레버리지 3.75배다(10-Q 부채 주석).</li>
+<li>참고(점수 미반영): 시총 약 161억 · 기업가치(야후) 약 179억 달러 · 선행 P/E 18.4 · 후행 P/E 26.3 · 배당 수익률 1.8%.</li>
+</ul>
+<figure class="dd-fig"><div id="fig-g5"></div><div class="dd-legend" id="fig-g5-leg"></div><figcaption id="fig-g5-cap"></figcaption></figure>
+
+<h3>G.1.5 🎯 시총 10배 랜드마크</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금은 J.B. Hunt보다 조금 작은 크기이고, 열 배가 되면 미국 최대 철도회사 Union Pacific 크기다.</p>
+</blockquote>
+<figure class="dd-fig"><div id="fig-g15"></div><div class="dd-legend" id="fig-g15-leg"></div><figcaption id="fig-g15-cap"></figcaption></figure>
+
+<h3>G.3 4축 매트릭스</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 마진과 현금 칸은 만점이다. 매출 성장은 운임 사이클에 묶여 안정 수준이고, 부채 칸은 만기 집중 때문에 낮다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>측정</th>
+<th style="text-align: center;">등급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 이익 성장</td>
+<td>매출 3년 연 −13%(운임 하락) · 영업이익 2023→2025 연 +24% · 2027 주당순이익 컨센서스 +19%</td>
+<td style="text-align: center;">🟡 안정</td>
+</tr>
+<tr>
+<td>② 마진</td>
+<td>회사 몫 대비 영업이익률 19.8% → 24.2% → 29.1% → 2분기 34.7%</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>③ 현금 창출</td>
+<td>잉여현금흐름 3년 연속 순이익 이상(2026 상반기는 운전자본 흡수)</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>④ 고금리·고물가 내구성</td>
+<td>아래 G.4-a 🟢 2개</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+</tbody>
+</table>
+<h3>G.4 고금리 내구성 (G.4-a · 점수 반영 · 옵션 B)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이자 부담은 가볍다. 문제는 2027~2028년에 빚의 90%가 만기를 맞고, 그 사이 RXO 인수 차입이 얹힌다는 점이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>하위</th>
+<th>측정</th>
+<th style="text-align: center;">등급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 이자보상</td>
+<td>최근 4개 분기 영업이익 약 8.3억 ÷ 순이자 비용 연 약 0.5~0.85억 ≈ 10~15배</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>② 순부채/EBITDA</td>
+<td>(16.85 − 1.55) ÷ 약 9.3 ≈ 1.6배</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>③ 만기 분산</td>
+<td>5년 내 만기 약 90% · 최대 단일 연도 2028년 7.48억 = 44%</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>④ 변동금리 비중</td>
+<td>리볼버+유동화 7.62억 = 45%(헤지 미확인)</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>⑤ 즉시 유동성</td>
+<td>단기 차입 0 · 리볼버 미사용 약 6.75억 달러</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+</tbody>
+</table>
+<p>인수 완료 시 순부채/EBITDA 약 2.9배(회사 제시)는 시너지 3억 달러를 미리 넣은 값이다. 더 빡빡한 약정은 리볼버 3.75배가 아니라 사모 노트의 3.50배다(정밀 진단 G.8에서 확인). RXO 인수 8-K는 브리지 대출이 기존 리볼버·노트 약정의 개정까지 백스톱한다고 적었다.</p>
+<h3>G.7 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 마진·현금·이자 칸이 점수를 받쳤고, 만기 집중이 끌어내렸다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 이익 성장 🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>② 마진 🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>③ 현금 창출 🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>④ 고금리 내구성 ⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>G.4-a ① 이자보상 🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>G.4-a ② 순부채 🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>G.4-a ③ 만기 🔴</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>G.4-a ④ 변동금리 🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>G.4-a ⑤ 유동성 🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td><strong>평균(9칸)</strong></td>
+<td style="text-align: center;"><strong>⭐3.94 → 9.2 / 12.5점</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>G.8 고금리·고물가 내구성 정밀 진단 (서브에이전트 위임 · 점수 미반영 · 낮은 신뢰도 참고)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금의 CHRW는 아주 심한 충격에서만 무너진다. 그러나 RXO 인수를 마치면 "보통 수준의 불황 + 금리 상승"에서도 이자를 갚는 여유가 약정선 근처까지 줄어든다. 회사가 말한 인수 뒤 부채비율 2.9배는 아직 없는 시너지를 미리 넣은 숫자다.</p>
+</blockquote>
+<p>[모드: embedded] — 원문 감사표는 내부 작업 파일에 있다.</p>
+<h4>G.8.1 아키타입 소비</h4>
+<p>자산 경량(설비투자 매출의 0.4%)이라 고금리의 1차 경로는 설비가 아니라 <strong>인수 차입 · 운전자본 · 소송 현금</strong>이다.</p>
+<h4>(1) 금리 기둥</h4>
+<ul>
+<li><strong>만기 사다리</strong>: 2028년 8월까지 현재 부채의 약 90%(15.1억 달러)가 돌아온다.
+  2027년 7.62억(전부 변동) · 2028년 7.50억(전부 고정) ·
+  2033년 1.75억. 고정금리 재차환 충격은 연 +600만~1,300만 달러로 작다.
+  진짜 위험은 <strong>2027 상반기~2028년 8월에 기존 만기 15억 + 인수 신규 조달 33억~36억 달러가 한 창에 몰리는 시장 접근 문제</strong>다.</li>
+<li><strong>변동금리·헤지</strong>: 금리 스왑·캡이 없다(10-K "파생상품을 쓰지 않는다"). 인수 영구 조달에 기간 대출이 크고 스왑을 걸지 않으면 인수 완료 시점이 곧 노출 급증 시점이다.</li>
+<li><strong>약정 — 더 빡빡한 상한은 3.75배가 아니라 3.50배다</strong>: 사모 노트(시리즈 B·C)에 최대 레버리지 3.50배 · 최소 이자보상 2.0배 약정이 있다(10-K 부채 주석). 지금은 총부채 기준 약 1.8배로 여유가 크다.</li>
+<li><strong>인수 뒤</strong>: 시너지 3억 달러 전액을 넣으면 3.0~3.5배, <strong>빼면 3.6~4.3배로 완료 첫날 사모 노트 상한을 넘는다.</strong> 브리지 대출이 기존 리볼버·노트 약정의 개정까지 백스톱하는 이유로 보인다[추론]. 개정 상한·약정 EBITDA 정의는 아직 공시되지 않았다.</li>
+<li><strong>재투자 충격</strong>: 차입 금리 5.0%면 RXO가 차입비용을 넘는 데 필요한 시너지는 약 2.1억 달러, 6.0%면 약 2.7억 달러다. 금리 +1%p마다 필요 시너지가 약 5,800만 달러 는다.</li>
+<li><strong>주식 조달</strong>: 시장가 증자·전환사채 없음. RXO 주식 대가는 고정 교환비율이라 주가가 내려도 신주 수가 늘지 않는다.</li>
+<li><strong>float 부호</strong>: CHRW는 운전자본을 빌려주는 쪽(순운전자본 약 14억 달러를 부채로 조달) → 고금리는 순 마이너스.</li>
+</ul>
+<h4>(2) 물가 기둥</h4>
+<ul>
+<li>팔 때는 1년 이하 계약 운임, 살 때는 스팟이다. 운임 상승기에는 차액이 시차로 눌리고, 하락기에는 넓어진다. 연료 할증은 대부분 통과된다.</li>
+<li>재고·연료 헤지·장기 고정 공급계약·노조 언급이 모두 없다 → 재고 평가 착시와 헤지 만기 절벽은 없다.</li>
+<li><strong>인플레 부호는 양방향</strong>: 운임 인플레(2026 상반기형)는 손익은 버티고 현금이 운전자본으로 빠진다. 운임 디플레(2023형)는 회사 몫이 −27.5% 줄지만 현금은 들어온다.</li>
+</ul>
+<h4>(3) 결합 시나리오 (원가·금리·물량 동시 · 1년 충격 · 밴드)</h4>
+<table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th>구조</th>
+<th>영업이익</th>
+<th>이자보상</th>
+<th>잉여현금흐름</th>
+<th>총부채/EBITDA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기준(원가 +10% · +200bp · 물량 −10%)</td>
+<td>현재 단독</td>
+<td>3.5억~5.5억</td>
+<td>4.6~7.2배</td>
+<td>0.3억~3.3억</td>
+<td>2.6~3.8배</td>
+</tr>
+<tr>
+<td>심각(+20% · +300bp · −20%)</td>
+<td>현재 단독</td>
+<td>−0.6억~+2.9억</td>
+<td>−0.7~3.5배</td>
+<td>−3.8억~+0.7억</td>
+<td>4.3배~ 🔴</td>
+</tr>
+<tr>
+<td>기준</td>
+<td>인수 뒤 · 시너지 제외</td>
+<td>3.7억~6.4억</td>
+<td><strong>1.0~2.2배</strong> 🔴</td>
+<td>−2.1억~+2.7억</td>
+<td>5.4~9.1배</td>
+</tr>
+<tr>
+<td>기준</td>
+<td>인수 뒤 · 시너지 전액</td>
+<td>6.5억~9.1억</td>
+<td>1.7~3.2배</td>
+<td>0.2억~4.8억</td>
+<td>4.1~6.1배</td>
+</tr>
+<tr>
+<td>디플레형 침체(−10% · −100bp · −20%)</td>
+<td>현재 단독</td>
+<td>1.8억~5.8억</td>
+<td>3.3~11.1배</td>
+<td>3.6억~8.5억(현금 유입)</td>
+<td>2.5~6.2배</td>
+</tr>
+</tbody>
+</table>
+<p>(단위: 달러 · 부채는 1년 불변 가정 · 상세 밴드와 가정은 내부 파일)</p>
+<ul>
+<li>🔴 <strong>임계점</strong>: 현재 단독은 금리 단독·원가 단독으로 무사하고 '심각'에서만 무너진다. <strong>인수 뒤에는 '기준'에서 이미 이자보상이 사모 노트 2.0배선 아래로 갈 수 있다</strong>(시너지 제외). cliff를 만드는 주 동인은 금리가 아니라 물량 × 차액(약 88%)이다.</li>
+<li><strong>2차 효과</strong>: ① 2027~2028 조달 창과 운임 하강의 겹침
+  ② 운임 상승기 운전자본 흡수(합산 총매출 기준 판가 +10%면 약 −1.5억~2.5억 달러) 
+  ③ <strong>Lipe 평결</strong>: 보험 밖 최대 약 4.49억 달러 = 인수 뒤 레버리지 +0.30~0.37배 ·
+  항소 뒤 현금 유출이 2027~2028 탈레버리지 창과 겹친다 ④ Montgomery 판결 뒤 보험비 상승(가정 밴드 연 +2,500만~7,500만 달러 · 1차 근거 없음) ⑤ Montgomery 환송심(CHRW 피고) = Lipe 옆의 추가 소송 현금 경로 · 금액 미공시〔Specific-Dive〕.</li>
+<li><strong>1970s 생존 특성</strong>: 현재 2/5 → 인수 뒤 1.5/5(자본 경량만 확실 · 만기벽 가까움 · 해자 약함).</li>
+</ul>
+<h4>G.8.4 종합 verdict</h4>
+<blockquote>
+<p>🏷️ <strong>종합 내구성: ⚪ 조건부 ‖ 신뢰도 낮음 ‖ 풀 DD 승격 높음</strong> — 기둥 사이 엇갈림을 그대로 적는다: <strong>현재 단독 = 🟢에 가까움(심각 충격에서만 무너짐) / 인수 완료 뒤 = 🔴 결합 취약 경로 존재(기준 충격에서 무너짐)</strong>.</p>
+<p>🎯 <strong>버티는가</strong>: <strong>⚪ 조건부 — "인수 뒤 12~18개월 합산 EBITDA가 시너지로 14억 달러 이상에 올라서는가"가 관건.</strong> 시너지가 늦고 트럭 물량이 10% 빠지는 해에 Lipe 판결까지 확정되면 약정 상한을 넘는 경로가 열린다. 회복 trigger = 인수 등록서류·채권 발행 공시에서 약정 상한 한시 상향(4.0배 이상) + 기간 대출 금리 스왑 / 악화 trigger = 완료 뒤 첫 2개 분기 합산 EBITDA 연환산 12.5억 달러 미만 + Lipe 항소 기각. <em>낮은 신뢰도 · enforcement 아님 · 최종 판단은 사용자.</em></p>
+<p><strong>swing 변수</strong>: 인수 뒤 합산 EBITDA(시너지 속도 × 트럭 물량)와 개정 약정 상한 사이의 거리.</p>
+</blockquote>
+<ul>
+<li>금리 레짐 부호: [고금리 지속] 현재 단독 중립 · 인수 뒤 마이너스 / [저금리·디스인플레] 이자는 플러스지만, 디스인플레가 운임 하강으로 오면 손익은 마이너스 — 금리 축과 운임 축의 부호가 반대로 움직일 수 있다.</li>
+<li>의무 라벨: ① 낮은 신뢰도 참고 ② 버티는가 직접 한 줄 ③ 장기 thesis stop sign ❌ ④ 점수 미반영(7축·숫자 축 ④칸 미합산).</li>
+<li>반박 반영: 약정 trip은 "개정 조건 미공시로 거리 측정 불가 구간"으로 한정하고, cliff의 주 동인을 이자보상·현금흐름으로 둔다. 투자적격 기업의 인수 금융은 보통 한시 상향과 시너지 가산을 허용하므로 🔴로 내리지 않았다.</li>
+<li>▶ ⚪ → 🟢: 영구 조달 고정금리 비중 70% 이상 또는 스왑 공시 · 개정 상한 4.0배 이상 · 완료 뒤 2개 분기 합산 EBITDA 연환산 14억 달러 이상 · Lipe 연대책임 축소 / ⚪ → 🔴: 합산 EBITDA 12.5억 달러 미만 · Lipe 원심 유지로 보험 밖 3억 달러 이상 유출 · 운전자본 반기 −3억 달러 이상 반복 · 투자적격 상실.</li>
+</ul>
+<hr />
+<h1>Part 2 — 시나리오 · 렌즈 · 자금흐름</h1>
+<h2 id="h">Section H. 시나리오 · Catalyst · 렌즈</h2>
+<h3>H.1 Bull / Base / Bear (5년 = 2031 · 주가 배수 · 배당 제외 · RXO 신주 반영)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 5년 기대값은 1.37배로 기준선 1.5배 아래다. 이익 성장은 꾸준하지만, 소송·인수·AI 경쟁이 겹치는 나쁜 시나리오의 폭이 크다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: center;">확률</th>
+<th style="text-align: center;">2년</th>
+<th style="text-align: center;">3년</th>
+<th style="text-align: center;">5년(주가)</th>
+<th>가정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🟢 Bull</td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: center;">1.40배</td>
+<td style="text-align: center;">1.65배</td>
+<td style="text-align: center;">2.2배($305)</td>
+<td>2027~28 운임 상승기 계약 재가격 성공 + RXO 시너지 3억 달러 전부 + AI 비용 우위 유지 → 2031 조정 주당순이익 약 $14.5 · P/E 21배</td>
+</tr>
+<tr>
+<td>🟡 Base</td>
+<td style="text-align: center;">50%</td>
+<td style="text-align: center;">1.05배</td>
+<td style="text-align: center;">1.12배</td>
+<td style="text-align: center;">1.30배($180)</td>
+<td>시너지 약 3분의 2 · 2028 주당순이익 약 $8.9 → 연 6% → 2031 약 $10.6 · P/E 17배</td>
+</tr>
+<tr>
+<td>🔴 Bear</td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: center;">0.70배</td>
+<td style="text-align: center;">0.68배</td>
+<td style="text-align: center;">0.66배($91)</td>
+<td>배심 평결 유지(최대 6억 400만 달러 − 보험 1.55억) + Montgomery 환송(CHRW 피고)·연방 등급 방어 실패로 운송사 선정 소송 증가·보험비 상시 상승 + RXO 통합 부진(시너지 3분의 1 · 레버리지 3배 고착) + AI 경쟁으로 차액 비율 압축 → 2031 주당순이익 약 $6.5 · P/E 14배</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>기대값</strong>: 2년 1.05배 · 3년 1.14배 · <strong>5년 1.37배 ⚠️(기준선 1.5배 미만 = thesis 약함)</strong>.</li>
+<li>⚠️ <strong>Base 2년 1.05배 &lt; 2.0배 → bull tail 의존</strong> 표시. 다만 성숙 대형주라 2년 2배 기준 자체가 구조적으로 맞지 않는다.</li>
+<li><strong>암묵 exit 멀티플</strong>: Base 2031 시총 약 236억 달러(주식 약 1.31억 주) ÷ 2031 추정 매출 약 259억 달러
+  (CHRW+RXO 2025 합 약 223억 × 연 3%) = 매출 대비 약 0.9배(5년 역사 대략 0.4~1.4배의 중간) ·
+  exit P/E 17배(현재 선행 18.4 · peer 선행 21~24) → <strong>재평가 의존 낮음</strong>. Bull은 P/E 21배 · 매출 대비 약 1.4배(역사 상단) → <strong>재평가 의존 중간</strong>.</li>
+<li>Bull 가정이 기대는 RXO 시너지는 외부 인수 시너지 약속 이행 이력이 0건인 회사의 첫 약속이다(History-Dive). 지연 계수 1.0배는 "자기 집 안" 약속에서 나온 값이라 시나리오 일정에 그대로 적용했지만 근거는 약하다.</li>
+</ul>
+<figure class="dd-fig"><div id="fig-h1"></div><div class="dd-legend" id="fig-h1-leg"></div><figcaption id="fig-h1-cap"></figcaption></figure>
+
+<h3>H.2 Catalyst 캘린더</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 2주 뒤 실적에서 트럭 차액 비율이 회복되는지가 첫 시험이다. 소송 확정과 RXO 승인 절차가 뒤따른다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>일시</th>
+<th>이벤트</th>
+<th style="text-align: center;">영향</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-28(야후 표기 · 회사 확정 미확인)</td>
+<td>3분기 실적 — 트럭 마일당 회사 몫(달러)·트럭 차액 비율·계약/스팟 비중·생산성 숫자·연간 영업이익 가이던스(9월 계약−스팟 차이가 더 좁아져 비율 회복은 어렵다[추론])</td>
+<td style="text-align: center;">🔴</td>
+<td>yfinance</td>
+</tr>
+<tr>
+<td>10월 말</td>
+<td>FOMC(9월 인상 뒤 첫 회의)</td>
+<td style="text-align: center;">🟡</td>
+<td>연준</td>
+</tr>
+<tr>
+<td>미정(사후 절차)</td>
+<td>Lipe 사건 최종 판결 여부 · 항소 · 공탁 비용</td>
+<td style="text-align: center;">🔴</td>
+<td>10-Q 소송 주석</td>
+</tr>
+<tr>
+<td>2026 4분기~2027</td>
+<td>RXO 인수 등록서류(S-4) · RXO 주주총회 · 반독점(HSR) 심사</td>
+<td style="text-align: center;">🔴</td>
+<td>8-K 10/5</td>
+</tr>
+<tr>
+<td>2027 상반기</td>
+<td>RXO 인수 완료 · 브리지 대출 → 장기 차입 전환</td>
+<td style="text-align: center;">🔴</td>
+<td>8-K 10/5</td>
+</tr>
+<tr>
+<td>2027-08 / 2027-11</td>
+<td>매출채권 유동화 · 리볼버 만기</td>
+<td style="text-align: center;">🟡</td>
+<td>10-Q 부채 주석</td>
+</tr>
+<tr>
+<td>2027년 1분기</td>
+<td>화주 연간 입찰 시즌 — 계약 운임 재가격 폭 vs 회사 전망 매입비 +10%(2027)</td>
+<td style="text-align: center;">🔴</td>
+<td><a href="https://www.chrobinson.com/en-us/resources/insights-and-advisories/north-america-freight-insights/oct-2026-freight-market-update/na-truckload/">CHRW 시장 보고서 10월</a></td>
+</tr>
+<tr>
+<td>2027-01</td>
+<td>2026년 실적 · 영업이익 가이던스 9.65억~10.4억 달러 달성 여부</td>
+<td style="text-align: center;">🟡</td>
+<td>History-Dive</td>
+</tr>
+<tr>
+<td>2028</td>
+<td>인수 시너지 연 3억 달러(완료 2년 안) · 순부채/EBITDA 1.75~2.25배 목표</td>
+<td style="text-align: center;">🔴</td>
+<td>인수 보도자료</td>
+</tr>
+</tbody>
+</table>
+<h3>H.3 ⚠️ Thesis 리스크 신호 (종목 Memory 없음 · 이 보고서가 정의 원본)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 아래 신호가 켜지면 "AI로 줄인 비용이 회사에 남는다"는 이야기가 흔들린다. 매매 지시가 아니라 조기경보다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>신호</th>
+<th>관측 trigger</th>
+<th style="text-align: center;">현재</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>이익 훼손</td>
+<td>조정 총이익 전년 대비 감소 2개 분기 연속</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>마진 훼손</td>
+<td>회사 몫 대비 영업이익률 25% 미만 2개 분기</td>
+<td style="text-align: center;">대기(2분기 34.7%)</td>
+</tr>
+<tr>
+<td>가격 압박 지속</td>
+<td>트럭 차액 비율 13% 미만 2개 분기 + 업계 지표 대비 물량 우위 소멸</td>
+<td style="text-align: center;">🟠 2분기 13.1%</td>
+</tr>
+<tr>
+<td>소송 확정·확대</td>
+<td>Lipe 사건 최종 판결이 보험 한도(1.55억 달러)를 넘어 확정 · Montgomery 환송심 금액 공시 · 보험 한도 축소 또는 자기부담 상향〔Specific-Dive 병합〕</td>
+<td style="text-align: center;">🟠 권고 평결 · 환송 진행</td>
+</tr>
+<tr>
+<td>인수 통합 실패</td>
+<td>완료 1년 차 시너지 실현 1억 달러 미만 또는 2027년 말 순부채/EBITDA 3배 초과</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>AI 비용 우위 소멸</td>
+<td>경쟁사가 비슷한 1인당 조정 총이익을 공시 · 통행세율 업계 평균 수렴</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>인건비 비율 되돌림</td>
+<td>회사 몫 대비 인건비 52% 초과 2개 분기(2019·2025 = 50.2%) · 물량 증가에 맞춰 인원이 다시 늘어남(2021년 전례)〔Specific-Dive〕</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>계약−스팟 역전</td>
+<td>DAT 밴 계약 − 스팟 마일당 차이 0 이하 · 또는 라우팅 가이드 실패율 10% 초과〔Specific-Dive〕</td>
+<td style="text-align: center;">🟠 9월 +0.23달러 · 실패율 6%대</td>
+</tr>
+<tr>
+<td>입찰 재가격 실패</td>
+<td>2027년 1분기 입찰 뒤 트럭 판매 운임 증가율 &lt; 매입 운임 증가율이 2개 분기 지속〔Specific-Dive〕</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>브로커 투명성 규칙 확정</td>
+<td>거래 기록 자동 공개 최종 규칙 공포〔Specific-Dive〕</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>RXO 고객 이탈</td>
+<td>발표 뒤 RXO 중개 물량 −5% 이하 2개 분기 · 최대 고객(약 11%) 이탈 공시〔Specific-Dive〕</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>경영진 리스크</td>
+<td>CEO·CFO 이탈 또는 장내 매도 시작</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>운전자본 흡수</td>
+<td>운임 상승기 영업현금흐름이 2개 분기 연속 순이익의 절반 미만</td>
+<td style="text-align: center;">🟡 2026 상반기 발생</td>
+</tr>
+</tbody>
+</table>
+<h3>H.3-0 보유 종목 가설 신선도 — 해당 없음(미보유 관찰 종목)</h3>
+<h3>H.5 🧭 CAE · Edge Grid 좌표</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이야기의 무게는 "조정 일손을 AI로 줄인다"는 한 층에 있다. 가장 약한 고리는 값을 올리는 힘이다. 주가는 고점에서 3분의 1 내려 싸진 편이지만, 사업이 강한 쪽은 아니다.</p>
+</blockquote>
+<p>〔CAE: C=제약 / A=조정 / E=표현 · 중요도 L=다층성 R=비가역성 H=병목경도 · 엣지 G=선반영 격차 P=연료 잔량 D=컨센서스 반증 · 각 0~3〕</p>
+<ul>
+<li><strong>(a) CAE 분류</strong>: 조정(A · 화주와 운송사의 짝짓기) 단일 층 · 🔴 가장 약한 고리 = 가격결정력(차액은 시황가).</li>
+<li><strong>(b) 프로파일</strong>: 중요도 L1·R1·H0 = 下 / 엣지 G2·P1·D1 = 中.
+  G 입력 — 60일 주가 상관 1위는 같은 중개 Landstar(0.55), 2위 Expeditors(0.47)로 차이가 0.07이라 <strong>혼재</strong>다.
+  AI 소프트웨어(IGV)와는 0.07이다. 시장은 CHRW를 "AI 수혜 기업"이 아니라 "화물 중개·포워딩 업종 바구니"로 가격 매긴다. 애널리스트 비교군도 같은 운송·물류 업종이다. 내 가설(업종 안의 AI 비용 컴파운더)과 다르므로, 시장이 가설을 갈아탈 계기 = <strong>운임 상승기에도 회사 몫 대비 영업이익률 30% 이상 유지 확인</strong>(Bull 시나리오의 catalyst).</li>
+<li><strong>(c)(d) 분면</strong>: <strong>「약하고 싼」 경계</strong>. 행동 = 정찰(value trap 다발 구역). "강하고 싼"이 아니므로 3 잠금장치는 적용 대상이 아니다.</li>
+<li><strong>(e) 과목 적합도</strong>: CHRW는 <code>혼합</code>이다(현재 실적으로 설명되는 수학형이 주이고, AI 생산성 이야기가 일부 문학형). 지금 시장 과목은 📐 수학 유지·🏐 체육 경계 근접(10/11 텐배거 보고서 인용 · 근거 Expect-daily 10/10·macro-weekly 10/10) → 대체로 일치. 체육 경계라 레버리지 ETF 노출을 확인했고 0이다(Section I).</li>
+</ul>
+<figure class="dd-fig"><svg viewBox="0 0 520 300" width="100%" style="max-width:520px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="20" width="220" height="130" fill="#fdeee9"/><rect x="280" y="20" width="220" height="130" fill="#eef6f0"/>
+<rect x="60" y="150" width="220" height="130" fill="#eeeeee"/><rect x="280" y="150" width="220" height="130" fill="#e8f0f8"/>
+<line x1="280" y1="20" x2="280" y2="280" stroke="#999" stroke-dasharray="4,3"/><line x1="60" y1="150" x2="500" y2="150" stroke="#999" stroke-dasharray="4,3"/>
+<text x="170" y="40" font-size="11" text-anchor="middle" fill="#8a2415">강한데 비싼 → 트림·회피</text>
+<text x="390" y="40" font-size="11" text-anchor="middle" fill="#1f6f3b">강하고 싼 → 집중매수 후보</text>
+<text x="170" y="270" font-size="11" text-anchor="middle" fill="#555">약하고 비싼 → 회피·청산</text>
+<text x="390" y="270" font-size="11" text-anchor="middle" fill="#2c5282">약하고 싼 → 정찰</text>
+<text x="280" y="295" font-size="11" text-anchor="middle" fill="#444">← 엣지 소진(비싼)   ·   엣지 잔량(싼) →</text>
+<text x="20" y="150" font-size="11" text-anchor="middle" fill="#444" transform="rotate(-90 20,150)">중요도 약 → 강</text>
+<circle cx="300" cy="205" r="7" fill="#c0392b"/>
+<text x="310" y="195" font-size="10" text-anchor="start" fill="#c0392b">10/14 약하고 싼 경계</text>
+</svg><figcaption>CHRW 10/14 — 중요도 下(조정 단일 층·병목 아님) · 엣지 中(고점 대비 −34%·시장은 업종 바구니로 가격) → 「약하고 싼」 경계 · 정찰 영역</figcaption></figure>
+
+<h3>H.6 💎 0to1 (틸 7문)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 사람과 유통은 YES지만, 10배 기술도 작은 시장 독점도 없다. 2/7은 "불운 위험" 구간이다. 이 회사는 0→1이 아니라 1→n을 잘하는 회사다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>문항</th>
+<th style="text-align: center;">판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 기술(10배)</td>
+<td style="text-align: center;">NO</td>
+<td>AI 에이전트는 경쟁사도 쓴다(10-K 위험 요인) · 1인당 이익 우위는 약 1.3배(대 RXO)</td>
+</tr>
+<tr>
+<td>② 시기</td>
+<td style="text-align: center;">⚠️</td>
+<td>AI 자동화의 시기는 맞지만, 운임 상승 초기라 차액 압축기와 겹친다</td>
+</tr>
+<tr>
+<td>③ 독점</td>
+<td style="text-align: center;">NO</td>
+<td>거대·파편 시장의 1위 · 작은 시장 지배가 아님</td>
+</tr>
+<tr>
+<td>④ 사람</td>
+<td style="text-align: center;">YES</td>
+<td>객관 7축 4.57 · 약속 이행 기록</td>
+</tr>
+<tr>
+<td>⑤ 유통</td>
+<td style="text-align: center;">YES</td>
+<td>화주 7만 5천 · 운송사 45만 · Navisphere 직접 연동</td>
+</tr>
+<tr>
+<td>⑥ 존속성</td>
+<td style="text-align: center;">⚠️</td>
+<td>120년 생존 · 1위 · 그러나 해자는 비용 우위 하나</td>
+</tr>
+<tr>
+<td>⑦ 숨겨진 비밀</td>
+<td style="text-align: center;">⚠️</td>
+<td>"AI는 중개업의 파괴자가 아니라 통합의 도구"(CEO 2/23) — 시장은 반대로 읽었다. 1차 증거는 회사 손익뿐</td>
+</tr>
+<tr>
+<td>시장정의 tell</td>
+<td style="text-align: center;">혼재</td>
+<td>"린 AI 공급망의 선두"라는 넓은 화법 ↔ 회사 몫 대비 이익률은 숫자로 뒷받침(말 ≈ 숫자) · 매출 대비 4.9%는 업종 구조</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Track A 2/7 → 불운 위험 ‖ Track B ⭐3.0 ‖ tell 혼재</strong> · 별도 렌즈(7축 미합산).</p>
+<h3>H.7 💰 밸류에이션 정밀 판정 (서브에이전트 위임 · 7축 미합산 · 낮은 신뢰도 참고)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 업종 안에서 비교하면 비싸지 않다. 그러나 현재가가 정당하려면 이익률이 천장(회사 몫의 40%)에 붙고 성숙 산업치고 높은 성장(연 6%)이 함께 와야 한다. 그래서 약한 고평가로 본다.</p>
+</blockquote>
+<p>[모드: embedded] — 시나리오(H.1)의 암묵 exit 배수(Base P/E 17배 · Bull 21배)를 넘겨 렌즈⑤를 정상 수행했다. 원문 감사표는 내부 작업 파일에 있다.</p>
+<h4>H.7.1 아키타입 소비</h4>
+<p>주 <strong>Ⓐ 사이클형</strong>(북미 트럭 운임 사이클) + 부 <strong>Ⓑ 컴파운더</strong>(AI 비용 구조로 바닥 이익률 상승) + 보조 교차 <strong>Ⓓ</strong>(현금흐름). 경계 종목이라 두 판정을 함께 적는다.</p>
+<h4>H.7.2 렌즈별 결과</h4>
+<table>
+<thead>
+<tr>
+<th>렌즈</th>
+<th>결과</th>
+<th>핵심 근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 역-DCF</td>
+<td>🔴 현실 범위 상단~밖</td>
+<td>현재 기업가치가 성립하려면 회사 몫 대비 영업이익률 40%(천장) + 회사 몫 연 6% 성장(천장) + 할인율 9%(밴드 하단)가 동시에 맞아야 한다 → 여러 낙관 가정의 곱. 할인율 밴드 전 구간에서 방향이 같다</td>
+</tr>
+<tr>
+<td>② 아키타입</td>
+<td>Ⓐ 비싸 쪽 / Ⓑ 적정</td>
+<td>2027 컨센 주당순이익 $7.49 ≈ 2022 정점 $7.40. 지난 정점 때 시장은 후행 P/E 11.1배를 줬고 지금은 선행 18.4배 → 낮은 P/E 함정에 해당</td>
+</tr>
+<tr>
+<td>③ 상대가치</td>
+<td>⚪ 적정</td>
+<td>P/E는 peer 중앙값보다 약 28% 할인 · EV/EBITDA는 자산 경량 peer와 동급 · 5년 EV/EBITDA 62pct / +0.37σ(n=60개월 · 분모=EV/EBITDA · 시점기준=TTM) · 백분위와 Z 방향 일치</td>
+</tr>
+<tr>
+<td>④ 컨센서스</td>
+<td>선반영</td>
+<td>커버 n=23 · 평균 목표가 $194.4(고 $235 / 저 $131) · 2027 추정 범위 $6.09~8.20로 넓음 · 주당순이익 리비전 소폭 상향(2026 90일 +2.3%) · 목표가는 RXO 발표 뒤 하향 우세</td>
+</tr>
+<tr>
+<td>⑤ 시나리오 소비</td>
+<td>엇갈림</td>
+<td>청산 쪽 배수는 낙관이 필요 없지만 진입 쪽 가격은 운영 가정 상단을 요구 → "배수 확장은 불필요, 이익 경로(구조 마진 + RXO 시너지)에 의존"</td>
+</tr>
+<tr>
+<td>⑥ BRCR</td>
+<td>🔴 약한 신호(조건부)</td>
+<td>정규화 0.34 · 괴리 EV/GP 기준 −0.33 · EV/EBITDA 교차 −0.26 · 가장 약한 인자 = 구조(파편화·전환비용 없음) · [올라탐 · 단 1위 incumbent]</td>
+</tr>
+</tbody>
+</table>
+<h4>H.7.3 종합 판정</h4>
+<blockquote>
+<p><strong>🏷️ 밸류에이션 판정: 🔴 고평가(약 · 상단 의존) ‖ 신뢰도 낮음 ‖ 풀 DD 승격 중간</strong> — 상대·역사 비교(렌즈③)는 ⚪, 절대 기준(렌즈①②Ⓐ⑥)은 🔴로 엇갈린다. 업종 전체가 운임 상승기 초입에 높은 배수를 받고 있어 상대 비교가 중간으로 보이는 것이고, 절대 기준은 그 높이를 정당화하는 가정이 천장에 붙어 있음을 보여 준다.</p>
+<p>🎯 <strong>매수 적정성 한 줄</strong>: <strong>⚪ 관망 · $115 이하 trigger 대기</strong> — $115는 회사 몫 연 4% 성장 · 이익률 40%(2년 내) ·
+할인율 9%라는 현실 범위 안쪽 가정으로 성립하는 가격(역-DCF 주당 $114). 대체 trigger = 3분기·4분기에 트럭 차액이 회복되면서 회사 몫 대비 영업이익률 35% 이상 확인. <em>낮은 신뢰도 · enforcement 아님 · 최종 판단 = 사용자 · 정찰 소액 진입은 위반 아님.</em></p>
+<p><strong>핵심 swing 변수</strong>: 회사 몫 대비 영업이익률의 구조 수준 — 40~45%로 굳으면 ⚪ 적정, 다음 하강기에 30% 아래로 돌아가면 🔴 확정.</p>
+</blockquote>
+<ul>
+<li>보강〔Specific-Dive · 재채점 없음〕: 2019년(30.5%)·2025년(29.1%) 같은 비호황 해 모두 회사 몫 대비 영업이익률이 30% 근처였다 → "이익률 40%" 가정은 더 먼 곳에 있다. 🔴 방향을 강화하는 사실이다.</li>
+<li>🟢 저평가 적극 발화 체크: 역-DCF 하단 ❌ · 역사 하위 20% ❌ · 성장조정 할인 ❌ → 해당 없음.</li>
+<li>RXO 참고: RXO 기업가치 ÷ RXO 최근 4개 분기 EBITDA ≈ 59배. 합산하면 시너지 0일 때 약 22.8배, 시너지 3억 달러 전부면 약 17.7배다. 인수의 경제성은 시너지 실현에 전적으로 달려 있다.</li>
+</ul>
+<h4>H.7.4 의무 라벨 4종</h4>
+<ol>
+<li><strong>낮은 신뢰도 참고</strong> — 밸류 콜은 자주 틀린다(Intel $40 대기 권고 뒤 $100 급등 전례). 이 보고서의 강점은 가격이 아니라 구조 분석이다.</li>
+<li><strong>🎯 매수 적정성 = ⚪ 관망</strong> — 직접 답이지만 낮은 신뢰도이고 enforcement가 아니다. 최종 판단은 사용자다.</li>
+<li><strong>장기 thesis stop sign ❌</strong> — 🔴는 과지불 위험 표시일 뿐 리스크 신호의 입력 하나다.</li>
+<li><strong>점수 미반영</strong> — 7축 점수·레이더에 넣지 않는다.</li>
+</ol>
+<h4>H.7.5 반박과 Flip 트리거</h4>
+<ul>
+<li>반박으로 판정 강도를 낮췄다: ⚠️ 출발점(최근 4개 분기 회사 몫 27.6억 달러)이 사이클 저점권이라, 기준을 사이클 중간값(30.5억)으로 올리면 요구 성장률이 5.0%로 내려온다 → 🔴의 강도를 "약"으로 낮춤.</li>
+<li>▶ 🔴 → ⚪: 3·4분기 회사 몫 대비 영업이익률 35% 이상 + 회사 몫 전년 대비 +8% 이상 ·
+  또는 주가 $115 이하 / ⚪ → 🟢: 주가 $100 이하 + 구조 마진 35% 이상 2개 분기 / 🔴 강화: 다음 하강기 이익률 28% 미만 · RXO 시너지 하향 · Lipe 항소 기각 · 2027 컨센 하향 전환.</li>
+</ul>
+<h2 id="i">Section I. 자금흐름 · 내부정보</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 대형 기관이 거의 전부를 쥐고 있고 공매도는 적다. 레버리지 ETF는 없다. 옵션은 상승 쪽 계약이 많다.</p>
+</blockquote>
+<h3>I.0 지분 구조</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 창업 가문도 지배주주도 없는 분산 지분이다. RXO 인수로 신주가 약 11% 늘어난다.</p>
+</blockquote>
+<ul>
+<li>내부자 0.35% · 기관 보유 106%(대차 중복 포함 · yfinance) · 기관 1,260곳. 1주 1표 · 차등의결권 없음.</li>
+<li>6/30 13F 상위: BlackRock 9.7%(+13.8%) · Vanguard 6.4% · State Street 5.6% ·
+  Vanguard Portfolio 5.1% · FMR 3.2%(−14.7%) · WCM 3.2% · First Eagle 3.1%(−36.4%) ·
+  Wellington 3.0%(−9.1%).</li>
+<li>잠재 희석: RXO 신주 약 1,440만 주(추정 · 합병 회사의 약 11%) · 자사주 매입은 목표 부채 비율 복귀까지 중단.</li>
+</ul>
+<h3>I.2 내부자 (Form 4 · 12개월)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 사업부 책임자 넷이 팔았고, CEO·CFO는 사기만 했다.</p>
+</blockquote>
+<p>People-Dive 전수 확인: 경영진 매도 약 1,890만 달러(4명) · CEO·CFO 장내 매도 0 · 2/12 경영진 4명 소액 매입 ·
+RXO 발표 전후(8/1~10/14) 경영진 장내 거래 0건.</p>
+<h3>I.3 공매도 · I.3b 레버리지 ETF · I.4 옵션</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 공매도는 유통주식의 6%대로 보통 수준이다. 레버리지 ETF발 쏠림은 없다. 실적 앞두고 옵션 내재 변동성이 높다.</p>
+</blockquote>
+<ul>
+<li>공매도 유통주식 대비 6.17% · 상환 일수 3.98일(yfinance).</li>
+<li>레버리지·인버스 단일종목 ETF: 발견 0개 → 명목 노출 0% · ±10% 하루 리밸런싱 0(발견 목록 = 하한).</li>
+<li>옵션(10/13): 풋/콜 미결제약정 비율 11월물 0.29 · 2027년 1월물 0.32(콜 우위) ·
+  11월물 등가 내재 변동성 약 50%(실적 포함).</li>
+</ul>
+<hr />
+<h2 id="j">Section J. 산업 · 규제 · 정책</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 올해 업계의 법적 바닥이 바뀌었다. 대법원이 브로커도 운송사를 잘못 고른 책임을 주 법정에서 질 수 있다고 판결했고, CHRW는 바로 그 유형의 소송에서 6억 400만 달러 평결을 받았다.</p>
+</blockquote>
+<h3>J.1 산업 진화 (History-Dive 소비)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이 회사는 120년 동안 "남의 운송 수단을 빌려 되파는" 모델을 지켰다. 디지털 중개 도전자는 여러 번 왔고, 이번 도전자는 AI다.</p>
+</blockquote>
+<ul>
+<li>1997 상장 → 2012 Phoenix 인수로 국제 주선 확장 → 2015 Freightquote(온라인 소량 화물) → 2022 행동주의 투자자 개입·CEO 교체 →
+  2023 보즈먼 취임·린 AI 전환 → 2025 유럽 육상 손실 매각 → 2026-10 RXO 인수 발표.</li>
+<li>이익률은 운임 사이클을 탔다. 회사 몫 대비 영업이익률은 2022년 35.3% → 2023년 19.8% → 2025년 29.1%다. 2023년 이후 불황 바닥의 이익률이 높아졌다.</li>
+<li>2020년 비용 절감은 2021년에 되돌려졌다(북미 육상 영업비용 +32.7% · History-Dive). "생산성은 되돌려지지 않는다"는 회사 주장을 시험할 역사적 경고다. 되돌림은 인원보다 성과급으로 먼저 온다 — 2022→2023년 인원은 −8.9%인데 인건비는 −14.9%였다〔Specific-Dive〕.</li>
+</ul>
+<h3>J.2 규제·법적 위험</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 한 건의 평결이 연간 영업이익의 4분의 3 크기다. 회사는 확정 가능성이 낮다고 보고 거의 충당하지 않았다.</p>
+</blockquote>
+<ul>
+<li><strong>Lipe v. Lupus Superior(댈러스 카운티 법원 · 2026-07-23 배심 권고 평결)</strong> — 2021년 3월 사망 사고와 관련해 CHRW가 운송사를 과실로 고용했다고 판단했다.
+  총 손해 6억 400만 달러의 23%를 CHRW에 배분했지만, 대리책임으로 <strong>전액 연대책임</strong>을 질 수 있다. 보험은 1건당 1.55억 달러(자기부담 500만 달러)다.
+  6/30 재무제표에는 "중요하지 않은" 충당금만 잡혔고, 회사는 최종 판결이 나면 즉시 항소한다고 밝혔다(<a href="https://www.sec.gov/Archives/edgar/data/1043277/000104327726000031/chrw-20260630.htm">10-Q 소송 주석</a> · <a href="https://www.sec.gov/Archives/edgar/data/1043277/000119312526315034/d149453d8k.htm">8-K 7/24</a>).</li>
+<li><strong>Montgomery v. Caribe Transport II(미 대법원 24-1238 · 2026-05-14 · 만장일치 · 파기·환송)</strong> — <strong>피고 브로커가 C.H. Robinson이다.</strong> 원고는 회사가 "조건부" 안전등급 운송사를 고른 것이 과실이라고 주장했고, 대법원은 이런 주 법 소송이 연방법의 "자동차 안전 예외"에 해당해 막히지 않는다고 봤다(<a href="https://www.supremecourt.gov/opinions/25pdf/24-1238_1b7d.pdf">판결문</a> · <a href="https://www.scotusblog.com/2026/05/court-rules-freight-brokers-can-face-negligent-hiring-suits-under-state-law/">SCOTUSblog</a>). 사건은 하급심으로 돌아갔다(환송심 금액·일정 미공시 · 10-Q는 위험 요인에만 적음). 10-Q는 보험료·자기부담·보장 조건 악화 가능성을 적었다〔Specific-Dive〕.</li>
+<li>💬 해석: 이 위험은 "AI로 비용을 줄인다"는 thesis와 정면으로 만난다. 운송사 선정을 자동화할수록 선정 과실의 책임은 회사 쪽에 남는다. 소형 운송사(트럭 100대 미만)가 트럭 운송 건수의 약 72%를 맡는 구조에서 이 비용은 작지 않을 수 있다. Lipe 평결에서 회사는 "사고 전후 연방 최고 안전등급을 가진 운송사"를 골랐다고 밝혔다(<a href="https://www.chrobinson.com/en-us/about-us/newsroom/news/2026/lipe-v-lupus-superior-verdict/">회사 입장문 7/31</a>). 연방 등급 확인만으로는 방어가 안 된다는 뜻이다.
+  연방 선정 기준을 만들자는 <a href="https://www.congress.gov/bill/119th-congress/house-bill/5337">H.R.5337</a>은 2025-09-12 소위원회 회부 뒤 진전이 없다. 회사는 판결 뒤 최대 20%의 운송사가 일감에서 배제될 수 있다는 연구를 인용했다(연구 원문 미확인) — 검증 강화는 비용과 운송사 공급을 함께 조인다〔Specific-Dive〕.</li>
+</ul>
+<h3>J.3 정책 민감도</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 관세는 통관 일감을, 트럭 공급 규제는 운임을 움직인다. 정책은 직접 보조금이 아니라 사이클을 통해 들어온다.</p>
+</blockquote>
+<ul>
+<li>관세 → 통관 수수료↑·국제 물량↓(Section A).</li>
+<li>트럭 공급 축소 → 운임 급등 → 초기 차액 압축(2분기).</li>
+<li>브로커 재무 책임 규칙(2023-11 공포 · 일부 조항 2026-01-16 시행) — 재무 미달 시 면허 즉시 정지 → 자본이 얇은 소형 중개 퇴출 = 통합 순풍(<a href="https://www.federalregister.gov/d/2023-25312">연방관보</a>)〔Specific-Dive〕.</li>
+<li>브로커 거래 기록 공개 규칙(2024-11 제안 · 2025-02 의견 재개 · 최종안 없음) — 확정되면 운송사가 브로커 차액을 볼 수 있어 차액 압력<a href="[연방관보](https://www.federalregister.gov/d/2024-27115)">추론</a>〔Specific-Dive〕.</li>
+<li>RXO 인수 반독점 심사(HSR) — 북미 중개 1위와 3위권의 결합이지만 업계가 극도로 쪼개져 있다(판단 보류 · 심사 결과로 확인).</li>
+</ul>
+<hr />
+<h2 id="k">Section K. 공시 · 가이던스 · 약속 이행</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 날짜 붙은 비용 약속은 지켜 왔다. 이번 3억 달러 시너지는 이 회사가 처음 내건 "남의 회사" 약속이다.</p>
+</blockquote>
+<h3>K.1 · K.2 최근 실적과 경영진 화법</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 경영진은 "시황 회복 없이도 이익이 는다"를 반복한다. 2분기는 그 말을 이익률로는 증명했고, 차액으로는 증명하지 못했다.</p>
+</blockquote>
+<ul>
+<li>2분기 발표문(CEO): "린 AI 전략으로 견적부터 대금 회수까지 수작업을 자동화했다. 2022년 말 이후 NAST와 Global Forwarding 모두에서 60%가 넘는 지속적 생산성 개선이 나왔다"(<a href="https://www.sec.gov/Archives/edgar/data/1043277/000104327726000027/ex991earningsreleaseq20630.htm">8-K EX-99.1</a>).</li>
+<li>2/23 Reuters 인터뷰: CEO는 2/12 매도를 "단기적"이라 했고 "AI 도입 경쟁이 중개업 통합을 부를 것"이라고 말했다(<a href="https://www.reuters.com/business/ch-robinson-ceo-says-ai-will-drive-freight-brokerage-consolidation-2026-02-23/">Reuters</a>). 8개월 뒤 RXO 인수로 그 말을 행동에 옮겼다.</li>
+<li>실적 발표 다음 날 주가: 2026-02 −14.5%(AI 공포 · 실적과 별개) · 7/30 −15.4%(2분기 실적 다음 날 · 평결 공시 직후).</li>
+</ul>
+<h3>K.3 가이던스 · 약속 이행 (History-Dive 소비)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 판정이 난 장기 약속 7개 중 3개만 제때였지만, 2022년 이후 비용 약속 4개는 모두 지켰다. 지연 계수는 1.0배다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>약속</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>순 비용 절감 연 3억 달러(2023년 말)</td>
+<td>✅ 목표보다 앞서 달성</td>
+</tr>
+<tr>
+<td>1인당 하루 처리 건수 15% 개선(2023년 말)</td>
+<td>✅ 18%</td>
+</tr>
+<tr>
+<td>중간 사이클 영업이익률 NAST 40% · GF 30%</td>
+<td>✅ 2026년 2분기 40.9% · 33.4%(구조조정 제외)</td>
+</tr>
+<tr>
+<td>5년간 기술에 10억 달러(2019)</td>
+<td>🔇 금액이 공시에서 사라짐</td>
+</tr>
+<tr>
+<td>2026년 영업이익 9.65억~10.4억 달러</td>
+<td>⏳ 상반기 하단의 45%</td>
+</tr>
+<tr>
+<td>RXO 시너지 연 3억 달러(완료 2년 안)</td>
+<td>⏳ 첫 외부 인수 시너지 약속</td>
+</tr>
+</tbody>
+</table>
+<h3>K.4 8-K 주요 사건 (12개월)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 평결 공시와 역사상 최대 인수가 석 달 사이에 나왔다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>일자</th>
+<th>항목</th>
+<th>내용</th>
+<th style="text-align: center;">영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-05</td>
+<td>1.01·7.01</td>
+<td>RXO 인수 합의 · 브리지 대출 최대 45억 달러 · RXO 측 해지 수수료 1.75억 달러</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2026-07-29</td>
+<td>2.02</td>
+<td>2분기 실적</td>
+<td style="text-align: center;">🟠</td>
+</tr>
+<tr>
+<td>2026-07-24</td>
+<td>7.01</td>
+<td>댈러스 배심 권고 평결 6억 400만 달러</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2026-06-02</td>
+<td>5.02</td>
+<td>전략·혁신 책임자 특별 주식 보상 750만 달러</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>2026-05-11</td>
+<td>5.07</td>
+<td>주주총회 결과</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>2026-04-29 · 01-28</td>
+<td>2.02</td>
+<td>1분기 · 2025년 4분기 실적</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>2025-10-29</td>
+<td>2.02·7.01</td>
+<td>3분기 실적 · 투자자의 날 · 2026 영업이익 목표 상향</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+</tbody>
+</table>
+<h3>K.4b AI 밸류체인 이익 귀착 — 해당 없음</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — CHRW는 AI를 만드는 회사가 아니라 쓰는 회사라 이 표를 쓰지 않는다. 대신 "AI 없는 대조군"과의 비교는 RXO 1인당 이익으로 했다.</p>
+</blockquote>
+<p>AI 사용 기업이다. 귀착 검증의 대조군 비교는 Section D·E에 있다(1인당 조정 총이익 CHRW 21.4만 vs RXO 16.4만 달러 · 회사 자료). 다만 RXO도 AI를 쓰고 있어 깨끗한 대조군은 아니다.</p>
+<h3>K.4c 외부 비판 분해표</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 2/12 "AI가 중개업을 대체한다"는 시장 공포는 회사 실적으로는 아직 확인되지 않았다. 다만 근거가 된 주장 자체를 검증할 길도 없다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th>주장(원문 요지)</th>
+<th>가설 자산을 치나?</th>
+<th>1차 검증</th>
+<th>회사 반박</th>
+<th>분류</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td>AI 화물 플랫폼(Algorhythm SemiCab)이 "인원 추가 없이 물량 300~400% 확장"을 돕는다 → 중개 모델 위협(<a href="https://www.reuters.com/business/ch-robinson-ceo-says-ai-will-drive-freight-brokerage-consolidation-2026-02-23/">Reuters 2/23</a>)</td>
+<td>예 — 조정 총이익(차액)의 지속성</td>
+<td>불가(플랫폼 측 주장 · 매출 비교 불가)</td>
+<td>있음 — "단기적 매도 · 통합을 부른다"(인터뷰)</td>
+<td>❓ 미확인</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td>노동 집약·고수수료 자산 경량 모델은 AI에 취약(<a href="https://www.barrons.com/articles/freight-brokers-stocks-ai-victims-2d5b19d7">Barron's 2/12</a> · <a href="https://www.investing.com/news/stock-market-news/ch-robinson-stock-tumbles-amid-freight-sector-ai-disruption-fears-4503508">Investing.com 2/12</a>)</td>
+<td>예 — 차액 비율</td>
+<td>부분(2분기 트럭 차액 비율 하락은 사이클로 설명 가능 · 대표 디지털 중개 Uber Freight 2분기 매출 15.83억 달러(+26%) · 부문 영업손실 2,400만 달러〔Specific-Dive〕)</td>
+<td>회사 숫자(이익률 상승)</td>
+<td>❓ 미확인</td>
+</tr>
+</tbody>
+</table>
+<p>→ 두 주장 모두 L.deferred(확인 방법: 다음 4개 분기 트럭 차액 비율·업계 대비 물량 · 비상장 디지털 중개 점유율 통계).</p>
+<hr />
+<h2 id="l">Section L. 동적 발견</h2>
+<h4>L.1 🔴 운송사 선정 책임 — 하위 Dive 세 곳이 모두 놓친 위험</h4>
+<ul>
+<li>발견 트리거: 8-K 목록 점검(7/24 Item 7.01) → 10-Q 소송 주석 · 위험 요인 갱신.</li>
+<li>중요도: 🔴</li>
+<li>why: 평결액(6억 400만 달러)은 연간 영업이익(약 8억 달러)의 4분의 3이다. 대법원 판결 자체가 CHRW를 피고로 한 사건이고 하급심으로 돌아갔다 — 진행 중인 선정 과실 사건은 Lipe 하나가 아니다. AI 자동 배차가 늘수록 선정 책임이 회사 쪽에 남는다.</li>
+<li>추가 조사 결과: 보험 1건당 1.55억 달러 · 충당금 "중요하지 않음" · 항소 예정(10-Q). 대법원 판결은 만장일치(SCOTUSblog).</li>
+<li>Backreference: Section J.2 신설 · H.1 Bear 가정 · H.3 소송 확정 신호 · D.8 하방.</li>
+<li>결론 영향: 수정(하방을 넓힘 · 점수 축에서는 D.8 하방 🟡로 반영) · Specific-Dive: Montgomery 피고 = CHRW 확인.</li>
+</ul>
+<h4>L.2 🔴 RXO 시너지는 RXO 이익의 2.2배다</h4>
+<ul>
+<li>발견 트리거: R-Dive 인수 자료 해부 + History-Dive 인수 스코어카드.</li>
+<li>중요도: 🔴</li>
+<li>why: 이 회사의 첫 외부 인수 시너지 약속이고, 역사상 최대 인수(직전 최대의 약 8.8배)다. 시너지를 빼면 인수 가격은 EV/EBITDA 약 42배다(R-Dive 계산). 대상의 고유 위험도 있다.
+  RXO는 최대 고객 1곳이 매출의 약 11%(6.53억 달러), 상위 5곳이 23%다(RXO 10-K) —
+  합산 뒤 약 3%로 CHRW 최대 고객(2%)보다 크다.
+  회사는 "고객 중복이 제한적"이라고만 적었다. RXO 라스트마일 자회사는 배송 인력 분류 집단소송 여러 건의 피고이고 보험이 이를 덮지 않는다. 해지 수수료는 RXO→CHRW 1.75억 달러 한 방향만 확인되고, 기한은 2027-07-04(규제 승인만 남으면 3개월씩 두 번 연장)다〔Specific-Dive〕.</li>
+<li>Backreference: H.1 Bull/Base 가정 · H.3 인수 통합 신호 · D.5 성격 변화.</li>
+<li>결론 영향: 유지(판정은 시너지 이행으로만 확인 가능).</li>
+</ul>
+<h4>L.3 🟠 "생산성 60%"와 달러 생산성의 간극</h4>
+<ul>
+<li>발견 트리거: R-Dive 단위 경제학.</li>
+<li>중요도: 🟠</li>
+<li>why: 건수 생산성은 60% 넘게 올랐지만 1인당 조정 총이익은 2022년 대비 +5%다. 1인당 인건비는 9.8만 → 10.8만 달러로 늘었다.
+  "60%"를 이익 증가율로 읽으면 과대평가가 된다.</li>
+<li>Backreference: 한 장 요약 질문 ② · D.6 · H.5.</li>
+<li>결론 영향: 유지.</li>
+</ul>
+<h4>L.4 🟠 핵심 지표에서 빠지는 AI 비용</h4>
+<ul>
+<li>발견 트리거: R-Dive 마진 분모 함정.</li>
+<li>중요도: 🟠</li>
+<li>why: 조정 총이익은 고객 응대용 자체 개발 소프트웨어 상각비를 다시 더한 값이다. 이 상각비는 2023년 3,360만 → 2025년 5,830만 달러로 늘었다. AI 투자가 커질수록 회사 핵심 지표가 좋아 보이는 쪽으로 기운다(영업이익에는 반영됨).</li>
+<li>결론 영향: 유지(이 보고서의 이익률 판정은 영업이익 기준).</li>
+</ul>
+<h4>L.5 🟠 운임 상승기의 현금 빨대</h4>
+<ul>
+<li>발견 트리거: G.1 · R-Dive 현금 전환.</li>
+<li>중요도: 🟠</li>
+<li>why: 운임이 오르면 화주에게 받을 돈이 먼저 불어난다. 2026 상반기 영업현금흐름은 1년 전의 3분의 1이다. RXO 인수 차입과 같은 시기에 겹치면 부채 감축 속도가 늦어진다.</li>
+<li>Backreference: G.8 결합 시나리오 2차 효과 · H.3 운전자본 신호.</li>
+<li>결론 영향: 유지.</li>
+</ul>
+<h3>L.deferred</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이번에 못 본 것은 업계 전체 숫자와 소송 원기록이다. 다음 실행에서 먼저 확인한다.</p>
+</blockquote>
+<ul>
+<li>북미 화물 중개 TAM·성장률 1차 협회 자료 — 다음 실행 때 TIA(교통중개인협회) 연간 자료 확인.</li>
+<li>비상장 디지털 중개(Uber Freight·SemiCab 등) 점유율 통계 — 업계 협회·FreightWaves 데이터.</li>
+<li>"생산성 60%" 산식 — 투자자의 날 자료(2024-12) 원문.</li>
+<li>Lipe 사건 법원 기록(최종 판결·공탁) — 텍사스 댈러스 카운티 법원 기록.</li>
+<li>RXO 인수 등록서류(S-4)의 시너지 항목별 내역 · 고객 중복 비중 · 최대 고객 이름 · 라스트마일 소송 청구액.</li>
+<li>Montgomery 환송심 청구액·일정(하급심 기록).</li>
+<li>FMCSA 운송사 면허 순감 통계 · 2분기 시점 DAT 계약−스팟 차이.</li>
+</ul>
+<h2 id="s">Section S. 🔎 Specific-Dive — 업종 전문가 체크리스트 보완</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 화물 중개 업종용 체크리스트 15개를 새로 만들어 감사했다. 별점을 뒤집는 사실은 없다. 다만 "AI 이득이 손익에 남았다"는 말은 2019년과 견주면 "임금 상승을 메웠다"로 좁혀지고, 대법원 Montgomery 사건의 피고가 바로 이 회사였다.</p>
+</blockquote>
+<h3>체크리스트 대조</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회계 정의·운전자본·사이클 역사는 충분했다. 빈칸은 비교 기준, 달러 차액, 시장 계기판, 규제, 인수 대상의 고유 위험, 판례 당사자 여부였다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th>체크 항목</th>
+<th style="text-align: center;">판정</th>
+<th>결론 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td>총액 인식·회사 몫 정의</td>
+<td style="text-align: center;">✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td>차액을 달러로 보나</td>
+<td style="text-align: center;">◐→조사</td>
+<td><strong>마일당 +2% 명목 방어 · RXO 대비 덜 눌림 · 가격 테스트 🔴 유지</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td>계약/스팟 · 라우팅 가이드</td>
+<td style="text-align: center;">◐→조사</td>
+<td>실패율 7.5% 최고 → 6%대 · RXO 스팟 42% vs CHRW 30%</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td>시장 계기판</td>
+<td style="text-align: center;">◐→조사</td>
+<td><strong>계약−스팟 차이 마일당 0.37 → 0.23달러 · 물량 지수 마이너스</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td>인건비 비율·2019년 기준</td>
+<td style="text-align: center;">◐→조사</td>
+<td><strong>2019·2025 모두 50.2% · 감원의 42%는 증원 되돌림</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td>반복 구조조정 비용</td>
+<td style="text-align: center;">❌→조사</td>
+<td>3년 연속 · 조정 이익률 약 1%p 높게 보임</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td>운전자본</td>
+<td style="text-align: center;">✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td>선정 과실 책임</td>
+<td style="text-align: center;">◐→조사</td>
+<td><strong>연방 최고 등급 운송사여도 책임 인정 · 연방 기준 법안 정체</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td>운전자 공급 규제</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>비거주 면허 약 19만 4천 명 5년에 걸쳐 이탈(연방 추정)</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td>브로커 규제</td>
+<td style="text-align: center;">❌→조사</td>
+<td>재무 요건 강화(순풍) · 거래 기록 공개 규칙 미결</td>
+</tr>
+<tr>
+<td style="text-align: center;">11</td>
+<td>통관·관세</td>
+<td style="text-align: center;">◐→조사</td>
+<td>회사 몫의 4.9% · 영향 작음</td>
+</tr>
+<tr>
+<td style="text-align: center;">12</td>
+<td>사이클 역전</td>
+<td style="text-align: center;">✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: center;">13</td>
+<td>인수 통합</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>RXO 최대 고객 11%·상위 5곳 23% · 라스트마일 분류 소송(보험 밖)</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">14</td>
+<td>디지털 중개 경제성</td>
+<td style="text-align: center;">◐→조사</td>
+<td>Uber Freight 2분기 부문 손실 2,400만 달러</td>
+</tr>
+<tr>
+<td style="text-align: center;">15</td>
+<td>판례 당사자</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>Montgomery 피고 = CHRW · 파기·환송</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>새로 안 것</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이득은 2023년 바닥 대비로만 손익에 남았고, 운임 상승은 규제가 만든 공급 충격이며, 소송 위험은 이 회사 이름이 걸린 위험이다.</p>
+</blockquote>
+<ol>
+<li><strong>2019년과 2025년은 회사 몫 대비 인건비가 50.2%로 같다.</strong> 인원은 18% 줄었지만 1인당 인건비가 29% 올랐다.
+   회사 몫 대비 영업이익률은 2019년 30.5%, 2025년 29.1%다. AI 이득은 화주에게 새지 않았지만, 2019년 대비로는 임금 상승을 메우는 데 쓰였다.
+   2019년을 넘는 첫 신호는 2026년 2분기(조정 34.7%)이고 운임 상승 초입과 겹친다.</li>
+<li><strong>감원 4,868명(2022→2025)의 42%는 팬데믹 증원의 되돌림이다.</strong>
+   트럭 중개는 2022년 인원이 2019년과 같아 감원 30%가 거의 전부 추가 감축이다.
+   국제 운송 주선 감원은 3분의 2가 되돌림이다.</li>
+<li><strong>이번 운임 상승은 공급이 끈다.</strong> 연방 최종규칙으로 비거주 면허 소지자 약 19만 4천 명이 5년에 걸쳐 빠진다. 시장의 계약−스팟 차이는 1년 새 마일당 0.37 → 0.23달러로 좁아졌고 물량은 줄었다.
+   회사 전망은 2026년 매입비 +30%, 2027년 +10%다. 2027년 1분기 입찰 시즌의 재가격이 회복 관문이다.</li>
+<li><strong>차액은 달러로 지켰다.</strong> 2분기 트럭 마일당 회사 몫은 +2%였다(매입 +29%). 같은 분기 RXO 중개 마진은 3.7%p 내려 CHRW(1.7%p)보다 두 배 넘게 눌렸다. 명목 방어이지 가격결정력은 아니다.</li>
+<li><strong>Montgomery 사건의 피고가 C.H. Robinson이다.</strong> 대법원은 2026년 5월 만장일치로 원심을 뒤집어 돌려보냈다. Lipe 평결은 연방 최고 안전등급 운송사를 골랐는데도 책임을 인정했다. 연방 기준을 만드는 H.R.5337은 2025년 9월 이후 소위원회에 머물러 있다. 자동 배차의 방어선이 "연방 등급 확인"으로는 생기지 않는다.</li>
+</ol>
+<div class="callout">
+<p>▶ 반영: 7축 별점 재판정 없음 · 질문 ①·② 문장에 2019년 기준 추가 · 법률 위험 서술 사실 정정 · 리스크 신호 6개 추가. 상세 = 하위 Dive 링크 모음의 Specific-Dive 보고서.</p>
+</div>
+<hr />
+<h2 id="z">🔴 종합 판단</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — AI로 일손을 줄인 이득은 지금까지 화주에게 새지 않고 회사에 남았다. 그러나 그 이득은 값을 올리는 힘이 아니라 비용 우위에서 나왔고, 2019년과 견주면 임금 상승을 메운 수준이다. 이 회사는 지금 그 방법을 빚을 내 남의 회사(RXO)에 옮기는 시험과, 자기 이름이 걸린 소송이라는 두 시험대 앞에 있다.</p>
+</blockquote>
+<ul>
+<li><strong>7축 종합 59점 / 100 (⭐3.37 병기 · 보통)</strong> · 첫 실행이라 비교 회차 없음 · 사업·thesis 매력도이며 밸류 멀티플은 반영하지 않았다 · 5점 이내 차이 = 동급.</li>
+<li><strong>감점 상위 3칸</strong>:</li>
+<li>산 성장률·시장 규모 🔴 −3.1점</li>
+<li>날씨 금리 민감도 ⚪ −2.6점</li>
+<li>날씨 화물 사이클 ⚪ −2.6점(날씨 지정학 이벤트·유동성 칸도 각 −2.6점)</li>
+<li>숲의 시점 칸 셋과 수요/공급 칸은 렌트 포획 🔴 상한으로 칸마다 −1.1점이 묶였다(상한).</li>
+<li>축별 득점(배점 25 · 나머지 각 12.5): 날씨 12.5 · 산 3.9 · 숲 5.8 · 나무 8.9 · 옆나무 7.8 ·
+  사람 11.2 · 숫자 9.2.</li>
+<li><strong>별도 렌즈(점수 미합산)</strong>: 분면 「약하고 싼」 경계(정찰 영역) · 0to1 2/7(불운 위험 · 1→n을 잘하는 회사) · 밸류 🔴 고평가(약 · 신뢰도 낮음) · 내구성 ⚪ 조건부.</li>
+<li><strong>핵심 질문 세 개의 답</strong></li>
+<li>① 화주에게 새는가 — 아직 새지 않았다. 회사 몫 비율이 올랐고, 2분기에도 마일당 회사 몫은 +2%였다. 그러나 가격 인상 테스트는 🔴이고 이득을 지키는 것은 비용 우위뿐이다. 경쟁사가 같은 AI 도구를 쓰는 만큼, 이 이득은 시간이 지나며 경쟁을 통해 화주 쪽으로 넘어갈 위험이 크다.</li>
+<li>② 인원과 이익의 분리 — 2023년 바닥 대비로는 인원 −21%에 영업이익 +54%라 생산성 몫이 분명하다. 2019년 대비로는 감원의 42%가 팬데믹 증원의 되돌림이고, 회사 몫 대비 인건비는 50.2%로 같다. "AI가 이익을 바꿨다"는 회사 설명은 2023년 바닥을 출발점으로 할 때만 크게 보인다.</li>
+<li>③ 사이클 민감도 — 여전히 크다. 이번 상승은 규제가 운전자를 줄이는 공급발 상승이라 초기 차액 압축이 길어질 수 있다. 2027년 1분기 화주 입찰의 재가격이 회복의 관문이다. RXO는 스팟 비중이 더 커 사이클 민감도를 키운다.</li>
+<li><strong>시간 지평</strong></li>
+<li>0~6개월: 10/28 실적의 트럭 마일당 회사 몫·차액 비율, Lipe 사후 절차.</li>
+<li>6개월~3년: 2027년 입찰 재가격, RXO 완료와 시너지 집계, 2027~2028 조달 창.</li>
+<li>3~10년: AI 비용 우위가 업계 표준이 되는 속도, 선정 과실 소송의 상시 비용화.</li>
+<li>단기(사이클 압축·소송)와 중기(인수 차입)의 역풍이 장기 순풍(업계 통합·비용 우위)보다 먼저 온다.</li>
+<li><strong>리스크 신호 집계</strong>: 13개 중 🟠 3(트럭 차액 비율 · 소송 확정·확대 · 계약−스팟 차이 축소) · 🟡 1(운전자본 흡수) · 대기 9.</li>
+<li><strong>종합 판정: 추가 검증</strong> — "AI로 비용 구조를 바꿨다"는 사실은 1차 숫자로 확인했다. "그 이득이 값을 올리는 힘으로 굳어 오래 회사에 남는다"는 증거는 없다. 다음 시험 = 10/28 3분기 실적, 결정적 시험 = 2027년 입찰 재가격 + RXO 통합 첫해 숫자 + Lipe 최종 판결.</li>
+</ul>
+<h2>수집 상태 (실패·불완전 항목만)</h2>
+<ul>
+<li>⚠️ 북미 화물 중개 TAM·성장률 1차 자료 미수집.</li>
+<li>⚠️ "생산성 60%"의 산식·절대값, AI 비용 금액은 회사 미공시.</li>
+<li>⚠️ 3분기 실적일은 야후 표기(10/28)만 확인 · 회사 IR 일정 페이지는 열리지 않았다.</li>
+<li>⚠️ Lipe 사건 법원 기록 원문은 열지 않았다(회사 공시로만 확인).</li>
+<li>⚠️ 비상장 경쟁자(TQL·Uber Freight 등) 재무는 미공시다.</li>
+</ul>
+<h2>다음 실행 시 보완 목록</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 10/28 실적의 트럭 차액 비율과 소송·인수 일정이 다음 실행의 첫 확인 대상이다.</p>
+</blockquote>
+<ul>
+<li>10/28 3분기: 트럭 차액 비율(13.1%에서 회복?) · 계약/스팟 비중 · 생산성 숫자 · 영업이익 가이던스 유지 여부 · 운전자본.</li>
+<li>Lipe 사건 최종 판결·항소·공탁 비용 공시.</li>
+<li>RXO 인수 등록서류(S-4)의 시너지 항목·차입 구조 · 반독점 심사.</li>
+<li>같은 유형 운송사 선정 소송의 업계 확산(다른 브로커 공시).</li>
+</ul>
+<div class="footer">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+<div class="footer">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const VIZ = {"score7": {"label": "확신도 7축", "max": 5, "axes": ["🌦️날씨", "⛰️산", "🌲숲", "🌳나무", "🌲🌳옆나무", "👤사람", "🔢숫자"], "series": [{"name": "CHRW 10/14", "color": "#0068b5", "scores": [3.0, 2.25, 2.86, 3.83, 3.5, 4.57, 3.94]}]}, "narrative": {"label": "내러티브 5축", "max": 5, "axes": ["🔧기술", "👥사회", "🏛️정책", "🌐지정학", "💰자본"], "series": [{"name": "북미 화물 운송·중개", "color": "#8e44ad", "scores": [4, 3, 2, 2, 2]}]}, "trajectory": {"periods": ["2022", "2023", "2024", "2025", "2Q26(연율)"], "forecastFrom": 5, "series": [{"label": "1인당 조정 총이익(천 달러)", "axis": "left", "color": "#2980b9", "values": [204, 162, 192, 214, 257]}, {"label": "영업이익 ÷ 조정 총이익(% · 오른축)", "axis": "right", "color": "#c0392b", "values": [35.3, 19.8, 24.2, 29.1, 34.7]}]}, "peers": {"metrics": [{"key": "rev", "label": "매출 TTM(억 달러)", "unit": "", "better": "high"}, {"key": "opm", "label": "매출 대비 영업이익률", "unit": "%", "better": "high"}, {"key": "nc", "label": "순현금(억 달러)", "unit": "", "better": "high"}, {"key": "pe", "label": "선행 P/E", "unit": "", "better": "low"}], "rows": [{"name": "CHRW", "subject": true, "vals": {"rev": 170, "opm": 5.3, "nc": -18, "pe": 18.4}}, {"name": "RXO", "vals": {"rev": 61, "opm": 0.7, "nc": -7, "pe": 44.4}}, {"name": "LSTR", "vals": {"rev": 50, "opm": 4.6, "nc": 2, "pe": 21.8}}, {"name": "EXPD", "note": "포워딩 대장", "vals": {"rev": 120, "opm": 10.7, "nc": 5, "pe": 24.2}}, {"name": "JBHT", "vals": {"rev": 127, "opm": 7.4, "nc": -14, "pe": 23.1}}]}, "scenario": {"horizonLabel": "5년", "threshold": 1.5, "cases": [{"label": "Bull", "tone": "bull", "prob": 0.25, "mult": 2.2}, {"label": "Base", "tone": "base", "prob": 0.5, "mult": 1.3}, {"label": "Bear", "tone": "bear", "prob": 0.25, "mult": 0.66}]}, "landmark": {"current": {"label": "CHRW 시총", "mcap": 16.1}, "target": {"label": "×10", "mcap": 161}, "refs": [{"name": "RXO", "mcap": 4.7}, {"name": "Landstar", "mcap": 5.7}, {"name": "J.B. Hunt", "mcap": 21.5}, {"name": "Expeditors", "mcap": 25.4}, {"name": "Old Dominion", "mcap": 38.1}, {"name": "UPS", "mcap": 80.6}, {"name": "Union Pacific", "mcap": 167.7}], "sentence": "💡 지금 $161억 ≈ J.B. Hunt($215억)보다 조금 작다 → 텐배거면 $1,610억 ≈ Union Pacific($1,677억). (규모 비교일 뿐)", "warn": false}, "h5": {"points": [{"label": "10/14 약하고 싼 경계", "x": 300, "y": 205}], "caption": "CHRW 10/14 — 중요도 下(조정 단일 층·병목 아님) · 엣지 中(고점 대비 −34%·시장은 업종 바구니로 가격) → 「약하고 싼」 경계 · 정찰 영역"}};
+try{
+DDViz.renderRadar('fig-score7','fig-score7-leg',VIZ.score7);
+DDViz.renderRadar('fig-c3','fig-c3-leg',VIZ.narrative);
+DDViz.renderTrajectory('fig-g5','fig-g5-leg',VIZ.trajectory);
+DDViz.renderHeatmap('fig-e1',VIZ.peers);
+DDViz.renderScenario('fig-h1',null,VIZ.scenario);
+DDViz.renderMcapLadder('fig-g15','fig-g15-cap',VIZ.landmark);
+var c7=document.getElementById('fig-score7-cap'); if(c7)c7.textContent="7축 종합 59점 / 100 (⭐3.37 병기) · 보통 · 5점 이내 차이 = 동급 · 사업·thesis 매력도·밸류 미반영";
+var ch=document.getElementById('fig-h1-cap'); if(ch)ch.textContent='§H.1 5년 시나리오 (기준 $11.46) — 기댓값 ~1.16x(⚠️ <1.5x) · 2년 0.84x = bull-tail 의존 ⚠️ (게이트 ❌·보유 매도신호 ❌)';
+var cg=document.getElementById('fig-g5-cap'); if(cg)cg.textContent='§G.5 분기 매출·조정 EBITDA·GM 6분기 + FY26E 가이던스 중간 분기평균(점선·보강) — 변곡점 = 2Q26';
+var ce=document.getElementById('fig-e1-cap'); if(ce)ce.textContent='§E.1 peer 히트맵 (yfinance 2026-09-21 · 전 열 TTM·GAAP·USD) — GM 100% 표기 종목은 보고 방식 artifact';
+var cd=document.getElementById('fig-d0-cap'); if(cd)cd.textContent='§D.0 2Q26 매출 구성 — 토큰화 54% / 자산서비스 46% (역방향 믹스 시프트)';
+var cc=document.getElementById('fig-c3-cap'); if(cc)cc.textContent='§B.3 내러티브 5축 (변동 없음)';
+}catch(e){console.error('viz',e);}
+</script></body></html>
