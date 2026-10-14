@@ -1,0 +1,2968 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QuantumScape (QS) Deep-Dive — 고객은 넷으로 늘었는데, 가장 큰 고객이 낼 돈은 42% 줄었다 — 2026-10-14</title>
+<meta name="vault-stage" content="Dive"><meta name="vault-topic" content="QS"><meta name="vault-date" content="2026-10-14">
+<meta name="vault-skill" content="Deep-Dive"><meta name="description" content="고객은 넷으로 늘었는데 가장 큰 고객이 낼 돈은 42% 줄었다 — 7축 61점 · 밸류 🔴 · 판사 🔴 진입 보류">
+<style>/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+
+body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Helvetica Neue','Apple SD Gothic Neo',sans-serif;line-height:1.65;margin:0;padding:0;}
+.container{max-width:940px;margin:24px auto;background:#FDF6E3;padding:36px 44px;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.08);}
+h1{font-size:1.7em;border-bottom:3px solid #c0392b;padding-bottom:.3em;margin-top:.2em;}
+h2{font-size:1.32em;border-bottom:1px solid #c9bfa3;padding-bottom:.24em;margin-top:1.7em;color:#8a2415;}
+h3{font-size:1.1em;margin-top:1.3em;color:#5c4a00;}
+h4{font-size:1.0em;margin-top:1.1em;color:#5c4a00;}
+blockquote{border-left:4px solid #c9a227;background:#f5ecd3;margin:.8em 0;padding:.5em 1em;color:#4a4230;border-radius:0 6px 6px 0;}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.9em;display:block;overflow-x:auto;}
+th,td{border:1px solid #e8e1cf;padding:6px 9px;text-align:left;vertical-align:top;}
+th{background:#efe6cc;color:#5c4a00;font-weight:600;}
+tr:nth-child(even) td{background:#faf4e2;}
+code{background:#efe6cc;padding:1px 5px;border-radius:4px;font-size:.88em;}
+pre{background:#f0e8cf;padding:12px;border-radius:6px;overflow-x:auto;border:1px solid #e8e1cf;}
+a{color:#b0562a;text-decoration:none;} a:hover{text-decoration:underline;}
+hr{border:none;border-top:1px solid #d8cca8;margin:1.6em 0;}
+strong{color:#3a2f18;}
+.judge{background:#f3ead0;border:2px solid #c0392b;border-radius:8px;padding:16px 20px;margin:1.2em 0;}
+.judge h2{border:none;color:#8a2415;margin-top:0;}
+.dd-fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:12px;margin:1em 0;}
+.dd-fig figcaption{font-size:.82em;color:#6b5d3a;margin-top:6px;text-align:center;}
+.footer{margin-top:2em;padding-top:1em;border-top:1px solid #d8cca8;font-size:.85em;color:#6b5d3a;}
+@media print{body{background:#fff;}.container{box-shadow:none;background:#fff;}}
+@media (max-width:640px){.container{padding:20px 16px;}}
+</style><meta name="vault-published" content="2026-10-14">
+<meta name="robots" content="noindex, nofollow">
+</head><body>
+<!--dive-hub:start-->
+<nav id="dive-hub" aria-label="하위 Dive 모음" style="max-width:1100px;margin:12px auto 18px;padding:12px 16px;background:#F3EBD6;border:1px solid #e8e1cf;border-radius:10px;font:14px/1.6 'Pretendard','Noto Sans KR',sans-serif;color:#1f2328">
+<div style="font-weight:700;margin-bottom:4px">🤿 QS 하위 Dive 모음 <span style="font-weight:400;font-size:12px;color:#6b6457">— 이 Deep-Dive가 참고한 개별 보고서</span></div>
+<ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px">
+<li><a href="2026-10-14_qs-rdive.html" title="QS (QuantumScape) R-Dive — 제품·수익모델 정밀 해부 — 2026-10-14" style="color:#1F6F8B;font-weight:600;text-decoration:none">💰 R-Dive</a> <span style="font-size:12px;color:#6b6457">제품·수익모델 · 10/14</span></li>
+<li><a href="2026-10-14_historydive-quantumscape.html" title="History-Dive — QuantumScape (QS) — 2026-10-14" style="color:#1F6F8B;font-weight:600;text-decoration:none">📜 History-Dive</a> <span style="font-size:12px;color:#6b6457">기업 역사 · 10/14</span></li>
+<li><a href="2026-10-14_peopledive-timholme.html" title="사람 해부 — QuantumScape 공동창업자·CTO 팀 홈 (+ 자그딥 싱 전 CEO · 프리츠 프린츠 공동창업자) | 2026-10-14" style="color:#1F6F8B;font-weight:600;text-decoration:none">👤 People-Dive</a> <span style="font-size:12px;color:#6b6457">사람·리더 · 10/14</span></li>
+<li style="color:#8a8270">📈 chart-dive <span style="font-size:12px">타이밍 — 🔒 로컬 전용 · 10/14</span></li>
+<li><a href="2026-10-14_qs-specificdive.html" title="QS (QuantumScape) Specific-Dive — 업종 전문가 체크리스트 보완 — 2026-10-14" style="color:#1F6F8B;font-weight:600;text-decoration:none">🔎 Specific-Dive</a> <span style="font-size:12px;color:#6b6457">업종 특수 점검 · 10/14</span></li>
+<li style="color:#8a8270">📄 One-Pager <span style="font-size:12px">1p 압축 — 미수행</span></li>
+</ul>
+</nav>
+<!--dive-hub:end-->
+<div class="container">
+<div class="kicker">DEEP-DIVE · 단일 종목 심층 · v1.42 --full · 델타 회차(2회차)</div>
+
+<h1>QuantumScape (QS) Deep-Dive — 고객은 넷으로 늘었는데, 가장 큰 고객이 낼 돈은 42% 줄었다</h1>
+<p class="sub">2026-10-14 · 기준가 $4.12(10/13 종가 · 52주 최저 · 6/18 대비 −48.8%) · 시총 약 25.5억 달러 · 직전 실행 2026-06-21 · 다음 실적 10/21(장 마감 뒤)</p>
+
+<div class="meta">1차 자료: <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526316073/qs-20260630.htm">10-Q 2026년 2분기(7/24)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526312423/qs-ex99_1.htm">2분기 주주서한(8-K EX-99.1 · 7/22)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526312381/qs-20260716.htm">8-K PowerCo 협력계약 개정(7/16 체결)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526312381/qs-ex10_1.htm">개정 계약서(EX-10.1 · 일부 가림)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526173828/qs-20260423.htm">위임장 DEF 14A(4/23)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526071556/qs-20251231.htm">10-K FY2025</a> · <a href="https://data.sec.gov/api/xbrl/companyfacts/CIK0001811414.json">XBRL 재무 사실</a> · <a href="https://data.sec.gov/submissions/CIK0001811414.json">SEC 제출 목록(Form 4·144 포함)</a> · <a href="https://ir.quantumscape.com/news-releases/news-release-details/quantumscape-announces-agreement-honda-solid-state-battery">Honda 계약 보도자료(6/18)</a> · <a href="https://ir.quantumscape.com/news-releases/news-release-details/quantumscape-announces-qs-powerblock-rack-energy-storage-ai-data">PowerBlock 보도자료(10/8)</a> · <a href="https://ir.quantumscape.com/news-releases/news-release-details/quantumscape-announces-timing-third-quarter-2026-business">3분기 실적 일정(10/8)</a> · <a href="https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm">FOMC 성명(9/16)</a> · yfinance(10/13)</div>
+
+<div class="judge">
+<h4>🧑‍⚖️ 종합 매수 판단 (Fable 판사가 직접 쓴 쉬운 말 판정)</h4>
+<p>① <strong>한 줄 답</strong> — 🔴 지금 가격에 사는 것은 보류. 기술 사용료로 돈을 번 적이 없는데, 주가는 그 성공을 여러 겹 미리 깔고 있다.</p>
+<p>② <strong>왜 그렇게 보나</strong>
+- 현금을 뺀 회사 가치 약 17억 6천만 달러를 정당화하려면 해마다 4억~10억 달러의 사용료가 필요하다. 지금 확보된 유일한 큰 계약은 후하게 쳐도 연 2억 6천만 달러에 그친다.
+- 5년 뒤 기대 수익은 1.35배로 기준선에 못 미친다. 오를 여지는 낙관 시나리오 한쪽에 몰려 있고, 기본 시나리오는 2년 동안 제자리다.
+- 회사는 빚이 없어 망하지는 않는다. 다만 2028년 무렵 증자가 필요하고, 그때 주가가 2달러 아래면 기존 주주 몫이 24% 넘게 깎인다.</p>
+<p>③ <strong>언제 다시 보나</strong> — 10월 21일 3분기 실적에서 "현장 시험" 문장이 살아 있는지와 고객 돈 유입을 본다. 기술 사용료 본계약과 단가가 공시되면 처음부터 다시 계산한다. 가격만으로는 약 1.6달러 수준이 확보 계약을 최대로 채웠을 때 정당화되는 값이다.</p>
+<p>④ <strong>반대로 볼 이유</strong> — 사용료 단가가 공개되지 않았는데 그 숫자 하나가 내 계산보다 두 배 높으면 판정이 뒤집힌다. 공매도가 많아 본계약 뉴스 한 번에 주가가 몇 배 뛸 수 있고, 기다리다 놓친 전례가 있다.</p>
+<p>⑤ <strong>아직 모르는 것</strong> — 1kWh당 사용료 단가와 본계약 체결 시점.</p>
+<p>낮은 신뢰도의 참고 판단이며, 최종 판단은 독자 몫이다.</p>
+<blockquote>
+<p>QS는 미보유 관찰 종목이다. 🔴는 매도 신호가 아니라 지금 가격에서의 진입 보류이며, 정찰 규모의 소액 진입을 규율 위반으로 보지 않는다. 근거별 출처가 달린 판사 원문은 내부 파일에 따로 있다.</p>
+</blockquote>
+</div>
+<h2>한 장 요약</h2>
+<div class="summary">
+<ul>
+<li>🔴 <strong>가장 큰 고객이 줄 수 있는 돈의 상한이 42% 줄었다.</strong> 7/16 PowerCo(폭스바겐 배터리 자회사)와 계약을 고쳤다. "든 비용을 돌려받는" 방식이 "목표를 달성할 때 받는" 방식으로 바뀌었다. 2년 상한은 1억 3,070만 달러에서 7,540만 달러가 됐다(이미 받은 돈 포함). 병목을 쥔 회사라면 일어나지 않았어야 할 일이라, 숲(섹터) 축에 렌트 포획 🔴 상한을 걸었다.</li>
+<li>🔴 <strong>라이선스 본계약은 아직 없고, 매출은 계속 0이다.</strong> 로열티 선급 1억 3,000만 달러 조건은 그대로지만 체결 시점은 공시되지 않았다. 상장 때 약속한 여러 해짜리 이정표 13개 중 기한 안에 지킨 것은 0개다. 실제 걸린 시간은 약속의 약 1.4배였다.</li>
+<li>🟠 <strong>고객과 시장의 수는 넓어졌다.</strong> 6/18 Honda와 다년 공동개발 계약을 맺어 상위 10위 완성차 고객이 넷이 됐다. 미국 대형 방산업체에 셀을 보냈고, 데이터센터용 배터리 설계안(10/8 PowerBlock)을 냈다. 다만 셋 다 금액·과금 방식이 공시되지 않았다(고객 검증 D).</li>
+<li>🟠 <strong>현금은 3년 남짓 버틴다.</strong> 6월 말 유동성은 8억 5,900만 달러이고 금융 부채는 없다. 연간 소모는 약 2억 6,000만 달러이고, 올해 상반기에는 새 주식을 팔지 않았다. 그러나 주가가 52주 최저라 다음 증자는 더 많은 주식을 내줘야 한다.</li>
+<li>🟠 <strong>주가는 6/18 고점 이후 반토막이 됐고, 공매도는 유통주식의 21.8%다.</strong> 같은 기간 CTO(공동창업자)가 매달 주식을 팔았다. 9/16 연준이 금리를 0.25%p 올려, 매출 0의 먼 미래 기업에 불리한 환경이 실제로 왔다.</li>
+<li>🟠 <strong>업종 체크리스트가 찾은 것(Specific-Dive)</strong> — 협력 중 만든 개량 기술은 PowerCo와 공동 소유이고(10-K), 핵심 특허는 2034~2043년에 끝난다. PowerCo의 유일한 가동 공장은 NMC 표준 셀로 채워지는 중이고, 선급 로열티 1억 3,000만 달러는 미래 로열티에서 깎인다. 숲 판정(가격을 지키지 못함)을 더 단단하게 하는 사실이다.</li>
+<li><strong>7축 종합 61점 / 100 (⭐3.44 병기 · 보통 · 경계(양호/보통))</strong> · 직전 6/21 ≈58점(구 체계 환산 ±3) → <strong>+3점 = 동급(변화 없음)</strong> · 사업·thesis 매력도 · 밸류 멀티플 미반영 · 5점 이내 차이 = 동급</li>
+<li><strong>분면 「약하고 싼」 쪽으로 이동(정찰 영역)</strong> · <strong>0to1 Track A 2/7 · ⭐3.0</strong> · <strong>밸류 🔴 고평가(신뢰도 낮음 · 로열티 단가 하나에 뒤집힐 수 있음)</strong> · <strong>🎯 🔴 진입 보류 — IP 라이선스 본계약과 kWh당 단가(또는 선급 1억 3,000만 달러 수령) 공시 때 재검토</strong> · <strong>고금리·고물가 내구성 ⚪ 조건부(부채 🟢 · 희석 ⚪~🔴)</strong></li>
+</ul>
+</div>
+<figure class="dd-fig"><div id="fig-score7"></div><div class="dd-legend" id="fig-score7-leg"></div><figcaption id="fig-score7-cap"></figcaption></figure>
+
+<blockquote>
+<p>📎 <strong>하위 Dive</strong> — 이 보고서는 R-Dive(제품·수익모델) · History-Dive(기업 역사·약속 이행) · People-Dive(경영진)를 오늘 새로 돌려 그 결과를 요약해 쓴다. 업종 체크리스트(Specific-Dive)는 본문 초안 뒤에 돌렸다. 링크는 맨 위 모음에 있다.</p>
+</blockquote>
+<p><strong>배경 (1회만)</strong> — QS는 음극 쪽 액체 전해질 대신 단단한 세라믹 칸막이(세퍼레이터)를 쓰는 리튬금속 배터리를 개발한다(현 세대 셀의 양극 쪽에는 유기 액체 전해질이 남아 있다 · 10-K). 만들 때 음극을 넣지 않고, 첫 충전 때 리튬 금속이 칸막이 위에 쌓여 음극이 된다(무음극 구조). 그래서 거의 전량 중국산인 흑연이 필요 없다. 공장을 직접 짓지 않고, 남의 공장에 기술을 빌려주고 생산량만큼 사용료(로열티)를 받는 모델을 택했다. 2020년 스팩으로 상장했고, 폭스바겐이 의결권 26.2%의 최대주주다. 이번은 6/21 이후 변한 것만 깊게 보는 두 번째 실행이다.</p>
+<hr />
+<h2 id="delta">6/21 이후 바뀐 것 — 대조표</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 좋아진 것은 고객 수·시장 수·비용 통제다. 나빠진 것은 가장 큰 고객이 낼 돈과 주가다. 아직 모르는 것은 라이선스 체결 시점이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>6/21</th>
+<th>10/14</th>
+<th style="text-align: center;">방향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>주가 · 시총</td>
+<td>$8.04 · 약 49.5억 달러</td>
+<td>$4.12 · 약 25.5억 달러</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>PowerCo 개발 대금 상한</td>
+<td>2년 1억 3,070만 달러(비용 보전)</td>
+<td>7,540만 달러(마일스톤 지급 · 기수령 포함)</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>상위 10위 완성차 고객</td>
+<td>3곳</td>
+<td>4곳(Honda 추가)</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>사업 부문</td>
+<td>자동차 중심</td>
+<td>전기차 · AI 데이터센터 · 항공우주/국방 3부문</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>유동성</td>
+<td>9억 500만 달러(3월 말)</td>
+<td>8억 5,900만 달러(6월 말)</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>2026 설비투자 전망</td>
+<td>4,000만~6,000만 달러</td>
+<td>2,700만~3,700만 달러</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>공매도(유통주식 대비)</td>
+<td>17.6%</td>
+<td>21.8%</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>기준 금리</td>
+<td>동결 국면</td>
+<td>9/16 +0.25%p 인상(3.75~4.00%)</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Part 1 — Top-Down 7계층 (델타 중심)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 산업(전고체 배터리)이 세상을 바꿀 산업이라는 판단은 그대로다. 바뀐 것은 이 회사가 그 산업에서 돈을 걷을 힘이다. 가장 큰 고객과의 협상에서 그 힘이 약하다는 첫 증거가 나왔다.</p>
+</blockquote>
+<h2 id="a">Section A. 🌦️ 날씨 — 지정학 + 거시 (장기 구조)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 탈중국 공급망·국방이라는 순풍은 오히려 강해졌다. 반대로 금리 인상과 미국 전기차 보조금 종료라는 역풍이 실제로 왔다. 순풍은 상업화 이후에야 돈이 되고 역풍은 지금 주가에 온다는 시차 문제가 더 뚜렷해졌다.</p>
+</blockquote>
+<h3>A.1 지정학 — 순풍 강화</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 흑연이 필요 없는 구조가 국방 수요와 직접 맞물리기 시작했다. 대형 방산업체에 셀을 보낸 것이 그 첫 실물이다.</p>
+</blockquote>
+<p>2분기 주주서한은 항공우주·국방 부문(QSAS)을 따로 만들고 "미국 대형 방산업체에 QSE-5 셀을 보냈다"고 적었다. 같은 서한은 기존 리튬이온이 거의 전량 중국산인 흑연 음극에 의존한다는 점을 공급망 약점으로 짚었다. 미·중 핵심광물 경쟁에서 QS는 수혜 쪽이다. 다만 방산업체의 이름과 계약 금액은 공시되지 않았다.</p>
+<h3>A.2 거시 — 역풍이 실제로 왔다</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 연준이 9월에 금리를 올렸다. 매출 0의 먼 미래 기업은 할인율 상승에 가장 먼저 맞는다.</p>
+</blockquote>
+<p>9/16 FOMC는 기준 금리를 0.25%p 올려 3.75~4.00%로 만들었다(12대 0). 성명은 "인플레이션이 여전히 높다"고 적었다. QS처럼 모든 가치가 몇 년 뒤 현금흐름에 몰린 회사는 할인율이 오를 때 가장 크게 깎인다. 베타는 2.84다.</p>
+<p>미국 전기차 세액공제는 2025년 9월 말 종료됐다. 자동차 쪽 수요 시계가 늦어지는 방향이다. QS가 데이터센터·국방으로 시장을 넓힌 것은 이 역풍을 일부 피하려는 움직임으로 읽힌다.</p>
+<p>역부호도 하나 있다. 금리가 오르면 보유 유가증권 이자수익이 늘어난다(2분기 이자수익 840만 달러). 금리가 내리면 이 수입이 줄어든다.</p>
+<h3>A.3 thesis anchor 매핑</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 사용자 거시 view 가운데 QS에 순풍인 것은 탈중국·국방·AI 전력이고, 역풍인 것은 실질 긴축이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>틀</th>
+<th style="text-align: center;">QS 정합</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>대만 억제·핵심광물 탈중국(Fryman)</td>
+<td style="text-align: center;">🟢</td>
+<td>무흑연 구조 · 방산 셀 출하(2분기 주주서한)</td>
+</tr>
+<tr>
+<td>실물 병목(전력·국방·공급망 재편)</td>
+<td style="text-align: center;">🟢</td>
+<td>데이터센터 랙 전력 · 국방 배터리</td>
+</tr>
+<tr>
+<td>AI 전력 수요</td>
+<td style="text-align: center;">🟡</td>
+<td>데이터센터 부문 신설 · 설계안 단계(매출 0)</td>
+</tr>
+<tr>
+<td>Warsh 이중 전략(표면 완화·실질 긴축)</td>
+<td style="text-align: center;">🔴</td>
+<td>9/16 실제 인상 · 고베타 적자주 최취약</td>
+</tr>
+<tr>
+<td>달러 패권·컴퓨트 달러</td>
+<td style="text-align: center;">⚪</td>
+<td>직접 노출 낮음</td>
+</tr>
+</tbody>
+</table>
+<h3>A.4 매크로 민감도 (방향만 · 매출 0이라 EPS 민감도 산출 불가)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 금리가 오르면 주가에 불리하고, 위험 선호가 살아나면 크게 오른다. 전기차 수요는 중기 역풍이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>변수</th>
+<th>방향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기준 금리 · 10년물 ↑</td>
+<td>🔴 할인율 상승 · 증자 창 위축(이자수익은 소폭 증가)</td>
+</tr>
+<tr>
+<td>위험 선호 회복</td>
+<td>🟢 고베타 · 공매도 21.8% → 되돌림 폭 큼</td>
+</tr>
+<tr>
+<td>미국 전기차 수요</td>
+<td>🔴 세액공제 종료 · 자동차 시계 지연</td>
+</tr>
+<tr>
+<td>중국 핵심광물 통제 강화</td>
+<td>🟢 무흑연 차별화 부각</td>
+</tr>
+</tbody>
+</table>
+<h3>A.5 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 순풍 칸 셋과 역풍 칸 셋이 맞서 3점대 초반이다. 6/21에는 반올림과 손 보정이 있었으나 이번엔 기계 환산 그대로다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>미·중 패권 · 탈중국(무흑연)</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>국방·안보 우선순위</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>금리 민감도(9/16 인상)</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>유동성·위험 선호(실질 긴축)</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>전동화 수요(미국 EV 보조금 종료)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>AI 데이터센터 전력 수요</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>⭐3.08 → 13.0 / 25점</strong></td>
+</tr>
+</tbody>
+</table>
+<p>▶ Flip 트리거 — 🟢 강화: 미 국방부·정부 기관과 QS의 직접 계약·자금 공시 / 🔴 훼손: 금리 추가 인상 + 전기차 수요 급랭 동시, 또는 중국 흑연 공급 정상화.</p>
+<hr />
+<h2 id="b">Section B. ⛰️ 산 — 산업 (차세대 배터리) — 변동 없음</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 배터리는 전기차·데이터센터·국방·드론의 공통 병목이고, 다섯 갈래 이야기가 모두 켜져 있다. 6/21 판단 그대로다.</p>
+</blockquote>
+<p>세상을 바꾸는 산업인가에 YES(⭐5), 국가 자본 투입 🟡(중국 쪽 몫이 더 큼 · ⭐4), 내러티브 5축 모두 충족(⭐5), 시장 규모·성장 🟡(전고체 시장은 커도 QS 몫은 미실현 · ⭐4). 6/21에는 평균 4.5를 손 보정으로 4.0으로 내렸는데, 이번엔 기계 환산 규칙대로 <strong>⭐4.5 → 10.9 / 12.5점</strong>으로 적는다. 판단 자체가 바뀐 것은 아니다.</p>
+<figure class="dd-fig"><div id="fig-c3"></div><div class="dd-legend" id="fig-c3-leg"></div><figcaption id="fig-c3-cap"></figcaption></figure>
+
+<hr />
+<h2 id="c">Section C. 🌲 숲 — 섹터 (배터리 가치사슬 안의 QS 자리)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 세라믹 세퍼레이터를 대량으로 고르게 만드는 일은 여전히 전고체의 병목이다. 그러나 병목을 쥐었다고 돈을 걷는 것은 아니다. 7월 계약 개정은 QS가 가장 큰 고객 앞에서 값을 지키지 못했다는 첫 증거다.</p>
+</blockquote>
+<h3>C.1 병목 시점 매트릭스</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금의 병목은 "셀을 고르게 많이 만드는 것"이고, 2~5년 뒤 병목은 "남의 공장이 같은 품질로 복제하는 것"이다. 어느 시점에서도 QS가 그 값을 걷을 장치는 약하다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>병목 단계</th>
+<th>QS 위치</th>
+<th style="text-align: center;">유지 기간</th>
+<th>해소 경로</th>
+<th style="text-align: center;">렌트 포획</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>지금(0~6개월)</td>
+<td>셀 품질·생산 재현</td>
+<td>Eagle Line 시범 생산 · 하반기 생산 2배 목표</td>
+<td style="text-align: center;">추정 불가</td>
+<td>경쟁사 반고체가 "충분히 좋은" 셀로 수요 흡수</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>6~24개월</td>
+<td>세라믹 세퍼레이터 GWh급 생산</td>
+<td>Cobra 공정 · Murata·Corning 협력</td>
+<td style="text-align: center;">추정 불가</td>
+<td>황화물 전해질 양산 성공(토요타 전고체 전기차 출시 목표 2027~28년 · 2025-10-08 공시)</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2~5년</td>
+<td>라이선시 공장 GWh 복제 → 로열티</td>
+<td>Eagle Line 설계도 전수</td>
+<td style="text-align: center;">추정 불가</td>
+<td>라이선시의 자체 공정 내재화</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+</tbody>
+</table>
+<p><strong>지불자 경로</strong> — 큰손은 폭스바겐(PowerCo)과 상위 완성차다. 이들이 막힌 곳은 "중국 반고체·LFP와 비용·안전에서 겨룰 차세대 셀을 자기 공장에서 양산하는 것"이다. QS는 그 막힘을 푸는 기술을 라이선스로 판다 → 경로 <strong>직접</strong>. 직접 경로는 큰손의 협상력에 마진이 눌리는 자리다. 고객 집중도는 실제 들어온 고객 현금의 100%가 PowerCo이고, 가격 인상 테스트는 판가 이력이 없어 N/A다(Section D).</p>
+<p><strong>렌트 포획 — 4문</strong></p>
+<table>
+<thead>
+<tr>
+<th>질문</th>
+<th>답</th>
+<th style="text-align: center;">판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 계약 구조</td>
+<td>GWh당 로열티 + 선급 1억 3,000만 달러 · 단가 미공시</td>
+<td style="text-align: center;">중립</td>
+</tr>
+<tr>
+<td>② 구매자 협상력</td>
+<td>PowerCo가 상한을 42% 깎았다 · 폭스바겐이 이사 2명 지명·의결권 26.2%</td>
+<td style="text-align: center;"><strong>상한</strong></td>
+</tr>
+<tr>
+<td>③ 캐파 소유</td>
+<td>배경 특허·세퍼레이터 공정은 단독 소유 · 협력 중 공동 개발한 개량 기술은 PowerCo와 공동 소유(각자 동의 없이 활용 가능 · 10-K 위험요인) · 세퍼레이터 공동개발 협력사도 공동 IP</td>
+<td style="text-align: center;">부분 포획</td>
+</tr>
+<tr>
+<td>④ 우회 비용</td>
+<td>반고체·황화물 전고체·실리콘 음극 등 대안 다수</td>
+<td style="text-align: center;"><strong>상한</strong></td>
+</tr>
+</tbody>
+</table>
+<p>상한이 2개라 <strong>🔴 포획 실패</strong>로 판정했다. ③도 부분 포획이라 상한은 사실상 2개 반이다. 판정은 그대로 🔴다〔Specific-Dive〕. 미래 칸에는 실현 증거가 정의상 없으므로 4문만으로 판정했다.</p>
+<h3>C.2 4중 필터</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 경쟁자는 거대 배터리 회사와 완성차 내부 연구소다. QS는 기술 선두권이지만 1~2등이 증명된 것은 아니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>필터</th>
+<th style="text-align: center;">등급</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">⚪</td>
+<td>지금 칸 판정을 따름 · 렌트 포획 🔴 상한</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">⚪</td>
+<td>상장 전고체(SLDP) + 토요타·삼성SDI·CATL·Factorial 등</td>
+</tr>
+<tr>
+<td>③ 섹터 순위</td>
+<td style="text-align: center;">⭐3</td>
+<td>상위 10위 완성차 4곳 고객 = 스타트업 중 최다 · 양산 미증명</td>
+</tr>
+<tr>
+<td>④ 잠재 마진</td>
+<td style="text-align: center;">🟡</td>
+<td>라이선스 모델 = 잠재 고마진 · 미실현</td>
+</tr>
+</tbody>
+</table>
+<h3>C.3 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 렌트 포획 🔴 상한이 시점 칸 셋과 수요/공급 칸을 모두 2.5로 묶었다. 6/21 ⭐3.0에서 2.79로 내려온 이유다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">원판정</th>
+<th style="text-align: center;">상한 적용 후 ⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>지금(0~6개월)</td>
+<td style="text-align: center;">⚪2.5</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>6~24개월</td>
+<td style="text-align: center;">🟡4 →</td>
+<td style="text-align: center;">⚪2.5(렌트 포획 🔴)</td>
+</tr>
+<tr>
+<td>2~5년</td>
+<td style="text-align: center;">🟡4 →</td>
+<td style="text-align: center;">⚪2.5(렌트 포획 🔴)</td>
+</tr>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">⚪2.5</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">⚪2.5</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>③ 섹터 순위</td>
+<td style="text-align: center;">⭐3</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td>④ 잠재 마진</td>
+<td style="text-align: center;">🟡4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>⭐2.79 → 5.6 / 12.5점</strong></td>
+</tr>
+</tbody>
+</table>
+<p>▶ Flip 트리거 — 🟢 강화: PowerCo IP 라이선스 본계약 체결 · 두 번째 라이선시 / 🔴 훼손: 추가 고객이 비용 보전 대신 마일스톤형으로 바꾸거나 상한을 낮춤 · 토요타·삼성SDI 황화물 전고체 양산차 출시.</p>
+<hr />
+<h2 id="d">Section D. 🌳 나무 — 기업</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 기술의 다섯 기둥은 그대로이고 여섯 번째 상품(데이터센터 설계안)이 붙었다. 그러나 돈을 받는 방식은 여전히 하나도 증명되지 않았고, 유일하게 돈을 내던 고객의 지갑이 얇아졌다.</p>
+</blockquote>
+<h3>D.0 제품·수익모델 — R-Dive 요약</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 미래 매출은 라이선스 로열티, 지금 들어오는 돈은 개발 대금(회계상 매출이 아니라 자본)이다. 데이터센터·국방 갈래가 로열티형인지 제품 판매형인지는 아직 모른다.</p>
+</blockquote>
+<ul>
+<li><strong>아키타입</strong>: 미래 = 지식재산 라이선스·GWh당 로열티 / 현재 = 개발 대금(마일스톤 지급 · 추가납입자본 처리) / 새 갈래 = 데이터센터(QSDC)·항공국방(QSAS)은 판정 보류 / 성격 = 전환 중 · 실증 0.</li>
+<li><strong>주력 제품</strong>: QSE-5 셀(약 5Ah · 800Wh/L 이상 · 10→80% 충전 15분 미만 · B샘플) · Cobra 세퍼레이터 공정 · Eagle Line 시범 생산라인 · 무음극 구조 · 특허 400건 이상(출원 포함) · PowerBlock(데이터센터 랙 배터리 설계안 · 회사 주장 수치).</li>
+<li><strong>돈의 흐름</strong>: 2분기 고객 청구액 1,080만 달러 · PowerCo 실제 현금 누계 약 2,990만 달러 · GAAP 매출 0. 라이선스 본계약(연 최대 40+40+5GWh · 로열티 선급 1억 3,000만 달러)은 체결 전이다.</li>
+<li><strong>치명 함정</strong>: ① 돈줄 한 곳(PowerCo) ② 고객 청구액은 매출이 아님 ③ 낮은 주가에서의 희석 비용 상승.</li>
+<li>상세 = R-Dive 2026-10-14(맨 위 링크 모음).</li>
+</ul>
+<h3>D.0.5 고객 검증 등급</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이름과 계약이 모두 공개된 고객은 PowerCo 하나다. Honda·방산업체·데이터센터 설계 업체는 아직 "계약했다는 발표"까지만 왔다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>고객</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PowerCo(폭스바겐)</td>
+<td style="text-align: center;">A</td>
+<td>8-K 계약 원문 · 현금 수령 확인</td>
+</tr>
+<tr>
+<td>Honda</td>
+<td style="text-align: center;">D</td>
+<td>보도자료만 · 10-Q에 이름 없음 · 금액 비공개 · 공동연구 계약(공급·라이선스 아님) · Honda는 2024-11 독자 전고체 시험 생산 라인(약 430억 엔) 보유</td>
+</tr>
+<tr>
+<td>기존 공동개발 OEM 2곳</td>
+<td style="text-align: center;">B</td>
+<td>10-K에 계약 존재 기재 · 이름 비공개</td>
+</tr>
+<tr>
+<td>미국 대형 방산업체</td>
+<td style="text-align: center;">D</td>
+<td>주주서한 1문장 · 이름·금액 비공개</td>
+</tr>
+<tr>
+<td>데이터센터 설계 업체(ODM)</td>
+<td style="text-align: center;">D</td>
+<td>주주서한 "협의 중"</td>
+</tr>
+</tbody>
+</table>
+<h3>D.5 곡괭이 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 누가 이기든 돈을 버는 곡괭이 구조는 아직 성립하지 않았다. 매출이 없으니 마진 출처를 따질 단계도 아니다.</p>
+</blockquote>
+<p>곡괭이 질은 <strong>(B) 자본갈증형 성격</strong>이다. 연 약 2억 6,000만 달러를 쓰고, 상장 뒤 순 11억 4,000만 달러어치 주식을 팔아 주식 수가 약 70% 늘었다(History-Dive). 다만 올해는 설비투자를 줄이고 증자를 멈췄다. 정책렌트형(P)은 아니다.</p>
+<h3>D.6 해자</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 판가 이력이 없어 가격 인상 테스트는 할 수 없다. 해자는 "잠재"로만 적는다.</p>
+</blockquote>
+<ul>
+<li><strong>D.6-a</strong>: 가격 인상 테스트 = <strong>N/A(매출 0)</strong> · 유형은 <code>잠재 해자</code> 라벨만 — ③ 전환 비용(완성차 인증·공정 락인 · 잠재) · ④ 비용 우위(무흑연 · 잠재). ⭐ 미부여.</li>
+<li><strong>D.6-b Durable ↔ Variable</strong>: Durable = 특허 400건 이상(일부 핵심 특허 2034~2043년 만료 · 가장 오래된 가넷 분리막 특허 2014년 출원) · 세퍼레이터 공정 배경 기술 단독 소유. 단 협력 중 개량 기술은 PowerCo·분리막 협력사와 공동 소유다. Variable = 공정·셀 설계(경쟁 기술 진화에 노출). 정부 계약·장기 공급계약 같은 내구 자산은 없다 → <strong>⭐2.5</strong>〔Specific-Dive · 3→2.5 재판정〕.</li>
+<li>D.6 ⭐ = D.6-b 단독 <strong>2.5</strong> · 해자 내구성 = 특허 기준 약 8~17년(2034~2043) · 로열티 개시가 2030이면 가장 오래된 핵심 특허와 겹치는 기간 약 4년.</li>
+</ul>
+<h3>D.7 확장성 · D.8 하방/상방</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 시장은 셋으로 넓혔고 현금 쿠션도 있다. 그러나 스스로 돈을 버는 사업(캐시카우)은 없다.</p>
+</blockquote>
+<ul>
+<li><strong>D.7</strong>: 전기차·데이터센터·항공국방 3부문 = 인접 1~2 확장 ⭐4(매출 0이라 확장은 아직 의도).</li>
+<li><strong>D.8 하방</strong>: 유동성 8억 5,900만 달러 · 금융 부채 0 · 3년 남짓 → 🟡4. <strong>캐시카우</strong>: 없음 → 🔴1. <strong>상방</strong>: 라이선스 체결 시 로열티 선급 1억 3,000만 달러 + GWh당 로열티 경로가 열려 있다.</li>
+</ul>
+<h3>D.9 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 현금 쿠션과 시장 확장이 점수를 받쳤고, 증명되지 않은 수익모델과 캐시카우 부재가 끌어내렸다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D.0 수익모델(미증명 · 돈줄 축소)</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>D.5 곡괭이 질(B 성격)</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>D.6 해자(D.6-b 단독 · 공동 IP 반영)</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>D.7 확장성</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>D.8 하방 닫힘</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>D.8 캐시카우</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"><strong>⭐2.75 → 5.5 / 12.5점</strong></td>
+</tr>
+</tbody>
+</table>
+<p>▶ Flip 트리거 — 🟢: IP 라이선스 본계약 · 데이터센터·국방 첫 유료 계약 공시 / 🔴: Honda·기존 OEM 계약 해지 · 마일스톤 미달로 PowerCo 지급 중단.</p>
+<hr />
+<h2 id="e">Section E. 🌲🌳 옆의 나무 — 경쟁</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 상장 경쟁사들은 작게라도 매출이 있지만 QS는 0이다. 대신 붙잡은 완성차 고객 수는 가장 많다. 대장주 CATL은 이 싸움을 이미 이익으로 하고 있다.</p>
+</blockquote>
+<h3>E.1 비교 매트릭스 (yfinance 10/13 · 통화 현지 · 대장주 시총은 달러 환산 근사)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 숫자로 이기는 칸은 현금과 고객 수뿐이다. 매출·마진은 모두 경쟁사가 앞선다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>QS</th>
+<th>SLDP</th>
+<th>ENVX</th>
+<th>AMPX</th>
+<th>CATL(대장)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기술</td>
+<td>산화물 세라믹 전고체 · 무음극</td>
+<td>황화물 전해질 판매·라이선스</td>
+<td>실리콘 음극</td>
+<td>실리콘 음극</td>
+<td>LFP·NCM·나트륨·반고체</td>
+</tr>
+<tr>
+<td>시총</td>
+<td>약 25.5억 달러</td>
+<td>약 4.9억</td>
+<td>약 5.5억</td>
+<td>약 12.5억</td>
+<td>약 1,880억</td>
+</tr>
+<tr>
+<td>매출(TTM)</td>
+<td>0</td>
+<td>740만</td>
+<td>3,590만</td>
+<td>1억 920만</td>
+<td>5,217억 위안</td>
+</tr>
+<tr>
+<td>매출총이익률</td>
+<td>—</td>
+<td>음수</td>
+<td>18.8%</td>
+<td>22.3%</td>
+<td>24.5%</td>
+</tr>
+<tr>
+<td>현금</td>
+<td>8.59억</td>
+<td>2.42억</td>
+<td>4.76억</td>
+<td>0.75억</td>
+<td>4,402억 위안</td>
+</tr>
+<tr>
+<td>주요 고객</td>
+<td>PowerCo·Honda·OEM 2곳</td>
+<td>BMW·Ford·SK온</td>
+<td>스마트폰·드론</td>
+<td>드론·항공</td>
+<td>전 세계 완성차</td>
+</tr>
+<tr>
+<td>고객 검증(최고)</td>
+<td>A(PowerCo)</td>
+<td>A(BMW 공시)</td>
+<td>B</td>
+<td>B</td>
+<td>A</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-e1"></div><div class="dd-legend" id="fig-e1-leg"></div><figcaption id="fig-e1-cap"></figcaption></figure>
+
+<ul>
+<li>본 종목이 열위인 peer: AMPX(매출 +126% · 드론·국방에서 이미 판다) — QS가 새로 노리는 항공국방 시장에서 앞서 있다.</li>
+<li>비상장 주요 경쟁자(Factorial·토요타 내부 · 매출 미공시)는 표에서 뺐다.</li>
+<li>QS는 양극 쪽에 액체 전해질이 남은 구조라 SLDP(황화물 전고체)와 같은 종류의 "전고체"가 아니다. 안전성 비교는 셀 단위 시험으로 해야 한다〔Specific-Dive〕.</li>
+</ul>
+<h3>E.2 종합 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 수익모델은 미증명이라 열위, 고객 폭은 우위, 정부 매출은 아직 없다.</p>
+</blockquote>
+<ul>
+<li>(a) 수익모델: 경쟁사는 셀·소재를 팔아 소액이라도 매출이 있다. QS 라이선스 모델은 성공하면 마진이 높지만 아직 0원이다 → ⚪.</li>
+<li>(b) 정부 vs 민간: 매출 0 · 방산 샘플 단계 → ⚪.</li>
+<li>(c) 경쟁 포지션: 상위 10위 완성차 4곳은 스타트업 중 가장 넓다 → 🟡. 다만 그중 Honda는 자체 전고체 라인을 가진 공동연구 상대다. 최대 위협은 중국 반고체·LFP가 "충분히 좋은" 가격으로 먼저 자리를 잡는 것이다.</li>
+</ul>
+<p><strong>⭐ = (2.5 + 2.5 + 4) ÷ 3 = ⭐3.0 → 6.3 / 12.5점</strong> (6/21 ⭐2.5에서 Honda 추가로 고객 폭 칸 상향).</p>
+<hr />
+<h2 id="f">Section F. 👤 사람</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — CEO는 반도체 양산 경력이 탄탄하고 1년 단위 약속을 지킨다. 그러나 여러 해짜리 일정은 설명 없이 바뀐다. 공동창업자 CTO는 같은 기술에 16년을 바쳤지만, 지분은 사전 계획에 따라 꾸준히 줄이고 있다. 2024년 이후 내부자 매수는 한 건도 없다.</p>
+</blockquote>
+<h3>F.1 임원 8축 (People-Dive 요약 · 두 리더)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 약력과 기술 능력은 강하다. 도덕성·본인 돈·거버넌스·외부 평가는 모두 "조건부" 수준이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">시바람(CEO · 2024~)</th>
+<th style="text-align: center;">팀 홈(공동창업자 · CTO)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 약력</td>
+<td style="text-align: center;">🟢 인텔·샌디스크·웨스턴디지털 사장 · 메모리 양산 약 40년</td>
+<td style="text-align: center;">🟢 스탠퍼드 박사 · 16년째 이 회사 CTO</td>
+</tr>
+<tr>
+<td>② 명성</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">🟡 2021 공매도 보고서·집단소송에 이름</td>
+</tr>
+<tr>
+<td>③ 능력</td>
+<td style="text-align: center;">🟡 연간 목표 8/8 달성 · 돈이 들어오는 단계는 아직</td>
+<td style="text-align: center;">🟢 2024년 건 기술 일정 이행</td>
+</tr>
+<tr>
+<td>④ 도덕성</td>
+<td style="text-align: center;">🟡 일정 문장을 설명 없이 지우는 소통 · 2025-10 고점 근처 계획 밖 매도 12만 주</td>
+<td style="text-align: center;">🟡 집단소송 피고(4,750만 달러 합의 · 잘못 인정 없음)</td>
+</tr>
+<tr>
+<td>⑥ 본인 돈</td>
+<td style="text-align: center;">🟡 약 134만 주(추정) · 매수 0</td>
+<td style="text-align: center;">🟡 B주 약 946만 주 · 15개월 새 약 19% 감소</td>
+</tr>
+<tr>
+<td>⑦ 거버넌스</td>
+<td style="text-align: center;">🟡 의장·이사·COO가 같은 회사 출신 · 폭스바겐 의결권 26.2%</td>
+<td style="text-align: center;">🟡 의결권 11.0% · 이사회 밖</td>
+</tr>
+<tr>
+<td>⑧ 외부 평가</td>
+<td style="text-align: center;">🟡 직원 평가 CEO 지지 73%</td>
+<td style="text-align: center;">🟡 소셜 여론 냉담</td>
+</tr>
+</tbody>
+</table>
+<h3>F.2 4대 덕목 · 언행일치</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — CEO는 방법론에 대한 신념이 일관되고, CTO는 기술에 대한 신념이 일관된다. 두 사람 모두 "여러 해짜리 약속"과 "지분 행동"에서 말과 행동이 어긋난다.</p>
+</blockquote>
+<ul>
+<li><strong>시바람</strong>: 신념 🟢("체계적으로, 지름길 없이" · "공장은 파트너가 짓는다"를 3년 유지) · 언행일치 🟡 — 2025년 2월 로드맵의 "2026년 첫 고객 출시"는 "현장 시험"으로 바뀌었고, 2026년 2분기 서한에서는 사라졌다.</li>
+<li><strong>팀 홈</strong>: 인내·신념 🟢(같은 기술에 16년) · 언행일치는 기술 약속 🟢 / 지분 행동 ⚪(장기 사명과 반대 방향).</li>
+</ul>
+<h3>F.3 내부자 매도 해석 (Form 4 원문)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — CTO 매도는 모두 사전 계획 매도라 "정보를 알고 판 매도"로 볼 근거는 약하다. 다만 6월에 새 계획을 또 세웠고, 그 결과 창업자 의결권이 해마다 폭스바겐 쪽으로 넘어간다.</p>
+</blockquote>
+<ul>
+<li>팀 홈: 2026년 5~10월 약 92.6만 주(약 661만 달러) · 최근 12개월 약 211만 주(약 1,825만 달러). 2024년 이후 매도는 전부 사전 계획 매도(10b5-1 · 계획 수립 2024-03 · 2025-06 · 2026-06)다. 10배 의결권 B주를 A주로 바꿔 판다. 2026년 6월 새 계획부터 월 매도량이 약 12만 주로 직전의 절반 수준이 됐다.</li>
+<li>시바람: 계획 매도 없음 · 장내 매도는 2025년 10월 12만 주(계획 밖) 한 번뿐이다. 같은 주에 임원·이사 여러 명이 함께 계획 밖으로 팔았다.</li>
+<li>CFO 헤트리치: 계획 매도 월 9,800주(규모 작음).</li>
+<li>기타: JB 스트라우벨은 2026-06 주총에서 이사 임기를 마치고 자문역으로 옮겼다. 그가 CEO인 레드우드와 30만 달러 용역 계약(2026-03)이라는 이해관계 거래가 있다.</li>
+</ul>
+<h3>F.4 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 객관 7축을 두 리더 평균으로 냈다. 비전축은 사용자 몫이라 비워 둔다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">시바람</th>
+<th style="text-align: center;">팀 홈</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>②</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>③</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>④</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>⑥</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>⑦</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>⑧</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>평균</td>
+<td style="text-align: center;">4.29</td>
+<td style="text-align: center;">4.29</td>
+</tr>
+</tbody>
+</table>
+<p><strong>사람 ⭐4.29 → 10.3 / 12.5점</strong> · <code>비전축 사용자 ⭐ 대기</code> — Claude 💬 의견: 시바람은 사명형이 아니라 운영형 비전이다. 사명과 돈이 갈라지는 순간에 비용을 치른 기록은 아직 없다. 팀 홈은 사명형이며, 그 사명에 시간은 치렀지만 지분으로는 치르지 않았다. 생존편향 주의 — 16년 근속은 성공한 창업자와 실패한 창업자 모두에게서 관찰된다.</p>
+<p>▶ Flip 트리거 — 🟢: 내부자 장내 매수 · CTO 매도 계획 종료 / 🔴: 핵심 기술 리더 이탈 · 계획 밖 대량 매도.</p>
+<hr />
+<h2 id="g">Section G. 🔢 숫자 — 재무건전성</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚이 없고 현금이 3년 남짓 버틸 만큼 있어 "망하지 않는다"는 점은 탄탄하다. 그러나 매출이 0이라 "돈을 번다"는 칸은 하나도 채우지 못한다.</p>
+</blockquote>
+<h3>G.1 기본 정량</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 손실은 조금 줄었고 현금 소모 속도도 약간 느려졌다. 주식 수는 1년 새 10% 늘었다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목(백만 달러)</th>
+<th style="text-align: right;">2025 상반기</th>
+<th style="text-align: right;">2026 상반기</th>
+<th>변화</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 매출</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>—</td>
+</tr>
+<tr>
+<td>영업비용</td>
+<td style="text-align: right;">247.2</td>
+<td style="text-align: right;">215.3</td>
+<td>−13%</td>
+</tr>
+<tr>
+<td>순손실</td>
+<td style="text-align: right;">−229.1</td>
+<td style="text-align: right;">−199.0</td>
+<td>축소</td>
+</tr>
+<tr>
+<td>영업현금흐름</td>
+<td style="text-align: right;">−122.6</td>
+<td style="text-align: right;">−116.3</td>
+<td>소폭 개선</td>
+</tr>
+<tr>
+<td>설비투자</td>
+<td style="text-align: right;">14.4</td>
+<td style="text-align: right;">14.6</td>
+<td>같음</td>
+</tr>
+<tr>
+<td>주식보상비용</td>
+<td style="text-align: right;">66.9</td>
+<td style="text-align: right;">57.8</td>
+<td>−14%</td>
+</tr>
+<tr>
+<td>증자(ATM)</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">0</td>
+<td>중단</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>6월 말 유동성 8억 5,900만 달러(현금 1억 3,290만 + 유가증권 7억 2,610만) · 금융 부채 0 · 리스 부채 6,710만.</li>
+<li>상반기 잉여현금흐름 −1억 3,090만 달러 → 연 약 2억 6,000만 달러 소모 → 단순 계산 약 3.3년(2029년 하반기).</li>
+<li>가중평균 주식 수 2분기 6억 1,710만 주(1년 전 5억 6,170만 · +9.9%) · 미행사 잠재주식 4,770만 주(약 7.7%).</li>
+<li>2026 가이던스: 조정 EBITDA 손실 2억 5,000만~2억 7,500만 달러(유지) · 설비투자 2,700만~3,700만 달러(하향).</li>
+</ul>
+<figure class="dd-fig"><div id="fig-g5"></div><div class="dd-legend" id="fig-g5-leg"></div><figcaption id="fig-g5-cap"></figcaption></figure>
+
+<h3>G.1.5 🎯 시총 10배 랜드마크</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금 QS는 소형 성장주 크기이고, 열 배가 되면 대형 배터리 회사 하나만 하다.</p>
+</blockquote>
+<figure class="dd-fig"><div id="fig-g15"></div><div class="dd-legend" id="fig-g15-leg"></div><figcaption id="fig-g15-cap"></figcaption></figure>
+
+<h3>G.3 4축 매트릭스</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이익·마진·현금 창출 칸은 매출이 없어 정체로 매겼다. 고금리 내구성 칸은 빚이 없어 만점이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>측정</th>
+<th style="text-align: center;">등급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 이익 성장</td>
+<td>매출 0 지속 · 손실 소폭 축소</td>
+<td style="text-align: center;">⚪ 정체</td>
+</tr>
+<tr>
+<td>② 마진</td>
+<td>매출 0 · 조정 EBITDA 분기 −6,400만 달러 안팎 평탄</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>③ 현금 창출</td>
+<td>연 약 2.6억 달러 소모 · 약 3.3년</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>④ 고금리·고물가 내구성</td>
+<td>아래 G.4 하위 4칸 모두 🟢</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+</tbody>
+</table>
+<h3>G.4 고금리 내구성 (G.4-a · 점수 반영 · 옵션 B)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚이 없으니 금리가 올라도 이자 부담은 없다. 다만 "빚이 없다"는 "돈이 필요 없다"는 뜻이 아니다. 과거엔 주식 발행으로 버텼다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>하위</th>
+<th>측정</th>
+<th style="text-align: center;">등급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 이자보상</td>
+<td>영업적자 · 금융 부채 0</td>
+<td style="text-align: center;">N/A</td>
+</tr>
+<tr>
+<td>② 순부채/EBITDA</td>
+<td>순현금</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>③ 만기 분산</td>
+<td>금융 부채 0(리스만)</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>④ 변동금리 노출</td>
+<td>0</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>⑤ 즉시 유동성</td>
+<td>(현금+유가증권) ÷ 단기부채 ≈ 18배</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+</tbody>
+</table>
+<p>무차입이지만 2024년 1억 2,850만, 2025년 2억 6,420만 달러를 시장가 증자(ATM)로 조달했다. 그 프로그램은 2025년 8월에 끝났고 새 등록서류는 아직 없다.</p>
+<h3>G.7 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 무차입 하위 칸 넷이 점수를 끌어올렸다. 매출 0 회사가 숫자 축에서 4점대가 나오는 것은 이 축이 "망하지 않는가"를 재기 때문이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 이익 성장 ⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>② 마진 ⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>③ 현금 창출 ⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>④ 고금리 내구성 🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>G.4-a ② · ③ · ④ · ⑤ 🟢</td>
+<td style="text-align: center;">5 × 4</td>
+</tr>
+<tr>
+<td><strong>평균(8칸)</strong></td>
+<td style="text-align: center;"><strong>⭐4.06 → 9.6 / 12.5점</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>G.8 고금리·고물가 내구성 정밀 진단 (서브에이전트 위임 · 점수 미반영 · 낮은 신뢰도 참고)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚이 없어 회사가 무너질 위험은 낮다. 위험은 주주 몫이다. 다음 증자를 몇 달러에 하느냐가 관건이다.</p>
+</blockquote>
+<p>[모드: embedded]</p>
+<blockquote>
+<p>📌 <strong>요약 상단 1줄</strong>: <code>내구성 〔G.8〕: ⚪조건부 ‖ 신뢰도 낮음 ‖ 금리{만기벽 없음·헤지 절벽 없음·약정 없음 → 차환 위험 구조적 부재 / 단 주식 조달 창이 급소} 물가{매출 0이라 전가 N/A·현금 비용의 절반 이상이 인건비[추정]·인플레 부호 −(약)} 스태그{"적자 전환"형 절벽 없음 · 결합 심각 시 1년 버퍼 증자 시점이 2028 하반기→2028 상반기로 약 0.3~0.4년 앞당겨지고 그때 주가가 $2 이하면 희석 24%+} ‖ swing=PowerCo 라이선스 선급 로열티 $130M이 증자 필요 시점(약 2028년) 전에 들어오느냐 ‖ 🎯버티는가=⚪조건부(낮은 신뢰·최종 판단 사용자) · 별도 렌즈(점수 미합산)·장기 thesis 종목 stop sign ❌</code></p>
+</blockquote>
+<ul>
+<li>현재가 $4.12 (yfinance 2026-10-13 종가 재확인 · 52주 최저) · 시총 ≈ $2.55B · 3개월 국채 금리(^IRX) 약 4.06% (yfinance 2026-10-13)</li>
+<li>1차 출처: 10-Q Q2'26 <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526316073/qs-20260630.htm">https://www.sec.gov/Archives/edgar/data/1811414/000119312526316073/qs-20260630.htm</a> · 10-K FY2025 <a href="https://www.sec.gov/Archives/edgar/data/1811414/000119312526071556/qs-20251231.htm">https://www.sec.gov/Archives/edgar/data/1811414/000119312526071556/qs-20251231.htm</a> (둘 다 Chrome 새 탭 1개로 열고 닫음)</li>
+<li>종목 Memory 없음 → recent_changes.md 최근 10건 Read(QS 관련 항목 0건 · stale 위험 없음)</li>
+</ul>
+<hr />
+<h4>G.8.1 아키타입 소비 (1줄 · 재정의 ❌)</h4>
+<p>Ⓔ pre-revenue 딥테크(매출 0) · §D.5 곡괭이 질 = <strong>B 자본갈증형 성격</strong>(P 아님 → 제4 충격축 '제도 리스크' 해당 없음) · §D.0.3 가격결정력 = 로열티 단가 미공시·PowerCo 개정에서 구매자가 상한을 42% 깎음 · §A.5 = 방향만(EPS 민감도 산출 불가) · §G.4 quick = 무차입 · Quick Liquidity ≈ 18배.</p>
+<p><strong>사전 게이트</strong>: 시총 $2.55B &gt; $1B → micro-cap 경량화 대상 아님. <strong>무차입(net cash) 게이트 해당</strong> → 「<strong>부채 차환 위험 구조적 부재</strong>」 1줄 종결. 단, 과거 ATM 의존(2024 $128.5M · 2025 $264.2M)과 리스·구매 약정이 있으므로 ⑤ 주식 자금조달 이중 압박 + 계약 약정은 수행한다.</p>
+<hr />
+<h4>(1) 금리 기둥</h4>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>항목</th>
+<th>1차 수치 (출처)</th>
+<th>판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td>연도별 만기 사다리</td>
+<td><strong>금융부채 0</strong> — 10-Q 이자비용 = "primarily associated with our finance lease" (H1'26 $0.94M). 채권·대출·전환사채 없음</td>
+<td>만기벽 <strong>없음</strong> (무차입 게이트 종결)</td>
+</tr>
+<tr>
+<td>②</td>
+<td>변동금리 + 헤지 절벽</td>
+<td>변동금리 부채 없음 · 금리 스왑·캡 없음 · 10-K 7A: 외환도 "have not hedged"</td>
+<td>헤지 절벽 <strong>없음</strong></td>
+</tr>
+<tr>
+<td>③</td>
+<td>약정(covenant)</td>
+<td>신용계약(Credit Agreement) 없음 → 재무 약정 없음</td>
+<td>약정 위반 위험 <strong>없음</strong></td>
+</tr>
+<tr>
+<td>④</td>
+<td>WACC 2차 충격 (B형)</td>
+<td>자체 capex 작음(FY26 가이던스 $27~37M · H1 $14.6M) → 자기 공장 NPV 충격은 작다. 대신 <strong>라이선스 파트너(PowerCo)의 공장 투자 결정이 금리에 민감</strong> [추론]</td>
+<td>아래 2차 효과 (a)로 이관</td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>주식 자금조달 이중 압박</td>
+<td>아래 소표</td>
+<td><strong>압박 — 본 종목의 실제 급소</strong></td>
+</tr>
+<tr>
+<td>⑥</td>
+<td>float 비대칭</td>
+<td>보험·결제형 아님. 다만 현금 $859.0M을 굴리는 <strong>이자수익이 금리와 같은 방향</strong>(Q2 $8.4M · H1 $17.2M)</td>
+<td>현금흐름 기준 금리 민감도 <strong>부호 = +</strong> (금리↑ = 소모 줄어듦)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>① 근거 소표 — 남은 고정 약정 (금리와 무관한 고정 지출)</strong></p>
+<table>
+<thead>
+<tr>
+<th>약정</th>
+<th>향후 12개월</th>
+<th>그 이후</th>
+<th>성격</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>운용리스</td>
+<td>$7.2M</td>
+<td>$38.0M</td>
+<td>2032년 9월까지 · "Fixed rent generally escalates each year" (임대료 연 인상 조항 = 비용 쪽 물가 연동이 이미 계약됨)</td>
+</tr>
+<tr>
+<td>금융리스(산호세 건물 1동)</td>
+<td>$5.5M</td>
+<td>$30.9M</td>
+<td>2032년 9월 만기 · 할인율 6.06% 고정 → 금리 재산정 없음</td>
+</tr>
+<tr>
+<td>최소 구매 약정</td>
+<td>$3.0M</td>
+<td>$3.9M</td>
+<td>소재·라이선스·호스팅 · 총 $6.9M</td>
+</tr>
+<tr>
+<td>원상복구 의무(ARO)</td>
+<td>—</td>
+<td>$14.0M(부채 계상)</td>
+<td>물가 가정 포함 추정치</td>
+</tr>
+<tr>
+<td><strong>합계</strong></td>
+<td><strong>약 $15.7M</strong></td>
+<td><strong>약 $72.8M</strong></td>
+<td>유동성 $859.0M 대비 12개월분 = 1.8%</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>🔴 Warsh 이중전략 정합 1줄: 정책금리가 내려도 레포·기간 프리미엄이 오르면 <em>실질</em> 조달금리는 안 내려간다 — 그런데 QS는 빌릴 부채가 없으므로 이 경로는 <strong>부채가 아니라 주가(롱듀레이션 고베타 주식의 할인율)로 들어온다</strong>. 즉 QS의 '차환 금리'는 다음 증자의 주가다.</li>
+</ul>
+<p><strong>⑤ 근거 소표 — 주식 조달 압박</strong></p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>수치</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ATM 이력</td>
+<td>2024: 24.9M주·$128.5M(평균 약 $5.16) / 2025: 29.5M주·$264.2M(평균 약 $8.96) · 2025년 8월 완료</td>
+<td>10-Q 유동성 절</td>
+</tr>
+<tr>
+<td>현재 ATM</td>
+<td><strong>없음</strong> — 신규 등록서류 미제출. 단 위험요인에 "we may conduct an additional ATM offering or conduct other capital raises" 명시</td>
+<td>10-Q Item 1A</td>
+</tr>
+<tr>
+<td>전환사채</td>
+<td>없음 (만기 상환형 숨은 부채 없음)</td>
+<td>10-Q 부채 구성</td>
+</tr>
+<tr>
+<td>잠재 희석(옵션·RSU·PSU)</td>
+<td>47.7M주 ≈ 7.7%</td>
+<td>10-Q (입력 파일)</td>
+</tr>
+<tr>
+<td>가중평균 주식 수</td>
+<td>Q2'26 617.1M vs Q2'25 561.7M (+9.9%)</td>
+<td>10-Q 손익계산서</td>
+</tr>
+<tr>
+<td>회사 문구</td>
+<td>"cash on hand will be sufficient … for a period of at least twelve months" (12개월 하한만 · 다년 런웨이 미공시)</td>
+<td>10-Q</td>
+</tr>
+</tbody>
+</table>
+<p><strong>같은 $300M을 조달할 때 주가별 신규 발행 주식 수</strong> (발행주식 619.1M 기준 · 수수료 무시 · 계산값)</p>
+<table>
+<thead>
+<tr>
+<th>증자 시 주가</th>
+<th>신규 주식</th>
+<th>희석률</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$4.12 (현재)</td>
+<td>약 72.8M</td>
+<td>약 11.8%</td>
+</tr>
+<tr>
+<td>$3.00</td>
+<td>약 100M</td>
+<td>약 16.2%</td>
+</tr>
+<tr>
+<td>$2.00</td>
+<td>약 150M</td>
+<td>약 24.2%</td>
+</tr>
+<tr>
+<td>$1.00</td>
+<td>약 300M</td>
+<td>약 48.5%</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>고금리 이중 압박 경로: 금리↑ → 롱듀레이션 적자주 할인율↑ → 주가↓ → 같은 금액에 더 많은 주식 → 희석↑ → 주가 추가 하락(악순환). 2025년 평균 발행가 약 $8.96 대비 현재가는 −54%.</li>
+</ul>
+<hr />
+<h4>(2) 물가 기둥 — 매출 0이라 대부분 "N/A — pre-revenue, 양산 시 투입재 정성 추정만"</h4>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>항목</th>
+<th>판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td>계약구조</td>
+<td>매출 없음 → 판가 전가 N/A. 현재 유일한 고객 현금 = <strong>PowerCo 2026 개정(마일스톤 지급 · 상한 $75.4M 기수령 포함 · 2년)</strong> = <strong>명목 고정액, 물가 연동 조항 없음</strong> → 인플레가 오면 실질 가치만 깎인다. 미래 라이선스 선급 로열티 <strong>$130M도 명목 고정</strong>. 로열티가 매출 비율인지 GWh당 고정 단가인지 <strong>미공시</strong> → 미래 인플레 전가력 판정 불가(❌ 미수집 — 계약 본문 비공개). 🔴 디스인플레 역풍 1줄: 연동 조항이 없으므로 디스인플레기에 매출이 깎이는 경로도 없다(대칭적으로 무관).</td>
+</tr>
+<tr>
+<td>②</td>
+<td>비용 분해</td>
+<td>매출원가 없음. <strong>현금 비용</strong>(Adj EBITDA 기준) FY26 가이던스 −$250~275M + capex $27~37M. 항목별 분해 미공시. 직원 약 700명(10-K, 2025-12-31) · 노조·단체협약 없음. <strong>인건비 비중 추정 = 현금 영업비용의 대략 절반 이상</strong> [추정 — 미공시 · R&amp;D 중심 조직 구조에서 추론]. 핵심 투입재(양산 시, 정성): ① 리튬(양극재 속 · 음극 호스트 없는 '무음극' 구조라 흑연 불필요) ② 세라믹 분리막 원료(조성 미공시) ③ 니켈·코발트(양극 화학에 따라) ④ 전력(소성·제조 공정) — 10-Q 위험요인이 "cobalt, nickel, and lithium" 가격 변동을 명시. 현재 물리 단위 노출은 파일럿 라인 수준이라 <strong>정량 N/A</strong>.</td>
+</tr>
+<tr>
+<td>③</td>
+<td>7A 원자재 ±10%</td>
+<td>10-K 7A에 원자재 민감도 <strong>없음</strong>(정성 문단만: "experienced increases in prices of raw materials, components and labor costs", 영향은 "not material"). 환: 기능통화 달러 · 노출 미미 · 헤지 없음. → ❌ 정량 미수집(회사 미공시)</td>
+</tr>
+<tr>
+<td>④</td>
+<td>헤지·장기공급계약</td>
+<td>원자재 헤지 없음 · 장기공급계약 = 최소 구매 약정 $6.9M뿐 → 헤지 롤오버 절벽 <strong>N/A</strong></td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>인건비 인플레</td>
+<td>노조·COLA 없음 → 임금 인상은 협상 없이 회사 재량이지만, 인재 경쟁(배터리·AI 하드웨어)이 실질 인상 압력. 임금 +5% → 현금 소모 연 약 +$7~10M [추정 · 인건비 $140~200M 밴드 가정]. 🔴 <strong>숨은 경로 = 주식 보상(SBC H1 $57.8M)</strong>: 주가가 떨어지면 같은 금액을 주려면 더 많은 주식을 줘야 하거나 현금 보상으로 바꿔야 한다 → 주가 하락 자체가 '인건비 인플레'로 작동.</td>
+</tr>
+<tr>
+<td>⑥</td>
+<td>실질 마진 분해</td>
+<td>매출·재고 없음 → FIFO/LIFO·재고 평가익 <strong>N/A</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>인플레 수혜자 판별</strong>: 수혜자 <strong>아님</strong>(원자재 생산자·실물자산·통행료형 아님). 인플레 부호 = <strong>− (약함)</strong> — 지금은 비용 쪽만 노출되고 받는 돈은 명목 고정. 단 양산 뒤에는 원가 부담이 라이선스 파트너(PowerCo) 쪽으로 넘어가는 구조라 QS의 직접 원자재 노출은 작아진다 [추론 — 회사가 말한 "capital-light licensing" 모델 전제].</li>
+<li>관세: 10-Q는 2026년 2월 미국의 150일 추가 관세를 언급하며 부품·장비 비용 상승 가능성을 적었다 → 물가 기둥의 실제 위험은 원자재 시세보다 <strong>수입 장비·부품 관세</strong>[1차 문구 · 영향 금액 미공시].</li>
+</ul>
+<hr />
+<h4>(3) 스태그플레이션 결합 시나리오 — 영업이익 대신 <strong>현금 소모 · 런웨이 · 증자 창 타이밍</strong>으로 번역</h4>
+<p><strong>번역 규칙</strong>: 원가축 = 현금 비용 기준선($277~312M = Adj EBITDA 소모 + capex)에 % 적용 · 금리축 = 이자수익 변화(향후 1년 평균 잔고 약 $700M × 금리 변화 · 보유 유가증권 97.9%가 1년 안에 만기라 거의 즉시 반영) · 물량축 = <strong>고객 현금의 지연</strong>(PowerCo 마일스톤 잔여 최대 약 $45.5M = $75.4M − 기수령 약 $29.9M, 라이선스 선급 $130M) + 증자 시 주가. 기준선 현금 소모 = 연 $245~280M(H1'26 OCF −$116.3M + capex −$14.6M 연환산 약 $262M과 가이던스 교차). 유동성 $859.0M(2026-06-30 기준). 전부 밴드·계산값·점추정 ❌.</p>
+<table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: center;">원가</th>
+<th style="text-align: center;">금리</th>
+<th style="text-align: center;">물량(고객 현금·주가)</th>
+<th>① 연 현금 소모</th>
+<th>② 이자 부담</th>
+<th>③ 런웨이(현금 0까지)</th>
+<th>④ 1년 버퍼 남기는 증자 시점</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기준선</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td>$245~280M</td>
+<td>리스 이자 연 ~$1.9M (변동 없음)</td>
+<td>3.1~3.5년 → 2029 중반~말</td>
+<td>2028 하반기</td>
+</tr>
+<tr>
+<td>경미</td>
+<td style="text-align: center;">+5% (+$14~16M)</td>
+<td style="text-align: center;">+100bp (이자수익 +약 $7M)</td>
+<td style="text-align: center;">−5% (마일스톤 일부 지연)</td>
+<td>$252~289M</td>
+<td>동일</td>
+<td>3.0~3.4년</td>
+<td>2028 중반~하반기</td>
+</tr>
+<tr>
+<td>기준(스태그)</td>
+<td style="text-align: center;">+10% (+$28~31M)</td>
+<td style="text-align: center;">+200bp (+약 $14M)</td>
+<td style="text-align: center;">−10% (마일스톤 잔여 지연)</td>
+<td>$259~298M</td>
+<td>동일</td>
+<td>2.9~3.3년</td>
+<td>2028 중반</td>
+</tr>
+<tr>
+<td>심각(1970s형)</td>
+<td style="text-align: center;">+20% (+$55~62M)</td>
+<td style="text-align: center;">+300bp (+약 $20M)</td>
+<td style="text-align: center;">−20% (라이선스 2029 이후로 밀림 · 선급 $130M 런웨이 밖)</td>
+<td>$280~322M</td>
+<td>동일</td>
+<td>2.7~3.1년 → 2029 초~중반</td>
+<td><strong>2028 상반기</strong></td>
+</tr>
+<tr>
+<td>🆕 디플레형 침체</td>
+<td style="text-align: center;">−10% (−$28~31M)</td>
+<td style="text-align: center;">−100bp (이자수익 −약 $7M)</td>
+<td style="text-align: center;">−20% (EV 수요 둔화 → 파트너 공장 지연)</td>
+<td>$224~256M</td>
+<td>동일</td>
+<td>3.4~3.8년</td>
+<td>2029 상반기</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>② 이자보상배율: 영업이익이 원래 적자라 <strong>의미 없음(N/A)</strong>. 고정 이자는 금융리스 이자뿐(연 약 $1.9M).</li>
+<li>③ covenant 여유: 약정 없음 → <strong>N/A</strong>.</li>
+<li>🔴 <strong>이자수익 역부호 명시</strong>: 금리가 <em>오르면</em> 이자수익이 늘어 현금 소모가 <em>줄고</em>(+100bp ≈ 연 +$7M), 금리가 <em>내리면</em> 이자수익이 줄어 소모가 <em>늘어난다</em>(Q2 이자수익 $8.4M = 분기 소모의 약 13%). 반대로 주가(증자 창)는 금리 하락 때 좋아진다. <strong>현금흐름 부호와 증자 창 부호가 서로 반대</strong>다.</li>
+</ul>
+<p><strong>🔴🔴 임계점 (단일 변수로는 생존이나 결합 시 무너지는 지점)</strong>
+- 이 종목은 "흑자→적자 전환"이나 "약정 위반"형 절벽이 <strong>구조적으로 없다</strong>(이미 적자 · 부채 0). 대신 절벽은 <strong>희석 절벽</strong>이다.
+- 단일 변수: 원가 +20%만 오면 런웨이 3.1~3.5년 → 약 2.6~3.0년. 금리만 오르면 오히려 현금 소모가 준다. 단일 변수로는 2028년 이전 증자 압박이 생기지 않는다.
+- 결합(심각): 원가 +20% · 이자수익 상쇄 · 라이선스 지연이 <strong>동시에</strong> 오면, 1년 버퍼를 남기는 증자 시점이 2028 하반기 → <strong>2028 상반기로 약 0.3~0.4년 당겨진다</strong>. 이 자체는 작다. <strong>진짜 임계점은 그 시점의 주가</strong>다 — 같은 레짐(고금리 + 성장 둔화)은 롱듀레이션 고베타(베타 2.84) 주가를 함께 누르므로, 증자 시 주가가 <strong>$2 이하면 $300M 조달에 희석 약 24% 이상, $1이면 약 48%</strong>. §H.1 Base(2027~28 증자 · 주식 ~800M)와 Bear(주식 ~950M)가 바로 이 경로다(소비만 · 재계산 ❌).</p>
+<p><strong>2차 효과</strong>
+- (a) <strong>증자 필요 시점 × 수요 둔화 타이밍 겹침</strong>: 고금리는 파트너(PowerCo)의 40GWh 공장 투자 수익성도 깎는다 → 라이선스 체결·선급 로열티 지연 → QS의 증자 필요 시점과 주가 저점이 같은 해에 겹칠 위험 [추론 — PowerCo 투자 계획 변경은 이번 수집에서 1차 확인 안 함].
+- (b) 고정비 역회전: 매출이 없어 마진 붕괴형은 N/A. 다만 비용이 거의 전부 고정비(인력·시설)라 '물량'이 줄어도 비용이 안 줄어든다.
+- (c) 운전자본 빨대·재고 평가손: N/A(재고·매출채권 없음).
+- (d) <strong>고객 지급능력 연쇄</strong>: 고객 현금이 사실상 VW그룹(PowerCo, 대주주 겸 특수관계자) 한 곳에 몰려 있다. 2026-07 개정에서 상한이 $130.7M → $75.4M로 깎인 것 자체가 구매자 쪽 예산 압박의 신호일 수 있다 [추론 — 회사는 "program structure and milestones 갱신"이라고만 설명].
+- (e) 통화×수입원가: 기능통화 달러 · 수입 장비·부품 관세 노출(10-Q 위험요인 정성)만 존재.</p>
+<p><strong>1970s analog 5특성 채점 (1차 데이터)</strong></p>
+<table>
+<thead>
+<tr>
+<th>특성</th>
+<th style="text-align: center;">채점</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 가격결정력·필수재</td>
+<td style="text-align: center;">✗</td>
+<td>매출 0 · PowerCo 상한 42% 삭감(구매자 협상력 우위)</td>
+</tr>
+<tr>
+<td>② 저부채·고정금리</td>
+<td style="text-align: center;">✓</td>
+<td>금융부채 0 · 금융리스 할인율 6.06% 고정</td>
+</tr>
+<tr>
+<td>③ 자본 light·낮은 운전자본</td>
+<td style="text-align: center;">△ (0.5)</td>
+<td>capex 연 $27~37M · 재고·채권 없음 ✓ / 그러나 연 $245~280M 현금 소모 ✗</td>
+</tr>
+<tr>
+<td>④ 짧은 만기벽</td>
+<td style="text-align: center;">✓</td>
+<td>만기벽 자체 없음</td>
+</tr>
+<tr>
+<td>⑤ 강한 해자</td>
+<td style="text-align: center;">✗</td>
+<td>미실증 · 고객 검증 D · 렌트 포획 🔴(입력 소비)</td>
+</tr>
+<tr>
+<td><strong>합계</strong></td>
+<td style="text-align: center;"><strong>2.5/5</strong></td>
+<td>⚪ (2~3)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4>G.8.4 종합 내구성 verdict</h4>
+<table>
+<thead>
+<tr>
+<th>기둥 입력</th>
+<th style="text-align: center;">결과</th>
+<th style="text-align: center;">신호</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>금리 — 만기벽·헤지 절벽·약정 여유</td>
+<td style="text-align: center;">견딤(부채 차환 위험 구조적 부재)</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>금리 ⑤ — 주식 조달 창</td>
+<td style="text-align: center;">압박(증자 = 사실상 유일한 외부 조달 경로)</td>
+<td style="text-align: center;">⚪~🔴</td>
+</tr>
+<tr>
+<td>물가 — 전가력·lag·실질마진·수혜부호</td>
+<td style="text-align: center;">압박(약함) — 비용만 노출·받는 돈은 명목 고정·노출 규모는 작음</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>스태그 결합 — 3+1 시나리오 절벽 거리</td>
+<td style="text-align: center;">단일은 견디나 결합 시 증자 시점 당겨짐 × 저가 증자 희석</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>1970s analog</td>
+<td style="text-align: center;">2.5/5</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>🏷️ 종합 내구성 판정: ⚪ 단일은 견디나 결합 시 압박 ‖ 신뢰도 밴드 낮음 ‖ 풀 DD 승격 중간</strong> (이미 embedded 풀 DD 안에서 실행)</p>
+<p>🎯 <strong>이 종목이 고금리·고물가 레짐을 버틸 수 있는가 — 직접 한 줄</strong>: <strong>⚪ 조건부 — 회사 자체는 부채가 없어 망가지지 않지만, '다음 증자를 몇 달러에 하느냐'가 관건이다.</strong> 고금리·고물가가 길어지면 회사가 아니라 <strong>기존 주주의 몫</strong>이 희석으로 깎이는 경로로 압박이 온다. 회복 trigger = PowerCo 라이선스 체결과 선급 로열티 $130M 수령(증자 필요 시점을 약 0.5년 뒤로 미룸) / 악화 trigger = 2027년 중 라이선스 미체결 상태에서 신규 ATM·증자 등록서류 제출. (낮은 신뢰도 참고 · soft-flag · 매수/매도 신호 ❌ · enforcement 아님 · 최종 판단은 사용자)</p>
+<p><strong>핵심 swing 변수 1개</strong>: <strong>PowerCo 선급 로열티 $130M이 증자 필요 시점(약 2028년) 전에 들어오느냐.</strong> 들어오면 결합 심각 시나리오에서도 2029년까지 증자 없이 간다 → 🟢 쪽으로, 안 들어오면 증자 주가가 판정을 정한다 → 🔴 쪽으로 뒤집힌다.</p>
+<p>🔴 <strong>금리 레짐 조건부 부호</strong>: <code>[고금리 지속 시]</code> 현금흐름 + (이자수익↑ · 연 약 +$7M/100bp) / 증자 창 − (고베타 적자주 할인율↑) → <strong>순 −</strong> (증자 창 효과가 훨씬 큼) · <code>[저금리·디스인플레 전환 시]</code> 현금흐름 − (이자수익↓) / 증자 창 + (risk-on 순풍) → <strong>순 +</strong>. 무차입·현금 부자라는 '방어형' 특징이 완화 국면에서 오히려 이자수익 감소라는 작은 페널티로 바뀐다.</p>
+<p>🔴 <strong>엇갈림 명시(봉합 ❌)</strong>: <strong>회사 생존(부채 축) = 🟢 robust / 주주 지분 가치(희석 축) = ⚪~🔴 취약.</strong> 같은 '내구성'이라도 채권자 눈과 주주 눈의 답이 다르다.</p>
+</blockquote>
+<hr />
+<h4>G.8.5 의무 라벨 4종</h4>
+<ol>
+<li><strong>낮은 신뢰도 참고</strong> — 런웨이·증자 시점은 기준선 소모 밴드($245~280M)와 원가·금리 가정의 산물이고, 인건비 비중은 미공시 추정이며, 무엇보다 '증자 시 주가'는 예측 불가. 부채 쪽 사실(금융부채 0)은 확실하지만 판정을 좌우하는 변수는 정성. 신뢰도 <strong>낮음</strong>("높음" ❌).</li>
+<li><strong>🎯 버티는가는 직접 답함, 단 낮은 신뢰도</strong> — 위 🎯 한 줄(⚪ 조건부). 회피 도장 ❌ · enforcement 아님 · 최종 판단은 사용자.</li>
+<li><strong>장기 thesis 종목엔 stop sign ❌</strong> — 희석 압박 ⚪~🔴는 매도 기준·진입 차단이 아니다. §H.3 Thesis 리스크 신호 <em>입력</em>으로만 roll-up. (QS는 현재 사용자 미보유 · 관찰 종목.)</li>
+<li><strong>점수 미반영</strong> — 7축 가중평균(12.0)·레이더·§G.3 ④축에 합산 ❌. §G.4의 '무차입·Quick Liquidity 18배'로 숫자축 점수가 높아도, 본 렌즈는 주주 희석 축의 취약을 별도로 보여준다.</li>
+</ol>
+<blockquote>
+<p>soft-flag: "희석 절벽"도 하드게이트·보유 매도신호 ❌ → §H.3 입력. 🔴 validator 함정 차단: 본 진단은 고금리·고물가가 <em>온다는 전제를 검증한 것이 아니라</em>, 레짐과 무관하게 QS 내부 구조(부채 0 · 고정 약정 $88M · 런웨이 · 희석 경로)의 거리만 쟀다. 레짐 확률 재산정 ❌.</p>
+</blockquote>
+<h4>Steelman 자기 반박 (3축)</h4>
+<ul>
+<li><strong>본 분석</strong>: 부채가 없어 차환·약정 위험은 0이고, 결합 충격은 증자 시점을 몇 달 당기는 정도라 회사 생존은 robust, 압박은 희석 경로로만 온다 → ⚪ 조건부.</li>
+<li><strong>데이터 축 반박</strong>: 런웨이 3.1~3.5년은 <strong>회사가 2025-Q3부터 다년 런웨이 안내를 끊은 상태</strong>에서 내가 H1 연환산으로 만든 숫자다. History-Dive에 따르면 이 회사의 다년 약속은 기한 내 0/13, 지연 계수 1.4배 — 비용 쪽도 가이던스보다 늘 수 있다. 회사가 공식으로 말하는 것은 "최소 12개월"뿐이므로, 런웨이를 길게 본 내 숫자 자체가 낙관 편향일 수 있다. 또 양산 전환(H2'26 셀 생산 2배 · 방산·데이터센터 갈래) 비용이 기준선에 안 들어 있다.</li>
+<li><strong>구조 축 반박</strong>: "주가가 낮으면 희석이 크다"는 구조는 반대로도 읽힌다 — 공매도 21.8%·days to cover 10.0인 종목에서 라이선스 체결 같은 사건은 숏커버로 주가를 몇 배 올릴 수 있고(2025년 평균 발행가 $8.96), 그 창에서 증자하면 희석이 오히려 작다. 즉 결과를 정하는 것은 금리·물가 레짐이 아니라 <strong>기술 마일스톤 사건</strong>이며, 본 모듈의 매크로 결합 시나리오는 QS에선 주변 변수일 수 있다(독립 정보량이 작음).</li>
+<li><strong>시간 지평 축 반박</strong>: 1~2년 안에는 현금 $859M로 레짐과 무관하게 버틴다 — 이 기간엔 내구성 판정이 사실상 의미가 없다. 반대로 5년 지평에서는 매출이 생기면 원가 전가력(로열티 구조 미공시)이 진짜 물가 내구성을 정하는데, 지금은 그 데이터가 없다. "⚪"는 단기의 안전과 장기의 미지수를 한 칸에 섞은 것일 수 있다.</li>
+<li><strong>유지 / 수정 / 철회 → 수정(유지하되 범위 한정)</strong>: ⚪ 조건부는 유지. 단 ① 런웨이는 "회사 공식 = 12개월 하한, 3.1~3.5년은 내 계산값"으로 분리 표기했고 ② swing 변수를 매크로 변수가 아닌 <strong>라이선스 선급 로열티 시점</strong>으로 둬 구조 축 반박을 반영했다 ③ 생존(🟢)과 주주 희석(⚪~🔴)을 봉합하지 않고 나눠 적었다.</li>
+</ul>
+<h4>▶ Flip 트리거 (관측 가능 신호만)</h4>
+<ul>
+<li>🟢 강화: PowerCo IP License 본계약 체결 + 선급 로열티 $130M 입금 공시(8-K) · PowerCo 마일스톤 잔여(최대 약 $45.5M) 분기별 수령 확인(재무활동 "Cash received under collaboration agreement") · 반기 현금 소모가 $120M 이하 유지 · 고주가 구간에서의 선제 증자(희석률 &lt;10%).</li>
+<li>🔴 훼손(→ §H.3 roll-up · 관찰 종목이므로 진입 판단의 재검토 입력): 라이선스 미체결 상태에서 신규 S-3/ATM 등록서류 제출 · 10-Q '12개월' 문구 약화 또는 going concern 문구 등장 · 반기 소모가 $150M 초과(양산 비용 반영) · PowerCo 상한 추가 삭감 · 주가 $2 이하에서 증자.</li>
+<li><strong>레짐 falsifier</strong>: 디스인플레·금리 완화가 2분기 이어지면 이자수익 감소(분기 약 −$2M/100bp)보다 증자 창 개선이 훨씬 크므로, "고금리가 QS에 불리" 판정의 부호를 다시 확인한다(완화 국면에선 ⚪ → 🟢 방향).</li>
+</ul>
+<hr />
+<hr />
+<h1>Part 2 — 시나리오 · 렌즈 · 자금흐름</h1>
+<h2 id="h">Section H. 시나리오 · Catalyst · 렌즈</h2>
+<h3>H.1 Bull / Base / Bear (5년 = 2031 · 희석 반영 주당 배수 · 지연 계수 1.4배 적용)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 기대값은 5년 1.35배로 기준선 1.5배 아래다. 오를 여지는 낙관 시나리오 한쪽에 몰려 있고, 그 낙관조차 시장이 라이선스 회사에 매기는 값보다 훨씬 비싼 값을 전제한다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: center;">확률</th>
+<th style="text-align: center;">2년</th>
+<th style="text-align: center;">3년</th>
+<th style="text-align: center;">5년(주가)</th>
+<th>가정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🟢 Bull</td>
+<td style="text-align: center;">20%</td>
+<td style="text-align: center;">2.1배</td>
+<td style="text-align: center;">2.8배</td>
+<td style="text-align: center;">4.0배($16.7)</td>
+<td>2027 PowerCo 라이선스 · 2028~29 로열티 · OEM 2곳 추가 · 데이터센터·국방 제품 매출 → 2031 매출 약 4억 달러 · 시총 약 120억 · 주식 약 7.2억</td>
+</tr>
+<tr>
+<td>🟡 Base</td>
+<td style="text-align: center;">45%</td>
+<td style="text-align: center;">1.0배</td>
+<td style="text-align: center;">1.0배</td>
+<td style="text-align: center;">1.06배($4.4)</td>
+<td>라이선스 2028(지연 1.4배) · 로열티 2030 시작 · 2031 매출 약 8,000만 · 2027~28 증자 · 시총 약 35억 · 주식 약 8억</td>
+</tr>
+<tr>
+<td>🔴 Bear</td>
+<td style="text-align: center;">35%</td>
+<td style="text-align: center;">0.5배</td>
+<td style="text-align: center;">0.35배</td>
+<td style="text-align: center;">0.2배($0.84)</td>
+<td>라이선스 미체결 · PowerCo 우선순위 하락 · 중국 반고체 선점 · 고희석 · 시총 약 8억 · 주식 약 9.5억</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>기대값</strong>: 2년 1.05배 · 3년 1.13배 · <strong>5년 1.35배 ⚠️(기준선 1.5배 미만 = thesis 약함)</strong>.</li>
+<li>⚠️ <strong>Base 2년 1.0배 &lt; 2.0배 → bull tail 의존</strong>(5년 Base도 3배 미만이라 "늦게 꽃피는 병목" 예외에 해당하지 않음).</li>
+<li><strong>암묵 exit 멀티플</strong>: Bull 120억 ÷ 4억 = 30배 · Base 35억 ÷ 8,000만 ≈ 44배. 성숙한 라이선스 회사(램버스·인터디지털)는 대략 8~15배다 → <strong>재평가 의존 높음</strong>(Base 5년 매출 ÷ 시총 2.3%라 계산은 유효).</li>
+<li>Bull 가정이 기대는 고객은 Honda·기존 OEM(고객 검증 B~D)이다.</li>
+<li><strong>선급 로열티는 차감형이다</strong> — 1억 3,000만 달러는 미래 로열티에서 깎인다(10-K). kWh당 1달러면 첫 130GWh(연 40GWh 기준 약 3.3년) 동안 새 로열티 현금이 없다. 시나리오 매출은 회계 인식 기준이라 유지하되, 현금은 선급 소진 뒤로 늦다〔Specific-Dive〕.</li>
+<li><strong>Base 라이선스 2028의 조건</strong> — 개정 계약은 QS 기술을 "PowerCo가 정할 셀 크기"로 옮기라고 적었고, C샘플 공시는 아직 없다. 규격이 바뀌면 인증 단계를 앞에서 다시 밟을 수 있다(추론).</li>
+<li>6/21 대비: 5년 기대값 약 2.0배 → 1.35배. 주가가 반으로 내려 배수 분모가 낮아졌는데도 기대값이 떨어진 것은, PowerCo 상한 축소와 지연 계수를 반영해 Bull 확률을 낮추고 Bear 확률을 높였기 때문이다.</li>
+</ul>
+<figure class="dd-fig"><div id="fig-h1"></div><div class="dd-legend" id="fig-h1-leg"></div><figcaption id="fig-h1-cap"></figcaption></figure>
+
+<h3>H.2 Catalyst 캘린더</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 일주일 뒤 실적이 첫 시험이다. "현장 시험 2026" 문장이 살아 있는지가 가장 중요하다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>일시</th>
+<th>이벤트</th>
+<th style="text-align: center;">영향</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-21(장 마감 뒤)</td>
+<td>3분기 실적·주주서한 — Eagle Line 생산 2배·현장 시험·PowerCo 마일스톤</td>
+<td style="text-align: center;">🔴</td>
+<td><a href="https://ir.quantumscape.com/news-releases/news-release-details/quantumscape-announces-timing-third-quarter-2026-business">회사 공지</a></td>
+</tr>
+<tr>
+<td>10월 말</td>
+<td>FOMC(9월 인상 뒤 첫 회의)</td>
+<td style="text-align: center;">🟡</td>
+<td>연준</td>
+</tr>
+<tr>
+<td>2026 하반기</td>
+<td>Eagle Line 셀 생산 2배 · 고객 샘플 출하 가속</td>
+<td style="text-align: center;">🟡</td>
+<td>2분기 주주서한</td>
+</tr>
+<tr>
+<td>2026 중</td>
+<td>두카티 현장 시험(2분기 서한에서 문장 삭제)</td>
+<td style="text-align: center;">🟡</td>
+<td>History-Dive</td>
+</tr>
+<tr>
+<td>~2028-07</td>
+<td>PowerCo 개정 계약 2년 마일스톤(셀 납품·검증·대형 셀)</td>
+<td style="text-align: center;">🔴</td>
+<td>8-K 7/22</td>
+</tr>
+<tr>
+<td>미정</td>
+<td>PowerCo IP 라이선스 본계약 · 로열티 선급 1억 3,000만 달러</td>
+<td style="text-align: center;">🔴</td>
+<td>10-Q</td>
+</tr>
+<tr>
+<td>2027 상반기</td>
+<td>새 증자 등록서류 제출 가능성(현금 소모 경로상)</td>
+<td style="text-align: center;">🟠</td>
+<td>추론</td>
+</tr>
+</tbody>
+</table>
+<h3>H.3 ⚠️ Thesis 리스크 신호 (종목 Memory 없음 · 이 보고서가 정의 원본)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 아래 신호가 켜지면 "라이선스로 돈을 번다"는 이야기가 흔들린다. 매매 지시가 아니라 조기경보다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>신호</th>
+<th>관측 trigger</th>
+<th style="text-align: center;">현재</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>최대 고객 돈줄 축소</td>
+<td>PowerCo 지급 상한 추가 하향 · 마일스톤 미달 공시</td>
+<td style="text-align: center;">🟠 1회 발생(7/16)</td>
+</tr>
+<tr>
+<td>라이선스 지연</td>
+<td>2027 말까지 IP 라이선스 본계약 미체결</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>약속 조용히 지우기</td>
+<td>주주서한에서 일정 문장이 설명 없이 사라짐</td>
+<td style="text-align: center;">🟠 발생(두카티 현장 시험)</td>
+</tr>
+<tr>
+<td>희석 가속</td>
+<td>새 ATM 등록 + 주가 $5 미만 대량 발행</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>경영진 이탈·매도</td>
+<td>핵심 기술 리더 이탈 또는 매도 가속</td>
+<td style="text-align: center;">🟡 CTO 매도 지속</td>
+</tr>
+<tr>
+<td>경쟁 기술 선점</td>
+<td>황화물 전고체·반고체 양산차 대량 출시</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>런웨이 단축</td>
+<td>연 소모 3억 달러 초과 또는 유동성 6억 달러 미만</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>라이선시 생산 자리</td>
+<td>PowerCo가 QS 기술 셀의 목표 설계·생산 공장·라인을 공시(🟢) / QS 언급 없이 추가 공장 연기·표준 셀 라인만 증설(🔴)</td>
+<td style="text-align: center;">🟠 Salzgitter NMC 20GWh · 캐나다 2029 연기 · QS 라인 0</td>
+</tr>
+<tr>
+<td>공동 IP 확대</td>
+<td>새 계약(Honda·Corning·Murata)에 공동 소유 조항 공시 · PowerCo가 공동 개량 기술로 자체 셀 발표</td>
+<td style="text-align: center;">🟡 10-K·10-Q 위험요인에 공동 소유 문구 존재</td>
+</tr>
+<tr>
+<td>샘플 단계 정체</td>
+<td>PowerCo 규격 셀 첫 납품·C샘플 언급(🟢) / 2027년 말까지 C샘플 언급 없음(🔴)</td>
+<td style="text-align: center;">대기(B샘플 2024~)</td>
+</tr>
+<tr>
+<td>특허 시계</td>
+<td>로열티 개시가 2031년 이후로 밀려 가장 오래된 핵심 특허 보호가 3년 미만</td>
+<td style="text-align: center;">대기(Base 2030 · 겹침 약 4년)</td>
+</tr>
+<tr>
+<td>고객의 자체 개발</td>
+<td>Honda 독자 전고체 양산 차량 발표(🔴) / Honda와 라이선스·공급 계약 전환(🟢)</td>
+<td style="text-align: center;">🟡 Honda 독자 시험 라인(2024-11) 가동 중</td>
+</tr>
+<tr>
+<td>희석 가격</td>
+<td>라이선스 미체결 상태에서 새 증자 등록서류 + 주가 $2 이하 증자</td>
+<td style="text-align: center;">대기</td>
+</tr>
+</tbody>
+</table>
+<h3>H.3-0 보유 종목 가설 신선도 — 해당 없음(미보유 관찰 종목)</h3>
+<h3>H.5 🧭 CAE · Edge Grid 좌표</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이야기는 여러 층에 걸쳐 크지만 가장 약한 고리(라이선스로 돈 걷기)가 증명되지 않았다. 가격은 반으로 싸졌다. 그래서 "약하고 싼" 정찰 영역으로 옮겼다.</p>
+</blockquote>
+<p>〔CAE: C=제약 / A=조정 / E=표현 · 중요도 L=다층성 R=비가역성 H=병목경도 · 엣지 G=선반영 격차 P=연료 잔량 D=컨센서스 반증 · 각 0~3〕</p>
+<ul>
+<li><strong>(a) CAE 분류</strong>: 제약(C·핵심광물·국방 공급망) + 표현(E·전동화·AI 데이터센터 신시장) 다층 · 무게중심 = 표현 · 🔴 가장 약한 고리 = 라이선스 렌트 포획(PowerCo 상한 축소로 확인).</li>
+<li><strong>(b) 프로파일</strong>: 중요도 L2·R1·H1 = 中下 / 엣지 G2·P1·D1 = 中. G 입력 — 60일 주가 상관 1위는 같은 전고체 SLDP(0.82 · 우세)다. 시장은 QS를 "개별 기술 성공"이 아니라 "전고체 업종 바구니"로 가격 매기는 중이다. 애널리스트 비교군도 같은 차세대 배터리 업종이다 → 시장 가설 = 내 가설(업종 베팅) · 괴리 작음.</li>
+<li><strong>(c)(d) 분면</strong>: 6/21 「약하고 비싼」 → <strong>「약하고 싼」 경계</strong>. 행동 = 정찰(value trap 다발 구역). 3 잠금장치(실현 확률 교차 · 컨센서스 반증 · 유효 범위)는 "강하고 싼"이 아니므로 적용 대상 아님.</li>
+<li><strong>(e) 과목 적합도</strong>: QS는 문학형(미래 매출·꿈) 종목이다. 지금 시장 과목은 금리 인상·과열 우려 국면이라 수학형 쪽으로 기울어 있다 → 가격 반영 지연 가능.</li>
+</ul>
+<figure class="dd-fig"><svg viewBox="0 0 520 300" width="100%" style="max-width:520px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="20" width="220" height="130" fill="#fdeee9"/><rect x="280" y="20" width="220" height="130" fill="#eef6f0"/>
+<rect x="60" y="150" width="220" height="130" fill="#eeeeee"/><rect x="280" y="150" width="220" height="130" fill="#e8f0f8"/>
+<line x1="280" y1="20" x2="280" y2="280" stroke="#999" stroke-dasharray="4,3"/><line x1="60" y1="150" x2="500" y2="150" stroke="#999" stroke-dasharray="4,3"/>
+<text x="170" y="40" font-size="11" text-anchor="middle" fill="#8a2415">강한데 비싼 → 트림·회피</text>
+<text x="390" y="40" font-size="11" text-anchor="middle" fill="#1f6f3b">강하고 싼 → 집중매수 후보</text>
+<text x="170" y="270" font-size="11" text-anchor="middle" fill="#555">약하고 비싼 → 회피·청산</text>
+<text x="390" y="270" font-size="11" text-anchor="middle" fill="#2c5282">약하고 싼 → 정찰</text>
+<text x="280" y="295" font-size="11" text-anchor="middle" fill="#444">← 엣지 소진(비싼)   ·   엣지 잔량(싼) →</text>
+<text x="20" y="150" font-size="11" text-anchor="middle" fill="#444" transform="rotate(-90 20,150)">중요도 약 → 강</text>
+<circle cx="200" cy="200" r="6" fill="#2980b9" opacity="0.5"/><text x="120" y="192" font-size="10" fill="#2980b9">6/21 약하고 비싼</text>
+<circle cx="288" cy="200" r="7" fill="#c0392b"/><text x="300" y="214" font-size="10" fill="#c0392b">10/14 「약하고 싼」 경계</text>
+<line x1="207" y1="200" x2="279" y2="200" stroke="#c0392b" stroke-width="1.5" marker-end="url(#ar)"/>
+<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c0392b"/></marker></defs>
+</svg><figcaption>CAE·Edge Grid 2×2 분면 — 세로 중요도 L2·R1·H1(中下) · 가로 엣지 G2·P1·D1(中) · 주가 반토막으로 가격 쪽이 오른쪽(싼 쪽)으로 이동</figcaption></figure>
+
+<h3>H.6 💎 0to1 (틸 7문)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 기술·숨겨진 비밀은 YES지만, 시기·독점·유통·존속성이 모두 흔들린다. 2/7은 "불운 위험" 구간이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>문항</th>
+<th style="text-align: center;">판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 기술(10배)</td>
+<td style="text-align: center;">YES</td>
+<td>무음극 + 세라믹 세퍼레이터 · 상온 저압 리튬금속</td>
+</tr>
+<tr>
+<td>② 시기</td>
+<td style="text-align: center;">⚠️</td>
+<td>전기차 보조금 종료 · 데이터센터는 새 기회</td>
+</tr>
+<tr>
+<td>③ 독점</td>
+<td style="text-align: center;">⚠️</td>
+<td>작은 시장 지배 전 · PowerCo 협상력 열위</td>
+</tr>
+<tr>
+<td>④ 사람</td>
+<td style="text-align: center;">⚠️</td>
+<td>반도체 양산통 CEO · 창업자 매도</td>
+</tr>
+<tr>
+<td>⑤ 유통</td>
+<td style="text-align: center;">NO</td>
+<td>라이선스 채널 미가동 · 새 부문 과금 미공시</td>
+</tr>
+<tr>
+<td>⑥ 존속성</td>
+<td style="text-align: center;">⚠️</td>
+<td>특허 · 대안 기술 다수</td>
+</tr>
+<tr>
+<td>⑦ 숨겨진 비밀</td>
+<td style="text-align: center;">YES</td>
+<td>"음극 없이 리튬금속을 상온 저압에서 돌린다"</td>
+</tr>
+<tr>
+<td>시장정의 tell</td>
+<td style="text-align: center;">혼재</td>
+<td>"세 개의 거대 시장"이라는 합집합 화법 ↔ 매출 0(말 &gt; 숫자)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Track A 2/7 → 불운 위험 ‖ Track B ⭐3.0 ‖ tell 혼재</strong> · 별도 렌즈(7축 미합산).</p>
+<h3>H.7 💰 밸류에이션 정밀 판정 (서브에이전트 위임 · 7축 미합산 · 낮은 신뢰도 참고)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 현금을 뺀 기업가치는 PowerCo 계약 최대치의 몇 배 로열티를 요구하는데, 로열티는 아직 0원이라 고평가로 본다. 다만 공개되지 않은 kWh당 로열티 단가 하나에 판정이 뒤집힐 수 있다.</p>
+</blockquote>
+<p>[모드: embedded] — orchestrator가 §H.1 암묵 exit 멀티플(Bull 30x · Base 약 44x)을 넘김 · 렌즈⑤ 정상 수행</p>
+<blockquote>
+<p>📌 <strong>요약 상단 1줄</strong>: <code>밸류 〔H.7〕: 🔴고평가 ‖ 신뢰도 낮음 ‖ 아키타입 Ⓔ(pre-revenue 딥테크 · 미래 Ⓑ 로열티 전환 후보)·역-DCF envelope밖🔴(fragile — kWh당 로열티 단가 하나에 좌우)·§H.1 재평가의존 높음 ‖ swing=kWh당 로열티 단가(미공시) ‖ 🎯매수적정성=🔴보류·낮은신뢰·최종판단 사용자 ‖ BRCR〔H.7.6〕: 정식 N/A(EV/매출총이익 분모 0)·대체 y 참고 🔴·구속=R(가격결정력)·[소유(특허)·생산은 라이선시 의존]·약한신호 · 별도렌즈(7축 미합산)·장기 thesis 종목 stop sign ❌</code></p>
+<p>💡 <strong>간단히 말하면</strong> — 지금 주가에는 현금(약 8.6억 달러)을 빼고도 약 17.6억 달러의 "미래 기대"가 들어 있다. 그 기대를 정당화하려면 2030년대 초에 로열티(기술 사용료)로 해마다 4억~10억 달러를 벌어야 한다. 지금 확보된 유일한 큰 계약(PowerCo · 연 최대 85GWh)은 kWh당 3달러라는 후한 단가를 줘도 연 2.6억 달러에 그친다. 그래서 지금 가격은 "PowerCo 같은 계약을 2~3개 더 따고, 단가도 높게 받는다"는 여러 낙관을 한꺼번에 깔고 있다. 다만 단가가 공개되지 않아 이 판정은 쉽게 뒤집힐 수 있다(신뢰도 낮음).</p>
+</blockquote>
+<hr />
+<h4>H.7.1 아키타입 소비 (재분류 ❌)</h4>
+<ul>
+<li><strong>확정 아키타입 = Ⓔ pre-revenue 딥테크</strong> (GAAP 매출 0 · orchestrator 확정 · 소비만)</li>
+<li>부 아키타입 = 미래 Ⓑ(라이선스 로열티 컴파운더) 후보 — <strong>전환 falsifier = IP License 본계약 체결 + 로열티 매출 첫 인식</strong> (둘 다 아직 0)</li>
+<li>§D.5 곡괭이 질 = <strong>B(자본갈증형 성격)</strong> — 매출 0 · 연 약 2.6억 달러 소모 · 과거 ATM(수시 주식 발행) 의존</li>
+<li>경계 종목 병기: 지금 값은 Ⓔ 방법(대체 분모·옵션가치·runway)으로 매기고, Ⓑ 방법(성장조정 멀티플)은 "로열티 매출이 생긴 뒤"에만 유효하다고 적는다 — Ⓑ 멀티플을 지금 미리 적용하는 것은 금지.</li>
+</ul>
+<hr />
+<h4>1. 직접 1차 수집 (2026-10-14 런타임)</h4>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>항목</th>
+<th>값</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>현재가</td>
+<td><strong>$4.12</strong> (10/13 종가 · 52주 최저 = 범위 $4.12~$19.07 · 전일 $4.27)</td>
+<td>yfinance <code>QS</code> history·info (런타임 재확인)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>발행주식</td>
+<td>Class A 587,219,164 + Class B 31,894,343 = <strong>619.1M주</strong> (yfinance implied 619,113,507 일치)</td>
+<td>10-Q 표지 https://www.sec.gov/Archives/edgar/data/1811414/000119312526316073/qs-20260630.htm</td>
+</tr>
+<tr>
+<td>1</td>
+<td>시가총액</td>
+<td><strong>$2.55B</strong></td>
+<td>yfinance marketCap 2,550,747,648</td>
+</tr>
+<tr>
+<td>1</td>
+<td>유동성</td>
+<td>현금 $132.9M + 단기 유가증권 $726.1M = <strong>$859.0M</strong> (2026-06-30)</td>
+<td>SEC XBRL companyfacts <code>CashAndCashEquivalentsAtCarryingValue</code>·<code>MarketableSecuritiesCurrent</code> https://data.sec.gov/api/xbrl/companyfacts/CIK0001811414.json</td>
+</tr>
+<tr>
+<td>1</td>
+<td>EV</td>
+<td><strong>≈ $1.76B</strong> (= 2.55 − 0.859 + 리스 0.067) · ⚠️ yfinance enterpriseValue는 $1.85B로 표시 — 산식 불투명이라 SEC 기준 $1.76B 사용</td>
+<td>위 두 출처</td>
+</tr>
+<tr>
+<td>1</td>
+<td>자기자본(장부)</td>
+<td>$1,048.0M (2026-06-30) → P/B 2.43</td>
+<td>SEC XBRL <code>StockholdersEquity</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>컨센 목표가</td>
+<td>평균 <strong>$6.29</strong> · 중앙 $7.00 · 고 $8.50 / 저 $2.50 · 의견 "hold"</td>
+<td>yfinance info</td>
+</tr>
+<tr>
+<td>2</td>
+<td>🆕 컨센 메타데이터</td>
+<td>목표가 커버 <strong>n=8</strong> · 추정 고/저 배수 3.4배(분산 넓음) · EPS 추정 n=5~6 · 매출 추정 FY26 n=3(전부 0) · FY27 <strong>n=5 · 평균 $10.3M · 범위 $0~35.1M</strong></td>
+<td>yfinance <code>numberOfAnalystOpinions</code>·<code>targetHigh/LowPrice</code>·<code>revenue_estimate</code>·<code>earnings_estimate</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>🆕 리비전 방향</td>
+<td><strong>EPS = 소폭 상향(적자 축소)</strong>: FY26 90일 전 −0.696 → 30일 전 −0.669 → 현재 −0.664 · 30일 상향 4건/하향 0건 · FY27 −0.678 → −0.669(상향 1·하향 1) ‖ <strong>목표가 = 연속 하향</strong>: Evercore $10→$7(10/12) · TD Cowen $8→$6(7/24) · Evercore $12→$10(2/23) · HSBC $10.5→$8.3(2/19) · Morgan Stanley $12→$8.5(2/18)</td>
+<td>yfinance <code>eps_trend</code>·<code>eps_revisions</code>·<code>upgrades_downgrades</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>peer 현재 멀티플</td>
+<td>아래 렌즈③(가) 표</td>
+<td>yfinance info (10/13)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>자기 5년 역사</td>
+<td>P/S·PER = N/A(매출 0·적자) · 참고용 EV·P/B·EV/유동성 월말 60개</td>
+<td>yfinance 월말 종가 × SEC XBRL 분기 가중평균 주식수·자기자본·유동성</td>
+</tr>
+<tr>
+<td>5</td>
+<td>현재 매출·마진·FCF</td>
+<td>매출 0 · H1'26 OCF −$116.3M · CapEx $14.6M · FY26 가이던스 조정 EBITDA −$250~275M · CapEx $27~37M (입력 재사용 · 신규 낙관 수치 ❌)</td>
+<td>입력 파일 · 주주서한 https://www.sec.gov/Archives/edgar/data/1811414/000119312526312423/qs-ex99_1.htm</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>❌ 미수집: §B.4 산업 TAM·§C.2 과점·§D.6 해자 원문(입력 파일에 없음) → envelope·BRCR은 아래처럼 자체 추정에 [추정] 표기.</li>
+<li>❌ 미수집: kWh당 로열티 단가 — 회사 미공시(R-Dive 2026-10-14 확인 · 라이선스 본계약 미체결).</li>
+</ul>
+<hr />
+<h4>H.7.2 5렌즈 감사표</h4>
+<h5>① 역-DCF "무엇이 참이어야 하나"</h5>
+<p><strong>산출 근거 소표</strong></p>
+<table>
+<thead>
+<tr>
+<th>가정</th>
+<th>값</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>맞춰야 할 값</td>
+<td>EV $1.76B (= 미래 현금흐름 현재가치 합)</td>
+<td>위 1번</td>
+</tr>
+<tr>
+<td>로열티 전 소모</td>
+<td>연 $260M (H1'26 OCF+CapEx 연환산 $262M) · 로열티가 늘수록 비례해 줄어듦</td>
+<td>입력 재무</td>
+</tr>
+<tr>
+<td>로열티 개시</td>
+<td>2028(§H.1 Bull 정합) / 2030(§H.1 Base 정합) · 5년에 걸쳐 정상 규모 도달</td>
+<td>§H.1 소비</td>
+</tr>
+<tr>
+<td>정상 상태 현금 마진</td>
+<td>40% / 50% / 60% (성숙 라이선서 범위)</td>
+<td>[추정]</td>
+</tr>
+<tr>
+<td>WACC · 영구성장 g</td>
+<td>9~12% · 2.5~3.5% (규칙 밴드) + 참고 15%</td>
+<td>규칙 H.7.2</td>
+</tr>
+<tr>
+<td>세금</td>
+<td>0 (누적 결손금이 큼 → 낙관 쪽 가정)</td>
+<td>[추정]</td>
+</tr>
+</tbody>
+</table>
+<p><strong>역산 결과 — 정상 상태 연 로열티형 매출(달러, 2032~2034년 도달)</strong></p>
+<table>
+<thead>
+<tr>
+<th>마진 \ 시작 · WACC</th>
+<th>2028 · 9%</th>
+<th>2028 · 12%</th>
+<th>2030 · 9%</th>
+<th>2030 · 12%</th>
+<th>참고 2030 · 15%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>60%</td>
+<td>3.4~3.8억</td>
+<td>5.4~5.8억</td>
+<td>4.4~5.0억</td>
+<td>7.4~8.0억</td>
+<td>11.0~11.6억</td>
+</tr>
+<tr>
+<td>50%</td>
+<td>4.0~4.5억</td>
+<td>6.5~7.0억</td>
+<td>5.2~6.0억</td>
+<td>8.9~9.6억</td>
+<td>13.2~13.9억</td>
+</tr>
+<tr>
+<td>40%</td>
+<td>5.1~5.7억</td>
+<td>8.2~8.7억</td>
+<td>6.6~7.5억</td>
+<td>11.1~12.0억</td>
+<td>16.5~17.4억</td>
+</tr>
+</tbody>
+</table>
+<p>→ <strong>암묵 요구치 = 연 약 4억~10억 달러(중심 약 6~7억)를 사실상 확실하게.</strong> 비용을 고정($220M 유지)으로 두는 보수 변형에서도 4.4억~7.3억으로 같은 범위.</p>
+<p><strong>envelope (역산값 보기 전 독립 도출 · §B.4 미수신 → 자체 [추정])</strong></p>
+<table>
+<thead>
+<tr>
+<th>천장 항목</th>
+<th>도출</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>생산량 천장</td>
+<td>PowerCo 계약 상한 85GWh(40+40+5 · 1차 계약 조건) + 다른 OEM(Honda 등 상위 10곳 중 3곳) Bull 가정 +80~120GWh</td>
+<td>약 165~205GWh</td>
+</tr>
+<tr>
+<td>단가 천장</td>
+<td>R-Dive 가정표 $0.5~2/kWh → 위로 넓혀 $3/kWh</td>
+<td>$0.5~3/kWh</td>
+</tr>
+<tr>
+<td>매출 천장</td>
+<td>Base 85GWh×$1×가동 70% ≈ 0.6억 · 중간 85GWh×$3 ≈ 2.6억 · Bull 205GWh×$3 ≈ 6.2억</td>
+<td><strong>0.6억 / 2.6억 / 최대 6.2억</strong></td>
+</tr>
+<tr>
+<td>마진 천장</td>
+<td>로열티 매출총이익 ~100%(R-Dive) · 현금 마진은 성숙 라이선서 40~60%</td>
+<td>60%</td>
+</tr>
+<tr>
+<td>지속 천장</td>
+<td>§D.6 미수신 · 중국 반고체 경쟁·첫 계약 단가가 후속 계약 천장이 될 수 있다는 10-Q 위험 요인(R-Dive)</td>
+<td>짧게 잡음</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>distance = 🔴 envelope 밖 (fragile)</strong>. 요구치 중심(6~7억)은 Bull 천장(6.2억)과 같거나 위다. 요구치가 envelope 안으로 들어오는 경우는 <strong>WACC 9% + 마진 60% + 2028 시작 + 단가 $2.5~3/kWh + 생산량 165GWh 이상</strong>이 <strong>동시에</strong> 맞을 때뿐이다 → <strong>"복수 낙관 가정 곱에 베팅"</strong>(단가 상한·물량 상한·개시 시점 세 칸이 모두 상단).</li>
+<li><strong>PowerCo 단독 환산</strong>: 85GWh를 kWh당 3달러로 꽉 채워도(연 2.6억) 성공 확정 가정의 현재가치는 EV 약 <strong>0.2억 달러</strong>(WACC 10.5%) — 지금 EV 17.6억의 약 1/9.</li>
+<li>🔴 <strong>fragile 표기</strong>: 단가 하나(미공시)가 $1→$5/kWh로 움직이면 같은 85GWh의 연 매출이 0.85억→4.25억으로 5배 바뀐다. 판정이 이 한 숫자에 뒤집힐 수 있다.</li>
+</ul>
+<h5>② 아키타입별 판정 — Ⓔ pre-revenue</h5>
+<p><strong>산출 근거 소표</strong></p>
+<table>
+<thead>
+<tr>
+<th>분모</th>
+<th>QS 값</th>
+<th>비교 기준</th>
+<th>읽기</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🚫 P/S</td>
+<td>적용 금지(매출 0 → 무한대)</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>EV/생산능력 GWh (카탈로그 표준)</td>
+<td>자체 공장 = Eagle Line 시범 라인(GWh 단위 아님) → 계약상 조건부 GWh로 대체: <strong>EV ÷ 85GWh = GWh당 $20.7M</strong></td>
+<td>같은 GWh가 만드는 가치(자체 단위경제 환산 · 멀티플 제작 아님): $1/kWh면 연 $1M 매출 → 현금 $0.5M → 성숙 라이선서 12~15배 = <strong>GWh당 $6~8M(성공 확정·할인 전)</strong> · $3/kWh면 <strong>$18~23M</strong></td>
+<td>지금 GWh당 값이 <strong>단가 최상단·성공 확정·할인 전 가치와 같다</strong> → 비쌈</td>
+</tr>
+<tr>
+<td>EV/검증 OEM 디자인윈 (카탈로그 표준)</td>
+<td>양산 수주 기준 <strong>0건</strong> → 분모 0 = N/A · 참고: 상위 10 OEM 파트너 4곳 → 파트너당 EV $440M</td>
+<td>peer 파트너당 값은 공개 범위가 달라 직접 비교 ❌</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>fallback ① 옵션가치</td>
+<td>성공(로열티 2029 개시 · 연 5억) 시 EV $0.8~1.2B(WACC 10.5~12%) · 실패 시 EV 약 −$0.5B(남은 현금 일부만 회수)</td>
+<td>지금 EV $1.76B를 맞추는 성공 확률 = <strong>1.3~1.7(100% 초과)</strong></td>
+<td>연 5억짜리 성공을 <strong>확실히</strong> 가정해도 지금 값에 못 미침 → 시장은 연 5억보다 큰 꼬리(더 많은 OEM·데이터센터·방산)를 사고 있다</td>
+</tr>
+<tr>
+<td>fallback ② runway 대비 milestone</td>
+<td>유동성 $859M + PowerCo 남은 상한 최대 $45.5M ÷ 연 소모 $262~312M(H1 실적 연환산 ~ FY26 가이던스 상단+CapEx) = <strong>약 2.9~3.5년 → 2029년 중후반</strong></td>
+<td>로열티 개시: §H.1 Base 2030 · Bull 2028~29</td>
+<td><strong>runway &lt; Base milestone</strong> → Base 경로에서는 그 사이 증자(희석) 필요 · §H.1 Base 주식 800M 가정과 정합</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>분모 사이 결론 충돌 = 없음(대체 분모 2개·옵션가치·runway 모두 같은 방향) → "분모 의존적·미결" 해당 ❌.</li>
+<li><strong>판정: 비싸 (낮은 신뢰도 참고)</strong> — ① 조건부 GWh 한 단위에 이미 "최고 단가·성공 확정" 가치가 매겨져 있고 ② 연 5억 달러 성공을 100% 가정해도 EV에 못 미치며 ③ Base 경로에서는 로열티 전에 현금이 먼저 바닥난다.</li>
+</ul>
+<h5>③ 상대가치</h5>
+<p><strong>(가) peer 멀티플 표</strong> — 전부 USD 상장 · 2026-10-13 종가 · <strong>EV·시총 = 10/13 시점 · P/B·EV/유동성 = MRQ(최근 분기 말) GAAP · EV/매출 = TTM GAAP</strong> (한 열 안에서 시점·기준 혼합 없음)</p>
+<table>
+<thead>
+<tr>
+<th>종목</th>
+<th>아키타입</th>
+<th>시총</th>
+<th>EV</th>
+<th>유동성(MRQ)</th>
+<th>EV/유동성</th>
+<th>P/B (MRQ GAAP)</th>
+<th>EV/매출 (TTM GAAP)</th>
+<th>매출 성장(YoY)</th>
+<th>GM (TTM)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>QS</strong></td>
+<td>Ⓔ 매출 0</td>
+<td>$2.55B</td>
+<td>$1.76B</td>
+<td>$0.86B</td>
+<td><strong>2.05</strong></td>
+<td><strong>2.43</strong></td>
+<td>N/A(매출 0)</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>SLDP (전고체·전해질)</td>
+<td>Ⓔ~Ⓒ</td>
+<td>$0.49B</td>
+<td>$0.27B</td>
+<td>$0.24B</td>
+<td>1.13</td>
+<td>0.97</td>
+<td>37.1x</td>
+<td>—</td>
+<td>음수</td>
+</tr>
+<tr>
+<td>SES (리튬금속)</td>
+<td>Ⓒ</td>
+<td>$0.37B</td>
+<td>$0.14B</td>
+<td>$0.16B</td>
+<td>0.87</td>
+<td>1.98</td>
+<td>6.0x</td>
+<td>+43.8%</td>
+<td>27.8%</td>
+</tr>
+<tr>
+<td>ENVX (실리콘 음극)</td>
+<td>Ⓒ</td>
+<td>$0.55B</td>
+<td>$0.62B</td>
+<td>$0.48B</td>
+<td>1.31(순부채)</td>
+<td>2.56</td>
+<td>17.3x</td>
+<td>+20.8%</td>
+<td>18.8%</td>
+</tr>
+<tr>
+<td>AMPX (실리콘 음극)</td>
+<td>Ⓒ</td>
+<td>$1.25B</td>
+<td>$1.23B</td>
+<td>$0.07B</td>
+<td>16.5</td>
+<td>9.95</td>
+<td>11.2x</td>
+<td>+125.9%</td>
+<td>22.3%</td>
+</tr>
+<tr>
+<td>참고: CATL·삼성SDI·Panasonic</td>
+<td>Ⓐ 제조 대장</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>3.50 / — / 1.89</td>
+<td>2.1x / 4.0x / 1.3x</td>
+<td>—</td>
+<td>24.5% / 17.5% / 31.8%</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>대장주 3사 비율은 같은 통화끼리 나눈 값(무단위)이라 통화 오염 없음. 단 제조형(Ⓐ)이라 라이선서 후보 QS와 직접 비교 ❌ — 참고만.</li>
+<li>매출 0인 QS는 EV/매출·EV/매출총이익 비교 불가 → peer 안 위치는 EV/유동성(현금 위에 얹힌 기대의 크기)으로만 읽음: <strong>QS 2.05 = pre/저매출 4사 중 AMPX(매출 1억 달러대·성장 +126%) 다음 2위</strong>. 매출 0 동료 SLDP(1.13)·SES(0.87)는 EV가 현금과 거의 같다.</li>
+</ul>
+<p><strong>(나) 프리미엄 정당성</strong></p>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>성장</td>
+<td>❌</td>
+<td>매출 0 · FY27 컨센 매출 $10.3M(범위 0~35M) — 성장으로 설명할 숫자가 없음</td>
+</tr>
+<tr>
+<td>마진</td>
+<td>❌</td>
+<td>측정 불가 · 로열티 단가 미공시</td>
+</tr>
+<tr>
+<td>질</td>
+<td>⚠️</td>
+<td>✅ 상위 10 OEM 파트너 4곳·VW 그룹 라이선스 틀·현금 $859M(SLDP의 3.5배) / ❌ 파트너 개정에서 상한 −42%(구매자 협상력)·양산 수주 0·지연 계수 중앙 1.4배·다년 약속 기한 내 달성 0/13</td>
+</tr>
+</tbody>
+</table>
+<p>→ <strong>SLDP 대비 EV 6.4배 프리미엄은 "질" 한 축으로 일부만 설명됨 = 근거 약한 프리미엄(⚠️ · 🔴 쪽)</strong>. 현금이 많은 점은 EV에서 이미 빠졌으므로 프리미엄의 근거가 될 수 없다.</p>
+<p><strong>(다) 자기 5년 역사 percentile + Z(σ)</strong></p>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>현재</th>
+<th>5년 범위</th>
+<th>percentile / Z</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P/S · PER</td>
+<td>N/A</td>
+<td>—</td>
+<td><strong>N/A(매출 0 · 적자 · NM)</strong></td>
+<td>규칙: pre-revenue = percentile N/A</td>
+</tr>
+<tr>
+<td>참고 EV(절대)</td>
+<td>$1.76B</td>
+<td>$1.28B ~ $10.55B</td>
+<td><strong>17pct / −0.72σ</strong> (n=60개월 · 분모=없음(절대값) · 시점=월말)</td>
+<td>2021 SPAC 거품·2025 하반기 급등($18 대)이 분포 위쪽을 끌어올림</td>
+</tr>
+<tr>
+<td>참고 P/B</td>
+<td>2.43</td>
+<td>1.74 ~ 8.93</td>
+<td><strong>32pct / −0.64σ</strong> (n=60 · 분모=분기 말 GAAP 자기자본 · 시점=MRQ)</td>
+<td>같은 기간 주식 수 418M→619M(+48%)</td>
+</tr>
+<tr>
+<td>참고 EV/유동성</td>
+<td>2.05</td>
+<td>1.18 ~ 9.82</td>
+<td><strong>30pct / −0.64σ</strong> (n=60 · 분모=분기 말 현금+유가증권 · 시점=MRQ)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>사업모델 전환 tell 점검(§D.0·§J.1 소비 대신 입력으로): 주력 세그먼트·아키타입·인수분할·GM 레벨 모두 변화 없음(5년 내내 매출 0의 개발 회사) → Z 산출 허용. 단 대체 지표라 <strong>기술 통계로만</strong> 사용.</li>
+<li>percentile·Z 방향 일치(둘 다 "하위권, 극단은 아님") · <strong>Z가 −1σ보다 높아 🟢 적극 발화 조건 미충족</strong>. 펀더 동반 = 없음(매출 0 그대로 · 분모가 바뀐 게 아니라 주가만 내려옴).</li>
+<li><strong>신호 ⚪</strong> — "자기 과거보다는 싼 편"이지만 과거 분포 자체가 거품 구간을 포함한다. 평균 회귀 근거로 쓰지 않음.</li>
+</ul>
+<h5>④ 컨센서스</h5>
+<table>
+<thead>
+<tr>
+<th>행</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>컨센이 깐 가정 1줄</td>
+<td>"hold · 목표가 평균 $6.29(+53%)" = 라이선스는 늦게라도 오되 FY27 매출은 1천만 달러 수준 — 로열티 본격화는 FY28 이후로 미뤄 둔 상태</td>
+</tr>
+<tr>
+<td>🆕 (a) 컨센 메타데이터</td>
+<td>목표가 n=8(소수 의견 라벨 대상 아님) · 고 $8.5 / 저 $2.5 = <strong>3.4배 분산</strong> → 선반영/variant 판정 자체가 흐릿함 · 매출 추정 n=5·범위 0~35M</td>
+</tr>
+<tr>
+<td>🆕 (b) 리비전 방향</td>
+<td>EPS 소폭 <strong>상향</strong>(적자 축소 = 비용 절감 · 매출 아님) vs 목표가 <strong>5회 연속 하향</strong>(2026-02~10) → 1차 미분은 "기대 하향". ③-다 percentile 하위권 + 목표가 하향 = <strong>value trap 쪽 증거</strong></td>
+</tr>
+<tr>
+<td>내 thesis 핵심 변수</td>
+<td>kWh당 로열티 단가 + 라이선스 본계약 체결 시점 — 컨센 매출(FY27 $10.3M)은 아직 이 변수를 담지 않음</td>
+</tr>
+<tr>
+<td>판정</td>
+<td><strong>선반영(관망 컨센) ⚪</strong> — 본 렌즈①②의 "비싸"는 컨센 목표가보다 비관적이지만, 컨센 목표가 자체가 같은 방향으로 내려오는 중이다. §B.3 내러티브 5축 1차 증거를 받지 않았으므로 variant 승격 ❌.</td>
+</tr>
+</tbody>
+</table>
+<h5>⑤ §H.1 소비 (재계산 ❌)</h5>
+<ul>
+<li>§H.1 암묵 exit P/S(5년): Bull 30x · Base 약 44x vs 성숙 라이선서 약 8~15x → orchestrator 판정 <strong>재평가 의존 높음</strong> 그대로 인용.</li>
+<li>렌즈①과 방향 교차: ① 진입 쪽 = 요구 매출이 envelope 밖 / ⑤ 청산 쪽 = 출구 배수도 성숙 라이선서 상단 초과 → <strong>"진입·청산 양 끝 낙관 의존"</strong>.</li>
+<li>§H.1 표·산식·Steelman은 cross-ref만.</li>
+</ul>
+<h5>⑥ BRCR 병목 렌트 괴리 (overlay · 약한 신호(조건부))</h5>
+<table>
+<thead>
+<tr>
+<th>인자</th>
+<th>값</th>
+<th>근거(소비)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S 직렬 병목성</td>
+<td>0.35 [추정]</td>
+<td>§C.2·§D.6-a 미수신 · 전고체 경쟁자 다수(SLDP·대형 셀 3사·중국 반고체) · 특허 묶음은 강하지만 대체 기술 존재</td>
+</tr>
+<tr>
+<td>R 렌트율</td>
+<td><strong>0.15</strong></td>
+<td>§D.0.3 = 로열티 단가 미공시 + PowerCo 개정에서 구매자가 상한을 42% 깎음 → 렌트 포획 🔴</td>
+</tr>
+<tr>
+<td>D 지속성</td>
+<td>0.30 [추정]</td>
+<td>§D.6 미수신 · 첫 계약 단가가 후속 계약 천장(10-Q 위험 요인) · 중국 반고체 선점 위험</td>
+</tr>
+<tr>
+<td>C 포획효율</td>
+<td>0.20</td>
+<td>§D.5 = B(자본갈증) · 고객 집중 PowerCo</td>
+</tr>
+<tr>
+<td><strong>BRCR = S×R×D×C</strong></td>
+<td>≈ 0.0032 · <strong>정규화 ≈ 0.24</strong> (매우 낮음)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>y축(peer EV/매출총이익 백분위) = <strong>N/A — 매출총이익 0이라 분모 없음</strong> → 정식 괴리 판정 <strong>N/A</strong>.</li>
+<li>대체 y 참고(렌즈③(가) EV/유동성 재사용 · 5종목 중 2위 = 75pct): 0.24 − 0.75 = −0.51 → 🔴 쪽. 단 정식 y가 아니므로 종합 승격 ❌.</li>
+<li><strong>구속 병목 = R(가격결정력)</strong> — "기술이 병목이어도, 값을 정하는 쪽이 사는 쪽이면 렌트가 안 남는다."</li>
+<li><code>[소유(특허)·생산은 라이선시 의존]</code> — 특허는 자기 것이지만 양산 결정권은 PowerCo에 넘어간다(10-Q 위험 요인). 저점수를 매도 신호로 쓰지 않음.</li>
+</ul>
+<hr />
+<h4>H.7.3 종합 판정</h4>
+<table>
+<thead>
+<tr>
+<th>렌즈 입력</th>
+<th>결과</th>
+<th>신호</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 역-DCF distance</td>
+<td>envelope 밖 (fragile · 단가 의존)</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>② 아키타입별 판정(Ⓔ)</td>
+<td>비싸 (대체 분모·옵션가치·runway 같은 방향)</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>③-나 프리미엄 정당성</td>
+<td>근거 약한 프리미엄 (SLDP 대비 EV 6.4배 · 질 축만 ⚠️)</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>③-다 역사 percentile + Z</td>
+<td>P/S·PER N/A · 참고 EV 17pct / −0.72σ (n=60) · 펀더 동반 ❌</td>
+<td>⚪</td>
+</tr>
+<tr>
+<td>④ 컨센서스</td>
+<td>선반영(관망) · 목표가 5연속 하향</td>
+<td>⚪</td>
+</tr>
+<tr>
+<td>⑤ §H.1 재평가 의존</td>
+<td>높음</td>
+<td>🔴</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>🏷️ 밸류에이션 판정(구조): 🔴 고평가  ‖  신뢰도 밴드: 낮음  ‖  풀 DD 승격 우선순위: 낮음</strong> (미보유 관찰 종목 · 판정이 단가 한 변수에 fragile하지만 그 변수는 10/21 실적·라이선스 공시 전에는 알 수 없음)</p>
+<p>🎯 <strong>매수 적정성 한 줄: 🔴 현재가 진입 보류 — 고평가(현금 위 기대 17.6억 달러가 PowerCo 계약 최대치의 몇 배를 요구) · thesis 미입증(로열티 0).</strong> 더 싸게·더 안전하게 사는 trigger 1개 = <strong>IP License 본계약 체결과 함께 kWh당 로열티 단가(또는 선급 1.3억 달러 수령)가 공시되는 순간</strong> — 그때 envelope를 다시 그린다. 참고로 가격만으로 말하면, PowerCo 계약을 최고 단가로 꽉 채운다고 확정해도 정당화되는 주가는 약 $1.6 수준이다[추정 · 비용 구조 가정에 민감].</p>
+<p>🔴🔴 <strong>이건 Claude의 낮은 신뢰도 가격 콜이다</strong> — 타이밍 적중률이 약하다(Intel $40 대기 권고 → $100 급등 사고). 강점은 구조 분석이지 진입 타이밍이 아니며, <strong>최종 판단·실행은 사용자</strong>다(enforcement 아님 · 정찰성 소액 진입을 규율 위반으로 단정 ❌).</p>
+<p><strong>핵심 swing 변수 1개: kWh당 로열티 단가(미공시).</strong> $1 → $5로 바뀌면 같은 85GWh의 연 매출이 5배가 되고, 요구치가 PowerCo+Honda 범위 안으로 들어와 ①②가 ⚪로 바뀔 수 있다.</p>
+</blockquote>
+<ul>
+<li>렌즈 간 엇갈림(봉합 ❌): <strong>절대 가정(①②)은 "비싸다" / 자기 과거(③-다)는 "싼 편"</strong>. 과거 분포가 2021 거품과 2025 하반기 급등을 포함하므로, 두 결론을 섞지 않고 병기한다. 시간 지평으로는 "단기(로열티 전) envelope 밖 / 장기(복수 OEM 라이선스 성공 시) 정당화 가능".</li>
+<li>🟢 저평가 적극 발화 체크: ① envelope 하단 ❌ · ② percentile 하위 20%(EV 17pct)지만 Z −0.72σ로 −1σ 미달 ❌ · ③ peer 대비 성장조정 discount ❌ → 미충족.</li>
+</ul>
+<hr />
+<h4>H.7.4 의무 라벨 4종</h4>
+<ol>
+<li><strong>낮은 신뢰도 참고</strong> — Claude 밸류·타이밍 콜은 문서화된 약점이다(Intel $40→$100). 신뢰도 상한 "중간", 본 판정은 "낮음"(단가 미공시·매출 0·역산 가정 민감).</li>
+<li><strong>🎯 매수 적정성은 직접 답했다(🔴 보류)</strong> — 단 낮은 신뢰도이며 enforcement 아님. 최종 판단은 사용자. 정찰성 소액 진입을 규율 위반으로 단정하지 않는다.</li>
+<li><strong>장기 thesis 종목 stop sign ❌</strong> — 고평가 판정은 §H.3 Thesis 리스크 신호의 입력일 뿐, 진입 차단·매도 기준이 아니다(QS는 미보유 관찰 종목).</li>
+<li><strong>점수 미반영</strong> — 7축 가중평균(12.0)·레이더에 합산하지 않는다. 고평가여도 7축 점수와는 별개다.</li>
+</ol>
+<ul>
+<li>soft-flag만 발생: "envelope 밖 · 근거 약한 프리미엄 · 재평가 의존 높음" → §H.3 Thesis 리스크 신호로 roll-up(하드 게이트 ❌).</li>
+</ul>
+<hr />
+<h4>H.7.5 Steelman 자기 반박 (3축) + ▶ Flip 트리거</h4>
+<ul>
+<li><strong>본 분석</strong>: 현금을 뺀 EV 17.6억 달러는 연 4억~10억 달러의 로열티형 매출을 거의 확실하게 요구한다. 확보된 계약(85GWh)은 최고 단가로도 2.6억에 그친다. 대체 분모·옵션가치·runway가 모두 같은 방향이다 → 🔴 고평가.</li>
+<li><strong>자기 반박 (데이터 축)</strong>: 가장 센 반박은 <strong>단가가 내가 잡은 천장($3/kWh)보다 훨씬 높을 수 있다</strong>는 점이다. 전고체가 주행거리·충전 속도에서 확실한 우위를 보이면 셀값의 5%(kWh당 약 $4~5)도 협상할 수 있고, 그러면 PowerCo+Honda 두 곳만으로 요구치에 닿는다. 또 비용 구조 가정(소모 $260M이 로열티와 함께 줄어든다)이 결과를 크게 흔든다 — 회사가 라이선서로 탈바꿈하며 비용을 연 $150M 이하로 줄이면 요구치가 20~30% 내려간다. 역산 숫자는 정밀해 보여도 가정 하나에 크게 흔들린다(spurious precision).</li>
+<li><strong>자기 반박 (구조 축)</strong>: 매출 0 회사에 DCF를 쓰는 것 자체가 틀린 도구일 수 있다. 시장은 이 주식을 "현금 흐름"이 아니라 <strong>복권형 옵션</strong>으로 산다 — 2025 하반기에 뉴스 몇 건으로 $18까지 올랐던 것처럼, 공매도 21.8%·회전일 10일·베타 2.84 구조에서는 라이선스 공시 한 번에 가격이 몇 배 튈 수 있다. 데이터센터 PowerBlock·방산 셀 같은 새 시장 갈래는 envelope에 넣지 않았는데, 그것이 자동차 로열티와 무관한 별도 가치일 수 있다. 또 VW 그룹이 기술을 확보하려 회사를 통째로 사는 경우(인수 옵션)도 DCF에 없다.</li>
+<li><strong>자기 반박 (시간 지평 축)</strong>: 단기(로열티 전 2~3년)에는 envelope 밖이지만, 2030년대 중반에 전고체가 표준이 되면 85GWh는 작은 첫 계약일 뿐이고 장기로는 정당화될 수 있다. 또 3분기 실적(10/21)이라는 가까운 확인 창이 있다 — 단기 결론으로 장기 옵션을 지우면 안 된다.</li>
+<li><strong>유지 / 수정 / 철회</strong>: <strong>유지 — 단 "fragile" 꼬리표를 붙인다.</strong> 데이터 반박(단가 $4~5)은 가능성이 있지만 미공시이고, PowerCo 개정에서 사는 쪽이 상한을 42% 깎은 1차 사실은 높은 단가와 반대 방향이다. 구조 반박(복권형 옵션)은 "가격이 왜 이 수준인가"는 설명해도 "이 가격이 싼가"를 말해 주지 않는다. 그래서 🔴 고평가·신뢰도 낮음을 유지하고, 판정을 뒤집을 첫 변수로 단가를 명시한다.</li>
+</ul>
+<p><strong>▶ Flip 트리거 (관측 가능 신호만)</strong></p>
+<ul>
+<li>🟢 강화(과지불 위험↓): ① IP License 본계약 체결 + kWh당 단가 $2.5 이상 공시 ② PowerCo 외 OEM 두 번째 라이선스(GWh 상한 명시) ③ 데이터센터·방산 갈래에서 매출과 매출총이익 첫 공시 ④ 연 소모 $150M 이하로 구조 축소 공시 ⑤ EV가 유동성 수준(시총 약 $0.9~1.0B)까지 내려오는 동안 계약 진척은 유지 ⑥ 컨센 목표가 상향 전환</li>
+<li>🔴 훼손(→ §H.3 Thesis 리스크 신호 · 미보유라 관찰 입력): ① 10/21 실적에서 청구액(billings)·PowerCo 현금 유입 감소 ② 라이선스 본계약이 2027년 이후로 밀림 ③ 새 주식 발행 등록서류(S-3·ATM) 제출 ④ runway 안내 없이 유동성 $600M 아래 ⑤ 목표가 추가 하향 + EPS 리비전도 하향 전환</li>
+</ul>
+<hr />
+<hr />
+<h2 id="i">Section I. 자금흐름 · 내부정보</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 폭스바겐이 의결권의 4분의 1을 쥐고 있고, 공동창업자 CTO는 10배 의결권 주식을 팔고 있다. 공매도는 유통주식의 5분의 1이 넘는다.</p>
+</blockquote>
+<h3>I.0 지분 구조 (위임장 · 2026-03-31 기준)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 폭스바겐과 창업자 2명이 10배 의결권 B주의 대부분을 갖는다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>주체</th>
+<th style="text-align: right;">A주</th>
+<th style="text-align: right;">B주(10표)</th>
+<th style="text-align: right;">의결권</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>폭스바겐(VGA)</td>
+<td style="text-align: right;">6,824만</td>
+<td style="text-align: right;">1,798만</td>
+<td style="text-align: right;">26.2%</td>
+</tr>
+<tr>
+<td>CTO 팀 홈</td>
+<td style="text-align: right;">47만</td>
+<td style="text-align: right;">1,037만</td>
+<td style="text-align: right;">11.0%</td>
+</tr>
+<tr>
+<td>공동창업자 프리츠 프린츠(이사)</td>
+<td style="text-align: right;">6만</td>
+<td style="text-align: right;">861만</td>
+<td style="text-align: right;">9.1%</td>
+</tr>
+<tr>
+<td>뱅가드</td>
+<td style="text-align: right;">2,937만</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">3.1%</td>
+</tr>
+<tr>
+<td>임원·이사 전체(17명)</td>
+<td style="text-align: right;">521만</td>
+<td style="text-align: right;">1,898만</td>
+<td style="text-align: right;">20.5%</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>발행주식(7/17): A주 5억 8,722만 + B주 3,189만 = 6억 1,911만 주. B주는 3월 말 3,697만에서 7월 3,189만으로 줄었다. 창업자 매도 과정에서 A주로 바뀐 것으로 추정된다(추론).</li>
+<li>이중 의결권 구조: 있음. 경제지분과 의결권이 분리돼 있다.</li>
+</ul>
+<h3>I.1 기관 (13F · 6/30)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지수 펀드가 대부분이고, 일부 단타성 퀀트는 크게 줄였다.</p>
+</blockquote>
+<p>블랙록 2,856만 주(+31%) · 뱅가드 두 법인 합계 약 3,984만 주 · 골드만삭스 736만(+40%) · D.E. Shaw 727만(−63%). 기관 보유 36.9%(유통주식 기준 42.5%). 13F는 45일 늦게 나오는 자료다.</p>
+<h3>I.2 내부자 (Form 4 · 12개월)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 주가가 반토막 나는 동안 매수는 0건이고 매도만 이어졌다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>기간</th>
+<th>인물</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5/20~10/5</td>
+<td>CTO 팀 홈</td>
+<td>8차례 매도 · 약 92.6만 주 · 체결가 $9.30(6/2 최고)~$4.54(10/5)</td>
+</tr>
+<tr>
+<td>5/21~7/2</td>
+<td>CFO 케빈 헤트리치</td>
+<td>매월 9,800주 매도(규칙적)</td>
+</tr>
+<tr>
+<td>5/12</td>
+<td>이사 JB 스트라우벨</td>
+<td>2.7만 주 매도 · 6/3 이사회→자문위 이동</td>
+</tr>
+<tr>
+<td>5/6</td>
+<td>임원 모힛 싱</td>
+<td>5만 주 매도</td>
+</tr>
+<tr>
+<td>6/3</td>
+<td>사외이사 7명</td>
+<td>주식 보상 지급(매수 아님)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>2024년 이후 내부자 장내 매수 0건. CTO 매도는 전부 사전 계획(10b5-1) 매도다.</li>
+</ul>
+<h3>I.3 공매도 · I.3b 레버리지 ETF</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 공매도가 유통주식의 21.8%로 늘었다. 레버리지 ETF가 만드는 쏠림은 작다.</p>
+</blockquote>
+<ul>
+<li>공매도 1억 1,220만 주 = 유통주식의 21.8%(6/21 17.6%) · 상환에 평균 10.0일.</li>
+<li>레버리지 ETF(하한): Defiance 2배 롱(QSU) 1개 · 명목 노출 1,200만 달러 = 유통 시총의 0.57% · 주가 ±10% 하루 리밸런싱 약 120만 달러 = 20일 평균 거래대금의 2.0%.</li>
+<li>공매도가 크고 레버리지 롱은 작다 → 급변 구간의 연쇄 청산 압력은 숏커버 쪽(위 방향)에서 더 크게 나올 수 있다.</li>
+</ul>
+<hr />
+<h2 id="j">Section J. 산업 · 규제 · 정책</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 규제 리스크는 작다. 정책 쪽에선 미국 전기차 보조금 종료가 역풍이고, 국방 공급망 다변화가 순풍이다.</p>
+</blockquote>
+<ul>
+<li>진행 소송: 상장 초기 증권 집단소송은 2024년 4,750만 달러에 합의(회사 순부담 2,450만)했다. 경영진 상대 파생소송은 2026년 2월 "개선 조치" 중심으로 원칙 합의했다(금액 미정). 상세 = History-Dive.</li>
+<li>수출통제·CFIUS: 현재 이슈 없음. 핵심 지식재산을 해외(독일 PowerCo)에 라이선스하는 구조는 장래 기술안보 검토 대상이 될 수 있다(추론). 라이선스 용도는 "주로 자동차"로 제한돼 데이터센터·국방 갈래는 PowerCo 라이선스 밖이다(10-K).</li>
+<li>정책: 미국 전기차 세액공제 종료(2025-09-30) 🔴 · 국방 공급망 탈중국 🟢.</li>
+</ul>
+<hr />
+<h2 id="k">Section K. 공시 · 가이던스 · 약속 이행</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 1년짜리 목표는 지키지만 여러 해짜리 약속은 다른 약속으로 갈아탄다. 이번 분기에도 현장 시험 문장이 조용히 빠졌다.</p>
+</blockquote>
+<h3>K.2 경영진 화법</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — "자동차 상용화"에서 "세 개의 시장"으로 이야기의 중심이 옮겨 갔다.</p>
+</blockquote>
+<p>2분기 서한의 새 키워드는 데이터센터(QSDC)·항공국방(QSAS)·Honda·더 큰 셀이다. 빠진 키워드는 "현장 시험(두카티)"과 런웨이 연도다. 런웨이 연도 안내는 2025년 3분기부터 나오지 않는다.</p>
+<h3>K.3 가이던스 · 약속 이행 (History-Dive 소비)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회사가 스스로 정한 연간 목표는 19개 모두 달성으로 보고됐다. 여러 해짜리 약속 13개 중 기한 안 이행은 0개다.</p>
+</blockquote>
+<ul>
+<li>연간 목표 19/19(자체 채점 · 2025년 2개는 채점 때 문구 변경).</li>
+<li>여러 해짜리 약속 13개: 기한 안 0개 · 늦게라도 4개(31%).</li>
+<li>지연 계수 중앙값 1.4배(범위 1.17~1.64) → 이 보고서 Base 시나리오의 라이선스·로열티 시점에 적용했다.</li>
+<li>2020 합병 신고서 전망(2024 첫 생산 · 2024 매출 1,400만 달러 · 2026 매출 2억 7,500만 달러)은 하나도 오지 않았다.</li>
+</ul>
+<h3>K.4 8-K 주요 사건 (6/21 이후)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 실적·계약 개정·주총 결과 세 건이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>일자</th>
+<th>항목</th>
+<th>내용</th>
+<th style="text-align: center;">영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6/5</td>
+<td>5.07</td>
+<td>정기 주총 결과</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>7/22</td>
+<td>1.01·1.02</td>
+<td>PowerCo 협력계약 개정 · 기존 작업명세서 1번 해지</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>7/22</td>
+<td>2.02</td>
+<td>2분기 실적 · 주주서한</td>
+<td style="text-align: center;">🟠</td>
+</tr>
+</tbody>
+</table>
+<h3>K.4b AI 밸류체인 이익 귀착 — 해당 축만</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 데이터센터 부문은 설계안 단계라 이익 귀착을 따질 숫자가 없다. "AI 수혜 라벨, 현금은 아직"이다.</p>
+</blockquote>
+<h3>K.4c 외부 비판 리포트 — 최근 12개월 해당 없음</h3>
+<p>과거 비판 리포트(2021년 4월 Scorpion Capital)는 History-Dive가 정리했다.</p>
+<hr />
+<h2 id="l">Section L. 동적 발견</h2>
+<h4>L.1 🔴 PowerCo 상한 축소는 "협상력" 데이터다</h4>
+<ul>
+<li>발견 트리거: 8-K 7/22(Item 1.01·1.02).</li>
+<li>why: 병목 기술을 가진 쪽이 아니라 사는 쪽이 조건을 정했다. 렌트 포획 판정의 가장 직접적인 1차 증거다.</li>
+<li>추가 조사 결과: 개정 계약서는 마일스톤별 금액이 가려져 있다. 남은 상한은 7,540만에서 기수령 약 2,990만을 뺀 약 4,550만 달러로 추정된다(R-Dive).</li>
+<li>Backreference: 숲 렌트 포획 🔴 · 나무 수익모델 ⭐2.5 · 리스크 신호 1번.</li>
+<li>결론 영향: 숲 ⭐3.0 → 2.79.</li>
+</ul>
+<h4>L.2 🟠 CTO가 주가 반토막 구간에서 계속 팔았다</h4>
+<ul>
+<li>발견 트리거: Form 4(5/20~10/5).</li>
+<li>why: 기술 리더의 경제적 이해가 회사 미래와 얼마나 묶여 있는지의 신호다.</li>
+<li>추가 조사 결과: 전부 사전 계획 매도(10b5-1)이고, 6월 새 계획부터 월 매도량이 절반 수준으로 줄었다(People-Dive). "창업자 이탈"보다 "느린 축소"로 판정한다.</li>
+<li>Backreference: 사람 축 · 리스크 신호 5번.</li>
+</ul>
+<h4>L.3 🟠 "세 개의 시장"은 과금 방식이 공시되지 않았다</h4>
+<ul>
+<li>발견 트리거: 2분기 서한 · PowerBlock 보도자료.</li>
+<li>why: 제품 판매형이라면 "공장 없이 사용료만 받는" 자본경량 모델 전제가 흔들린다.</li>
+<li>Backreference: 나무 D.0 · 0to1 ⑤ 유통.</li>
+</ul>
+<h4>L.4 🟠 "더 큰 셀로 옮기는 개량"은 공동 소유가 될 수 있다</h4>
+<ul>
+<li>발견 트리거: 10-K·10-Q 위험요인("jointly own") · 7월 개정 8-K("PowerCo가 정할 셀 크기로 이전").</li>
+<li>why: 라이선서의 값은 독점 기술에서 나온다. 개정 계약이 돈을 대는 일이 바로 공동 소유가 될 수 있는 개량 영역이다.</li>
+<li>추가 조사 결과: 배경 특허는 단독 · 개량 기술은 각자 동의 없이 활용 가능(일부 조건 · 원문 가림) · 세퍼레이터 공동개발 협력사도 같은 구조〔Specific-Dive〕.</li>
+<li>Backreference: 숲 렌트 포획 ③ 부분 포획 · 나무 해자 3→2.5 · 리스크 신호 「공동 IP 확대」.</li>
+<li>결론 영향: 나무 ⭐2.83 → 2.75(종합 61점 유지 · 동급).</li>
+</ul>
+<h3>L.deferred</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이번에 열지 못한 계약 세부 조항과 새 고객 조건은 다음 실행에서 1차 자료로 확인한다.</p>
+</blockquote>
+<ul>
+<li>개정 계약서의 마일스톤별 금액(가려짐) — 10-Q/10-K 주석에서 수령 시점별로 역산(다음 실행).</li>
+<li>Honda 계약 조건 — 3분기 10-Q 고객 주석 확인.</li>
+<li>데이터센터·국방 과금 방식 — 3분기 서한·컨퍼런스콜.</li>
+<li>공동 IP의 "일부 조건"(사용 범위·로열티 여부) — 협력계약 원문 IP 조항.</li>
+<li>세라믹 분리막 협력사(Murata 탐색 · Corning 공동개발)의 공급 조건·가치 배분.</li>
+<li>이중 의결권 일몰 조항 — 정관 원문.</li>
+</ul>
+<hr />
+<h2 id="s">Section S. 🔎 Specific-Dive — 업종 전문가 체크리스트 보완</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 차세대 배터리 기술 회사용 체크리스트 15개를 새로 만들어 감사했다. 별점을 뒤집는 사실은 없다. 다만 "가격을 지키지 못한다"는 숲 판정이 계약 문구 셋(공동 IP·선급 차감·셀 규격 결정권)으로 더 단단해졌다.</p>
+</blockquote>
+<h3>체크리스트 대조</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회계와 런웨이는 이미 충분했다. 빈칸은 계약 세부 조항, 특허 시계, 라이선시 공장, "전고체"의 정의에 있었다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th>체크 항목</th>
+<th style="text-align: center;">판정</th>
+<th>결론 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td>성능 숫자의 시험 조건</td>
+<td style="text-align: center;">◐→조사</td>
+<td>공개 수명 숫자는 A0 시제품 · B샘플 수명·조건 미공개</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td>"전고체"의 정의</td>
+<td style="text-align: center;">❌→조사</td>
+<td>양극 쪽 유기 액체 전해질 · 배경 서술 정정</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td>인증 단계·셀 규격</td>
+<td style="text-align: center;">◐→조사</td>
+<td><strong>양산 셀 크기는 PowerCo가 정함 · C샘플 없음</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td>수율·원가</td>
+<td style="text-align: center;">◐→조사</td>
+<td>숫자 공시 0</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td>개발 대금 회계</td>
+<td style="text-align: center;">✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td>라이선스 본계약 조건</td>
+<td style="text-align: center;">◐→조사</td>
+<td><strong>선급 = 미래 로열티 차감 · 체결 의무 없음 · 용도 = 주로 자동차</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td>공동개발 지식재산</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>개량 IP 공동 소유 · 숲 ③ 부분 포획 · 해자 재판정 플래그</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td>핵심 특허 만료</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>2034~2043 · Base 로열티와 약 4년 겹침</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td>최대주주 권리·일몰</td>
+<td style="text-align: center;">◐→보충</td>
+<td>일몰 조항 미수집</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td>라이선시 공장</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>Salzgitter = NMC 20GWh · QS 라인 미공시 · 캐나다 2029 · 신호 신설</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">11</td>
+<td>실사 이탈·자체 개발</td>
+<td style="text-align: center;">◐→조사</td>
+<td><strong>Honda 자체 전고체 라인(약 430억 엔) · 신호 신설</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">12</td>
+<td>경쟁 시간표</td>
+<td style="text-align: center;">◐→조사</td>
+<td>토요타 전고체 차 2027~28</td>
+</tr>
+<tr>
+<td style="text-align: center;">13</td>
+<td>분리막 협력사</td>
+<td style="text-align: center;">◐→조사</td>
+<td>Murata 탐색 단계 · Corning 공동개발 · 가치 배분 미공시</td>
+</tr>
+<tr>
+<td style="text-align: center;">14</td>
+<td>새 시장 인증·시점</td>
+<td style="text-align: center;">◐→조사</td>
+<td>PowerBlock 인증·출시 시점 없음</td>
+</tr>
+<tr>
+<td style="text-align: center;">15</td>
+<td>런웨이·증자</td>
+<td style="text-align: center;">✅</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3>새로 안 것</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — QS가 쥔 기술의 다음 층은 상대와 나눠지고, 특허 시계는 로열티보다 먼저 돈다. 라이선시 공장에는 아직 QS 자리가 없다.</p>
+</blockquote>
+<ol>
+<li><strong>개량 기술은 PowerCo와 공동 소유다.</strong> 10-K·10-Q 위험요인은 협력 중 공동 개발한 일부 기술을 함께 소유하고, 각자 상대 동의 없이 자기 몫을 쓸 수 있다고 적었다. 세퍼레이터 공동개발 협력사와도 같다. 7월 개정 계약이 돈을 대는 "더 큰 셀로 옮기는 개량"이 그 영역이다. 배경 특허는 단독이라 라이선스 필요성은 남는다 → 숲 렌트 포획 ③은 "포획"이 아니라 "부분 포획"이다.</li>
+<li><strong>핵심 특허는 2034~2043년에 끝난다.</strong> 가장 오래된 가넷 분리막 특허는 2014년 10월 출원이라 2034년 무렵 만료다. Base 시나리오 로열티(2030)와 겹치는 기간은 약 4년이고, 그 뒤는 후속 특허와 제조 노하우가 지킨다.</li>
+<li><strong>PowerCo 공장에 QS 셀 자리가 아직 없다.</strong> Salzgitter는 2025년 12월 NMC 표준 셀로 연 20GWh 첫 단계를 시작했고 다음은 LFP다. 캐나다 공장은 2029년으로 2년 밀렸다. 개정 계약은 QS 기술을 "PowerCo가 정할 셀 크기"로 옮기라고 적었다 — 양산 규격과 공장 결정권이 모두 상대에게 있다.</li>
+<li><strong>선급 1억 3,000만 달러는 미래 로열티에서 깎인다.</strong> kWh당 1달러면 첫 130GWh(연 40GWh 기준 약 3.3년) 동안 새 로열티 현금이 0이다. 마일스톤을 못 채우면 PowerCo는 본계약을 맺을 의무가 없다.</li>
+<li><strong>Honda는 자체 전고체 라인을 가진 연구 상대다.</strong> Honda는 2024년 11월 독자 개발 전고체 시험 생산 라인(약 430억 엔)을 공개했고, 6월 QS 계약은 공급·라이선스가 아니라 공동연구 계약이다.</li>
+</ol>
+<div class="callout">
+<p>▶ 반영: 숲 판정 🔴 유지(근거 보강) · 해자 Durable과 밸류 envelope 생산량 천장에 재판정 플래그 · 리스크 신호 5개 추가. 상세 = 하위 Dive 링크 모음의 Specific-Dive 보고서.</p>
+</div>
+<h2 id="z">🔴 종합 판단</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회사는 망하지 않을 만큼 현금이 있고 기술 이야기도 살아 있다. 그러나 "기술을 빌려주고 돈을 걷는다"는 핵심 고리는 가장 큰 고객 앞에서 약하다는 증거가 나왔고, 주가가 반으로 내렸는데도 그 성공을 여러 겹 미리 깔고 있다.</p>
+</blockquote>
+<ul>
+<li><strong>7축 종합 61점 / 100 (⭐3.44 병기 · 보통 · 경계 양호/보통)</strong> · 직전 6/21 ≈58점(구 체계 환산 ±3) → +3점 = 동급. 사업·thesis 매력도이며 밸류 멀티플은 반영하지 않았다.</li>
+<li><strong>감점 상위 3칸</strong>: 날씨 금리 민감도 🔴 −4.2점 · 날씨 실질 긴축 🔴 −4.2점 · 나무 캐시카우 없음 🔴 −2.1점. 숲의 시점 칸들은 렌트 포획 🔴 상한으로 칸마다 −0.7점이 묶였다(상한).</li>
+<li>축별 득점: 날씨 13.0/25 · 산 10.9 · 숲 5.6 · 나무 5.5 · 옆나무 6.2 · 사람 10.3 · 숫자 9.6 (각 /12.5).</li>
+<li><strong>점수가 그대로인 이유</strong>: 숲(렌트 포획 상한)·나무(공동 IP·돈줄 축소)는 내려갔다. 산·숫자는 6/21의 손 보정을 기계 환산 규칙으로 되돌려 올라갔다. 사업 매력도가 좋아진 것이 아니라 계산 방식이 같아진 것이다.</li>
+<li><strong>별도 렌즈(점수 미합산)</strong>: 분면 「약하고 싼」 경계(정찰 영역) · 0to1 2/7(불운 위험) · 밸류 🔴 고평가(신뢰도 낮음) · 내구성 ⚪ 조건부(생존 🟢 · 희석 ⚪~🔴).</li>
+<li><strong>시간 지평</strong>: 0~6개월 = 10/21 실적과 현장 시험 문장이 첫 시험 · 6개월~3년 = PowerCo 마일스톤·라이선스 본계약·다음 증자 가격이 승부처 · 3~10년 = 로열티가 시작돼도 선급 차감과 특허 만료(2034~)가 수확 기간을 줄인다. 단기 역풍(금리·희석)이 먼저 오고 장기 순풍(탈중국·국방·AI 전력)은 나중에 오는 시차가 6/21보다 더 벌어졌다.</li>
+<li><strong>리스크 신호 집계</strong>: 13개 중 🟠 3(PowerCo 상한 · 현장 시험 문장 삭제 · 라이선시 생산 자리) · 🟡 3 · 대기 7.</li>
+<li><strong>종합 판정: 부분 수정</strong> — "전고체가 이긴다"는 산업 판단은 유지한다. "QS가 그 승리에서 로열티를 걷는다"는 판단은 증거가 약해져 하향한다. 다음 시험 = 10/21 3분기 실적, 결정적 시험 = IP 라이선스 본계약과 kWh당 단가 공시.</li>
+</ul>
+<h2>수집 상태 (실패·불완전 항목만)</h2>
+<ul>
+<li>⚠️ 개정 계약서(EX-10.1)의 마일스톤 금액은 기밀 처리로 가려져 있다.</li>
+<li>⚠️ Honda 계약 금액·조건, 방산업체 이름, 데이터센터 고객 이름은 공시되지 않았다.</li>
+<li>⚠️ 비상장 경쟁사(Factorial 등) 재무는 미공시다.</li>
+<li>⚠️ QSE-5 B샘플 수명·저온 성능의 시험 조건(온도·압력)은 공개되지 않았다. 공개 수명 근거는 A0 시제품이다(10-K).</li>
+</ul>
+<h2>다음 실행 시 보완 목록</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 10/21 실적과 증자 등록 여부가 다음 실행의 첫 확인 대상이다.</p>
+</blockquote>
+<ul>
+<li>10/21 3분기 서한: 현장 시험 문장 · Eagle Line 생산 2배 · PowerCo 마일스톤 달성 · 런웨이 안내 재개 여부.</li>
+<li>새 증자 등록서류(S-3) 제출 여부 · CTO 매도 지속 여부.</li>
+<li>데이터센터·국방 첫 유료 계약의 과금 구조.</li>
+</ul>
+<div class="footer">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+<div class="footer">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const VIZ = {"score7": {"label": "확신도 7축", "max": 5, "axes": ["🌦️날씨", "⛰️산", "🌲숲", "🌳나무", "🌲🌳옆나무", "👤사람", "🔢숫자"], "series": [{"name": "QS 10/14", "color": "#0068b5", "scores": [3.08, 4.5, 2.79, 2.75, 3.0, 4.29, 4.06]}, {"name": "QS 6/21(구 체계)", "color": "#8a8578", "dash": true, "scores": [3.5, 4.0, 3.0, 3.0, 2.5, 3.5, 3.5]}]}, "narrative": {"label": "내러티브 5축", "max": 5, "axes": ["🔧기술", "👥사회", "🏛️정책", "🌐지정학", "💰자본"], "series": [{"name": "차세대 배터리(전고체)", "color": "#8e44ad", "scores": [5, 4, 4, 4, 3]}]}, "trajectory": {"periods": ["1Q25", "2Q25", "3Q25", "4Q25", "1Q26", "2Q26"], "forecastFrom": 6, "series": [{"label": "유동성(현금+유가증권 · 백만 달러)", "axis": "left", "color": "#2980b9", "values": [860.3, 797.5, 1003.7, 970.8, 904.7, 859.0]}, {"label": "분기 GAAP 영업비용(백만 달러 · 오른축)", "axis": "right", "color": "#c0392b", "values": [123.6, 123.6, 115.0, 110.4, 109.2, 106.1]}]}, "peers": {"metrics": [{"key": "rev", "label": "매출 TTM(백만 달러)", "unit": "", "better": "high"}, {"key": "gm", "label": "매출총이익률", "unit": "%", "better": "high"}, {"key": "cash", "label": "현금(백만 달러)", "unit": "", "better": "high"}, {"key": "mc", "label": "시총(억 달러)", "unit": "", "better": "high"}], "rows": [{"name": "QS", "subject": true, "vals": {"rev": 0, "gm": null, "cash": 859, "mc": 25.5}}, {"name": "SLDP", "vals": {"rev": 7.4, "gm": -105.1, "cash": 242, "mc": 4.9}}, {"name": "ENVX", "vals": {"rev": 35.9, "gm": 18.8, "cash": 476, "mc": 5.5}}, {"name": "AMPX", "vals": {"rev": 109.2, "gm": 22.3, "cash": 75, "mc": 12.5}}, {"name": "SES", "vals": {"rev": 23.5, "gm": 27.8, "cash": 163, "mc": 3.7}}, {"name": "CATL", "note": "섹터 대장 · 달러 환산 근사", "vals": {"rev": 73500, "gm": 24.5, "cash": 62000, "mc": 1880}}]}, "scenario": {"horizonLabel": "5년", "threshold": 1.5, "cases": [{"label": "Bull", "tone": "bull", "prob": 0.2, "mult": 4.0}, {"label": "Base", "tone": "base", "prob": 0.45, "mult": 1.06}, {"label": "Bear", "tone": "bear", "prob": 0.35, "mult": 0.2}]}, "landmark": {"current": {"label": "QS 시총", "mcap": 2.55}, "target": {"label": "×10", "mcap": 25.5}, "refs": [{"name": "Solid Power", "mcap": 0.49}, {"name": "Enovix", "mcap": 0.55}, {"name": "Amprius", "mcap": 1.25}, {"name": "삼성SDI", "mcap": 32.9}, {"name": "파나소닉", "mcap": 68.0}, {"name": "CATL", "mcap": 188.0}], "sentence": "💡 지금 $25.5억 ≈ Amprius($12.5억)의 두 배 → 텐배거면 $255억 ≈ 삼성SDI($329억)의 약 0.8배. (규모 비교일 뿐)", "warn": false}};
+try{
+DDViz.renderRadar('fig-score7','fig-score7-leg',VIZ.score7);
+DDViz.renderRadar('fig-c3','fig-c3-leg',VIZ.narrative);
+DDViz.renderTrajectory('fig-g5','fig-g5-leg',VIZ.trajectory);
+DDViz.renderHeatmap('fig-e1',VIZ.peers);
+DDViz.renderScenario('fig-h1',null,VIZ.scenario);
+DDViz.renderMcapLadder('fig-g15','fig-g15-cap',VIZ.landmark);
+var c7=document.getElementById('fig-score7-cap'); if(c7)c7.textContent="7축 종합 61점 / 100 (⭐3.44 병기) · 보통 · 경계(양호/보통) · 5점 이내 차이 = 동급 · 사업·thesis 매력도·밸류 미반영";
+var ch=document.getElementById('fig-h1-cap'); if(ch)ch.textContent='§H.1 5년 시나리오 (기준 $11.46) — 기댓값 ~1.16x(⚠️ <1.5x) · 2년 0.84x = bull-tail 의존 ⚠️ (게이트 ❌·보유 매도신호 ❌)';
+var cg=document.getElementById('fig-g5-cap'); if(cg)cg.textContent='§G.5 분기 매출·조정 EBITDA·GM 6분기 + FY26E 가이던스 중간 분기평균(점선·보강) — 변곡점 = 2Q26';
+var ce=document.getElementById('fig-e1-cap'); if(ce)ce.textContent='§E.1 peer 히트맵 (yfinance 2026-09-21 · 전 열 TTM·GAAP·USD) — GM 100% 표기 종목은 보고 방식 artifact';
+var cd=document.getElementById('fig-d0-cap'); if(cd)cd.textContent='§D.0 2Q26 매출 구성 — 토큰화 54% / 자산서비스 46% (역방향 믹스 시프트)';
+var cc=document.getElementById('fig-c3-cap'); if(cc)cc.textContent='§B.3 내러티브 5축 (변동 없음)';
+}catch(e){console.error('viz',e);}
+</script></body></html>
