@@ -1,0 +1,2572 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Block (XYZ) Deep-Dive — 사람을 절반으로 줄였지만, 이익률을 끌어올린 것은 감원보다 빌려준 돈이다 — 2026-10-14</title>
+<meta name="vault-stage" content="Dive"><meta name="vault-topic" content="XYZ"><meta name="vault-date" content="2026-10-14">
+<meta name="vault-skill" content="Deep-Dive"><meta name="description" content="Block 단일 종목 심층 분석: 감원의 마진 효과, AI RPE 5질문, 소비자 신용 위험, 가격 인상 테스트">
+<style>/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+
+body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Helvetica Neue','Apple SD Gothic Neo',sans-serif;line-height:1.65;margin:0;padding:0;}
+.container{max-width:940px;margin:24px auto;background:#FDF6E3;padding:36px 44px;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.08);}
+h1{font-size:1.7em;border-bottom:3px solid #c0392b;padding-bottom:.3em;margin-top:.2em;}
+h2{font-size:1.32em;border-bottom:1px solid #c9bfa3;padding-bottom:.24em;margin-top:1.7em;color:#8a2415;}
+h3{font-size:1.1em;margin-top:1.3em;color:#5c4a00;}
+h4{font-size:1.0em;margin-top:1.1em;color:#5c4a00;}
+blockquote{border-left:4px solid #c9a227;background:#f5ecd3;margin:.8em 0;padding:.5em 1em;color:#4a4230;border-radius:0 6px 6px 0;}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.9em;display:block;overflow-x:auto;}
+th,td{border:1px solid #e8e1cf;padding:6px 9px;text-align:left;vertical-align:top;}
+th{background:#efe6cc;color:#5c4a00;font-weight:600;}
+tr:nth-child(even) td{background:#faf4e2;}
+code{background:#efe6cc;padding:1px 5px;border-radius:4px;font-size:.88em;}
+pre{background:#f0e8cf;padding:12px;border-radius:6px;overflow-x:auto;border:1px solid #e8e1cf;}
+a{color:#b0562a;text-decoration:none;} a:hover{text-decoration:underline;}
+hr{border:none;border-top:1px solid #d8cca8;margin:1.6em 0;}
+strong{color:#3a2f18;}
+.judge{background:#f3ead0;border:2px solid #c0392b;border-radius:8px;padding:16px 20px;margin:1.2em 0;}
+.judge h2{border:none;color:#8a2415;margin-top:0;}
+.dd-fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:12px;margin:1em 0;}
+.dd-fig figcaption{font-size:.82em;color:#6b5d3a;margin-top:6px;text-align:center;}
+.footer{margin-top:2em;padding-top:1em;border-top:1px solid #d8cca8;font-size:.85em;color:#6b5d3a;}
+@media print{body{background:#fff;}.container{box-shadow:none;background:#fff;}}
+@media (max-width:640px){.container{padding:20px 16px;}}
+</style><meta name="vault-published" content="2026-10-14">
+<meta name="robots" content="noindex, nofollow">
+</head><body>
+<!--dive-hub:start-->
+<nav id="dive-hub" aria-label="하위 Dive 모음" style="max-width:1100px;margin:12px auto 18px;padding:12px 16px;background:#F3EBD6;border:1px solid #e8e1cf;border-radius:10px;font:14px/1.6 'Pretendard','Noto Sans KR',sans-serif;color:#1f2328">
+<div style="font-weight:700;margin-bottom:4px">🤿 XYZ 하위 Dive 모음 <span style="font-weight:400;font-size:12px;color:#6b6457">— 이 Deep-Dive가 참고한 개별 보고서</span></div>
+<ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px">
+<li><a href="2026-10-14_xyz-rdive.html" title="XYZ (Block) R-Dive — 제품·수익모델 정밀 해부 — 2026-10-14" style="color:#1F6F8B;font-weight:600;text-decoration:none">💰 R-Dive</a> <span style="font-size:12px;color:#6b6457">제품·수익모델 · 10/14</span></li>
+<li><a href="2026-10-14_historydive-block.html" title="History-Dive — Block (XYZ) — 2026-10-14" style="color:#1F6F8B;font-weight:600;text-decoration:none">📜 History-Dive</a> <span style="font-size:12px;color:#6b6457">기업 역사 · 10/14</span></li>
+<li><a href="2026-10-14_peopledive-jackdorsey.html" title="사람 해부 — Block의 리더 잭 도시 (+ 아므리타 아후자 CFO·COO · 오언 제닝스 사업 책임자) | 2026-10-14" style="color:#1F6F8B;font-weight:600;text-decoration:none">👤 People-Dive</a> <span style="font-size:12px;color:#6b6457">사람·리더 · 10/14</span></li>
+<li style="color:#8a8270">📈 chart-dive <span style="font-size:12px">타이밍 — 🔒 로컬 전용 · 10/14</span></li>
+<li><a href="2026-10-14_xyz-specificdive.html" title="XYZ (Block) Specific-Dive — 결제·소비자 핀테크·산업은행 전문가 체크리스트 보완 — 2026-10-14" style="color:#1F6F8B;font-weight:600;text-decoration:none">🔎 Specific-Dive</a> <span style="font-size:12px;color:#6b6457">업종 특수 점검 · 10/14</span></li>
+<li style="color:#8a8270">📄 One-Pager <span style="font-size:12px">1p 압축 — 미수행</span></li>
+</ul>
+</nav>
+<!--dive-hub:end-->
+<div class="container">
+<div class="kicker">DEEP-DIVE · 단일 종목 심층 · v1.42 --full · 첫 실행</div>
+
+<h1>Block (XYZ) Deep-Dive — 사람을 절반으로 줄였지만, 이익률을 끌어올린 것은 감원보다 빌려준 돈이다</h1>
+<p class="sub">2026-10-14 ·
+기준가 $76.86(10/13 종가 ·
+52주 범위 $48.21~$86.92) ·
+시총 약 462억 달러 ·
+첫 Deep-Dive ·
+다음 실적 11/3(회사 확정)</p>
+
+<div class="meta">
+1차 자료:
+<a href="https://www.sec.gov/Archives/edgar/data/1512673/000162828026012254/xyz-20251231.htm">10-K FY2025(2026-02-26)</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1512673/000162828026053368/xyz-20260630.htm">10-Q 2026년 2분기(8/5)</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1512673/000162828026032200/xyz-20260331.htm">10-Q 2026년 1분기(5/7)</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1512673/000162828025050234/sq-20250930.htm">10-Q 2025년 3분기</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1512673/000119312526335117/d91486dex991.htm">2026년 2분기 주주서한(8-K EX-99.1)</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1512673/000119312526212032/d132441dex991.htm">2026년 1분기 주주서한</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1512673/000119312526076557/d108590dex991.htm">2025년 4분기 주주서한(2/26 · 감원 발표)</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1512673/000119312526076557/d108590d8k.htm">8-K 2.05항 구조조정(2/26)</a> ·
+<a href="https://www.sec.gov/Archives/edgar/data/1512673/000162828026027203/sq-20260423.htm">위임장 DEF 14A(2026)</a> ·
+<a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001512673&type=&dateb=&owner=include&count=40">EDGAR 공시 목록</a> ·
+<a href="https://investors.block.xyz/investor-news/news-details/2026/Block-Applies-to-Establish-Builders-Bank-a-National-Trust-Bank/default.aspx">신탁은행 설립 신청 보도자료(9/8)</a> · yfinance(10/13)</div>
+
+<div class="judge">
+<h4>🧑‍⚖️ 종합 매수 판단 (판사가 직접 쓴 쉬운 말 판정)</h4>
+<p>① <strong>한 줄 답</strong> — ⚪ 관망. 싸 보이지만, 싼 이유인 대출 손실이 아직 꺾이지 않았다.</p>
+<p>② <strong>왜 그렇게 보나</strong>
+- 결제 회사로 보면 주가는 싼 편이다. 지금 가격은 매출총이익이 5년간 해마다 8.5%만 늘어도 설명된다.
+- 싼 이유와 위험한 이유가 같은 곳, 소비자 대출 손실에 있다. 대출 손실이 매출총이익을 깎는 비율은 같은 회계 기준에서 13.6%에서 18.5%로 올랐다.
+- 발행한 채권은 전부 고정금리라 금리가 올라도 버틴다. 다만 두세 달 밀린 연체가 반년 새 78% 늘었다. 침체가 겹치면 이익이 0 근처까지 갈 수 있다.</p>
+<p>③ <strong>언제 다시 보나</strong> — 11월 3일 실적에서 대출 손실 비율이 20%를 넘지 않는지 본다. 대출 손실에 대비해 쌓아 둔 준비금 비율이 14.7%에서 1%포인트 넘게 오르지 않아야 한다. 가격으로는 65달러 이하에서 다시 본다.</p>
+<p>④ <strong>반대로 볼 이유</strong> — 대출 만기가 3~6주로 짧다. 그래서 심사를 조이면 손실이 빨리 줄 수 있고, 확인을 기다리다 비싸게 살 수 있다. 감원 발표 다음 날에도 주가는 하루에 16.8% 뛰었다.</p>
+<p>⑤ <strong>아직 모르는 것</strong> — 감원 뒤 실제 직원 수와 가맹점 이탈률을 모른다. 이 대출 사업이 진짜 경기 침체를 견딜지도 아직 모른다.</p>
+<p>낮은 신뢰도의 참고 판단이며, 최종 판단은 독자 몫이다.</p>
+<p>판사 모델 = Opus 5.5 (사용자 지시 · 2026-10-14)</p>
+<blockquote>
+<p>XYZ는 미보유 관찰 종목이다. ⚪는 매수·매도 신호가 아니라 지금 가격에서의 관망이며, 정찰 규모의 소액 진입을 규율 위반으로 보지 않는다. 근거별 출처가 달린 판사 원문은 내부 파일에 따로 있다.</p>
+</blockquote>
+</div>
+<h2>한 장 요약</h2>
+<div class="summary">
+<ul>
+<li><strong>분석 계기</strong> — 사용자 보고서 2건(10/14 「AI로 매출·마진은 키우고 고용은 줄이는 곳은 어디인가 — 1인당 매출 지도」 · 「세션 총정리」)에서 Block은 2026-02-26 인원을 1만 명 넘게에서 6,000명 바로 아래로 줄이며 "지능 도구와 더 작은 팀"을 이유로 든 AI <em>사용</em> 기업(경로 C)이었다. 발표 다음 날 주가는 +16.8%였고, 외부에서는 AI가 원인인지 편리한 명분인지 논란이 있었다.</li>
+<li>🔴 <strong>질문 ① 감원의 마진 효과는 나타났다 — 회사 계획 대비로는 최대 요인, 1년 전 실적 대비로는 "비용을 평평하게 묶은 장치"다.</strong> 2026년 이익률 가이던스(매출총이익 대비)는 감원 전 22% → 감원 발표 당일 26% → 8월 28%다.
+  그러나 2분기 실적을 1년 전과 비교하면 손실 뺀 영업비용은 +1.3%로 평평했고, 개발비 절감(−1.1억 달러)을 마케팅 증가(+1.2억)가 거의 그대로 썼다. 다만 마케팅 증가분의 42%(4,830만 달러)는 광고가 아니라 Cash App 송금 처리비와 그 사기·대월 손실이다. 성장 마케팅(광고 2,920만 + 제휴 수수료 2,910만)은 절감액의 약 절반이다〔Specific-Dive〕. 조정 영업이익률 22% → 27%를 만든 것은 매출총이익 +6.3억 − 대출 손실 +2.9억이다.
+  회사가 말한 연 8~9억 달러 절감은 아직 영업비용 감소로 보이지 않는다(감원 전 정점 대비 −5.6%). 첫 확인 지점은 11/3 3분기 실적이다.</li>
+<li>🔴 <strong>질문 ② 다섯 질문 중 넷 통과, 하나 부분 통과.</strong> 인원 감소 실재(10-K 10,205명 → 회사 발표 6,000명 미만 · 분기 말 실제 인원은 미공시 · 2026년 10-Q·서한·위임장 전문에도 절대 숫자 없음 · "40% 넘게" 기준 6,123명 미만[계산]) · 마진 수치화(회사가 절감액·이익률 제시) ·
+  줄어든 곳은 개발 조직(구조조정 비용의 70%)이고 영업·마케팅은 오히려 늘었다 · 매출총이익 성장 +25~27% 유지 → <strong>축소가 아니라 효율화 쪽</strong>이다. 품질 지표는 회사 공시가 없다. 대리 지표(소비자금융보호국 민원)로 보면 감원 뒤 2026년 1분기 → 3분기 민원 총량은 +5.5%로 PayPal(+12.9%)보다 덜 늘었다. 다만 대출 상품 민원은 1년 새 57 → 142건(2.5배), 사기·무단 거래 민원은 +44%다〔Specific-Dive〕.</li>
+<li>🔴 <strong>질문 ③ AI 효율보다 큰 변수는 소비자 신용이다.</strong> 거래·대출 손실은 1년 새 두 배(매출총이익의 12% → 18%)다. 증가분의 95%는 대출이고, 후불 결제 4회 분할(+6%)과 가맹점 거래(+18%) 손실은 안정적이다. 같은 회계 기준(2025년 3분기 13.6%)으로 보면 상승폭은 +4.9%p다〔Specific-Dive〕. 소비자 대출 충당금 비율은 6개월 만에 10.7% → 14.7%, 60~89일 연체는 +78%다.
+  손실 비율이 5%p 더 오르면 연 6억 달러 안팎이 빠진다. 회사가 말한 감원 절감액과 같은 크기다. 시장도 이 주식을 결제·AI가 아니라 후불 결제 신용주(Affirm과 60일 상관 0.74)로 가격 매긴다. 비트코인은 매출의 29%지만 매출총이익의 2%·보유 자산은 시총의 약 1%로 작다.</li>
+<li>🟠 <strong>질문 ④ 값을 올리는 힘은 중간이다.</strong> Square는 대면 결제 요율을 올렸고 결제액은 오히려 빨라졌지만, 결제액 대비 남는 몫은 1.30% → 1.23%로 밀렸다. Cash App 즉시 입금은 두 번 올리고도 이용자가 유지됐다. 카드 교환수수료는 카드망과 연방 규정이 정한다 — 자산 100억 달러 미만 협력 은행이 발급해야 상한을 피한다〔Specific-Dive〕. 이 회사는 애초에 병목 자리에 있지 않아 "병목이라서 받는 가격"도 없다.</li>
+<li>🟠 <strong>경영진은 숫자 약속을 지키는 창업자 체제다.</strong> 2023년 11월 이후 재무·인원 숫자 약속 9개를 결국 모두 지켰다. 그러나 창업자 혼자 의결권 42.2%이고, 규제 문제는 "부인한 뒤 수년 뒤 합의"가 반복됐다(법무부 건 5.26억 달러 충당).</li>
+<li>🟠 <strong>업종 체크리스트가 찾은 것(Specific-Dive)</strong> — 감원 뒤 늘어난 마케팅비의 42%는 광고가 아니라 Cash App 송금 처리비와 사기·대월 손실이었다(손실을 넓게 잡으면 매출총이익의 18.5~21.4%).
+  Borrow는 주 은행의 금리 수출을 거부한 세 주(콜로라도·아이오와·오리건)에서 팔지 않고, Cash App 카드 수수료는 자산 100억 달러 미만 협력 은행이 발급해야 연방 상한을 피한다. 민원 총량은 감원 뒤에도 안정적이었다.</li>
+<li><strong>7축 종합 61점 / 100 (⭐3.44 병기 · 보통 · 경계 양호/보통)</strong> · 첫 실행 · 사업·thesis 매력도 · 밸류 멀티플 미반영 · 5점 이내 차이 = 동급</li>
+<li><strong>분면 「약하고 싼」 경계(정찰 영역)</strong> · <strong>0to1 Track A 1/7 · ⭐2.5</strong> · <strong>밸류 🟢 저평가(약 · 커지는 결제 회사 전제 조건부 · 신뢰도 낮음 · 대출 회사로 보면 ⚪ 적정)</strong> ·
+  <strong>🎯 ⚪ 관망 — 11/3 3분기 손실÷매출총이익 20% 이하 확인 또는 $65 이하</strong> · <strong>고금리·고물가 내구성 ⚪ 조건부(빚·금리는 robust · 신용 사이클 결합에 취약)</strong> · <strong>🧑‍⚖️ 판사(Opus 5.5) ⚪ 관망</strong> — 결제 회사로 보면 싸지만 대출 손실 비율이 계속 올라 11월 실적 확인이 먼저다(낮은 신뢰도 참고)</li>
+</ul>
+</div>
+<figure class="dd-fig"><div id="fig-score7"></div><div class="dd-legend" id="fig-score7-leg"></div><figcaption id="fig-score7-cap"></figcaption></figure>
+
+<blockquote>
+<p>📎 <strong>하위 Dive</strong> — 이 보고서는 R-Dive(제품·수익모델) · History-Dive(기업 역사·약속 이행) · People-Dive(잭 도시)를 오늘 새로 돌려 그 결과를 요약해 쓴다. 업종 체크리스트(Specific-Dive)는 본문 초안 뒤에 돌렸다. 링크는 맨 위 모음에 있다.</p>
+</blockquote>
+<p><strong>배경 (1회만)</strong> — Block은 2009년 잭 도시가 공동 창업한 Square에서 출발했다. 지금은 두 개의 큰 앱을 운영한다. 가게 주인이 카드 결제를 받고 가게를 관리하는 <strong>Square</strong>(판매자 450만 곳 이상 · 2025년 결제액 2,500억 달러)와, 개인이 돈을 보내고 쓰고 빌리는 <strong>Cash App</strong>(월간 거래 활성 5,900만 명)이다. 2022년 호주 후불 결제 회사 Afterpay를 주식으로 샀다. Cash App 안에서 비트코인을 사고팔 수 있는데, 판매 총액을 매출로 잡기 때문에 매출이 크게 부풀어 보인다. 그래서 회사도, 이 보고서도 매출이 아니라 <strong>매출총이익</strong>(매출 − 카드망 수수료·비트코인 매입가 같은 직접 원가)을 기준으로 본다.</p>
+<hr />
+<h2>Part 1 — Top-Down 7계층</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 산업은 크지만 경쟁이 많고, 이 회사는 병목이 아니라 두 개의 큰 고객망을 쥔 자리다. 나무(회사)와 숫자는 단단하고, 날씨는 저소득 가계의 신용이라는 한 칸에서 크게 깎인다.</p>
+</blockquote>
+<h2 id="a">Section A. 🌦️ 날씨 — 지정학 + 거시 (장기 구조)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지정학 노출은 작다. 스테이블코인 제도화와 "여러 곳에서 버는 노동자" 증가는 순풍이다. 가장 큰 역풍은 저·중소득 가계의 신용 체력이다. 전체로는 중립보다 약간 아래다.</p>
+</blockquote>
+<h3>A.1 지정학</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매출의 대부분이 미국이라 관세·중동 같은 바깥 충격에는 둔하다. 달러 스테이블코인 제도화가 새 순풍 후보다.</p>
+</blockquote>
+<ul>
+<li><strong>미·중·관세</strong> — 2025년 매출의 92%가 미국이다(10-K). 2분기 Square 매출총이익 성장 13% 중 약 2%p는 일회성 관세 환급이었다(2분기 서한). 공급망 노출은 단말기 외주 생산 정도다.</li>
+<li><strong>중동·이란</strong> — 직접 노출은 없다. 유가 → 저소득 가계 실질소득 → 상환 능력이라는 간접 경로만 있다.</li>
+<li><strong>달러 패권·스테이블코인</strong> — 2025년 7월 스테이블코인 법(GENIUS Act)이 제도 틀을 만든 뒤, Cash App은 2026년 2분기 USDC를 붙였고 9월 8일 비트코인·스테이블코인을 수탁하는 연방 신탁은행 설립을 통화감독청에 신청했다(<a href="https://investors.block.xyz/investor-news/news-details/2026/Block-Applies-to-Establish-Builders-Bank-a-National-Trust-Bank/default.aspx">보도자료</a>). 달러 스테이블코인의 <em>유통 창구</em>가 될 수 있는 자리다. 다만 "공리가 참이어도 가치가 이 회사에 쌓인다는 보장은 없다"는 점은 같다.</li>
+</ul>
+<h3>A.2 거시</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 금리 자체에는 둔하지만, 금리가 저소득 가계를 누르면 대출 손실로 돌아온다. 주가는 시장보다 2.5배 크게 움직인다.</p>
+</blockquote>
+<ul>
+<li><strong>금리</strong> — 9/16 FOMC가 기준금리를 0.25%p 올렸다(3.75~4.00%). 고객 예치금 이자 수익은 매출총이익의 2.2%뿐이고, 10-K는 금리 10% 변동이 재무에 중요하지 않다고 적었다. 부채는 고정금리 선순위 노트·전환사채가 대부분이다.</li>
+<li><strong>소비자 신용 사이클</strong> — Cash App의 주 고객은 연 소득 15만 달러 이하 가구다(R-Dive). Borrow 이용자 43%가 "공과금 납부"에 썼다고 답했다(회사 의뢰 설문). 2분기 소비자 대출 충당금 비율 14.7%·60~89일 연체 +78%는 이 칸이 이미 움직이고 있다는 신호다(10-Q 고객 대출 주석).</li>
+<li><strong>노동 구조</strong> — 회사는 시급·긱·프리랜서처럼 여러 곳에서 버는 "모던 어너"를 1.25억 명 시장으로 본다(회사 의뢰 설문 기반 · 4분기 서한). 독립 노동 증가는 Cash App 표적 고객 확대이고, 동시에 소득 변동성이 신용 위험을 키운다.</li>
+<li><strong>위험 선호</strong> — 베타 2.55(yfinance). 2021년 고점 $265 → 2023년 10월 $39 → 지금 $77. 위험 선호가 꺾이면 가장 먼저 크게 흔들리는 종류다.</li>
+</ul>
+<h3>A.3 thesis anchor 매핑</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 사용자 거시 틀 중 직접 맞닿는 것은 AI 노동 논쟁, 스테이블코인·달러, K자 경제 세 가지다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>틀</th>
+<th style="text-align: center;">정합</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AI 노동 논쟁 3진영(Carnegie)</td>
+<td style="text-align: center;">🟡</td>
+<td>"AI로 인원 40% 감축" 실증 사례이면서 "AI는 명분" 반론의 대상(People-Dive)</td>
+</tr>
+<tr>
+<td>토큰화·달러 패권(스테이블코인 유통)</td>
+<td style="text-align: center;">🟡</td>
+<td>USDC 도입·신탁은행 신청 · 가치 귀착은 미확인</td>
+</tr>
+<tr>
+<td>K자 경제(저·중소득 가계 압박)</td>
+<td style="text-align: center;">🔴</td>
+<td>주 고객층 = K자 아래 다리 · 소비자 대출 연체 상승</td>
+</tr>
+<tr>
+<td>Warsh 이중 전략(표면 완화·실질 긴축)</td>
+<td style="text-align: center;">⚪</td>
+<td>9/16 인상 · 직접 금리 노출 작음, 간접 신용 노출 큼</td>
+</tr>
+<tr>
+<td>이란 전쟁 매크로</td>
+<td style="text-align: center;">⚪</td>
+<td>유가 → 실질소득 간접 경로</td>
+</tr>
+<tr>
+<td>대만 억제(Fryman)</td>
+<td style="text-align: center;">⚪</td>
+<td>노출 낮음</td>
+</tr>
+</tbody>
+</table>
+<h3>A.4 매크로 민감도</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이익을 가장 크게 흔드는 거시 변수는 금리가 아니라 저소득 가계의 상환 능력이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>변수</th>
+<th>방향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기준금리 +1%p</td>
+<td>예치금 이자 수익 + · 창고 대출 비용 − · 차입자 상환 부담 − (직접 효과는 작음 · 10-K)</td>
+</tr>
+<tr>
+<td>저·중소득 가계 신용 악화</td>
+<td>🔴 손실÷매출총이익 +5%p = 연 약 6억 달러 감소(2026 가이던스 매출총이익 125억 기준 계산)</td>
+</tr>
+<tr>
+<td>비트코인 ±30%</td>
+<td>보유 비트코인 투자자산 5.34억 달러 재평가(6/30 · 10-Q) · 비트코인 매출총이익은 2%</td>
+</tr>
+<tr>
+<td>달러 강세</td>
+<td>Square 해외 결제액 22% · 해외 매출 약 8%</td>
+</tr>
+<tr>
+<td>관세</td>
+<td>일회성 환급(2분기) · 가맹점 매출 둔화 시 결제액 감소</td>
+</tr>
+<tr>
+<td>유가·이란</td>
+<td>간접(가계 실질소득)</td>
+</tr>
+<tr>
+<td>주 금리 수출 탈퇴 확산</td>
+<td>🔴 Borrow 판매 가능 주 감소(현재 3개 주 제외 · 콜로라도 전원합의체 대기 · 로드아일랜드 검토)〔Specific-Dive〕</td>
+</tr>
+<tr>
+<td>직불 수수료 소형 은행 면제 상실</td>
+<td>🟡 협력 은행 연말 자산 100억 달러 초과 또는 자체 발급 전환 시 카드 교환수수료 상한〔Specific-Dive〕</td>
+</tr>
+</tbody>
+</table>
+<h3>A.5 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 순풍 칸 둘, 역풍 칸 하나(신용), 나머지는 중립이라 2.71이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>미·중·관세·공급망</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>지정학 이벤트(중동)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>달러 패권·스테이블코인 제도화</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>금리(직접 노출 작음)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>K자 소비자 신용(주 고객층)</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>노동 구조 변화(독립 노동 증가·AI 사용 기업 실증)</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>유동성·위험 선호(고베타)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>⭐2.71 → 10.7 / 25점</strong></td>
+</tr>
+</tbody>
+</table>
+<p>▶ Flip 트리거 — 🟢 강화: 소비자 대출 충당금 비율이 2개 분기 연속 하락 + 신탁은행 인가 / 🔴 훼손: 실업률 상승 국면에서 60~89일 연체가 장부 증가율의 2배 이상 2개 분기 지속.</p>
+<hr />
+<h2 id="b">Section B. ⛰️ 산 — 산업 (디지털 결제 · 소비자 금융 앱)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 결제는 크고 성숙한 산업이다. 바뀌는 곳은 "결제 앱이 은행·대출을 대신하는 것"과 "스테이블코인·AI 에이전트 결제" 두 군데다.</p>
+</blockquote>
+<h3>B.1 세상을 바꾸는 산업인가</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 결제 자체는 이미 바뀐 산업이다. 앱이 은행을 대신하는 변화는 진행 중이지만, 승자가 한 곳으로 정해지는 산업은 아니다.</p>
+</blockquote>
+<p>⚠️ 불확실. 카드 결제 대행은 성숙 산업이다. 진행 중인 변화는 ① 월급을 앱으로 받고 앱에서 빌리는 "앱 은행화" ② 스테이블코인 결제 레일 ③ AI 에이전트가 대신 사는 결제다. 이 회사는 셋 모두에 발을 걸쳤지만(USDC 도입 · Cash App Tags에 에이전트 결제 기반 · Moneybot 주간 이용 100만 계정 이상 · 2분기 서한), 매출로 확인되는 것은 ①뿐이다.</p>
+<h3>B.2 미·중 패권 자본 투입</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 반도체처럼 국가가 돈을 쏟는 산업은 아니다. 대신 규제가 판을 짠다.</p>
+</blockquote>
+<p>국가 자본 투입 산업이 아니다 → ⚪. 스테이블코인 법은 자본이 아니라 제도 틀이다. 반대로 소비자금융보호국·주 규제당국·뉴욕 금융감독청이 이 산업의 비용을 정한다(History-Dive).</p>
+<h3>B.3 내러티브 다중성 5축</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 기술·사회·정책 세 축이 뚜렷하다. 자본시장은 감원 발표 날 이 회사를 "AI로 가벼워진 회사"로 반겼지만, 평소에는 신용주로 본다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">판정</th>
+<th style="text-align: center;">깊이</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔧 기술</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">4</td>
+<td>자체 에이전트 goose·Builderbot · "6월 운영 코드 변경 거의 전부를 에이전트 AI가 쓰거나 검토"(회사 주장 · 2분기 서한)</td>
+</tr>
+<tr>
+<td>👥 사회</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">4</td>
+<td>여러 곳에서 버는 노동자·은행 밖 가계 · 주 거래 고객 940만</td>
+</tr>
+<tr>
+<td>🏛️ 정책</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">3</td>
+<td>스테이블코인 법 · 자체 산업은행 · 신탁은행 신청 · 반대로 규제 합의 반복</td>
+</tr>
+<tr>
+<td>🌐 지정학</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">2</td>
+<td>달러 스테이블코인 유통</td>
+</tr>
+<tr>
+<td>💰 자본</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">3</td>
+<td>감원 발표 다음 날 +16.8% · 그러나 2021년 고점 대비 −71%</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-c3"></div><div class="dd-legend" id="fig-c3-leg"></div><figcaption id="fig-c3-cap"></figcaption></figure>
+
+<h3>B.4 산업 CAGR + TAM</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 연 30%로 크는 산업은 아니다. 산업 전체 1차 TAM은 이번에 모으지 못했다.</p>
+</blockquote>
+<ul>
+<li>❌ 미수집: 미국 가맹점 결제·소비자 금융 앱 시장의 1차 협회 통계.</li>
+<li>회사 지표로 본 성장: Square 결제액 +13% · Cash App 상거래 거래액 +17% · 소비자 대출 실행액 +59%(2026년 2분기 · 주주서한). 성장의 가장 빠른 칸은 대출이다 → ⚪.</li>
+</ul>
+<h3>B.5 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 성숙 산업 안의 변화 칸이라 3.0이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>세상 바꾸는 산업</td>
+<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td>국가 자본 투입</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>내러티브 다중성(3축)</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>성장률·시장 규모</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>⭐3.0 → 6.2 / 12.5점</strong></td>
+</tr>
+</tbody>
+</table>
+<p>▶ Flip 트리거 — 🟢: 스테이블코인 결제·에이전트 결제가 회사 매출총이익 표에 별도 숫자로 등장 / 🔴: 소액 소비자 대출에 연방 가격 상한 규칙 도입.</p>
+<hr />
+<h2 id="c">Section C. 🌲 숲 — 섹터 (소비자 금융 앱 + 가맹점 결제·POS)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이 섹터에는 병목이 없다. 이 회사의 강점은 "모자란 물건을 쥔 자리"가 아니라 "가게 450만 곳과 개인 5,900만 명을 한꺼번에 본다"는 데이터 자리다. 그 데이터가 돈이 되는 곳은 대출 심사다.</p>
+</blockquote>
+<h3>C.1 병목 시점 매트릭스</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금 수요가 넘치는 칸은 저소득층의 짧은 신용이다. 회사가 거기서 웃돈을 받는 구조는 보이지만, 손실을 뺀 순이익으로 남는지는 아직 확인되지 않았다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>수요가 몰리는 칸</th>
+<th>Block 위치</th>
+<th style="text-align: center;">유지 기간</th>
+<th>해소 경로</th>
+<th style="text-align: center;">렌트 포획</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>지금(0~6개월)</td>
+<td>저·중소득층 단기 유동성(소액 대출·후불 결제)</td>
+<td>Cash App Borrow · Afterpay 실행액 +59%</td>
+<td style="text-align: center;">추정 불가</td>
+<td>연방 소액대출 규칙·경쟁 앱(Chime·Dave·EarnIn·Klarna)의 같은 상품</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>6~24개월</td>
+<td>가맹점 결제 매입·예금을 자체 은행으로 내재화</td>
+<td>6월 첫 자체 매입 처리 · 판매자 고금리 예금 시작</td>
+<td style="text-align: center;">추정 불가</td>
+<td>카드망·은행 협력사의 조건 변경 · 카드 발급은 내재화하면 연방 직불 수수료 상한이 걸린다(Block 연결 자산 합산)</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2~5년</td>
+<td>스테이블코인·AI 에이전트 결제 레일</td>
+<td>USDC 도입 · 신탁은행 신청 · Tags</td>
+<td style="text-align: center;">추정 불가</td>
+<td>카드망·Stripe·빅테크 지갑이 같은 레일 제공</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+</tbody>
+</table>
+<p><strong>지불자 경로</strong> — 큰손은 따로 없다. 웃돈을 내는 쪽은 <em>빌리는 개인</em>(정액 수수료)과 <em>결제를 받는 가게</em>(요율)로 흩어져 있다. 막힘 = "월급날 전에 공과금·월세를 낼 현금이 없다"는 가계의 단기 유동성 문제다. Block은 그 돈을 직접 빌려준다 → 경로 <strong>직접</strong>. 직접 경로라 큰손 협상력에 눌리지는 않지만(최대 판매자도 결제액의 5% 미만 · 10-K · 고객 검증 등급 B), 가격 인상 테스트는 🟡이고(Section D), 가격의 상한은 고객이 아니라 <em>규제와 손실</em>이 정한다.</p>
+<p><strong>렌트 포획 — 4문(지금 칸)</strong></p>
+<table>
+<thead>
+<tr>
+<th>질문</th>
+<th>답</th>
+<th style="text-align: center;">판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 계약 구조</td>
+<td>정액 수수료 · 평균 만기 21일이라 바로 다시 값을 매길 수 있다(R-Dive)</td>
+<td style="text-align: center;">포착</td>
+</tr>
+<tr>
+<td>② 구매자 협상력</td>
+<td>개인 차입자로 흩어짐</td>
+<td style="text-align: center;">포착</td>
+</tr>
+<tr>
+<td>③ 캐파 소유</td>
+<td>자체 산업은행이 2025년 2분기부터 Borrow를 직접 실행·장부 보유</td>
+<td style="text-align: center;">포착</td>
+</tr>
+<tr>
+<td>④ 우회 비용</td>
+<td>같은 상품을 파는 앱이 여럿 · 단 Cash App 안 월급 데이터로 즉시 승인</td>
+<td style="text-align: center;">중립</td>
+</tr>
+</tbody>
+</table>
+<p>실현 증거는 절반이다. 금융 서비스 매출총이익은 +43%(2분기)로 실현됐지만, 그 아래 손실이 +99%라 <em>손실을 뺀 렌트</em>가 늘었는지는 확인되지 않는다 → <strong>🟡</strong>. 미래 두 칸은 4문만으로 판정했고, ④ 우회 비용이 낮아(카드망·대형 결제사·빅테크 지갑) <strong>🔴</strong>이다. 6~24개월 칸의 🔴는 우회 비용뿐 아니라 "내재화의 규정 비용"으로도 뒷받침된다 — 결제·예금은 안으로 가져올 수 있어도 카드 발급은 작은 협력 은행에 남겨야 수수료가 지켜진다〔Specific-Dive〕.</p>
+<h3>C.2 4중 필터</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 섹터 상위권이지만 경쟁자가 많고, 매출총이익 대비 이익률은 대장주보다 낮다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>필터</th>
+<th style="text-align: center;">등급</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">🟡</td>
+<td>지금 칸 판정을 따름 · 렌트 포획 🟡 상한</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">⚪</td>
+<td>개인 송금은 Zelle·Venmo·Cash App 3강, 가맹점 결제·소비자 대출은 다수(PayPal·Fiserv·Toast·Stripe·Affirm·Chime 등) · 기호는 매력도 기준</td>
+</tr>
+<tr>
+<td>③ 섹터 순위</td>
+<td style="text-align: center;">⭐4</td>
+<td>미국 개인 송금 앱 상위 3 · 미국 소상공인 POS 상위권</td>
+</tr>
+<tr>
+<td>④ 마진</td>
+<td style="text-align: center;">⚪</td>
+<td>조정 영업이익 ÷ 매출총이익 27%(2분기) · PayPal은 영업이익 ÷ 매출총이익 약 40%대(yfinance 마진으로 계산)</td>
+</tr>
+</tbody>
+</table>
+<h3>C.3 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금 칸은 렌트 포획 🟡 상한으로 만점을 못 받았고, 미래 두 칸은 우회가 쉬워 2.5에 묶였다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">원판정</th>
+<th style="text-align: center;">상한 적용 후 ⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>지금(0~6개월)</td>
+<td style="text-align: center;">🟢5 →</td>
+<td style="text-align: center;">🟡4(렌트 포획 🟡)</td>
+</tr>
+<tr>
+<td>6~24개월</td>
+<td style="text-align: center;">🟡4 →</td>
+<td style="text-align: center;">⚪2.5(렌트 포획 🔴)</td>
+</tr>
+<tr>
+<td>2~5년</td>
+<td style="text-align: center;">⚪2.5</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">🟡4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>③ 섹터 순위</td>
+<td style="text-align: center;">⭐4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>④ 마진</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>⭐3.14 → 6.7 / 12.5점</strong></td>
+</tr>
+</tbody>
+</table>
+<p>▶ Flip 트리거 — 🟢 강화: 손실 차감 후 금융 서비스 이익(회사가 따로 공시하면)이 2개 분기 연속 증가 / 🔴 훼손: 손실÷매출총이익 20% 초과 2개 분기 + 실행액 감속.</p>
+<hr />
+<h2 id="d">Section D. 🌳 나무 — 기업</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 흑자이고 현금을 잘 벌며 자사주로 주식 수를 줄인다. 해자는 Cash App의 월급 입금 고객이 만드는 전환 비용과 자체 은행 인가다. 값을 올리는 힘은 상품마다 다르다.</p>
+</blockquote>
+<h3>D.0 제품·수익모델 — R-Dive 요약</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 결제 통행세 회사 위에 소비자 단기 대출 회사가 빠르게 자라는 중이다.</p>
+</blockquote>
+<ul>
+<li><strong>아키타입</strong>: 통행세형(결제·카드 교환수수료) 주력 + 믹스 시프트(소비자 단기 신용으로 이동 중).</li>
+<li><strong>돈줄(2026년 2분기 매출총이익 31.7억 달러)</strong>: 상거래 지원 57% · 금융 서비스 41% · 비트코인 2%. 금융 서비스 비중은 2024년 33% → 2025년 37% → 41%다.</li>
+<li><strong>주력 제품</strong>: Square 결제·소프트웨어 · Cash App 카드·Pay·즉시 입금 · Afterpay 후불 결제 · Cash App Borrow·Square Loans · 비트코인 매매·Proto 채굴기. 회사 공개 기준 Borrow의 투하 자본 수익률 33%·평균 만기 21일·연 17회 회전(2024년 3분기 서한).</li>
+<li><strong>치명 함정</strong>: ① 대출 손실이 매출총이익 아래(영업비용)에 따로 잡혀, 매출총이익 성장만 보면 대출 사업이 실제보다 좋아 보인다 ② Square는 요율을 올렸는데 남는 몫은 내려갔다.</li>
+<li>상세 = R-Dive 2026-10-14(맨 위 링크 모음).</li>
+</ul>
+<figure class="dd-fig"><div id="fig-d0"></div><div class="dd-legend" id="fig-d0-leg"></div><figcaption id="fig-d0-cap"></figcaption></figure>
+
+<h3>D.0.5 고객 검증 등급</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 고객이 수백만 단위로 흩어져 있어 한 곳에 휘둘리지 않는다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>고객</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Square 판매자(450만 곳+)</td>
+<td style="text-align: center;">B</td>
+<td>10-K: 어떤 판매자도 결제액의 5% 미만 · 대형 판매자 계약 사례(Ladurée 캐나다·OpenTable 제휴 · 2분기 서한)</td>
+</tr>
+<tr>
+<td>Cash App 개인(월 활성 5,900만)</td>
+<td style="text-align: center;">B</td>
+<td>주주서한 지표 · 개인이라 이름 공개 대상 아님</td>
+</tr>
+<tr>
+<td>기업 제휴(Instacart·Uber의 Cash App Pay)</td>
+<td style="text-align: center;">D</td>
+<td>서한의 제휴 언급만 · 금액 미공시 (고객 검증 D)</td>
+</tr>
+</tbody>
+</table>
+<h3>D.5 곡괭이 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 번 돈으로 대출 장부를 키우고도 자사주를 사는 자가조달형이다. 다만 대출이 클수록 현금이 장부에 묶인다.</p>
+</blockquote>
+<ul>
+<li><strong>곡괭이 질 (A) 자가조달형</strong>: 설비투자는 최근 12개월 1.76억 달러뿐이고, 잉여현금흐름은 2025년 24.25억 · 최근 12개월 38.82억 달러다(2분기 서한).
+  대출 장부 변화까지 넣은 회사 비GAAP 현금흐름은 2025년 −3.76억 → 최근 12개월 +12.67억 달러다. 2025년 자사주 23억 달러가 주식 보상 12억 달러를 넘어 희석 주식 수가 6.36억(2024) → 6.09억 주(2026년 2분기)로 줄었다.</li>
+<li><strong>마진 출처 3분해</strong>: (a) 매출총이익 성장 + 개발 인건비 감소 · (b) 정부 이전지출 없음 · (c) 일회성은 2분기 Square 관세 환급(약 2%p)뿐이고 전년 카드망 정산금과 상쇄된다 → 정책렌트형(P) 아님.</li>
+<li>단서: "대출 1달러를 늘릴 때마다 손실도 같이 커지는" 변동비가 섞여 있다. 신용 사이클이 꺾이면 (A)의 여유가 줄어든다.</li>
+</ul>
+<h3>D.6 해자</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 작동하는 해자는 Cash App 월급 입금 고객의 전환 비용 하나다. 네트워크는 크지만 커질수록 더 비싸게 받는다는 증거는 없다.</p>
+</blockquote>
+<p><strong>D.6-a 해자 유형 4종 + 가격 인상 테스트</strong></p>
+<table>
+<thead>
+<tr>
+<th>유형</th>
+<th style="text-align: center;">작동</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 네트워크 효과</td>
+<td style="text-align: center;">⚠️</td>
+<td>두 면(가게·개인)을 함께 쥔 드문 구조. 그러나 Square는 규모↑·남는 몫↓, Cash App 월 활성은 57→59백만으로 정체</td>
+</tr>
+<tr>
+<td>② 브랜드</td>
+<td style="text-align: center;">⚠️</td>
+<td>Cash App Tags가 무광고로 매진·알림 신청 300만(2분기 서한) · peer 대비 가격 프리미엄 정량 근거는 없음</td>
+</tr>
+<tr>
+<td>③ 전환 비용</td>
+<td style="text-align: center;">✅</td>
+<td>월급 입금 등 주 거래 고객 940만 · 회사 기준 이들의 1인당 매출총이익은 송금 전용 고객의 약 10배(4분기 서한) · 즉시 입금 요율 2회 인상 뒤 이용자 유지</td>
+</tr>
+<tr>
+<td>④ 비용 우위</td>
+<td style="text-align: center;">❌</td>
+<td>조정 영업이익 ÷ 매출총이익 27%로 PayPal(약 40%대)보다 낮다</td>
+</tr>
+</tbody>
+</table>
+<p><strong>규모 × 렌트 동행 소표</strong></p>
+<table>
+<thead>
+<tr>
+<th>규모(3년)</th>
+<th>렌트(같은 기간)</th>
+<th style="text-align: center;">판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Square 결제액 +7~13%/년</td>
+<td>결제액 대비 매출총이익(하드웨어 제외) 1.30% → 1.23%</td>
+<td style="text-align: center;">❌ 동질화 쪽(큰 가맹점 맞춤 요율 확대 · 판매자의 다른 결제사 병행 사용)</td>
+</tr>
+<tr>
+<td>Cash App 월 활성 57 → 59백만</td>
+<td>상거래 거래액 대비 매출총이익 1.53% → 1.65%</td>
+<td style="text-align: center;">⚠️ 규모 정체 — 강화 검증이 열리지 않음</td>
+</tr>
+</tbody>
+</table>
+<p><strong>가격 인상 테스트 = 🟡</strong> — 올렸고 물량은 유지됐다. Square 대면 결제는 2.6%+10¢ → 15¢(2025년 초)였고, 그 뒤 결제액 증가율은 7.2% → 13%로 빨라졌다. Cash App 즉시 입금은 2022년·2025~2026년 두 번 올렸고 월 활성은 유지됐다(가격표 보관본 · R-Dive). 그러나 Square의 결제액 대비 남는 몫은 내려갔고, 카드 교환수수료는 카드망 규칙과, 연방 규정의 소형 은행 면제(발급 은행 계열 합산 자산 100억 달러 미만)가 정하며, 비트코인은 회사가 스스로 수수료를 내렸다.</p>
+<p>→ ✅ 유형 1개 = ⭐3 · 가격 테스트 🟡 상한 ⭐3 → <strong>D.6-a ⭐3</strong>.</p>
+<p><strong>D.6-b Durable ↔ Variable</strong> — Durable: 유타주 산업은행 인가(Square Financial Services · 2026년 6월 첫 자체 결제 매입) + 송금 라이선스. Variable: 자체 AI 도구·소프트웨어. 둘 다 있다 → <strong>⭐5(균형)</strong>. 단 인가는 감독 위험이 따른다(뉴욕 금융감독청 독립 감시인 · History-Dive). 인가에는 조건이 붙어 있다 — 은행 레버리지 비율 상시 20% 이상(실제 65.2% · 자본 13.5억 달러 · 2026-06-30 FDIC), 모회사 자본·유동성 유지 약정, Block 인사의 은행 이사회 비중 25% 이하, 비상 청산·매각 계획, 그리고 도시 개인이 회사의 이행을 약속했다(10-Q 위험 요인). FDIC가 조건을 올릴 수 있는 해자다〔Specific-Dive〕.</p>
+<p><strong>D.6 ⭐ = (3 + 5) ÷ 2 = 4.0</strong> · 해자 내구성 = 약 5년 추정(전환 비용 1종 + 은행 인가 · 근거 중간).</p>
+<h3>D.7 확장성 · D.8 하방/상방</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 결제에서 은행·대출·하드웨어로 넓혔다. 현금이 많아 하방은 대체로 닫혀 있지만, 신용 사이클과 법무부 건이 문을 조금 연다.</p>
+</blockquote>
+<ul>
+<li><strong>D.7</strong>: 결제 → 은행·대출 → 비트코인 채굴 장비(Proto)까지 인접 확장 → ⭐4. 다만 History-Dive는 "새 생태계에 크게 걸고 3~5년 뒤 정리"(TIDAL 88% 감액·TBD 종료)를 반복 패턴으로 짚었다.</li>
+<li><strong>D.8 하방</strong>: 흑자 · 현금·투자 약 79억 달러 · 부채(노트 57.75억 + 창고 대출 11.6억)와 비슷한 수준 → 🟡4. 법무부 건 충당 5.26억 달러와 소비자 대출 장부(약 36억 달러 · 충당금 14.7%)가 하방을 넓힌다.
+  <strong>캐시카우</strong>: Square·Cash App 카드 → 🟢5. <strong>상방</strong>: 2028년 목표(매출총이익 158억 · 조정 영업이익 46억 · 투자자의 날 2025-11)를 감원 효과로 넘어서는 경로.</li>
+</ul>
+<h3>D.9 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 현금 창출·자가조달·확장성이 점수를 받쳤다. 해자는 4점이지만 그중 한 칸은 은행 인가라는 자산 쪽에서 왔다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D.0 수익모델(흑자 · 대출 비중 상승)</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>D.5 곡괭이 질(A · 대출 변동비)</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>D.6 해자(전환 비용 + 인가 · 가격 테스트 🟡)</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>D.7 확장성</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>D.8 하방 닫힘</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>D.8 캐시카우</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"><strong>⭐4.17 → 9.9 / 12.5점</strong></td>
+</tr>
+</tbody>
+</table>
+<p>▶ Flip 트리거 — 🟢: Square 결제액 대비 남는 몫이 2개 분기 연속 상승 · 자체 은행 매입 비중 공시 / 🔴: 즉시 입금·Borrow 요율 인하 압박 또는 규제 상한 · 월 활성 감소 전환.</p>
+<hr />
+<h2 id="e">Section E. 🌲🌳 옆의 나무 — 경쟁</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 성장은 결제 대장주 PayPal보다 훨씬 빠르고, 이익률은 낮다. 신용 쪽에서는 Affirm, 저소득 은행 앱에서는 Chime이 바로 옆 경쟁자다.</p>
+</blockquote>
+<h3>E.1 비교 매트릭스 (yfinance 10/13)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — Block이 앞서는 칸은 두 면 네트워크와 성장률이다. 매출 대비 이익률은 PayPal·Adyen이 앞선다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>XYZ</th>
+<th>PYPL(결제 대장)</th>
+<th>TOST</th>
+<th>AFRM</th>
+<th>SOFI</th>
+<th>CHYM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>모델</td>
+<td>결제+앱 은행+대출</td>
+<td>결제·지갑·Venmo</td>
+<td>식당 POS·결제</td>
+<td>후불 결제</td>
+<td>소비자 대출·은행</td>
+<td>저소득 은행 앱</td>
+</tr>
+<tr>
+<td>시총(억 달러)</td>
+<td>462</td>
+<td>481</td>
+<td>179</td>
+<td>263</td>
+<td>197</td>
+<td>113</td>
+</tr>
+<tr>
+<td>매출 TTM(억 달러)</td>
+<td>250(비트코인 포함)</td>
+<td>341</td>
+<td>68</td>
+<td>43</td>
+<td>43</td>
+<td>25</td>
+</tr>
+<tr>
+<td>매출 성장(최근 분기)</td>
+<td>+9.3%(비트코인 포함)</td>
+<td>+4.8%</td>
+<td>+23.1%</td>
+<td>+33.0%</td>
+<td>+42.6%</td>
+<td>+26.8%</td>
+</tr>
+<tr>
+<td>매출 대비 영업이익률</td>
+<td>7.0%</td>
+<td>17.0%</td>
+<td>7.4%</td>
+<td>12.6%</td>
+<td>17.0%</td>
+<td>18.6%</td>
+</tr>
+<tr>
+<td>선행 P/E</td>
+<td>14.8</td>
+<td>9.7</td>
+<td>17.6</td>
+<td>15.7</td>
+<td>18.5</td>
+<td>18.6</td>
+</tr>
+<tr>
+<td>직원</td>
+<td>10,205(감원 전)</td>
+<td>23,800</td>
+<td>6,500</td>
+<td>2,358</td>
+<td>6,100</td>
+<td>1,519</td>
+</tr>
+<tr>
+<td>고객 검증(최고)</td>
+<td>B</td>
+<td>B</td>
+<td>B</td>
+<td>B</td>
+<td>B</td>
+<td>B</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-e1"></div><div class="dd-legend" id="fig-e1-leg"></div><figcaption id="fig-e1-cap"></figcaption></figure>
+
+<ul>
+<li>본 종목이 열위인 peer: <strong>PayPal</strong> — 매출 대비 영업이익률이 두 배 이상이고 선행 P/E가 더 낮다. 단 성장은 4.8%로 정체다.</li>
+<li>Fiserv(FISV · Clover) 재무 칸은 야후에서 비어 있어 표에서 뺐다. Adyen(EUR · 매출 대비 영업이익률 43.6%)은 통화가 달라 참고만 한다.</li>
+<li>매출 성장·마진은 비트코인 총액 매출이 섞여 그대로 비교하면 안 된다. 매출총이익 기준 성장은 +25%(2분기)다.</li>
+</ul>
+<h3>E.2 종합 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 성장은 앞서고 이익률은 뒤진다. 가장 큰 위협은 결제가 아니라 "같은 저소득 고객에게 같은 소액 신용을 파는" 앱들이다.</p>
+</blockquote>
+<ul>
+<li>(a) 수익모델: 두 면 네트워크와 매출총이익 성장은 우위, 이익률은 열위 → 🟡.</li>
+<li>(b) 정부 vs 민간: 전부 민간 → ⚪.</li>
+<li>(c) 경쟁 포지션: 개인 송금 3강 · 소상공인 POS 상위 → 🟡. 최대 위협은 Chime·Dave·EarnIn·Affirm처럼 같은 고객층에 같은 단기 신용을 파는 앱들과, 그 상품에 대한 규제다.</li>
+</ul>
+<p><strong>⭐ = (4 + 2.5 + 4) ÷ 3 = ⭐3.5 → 7.8 / 12.5점</strong></p>
+<hr />
+<h2 id="f">Section F. 👤 사람</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 사명을 오래 지키고 회사 모양은 자주 갈아엎는 창업자다. 본인 돈은 압도적으로 걸려 있고, 이사회 견제는 약하다.</p>
+</blockquote>
+<h3>F.1 임원 8축 (People-Dive 요약)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 약력·명성·본인 돈은 최상위, 거버넌스는 가장 약하다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">잭 도시(공동창업자 · 의장 · Block Head)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 약력</td>
+<td style="text-align: center;">🟢 트위터 공동창업·CEO 두 번 · Square 공동창업(2009) · 2022년부터 Block Head</td>
+</tr>
+<tr>
+<td>② 명성</td>
+<td style="text-align: center;">🟢 대중 서비스 두 개를 만든 창업자 · 비트코인 진영의 대표 얼굴</td>
+</tr>
+<tr>
+<td>③ 능력</td>
+<td style="text-align: center;">🟡 결제 단말기·Cash App·goose는 맞았고 TIDAL(88% 감액)·TBD 종료·인원 3.4배 팽창은 틀림</td>
+</tr>
+<tr>
+<td>④ 도덕성</td>
+<td style="text-align: center;">🟡 본인 제재 없음 · SEC는 2026년 3월 제재 권고 없이 종결 · 회사의 "부인 뒤 합의" 패턴</td>
+</tr>
+<tr>
+<td>⑥ 본인 돈</td>
+<td style="text-align: center;">🟢 2021-05-17 이후 장내 매도 0건 · 연봉 2.75달러 · 경제 지분 약 8.2%</td>
+</tr>
+<tr>
+<td>⑦ 거버넌스</td>
+<td style="text-align: center;">🔴 의장 겸 최고경영자 · 혼자 의결권 42.2%(맥켈비와 합쳐 52.7%) · 후계 비공개</td>
+</tr>
+<tr>
+<td>⑧ 외부 평가</td>
+<td style="text-align: center;">🟡 증권가 상향 · 직원 리뷰 CEO 지지 34% · X에서는 "AI 핑계" 비판 다수</td>
+</tr>
+</tbody>
+</table>
+<p>CFO 아므리타 아후자는 재무·운영·인사를 겸하고 2026년 2~5월 회계 책임자 공석도 임시로 맡았다. 이 회사의 가장 큰 단일 인물 위험이다. 엔지니어링 책임자는 1년 안에 두 번 바뀌었고 2026년 6월부터 엔지니어링이 도시에게 직접 보고한다(8-K 6/5).</p>
+<h3>F.2 4대 덕목 · 언행일치</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 숫자 약속은 지켰다. 감원의 AI 명분은 "부분 일치"다.</p>
+</blockquote>
+<ul>
+<li>2023년 11월 이후 재무·인원 숫자 약속 9개를 결국 모두 지켰다. 규제·서사 약속 3개는 지키지 못했다(History-Dive).</li>
+<li>2026년 2월 AI 명분 🟡: 실제 도구 투자(goose·Builderbot)는 있다. 그러나 11개월 전에는 "AI로 사람을 대체하려는 게 아니다"라고 했고, 같은 날 X에서 팬데믹 과잉 채용을 자기 조직 설계 실수로 인정했다(People-Dive). 10-Q는 효율화 수단을 "AI 자동화, 범위 우선순위, 성과 관리, 팀·기능 중앙화" 넷으로 적었다 — AI는 넷 중 하나다.</li>
+<li>신념: 2026년 비트코인 수수료를 스스로 내려 비트코인 매출총이익이 26~31% 줄었다(사명 쪽 선택). 반면 2025년 6월 "비트코인만 한다"고 쓴 뒤 2026년 USDC를 붙였고, 그 이유는 설명하지 않았다.</li>
+</ul>
+<h3>F.3 내부자 거래 · 보상</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 도시는 4년 넘게 팔지 않았다. 공동창업자의 매도 계획은 감원 발표 1주 전에 종료됐다.</p>
+</blockquote>
+<ul>
+<li>도시: 2016~2021년 사전 계획 매매로 약 9.9억 달러를 판 뒤 2021-05-17 이후 장내 매도 0건. 주식 보상 0.</li>
+<li>맥켈비: 2025-12-01 최대 100만 주 매도 계획 → 2026-02-19 종료(1분기 10-Q · 그 계획으로 판 신고 없음).</li>
+<li>선임 독립 사외이사 보타는 2023~2024년 약 5,250만 달러어치를 장내에서 샀다.</li>
+</ul>
+<h3>F.4 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 객관 7축 평균 4.0이다. 거버넌스 한 칸이 1점이다. 비전축은 사용자 몫이라 비워 둔다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 약력</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>② 명성</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>③ 능력</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>④ 도덕성</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>⑥ 본인 돈</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>⑦ 거버넌스</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>⑧ 외부 평가</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"><strong>⭐4.0 → 9.4 / 12.5점</strong></td>
+</tr>
+</tbody>
+</table>
+<p><code>비전축 사용자 ⭐ 대기</code> — Claude 💬 의견: 사명형 리더다. 다만 사명을 지킨 곳은 매출총이익의 2% 안팎인 비트코인이고, 주주가 돈을 버는 엔진(대출·스테이블코인·은행 인가)에서는 실용 쪽을 택했다. 생존편향 주의 — 강한 사명형 창업자가 10배 의결권 아래에서 큰 베팅을 반복하는 구조는 성공과 실패를 모두 키운다.</p>
+<p>▶ Flip 트리거 — 🟢: 후계 계획 공개 · 엔지니어링 책임자 선임 / 🔴: 도시의 장내 매도 재개 · 아후자 이탈 · 인원이 다시 6,000명을 크게 넘어 증가.</p>
+<hr />
+<h2 id="g">Section G. 🔢 숫자 — 재무건전성</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매출총이익 성장이 빨라지고 조정 이익률도 오른다. 빚은 현금과 비슷한 수준이고 대부분 고정금리다. 걸리는 것은 대출 손실이 이익 아래에서 빠르게 커진다는 점이다.</p>
+</blockquote>
+<h3>G.1 기본 정량</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매출총이익은 3년 연속 두 자릿수로 늘었다. 회계 기준 영업이익은 구조조정·소송 충당 때문에 올해 출렁였다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목(백만 달러)</th>
+<th style="text-align: right;">2023</th>
+<th style="text-align: right;">2024</th>
+<th style="text-align: right;">2025</th>
+<th style="text-align: right;">2026 상반기</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매출총이익</td>
+<td style="text-align: right;">7,505</td>
+<td style="text-align: right;">8,889</td>
+<td style="text-align: right;">10,360</td>
+<td style="text-align: right;">6,075</td>
+</tr>
+<tr>
+<td>회계 기준 영업이익</td>
+<td style="text-align: right;">−279</td>
+<td style="text-align: right;">892</td>
+<td style="text-align: right;">1,708</td>
+<td style="text-align: right;">275</td>
+</tr>
+<tr>
+<td>조정 영업이익</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">약 1,600</td>
+<td style="text-align: right;">2,084</td>
+<td style="text-align: right;">1,592</td>
+</tr>
+<tr>
+<td>거래·대출 손실</td>
+<td style="text-align: right;">661</td>
+<td style="text-align: right;">794</td>
+<td style="text-align: right;">1,337</td>
+<td style="text-align: right;">1,086</td>
+</tr>
+<tr>
+<td>주식 보상</td>
+<td style="text-align: right;">1,276</td>
+<td style="text-align: right;">1,264</td>
+<td style="text-align: right;">1,203</td>
+<td style="text-align: right;">—</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>출처: 10-K FY2025 손익계산서 · 2026년 2분기 10-Q · 주주서한 비GAAP 표. 2024년 조정 영업이익은 History-Dive 계산값(약).</li>
+<li>2026년 상반기 회계 기준 영업이익이 작은 이유: 구조조정 4.95억 + 소송·규제 충당(1분기 7.43억 · 2분기 3.65억 달러 · "우발 채무·구조조정·기타" 항목).</li>
+<li>2026 가이던스: 매출총이익 125.1억(+21%) · 조정 영업이익 34.7억(28%) · 조정 주당순이익 $4.02 · 3분기 매출총이익 31.3억(+18%) · 조정 영업이익 8.75억(28%).</li>
+<li>참고(점수 미반영): 시총 약 462억 · 야후 기업가치 약 466억 달러 · 선행 P/E 14.8 · 시총 ÷ 최근 4개 분기 매출총이익 약 4.0배 · 배당 없음.</li>
+</ul>
+<figure class="dd-fig"><div id="fig-g5"></div><div class="dd-legend" id="fig-g5-leg"></div><figcaption id="fig-g5-cap"></figcaption></figure>
+
+<h3>G.1.5 🎯 시총 10배 랜드마크</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금은 PayPal과 거의 같은 크기이고, 열 배가 되면 Mastercard에 조금 못 미치는 크기다.</p>
+</blockquote>
+<figure class="dd-fig"><div id="fig-g15"></div><div class="dd-legend" id="fig-g15-leg"></div><figcaption id="fig-g15-cap"></figcaption></figure>
+
+<h3>G.2 핵심 질문 ① — 감원의 마진 효과는 1·2분기 실적에 나타났나</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 나타났다. 하지만 "인건비를 줄여 이익률을 올렸다"가 아니라 "인건비를 줄인 만큼 마케팅·클라우드에 다시 썼고, 이익률은 매출총이익이 손실보다 빨리 늘어서 올랐다"가 정확하다.</p>
+</blockquote>
+<p><strong>분기별 분해(백만 달러 · 주주서한 비GAAP 표 + 10-Q 손익계산서)</strong></p>
+<table>
+<thead>
+<tr>
+<th>분기</th>
+<th style="text-align: right;">매출총이익</th>
+<th style="text-align: right;">성장</th>
+<th style="text-align: right;">손실 뺀 비GAAP 영업비용</th>
+<th style="text-align: right;">거래·대출 손실</th>
+<th style="text-align: right;">손실÷매출총이익</th>
+<th style="text-align: right;">조정 영업이익</th>
+<th style="text-align: right;">매출총이익 대비</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025 1Q</td>
+<td style="text-align: right;">2,290</td>
+<td style="text-align: right;">9%</td>
+<td style="text-align: right;">1,668</td>
+<td style="text-align: right;">170</td>
+<td style="text-align: right;">7%</td>
+<td style="text-align: right;">466</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>2025 2Q</td>
+<td style="text-align: right;">2,537</td>
+<td style="text-align: right;">14%</td>
+<td style="text-align: right;">1,707</td>
+<td style="text-align: right;">294</td>
+<td style="text-align: right;">12%</td>
+<td style="text-align: right;">550</td>
+<td style="text-align: right;">22%</td>
+</tr>
+<tr>
+<td>2025 3Q</td>
+<td style="text-align: right;">2,662</td>
+<td style="text-align: right;">18%</td>
+<td style="text-align: right;">1,832</td>
+<td style="text-align: right;">363</td>
+<td style="text-align: right;">14%</td>
+<td style="text-align: right;">480</td>
+<td style="text-align: right;">18%</td>
+</tr>
+<tr>
+<td>2025 4Q</td>
+<td style="text-align: right;">2,872</td>
+<td style="text-align: right;">24%</td>
+<td style="text-align: right;">1,788</td>
+<td style="text-align: right;">510</td>
+<td style="text-align: right;">18%</td>
+<td style="text-align: right;">588</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>2026 1Q</td>
+<td style="text-align: right;">2,909</td>
+<td style="text-align: right;">27%</td>
+<td style="text-align: right;">1,694</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">17%</td>
+<td style="text-align: right;">728</td>
+<td style="text-align: right;">25%</td>
+</tr>
+<tr>
+<td>2026 2Q</td>
+<td style="text-align: right;">3,166</td>
+<td style="text-align: right;">25%</td>
+<td style="text-align: right;">1,730</td>
+<td style="text-align: right;">585</td>
+<td style="text-align: right;">18%</td>
+<td style="text-align: right;">864</td>
+<td style="text-align: right;">27%</td>
+</tr>
+</tbody>
+</table>
+<p>손실 뺀 비GAAP 영업비용 = 비GAAP 영업비용(서한) − 거래·대출 손실(10-Q). 3·4분기 손실은 10-Q 9개월 누계와 10-K 연간에서 뺀 값이다.</p>
+<p><strong>2분기 조정 영업이익 +3.14억 달러(1년 전 대비)의 출처</strong></p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th style="text-align: right;">변화</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매출총이익</td>
+<td style="text-align: right;">+6.29억</td>
+</tr>
+<tr>
+<td>거래·대출 손실</td>
+<td style="text-align: right;">−2.91억</td>
+</tr>
+<tr>
+<td>비GAAP 개발비(감원 효과의 중심)</td>
+<td style="text-align: right;">+1.11억(감소분)</td>
+</tr>
+<tr>
+<td>비GAAP 마케팅비</td>
+<td style="text-align: right;">−1.16억(증가분)</td>
+</tr>
+<tr>
+<td>비GAAP 관리비</td>
+<td style="text-align: right;">−0.18억(증가분)</td>
+</tr>
+<tr>
+<td><strong>합계</strong></td>
+<td style="text-align: right;"><strong>+3.14억</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>감원 효과는 개발비에 보인다.</strong> 회계 기준 개발비는 2분기 −16%다(7.25억 → 6.09억 · 10-Q). 구조조정 비용 4.95억 달러의 70%(3.46억)가 개발 부문이었다.</li>
+<li><strong>그러나 줄인 만큼 다시 썼다.</strong> 마케팅비가 +21%(Cash App 마케팅 +28%)였고, 클라우드 비용이 8,680만 달러 늘었다(10-Q · R-Dive). 감원 전 정점(2025년 3분기 18.32억)과 비교해도 손실 뺀 영업비용은 17.30억으로 −5.6%다. 회사가 제시한 연 8~9억 달러(분기 2억 달러 안팎) 절감은 대부분 재투자로 돌아갔다. 회사도 "일부를 전략적으로 재투자한다"고 적었다(10-Q).
+  마케팅 증가 1.15억 달러(회계 기준)의 내역은 송금 처리비·관련 거래 손실 4,830만(42%) · 광고 2,920만 · 제휴 수수료 2,910만 달러다. 회사는 매출과 직접 연결되지 않는 Cash App 비용(송금 처리비·관련 손실·대월 손실·카드 발급비·추천 보너스·경품)을 마케팅비로 분류하고, 이 묶음은 2.12억 → 2.80억 달러(+32%)다. 즉 "재투자"의 절반 가까이는 손실성 비용이다〔Specific-Dive〕.</li>
+<li><strong>이익률 상승의 엔진은 매출총이익이다.</strong> 매출총이익 +6.29억 중 손실 증가(2.91억)를 뺀 3.38억 달러가 거의 그대로 이익으로 내려왔다. 비용이 평평했기 때문이다. 감원이 없었다면 개발비를 줄이지 못한 채 마케팅을 늘렸을 것이므로, 감원은 "이익률 유지 장치"로서 역할을 했다[추론].</li>
+<li><strong>회사 계획 대비로 보면 감원 몫이 가장 크다.</strong> 2026년 조정 영업이익 가이던스는 투자자의 날(2025-11) 27억 → 감원 발표일(2/26) 32억 → 8월 34.7억 달러로 올랐다(History-Dive · 서한).</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>단계</th>
+<th style="text-align: right;">매출총이익 가이던스</th>
+<th style="text-align: right;">조정 영업이익</th>
+<th style="text-align: right;">매출총이익 대비</th>
+<th>변화</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025년 실적</td>
+<td style="text-align: right;">103.6억</td>
+<td style="text-align: right;">20.8억</td>
+<td style="text-align: right;">20.1%</td>
+<td>출발점</td>
+</tr>
+<tr>
+<td>투자자의 날(감원 전)</td>
+<td style="text-align: right;">약 121억(+17%)</td>
+<td style="text-align: right;">27억</td>
+<td style="text-align: right;">약 22%</td>
+<td>계획된 규모의 경제 +2%p</td>
+</tr>
+<tr>
+<td>2/26 감원 발표</td>
+<td style="text-align: right;">122억(+18%)</td>
+<td style="text-align: right;">32억</td>
+<td style="text-align: right;">26.2%</td>
+<td><strong>감원 +4%p 안팎(조정 영업이익 +5억)</strong></td>
+</tr>
+<tr>
+<td>8/5 상향</td>
+<td style="text-align: right;">125.1억(+21%)</td>
+<td style="text-align: right;">34.7억</td>
+<td style="text-align: right;">27.7%</td>
+<td>매출총이익 초과 달성 +1.5%p</td>
+</tr>
+</tbody>
+</table>
+<p>2025년 20%에서 2026년 28%로 오르는 약 8%p 중 절반가량이 감원 발표 때 한꺼번에 더해졌다. 즉 <strong>계획 대비로는 감원이 이익률 개선의 최대 단일 요인</strong>이고, <strong>전년 실적 대비로는 비용이 평평해져 매출총이익 성장이 그대로 이익이 된 모습</strong>으로 보인다. 둘은 같은 사실의 두 면이다 — 감원 전 계획은 비용을 더 늘릴 예정이었다[추론]. 투자자의 날 매출총이익(약 121억)은 2025년 실적 × 1.17로 계산한 값이다.
+- <strong>회계 기준으로는 아직 개선이 안 보인다.</strong> 2분기 회계 기준 영업이익률(매출총이익 대비)은 14%로 1년 전 19%보다 낮다. 법무부 건 등 소송·규제 충당 때문이다.
+- 하반기 확인 지점: 회사는 "새 비용 구조의 전체 효과는 하반기"라고 했다(4분기 서한). 3분기 가이던스(매출총이익 31.3억 · 조정 영업이익 8.75억)를 역산하면 손실 포함 비GAAP 영업비용은 약 22.55억 달러로 2분기(23.15억)보다 낮다. 3분기에 손실 뺀 영업비용이 17억 달러 아래로 내려오는지가 "절감이 이익으로 남는지"의 첫 시험이다.</p>
+<h3>G.3 4축 매트릭스</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 성장과 마진 칸은 만점이다. 현금 칸은 대출 장부가 일부를 먹어 4점, 부채 칸은 만기 집중 때문에 중간이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>측정</th>
+<th style="text-align: center;">등급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 이익 성장</td>
+<td>매출총이익 성장 9% → 14% → 18% → 24% → 27% → 25% · 2026 가이던스 +21% · 2027 EPS 컨센 상향(90일 $5.03 → $5.21)</td>
+<td style="text-align: center;">🟢 가속</td>
+</tr>
+<tr>
+<td>② 마진</td>
+<td>조정 영업이익 ÷ 매출총이익 17%(2024 4Q) → 20%(2025) → 27%(2026 2Q) · 주식 보상 포함 기준</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>③ 현금 창출</td>
+<td>잉여현금흐름 2025년 24.25억 · 최근 12개월 38.82억 · 대출 반영 현금흐름은 2025년 음수 → 최근 12개월 +12.67억</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>④ 고금리·고물가 내구성</td>
+<td>아래 G.4-a 🟢 2개</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+</tbody>
+</table>
+<h3>G.4 고금리 내구성 (G.4-a · 점수 반영 · 옵션 B)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚은 대부분 고정금리이고 현금이 넉넉하다. 2030~2033년에 만기가 몰려 있고, 2032년 한 해가 35%다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>하위</th>
+<th>측정</th>
+<th style="text-align: center;">등급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 이자보상</td>
+<td>회계 기준 영업이익 최근 4개 분기 11.69억 ÷ 순이자비용 연 약 2.2억 ≈ 5배(조정 영업이익 기준 약 13배)</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>② 순부채/EBITDA</td>
+<td>노트 57.75억 + 창고 대출 11.6억 − 현금·투자 약 67억(야후) ≈ 0배</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>③ 만기 분산</td>
+<td>5년 안 만기 48%(2027 전환사채 5.75억 · 2030 12억 · 2031 10억) · 최대 단일 연도 2032 20억 = 35%</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>④ 변동금리 비중</td>
+<td>창고 대출 11.6억 = 17%</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>⑤ 즉시 유동성</td>
+<td>현금 64.3억 ÷ 1년 안 차입(창고 대출 유동분 5.7억) &gt; 10배 · 리볼버 미사용 9억</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+</tbody>
+</table>
+<p>부채 구성(6/30 원금 · 10-Q 부채 주석): 2027 전환사채 5.75억 · 2030 선순위 12억 · 2031 선순위 10억 · 2032 선순위 20억 · 2033 선순위 10억 + 창고 대출 11.6억(변동). 2026년 상반기에 2026 선순위 10억·2026 전환사채 5.75억을 갚았다. 고객 지급 의무(고객 예치금) 76.3억 달러는 별도다.</p>
+<h3>G.7 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 성장·마진·유동성이 점수를 받쳤고, 부채 칸이 중간에 머물렀다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 이익 성장 🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>② 마진 🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>③ 현금 창출 🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>④ 고금리 내구성 ⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>G.4-a ① 이자보상 🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>G.4-a ② 순부채 🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>G.4-a ③ 만기 🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>G.4-a ④ 변동금리 🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>G.4-a ⑤ 유동성 🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td><strong>평균(9칸)</strong></td>
+<td style="text-align: center;"><strong>⭐4.28 → 10.2 / 12.5점</strong></td>
+</tr>
+</tbody>
+</table>
+<p>▶ Flip 트리거 — 🟢: 3분기 손실 뺀 영업비용 17억 달러 아래 + 손실÷매출총이익 17% 이하 / 🔴: 손실÷매출총이익 20% 초과 2개 분기 · 매출총이익 성장 15% 아래 둔화.</p>
+<h3>G.8 고금리·고물가 내구성 정밀 진단 (서브에이전트 위임 · 점수 미반영 · 낮은 신뢰도 참고)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚과 금리로는 버틴다. 위험은 손익 쪽에 있다. 물량 감소와 대출 손실 급증이 겹치면 이익이 0 근처로 가고, 그 경로는 물가가 오르는 침체보다 금리를 내리는 침체에서 더 깊다.</p>
+</blockquote>
+<p>[모드: embedded] — 아키타입·곡괭이 질·가격결정력·금리 5칸·시나리오를 넘겨 정상 수행했다. 원문 감사표는 내부 작업 파일에 있다.</p>
+<h4>G.8.1 아키타입 소비</h4>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이 회사의 매출총이익은 신용 손실을 빼기 전 숫자라, 모든 충격 계산을 "매출총이익 → 손실 → 이익" 순서로 했다.</p>
+</blockquote>
+<p>통행세형 + 소비자 단기 신용 · 자가조달형(정책렌트형 아님) · 가격 인상 테스트 🟡.</p>
+<h4>(1) 금리 기둥 — 🟢 견딤</h4>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 노트는 전부 고정금리이고 2030년 전 큰 만기가 없다. 고객 예치금과 회사 현금이 금리 상승의 득을 본다.</p>
+</blockquote>
+<ul>
+<li>노트 57.75억 달러 100% 고정(2027 전환사채 0.25% · 2030 5.625% · 2031 3.50% · 2032 6.50% · 2033 6.00% · 10-K 부채 주석). 전 트랜치를 7%로 갈아 끼워도 이자는 연 +1.1억 이하 = 2026 조정 영업이익 가이던스의 약 3%.</li>
+<li>2030년 전 만기는 2027 전환사채 5.75억뿐 · 현금·투자 약 70억으로 약 12배. 전환가 $299.13은 현재가보다 74% 높아 사실상 부채다.</li>
+<li>금리 스왑 없음 → 헤지가 먼저 끝나는 절벽도 없다.</li>
+<li>2026-01 개정 신용계약 약정 = 최대 총순레버리지 3.50배 · 실측 약 0.4~0.7배[추정] · 미사용 리볼버(9억)에만 걸리고 노트에는 재무 유지 약정이 없다(<a href="https://www.sec.gov/Archives/edgar/data/1512673/000119312526012944/d943166dex101.htm">8-K EX-10.1</a>).</li>
+<li>float 부호: 변동금리 자산(현금·투자·고객 예치금 약 155억) − 변동금리 부채(창고 대출 11.6억) → 금리 +1%p에 연 약 +0.85~1.3억(고객 저축 이자 전가율 가정 밴드). 직접 경로는 순 수혜(+), 간접 경로(차입자 상환 부담)는 피해(−)다.</li>
+</ul>
+<h4>(2) 물가 기둥 — ⚪ 조건부(인플레 ±)</h4>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 결제 수수료가 금액의 %라 물가가 오르면 명목 매출도 같이 오른다. 그러나 같은 물가가 차입자의 실질소득을 깎아 손실로 돌아온다.</p>
+</blockquote>
+<ul>
+<li>결제·카드·대출 수수료 대부분이 금액의 % → 명목 인플레 자동 연동(+). 카드망 원가도 % 구조라 그대로 전가 · 원자재·에너지 노출 0(10-K Item 7A).</li>
+<li>손실을 뺀 매출총이익 성장은 2026 1분기 +13.6% · 2분기 +15.1%로 헤드라인(+27% · +25%)보다 낮다.
+  2분기 Borrow 매출 증가 +2.81억과 대출 손실 증가 +2.77억이 거의 상쇄된다(10-Q).</li>
+<li>재고 평가 착시 경로는 해당 없음(하드웨어 재고 작음). 이 종목의 착시는 재고가 아니라 "손실 전 매출총이익"이다.</li>
+</ul>
+<h4>(3) 결합 시나리오 (원가·금리·물량 동시 · 경영진 무대응 기준 · 밴드)</h4>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 하나씩 오는 충격은 다 버틴다. 셋이 함께 오고 손실률이 30% 근처까지 가면 이익이 0 근처다. 금리를 내리는 침체에서는 예치금 이자까지 줄어 더 깊다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th>원가·금리·물량</th>
+<th style="text-align: center;">손실÷매출총이익</th>
+<th style="text-align: right;">조정 영업이익</th>
+<th style="text-align: right;">이자보상(노트)</th>
+<th style="text-align: right;">약정 레버리지(한도 3.5배)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>경미</td>
+<td>+5% · +1%p · −5%</td>
+<td style="text-align: center;">20~22%</td>
+<td style="text-align: right;">22.8~28.7억</td>
+<td style="text-align: right;">6.6~8.4배</td>
+<td style="text-align: right;">0.5~0.9배</td>
+</tr>
+<tr>
+<td>기준</td>
+<td>+10% · +2%p · −10%</td>
+<td style="text-align: center;">23~27%</td>
+<td style="text-align: right;">9.8~20.8억</td>
+<td style="text-align: right;">2.4~5.8배</td>
+<td style="text-align: right;">0.6~1.4배</td>
+</tr>
+<tr>
+<td>심각(1970년대형)</td>
+<td>+20% · +3%p · −20%</td>
+<td style="text-align: center;">28~35%</td>
+<td style="text-align: right;">−13.3~+5.0억</td>
+<td style="text-align: right;">−4.5~0.9배</td>
+<td style="text-align: right;">1.1배~약정 위반</td>
+</tr>
+<tr>
+<td>디플레형 침체</td>
+<td>−10% · −1%p · −20%</td>
+<td style="text-align: center;">28~36%</td>
+<td style="text-align: right;">−7.9~+7.2억</td>
+<td style="text-align: right;">−3.2~1.7배</td>
+<td style="text-align: right;">1.0~5.5배</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>임계점</strong>: 손실을 빼기 전 영업이익률(매출총이익 대비)이 46% → 심각 19% · 디플레형 29%로 줄어든다. 지금 손실률 18.5%가 유지되기만 해도 심각 시나리오에서는 이익이 0 근처다.</li>
+<li><strong>생존 거리는 멀다</strong>: 현금 약 70억 · 단기 대출 장부(약 63억)를 줄이면 1~2개 분기 안에 현금이 돌아온다 — 침체 때 손익은 나빠지고 현금은 늘어나는 은행형 구조. 창고 대출은 자산에만 상환 청구한다. 6/30 모든 창고 대출이 장부 성과 기준을 충족했고 회사 재무 약정은 없다. Square Loans 매각 이익(2분기 6,910만)은 매출총이익의 2.2%다〔Specific-Dive〕.</li>
+<li><strong>반박으로 범위를 좁혔다</strong>: 실행을 줄이면 손실 충당 전입이 바로 줄어 무대응 표는 상한 쪽 과장이다. 대신 그 경우 손익 절벽이 "성장 절벽(매출총이익 가이던스 훼손)"으로 바뀐다.</li>
+<li>1970년대형 생존 5특성 = 3.5 / 5(저부채·고정금리 ✅ · 짧은 만기벽 ✅ · 가격결정력·자본 경량·해자 각 절반).</li>
+</ul>
+<h4>G.8.4 종합 verdict</h4>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 대차대조표는 튼튼하고 손익은 신용 사이클에 취약하다. 방향은 고용이 정한다.</p>
+<p><strong>🏷️ 종합 내구성: ⚪ 조건부</strong> — 금리 🟢 / 물가 ⚪ / 결합 🔴(무대응 · 심각·디플레형) · "부채·유동성은 robust / 손익은 신용 사이클에 결합 취약" ‖ 신뢰도 낮음~중간 ‖ 풀 DD 승격 중간</p>
+<p>🎯 <strong>버티는가</strong>: ⚪ 조건부 — 빚과 금리로는 버틴다. 물량 −20%와 손실÷매출총이익 28% 이상이 겹치면 영업이익이 0 근처로 가고, 그 경로는 금리를 내리는 디플레형 침체에서 더 깊다. 회복 trigger = 3·4분기 손실÷매출총이익 18% 이하 + 60~89일 연체 감소 / 악화 trigger = 22% 초과 2개 분기 또는 창고 대출 성과 기준 위반·조기 상환 공시. <em>낮은 신뢰도 · enforcement 아님 · 최종 판단 = 사용자.</em></p>
+<p><strong>핵심 swing 변수</strong>: 손실÷매출총이익(+1%p ≈ 조정 영업이익 −1.25억 ≈ −3.6%).
+<strong>금리 레짐 조건부 부호</strong>: [고금리 지속] 금리 🟢 · 종합 ⚪ / [금리 인하 전환] 고용이 버티면 🟢 쪽 · 실업이 늘며 금리를 내리면 🔴(예치금 이자와 신용 손실이 같은 방향).</p>
+</blockquote>
+<p>의무 라벨 — ① 낮은 신뢰도 참고 ② 🎯 버티는가 = ⚪ 조건부(직접 답 · enforcement 아님) ③ 장기 thesis stop sign ❌ ④ 점수 미반영(7축·숫자 축 ④ 미합산).</p>
+<hr />
+<h1>Part 2 — 시나리오 · 렌즈 · 자금흐름</h1>
+<h2 id="h">Section H. 시나리오 · Catalyst · 렌즈</h2>
+<h3>H.1 Bull / Base / Bear (5년 = 2031-10 · 주가 배수 · 조정 EPS × 선행 P/E)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 5년 기대값은 1.73배다. 기본 경로는 매출총이익이 연 10%대로 크고 이익률이 30% 근처에서 머무는 그림이다. 나쁜 경로의 핵심은 AI가 아니라 신용 사이클이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: center;">확률</th>
+<th style="text-align: center;">2년</th>
+<th style="text-align: center;">3년</th>
+<th style="text-align: center;">5년(주가)</th>
+<th>가정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🟢 Bull</td>
+<td style="text-align: center;">20%</td>
+<td style="text-align: center;">2.06배</td>
+<td style="text-align: center;">2.48배</td>
+<td style="text-align: center;">3.5배($270)</td>
+<td>매출총이익 연 16%(2031 263억) · 조정 영업이익률 35% · 신용 손실 안정 · 자체 은행으로 결제 매입 이전 · 스테이블코인·에이전트 결제가 새 매출총이익 칸 · P/E 18배</td>
+</tr>
+<tr>
+<td>🟡 Base</td>
+<td style="text-align: center;">50%</td>
+<td style="text-align: center;">1.18배</td>
+<td style="text-align: center;">1.34배</td>
+<td style="text-align: center;">1.7배($130)</td>
+<td>매출총이익 2027 +15% · 2028 +13%(162.6억 · 2028 목표 158억 상회) · 이후 연 10%(2031 217억) · 조정 영업이익률 29~30% · 주식 수 연 1.5% 감소 · P/E 13배</td>
+</tr>
+<tr>
+<td>🔴 Bear</td>
+<td style="text-align: center;">30%</td>
+<td style="text-align: center;">0.52배</td>
+<td style="text-align: center;">0.55배</td>
+<td style="text-align: center;">0.59배($45)</td>
+<td>2027 소비자 신용 악화(손실÷매출총이익 25% 이상) · Borrow 심사 축소 또는 주 금리 수출 탈퇴 확산·주 단위 수수료 제한(연방 가격 규칙은 2025년 철회 뒤 가능성 낮음) · 매출총이익 연 4% · 조정 영업이익률 20% · P/E 10배</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>기대값</strong>: 2년 1.16배 · 3년 1.33배 · <strong>5년 1.73배</strong>(기준선 1.5배 이상).</li>
+<li>⚠️ <strong>Base 2년 1.18배 &lt; 2.0배 → bull tail 의존</strong> 표시. 성숙 대형주라 2년 2배 기준 자체가 구조적으로 맞지 않는다.</li>
+<li><strong>암묵 exit 멀티플</strong>: Base 2031 시총 약 728억 달러(주식 5.6억 × $130) ÷ 2031 매출총이익 217억 = 시총/매출총이익 약 3.4배(현재 최근 4개 분기 기준 4.0배 · PayPal 약 3.5배) · exit P/E 13배(현재 선행 14.8) → <strong>재평가 의존 낮음</strong>. Bull은 5.6배 · P/E 18배 → <strong>재평가 의존 중간</strong>.</li>
+<li>Bull 가정이 기대는 기업 제휴(Instacart·Uber)는 고객 검증 D다. 지연 계수 1.0배(History-Dive · 숫자 약속은 제때)를 그대로 적용했다. 단 대출 사업이 신용 침체를 견딘 기록은 역사에 없다.</li>
+</ul>
+<figure class="dd-fig"><div id="fig-h1"></div><div class="dd-legend" id="fig-h1-leg"></div><figcaption id="fig-h1-cap"></figcaption></figure>
+
+<h3>H.2 Catalyst 캘린더</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 3주 뒤 실적에서 "손실 증가율 둔화"와 "손실 뺀 영업비용 감소"가 동시에 보이는지가 첫 시험이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>일시</th>
+<th>이벤트</th>
+<th style="text-align: center;">영향</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-11-03(장 마감 뒤)</td>
+<td>3분기 실적 — 손실 구성(대출·후불 채권·가맹점 거래)과 같은 분기 안 확정된 Cash App 거래 손실(2분기 9,120만) · 마케팅비 증가 내역(송금 처리비·손실 vs 광고·제휴) · 손실÷매출총이익 · 소비자 대출 충당금 비율 · 손실 뺀 영업비용 · 가이던스(매출총이익 31.3억 · 조정 영업이익 8.75억) · 분기 말 인원 언급 여부</td>
+<td style="text-align: center;">🔴</td>
+<td>2분기 서한</td>
+</tr>
+<tr>
+<td>10월 말</td>
+<td>FOMC</td>
+<td style="text-align: center;">🟡</td>
+<td>연준</td>
+</tr>
+<tr>
+<td>2026-11-23</td>
+<td>FDIC 주 은행 동등 대우 규칙 의견 마감</td>
+<td style="text-align: center;">🟡</td>
+<td>Specific-Dive</td>
+</tr>
+<tr>
+<td>미정</td>
+<td>제10순회 전원합의체 — 콜로라도 금리 수출 탈퇴 범위 판결</td>
+<td style="text-align: center;">🔴</td>
+<td>Specific-Dive</td>
+</tr>
+<tr>
+<td>미정</td>
+<td>뉴욕 후불 결제 규칙 채택(+180일 시행)</td>
+<td style="text-align: center;">🟡</td>
+<td>Specific-Dive</td>
+</tr>
+<tr>
+<td>2026-12-31</td>
+<td>협력 발급 은행 The Bancorp Bank 연말 자산 측정(100억 달러 기준 · 넘으면 2027-07-01 상한)</td>
+<td style="text-align: center;">🟡</td>
+<td>Specific-Dive</td>
+</tr>
+<tr>
+<td>미정</td>
+<td>법무부 건 합의 확정(충당 5.26억 달러)</td>
+<td style="text-align: center;">🔴</td>
+<td>10-Q 소송 주석</td>
+</tr>
+<tr>
+<td>미정</td>
+<td>통화감독청 신탁은행(Builders Bank) 인가 판단</td>
+<td style="text-align: center;">🟡</td>
+<td>9/8 보도자료</td>
+</tr>
+<tr>
+<td>2027-01~02</td>
+<td>2026년 실적 · 10-K 연말 인원(감원 실측의 첫 1차 숫자)</td>
+<td style="text-align: center;">🔴</td>
+<td>10-K</td>
+</tr>
+<tr>
+<td>2027</td>
+<td>2027 전환사채 5.75억 만기</td>
+<td style="text-align: center;">⚪</td>
+<td>10-Q 부채 주석</td>
+</tr>
+<tr>
+<td>2028</td>
+<td>투자자의 날 목표(매출총이익 158억 · 조정 영업이익 46억 · 주당 $5.50)</td>
+<td style="text-align: center;">🟡</td>
+<td>History-Dive</td>
+</tr>
+</tbody>
+</table>
+<h3>H.3 ⚠️ Thesis 리스크 신호 (종목 Memory 없음 · 이 보고서가 정의 원본)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 아래 신호가 켜지면 "작아진 회사가 대출 성장으로 이익률을 올린다"는 이야기가 흔들린다. 매매 지시가 아니라 조기경보다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>신호</th>
+<th>관측 trigger</th>
+<th style="text-align: center;">현재</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>신용 손실 확대</td>
+<td>손실÷매출총이익(손실 줄 기준) 20% 초과 2개 분기 · 또는 소비자 대출 충당금 비율 16% 초과</td>
+<td style="text-align: center;">🟠 18.5% · 14.7%</td>
+</tr>
+<tr>
+<td>연체 가속</td>
+<td>60~89일 연체 증가율이 장부 증가율의 2배 이상 2개 분기</td>
+<td style="text-align: center;">🟠 2분기 +78% vs +13%</td>
+</tr>
+<tr>
+<td>성장 훼손</td>
+<td>매출총이익 성장 15% 미만 2개 분기</td>
+<td style="text-align: center;">대기(3분기 가이던스 18%)</td>
+</tr>
+<tr>
+<td>감원 효과 소멸</td>
+<td>손실 뺀 비GAAP 영업비용이 감원 전 정점(18.32억) 위로 복귀 · 또는 인원이 다시 7,000명 초과</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>Square 단가 압박</td>
+<td>결제액 대비 남는 몫(하드웨어 제외) 1.20% 미만</td>
+<td style="text-align: center;">대기(1.23%)</td>
+</tr>
+<tr>
+<td>규제 확대</td>
+<td>법무부 합의가 충당액을 크게 넘음 · 소액대출·후불 결제 가격 상한 규칙</td>
+<td style="text-align: center;">🟡 진행 중</td>
+</tr>
+<tr>
+<td>사람 리스크</td>
+<td>아후자 이탈 · 도시 장내 매도 재개</td>
+<td style="text-align: center;">대기</td>
+</tr>
+<tr>
+<td>Cash App 정체</td>
+<td>월 활성 2개 분기 연속 감소</td>
+<td style="text-align: center;">대기(59백만)</td>
+</tr>
+<tr>
+<td>넓은 손실률</td>
+<td>(거래·대출 손실 + 같은 분기 안 확정된 Cash App 거래 손실) ÷ 매출총이익 22% 초과 2개 분기〔Specific-Dive〕</td>
+<td style="text-align: center;">🟠 2분기 18.5~21.4%</td>
+</tr>
+<tr>
+<td>금리 수출 제한 확산</td>
+<td>제10순회 전원합의체가 콜로라도 편 판결 · 또는 Borrow 판매 제외 주가 3개에서 늘어남〔Specific-Dive〕</td>
+<td style="text-align: center;">🟡 3개 주 · 판결 대기</td>
+</tr>
+<tr>
+<td>직불 수수료 면제 상실</td>
+<td>Cash App 카드 발급 은행(계열 합산) 연말 자산 100억 달러 이상 · 또는 자체 은행 발급 전환 공시〔Specific-Dive〕</td>
+<td style="text-align: center;">🟡 Bancorp 92.1억(3월 말 99.0억)</td>
+</tr>
+<tr>
+<td>협력 은행 제재</td>
+<td>Sutton Bank·The Bancorp Bank 신규 감독 명령 또는 Cash App 카드 프로그램 제한 공시〔Specific-Dive〕</td>
+<td style="text-align: center;">🟡 Sutton 2024년 명령(상태 미확인)</td>
+</tr>
+<tr>
+<td>대출·사기 민원 가속</td>
+<td>대출 상품 민원 증가율이 소비자 대출 실행 증가율보다 2개 분기 연속 빠름 · 또는 전체 민원 증가율이 PayPal보다 2개 분기 연속 높음〔Specific-Dive〕</td>
+<td style="text-align: center;">🟠 대출 민원 1년 2.5배 vs 실행 +59% · 전체는 안정</td>
+</tr>
+<tr>
+<td>은행 인가 조건 변경</td>
+<td>자회사 은행 레버리지 비율 30% 미만 · FDIC 인가 조건 변경 · 은행 제재〔Specific-Dive〕</td>
+<td style="text-align: center;">대기(65.2%)</td>
+</tr>
+</tbody>
+</table>
+<h3>H.3-0 보유 종목 가설 신선도 — 해당 없음(미보유 관찰 종목)</h3>
+<h3>H.5 🧭 CAE · Edge Grid 좌표</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이야기의 무게는 "가게·개인 사이의 돈 흐름을 중개하고 그 데이터로 빌려준다"는 한 층에 있다. 가장 약한 고리는 저소득 가계의 신용이다. 가격은 업종 대비 중간이라 「약하고 싼」 경계다.</p>
+</blockquote>
+<p>〔CAE: C=제약 / A=조정 / E=표현 · 중요도 L=다층성 R=비가역성 H=병목경도 · 엣지 G=선반영 격차 P=연료 잔량 D=컨센서스 반증 · 각 0~3〕</p>
+<ul>
+<li><strong>(a) CAE 분류</strong>: 조정(A · 결제·신용 중개)이 무게중심, 표현(E · 소비자 앱 인터페이스)이 보조 · 🔴 가장 약한 고리 = 차입자 신용(손실이 매출총이익 아래에서 커짐).</li>
+<li><strong>(b) 프로파일</strong>: 중요도 L1·R1·H0 = 下 / 엣지 G2·P1·D1 = 中.
+  G 입력 — 60일 주가 상관 1위는 Affirm(0.74), 2위 SoFi(0.58)로 차이 0.16이라 <strong>후불 결제 신용 가설 우세</strong>다. AI 소프트웨어(IGV)와는 0.50, PayPal과는 0.32, 비트코인과는 0.31이다.
+  애널리스트 비교군은 결제·핀테크 바구니다. 시장은 이 주식을 "AI로 가벼워진 회사"가 아니라 "소비자 신용 회사"로 가격 매긴다. 이 보고서의 결론(이익률을 올린 주력 = 대출)과 같은 방향이라 선반영 쪽이고, 사용자 질문의 "AI 효율 회사" 가설과는 다르다. 시장이 가설을 갈아탈 계기 = <strong>손실 증가율이 꺾인 뒤에도 조정 영업이익률이 28% 이상 유지되는 첫 분기</strong>(Bull catalyst).</li>
+<li><strong>(c)(d) 분면</strong>: <strong>「약하고 싼」 경계</strong>. 행동 = 정찰(value trap 다발 구역). "강하고 싼"이 아니므로 3 잠금장치는 적용 대상이 아니다.</li>
+<li><strong>(e) 과목 적합도</strong>: Block은 <code>혼합</code>이다(현재 실적·이익률로 설명되는 수학형이 주, AI·스테이블코인 이야기가 문학형 일부). 지금 시장 과목은 📐 수학 유지·🏐 체육 경계 근접(10/11 텐배거 보고서 인용 · 근거 Expect-daily 10/10·macro-weekly 10/10) → 대체로 일치. 체육 경계라 레버리지 ETF 노출을 확인했고 유통 시총의 0.01%로 사실상 0이다(Section I).</li>
+</ul>
+<figure class="dd-fig"><svg viewBox="0 0 520 300" width="100%" style="max-width:520px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="20" width="220" height="130" fill="#fdeee9"/><rect x="280" y="20" width="220" height="130" fill="#eef6f0"/>
+<rect x="60" y="150" width="220" height="130" fill="#eeeeee"/><rect x="280" y="150" width="220" height="130" fill="#e8f0f8"/>
+<line x1="280" y1="20" x2="280" y2="280" stroke="#999" stroke-dasharray="4,3"/><line x1="60" y1="150" x2="500" y2="150" stroke="#999" stroke-dasharray="4,3"/>
+<text x="170" y="40" font-size="11" text-anchor="middle" fill="#8a2415">강한데 비싼 → 트림·회피</text>
+<text x="390" y="40" font-size="11" text-anchor="middle" fill="#1f6f3b">강하고 싼 → 집중매수 후보</text>
+<text x="170" y="270" font-size="11" text-anchor="middle" fill="#555">약하고 비싼 → 회피·청산</text>
+<text x="390" y="270" font-size="11" text-anchor="middle" fill="#2c5282">약하고 싼 → 정찰</text>
+<text x="280" y="295" font-size="11" text-anchor="middle" fill="#444">← 엣지 소진(비싼)   ·   엣지 잔량(싼) →</text>
+<text x="20" y="150" font-size="11" text-anchor="middle" fill="#444" transform="rotate(-90 20,150)">중요도 약 → 강</text>
+<circle cx="300" cy="210" r="7" fill="#c0392b"/>
+<text x="310" y="200" font-size="10" text-anchor="start" fill="#c0392b">10/14 약하고 싼 경계</text>
+</svg><figcaption>XYZ 10/14 — 중요도 下(조정 단일 층·병목 아님·약한 고리 = 차입자 신용) · 엣지 中(시총/매출총이익 5년 하위권 · 시장은 신용주로 가격) → 「약하고 싼」 경계 · 정찰 영역</figcaption></figure>
+
+<h3>H.6 💎 0to1 (틸 7문)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 유통 하나만 YES다. 이 회사는 0→1이 아니라 큰 시장에서 1→n을 잘하는 회사이고, 1/7은 "불운 위험" 구간이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>문항</th>
+<th style="text-align: center;">판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 기술(10배)</td>
+<td style="text-align: center;">NO</td>
+<td>결제·POS·직불카드·후불 결제는 경쟁사도 모두 가진 기능(R-Dive)</td>
+</tr>
+<tr>
+<td>② 시기</td>
+<td style="text-align: center;">⚠️</td>
+<td>AI 효율·스테이블코인 제도화 시기는 맞지만 소비자 신용 사이클 후반부와 겹친다</td>
+</tr>
+<tr>
+<td>③ 독점</td>
+<td style="text-align: center;">NO</td>
+<td>처음부터 큰 시장(카드 결제·개인 송금) · 경쟁 다수 · 곡괭이 판정에서도 독점 근거 없음</td>
+</tr>
+<tr>
+<td>④ 사람</td>
+<td style="text-align: center;">⚠️</td>
+<td>객관 7축 4.0이지만 거버넌스 🔴</td>
+</tr>
+<tr>
+<td>⑤ 유통</td>
+<td style="text-align: center;">YES</td>
+<td>개인 5,900만 + 가게 450만 · 단말기·Tags 같은 하드웨어로 무광고 확산</td>
+</tr>
+<tr>
+<td>⑥ 존속성</td>
+<td style="text-align: center;">⚠️</td>
+<td>17년 생존 · 전환 비용 1종 + 은행 인가 · 그러나 해자 유형은 하나</td>
+</tr>
+<tr>
+<td>⑦ 숨겨진 비밀</td>
+<td style="text-align: center;">⚠️</td>
+<td>"은행이 못 보는 실시간 거래 데이터로 저소득층에 21일 대출을 주면 은행보다 손실이 낮다" — 1차 증거(투하 자본 수익률 33%)는 있으나 지금 손실률이 오르는 중</td>
+</tr>
+<tr>
+<td>시장정의 tell</td>
+<td style="text-align: center;">혼재</td>
+<td>"상거래의 양쪽에 앉은 유일한 네트워크"라는 넓은 화법 ↔ 이익률은 PayPal보다 낮다(말 &gt; 숫자)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Track A 1/7 → 불운 위험 ‖ Track B ⭐2.5 ‖ tell 혼재</strong> · 별도 렌즈(7축 미합산).</p>
+<h3>H.7 💰 밸류에이션 정밀 판정 (서브에이전트 위임 · 7축 미합산 · 낮은 신뢰도 참고)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 결제 회사로 보면 싸고, 대출 회사로 보면 적정이다. 둘 중 무엇이 맞는지는 대출 손실이 정한다. 그래서 판정은 "약한 저평가"지만, 행동은 3분기 실적을 보고 정하는 관망이다.</p>
+</blockquote>
+<p>[모드: embedded] — 시나리오의 암묵 exit 배수(Base 시총/매출총이익 3.4배·P/E 13배 / Bull 5.6배·18배)를 넘겨 렌즈⑤를 정상 수행했다. 원문 감사표는 내부 작업 파일에 있다.</p>
+<h4>H.7.1 아키타입 소비</h4>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 커지는 결제 회사(주)와 대출 장부를 가진 현금흐름 회사(부)의 경계에 있다. 두 판정을 함께 적는다.</p>
+</blockquote>
+<p>주 <strong>Ⓑ 구조적 컴파운더</strong>(흑자 · 매출총이익 +25% · 결제 습관형 반복) + 부 <strong>Ⓓ 자산/현금흐름형</strong>(소비자 대출 장부). 분모는 비트코인 총액 매출을 피하려고 전부 매출총이익 기준이다.</p>
+<h4>H.7.2 렌즈별 결과</h4>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 다섯 렌즈 중 넷이 싼 쪽, 하나(대출 회사로 볼 때)가 적정 쪽을 가리킨다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>렌즈</th>
+<th>결과</th>
+<th>핵심 근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 역-DCF</td>
+<td>🟢 현실 범위 안(하단)</td>
+<td>지금 가격은 매출총이익이 5년 연 8.5%만 커져도 성립한다(현실 범위 8~16%). 할인율 12%나 대출 장부의 현금 흡수 가운데 하나만 나빠져도 범위 상단, 둘 다 나빠지면 연 18.9%로 범위 밖이다(가정에 민감)</td>
+</tr>
+<tr>
+<td>② 아키타입</td>
+<td>Ⓑ 싸 / Ⓓ 적정~약간 비쌈</td>
+<td>Ⓑ: 시총/매출총이익 ÷ 성장 0.19 · 매출총이익 기준 성장+이익률 49~52 / Ⓓ: 선행 P/E 14.8배 vs 대출 회사 배수 10배 · 대출 반영 현금흐름 수익률 2.7%</td>
+</tr>
+<tr>
+<td>③ 상대가치</td>
+<td>🟢 정당한 할인·역사 저점권</td>
+<td>시총/매출총이익 3.98배 · 미국 peer 6곳 중앙값 5.35배 · 5년 자기 분포 13pct / −0.61σ(n=60개월 · 분모=TTM 매출총이익 · 시점기준=TTM) · 2023년 이후 창 17pct / −0.96σ · 백분위와 Z 방향 일치 · 회계 기준 P/E Z는 흑자 분기 65%라 N/A</td>
+</tr>
+<tr>
+<td>④ 컨센서스</td>
+<td>선반영</td>
+<td>커버 n=42 · 평균 목표가 $98.1(고 $125 / 저 $75) · 2027 EPS 90일 $5.03 → $5.21(상향) · 감원 마진은 이미 가격에 · 신용 쪽 판단은 역베팅(낮은 신뢰)</td>
+</tr>
+<tr>
+<td>⑤ 시나리오 소비</td>
+<td>낙관 비의존</td>
+<td>Base 종료 배수(3.4배·13배)가 지금(4.0배·14.8배)보다 낮다 → Base는 매출총이익 성장과 주식 수 감소만으로 성립</td>
+</tr>
+<tr>
+<td>⑥ BRCR</td>
+<td>🟢 약한 신호(조건부)</td>
+<td>정규화 0.57 − peer EV/매출총이익 백분위 0.20 = +0.37 · 가장 약한 인자 = 구조·가격결정력 · [일부 소유 / 카드 교환수수료는 올라탐]</td>
+</tr>
+</tbody>
+</table>
+<h4>H.7.3 종합 판정</h4>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 싼 쪽으로 기울지만 조건부다. 3주 뒤 실적의 손실 숫자가 판정을 가른다.</p>
+<p><strong>🏷️ 밸류에이션 판정: 🟢 저평가(약 · 커지는 결제 회사 전제 조건부) ‖ 신뢰도 낮음 ‖ 풀 DD 승격 높음</strong> — 대출 회사로 보면 ⚪ 적정이다. 렌즈 엇갈림은 봉합하지 않는다.</p>
+<p>🎯 <strong>매수 적정성 한 줄</strong>: <strong>⚪ 관망 — 11/3 3분기 실적에서 손실÷매출총이익 20% 이하 + 소비자 대출 충당금 비율 14.7%±1%p 확인, 또는 $65 이하</strong>(시총/매출총이익 약 3.4배 = Base 종료 배수와 같아 재평가가 없어도 Base 성립)에서 분할 진입 고려. <em>낮은 신뢰도 · enforcement 아님 · 최종 판단 = 사용자 · 정찰 소액 진입은 위반 아님.</em></p>
+<p><strong>핵심 swing 변수</strong>: 거래·대출 손실 ÷ 매출총이익(손실 줄 기준 · 6개 분기 7.4% → 18.5% · 같은 회계 기준인 2025년 3분기부터는 13.6% → 18.5% · 넓은 정의로는 2분기 18.5~21.4%〔Specific-Dive〕) — 20% 초과 2개 분기면 대출 회사 배수로 재평가 = 판정 ⚪ 이하.</p>
+</blockquote>
+<ul>
+<li>🟢 저평가 적극 발화 3조건(역-DCF 하단 · 역사 하위 20% · 성장조정 할인) 모두 충족. 다만 경계 아키타입이라 신뢰도를 "중간"으로 올리지 않았다.</li>
+<li>⚠️ 반박으로 판정 강도를 낮췄다: 손실을 뺀 매출총이익으로 나누면 배수는 약 4.9배로 2023년 이후 평균(5.15배) 근처다. 베타 2.55를 반영한 할인율 14%면 필요한 성장이 14~18%로 뛴다 → "약·조건부" 부착.</li>
+</ul>
+<h4>H.7.4 의무 라벨 4종</h4>
+<ol>
+<li><strong>낮은 신뢰도 참고</strong> — 밸류 콜은 자주 틀린다(Intel $40 대기 권고 뒤 $100 급등 전례). 강점은 가격이 아니라 "지금 가격이 무엇을 요구하나"의 구조 분석이다.</li>
+<li><strong>🎯 매수 적정성 = ⚪ 관망</strong> — 직접 답이지만 낮은 신뢰도이고 enforcement가 아니다. 최종 판단은 사용자다.</li>
+<li><strong>장기 thesis stop sign ❌</strong> — 미보유 관찰 종목. ⚪·🔴가 나와도 리스크 신호의 입력일 뿐이다.</li>
+<li><strong>점수 미반영</strong> — 7축 점수·레이더에 넣지 않는다.</li>
+</ol>
+<h4>H.7.5 Flip 트리거</h4>
+<ul>
+<li>🟢 → ⚪/🔴: 손실÷매출총이익 20% 초과 2개 분기 · 충당금 비율 16% 이상 · Borrow 규제 제재 · 매출총이익 성장 15% 아래(2026 4분기 이후).</li>
+<li>🟢 강화: 3·4분기 손실 증가율 &lt; 매출총이익 성장률 + 충당금 안정 + 2027 가이던스 매출총이익 +15% 이상 + 추정치 상향 지속.</li>
+<li>가격: $65 이하 = Base 종료 배수 도달.</li>
+</ul>
+<h2 id="i">Section I. 자금흐름 · 내부정보</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 대형 기관이 대부분을 쥐고 있지만 의결권은 창업자에게 있다. 공매도는 적고 레버리지 ETF는 사실상 없다.</p>
+</blockquote>
+<h3>I.0 지분 구조</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — Class B(10배 의결권) 덕에 도시와 맥켈비가 의결권 과반이다. 경제 지분으로는 기관이 대부분이다.</p>
+</blockquote>
+<ul>
+<li>차등의결권: Class B 1주 10표 · 도시 의결권 42.2% · 맥켈비 10.5% · 합 52.7%(People-Dive · DEF 14A 2026).</li>
+<li>6/30 13F 상위(yfinance): BlackRock 7.7% · T. Rowe Price 7.4%(−12.1%) · Vanguard 6.5% · Vanguard Portfolio 4.6% · State Street 4.3% · Capital World 4.0%(+3.9%).</li>
+<li>내부자 1.2% · 기관 84.2%(yfinance · Class A 기준).</li>
+<li>잠재 희석: 2027 전환사채 5.75억(전환가는 10-Q 기준 별도 확인 필요) · 자사주 매입 잔여 한도 46억 달러.</li>
+</ul>
+<h3>I.2 내부자 (Form 4 · 12개월)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 창업자는 팔지 않았고, 사업부 출신 임원 일부가 팔았다.</p>
+</blockquote>
+<ul>
+<li>도시 장내 매도 0건(2021-05 이후). 그라사도니아(생태계 책임자)는 2024년 약 3,880만 달러 매도(People-Dive). 12개월 전체 Form 4 합계는 People-Dive 범위 밖이라 ❌ 미수집.</li>
+</ul>
+<h3>I.3 공매도 · I.3b 레버리지 ETF · I.4 옵션</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 공매도는 유통 주식의 3%로 낮다. 레버리지 ETF는 2배 상품 하나뿐이고 규모가 미미하다.</p>
+</blockquote>
+<ul>
+<li>공매도: 유통 주식 대비 3.08% · 대차 일수 3.47일 · 공매도 주식 1,438만 주(직전 달 1,285만 · yfinance).</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>ETF</th>
+<th>이름</th>
+<th style="text-align: right;">배율</th>
+<th style="text-align: right;">AUM</th>
+<th style="text-align: right;">명목 노출</th>
+<th style="text-align: right;">±10% 하루 리밸런싱</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XYZG</td>
+<td>Leverage Shares 2X Long XYZ Daily ETF</td>
+<td style="text-align: right;">+2.0x</td>
+<td style="text-align: right;">$1.1M</td>
+<td style="text-align: right;">$2.3M</td>
+<td style="text-align: right;">$0.2M</td>
+</tr>
+</tbody>
+</table>
+<p>명목 노출 합계는 유통 시총 412억 달러의 0.01%, ±10% 하루 리밸런싱 강제 매매는 20일 평균 거래대금 3.35억 달러의 0.1%다(스크립트 출력 · 하한).
+- 옵션: ❌ 미수집(yfinance 옵션 체인 미결제약정이 0으로 반환됨).</p>
+<h2 id="j">Section J. 산업 · 규제 · 정책</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이 회사의 비용은 규제가 정한다. 2023년 "준법 체계를 확신한다"는 말 뒤에 2025~2026년 합의가 이어졌다.</p>
+</blockquote>
+<h3>J.1 산업 진화 (History-Dive 소비)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 카드 리더기 → 판매자 생태계 → Cash App → 팬데믹 붐 → 규율 → 작은 AI 회사이자 대출 회사로 왔다.</p>
+</blockquote>
+<ul>
+<li>시대 다섯: 카드 리더기 스타트업(2009~2015) → 판매자 생태계와 Cash App 부상(2016~2019) → 팬데믹 붐과 큰 베팅(2020~2022) → 규율 전환(2023~2025) → 작은 AI 회사이자 대출 회사화(2026~).</li>
+<li>인원: 3,835명(2019) → 12,985명(2023) → 6,000명 미만(2026 발표). 1인당 매출총이익은 늘릴 때 제자리(2019년 49만, 2022년 48만 달러)였고 줄인 뒤 2025년 102만 달러로 뛰었다.</li>
+<li>반복 패턴: 새 생태계에 크게 걸고 3~5년 뒤 정리(Square Wallet·Caviar·TIDAL·TBD). 다음 시험대는 Proto·Bitkey다.</li>
+</ul>
+<h3>J.2 규제·법적 위험</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 합의 금액이 해마다 쌓였고, 법무부 건이 가장 크다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>기관</th>
+<th>사안</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025-01</td>
+<td>소비자금융보호국</td>
+<td>Cash App 분쟁 처리</td>
+<td>벌금 5,500만 + 피해 보상 7,500만~1.2억 달러</td>
+</tr>
+<tr>
+<td>2025-01</td>
+<td>주 송금 규제당국</td>
+<td>자금세탁 방지</td>
+<td>8,000만 달러</td>
+</tr>
+<tr>
+<td>2025-04</td>
+<td>뉴욕 금융감독청</td>
+<td>자금세탁 방지</td>
+<td>4,000만 달러 + 독립 감시인</td>
+</tr>
+<tr>
+<td>2026-03</td>
+<td>SEC</td>
+<td>공매도 보고서 관련</td>
+<td>제재 권고 없이 종결</td>
+</tr>
+<tr>
+<td>2026-07</td>
+<td>여러 주 검찰총장</td>
+<td>분쟁 처리</td>
+<td>"중요하지 않은 금액"</td>
+</tr>
+<tr>
+<td>진행 중</td>
+<td>법무부</td>
+<td>준법·공시</td>
+<td>2026-03 조건 제시 · 5.26억 달러 충당 · 회사는 산정 근거에 이견</td>
+</tr>
+<tr>
+<td>진행 중</td>
+<td>증권 집단소송</td>
+<td>—</td>
+<td>2026-01 각하 신청 기각</td>
+</tr>
+</tbody>
+</table>
+<p>출처: History-Dive(FY2024 10-K · 2025년 1분기 10-Q · 2026년 2분기 10-Q).</p>
+<h3>J.3 정책 민감도</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 소액 신용 규제와 스테이블코인 인가가 가장 큰 정책 변수다.</p>
+</blockquote>
+<ul>
+<li>소액 소비자 대출·후불 결제 규칙: 연방 소비자금융보호국의 감독 방향이 바뀌면 Borrow·Afterpay 가격과 실행액이 직접 영향을 받는다. Borrow는 유타주 자회사 은행(Square Financial Services)이 실행·관리하고, 콜로라도·아이오와·오리건에서는 팔지 않는다(Borrow 안내). 이 세 주는 주 은행이 본점 주 금리를 다른 주 고객에게 적용하는 "금리 수출"을 법으로 거부한 미국의 유일한 세 주다(오리건은 2026년 4월 · 의회조사국 LSB11433). 즉 Borrow 가격은 금리 수출에 기댄다[추론 · 회사 설명 없음].
+  콜로라도 사건은 2025-11 항소심 3인 재판부가 주 편을 들었다가 2026-04-02 전원합의체 재심리로 취소됐고 결론을 기다린다(은행 편 1심 가처분 유지). 연방은 순풍이다 — FDIC 2020년 연방 금리 권한 규칙, 2026-09-22 주 은행 동등 대우 규칙 제안(의견 마감 11/23).
+  소비자 대출의 약 4분의 3은 은행이 실행한 뒤 은행 밖 계열사 장부에 있다(FDIC 은행 재무 소비자 대출 9.18억 vs 연결 35.83억 달러[계산]). 위험은 연방 금지가 아니라 주 단위 잠식이다. 10-K·10-Q 위험 요인에는 이 구조가 따로 적혀 있지 않다〔Specific-Dive〕.</li>
+<li>스테이블코인: 신탁은행 인가가 나면 수탁 수수료·결제 레일의 새 칸이 열린다. 인가 실패는 기존 사업에 영향이 작다.</li>
+<li>카드 교환수수료 규칙: Cash App 선불카드는 Sutton Bank, 직불 Flex 카드는 Sutton Bank와 The Bancorp Bank가 발급한다(카드 약관). 두 은행 자산은 17.4억·92.1억 달러(2026-06-30 · FDIC)로 연방 직불 수수료 상한(21센트+0.05%+사기 방지 1센트)의 소형 은행 면제(계열 합산 100억 달러 미만) 안에 있다(Regulation II).
+  자체 은행이 직접 발급하면 Block 연결 자산 391.6억 달러가 계열로 합산돼 상한이 걸린다[규정 해석]. The Bancorp Bank는 2026-03-31 99.0억 달러로 기준선의 1% 안까지 왔다 — 연말 100억 달러를 넘으면 그 은행 발급분은 이듬해 7월 1일부터 상한 대상이다(지주회사 합산 자산 미확인). Sutton Bank는 2024-02 핀테크 제휴 관리로 FDIC 동의 명령을 받았다[근거 2차 · 종료 여부 미확인]〔Specific-Dive〕.</li>
+<li>후불·소액 대출 규칙: 소비자금융보호국의 후불 결제 해석 규칙(2024-05)은 2025-05 철회됐다. 대신 뉴욕 금융감독청이 면허·수수료 제한 규칙을 제안했고(2026-02 · 채택 뒤 180일 시행), 영국은 2026-07-15부터 후불 결제를 규제한다. 연방 가격 상한 위험은 낮아졌고 주 단위 수수료 제한이 늘어나는 방향이다〔Specific-Dive〕.</li>
+<li>디지털 지갑 감독: 소비자금융보호국의 디지털 결제 앱 대형 참가자 감독 규칙(2024-12)은 의회 결의로 무효가 됐다(공법 119-11 · 2025-05-09). 정기 감독 근거는 빠졌고 집행 권한은 남는다〔Specific-Dive〕.</li>
+</ul>
+<h2 id="k">Section K. 공시 · 가이던스 · 약속 이행</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 최근 1년 가이던스는 두 번 올렸다. 연간 숫자 약속은 지키고, 서사 약속은 조용히 지우는 회사다.</p>
+</blockquote>
+<h3>K.1 · K.2 최근 실적과 경영진 화법</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 2월 서한은 "지능 도구"를, 8월 서한은 "하드웨어와 AI라는 소유한 능력"을 앞세웠다. 신용 손실은 매번 "코호트 손실률은 건강하다"로 답한다.</p>
+</blockquote>
+<ul>
+<li>2025년 4분기(2/26): "더 작은 팀이 우리가 만드는 도구로 더 많이, 더 잘할 수 있다. 1년 안에 대부분의 회사가 같은 결론에 이를 것"(<a href="https://www.sec.gov/Archives/edgar/data/1512673/000119312526076557/d108590dex991.htm">4분기 서한</a>).</li>
+<li>2026년 2분기(8/5): "AI가 소프트웨어 제작 비용을 무너뜨리면, 판단·신뢰·이해·능력이 차별점이 된다" · "6월 운영 코드 변경 거의 전부를 에이전트 AI가 쓰거나 검토"(<a href="https://www.sec.gov/Archives/edgar/data/1512673/000119312526335117/d91486dex991.htm">2분기 서한</a>).</li>
+<li>신용: "대출 실행액 증가로 손실 +99% · Borrow 코호트 손실률은 건강 · 6주 상품 비중 확대 · 손실 증가율은 남은 기간 둔화 예상"(같은 서한).</li>
+<li>화법 변화: 2025년 3월 "AI로 사람을 대체하려는 게 아니다" → 2026년 2월 "지능 도구로 절반" → 2026년 8월 "하드웨어·AI 능력 소유". 감원 이유에서 AI의 비중이 점점 커졌다(People-Dive).</li>
+</ul>
+<h3>K.3 가이던스 · 약속 이행 (History-Dive 소비)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 2026년 가이던스는 2월 이후 두 번 올렸다. 2025년에는 5월에 한 번 낮췄다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th style="text-align: right;">2026 매출총이익</th>
+<th style="text-align: right;">2026 조정 영업이익</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025-11 투자자의 날</td>
+<td style="text-align: right;">+17% 예비</td>
+<td style="text-align: right;">27억</td>
+<td>감원 전</td>
+</tr>
+<tr>
+<td>2026-02-26</td>
+<td style="text-align: right;">122억(+18%)</td>
+<td style="text-align: right;">32억(26%)</td>
+<td>감원 발표 당일</td>
+</tr>
+<tr>
+<td>2026-08-05</td>
+<td style="text-align: right;">125.1억(+21%)</td>
+<td style="text-align: right;">34.7억(28%)</td>
+<td>2분기 매출총이익·조정 영업이익 모두 가이던스 상회</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>판정이 난 장기 약속 12개 중 기한 안 7개(58%), 늦게라도 지킨 것까지 9개(75%) · 지연 계수 1.0배 · 위험은 지연이 아니라 연중 하향(2025-05 하향 다음 날 −20.4%)이다(History-Dive).</li>
+</ul>
+<h3>K.4 8-K 주요 사건 (12개월)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 감원, 엔지니어링 책임자 교체, 회계 책임자 교체, 신탁은행 신청이 이어졌다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>일자</th>
+<th>항목</th>
+<th>내용</th>
+<th style="text-align: center;">영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025-11-19</td>
+<td>투자자의 날</td>
+<td>2028 목표 · 자사주 한도 +50억 달러</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>2026-01-23</td>
+<td>5.02</td>
+<td>회계 책임자 사임 → CFO 임시 겸임(<a href="https://www.sec.gov/Archives/edgar/data/1512673/000119312526021035/d78925d8k.htm">8-K</a>)</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>2026-02-26</td>
+<td>2.05</td>
+<td>인원 40% 넘게 감축 · 비용 4.5~5억 예상(<a href="https://www.sec.gov/Archives/edgar/data/1512673/000119312526076557/d108590d8k.htm">8-K</a>)</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2026-05-04</td>
+<td>5.02</td>
+<td>새 회계 책임자 선임(<a href="https://www.sec.gov/Archives/edgar/data/1512673/000119312526204101/d112286d8k.htm">8-K</a>)</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>2026-06-05</td>
+<td>5.02</td>
+<td>엔지니어링 책임자 퇴사 · 도시 직할(<a href="https://www.sec.gov/Archives/edgar/data/1512673/000119312526259540/d140803d8k.htm">8-K</a>)</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>2026-06-18</td>
+<td>5.07</td>
+<td>주총 결과(<a href="https://www.sec.gov/Archives/edgar/data/1512673/000119312526275869/d55271d8k.htm">8-K</a>)</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>2026-09-08</td>
+<td>보도자료</td>
+<td>연방 신탁은행 설립 신청(<a href="https://investors.block.xyz/investor-news/news-details/2026/Block-Applies-to-Establish-Builders-Bank-a-National-Trust-Bank/default.aspx">보도자료</a>)</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+</tbody>
+</table>
+<h3>K.4b AI 밸류체인 이익 귀착 — 해당 없음</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — Block은 AI를 파는 회사가 아니라 쓰는 회사라 이 표의 대상이 아니다. 대신 "AI 사용 효과"는 G.2에서 분해했다.</p>
+</blockquote>
+<p>AI 공급망(반도체·전력·클라우드 등) 종목이 아니다. 사용자 원칙의 대조군 검증 정신만 빌리면: 같은 기간 감원 없는 PayPal의 매출총이익 성장은 한 자릿수였고, Block은 감원과 함께 +25%였다. 다만 Block 성장의 주력은 대출이라 AI 사용 효과로 귀속할 수 없다.</p>
+<h3>K.4c 외부 비판 분해표</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 최근 12개월 공매도 보고서는 없다. 감원 직후 매체·직원 쪽 비판은 "AI는 명분"이라는 한 갈래로 모인다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th>주장</th>
+<th>가설이 기대는 자산을 치나</th>
+<th>1차 검증</th>
+<th>회사 반박</th>
+<th>분류</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td>"AI는 명분이고 팬데믹 과잉 채용 수정이다"(매체·X · People-Dive)</td>
+<td>부분 — AI 효율 가설을 친다. 대출 성장 가설은 안 친다</td>
+<td>가능 · 도시 본인이 과잉 채용 실수를 인정 · 10-Q는 AI를 효율화 수단 넷 중 하나로 적음</td>
+<td>서한의 생산성 주장(회사 지표)</td>
+<td>🔴 가설을 침(AI 효율 가설 한정)</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td>"연속 감원은 성과 관리 명목의 조용한 해고"(WIRED · People-Dive)</td>
+<td>아니오 — 품질 지표가 공시되지 않음</td>
+<td>부분 가능 — 소비자금융보호국 민원 총량은 감원 뒤 +5.5%(PayPal +12.9%) · 대출 민원 2.5배 · 사기·무단 거래 +44%〔Specific-Dive〕</td>
+<td>없음</td>
+<td>부분(총량은 주장 반박 · 대출·사기 민원은 별도 신호)</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td>2023 공매도 보고서(Hindenburg · 12개월 밖)</td>
+<td>법무부 건으로 이어짐</td>
+<td>충당 5.26억 확인</td>
+<td>2023 반박문</td>
+<td>참고(12개월 밖)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="l">Section L. 동적 발견</h2>
+<h4>L.1 🔴 대출 손실은 매출총이익 아래에 있다 — "Rule of 40"이 놓치는 칸</h4>
+<ul>
+<li>발견 트리거: G.2 분해 · R-Dive 함정 1.</li>
+<li>why: 회사의 핵심 지표(매출총이익 성장 + 조정 영업이익률)는 손실을 영업비용에서 빼고 계산하지만, 매출총이익 성장의 주력인 금융 서비스(+43%)와 그 손실(+99%)이 서로 다른 줄에 있다. 손실÷매출총이익은 7%(2025 1Q) → 18%(2026 2Q)로 2.5배가 됐다. 두 가지를 함께 적는다. ① 손실 일부는 이 줄 밖에도 있다 — 같은 분기 안에 확정된 Cash App 거래 손실 9,120만 달러(+47%) 중 송금·대월분은 마케팅비에 잡힌다. 넓게 잡으면 2분기 18.5~21.4%다. ② 2025년 1분기는 다른 회계 기준이다 — 회사는 2025년 2분기부터 대출 예상 손실을 실행 시점에 미리 잡는다. 모든 대출이 같은 기준이 된 2025년 3분기부터 보면 13.6% → 17.8% → 17.2% → 18.5%다〔Specific-Dive〕.</li>
+<li>결론 영향: 핵심 질문 ③의 답(신용 &gt; AI 효율)을 강화 · 리스크 신호 2개 추가(H.3).</li>
+</ul>
+<h4>L.2 🟠 감원 절감액은 재투자로 사라졌다</h4>
+<ul>
+<li>발견 트리거: G.2 표.</li>
+<li>why: 연 8~9억 달러 절감(10-Q)인데 손실 뺀 영업비용은 감원 전 정점 대비 −5.6%(분기 약 1억 달러)뿐이다. 마케팅 +21%(그중 42%는 Cash App 송금 처리비·사기·대월 손실)·클라우드 +8,680만이 차이를 메웠다.</li>
+<li>결론 영향: "AI로 마진이 올랐다"는 서사의 숫자 근거는 약하다. 성장 마케팅으로 간 몫은 절감액의 약 절반이다〔Specific-Dive〕. 3분기 손실 뺀 영업비용이 다음 확인 지점.</li>
+</ul>
+<h4>L.3 🟠 시장은 이 주식을 신용주로 본다</h4>
+<ul>
+<li>발견 트리거: 시장 가설 상관 스크립트.</li>
+<li>why: 60일 상관 Affirm 0.74 &gt; SoFi 0.58 &gt; Toast 0.51 &gt; IGV 0.50 &gt; PayPal 0.32 &gt; 비트코인 0.31. 감원 서사(AI)보다 신용 사이클에 주가가 묶여 있다.</li>
+</ul>
+<h4>L.4 🟠 비트코인 사명과 스테이블코인 실용의 엇갈림</h4>
+<ul>
+<li>발견 트리거: People-Dive · 2분기 서한.</li>
+<li>why: 비트코인 수수료를 내려 매출총이익을 포기하면서 동시에 USDC를 도입하고 신탁은행을 신청했다. 회사의 "돈이 되는 다음 칸"이 비트코인이 아니라 스테이블코인일 수 있다는 신호다. 창업자의 설명은 없다.</li>
+</ul>
+<h3>L.deferred</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 실제 인원과 Borrow 가격 구조, 협력 은행 상태는 다음 공시에서 확인한다.</p>
+</blockquote>
+<ul>
+<li>분기 말 실제 인원 수 · 기능별 인원 구성(10-K 연말까지 공시 없음) → 2027년 2월 10-K 「Human Capital」.</li>
+<li>Borrow 수수료·연환산 금리와 세 주 제외의 회사 설명 → Borrow 약관.</li>
+<li>자회사 은행 → 계열사 대출 이전 계약 조건 → 10-K 부속 계약.</li>
+<li>같은 분기 안 확정 Cash App 거래 손실 9,120만 달러의 마케팅비·손실 줄 배분 → 3분기 10-Q.</li>
+<li>The Bancorp, Inc. 지주 연결 자산(직불 수수료 면제 기준) → 그 회사 10-Q.</li>
+<li>Sutton Bank FDIC 동의 명령(2024-02) 현재 상태 → FDIC 집행 조치 목록.</li>
+<li>자회사 은행 배당·자본 이전 제한 조문 → 10-K 은행 규제 단락.</li>
+<li>2027 전환사채 전환가 → 2분기 10-Q 부채 주석.</li>
+</ul>
+<h2 id="s">Section S. 🔎 Specific-Dive — 업종 전문가 체크리스트 보완</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 결제·소비자 핀테크·산업은행 업종용 체크리스트 15개를 새로 만들어 감사했다. 별점을 뒤집는 사실은 없다. 다만 감원 뒤 늘어난 마케팅비의 42%는 송금 처리비·손실이었고, Cash App 대출과 카드 수익은 주 금리 법과 연방 수수료 규정이라는 바깥 조건 위에 서 있다.</p>
+</blockquote>
+<h3>체크리스트 대조</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 손실 차감 후 수익, 통행세율, 신용 둔화 시나리오, 규제 이력은 충분했다. 빈칸은 손실의 위치, 카드 발급 은행, 금리 상한 구조, 은행 인가 조건, 협력 은행, 민원 지표였다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th>체크 항목</th>
+<th style="text-align: center;">판정</th>
+<th>결론 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td>손실 인식 시점(실행 시점 선반영)</td>
+<td style="text-align: center;">◐→조사</td>
+<td>2025년 3분기 기준 손실÷매출총이익 13.6% → 18.5% · 손실 증가의 95%는 대출</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td>손실의 위치(마케팅비 안 손실)</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>마케팅 증가의 42% = 송금 처리비·손실 · 넓은 손실률 18.5~21.4%</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td>손실 차감 후 수익</td>
+<td style="text-align: center;">✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td>통행세율 분모 효과</td>
+<td style="text-align: center;">✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td>가맹점 잔존</td>
+<td style="text-align: center;">◐→조사</td>
+<td>숫자 미공시 · 회사는 "잔존도 기여"만 언급 · 대리점 채널 확대</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td>직불 교환수수료 상한</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>발급 = Sutton·Bancorp(자산 100억 달러 미만) · 자체 은행 발급 시 상한</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td>산업은행 인가 조건</td>
+<td style="text-align: center;">◐→조사</td>
+<td>레버리지 20% 하한(실제 65.2%) · 모회사 약정 · 도시 개인 약속</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td>주별 금리 상한</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>Borrow 제외 3개 주 = 금리 수출 탈퇴 3개 주 · 콜로라도 전원합의체 대기</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td>후불·소액 대출 규칙</td>
+<td style="text-align: center;">◐→조사</td>
+<td>연방 해석 규칙 철회 · 뉴욕 면허 규칙 제안 · 영국 2026-07 시행</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td>디지털 지갑 감독·사기 책임</td>
+<td style="text-align: center;">◐→조사</td>
+<td>연방 대형 참가자 감독 규칙 의회 무효화(2025-05)</td>
+</tr>
+<tr>
+<td style="text-align: center;">11</td>
+<td>대출 매각·창고 대출</td>
+<td style="text-align: center;">◐→조사</td>
+<td>매각 이익 = 매출총이익의 2.2% · 성과 기준 충족</td>
+</tr>
+<tr>
+<td style="text-align: center;">12</td>
+<td>협력 은행 위험</td>
+<td style="text-align: center;">❌→조사</td>
+<td>Sutton Bank 2024년 FDIC 동의 명령(종료 여부 미확인)</td>
+</tr>
+<tr>
+<td style="text-align: center;">13</td>
+<td>신용 둔화·규제 합의 경로</td>
+<td style="text-align: center;">✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: center;">14</td>
+<td>품질 대리 지표(민원)</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>감원 뒤 총량 +5.5%(PayPal +12.9%) · 대출 민원 2.5배 · 사기 +44%</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">15</td>
+<td>실제 인원</td>
+<td style="text-align: center;">◐→조사</td>
+<td>2026년 공시 전체에 절대 숫자 없음 · 6,123명 미만[계산]</td>
+</tr>
+</tbody>
+</table>
+<h3>새로 안 것</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 감원 절감의 절반은 성장 마케팅, 나머지는 송금 손실로 갔다. 대출은 주 금리 법에, 카드 수수료는 작은 은행 발급에 기대고, 품질은 총량으로는 버텼다.</p>
+</blockquote>
+<ol>
+<li><strong>늘어난 마케팅비의 42%는 송금 처리비와 손실이다.</strong> 2분기 마케팅비 증가 1.152억 달러 중 송금 처리비·관련 손실 4,830만, 광고 2,920만, 제휴 수수료 2,910만 달러다. 같은 분기 안에 확정된 Cash App 거래 손실은 9,120만 달러(+47%)이고 송금·대월분은 마케팅비에 잡힌다. 손실을 넓게 잡으면 손실÷매출총이익은 18.5~21.4%다.</li>
+<li><strong>손실 두 배의 95%는 대출이다.</strong> 후불 결제 4회 분할(+6%)과 가맹점 거래(+18%) 손실은 안정적이다. 모든 대출이 같은 회계 기준이 된 2025년 3분기부터 보면 손실÷매출총이익은 13.6% → 18.5%다.</li>
+<li><strong>Borrow는 콜로라도·아이오와·오리건에서 팔지 않는다.</strong> 이 세 주는 주 은행의 금리 수출을 거부한 유일한 세 주다. 소비자 대출의 약 4분의 3은 자회사 은행이 실행한 뒤 은행 밖 계열사 장부에 있다. 콜로라도 사건은 전원합의체 재심리 중이고, FDIC는 2026년 9월 주 은행 편의 규칙을 제안했다.</li>
+<li><strong>Cash App 카드는 자산 100억 달러 미만 은행 두 곳이 발급해 연방 직불 수수료 상한을 피한다.</strong> 자체 은행으로 옮기면 Block 연결 자산 391.6억 달러가 합산돼 상한이 걸린다. The Bancorp Bank 자산은 2026년 3월 말 99.0억 달러까지 왔었다.</li>
+<li><strong>민원 총량은 감원 뒤에도 안정적이다.</strong> 2026년 1분기 → 3분기 Block 민원 +5.5%, PayPal +12.9%다. 대출 상품 민원은 1년 새 57 → 142건, 사기·무단 거래 민원은 +44%다.</li>
+</ol>
+<div class="callout">
+<p>▶ 반영: 7축 별점 재판정 없음 · 감원 절감 쓰임새 문장 수정 · 손실 비교 기준 표기 · 금리 상한·카드 수수료 미확인 해소 · 리스크 신호 6개 추가. 상세 = 하위 Dive 링크 모음의 Specific-Dive 보고서.</p>
+</div>
+<h2 id="z">🔴 종합 판단</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — Block은 사람을 절반 가까이 줄였고, 그 효과는 회사 계획 대비 이익률을 끌어올린 최대 단일 요인이었다. 그러나 실제 이익률 상승의 엔진은 소비자 대출이 키운 매출총이익이고, 그 대출의 손실이 이익 아래에서 두 배로 커지고 있다. AI 효율 이야기보다 신용 이야기가 이 주식의 운명을 정한다.</p>
+</blockquote>
+<ul>
+<li><strong>7축 종합 61점 / 100 (⭐3.44 병기 · 보통 · 경계 양호/보통)</strong> · 첫 실행이라 비교 회차 없음 · 사업·thesis 매력도이며 밸류 멀티플은 반영하지 않았다 · 5점 이내 차이 = 동급.</li>
+<li><strong>감점 상위 3칸</strong>:</li>
+<li>날씨 K자 소비자 신용 🔴 −3.6점</li>
+<li>옆의 나무 정부 vs 민간 ⚪ −2.6점</li>
+<li>날씨 중립 칸 넷(관세·지정학·금리·위험 선호) ⚪ 각 −2.2점</li>
+<li>숲의 지금 칸은 렌트 포획 🟡 상한으로 −0.4점, 6~24개월 칸은 🔴 상한으로 −1.1점이 묶였다(상한).</li>
+<li>축별 득점(배점 25 · 나머지 각 12.5): 날씨 10.7 · 산 6.2 · 숲 6.7 · 나무 9.9 · 옆나무 7.8 · 사람 9.4 · 숫자 10.2.</li>
+<li><strong>별도 렌즈(점수 미합산)</strong>: 분면 「약하고 싼」 경계(정찰 영역) · 0to1 1/7(불운 위험 · 큰 시장의 1→n) · 밸류 🟢 저평가(약 · 조건부 · 신뢰도 낮음 · 🎯 ⚪ 관망) · 내구성 ⚪ 조건부(빚·금리는 robust · 손익은 신용 사이클에 결합 취약).</li>
+<li><strong>핵심 질문 네 개의 답</strong></li>
+<li>① 감원의 마진 효과 — 나타났다. 2026년 이익률 가이던스(매출총이익 대비)는 감원 전 22% → 감원 발표 당일 26% → 8월 28%로, 감원이 계획 대비 최대 단일 요인(약 +4%p)이었다. 그러나 1년 전 실적과 비교하면 손실 뺀 영업비용은 +1.3%로 평평했고, 개발비 절감(−1.1억)을 마케팅(+1.2억)이 거의 그대로 썼다. 2분기 조정 영업이익 +3.1억 달러의 출처는 매출총이익 +6.3억 − 손실 +2.9억이다.</li>
+<li>② 다섯 질문 — 인원 감소 실재 ✅(분기 말 실측은 미공시 · 2027년 2월 10-K가 첫 실측) · 마진 수치화 ✅ · 줄어든 곳 = 개발(구조조정 비용 70%)이고 영업·마케팅은 늘었다 ✅ · 품질 지표 ◐ 부분 통과(회사 공시 없음 · 민원 총량은 감원 뒤 +5.5%로 PayPal +12.9%보다 안정 · 대출 민원 2.5배·사기 민원 +44%) · 매출총이익 성장 +25~27% 유지 ✅ → 축소가 아니라 효율화. 단 성장의 주력이 대출이라 "AI 효율화의 결과"로 귀속할 수는 없다.</li>
+<li>③ 더 큰 변수 — 소비자 신용이다. 손실÷매출총이익 7% → 18%, 충당금 비율 10.7% → 14.7%, 60~89일 연체 +78%. 손실 비율 5%p 변화는 연 약 6억 달러로 감원 절감액(연 8~9억)과 같은 크기다. Square 가맹점 이탈은 공시가 없고, Square 결제액은 오히려 빨라졌다. 회사는 "신규 유입·잔존·같은 매장 성장이 모두 가속에 기여"라고만 적었고(2분기 서한), 대리점(ISO) 제휴를 늘리는 중이다 — 대리점 채널은 통행세율 하락과 같은 방향일 수 있다[추론]. 손실 증가의 95%는 대출이고 가맹점 거래 손실은 +18%다〔Specific-Dive〕. 비트코인은 매출총이익 2%·보유 자산 시총의 약 1%로 작다.</li>
+<li>④ 가격 인상 테스트 — 🟡. Square는 올렸지만 남는 몫이 내려갔고, 즉시 입금은 두 번 올리고도 이용자를 지켰으며, 카드 교환수수료는 카드망과 연방 규정이 정한다(자산 100억 달러 미만 협력 은행 발급). 이 회사는 병목 자리에 있지 않다 — 가격의 상한은 경쟁과 규제가 정한다.</li>
+<li><strong>시간 지평</strong></li>
+<li>0~6개월: 11/3 3분기 실적(손실÷매출총이익 · 충당금 비율 · 손실 뺀 영업비용 17억 달러 아래 여부) · 법무부 합의.</li>
+<li>6개월~3년: 첫 신용 둔화 국면에서 Borrow 손실률 · 2027년 2월 10-K의 실제 인원 · 신탁은행 인가와 스테이블코인 매출.</li>
+<li>3~10년: 두 면 네트워크가 대출 심사 우위로 굳는지, 아니면 같은 고객층을 노리는 앱들과 규제가 그 렌트를 깎는지.</li>
+<li>단기(감원 절감·가이던스 상향)는 순풍이고, 중기(신용 사이클)가 가장 큰 역풍이다. 장기 결론은 중기 신용 시험을 통과해야 열린다.</li>
+<li><strong>리스크 신호 집계</strong>: 14개 중 🟠 4(신용 손실 확대 · 연체 가속 · 넓은 손실률 · 대출·사기 민원) · 🟡 4(규제 확대 · 금리 수출 제한 · 직불 수수료 면제 · 협력 은행) · 대기 6.</li>
+<li><strong>종합 판정: 추가 검증</strong> — "AI로 사람을 줄였다"는 사실과 "이익률이 올랐다"는 사실은 모두 1차 숫자로 확인했다. 그러나 둘을 잇는 인과는 절반만 맞다 — 계획 대비로는 감원이, 실적 대비로는 대출 성장이 이익률을 만들었다. 다음 시험 = 11/3 3분기 실적, 결정적 시험 = 첫 신용 둔화 국면의 Borrow 손실률.</li>
+</ul>
+<h2>수집 상태 (실패·불완전 항목만)</h2>
+<ul>
+<li>⚠️ 미국 가맹점 결제·소비자 금융 앱 시장의 1차 TAM·성장률 통계 미수집.</li>
+<li>⚠️ 분기 말 실제 인원·기능별 인원은 회사 미공시(첫 실측 = 2027년 2월 10-K).</li>
+<li>⚠️ 고객 만족·가맹점 이탈률은 회사 미공시 · 소비자금융보호국 민원은 대리 지표다.</li>
+<li>⚠️ 옵션 미결제약정·내재 변동성 미수집(yfinance 0 반환).</li>
+<li>⚠️ 최근 12개월 Form 4 전체 합계 미수집(People-Dive 범위는 핵심 인물).</li>
+<li>⚠️ Fiserv 재무 칸(야후 빈칸) · 신용등급·CDS · 노트 인덴처 교차 부도 기준 미수집.</li>
+</ul>
+<h2>다음 실행 시 보완 목록</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 11/3 실적의 손실 숫자와 손실 뺀 영업비용이 다음 실행의 첫 확인 대상이다.</p>
+</blockquote>
+<ul>
+<li>11/3 3분기: 손실÷매출총이익(손실 줄·넓은 정의) · 소비자 대출 충당금 비율 · 60~89일 연체 · 손실 뺀 비GAAP 영업비용(17억 달러 아래?) · 마케팅비 내역 · 2026 가이던스.</li>
+<li>2027년 2월 10-K: 실제 인원 · 기능별 비중 · 인건비.</li>
+<li>법무부 합의 확정 금액 · 제10순회 콜로라도 판결 · 신탁은행 인가.</li>
+<li>첫 신용 둔화 국면의 Borrow 코호트 손실률(회사가 처음으로 겪는 시험).</li>
+</ul>
+<div class="footer">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+<div class="footer">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const VIZ = {"score7": {"label": "확신도 7축", "max": 5, "axes": ["🌦️날씨", "⛰️산", "🌲숲", "🌳나무", "🌲🌳옆나무", "👤사람", "🔢숫자"], "series": [{"name": "XYZ 10/14", "color": "#0068b5", "scores": [2.71, 3.0, 3.14, 4.17, 3.5, 4.0, 4.28]}]}, "narrative": {"label": "내러티브 5축", "max": 5, "axes": ["🔧기술", "👥사회", "🏛️정책", "🌐지정학", "💰자본"], "series": [{"name": "디지털 결제·소비자 금융 앱", "color": "#8e44ad", "scores": [4, 4, 3, 2, 3]}]}, "trajectory": {"periods": ["2025 1Q", "2025 2Q", "2025 3Q", "2025 4Q", "2026 1Q", "2026 2Q"], "forecastFrom": 6, "series": [{"label": "조정 영업이익 ÷ 매출총이익(%)", "axis": "left", "color": "#2980b9", "values": [20.3, 21.7, 18.0, 20.5, 25.0, 27.3]}, {"label": "거래·대출 손실 ÷ 매출총이익(% · 오른축)", "axis": "right", "color": "#c0392b", "values": [7.4, 11.6, 13.7, 17.8, 17.2, 18.5]}]}, "peers": {"metrics": [{"key": "mcap", "label": "시총(억 달러)", "unit": "", "better": "high"}, {"key": "opm", "label": "매출 대비 영업이익률", "unit": "%", "better": "high"}, {"key": "g", "label": "매출 성장(최근 분기)", "unit": "%", "better": "high"}, {"key": "pe", "label": "선행 P/E", "unit": "", "better": "low"}], "rows": [{"name": "XYZ", "subject": true, "vals": {"mcap": 462, "opm": 7.0, "g": 9.3, "pe": 14.8}}, {"name": "PYPL", "note": "결제 대장", "vals": {"mcap": 481, "opm": 17.0, "g": 4.8, "pe": 9.7}}, {"name": "TOST", "vals": {"mcap": 179, "opm": 7.4, "g": 23.1, "pe": 17.6}}, {"name": "AFRM", "vals": {"mcap": 263, "opm": 12.6, "g": 33.0, "pe": 15.7}}, {"name": "SOFI", "vals": {"mcap": 197, "opm": 17.0, "g": 42.6, "pe": 18.5}}, {"name": "CHYM", "vals": {"mcap": 113, "opm": 18.6, "g": 26.8, "pe": 18.6}}]}, "scenario": {"horizonLabel": "5년", "threshold": 1.5, "cases": [{"label": "Bull", "tone": "bull", "prob": 0.2, "mult": 3.5}, {"label": "Base", "tone": "base", "prob": 0.5, "mult": 1.7}, {"label": "Bear", "tone": "bear", "prob": 0.3, "mult": 0.59}]}, "landmark": {"current": {"label": "XYZ 시총", "mcap": 46.2}, "target": {"label": "×10", "mcap": 462}, "refs": [{"name": "Fiserv", "mcap": 24.8}, {"name": "Coinbase", "mcap": 48.0}, {"name": "PayPal", "mcap": 48.1}, {"name": "Robinhood", "mcap": 99.4}, {"name": "American Express", "mcap": 209.2}, {"name": "Shopify", "mcap": 229.1}, {"name": "Mastercard", "mcap": 529.8}, {"name": "Visa", "mcap": 743.5}], "sentence": "💡 지금 $462억 ≈ PayPal($481억)과 비슷 → 텐배거면 $4,620억 ≈ Mastercard($5,298억)보다 조금 작다. (규모 비교일 뿐)", "warn": false}, "bars": {"title": "2026년 2분기 매출총이익 구성(31.7억 달러)", "mode": "share", "items": [{"label": "상거래 지원", "value": 57}, {"label": "금융 서비스(대출 중심)", "value": 41}, {"label": "비트코인", "value": 2}]}, "h5": {"points": [{"label": "10/14 약하고 싼 경계", "x": 300, "y": 210}], "caption": "XYZ 10/14 — 중요도 下(조정 단일 층·병목 아님·약한 고리 = 차입자 신용) · 엣지 中(시총/매출총이익 5년 하위권 · 시장은 신용주로 가격) → 「약하고 싼」 경계 · 정찰 영역"}};
+try{
+DDViz.renderRadar('fig-score7','fig-score7-leg',VIZ.score7);
+DDViz.renderRadar('fig-c3','fig-c3-leg',VIZ.narrative);
+DDViz.renderTrajectory('fig-g5','fig-g5-leg',VIZ.trajectory);
+DDViz.renderHeatmap('fig-e1',VIZ.peers);
+DDViz.renderScenario('fig-h1',null,VIZ.scenario);
+DDViz.renderMcapLadder('fig-g15','fig-g15-cap',VIZ.landmark);
+DDViz.renderBars('fig-d0',VIZ.bars);
+var c7=document.getElementById('fig-score7-cap'); if(c7)c7.textContent="7축 종합 61점 / 100 (⭐3.44 병기) · 보통(경계 양호/보통) · 5점 이내 차이 = 동급 · 사업·thesis 매력도·밸류 미반영";
+var ch=document.getElementById('fig-h1-cap'); if(ch)ch.textContent='§H.1 5년 시나리오 (기준 $11.46) — 기댓값 ~1.16x(⚠️ <1.5x) · 2년 0.84x = bull-tail 의존 ⚠️ (게이트 ❌·보유 매도신호 ❌)';
+var cg=document.getElementById('fig-g5-cap'); if(cg)cg.textContent='§G.5 분기 매출·조정 EBITDA·GM 6분기 + FY26E 가이던스 중간 분기평균(점선·보강) — 변곡점 = 2Q26';
+var ce=document.getElementById('fig-e1-cap'); if(ce)ce.textContent='§E.1 peer 히트맵 (yfinance 2026-09-21 · 전 열 TTM·GAAP·USD) — GM 100% 표기 종목은 보고 방식 artifact';
+var cd=document.getElementById('fig-d0-cap'); if(cd)cd.textContent='§D.0 2Q26 매출 구성 — 토큰화 54% / 자산서비스 46% (역방향 믹스 시프트)';
+var cc=document.getElementById('fig-c3-cap'); if(cc)cc.textContent='§B.3 내러티브 5축 (변동 없음)';
+}catch(e){console.error('viz',e);}
+</script></body></html>
