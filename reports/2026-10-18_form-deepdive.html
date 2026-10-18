@@ -1,0 +1,2026 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FormFactor (FORM) Deep-Dive — 마진은 증명했고, 가격 결정력은 아직 증명 전이다 — 2026-10-18</title>
+<meta name="vault-stage" content="Dive"><meta name="vault-topic" content="FORM"><meta name="vault-date" content="2026-10-18">
+<meta name="vault-skill" content="Deep-Dive"><meta name="description" content="FORM Deep-Dive 2026-10-18">
+<style>/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+
+body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Helvetica Neue','Apple SD Gothic Neo',sans-serif;line-height:1.65;margin:0;padding:0;}
+.container{max-width:940px;margin:24px auto;background:#FDF6E3;padding:36px 44px;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.08);}
+h1{font-size:1.7em;border-bottom:3px solid #c0392b;padding-bottom:.3em;margin-top:.2em;}
+h2{font-size:1.32em;border-bottom:1px solid #c9bfa3;padding-bottom:.24em;margin-top:1.7em;color:#8a2415;}
+h3{font-size:1.1em;margin-top:1.3em;color:#5c4a00;}
+h4{font-size:1.0em;margin-top:1.1em;color:#5c4a00;}
+blockquote{border-left:4px solid #c9a227;background:#f5ecd3;margin:.8em 0;padding:.5em 1em;color:#4a4230;border-radius:0 6px 6px 0;}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.9em;display:block;overflow-x:auto;}
+th,td{border:1px solid #e8e1cf;padding:6px 9px;text-align:left;vertical-align:top;}
+th{background:#efe6cc;color:#5c4a00;font-weight:600;}
+tr:nth-child(even) td{background:#faf4e2;}
+code{background:#efe6cc;padding:1px 5px;border-radius:4px;font-size:.88em;}
+pre{background:#f0e8cf;padding:12px;border-radius:6px;overflow-x:auto;border:1px solid #e8e1cf;}
+a{color:#b0562a;text-decoration:none;} a:hover{text-decoration:underline;}
+hr{border:none;border-top:1px solid #d8cca8;margin:1.6em 0;}
+strong{color:#3a2f18;}
+.judge{background:#f3ead0;border:2px solid #c0392b;border-radius:8px;padding:16px 20px;margin:1.2em 0;}
+.judge h2{border:none;color:#8a2415;margin-top:0;}
+.dd-fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:12px;margin:1em 0;}
+.dd-fig figcaption{font-size:.82em;color:#6b5d3a;margin-top:6px;text-align:center;}
+.footer{margin-top:2em;padding-top:1em;border-top:1px solid #d8cca8;font-size:.85em;color:#6b5d3a;}
+@media print{body{background:#fff;}.container{box-shadow:none;background:#fff;}}
+@media (max-width:640px){.container{padding:20px 16px;}}
+</style>
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+<meta name="vault-published" content="2026-10-18">
+<meta name="robots" content="noindex, nofollow">
+</head><body>
+<!--dive-hub:start-->
+<nav id="dive-hub" aria-label="하위 Dive 모음" style="max-width:1100px;margin:12px auto 18px;padding:12px 16px;background:#F3EBD6;border:1px solid #e8e1cf;border-radius:10px;font:14px/1.6 'Pretendard','Noto Sans KR',sans-serif;color:#1f2328">
+<div style="font-weight:700;margin-bottom:4px">🤿 FORM 하위 Dive 모음 <span style="font-weight:400;font-size:12px;color:#6b6457">— 이 Deep-Dive가 참고한 개별 보고서</span></div>
+<ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px">
+<li style="color:#8a8270">💰 R-Dive <span style="font-size:12px">제품·수익모델 — 미수행</span></li>
+<li style="color:#8a8270">📜 History-Dive <span style="font-size:12px">기업 역사 — 미수행</span></li>
+<li style="color:#8a8270">👤 People-Dive <span style="font-size:12px">사람·리더 — 미수행</span></li>
+<li style="color:#8a8270">📈 chart-dive <span style="font-size:12px">타이밍 — 🔒 로컬 전용 · 미수행</span></li>
+<li><a href="2026-10-18_form-specificdive.html" title="FormFactor (FORM) Specific-Dive — 마진은 9년 밴드를 뚫었고, SK하이닉스에는 한국 경쟁사가 이미 들어가 있다 — 2026-10-18" style="color:#1F6F8B;font-weight:600;text-decoration:none">🔎 Specific-Dive</a> <span style="font-size:12px;color:#6b6457">업종 특수 점검 · 10/18</span></li>
+<li style="color:#8a8270">📄 One-Pager <span style="font-size:12px">1p 압축 — 미수행</span></li>
+</ul>
+</nav>
+<!--dive-hub:end-->
+<div class="container">
+<div class="kicker">DEEP-DIVE · 단일 종목 심층 · v1.42 --light · 델타 회차(2회차 · 직전 2026-06-08) · Funnel-screener 결선 채점</div>
+
+<h1>FormFactor (FORM) Deep-Dive — 마진은 증명했고, 가격 결정력은 아직 증명 전이다</h1>
+<p class="sub">2026-10-18 · 기준가 $105.01(10/16 종가 · 9/30 고점 $149.31 대비 −30% · 반도체지수 8일 연속 하락 구간) · 시총 약 82억 달러 · 직전 실행 2026-06-08 · 다음 실적 2026-10-29(3분기)</p>
+
+<div class="meta">1차 자료: <a href="https://www.sec.gov/Archives/edgar/data/1039399/000103939926000033/form-20260627.htm">2분기 10-Q(2026-08-04)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1039399/000103939926000030/ex9901-earningsreleasexq226.htm">2분기 실적 발표(8-K 2026-07-29)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1039399/000103939926000037/form-20261006.htm">Teradyne 사모 투자 8-K(2026-10-13)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1039399/000103939926000037/ex-991.htm">공동 발표문(2026-10-12)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1039399/000103939926000025/form-20260515.htm">주총 결과 8-K(2026-05-19)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1039399/000103939926000009/form-20251227.htm">FY2025 10-K</a> · 시세·동종 수치 = 야후 파이낸스(2026-10-16)</div>
+
+<div class="judge">
+<h4>🧑‍⚖️ 종합 매수 판단 (Fable 판사가 직접 쓴 쉬운 말 판정)</h4>
+<p>① <strong>한 줄 답</strong> — ⚪ 지금은 사지 않고 지켜본다. 사업은 좋아졌지만 가격이 이미 낙관적 미래를 다 담고 있다.
+② <strong>왜 그렇게 보나</strong>
+- 가격이 너무 앞서 갔다. 고점에서 30% 내려왔는데도 현재가 105달러는 낙관 시나리오로 계산한 적정가 109달러와 거의 같다. 좋은 일이 다 일어나야 본전인 자리다.
+- 이익이 늘어난 이유가 아직 약하다. 오래 40% 안팎이던 매출총이익률이 50.7%로 뛰었지만, 회사는 그 원인을 제품 구성과 공장 가동률 덕이라고 적었다. 값을 올려 받았다는 말은 없다. 가동률이 꺾이면 되돌아갈 수 있는 이익이다.
+- 기대할 수 있는 수익이 얇다. 좋고 나쁜 경우를 다 섞으면 2년 뒤 기대 수익은 본전 수준이고, 5년 뒤도 1.29배에 그친다. 반도체 경기가 꺾이면 영업이익이 적자로 갈 수 있는 구조라 아래쪽 폭이 더 넓다.
+③ <strong>언제 다시 보나</strong> — 10월 29일 실적 발표에서 매출총이익률이 더 올라가고 내년 매출 전망이 큰 폭으로 제시되면 다시 본다. 가격으로는 83달러 아래로 내려오면 다시 본다.
+④ <strong>반대로 볼 이유</strong> — 장비 회사 테라다인이 이 회사 주식을 주당 약 134달러에 사들이기로 했고, 메모리 고객 매출이 빠르게 늘고 있다. 이익률 상승이 일시적 호황이 아니라 구조 변화라면 지금 가격은 오히려 싼 편일 수 있다.
+⑤ <strong>아직 모르는 것</strong> — 프로브카드 시장 전체 크기와 경쟁사 고객 구성을 1차 자료로 확인하지 못했고, 재무책임자 교체 경위도 모른다.
+낮은 신뢰도의 참고 판단이며, 최종 판단은 독자 몫이다.</p>
+</div>
+<h2>한 장 요약</h2>
+<div class="summary">
+<ul>
+<li>🔴 <strong>2분기에 마진의 벽을 넘었다.</strong> 매출 2.58억 달러(전년 대비 +31.9%), 총마진 50.7%(전년 37.3%), 영업이익률 22.4%(전년 6.3%)다. 6월 보고서가 "곡괭이치고 약하다"고 본 영업이익률 7%대가 한 분기 만에 세 배가 됐다. 2017~2025년 연간 총마진은 39.0~41.9% 밴드였고 이번이 첫 돌파다(1분기 38.4%에서 매출원가 속 구조조정 2,150만 달러를 빼면 약 47.9%) 〔Specific-Dive〕.</li>
+<li>🔴 <strong>그러나 회사는 마진 개선의 원인을 "제품 믹스와 공장 가동률"로 적었다.</strong> 판가 인상 공시는 없다. 그래서 "병목이라 값을 올린다"는 증거는 아직 없고, 사이클이 꺾여 가동률이 내려가면 되돌려질 수 있는 마진이다.</li>
+<li>🔴 <strong>10/6 Teradyne가 3억 달러를 넣는다(주당 약 $134.24 · 223만 주 · 약 2.9% 희석).</strong> 테스트 장비 1위권 회사가 기술 협력과 함께 지분을 산 것이다. 발표 뒤 주가는 오히려 $139.67 → $105.01로 떨어졌다(반도체 전반 급락과 겹침).</li>
+<li>🟠 <strong>돈은 HBM과 고성능 로직으로 들어온다.</strong> 2분기 DRAM 프로브카드 매출 증가분의 약 75%가 HBM이고, 파운드리·로직은 네트워크·고성능 연산 칩이 끌었다. 공동 패키지 광학(CPO) 테스트 장비 Triton이 시스템 부문을 끌어올렸다.</li>
+<li>🟠 <strong>큰손 한 곳 의존은 그대로다.</strong> SK하이닉스 24.3% · TSMC 11.0% · 출하지 대만 36.6% · 한국 28.4%다. 직접 경쟁사 Technoprobe(이탈리아)는 영업이익률이 FORM보다 높다.</li>
+<li><strong>7축 종합 75점 / 100 (⭐3.98 병기 · 상위/양호 경계)</strong> · 6/8 ≈69점(구 체계 환산 ±3) → <strong>+6점 상승</strong>(숫자·나무 축 개선) · 감점이 큰 칸 = 옆의 나무 수익모델 우월성 ⚪ · 옆의 나무 고객 구성 ⚪ · 산 산업 성장률 ⚪ · 사업·thesis 매력도 · 밸류 멀티플 미반영 · 5점 이내 차이 = 동급</li>
+<li><strong>분면 「강한데 비싼」 → 가운데 쪽 경계로 이동(잠금장치 1/3)</strong> · <strong>0to1 Track A 3/7 · ⭐3.5 · tell 혼재</strong> · <strong>밸류 🔴 고평가(신뢰도 낮음 · 동종 대비 할인은 마진 열위로 설명)</strong> · <strong>내구성 🟢 생존 · 이익 ⚪ 사이클 노출</strong> · <strong>🎯 🔴 현재가 진입 보류 — 약 $83 이하 또는 10/29 실적 마진·가이던스 확인 후 재검토</strong></li>
+<li>🟠 <strong>업종 체크리스트가 찾은 것(Specific-Dive)</strong> — 총마진은 2017~2025년 내내 39~42%에 있다가 이번에 처음 50%를 넘었다. 판가 증거는 없고 일부는 공장 통폐합 효과다. SK하이닉스에는 한국 티에스이가 이미 HBM 포함 프로브카드를 공급한다는 경쟁사 공시가 있다 — FORM이 아직 몇 배 크지만 고객은 견줄 공급사를 쥐고 있다.</li>
+<li>🧑‍⚖️ 판사 한 줄: "⚪ 지켜보기 — 사업은 좋아졌지만 현재가가 이미 낙관 시나리오 적정가와 같아 기대 수익이 얇다 · 낮은 신뢰도 참고 판단."</li>
+</ul>
+</div>
+<figure class="dd-fig"><div id="fig-score7"></div><div class="dd-legend" id="fig-score7-leg"></div><figcaption id="fig-score7-cap"></figcaption></figure>
+
+<blockquote>
+<p>📎 <strong>하위 Dive</strong> — 이번 회차는 <code>--light</code>라 하위 Dive(R·History·People·chart)를 새로 돌리지 않았고, 90일 안의 기존 보고서도 없어 각 축은 Deep-Dive 표준 깊이로 직접 썼다. 업종 체크리스트(Specific-Dive)는 같은 업종 라이브러리(반도체 장비)가 있어 빈칸 감사와 상위 3항목만 돌렸다(15항목 감사 · 반영 지시 10건).</p>
+</blockquote>
+<p><strong>배경 (1회만)</strong> — FormFactor는 반도체 웨이퍼를 자르기 전에 칩 하나하나에 전기 신호를 넣어 불량을 가려내는 "프로브카드"를 만든다. 수천~수만 개의 미세한 바늘(MEMS 프로브)이 칩의 단자에 동시에 닿아야 해서, 칩 설계가 바뀔 때마다 카드를 새로 맞춤 제작한다. 사업 부문은 프로브카드(매출의 약 81%)와 시스템(프로브 스테이션·극저온 장비·CPO 테스트 장비, 약 19%) 두 개다. 본사는 캘리포니아 리버모어다.</p>
+<hr />
+<h2 id="delta">6/8 이후 바뀐 것 — 대조표</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 좋아진 것은 마진·현금·대형 전략 투자자다. 나빠진 것은 주가 변동성과 최대 고객 의존이 여전하다는 점이다. 새로 확인한 것은 마진 개선이 판가가 아니라 믹스·가동률에서 왔다는 회사 설명이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>6/8</th>
+<th>10/18</th>
+<th style="text-align: center;">방향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>주가</td>
+<td>$116.70</td>
+<td>$105.01(9/30 $149.31 고점 뒤 −30%)</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>분기 매출</td>
+<td>1분기 $226.1M</td>
+<td>2분기 $258.2M(+31.9% YoY) · 3분기 가이드 $270M ±10M</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>GAAP 총마진</td>
+<td>1분기 38.4%</td>
+<td>2분기 50.7% · 3분기 가이드 52.0% ±1.5%</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>GAAP 영업이익률</td>
+<td>1분기 7.4%</td>
+<td>2분기 22.4%</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>잉여현금</td>
+<td>FY25 $11.7M</td>
+<td>상반기 $83.3M</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>전략 투자자</td>
+<td>없음</td>
+<td>Teradyne 3억 달러 사모(4분기 종결 예정)</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>최고재무책임자</td>
+<td>Shai Shahar</td>
+<td>Aric McKinnis(Form 4 직함 기준 · 교체 경위 미수집)</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>주식 보상 한도</td>
+<td>—</td>
+<td>주총에서 500만 주 추가 승인(약 6.4%)</td>
+<td style="text-align: center;">🟠</td>
+</tr>
+<tr>
+<td>최대 고객</td>
+<td>SK하이닉스 20~25%</td>
+<td>SK하이닉스 24.3%</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+<tr>
+<td>7축 종합</td>
+<td>⭐3.8(≈69점 · 구 체계 환산)</td>
+<td>75점</td>
+<td style="text-align: center;">🟢 +6</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Part 1 — Top-Down 7계층</h2>
+<h2 id="a">Section A. 🌦️ 날씨 — 지정학 + 거시 (장기 구조)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 반도체 동맹과 AI 인프라 투자라는 큰 바람은 순풍이다. 다만 매출의 65%가 대만·한국으로 나가고 주가는 반도체 사이클과 위험선호에 크게 흔들려, 날씨 점수는 중상에서 멈춘다.</p>
+</blockquote>
+<h3>A.1 지정학 — 동맹 쪽 테스트 공급망</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 미국 회사이고 중국 매출은 6.5%라 수출통제 피해는 작다. 위험은 수출이 아니라 출하지가 대만·한국에 몰린 꼬리 위험이다.</p>
+</blockquote>
+<ul>
+<li><strong>미·중 패권</strong> 🟢 — 미국 본사·미국 공장(리버모어·텍사스 Farmers Branch 신공장 4분기 말 가동)이고, 고객은 TSMC·SK하이닉스·인텔 같은 동맹국 칩 제조사다. 중국 출하 비중은 2분기 6.5%다.</li>
+<li><strong>지정학 이벤트 노출</strong> ⚪ — 2분기 출하지 대만 36.6% · 한국 28.4%다. 대만해협 충돌은 확률은 낮아도 일어나면 매출의 3분의 1 이상이 한꺼번에 멈추는 자리다.</li>
+<li><strong>수출통제·관세</strong> 🟡 — 2026년 2월 대법원이 비상경제권한법(IEEPA) 관세를 무효로 판단해, 회사는 3분기에 약 700만~900만 달러의 관세 환급을 예상한다(10-Q). 일회성이라 정상 마진 판단에서는 뺀다.</li>
+<li><strong>국가안보 우선순위</strong> 🟢 — Fryman의 대만 억제 4기둥 중 "AI 리더십"은 첨단 칩 공급에 달렸고, 첨단 칩은 테스트 없이 출하되지 않는다.</li>
+</ul>
+<h3>A.2 거시 — 장부는 금리에 둔하고, 주가는 예민하다</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚이 사실상 없어 고금리가 회사를 다치게 하지는 않는다. 그러나 주가는 반도체 사이클과 위험선호를 그대로 탄다.</p>
+</blockquote>
+<ul>
+<li><strong>금리</strong> 🟡 — 차입은 건물 담보 대출 약 1,160만 달러뿐이고 금리 스왑으로 고정했다. 현금·유가증권 3.46억 달러라 금리가 오르면 이자수익이 조금 는다. 대신 주가 멀티플은 금리에 민감하다(베타 1.18).</li>
+<li><strong>경기·사이클</strong> ⚪ — 2023년 메모리 불황 때 매출이 전년 대비 −11.3% 줄었다. 백로그를 공시하지 않는 "주문 받고 바로 출하" 구조라 하강 신호가 늦게, 크게 온다. 더 깊은 기록으로 2009~2016년 8년 연속 영업적자가 있다 〔Specific-Dive〕.</li>
+<li><strong>달러</strong> 🟡 — 매출 대부분이 달러 표시이고 엔·대만달러·원 선물로 일부 헤지한다(10-Q 파생상품 주석).</li>
+</ul>
+<h3>A.3 thesis anchor 매핑</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — AI를 산업혁명 인프라로 보는 틀(성상현)과 대만 억제 틀(Fryman)에는 잘 맞는다. 달러·유가·연준 틀과는 간접 연결뿐이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>틀 (사용자 메모리)</th>
+<th style="text-align: center;">정합</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fryman 대만 억제</td>
+<td style="text-align: center;">🟢</td>
+<td>첨단 칩 공급망의 테스트 단계 · 동맹국 고객</td>
+</tr>
+<tr>
+<td>달러 패권 / Compute Dollar</td>
+<td style="text-align: center;">⚪</td>
+<td>직접 연결 없음</td>
+</tr>
+<tr>
+<td>이란 전쟁 매크로</td>
+<td style="text-align: center;">⚪</td>
+<td>유가 → 물가 → 금리 경로로만 간접</td>
+</tr>
+<tr>
+<td>성상현 "AI = 디지털 산업혁명 인프라"</td>
+<td style="text-align: center;">🟢</td>
+<td>강세 업종 목록에 반도체 장비·HBM 명시</td>
+</tr>
+<tr>
+<td>Warsh 이중 전략(표면 완화·실질 긴축)</td>
+<td style="text-align: center;">⚪</td>
+<td>장부 영향 작음 · 멀티플 할인율 경로만</td>
+</tr>
+<tr>
+<td>Carnegie 3진영</td>
+<td style="text-align: center;">🟡</td>
+<td>AI 투자 지속(Excited) 가정에 수요가 기대</td>
+</tr>
+<tr>
+<td>사용자 매크로 view</td>
+<td style="text-align: center;">⚪</td>
+<td>위험선호 하락 국면에 고베타 장비주 취약(10월 −30%가 실례)</td>
+</tr>
+</tbody>
+</table>
+<h3>A.4 매크로 민감도</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회사 이익보다 주가가 거시에 더 크게 반응하는 종목이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>변수</th>
+<th>영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>정책금리 +100bp</td>
+<td>이자수익 연 약 +350만 달러(현금 3.46억 달러 기준) · 주가 멀티플은 할인</td>
+</tr>
+<tr>
+<td>10년물</td>
+<td>멀티플 할인율 경로</td>
+</tr>
+<tr>
+<td>달러</td>
+<td>매출 달러 표시 · 아시아 원가 일부 헤지</td>
+</tr>
+<tr>
+<td>유가</td>
+<td>직접 원가 노출 작음</td>
+</tr>
+<tr>
+<td>이란</td>
+<td>간접 · 물류·보험 마찰</td>
+</tr>
+<tr>
+<td>엔 캐리 청산</td>
+<td>고베타 기술주 동반 매도 경로</td>
+</tr>
+</tbody>
+</table>
+<h3>A.5 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 안보·AI 칸이 점수를 올리고, 출하지 집중·사이클·간접 연결 칸이 끌어내린다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>하위 칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>미·중 패권 노출</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>지정학 이벤트 노출(대만·한국 65%)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>수출통제·관세</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>국가안보 우선순위</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>금리</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>경기·사이클 민감도</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>달러</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>Fryman</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>달러 패권 / Compute Dollar</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>이란</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>성상현 AI 인프라</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>Warsh 이중 전략</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>Carnegie</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>사용자 매크로 view</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td><strong>날씨 ⭐</strong></td>
+<td style="text-align: center;">51 ÷ 14</td>
+<td style="text-align: center;"><strong>3.64</strong> → 득점 16.5 / 25</td>
+</tr>
+</tbody>
+</table>
+<p><strong>▶ 신호</strong> — 🟢: 미국 본토 테스트 공급망 추가 지원 · Farmers Branch 가동. 🔴: 대만해협 군사 긴장 · 한국·대만산 반도체 관세 · 중국 추가 수출통제가 동맹국 판매까지 묶음.</p>
+<hr />
+<h2 id="b">Section B. ⛰️ 산 — 산업 (반도체 · AI 칩 · HBM)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 세상을 바꾸는 산업이고 국가 자본도 들어온다. 다만 산업 전체 성장률은 연 30%에 못 미쳐 이 칸 하나가 점수를 깎는다.</p>
+</blockquote>
+<h3>B.1~B.2 세상 바꿈 · 국가 자본</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 두 질문 모두 "예"다.</p>
+</blockquote>
+<ul>
+<li><strong>세상을 바꾸는 산업인가</strong> ✅ — AI 칩·HBM·첨단 패키징은 앞으로 5~10년 연산 인프라의 핵심이다.</li>
+<li><strong>국가 자본</strong> ✅ — 미국 반도체지원법(CHIPS)·중국 국가반도체기금이 같은 산업에 들어간다. 이 산업에서 뒤처지면 5~10년 안에 되돌리기 어렵다.</li>
+</ul>
+<h3>B.3 내러티브 5축</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 기술·정책·지정학·자본 네 축이 엮인 매우 강한 산업이다(사회 축만 약함).</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">판정</th>
+<th style="text-align: center;">깊이</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔧 기술</td>
+<td style="text-align: center;">✅ HBM·CPO·첨단 패키징</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>👥 사회</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>🏛️ 정책</td>
+<td style="text-align: center;">✅ CHIPS·수출통제</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>🌐 지정학</td>
+<td style="text-align: center;">✅ 대만·미중</td>
+<td style="text-align: center;">4.5</td>
+</tr>
+<tr>
+<td>💰 자본</td>
+<td style="text-align: center;">✅ AI 설비투자</td>
+<td style="text-align: center;">4.5</td>
+</tr>
+</tbody>
+</table>
+<p>4/5축 = "매우 강력" 등급(이 표의 색은 파급력 강도 표기라, 점수 환산에서는 4~5축을 ⭐5로 읽는다).</p>
+<figure class="dd-fig"><div id="fig-c3"></div><div class="dd-legend" id="fig-c3-leg"></div><figcaption id="fig-c3-cap"></figcaption></figure>
+
+<h3>B.4 산업 규모</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 반도체 전체는 연 10%대, 프로브카드 시장은 수십억 달러 규모로 작다. 연 30% 성장 산업은 아니다.</p>
+</blockquote>
+<ul>
+<li>프로브카드 세계 시장은 약 25억~35억 달러 수준으로 추정된다(업계 추정 · 1차 미확보). 반도체 전체는 2030년 1조 달러 내외로 연 10%대 성장 전망이 통설이다.</li>
+<li>HBM·고성능 로직·CPO 하위 시장은 이보다 빠르다. FORM의 DRAM 매출은 FY23 $113.8M → FY25 $247.4M로 2년 만에 두 배가 넘었다.</li>
+</ul>
+<h3>B.5 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 산업 크기 칸만 ⚪이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>하위 칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>세상 바꿈</td>
+<td style="text-align: center;">YES</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>국가 자본</td>
+<td style="text-align: center;">YES</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>내러티브 5축(4/5)</td>
+<td style="text-align: center;">매우 강력</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>산업 성장률·규모(30%+ 아님)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td><strong>산 ⭐</strong></td>
+<td style="text-align: center;">17.5 ÷ 4</td>
+<td style="text-align: center;"><strong>4.38</strong> → 득점 10.5 / 12.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>▶ 신호</strong> — 🟢: HBM 세대 전환(HBM4 → HBM4E) 일정 앞당김 · CPO 양산 본격화. 🔴: AI 설비투자 감속 · 메모리 공급과잉.</p>
+<hr />
+<h2 id="c">Section C. 🌲 숲 — 섹터 (반도체 테스트 · 프로브카드)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 프로브카드는 HBM·고성능 칩의 수율을 지키는 병목 부품이고 FORM은 1~2위다. 다만 마진 개선이 판가가 아니라 믹스·가동률에서 왔다고 회사가 적어, 병목 칸들은 만점이 아니라 🟡에서 멈춘다.</p>
+</blockquote>
+<h3>C.0 이 산업의 돈과 이익 — 두 질문</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 돈은 하이퍼스케일러 → 칩·메모리 회사 → 장비 회사 순으로 흐른다. 이익은 지불자인 칩·메모리 회사에 가장 두껍게 쌓이고, 장비 단계 중에서는 테스트 쪽이 3년 연속 두꺼워졌다.</p>
+</blockquote>
+<p><strong>돈은 어디로, 왜 흐르나</strong> — 빅테크가 AI 데이터센터를 짓기 위해 GPU와 HBM을 산다. 그 칩을 만드는 TSMC·SK하이닉스·마이크론이 공장을 늘리고(업종 입력: TSMC 2분기 설비투자 전년 대비 +67% · 마이크론 FY26 설비지출 +94%), 그 공장 예산이 장비 회사로 간다. 테스트는 그중 "칩을 다 만든 뒤 불량을 가려내는" 단계라, 칩 수가 늘고 칩이 복잡해질수록(HBM은 다이를 12~16장 쌓는다) 테스트 시간·카드 수요가 함께 는다. 입구의 돈 원천은 빅테크의 AI 설비투자이고, 끊기는 조건은 AI 서비스 수익이 투자를 정당화하지 못해 빅테크가 설비투자를 줄이는 것이다.</p>
+<p><strong>이익은 어디에 쌓이나</strong> (연간 영업이익률 · 3개년 · 야후 파이낸스 연간 재무 · 회계연도 기준이 회사마다 다름)</p>
+<table>
+<thead>
+<tr>
+<th>단계</th>
+<th>회사</th>
+<th>3개년 영업이익률</th>
+<th style="text-align: center;">방향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>칩 설계</td>
+<td>NVIDIA</td>
+<td>54.1% → 62.4% → 60.4%</td>
+<td style="text-align: center;">높게 유지</td>
+</tr>
+<tr>
+<td>파운드리</td>
+<td>TSMC</td>
+<td>42.6% → 45.7% → 50.8%</td>
+<td style="text-align: center;">↑</td>
+</tr>
+<tr>
+<td>메모리</td>
+<td>Micron</td>
+<td>−34.8% → 5.2% → 26.2%</td>
+<td style="text-align: center;">↑↑</td>
+</tr>
+<tr>
+<td>전공정 장비</td>
+<td>어플라이드(AMAT)</td>
+<td>28.9% → 28.9% → 29.9%</td>
+<td style="text-align: center;">→</td>
+</tr>
+<tr>
+<td>전공정 장비</td>
+<td>램리서치(LRCX)</td>
+<td>28.7% → 32.0% → 35.3%</td>
+<td style="text-align: center;">↑</td>
+</tr>
+<tr>
+<td>노광</td>
+<td>ASML</td>
+<td>32.8% → 31.9% → 34.6%</td>
+<td style="text-align: center;">하락 후 반등</td>
+</tr>
+<tr>
+<td>공정제어</td>
+<td>KLA</td>
+<td>37.1% → 41.2% → 41.7%</td>
+<td style="text-align: center;">↑</td>
+</tr>
+<tr>
+<td>테스트 장비</td>
+<td>Advantest</td>
+<td>16.8% → 29.3% → 44.2%</td>
+<td style="text-align: center;">↑↑</td>
+</tr>
+<tr>
+<td>테스트 장비</td>
+<td>Teradyne</td>
+<td>19.5% → 19.6% → 21.6%</td>
+<td style="text-align: center;">↑</td>
+</tr>
+<tr>
+<td>프로브카드</td>
+<td>Technoprobe</td>
+<td>19.5% → 12.4% → 21.7%</td>
+<td style="text-align: center;">하락 후 반등</td>
+</tr>
+<tr>
+<td>프로브카드</td>
+<td><strong>FormFactor</strong></td>
+<td><strong>1.5% → 5.8% → 7.7%</strong> (2026 상반기 15.4%)</td>
+<td style="text-align: center;">↑</td>
+</tr>
+<tr>
+<td>후공정</td>
+<td>Amkor</td>
+<td>7.2% → 6.9% → 7.0%</td>
+<td style="text-align: center;">→</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>결론</strong> — 이익은 지불자(칩 설계·파운드리·메모리)에 가장 두껍게 쌓인다. 장비 단계는 전공정 상위 3사 기준으로 혼재(램리서치·ASML 확장 · 어플라이드 제자리)라는 업종 판정에 <strong>동의한다</strong>. 다만 FORM이 속한 <strong>테스트 하위 단계(Advantest·Teradyne·프로브카드 2사)는 3개년 모두 확장</strong>이라, 이 단계만 보면 업종 판정(이익 y · 혼재)보다 <strong>강하다 — 업종 판정과 부분 불일치</strong>로 적는다.</li>
+<li>🔴 같은 단계 안에서도 FORM의 절대 마진은 가장 얇은 편이다. 이익이 단계에 쌓인다고 FORM에 쌓인다는 뜻은 아니다(아래 렌트 포획 판정).</li>
+</ul>
+<h3>C.1 병목 시점 매트릭스</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금(HBM·고성능 로직 테스트)과 1~2년 뒤(HBM4E·CPO 양산)는 병목이 맞다. 그러나 이 병목이 FORM의 판가로 바뀌었다는 증거는 아직 없다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>병목 단계</th>
+<th>본 종목 위치</th>
+<th>가격 반영</th>
+<th style="text-align: center;">유지 기간</th>
+<th>해소 경로</th>
+<th style="text-align: center;">렌트 포획</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 (0~6개월)</td>
+<td>HBM·고성능 로직 웨이퍼 테스트</td>
+<td>프로브카드 1~2위 · SK하이닉스 24.3%</td>
+<td>9/30 고점 뒤 −30%로 일부 되돌림</td>
+<td style="text-align: center;">1~2년</td>
+<td>Technoprobe·일본 MJC의 HBM 카드 증설 · Farmers Branch 가동으로 FORM 자체 캐파 확대</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>T+6~24개월</td>
+<td>HBM4E·CPO 양산 테스트</td>
+<td>Triton(CPO 테스트) · Keystone Photonics 광 프로브</td>
+<td>낮음</td>
+<td style="text-align: center;">추정 불가</td>
+<td>CPO 표준이 장비 업체 내재화로 가면 해소</td>
+<td style="text-align: center;">🟡(4문만)</td>
+</tr>
+<tr>
+<td>T+2~5년</td>
+<td>첨단 패키징 전수 테스트(칩렛·하이브리드 본딩[추론 · 회사 공시 언급 없음])</td>
+<td>Teradyne 협력으로 테스트 체인 통합</td>
+<td>낮음</td>
+<td style="text-align: center;">추정 불가</td>
+<td>고객 자체 테스트 내재화 · 패키징 업체 표준 카드</td>
+<td style="text-align: center;">🟡(4문만)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>지불자 경로</strong> — 큰손 = SK하이닉스(HBM)·TSMC(첨단 로직). 막힘 = HBM은 다이를 12~16장 쌓는데, 불량 다이 하나가 섞이면 스택 전체를 버린다. 그래서 쌓기 전에 웨이퍼 단계에서 "정상 다이"를 고온·고속으로 확인해야 한다. 경로 = <strong>직접</strong>(프로브카드를 칩 제조사에 직접 판다) · 고객 집중 SK하이닉스 24.3%(고객 검증 A — 10-Q 실명 공시) · 가격 인상 테스트 🟡. 직접 판매 자리라 큰손의 협상력에 마진이 눌릴 수 있는 자리이기도 하다.</li>
+<li><strong>렌트 포획 🟡 (T0)</strong> — 4문 점검: ① 계약 구조 — 설계별 맞춤 단건 주문이라 매 주문 가격 재협상(포착 가능하나 장기 고정가 아님) ② 구매자 협상력 — 최대 고객 24.3%로 50% 미만이지만, 고객 단위 복수 공급은 1차로 확인된다 — 한국 티에스이 2026 반기보고서가 SK하이닉스를 프로브카드 고객으로 적고 경쟁 공급사로 에이엠에스티·엠투엔·에스엘디·FormFactor·Advantest를 나열했으며, HBM 프로브카드를 "전세계 HBM 생산 업체"에 공급한다고 썼다(같은 HBM 품목의 분할 비율은 미확인) 〔Specific-Dive〕 ③ 캐파 소유 — 자체 공장(포착) ④ 우회 비용 — 맞춤 설계·인증에 시간이 들어 단기 우회는 비싸다. <strong>실현 증거</strong>: 영업이익률은 SEC 연간 기준 1.5% → 5.8% → 7.7%, 2026년 2분기 22.4%로 확장했지만, 10-Q는 그 원인을 "유리한 제품 믹스와 높은 공장 가동률, 마진 개선 프로그램"으로 적었고 판가 인상은 언급이 없다. → 판가 상승이 원가 상승을 앞섰다는 실현 증거가 없어 🟢가 아니라 🟡다(복수 공급은 확인되지만 마진이 확장 중이라 🔴 상한 구조 근거로는 쓰지 않고 🟡 유지).</li>
+</ul>
+<h3>C.2 4중 필터</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 과점 시장의 1~2위이고 마진은 올라오는 중이다. 네 칸 모두 🟡다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>필터</th>
+<th style="text-align: center;">등급</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">🟢→🟡(렌트 포획 상한)</td>
+<td>2분기 사상 최대 매출 · 3분기도 최대 가이드</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">🟡 과점</td>
+<td>FORM · Technoprobe · MJC(일본) · 한국 중소 공급사</td>
+</tr>
+<tr>
+<td>③ 섹터 1~2등</td>
+<td style="text-align: center;">⭐4</td>
+<td>FY25 프로브카드 매출 $637.9M vs Technoprobe 약 €630M — 1위 다툼</td>
+</tr>
+<tr>
+<td>④ 총마진/영업이익률</td>
+<td style="text-align: center;">🟡</td>
+<td>2분기 GAAP 50.7% / 22.4% · 연간은 아직 7.7%</td>
+</tr>
+</tbody>
+</table>
+<h3>C.3 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 병목은 맞지만 가격 증거가 없어 세 시점 칸과 수요 칸이 모두 🟡4로 묶였다. 상한이 없었다면 숲은 약 4.3이었다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>하위 칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 병목</td>
+<td style="text-align: center;">🟢5→🟡4(렌트 포획 🟡) (상한)</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>T+6~24개월</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>T+2~5년</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">🟢5→🟡4(렌트 포획 🟡) (상한)</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>② 경쟁</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>③ 1~2등</td>
+<td style="text-align: center;">⭐4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>④ 마진</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td><strong>숲 ⭐</strong></td>
+<td style="text-align: center;">28 ÷ 7</td>
+<td style="text-align: center;"><strong>4.00</strong> → 득점 9.4 / 12.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>▶ 신호</strong> — 🟢: 회사가 판가 인상 또는 HBM 카드 단가 상승을 실적 발표·10-Q에 명시 · 사이클 둔화기에도 총마진 45% 이상 유지. 🔴: SK하이닉스 HBM 카드의 복수 조달 확인 · Technoprobe의 DRAM 점유 확대 · 가동률 하락과 함께 총마진 40% 아래 복귀.</p>
+<hr />
+<h2 id="d">Section D. 🌳 나무 — 기업</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚 없이 스스로 돈을 벌어 공장을 짓는 곡괭이다. 해자는 맞춤 설계에서 오는 전환 비용 하나가 확실하고, 가격을 올릴 수 있다는 증거는 아직 없다.</p>
+</blockquote>
+<h3>D.0 제품·수익모델</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 칩 설계가 바뀔 때마다 다시 사야 하는 맞춤 하드웨어를 판다. 구독은 아니지만 설계 주기가 짧은 HBM·AI 칩에서 재주문이 잦다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시장</th>
+<th style="text-align: right;">2분기 FY26</th>
+<th style="text-align: right;">2분기 FY25</th>
+<th style="text-align: right;">YoY</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>파운드리·로직</td>
+<td style="text-align: right;">$121.8M</td>
+<td style="text-align: right;">$99.5M</td>
+<td style="text-align: right;">+22.4%</td>
+</tr>
+<tr>
+<td>DRAM(HBM 포함)</td>
+<td style="text-align: right;">$85.0M</td>
+<td style="text-align: right;">$57.1M</td>
+<td style="text-align: right;">+49.0%</td>
+</tr>
+<tr>
+<td>Flash</td>
+<td style="text-align: right;">$2.9M</td>
+<td style="text-align: right;">$5.5M</td>
+<td style="text-align: right;">−48.4%</td>
+</tr>
+<tr>
+<td>시스템</td>
+<td style="text-align: right;">$48.5M</td>
+<td style="text-align: right;">$33.7M</td>
+<td style="text-align: right;">+44.1%</td>
+</tr>
+<tr>
+<td><strong>합계</strong></td>
+<td style="text-align: right;"><strong>$258.2M</strong></td>
+<td style="text-align: right;"><strong>$195.8M</strong></td>
+<td style="text-align: right;"><strong>+31.9%</strong></td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-d0"></div><div class="dd-legend" id="fig-d0-leg"></div><figcaption id="fig-d0-cap"></figcaption></figure>
+
+<ul>
+<li><strong>주력 ① 고급 프로브카드(파운드리·로직)</strong> — 무엇: GPU·네트워크 칩·고성능 CPU 웨이퍼를 시험하는 맞춤 카드. 어떻게: MEMS 공정으로 만든 미세 바늘 수만 개가 칩 단자에 동시에 닿아 전기 신호를 주고받는다. 누가·왜: TSMC(11.0%)와 칩 설계사 — 불량 칩을 패키징 전에 걸러 값비싼 패키지 낭비를 막는다. 차별점: 고속·고온 측정과 미세 피치. 매출 위치: 프로브카드 부문 최대 시장.</li>
+<li><strong>주력 ② HBM용 DRAM 프로브카드</strong> — 무엇: 메모리 다이를 쌓기 전에 시험하는 카드. 왜: 불량 다이 하나가 HBM 스택 전체를 버리게 만든다. 고객: SK하이닉스(24.3%). 2분기 DRAM 매출 증가분의 약 75%가 HBM이다(10-Q).</li>
+<li><strong>성장 ③ Triton(CPO 테스트 장비)·Keystone Photonics</strong> — 빛으로 신호를 주고받는 칩(실리콘 포토닉스·공동 패키지 광학)을 양산 단계에서 시험하는 장비. 2025년 12월 Keystone Photonics를 2,060만 달러에 인수해 광 프로브 기술을 들였다. 시스템 부문 2분기 +44%의 주 동력이다.</li>
+<li><strong>과금</strong> — 하드웨어 판매(단가 × 수량) · 2분기 매출의 98.6%가 출하 시점에 인식된다. 백로그는 공시하지 않는다.</li>
+<li><strong>고객 검증 등급</strong> — SK하이닉스·TSMC = <strong>A</strong>(10-Q 실명·반복 매출) · Teradyne 협력 = <strong>D</strong>(기술 협력 발표 · 금액·물량 미공시 — 지분 투자 3억 달러는 사실이나 공동 매출 약정은 아님).</li>
+</ul>
+<h3>D.5 곡괭이 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 누가 AI 칩 경쟁에서 이기든 테스트는 필요하고, 그 장비 투자를 빚 없이 자기 현금으로 한다. 자가조달형이다.</p>
+</blockquote>
+<ul>
+<li><strong>곡괭이 질 (A) 자가조달형</strong> — ① 마진: 2분기 GAAP 총마진 50.7% ② 설비투자 강도: 상반기 $24.8M(매출의 5.1%) · 2025년 신공장 매입 때 일시 확대 ③ 외부 조달: 차입 사실상 0 · 자사주 매입 이력 ④ 현금 전환: 상반기 영업현금 $106.8M · 잉여현금 $83.3M.</li>
+<li><strong>마진 출처 3분해</strong> — (a) 사업 쪽: 믹스·가동률·구조조정(회사 설명) (b) 정부 이전지출: 캘리포니아 Competes 보조금 $18.0M은 부채(이연 보조금)로 잡혀 있고 손익 미인식 — 마진을 부풀리지 않는다 (c) 일회성: 3분기 IEEPA 관세 환급 700만~900만 달러 예상 → 3분기 마진에서 빼고 읽어야 한다. → 정책렌트형(P) 아님.</li>
+</ul>
+<h3>D.6 해자</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 맞춤 설계로 인한 전환 비용 하나만 증거가 있다. 가격을 올렸다는 증거가 없어 해자 점수는 상한 3에 걸린다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>유형</th>
+<th style="text-align: center;">작동</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 네트워크 효과</td>
+<td style="text-align: center;">❌</td>
+<td>해당 구조 없음</td>
+</tr>
+<tr>
+<td>② 브랜드</td>
+<td style="text-align: center;">⚠️</td>
+<td>peer 대비 판가 프리미엄 증거 없음 · 총마진은 Technoprobe와 비슷</td>
+</tr>
+<tr>
+<td>③ 전환 비용</td>
+<td style="text-align: center;">✅</td>
+<td>칩 설계별 맞춤 · 최대 고객 SK하이닉스 비중이 다년간 24~27%로 유지(10-Q 상반기 26.8%) · 단 전환 비용은 설계 단위 — 고객이 복수 공급사를 이미 써 새 설계마다 다시 겨룬다 〔Specific-Dive〕</td>
+</tr>
+<tr>
+<td>④ 비용 우위</td>
+<td style="text-align: center;">❌</td>
+<td>Technoprobe 영업이익률(TTM 약 37%)이 FORM보다 높다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>가격 인상 테스트 🟡</strong> — 판가 인상 공시 없음 · 총마진 상승 원인 = 믹스·가동률(10-Q). 병목 지위 자체는 해자 근거로 쓰지 않는다.</li>
+<li>D.6-a = ✅ 1개 → ⭐3(가격 테스트 🟡 상한 3과 같음) · D.6-b = 자체 공장·특허(오래 가는 자산) + MEMS 공정 기술(진화 자산) 균형 → ⭐5 · <strong>D.6 ⭐4.0</strong> · 해자 내구성 = 3~5년(설계 2~3세대 · 낮은 확신).</li>
+</ul>
+<h3>D.7 확장성 · D.8 하방/상방</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 메모리·로직에서 광 테스트로 한 칸 넓혔다. 순현금과 Teradyne 자금으로 하방은 닫혀 있다.</p>
+</blockquote>
+<ul>
+<li><strong>D.7</strong> ⭐4 — 인접 1~2개 확장(CPO·실리콘 포토닉스·극저온 측정).</li>
+<li><strong>D.8</strong> 🟡 — 하방: 순현금 약 3.34억 달러 + Teradyne 3억 달러 예정 · 흑자. 상방: HBM·CPO가 커질수록 늘지만 시장 자체가 수십억 달러라 시총 10배 경로는 좁다.</li>
+</ul>
+<h3>D.9 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 자가조달 곡괭이 칸이 만점이고 나머지는 🟡다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>하위 칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D.0 수익모델·매출 품질</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>D.5 곡괭이 질 (A)</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>D.6 해자</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>D.7 확장성</td>
+<td style="text-align: center;">⭐4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>D.8 하방/상방</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td><strong>나무 ⭐</strong></td>
+<td style="text-align: center;">21 ÷ 5</td>
+<td style="text-align: center;"><strong>4.20</strong> → 득점 10.0 / 12.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>▶ 신호</strong> — 🟢: 판가 인상 후 물량 유지 확인 · Triton 고객 확대 공시. 🔴: SK하이닉스 비중 30% 초과 또는 고객 내재화 · CPO 테스트에서 장비 업체 직접 진입.</p>
+<hr />
+<h2 id="e">Section E. 🌲🌳 옆의 나무 — 경쟁</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 같은 프로브카드 사업에서 Technoprobe가 마진도 시장 평가도 더 높다. FORM은 테스트 업계 안에서 "따라가는 쪽의 1~2위"다.</p>
+</blockquote>
+<h3>E.1 비교 매트릭스 (야후 2026-10-16 · 분모 TTM · GAAP · 통화는 비율만 비교)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — FORM은 총마진은 비슷하지만 영업이익률과 시장 배수가 직접 경쟁사보다 낮다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>FORM</th>
+<th>Technoprobe</th>
+<th>Teradyne</th>
+<th>KLA(대장주)</th>
+<th>Cohu(열위)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>시총</td>
+<td>$8.2B</td>
+<td>약 €17.0B</td>
+<td>$50.8B</td>
+<td>$216B</td>
+<td>$2.4B</td>
+</tr>
+<tr>
+<td>매출 성장(YoY)</td>
+<td>+31.9%</td>
+<td>+42.4%</td>
+<td>+103.9%</td>
+<td>+15.2%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>총마진 / 영업이익률(TTM)</td>
+<td>46.2% / 24.1%</td>
+<td>49.0% / 36.7%</td>
+<td>59.2% / 33.2%</td>
+<td>61.3% / 42.5%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>주력 과금</td>
+<td>맞춤 하드웨어</td>
+<td>맞춤 하드웨어</td>
+<td>장비 + 서비스</td>
+<td>장비 + 서비스</td>
+<td>장비</td>
+</tr>
+<tr>
+<td>고객 집중</td>
+<td>SK하이닉스 24.3%</td>
+<td>미수집</td>
+<td>미수집</td>
+<td>미수집</td>
+<td>미수집</td>
+</tr>
+<tr>
+<td>고객 검증 등급</td>
+<td>A</td>
+<td>미수집</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>P/S (참고)</td>
+<td>9.1x</td>
+<td>22.2x</td>
+<td>11.4x</td>
+<td>15.9x</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-e1"></div><div class="dd-legend" id="fig-e1-leg"></div><figcaption id="fig-e1-cap"></figcaption></figure>
+
+<h3>E.2 종합 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 수익모델은 열위, 고객 구성은 경기에 민감, 경쟁 위치는 1~2위로 방어 가능이다.</p>
+</blockquote>
+<ul>
+<li><strong>(a) 수익모델 우월성</strong> ⚪ — 같은 맞춤 하드웨어인데 Technoprobe 영업이익률이 12%p 높다.</li>
+<li><strong>(b) 정부 vs 민간</strong> ⚪ — 사실상 100% 민간 칩 제조사 · 정부 계약의 완충 없음 → 사이클을 그대로 탄다.</li>
+<li><strong>(c) 경쟁 포지션</strong> 🟡 — 1~2위 · Teradyne 협력으로 테스트 체인 묶음 판매 가능성(고객 검증 D). 최대 위협 = Technoprobe의 DRAM·HBM 진입 확대와 한국 현지 공급사(티에스이 프로브카드 2025 +79% · 국내 +145%)의 추격(1~2년) 〔Specific-Dive〕.</li>
+</ul>
+<h3>E.3 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 경쟁 축이 이번 보고서에서 가장 약하다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>하위 칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>수익모델 우월성</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>정부 vs 민간 구성</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>경쟁 포지션</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td><strong>옆의 나무 ⭐</strong></td>
+<td style="text-align: center;">9 ÷ 3</td>
+<td style="text-align: center;"><strong>3.00</strong> → 득점 6.3 / 12.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>▶ 신호</strong> — 🟢: FORM 영업이익률이 Technoprobe 수준(30%대)으로 수렴. 🔴: Technoprobe의 SK하이닉스 HBM 카드 수주 확인.</p>
+<hr />
+<h2 id="f">Section F. 👤 사람</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 12년째 CEO가 마진 목표를 숫자로 달성했다. 내부자 지분은 작고 CEO는 정기 매도 계획으로 꾸준히 판다.</p>
+</blockquote>
+<h3>F.1 임원 8축</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 능력·도덕성은 높고, 회사 지분으로 묶인 정도(skin)는 낮다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 약력</td>
+<td style="text-align: center;">🟢</td>
+<td>CEO Mike Slessor · 물리학 박사 · 2014년부터 CEO</td>
+</tr>
+<tr>
+<td>② 명성</td>
+<td style="text-align: center;">🟡</td>
+<td>업계 평판 양호 · 대중 인지도 낮음</td>
+</tr>
+<tr>
+<td>③ 능력</td>
+<td style="text-align: center;">🟢</td>
+<td>"4개 분기 만에 매출 +30%, 비GAAP 총마진 +1,500bp, EPS 3배"(2분기 발표문)</td>
+</tr>
+<tr>
+<td>④ 도덕성</td>
+<td style="text-align: center;">🟢</td>
+<td>소송·회계 문제 미발견</td>
+</tr>
+<tr>
+<td>⑤ 비전</td>
+<td style="text-align: center;">사용자 ⭐ 대기</td>
+<td>💬 Claude: 실행형 경영자 — 판을 새로 짜기보다 마진 목표를 달성하는 쪽</td>
+</tr>
+<tr>
+<td>⑥ Skin in the Game</td>
+<td style="text-align: center;">⚪</td>
+<td>내부자 보유 0.72%(야후) · CEO 10b5-1 계획 매도 8/14·9/16·10/14(회당 약 1.1만~1.7만 주)</td>
+</tr>
+<tr>
+<td>⑦ 거버넌스</td>
+<td style="text-align: center;">🟡</td>
+<td>1주 1표 · 독립 이사회 · 2026 주총에서 임원 면책 조항 추가와 주식 보상 500만 주 확대</td>
+</tr>
+<tr>
+<td>⑧ 외부 평가</td>
+<td style="text-align: center;">⚪</td>
+<td>CFO 교체(Aric McKinnis) 경위 · 이직률 미수집</td>
+</tr>
+</tbody>
+</table>
+<h3>F.2 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 객관 7칸 평균 4.0이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>하위 칸</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 5 · ② 4 · ③ 5 · ④ 5 · ⑥ 2.5 · ⑦ 4 · ⑧ 2.5</td>
+<td style="text-align: center;">28 ÷ 7</td>
+</tr>
+<tr>
+<td><strong>사람 ⭐</strong></td>
+<td style="text-align: center;"><strong>4.00</strong> → 득점 9.4 / 12.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>▶ 신호</strong> — 🟢: 경영진 장내 매수 · 주주환원 재개. 🔴: CEO 계획 외 대량 매도 · 핵심 기술 임원 이탈.</p>
+<hr />
+<h2 id="g">Section G. 🔢 숫자 — 재무건전성</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 성장·마진·현금·재무상태 네 칸이 모두 만점이다. 다만 마진 급등은 한 분기 기록이고, 사이클 하강기를 아직 통과하지 않았다.</p>
+</blockquote>
+<h3>G.1 기본 정량</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚은 거의 없고 현금은 3.46억 달러다.</p>
+</blockquote>
+<ul>
+<li>2분기 매출 $258.2M · GAAP 순이익 $56.2M(EPS $0.71) · 비GAAP EPS $0.82</li>
+<li>현금 $109.8M + 유가증권 $235.9M = $345.6M · 차입 약 $11.6M(건물 대출 · 스왑 고정) · 리볼버 1.5억 달러 미인출(순레버리지 3.5배 이하 약정 준수)</li>
+<li>지분법 투자: 일본 기판사 FICT 20%($65.9M) · 이연 보조금 $18.0M · 미인식 세금혜택 $55.5M</li>
+<li>참고(점수 미반영): P/S 9.1x · EV/EBITDA 42.2x · 선행 P/E 27.1x · 후행 P/E 72.4x</li>
+</ul>
+<h3>G.1.5 🎯 시총 10배 랜드마크</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 10배면 Teradyne의 1.6배가 되어야 한다. 시장 크기로는 어렵다(규모 비교일 뿐).</p>
+</blockquote>
+<ul>
+<li>지금 FORM 약 $8.2B(Onto Innovation $10.8B 근처) → 텐배거면 약 $82B(Teradyne $50.8B · NXP $57.8B보다 큼). 프로브카드 시장 전체가 수십억 달러라 시총 10배는 비현실에 가깝다 — "우량 컴파운더" 경로다.</li>
+</ul>
+<figure class="dd-fig"><div id="fig-g15"></div><div class="dd-legend" id="fig-g15-leg"></div><figcaption id="fig-g15-cap"></figcaption></figure>
+
+<h3>G.3 4축 매트릭스</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 가속 성장 · 마진 확장 · 현금 창출 · 무차입이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>측정</th>
+<th style="text-align: center;">등급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 성장</td>
+<td>분기 YoY +31.9% · 4개 분기 연속 사상 최대 · 3분기 가이드 $270M</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>② 마진</td>
+<td>연간 OM 1.5% → 5.8% → 7.7% · 2분기 GAAP GM 50.7%</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>③ 현금</td>
+<td>상반기 영업현금 $106.8M · 잉여현금 $83.3M</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>④ 고금리 내구성(G.4-a 5칸)</td>
+<td>5/5 🟢</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+</tbody>
+</table>
+<h3>G.4 고금리 내구성 (G.4-a · 점수 반영)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이자·만기·변동금리·유동성 어느 칸도 걸리지 않는다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th>값</th>
+<th style="text-align: center;">등급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 이자보상</td>
+<td>이자비용 미미(분기 현금 이자 약 8만 달러)</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>② 순부채/EBITDA</td>
+<td>순현금</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>③ 만기 분산</td>
+<td>건물 대출 1건(2035)</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>④ 변동금리</td>
+<td>스왑으로 고정</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>⑤ 즉시 유동성</td>
+<td>$345.6M ÷ 유동부채 $164.2M = 2.1배</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+</tbody>
+</table>
+<p>물가 쪽(점수 미반영): 전가력 🟡 협상형 · 재고는 선입선출 표준원가 · 마진 개선이 재고 평가차익이라는 근거 없음.</p>
+<h3>G.5 궤적</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 2023년 바닥 이후 매출과 마진이 같이 올라왔다. 2027년 이익 추정치는 90일 사이 $2.79에서 $3.87로 올랐다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>연도</th>
+<th style="text-align: right;">매출</th>
+<th style="text-align: right;">영업이익률</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY23</td>
+<td style="text-align: right;">$663.1M</td>
+<td style="text-align: right;">1.5%</td>
+</tr>
+<tr>
+<td>FY24</td>
+<td style="text-align: right;">$763.6M</td>
+<td style="text-align: right;">5.8%</td>
+</tr>
+<tr>
+<td>FY25</td>
+<td style="text-align: right;">$785.0M</td>
+<td style="text-align: right;">7.7%</td>
+</tr>
+<tr>
+<td>FY26E</td>
+<td style="text-align: right;">약 $1.03B(상반기 실적 + 3분기 가이드 + 4분기 가정)</td>
+<td style="text-align: right;">상반기 15.4%</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-g5"></div><div class="dd-legend" id="fig-g5-leg"></div><figcaption id="fig-g5-cap"></figcaption></figure>
+
+<h3>G.6 실물 병목 7카테고리</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — AI 생산성과 공급망 재편 두 칸에 걸친다.</p>
+</blockquote>
+<p>AI 생산성(AI 칩 수율) 🟢 · 공급망 재편(미국 본토 공장) 🟡 · 나머지 해당 없음.</p>
+<h3>G.7 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 네 칸 만점이다. 마진 수준 자체는 아직 동종 최하위권이라는 점은 숲·옆의 나무 축에서 깎였다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>하위 칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 성장</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>② 마진 확장</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>③ 현금</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>④ 고금리 내구성</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td><strong>숫자 ⭐</strong></td>
+<td style="text-align: center;">20 ÷ 4</td>
+<td style="text-align: center;"><strong>5.00</strong> → 득점 12.5 / 12.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>▶ 신호</strong> — 🟢: 3분기(10/29) 총마진 가이드 상단 달성 · 4분기 Farmers Branch 가동 후에도 마진 유지. 🔴: 신공장 고정비가 매출 둔화와 겹쳐 영업이익률 15% 아래.</p>
+<h3>G.8 고금리·고물가 내구성 정밀 진단 (서브에이전트 위임 · 점수 미반영 · 낮은 신뢰도)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚·대출 약정·만기벽이 사실상 없어 고금리·고물가로 쓰러질 경로는 없다. 대신 이익은 사이클에 그대로 노출된다 — 물량이 꺾이는 시점에 텍사스 신공장 고정비가 붙으면 영업이익이 손익분기까지 내려갈 수 있다.</p>
+</blockquote>
+<p><strong>🏷️ 종합: 🟢 견딤(생존·유동성) · 이익 축은 ⚪ 조건부</strong> ‖ 신뢰도 낮음~중간 ‖ 판정을 뒤집는 변수 = 가동률(HBM 물량 × 신공장 고정비 흡수 속도)</p>
+<table>
+<thead>
+<tr>
+<th>기둥</th>
+<th style="text-align: center;">판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>금리</td>
+<td style="text-align: center;">🟢</td>
+<td>차입 $11.7M(스왑 고정 2.75% · 2035) · 리볼버 $150M 미인출 · 순현금이라 약정 위반 불가 · 고금리 = 이자수익 증가</td>
+</tr>
+<tr>
+<td>물가</td>
+<td style="text-align: center;">🟡</td>
+<td>발주서 기반 매입 · 세라믹 기판·회로기판·도금 소재 단독 공급 · 원자재 민감도·원가 분해 미공시 · 재고 평가차익 착시는 작음</td>
+</tr>
+<tr>
+<td>결합 충격</td>
+<td style="text-align: center;">⚪</td>
+<td>심각형(원가 +20%·금리 +300bp·물량 −20%) + 신공장 고정비 → GAAP 영업이익 약 −1,700만~+3,700만 달러 · FY23 실적(매출 −11%에 영업이익률 1.5%)을 보면 기준형에서도 손익분기 근처일 수 있다</td>
+</tr>
+<tr>
+<td>1970년대 생존 특성</td>
+<td style="text-align: center;">🟢2 🟡3 🔴0</td>
+<td>저부채·만기벽 없음은 강하고, 가격결정력·자본 경량·해자는 중간</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>장부 밖 약정</strong> — 🟢 맞다. 다만 "약정 0"은 아니다: 계약 약정 $36.6M(리스 $20.9M · 대출 원리금 $14.8M · 리볼버 수수료 $0.9M) + 조건부 보조금 $18.0M + 미인식 세금혜택 $55.5M = 약 $110M(유동성 $346M의 약 32% · Teradyne 종결 후 약 17%). 구매약정·보증 공시 0. 캘리포니아 공장 통폐합이 보조금의 고용·투자 유지 조건과 부딪히면 $18.0M 반환 가능성이 커진다[추론].</li>
+<li><strong>금리 레짐별 부호</strong> — 고금리 지속: 금리 (+) · 물가 (−) · 물량 (−) / 금리 인하·디스인플레: 금리 (−, 아주 작음) · 물가 (+) · 물량 (+).</li>
+<li><strong>🎯 버티는가</strong> — 🟢 버틴다. 이것은 내구성 문제가 아니라 사이클 문제다. 악화 신호 = 매출이 전년 대비 −10% 이상인 분기에 신공장 고정비가 매출원가로 넘어오는 경우(FY27 상반기). 낮은 신뢰도의 참고이며 매수·매도 신호가 아니다. 점수에 넣지 않는 별도 렌즈다.</li>
+</ul>
+<hr />
+<h2 id="h">Section H. 시나리오 · 렌즈 (경량)</h2>
+<h3>H.1 Bull / Base / Bear (5년 = 2031 · 희석 반영 81M주)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 기준 시나리오로는 5년 뒤 약 1.2배다. 확률을 곱한 기댓값은 1.29배로, 지금 가격은 낙관 시나리오가 있어야 매력이 커진다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: center;">확률</th>
+<th style="text-align: center;">2년</th>
+<th style="text-align: center;">3년</th>
+<th>5년 주가(배수)</th>
+<th>가정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🟢 Bull</td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: center;">1.5x</td>
+<td style="text-align: center;">1.8x</td>
+<td>$247 (2.35x)</td>
+<td>매출 $2.6B · 비GAAP 영업이익률 32% · P/E 28배 · HBM4E·CPO 양산</td>
+</tr>
+<tr>
+<td>🟡 Base</td>
+<td style="text-align: center;">50%</td>
+<td style="text-align: center;">1.0x</td>
+<td style="text-align: center;">1.1x</td>
+<td>$124 (1.18x)</td>
+<td>매출 $1.8B · 27% · 24배 · 회사 2030 목표 소폭 상회</td>
+</tr>
+<tr>
+<td>🔴 Bear</td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: center;">0.45x</td>
+<td style="text-align: center;">0.5x</td>
+<td>$46 (0.44x)</td>
+<td>메모리 다운사이클 · 매출 $1.2B · 18% · 20배</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>기댓값</strong> — 2년 0.99x · 3년 1.13x · 5년 1.29x. ⚠️ 5년 1.5배 미만 · 기준 2년 2.0배 미만 = 낙관 꼬리 의존.</li>
+<li><strong>암묵 출구 배수</strong> — 기준 5년 시총 약 $10.0B ÷ 매출 $1.8B = P/S 약 5.6배 · 낙관 약 $20.0B ÷ $2.6B = 약 7.7배. 지금 9.1배·역사 범위 약 2.5~15배·Technoprobe 22배보다 낮다 → 재평가 의존 낮음. 성장만으로 도달 가능한 가정이다.</li>
+</ul>
+<figure class="dd-fig"><div id="fig-h1"></div><div class="dd-legend" id="fig-h1-leg"></div><figcaption id="fig-h1-cap"></figcaption></figure>
+
+<h3>H.2 Catalyst</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 10월 말 실적과 연말 Teradyne 종결·신공장 가동이 가까운 시험대다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>일시</th>
+<th>이벤트</th>
+<th style="text-align: center;">영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-29</td>
+<td>3분기 실적(가이드 $270M · GAAP GM 52%) · 4분기 가이드</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2026년 4분기</td>
+<td>Teradyne 3억 달러 사모 종결(규제 승인 조건)</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>2026년 4분기 말</td>
+<td>Farmers Branch 생산 시작 · 공장 시동비가 매출원가로 이동(2분기 시동비 486만 달러 기준 총마진 약 −1.9%p) 〔Specific-Dive〕</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>2026년 12월</td>
+<td>Carlsbad 공장 생산 종료(구조조정 마무리)</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+</tbody>
+</table>
+<h3>H.3 ⚠️ Thesis 리스크 신호</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 마진이 사이클에 되돌려지는지, 큰손이 공급사를 늘리는지가 핵심 경보다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>신호</th>
+<th>관측 trigger</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>마진 되돌림</td>
+<td>GAAP 총마진 2분기 연속 45% 아래</td>
+</tr>
+<tr>
+<td>성장 훼손</td>
+<td>매출 YoY 2분기 연속 마이너스</td>
+</tr>
+<tr>
+<td>고객 협상력</td>
+<td>SK하이닉스 비중 30% 초과</td>
+</tr>
+<tr>
+<td>경쟁</td>
+<td>Technoprobe의 DRAM·HBM 매출 급증 공시</td>
+</tr>
+<tr>
+<td>사람</td>
+<td>CEO·신임 CFO 이탈</td>
+</tr>
+<tr>
+<td>신공장 고정비</td>
+<td>4분기 이후 공장 가동 지연 + 매출 둔화 동시</td>
+</tr>
+<tr>
+<td>지정학</td>
+<td>대만해협 군사 긴장 · 한국·대만산 반도체 관세</td>
+</tr>
+<tr>
+<td>고객 교체(경쟁사 공시 기반)</td>
+<td>한국 티에스이 국내 프로브카드 매출 성장률이 FORM의 SK하이닉스 매출 성장률을 2개 반기 연속 20%p 이상 앞서고 FORM의 SK하이닉스 비중 하락</td>
+</tr>
+<tr>
+<td>재고 상각</td>
+<td>재고 평가손실이 매출의 3% 초과(직전 고점 2022년 3.3%)</td>
+</tr>
+<tr>
+<td>마진 밴드 복귀</td>
+<td>신공장 생산 개시 뒤 GAAP 총마진이 2017~2025 밴드 상단 42% 이하로 복귀</td>
+</tr>
+</tbody>
+</table>
+<h3>H.5 🧭 CAE · Edge Grid 좌표</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 중요도는 중상이고, 엣지(아직 가격에 안 들어간 것)는 작다. 시장도 이미 이 회사를 "반도체 장비 묶음"으로 값을 매긴다.</p>
+</blockquote>
+<ul>
+<li><strong>(a) CAE</strong> — 걸친 층: 제약(C · 칩 수율 병목) + 조정(A · 장비 투자 사이클). 무게중심 = 장비 투자 사이클. 🔴 약한 고리 = 렌트 포획(병목이 판가로 바뀐 증거 없음).</li>
+<li><strong>(b) 프로파일</strong> — 중요도 L2·R2·H2(중) / 엣지 G1·P2·D1(중하). 〔중요도 L 다층성·R 비가역성·H 병목경도 · 엣지 G 선반영격차·P 연료잔량·D 컨센서스반증, 각 0~3〕</li>
+<li><strong>시장이 보는 가설</strong> — 60일 상관: 램리서치 0.89 · Teradyne 0.86 · 반도체 ETF 0.84 · 마이크론 0.79 · 나스닥 0.67 · NVIDIA 0.47 → 1위 "전공정 장비"와 2위 차이 0.03 = 혼재. 애널리스트 비교군도 테스트·장비주다. 이 보고서의 가설(HBM·CPO 테스트 곡괭이)과 사실상 같아, 선반영 격차(G)는 낮다.</li>
+<li><strong>(d) 분면</strong> — 6/8 「강한데 비싼」에서 가격이 30% 내려 가운데 쪽 경계로 이동. 3 잠금장치: ① 실현확률 교차 ✅(3분기 가이드·컨센 상향) ② D 게이트 ❌(컨센과 같은 view) ③ 유효범위 ❌(사이클 위치 미확정) → 1/3.</li>
+<li><strong>(e) 과목 적합도</strong> — 이 종목은 <code>혼합</code>(지금 실적 + HBM·CPO 미래). 시장 과목은 최신 Expect-daily(2026-10-17)가 "공포" 국면을 기록 — 과목 판정 인용 불가(해당 표기 없음).</li>
+</ul>
+<figure class="dd-fig"><svg viewBox="0 0 520 300" width="100%" style="max-width:520px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="20" width="220" height="130" fill="#fdeee9"/><rect x="280" y="20" width="220" height="130" fill="#eef6f0"/>
+<rect x="60" y="150" width="220" height="130" fill="#eeeeee"/><rect x="280" y="150" width="220" height="130" fill="#e8f0f8"/>
+<line x1="280" y1="20" x2="280" y2="280" stroke="#999" stroke-dasharray="4,3"/><line x1="60" y1="150" x2="500" y2="150" stroke="#999" stroke-dasharray="4,3"/>
+<text x="170" y="40" font-size="11" text-anchor="middle" fill="#8a2415">강한데 비싼 → 트림·회피</text>
+<text x="390" y="40" font-size="11" text-anchor="middle" fill="#1f6f3b">강하고 싼 → 집중매수 후보</text>
+<text x="170" y="270" font-size="11" text-anchor="middle" fill="#555">약하고 비싼 → 회피·청산</text>
+<text x="390" y="270" font-size="11" text-anchor="middle" fill="#2c5282">약하고 싼 → 정찰</text>
+<text x="280" y="295" font-size="11" text-anchor="middle" fill="#444">← 엣지 소진(비싼)   ·   엣지 잔량(싼) →</text>
+<text x="20" y="150" font-size="11" text-anchor="middle" fill="#444" transform="rotate(-90 20,150)">중요도 약 → 강</text>
+<line x1="180" y1="95" x2="236.398" y2="112.353" stroke="#c0392b" stroke-width="1.5" marker-end="url(#h5ar)"/>
+<circle cx="180" cy="95" r="6" fill="#2980b9" opacity="0.5"/>
+<text x="190" y="85" font-size="10" text-anchor="start" fill="#2980b9">6/8 강한데 비싼</text>
+<circle cx="245" cy="115" r="7" fill="#c0392b"/>
+<text x="255" y="133" font-size="10" text-anchor="start" fill="#c0392b">10/18 가운데 쪽 경계</text><defs><marker id="h5ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c0392b"/></marker></defs>
+</svg><figcaption>CAE·Edge Grid 2×2 분면 — 6/8 대비 가격이 30% 내려 엣지가 조금 늘었고, 중요도는 중상 유지</figcaption></figure>
+
+<h3>H.6 💎 0to1 (틸 7문 · 경량)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 10배 기술이나 남들이 모르는 비밀은 없다. 0에서 1을 만드는 회사가 아니라 1에서 n으로 잘하는 회사다.</p>
+</blockquote>
+<p>0to1 〔틸 렌즈〕: Track A 3/7(② 시기 · ④ 사람 · ⑤ 유통 YES / ③ 독점 · ⑥ 존속성 ⚠️ / ① 10배 기술 · ⑦ 숨겨진 비밀 NO) → 불운위험 ‖ ⭐3.5 ‖ tell = 혼재(회사 화법 "IC 전 생애주기 테스트" 합집합형인데 마진은 동종 하단) · 별도 렌즈(7축 미합산) · soft-flag 없음.</p>
+<h3>H.7 💰 밸류에이션 정밀 판정 (서브에이전트 위임 · 7축 미합산 · 낮은 신뢰도)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금 가격은 회사가 낙관 시나리오에 가깝게 성장하고 마진을 지켜야 맞는 값이다. 동종보다 싸 보이는 것은 마진이 낮아서 생긴 정당한 할인이고, 자기 5년 역사로는 상위 13% 구간이다.</p>
+</blockquote>
+<p><strong>🏷️ 판정: 🔴 고평가(과지불 위험 명시)</strong> ‖ 신뢰도 <strong>낮음</strong> ‖ 아키타입 = 사이클형 하드웨어(주) + 구조적 성장형(부) 경계 · 두 해석 병기 ‖ 풀 DD 승격 중간</p>
+<table>
+<thead>
+<tr>
+<th>렌즈</th>
+<th>결과</th>
+<th style="text-align: center;">신호</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 가격이 요구하는 미래(역-DCF)</td>
+<td>비GAAP 영업이익률 27% 고정 시 요구 5년 매출 성장 연 17.4~28.6% vs 현실 천장 약 19% · 지금 가격 ≈ 낙관 시나리오 DCF 약 $109</td>
+<td style="text-align: center;">🔴 envelope 밖</td>
+</tr>
+<tr>
+<td>② 아키타입</td>
+<td>사이클 평균 이익 기준 P/E 약 72배(낮은 선행 P/E 27배는 고점 마진 위 숫자) ↔ 성장조정 기준 적정</td>
+<td style="text-align: center;">🔴↔⚪ 병기</td>
+</tr>
+<tr>
+<td>③ 상대가치</td>
+<td>동종 EV/매출 중앙값 16.0배 대비 8.7배(약 −45%) = 마진 열위로 설명되는 정당한 할인 · 자기 5년 P/S <strong>86.9pct / +1.39σ (n=61개월 · 분모=TTM 매출 · 시점기준=TTM)</strong> · PER Z = N/A(적자 구간 포함)</td>
+<td style="text-align: center;">🔴(역사)</td>
+</tr>
+<tr>
+<td>④ 컨센서스</td>
+<td>커버 9명 · 목표가 $100~$200(평균 $153.89) · 90일 리비전 FY27 EPS +39% 상향 · 업사이클 마진 유지까지 이미 반영</td>
+<td style="text-align: center;">⚪ 선반영</td>
+</tr>
+<tr>
+<td>⑤ 시나리오 재평가 의존</td>
+<td>출구 배수는 보수적(5.6~7.7배) ↔ 진입은 낙관 성장 의존</td>
+<td style="text-align: center;">⚪ 엇갈림</td>
+</tr>
+<tr>
+<td>BRCR 병목 렌트 괴리</td>
+<td>매출총이익 기준 +0.39 🟢 ↔ EBITDA 기준 +0.09 ⚪ → 교차 불일치 · 구속 병목 = 가격결정력 · [소유] · 약한 신호</td>
+<td style="text-align: center;">⚪</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>🎯 매수 적정성 한 줄: 🔴 현재가 진입 보류</strong> — 더 싸게 사는 조건 = 주가 $83 이하, 또는 10/29 3분기 실적에서 비GAAP 총마진 54% 이상 + 2027 매출 가이던스가 컨센 $1.22B 이상이면 재검토.</li>
+<li><strong>판정을 뒤집는 변수</strong> — 메모리 투자 하강기의 사이클 평균 총마진. 50% 이상을 지키면 ⚪로 이동, 40% 안팎으로 돌아가면 지금 가격은 고점 이익에 매긴 값이다.</li>
+<li>낮은 신뢰도 참고 · 매수 적정성은 직접 답하되 강제 아님(최종 판단은 독자) · 장기 thesis 종목에도 매도 신호 아님 · 점수 미반영(7축 미합산). 전문 = 서브에이전트 원 산출(내부 작업 파일).</li>
+</ul>
+<hr />
+<h2 id="l">Section L. 동적 발견</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이번 회차의 새 발견은 세 가지다: 마진 급등의 원인, Teradyne의 지분 투자, 경쟁사가 더 높은 마진을 낸다는 점.</p>
+</blockquote>
+<h4>L.1 마진 급등의 출처 — 판가가 아니라 믹스·가동률</h4>
+<ul>
+<li>발견 트리거: 10-Q 2분기 MD&amp;A · 중요도 🔴</li>
+<li>why: 병목이라 값을 올리는 회사라면 사이클 하강에도 마진이 남는다. 믹스·가동률이면 하강기에 되돌려진다.</li>
+<li>결과: 10-Q가 "favorable product mix and higher factory utilization"으로 명시 · 판가 언급 없음 → 숲 축 렌트 포획 🟡 상한 적용.</li>
+<li>보강: 캘리포니아 두 공장 통폐합은 가동률보다 오래 가는 원가 개선이다. 10-K는 DRAM이 로직보다 마진이 낮다고 썼는데 DRAM 비중이 오르며 마진도 올라, 믹스 개선은 같은 시장 안(HBM 등) 이동이거나 원가 쪽이다[추론] 〔Specific-Dive〕.</li>
+<li>결론 영향: 숫자 축은 유지(🟢 확장은 사실) · 숲 축 상한 적용.</li>
+</ul>
+<h4>L.2 Teradyne 3억 달러 — 협력의 대가인가, 묶음의 시작인가</h4>
+<ul>
+<li>발견 트리거: 8-K 2026-10-13 · 중요도 🟠</li>
+<li>why: 테스트 장비 강자가 프로브 회사 지분을 사면 고객에게 "장비+카드" 묶음을 제시할 수 있다. 반대로 Teradyne 경쟁사(Advantest) 고객과의 관계가 불편해질 수 있다.</li>
+<li>결과: 가격 주당 약 $134.24(발표 직전 10/9 종가 $139.67 근처) · 약 2.9% 희석 · 공동 매출 약정은 없음(고객 검증 D) · 구매계약서 미첨부로 지분 상한·매도 제한 조건 미공개 〔Specific-Dive〕.</li>
+<li>결론 영향: 하방(현금) 강화 · 경쟁 포지션은 유지.</li>
+</ul>
+<h4>L.3 같은 업종의 더 높은 마진 — Technoprobe</h4>
+<ul>
+<li>발견 트리거: 동종 비교 · 중요도 🟠</li>
+<li>why: 같은 맞춤 하드웨어에서 경쟁사가 12%p 높은 영업이익률을 내면, FORM의 "병목"은 회사 고유가 아니라 업종 공통이다.</li>
+<li>결론 영향: 옆의 나무 수익모델 ⚪.</li>
+</ul>
+<h4>L.deferred</h4>
+<ul>
+<li>Technoprobe 고객 구성·DRAM 비중(이탈리아 공시) · SK하이닉스 HBM 세대별 공급사 분할 비율 · CFO 교체 경위 8-K · 3분기 실적 콜 판가 언급 · 13F·공매도·옵션(<code>--full</code>에서).</li>
+</ul>
+<h2 id="s">Section S. 🔎 Specific-Dive — 업종 전문가 체크리스트 보완</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 반도체 장비 체크리스트 12개에 프로브카드 질문 3개를 더해 15개로 감사하고 상위 3개만 팠다. 별점은 그대로다. 다만 총마진은 9년 밴드(39~42%)를 처음 넘었고, SK하이닉스에는 한국 경쟁사가 이미 프로브카드를 공급하며, 재고 상각은 매년 나는 원가다.</p>
+</blockquote>
+<h3>체크리스트 대조</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 잔고 없음과 수출통제는 이미 충분했다. 빈칸은 마진의 역사, 고객의 복수 공급, 재고 상각, 단독 공급 부품에 있었다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th>체크 항목</th>
+<th style="text-align: center;">판정</th>
+<th>결론 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td>최종시장·시장 대비 상대 성장</td>
+<td style="text-align: center;">◐</td>
+<td>프로브카드 시장 1차 규모 미확보 유지</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td>비GAAP이 빼는 구조조정 반복</td>
+<td style="text-align: center;">◐→조사</td>
+<td>17년 중 14년 구조조정 · 2026 상반기 2,781만 달러 = 시계열 최대</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td>잔고 질</td>
+<td style="text-align: center;">✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td>맞춤품 재고 상각</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>매년 매출 1.6~3.3% · 2022 하강기 최대 · 신호 1</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td>수출통제</td>
+<td style="text-align: center;">✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td>세율</td>
+<td style="text-align: center;">◐</td>
+<td>미조사</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td>사이클 붕괴 깊이</td>
+<td style="text-align: center;">◐→조사</td>
+<td>2009~2016 8년 연속 영업적자 · 2023 하강기 총마진 39.0%</td>
+</tr>
+<tr>
+<td style="text-align: center;">11</td>
+<td>기술 대체(테스트 줄이는 설계)</td>
+<td style="text-align: center;">❌→보충</td>
+<td>10-K 위험 문구 · 방향 보류</td>
+</tr>
+<tr>
+<td style="text-align: center;">12</td>
+<td>단독 공급 부품</td>
+<td style="text-align: center;">❌→조사</td>
+<td>세라믹 기판·도금 재료·회로기판 일부 대체원 없음 · FICT 구매 매출원가 2.2%</td>
+</tr>
+<tr>
+<td style="text-align: center;">13</td>
+<td>거점 재해</td>
+<td style="text-align: center;">❌</td>
+<td>미조사</td>
+</tr>
+<tr>
+<td style="text-align: center;">15</td>
+<td>하이브리드 본딩</td>
+<td style="text-align: center;">◐→보충</td>
+<td>회사 공시 0회 → [추론] 표기</td>
+</tr>
+<tr>
+<td style="text-align: center;">16</td>
+<td>고객 집중의 실제 모양</td>
+<td style="text-align: center;">◐→조사</td>
+<td>인텔 17%→10% 미만 · 매출채권 10% 초과 2곳→3곳</td>
+</tr>
+<tr>
+<td style="text-align: center;">27 🆕</td>
+<td>고객 단위 복수 공급</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>SK하이닉스 경쟁 공급사 5곳(경쟁사 공시) · 문구 수정 · 신호 교체</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">28 🆕</td>
+<td>마진 역사 밴드·시장 안 믹스·시동비</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>39~42% 밴드 첫 돌파 · 시동비 옮기면 −1.9%p</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">29 🆕</td>
+<td>전략 투자자 계약 조건</td>
+<td style="text-align: center;">◐→보충</td>
+<td>구매계약서 미첨부</td>
+</tr>
+</tbody>
+</table>
+<h3>새로 안 것</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 마진은 새 자리지만 일부는 공장 통폐합이고, 고객은 견줄 공급사를 이미 쥐고 있다.</p>
+</blockquote>
+<ul>
+<li><strong>총마진의 자리</strong> — 2017~2025년 연간 GAAP 총마진은 39.0~41.9%였다(2023년 매출 −11%에도 39.0%). 2026년 2분기 50.7%는 이 밴드를 처음 넘은 값이다. 1분기 38.4%에서 구조조정 2,150만 달러를 빼면 약 47.9%라, 바탕은 1분기에 이미 올라와 있었다.</li>
+<li><strong>원인</strong> — 10-Q는 판매 가격을 원인에 넣지 않았다. DRAM은 로직보다 마진이 낮다고 10-K가 썼는데 DRAM 비중이 오르며 마진도 올랐으니, 믹스는 같은 시장 안(HBM 등) 이동이거나 원가 쪽이다[추론]. 캘리포니아 두 공장 통폐합은 가동률보다 오래 가는 개선이다.</li>
+<li><strong>곧 올 비용</strong> — 텍사스 신공장 시동비(2분기 486만 달러)는 지금 매출원가 밖에 있다. 생산이 시작되면 들어온다 → 2분기 기준 약 −1.9%p.</li>
+<li><strong>SK하이닉스의 다른 공급사</strong> — 한국 티에스이는 2026 반기보고서에 SK하이닉스를 프로브카드 고객으로 적고, HBM 프로브카드를 "전 세계 HBM 생산 업체"에 공급한다고 썼다. 프로브카드 매출은 2025년 +79%(국내 +145%) · 2026 상반기에 이미 작년의 82%. FORM의 SK하이닉스 매출(FY25 약 1.8억 달러)이 아직 몇 배 크다.</li>
+<li><strong>재고 상각</strong> — 맞춤품이라 최소 주문 수량·수율 가정으로 먼저 만들고, 남으면 버린다. 매년 매출의 1.6~3.3% · 감사인 핵심 감사 사항.</li>
+</ul>
+<hr />
+<h2 id="verdict">🔴 종합 판단</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 사업은 이번 회차에 분명히 좋아졌다. 남은 질문은 하나다 — 이 마진이 사이클을 견디는 가격결정력인가, 호황의 가동률인가.</p>
+</blockquote>
+<ul>
+<li><strong>7축 종합 75점 / 100 (W-2026-10-11 · DD-v2.0) (⭐3.98)</strong> — 구간 경계(상위/양호) · 종합 점수(100점) = 사업·thesis 매력도(가중합) · 밸류 멀티플 미반영 · <strong>5점 이내 차이는 같은 점수로 본다</strong> · 6/8 ≈69점(구 체계 환산 ±3)에서 +6.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">⭐</th>
+<th style="text-align: center;">득점/배점</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🌦️ 날씨</td>
+<td style="text-align: center;">3.64</td>
+<td style="text-align: center;">16.5 / 25</td>
+</tr>
+<tr>
+<td>⛰️ 산</td>
+<td style="text-align: center;">4.38</td>
+<td style="text-align: center;">10.5 / 12.5</td>
+</tr>
+<tr>
+<td>🌲 숲</td>
+<td style="text-align: center;">4.00</td>
+<td style="text-align: center;">9.4 / 12.5</td>
+</tr>
+<tr>
+<td>🌳 나무</td>
+<td style="text-align: center;">4.20</td>
+<td style="text-align: center;">10.0 / 12.5</td>
+</tr>
+<tr>
+<td>🌲🌳 옆의 나무</td>
+<td style="text-align: center;">3.00</td>
+<td style="text-align: center;">6.3 / 12.5</td>
+</tr>
+<tr>
+<td>👤 사람</td>
+<td style="text-align: center;">4.00</td>
+<td style="text-align: center;">9.4 / 12.5</td>
+</tr>
+<tr>
+<td>🔢 숫자</td>
+<td style="text-align: center;">5.00</td>
+<td style="text-align: center;">12.5 / 12.5</td>
+</tr>
+<tr>
+<td><strong>합</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>74.6 → 75</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>감점표</strong> — ① 옆의 나무 · 수익모델 우월성 ⚪ · −2.6점 ② 옆의 나무 · 정부 vs 민간 구성 ⚪ · −2.6점 ③ 산 · 산업 성장률·규모 ⚪ · −2.0점 · (상한) 숲 T0 병목·수요 칸 렌트 포획 🟡 상한 각 −0.4점.</p>
+<ul>
+<li><strong>시간 지평</strong> — 단기(0~6개월): 반도체 급락과 10/29 실적이 주가를 좌우 · 중기(6개월~3년): HBM4E·CPO 양산과 Farmers Branch 가동 후 마진 유지가 관건 · 장기(3~10년): 시장 규모가 작아 텐배거가 아니라 컴파운더 경로.</li>
+<li><strong>종합 판정: 유지 + 추가 검증</strong> — 사업 thesis는 6월보다 강해졌다. 다음 검증 = 3분기 실적의 마진 원인 설명(판가 언급 여부)과 사이클 둔화기 총마진.</li>
+</ul>
+<hr />
+<h2>수집 상태 (실패·불완전 항목만)</h2>
+<ul>
+<li>⚠️ 하위 Dive 4종 미수행(<code>--light</code> · 90일 내 기존 보고서 없음) — 제품·사람 축을 표준 깊이로 직접 작성</li>
+<li>⚠️ 프로브카드 시장 규모 1차 출처 미확보(업계 추정)</li>
+<li>⚠️ Technoprobe 고객 구성 · CFO 교체 경위 · 13F·공매도·옵션(<code>--light</code> 범위 밖) 미수집</li>
+<li>⚠️ 사람 축 비전(⑤) 사용자 ⭐ 대기</li>
+</ul>
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p>
+<div class="footer">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const VIZ = {"score7": {"label": "확신도 7축", "max": 5, "axes": ["🌦️날씨", "⛰️산", "🌲숲", "🌳나무", "🌲🌳옆나무", "👤사람", "🔢숫자"], "series": [{"name": "FORM 10/18", "color": "#1f6f3b", "scores": [3.64, 4.38, 4.0, 4.2, 3.0, 4.0, 5.0]}, {"name": "FORM 6/8(구 체계)", "color": "#8a8578", "dash": true, "scores": [4.0, 3.5, 4.0, 3.5, 3.5, 3.5, 4.0]}]}, "narrative": {"label": "내러티브 5축", "max": 5, "axes": ["🔧기술", "👥사회", "🏛️정책", "🌐지정학", "💰자본"], "series": [{"name": "반도체·HBM", "color": "#8a2415", "scores": [5, 2.5, 4, 4.5, 4.5]}]}, "trajectory": {"periods": ["FY23", "FY24", "FY25", "FY26E"], "forecastFrom": 3, "series": [{"label": "매출(백만 달러)", "axis": "left", "color": "#2980b9", "values": [663.1, 763.6, 785.0, 1030], "estimatedFrom": 3}, {"label": "GAAP 영업이익률(% · 오른축)", "axis": "right", "color": "#c0392b", "values": [1.5, 5.8, 7.7, 15.4], "estimatedFrom": 3}], "markers": [{"period": "FY25", "label": "2026 구조조정 착수"}], "caption": "SEC 10-K·10-Q · FY26E = 상반기 실적 + 3분기 가이드 + 4분기 가정 · 영업이익률 FY26E는 상반기 실적"}, "peers": {"metrics": [{"key": "rg", "label": "매출 성장(YoY %)", "unit": "%", "better": "high"}, {"key": "gm", "label": "총마진 TTM", "unit": "%", "better": "high"}, {"key": "om", "label": "영업이익률 TTM", "unit": "%", "better": "high"}, {"key": "ps", "label": "매출 대비 시총", "unit": "x", "better": "low"}], "rows": [{"name": "FORM", "subject": true, "vals": {"rg": 31.9, "gm": 46.2, "om": 24.1, "ps": 9.1}}, {"name": "Technoprobe", "subject": false, "vals": {"rg": 42.4, "gm": 49.0, "om": 36.7, "ps": 22.2}}, {"name": "Teradyne", "subject": false, "vals": {"rg": 103.9, "gm": 59.2, "om": 33.2, "ps": 11.4}}, {"name": "KLA", "subject": false, "vals": {"rg": 15.2, "gm": 61.3, "om": 42.5, "ps": 15.9}}]}, "scenario": {"horizonLabel": "5년", "threshold": 1.5, "cases": [{"label": "Bull", "tone": "bull", "prob": 0.25, "mult": 2.35}, {"label": "Base", "tone": "base", "prob": 0.5, "mult": 1.18}, {"label": "Bear", "tone": "bear", "prob": 0.25, "mult": 0.44}]}, "landmark": {"current": {"label": "FORM 시총", "mcap": 8.2}, "target": {"label": "×10", "mcap": 82}, "refs": [{"name": "Camtek", "mcap": 6.0}, {"name": "Onto", "mcap": 10.8}, {"name": "Microchip", "mcap": 40.1}, {"name": "Teradyne", "mcap": 50.8}, {"name": "NXP", "mcap": 57.8}]}, "h5": {"points": [{"label": "6/8 강한데 비싼", "x": 180, "y": 95, "prior": true}, {"label": "10/18 가운데 쪽 경계", "x": 245, "y": 115}], "caption": "CAE·Edge Grid 2×2 분면 — 6/8 대비 가격이 30% 내려 엣지가 조금 늘었고, 중요도는 중상 유지"}, "bars": {"label": "2분기 FY26 시장별 매출(백만 달러)", "items": [{"label": "파운드리·로직", "value": 121.8, "color": "#2980b9"}, {"label": "DRAM(HBM 포함)", "value": 85.0, "color": "#1f6f3b"}, {"label": "시스템(CPO 포함)", "value": 48.5, "color": "#c9a227"}, {"label": "Flash", "value": 2.9, "color": "#8a7a5a"}], "caption": "10-Q 2026-06-27 분기"}};
+try{
+DDViz.renderRadar('fig-score7','fig-score7-leg',VIZ.score7);
+DDViz.renderRadar('fig-c3','fig-c3-leg',VIZ.narrative);
+DDViz.renderTrajectory('fig-g5','fig-g5-leg',VIZ.trajectory);
+DDViz.renderHeatmap('fig-e1',VIZ.peers);
+DDViz.renderScenario('fig-h1',null,VIZ.scenario);
+DDViz.renderMcapLadder('fig-g15','fig-g15-cap',VIZ.landmark);
+DDViz.renderBars('fig-d0',VIZ.bars);
+var c7=document.getElementById('fig-score7-cap'); if(c7)c7.textContent="7축 종합 75점 / 100 (⭐3.98 병기) · 상위 (경계 상위/양호) · 5점 이내 차이 = 동급 · 사업·thesis 매력도·밸류 미반영";
+var ch=document.getElementById('fig-h1-cap'); if(ch)ch.textContent='§H.1 5년 시나리오 (기준 $11.46) — 기댓값 ~1.16x(⚠️ <1.5x) · 2년 0.84x = bull-tail 의존 ⚠️ (게이트 ❌·보유 매도신호 ❌)';
+var cg=document.getElementById('fig-g5-cap'); if(cg)cg.textContent='§G.5 분기 매출·조정 EBITDA·GM 6분기 + FY26E 가이던스 중간 분기평균(점선·보강) — 변곡점 = 2Q26';
+var ce=document.getElementById('fig-e1-cap'); if(ce)ce.textContent='§E.1 peer 히트맵 (yfinance 2026-09-21 · 전 열 TTM·GAAP·USD) — GM 100% 표기 종목은 보고 방식 artifact';
+var cd=document.getElementById('fig-d0-cap'); if(cd)cd.textContent='§D.0 2Q26 매출 구성 — 토큰화 54% / 자산서비스 46% (역방향 믹스 시프트)';
+var cc=document.getElementById('fig-c3-cap'); if(cc)cc.textContent='§B.3 내러티브 5축 (변동 없음)';
+}catch(e){console.error('viz',e);}
+</script></body></html>
