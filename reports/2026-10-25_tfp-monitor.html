@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>생산성 7-고리 진단 — 2026-10-25</title>
+<meta name="vault-stage" content="Monitoring">
+<meta name="vault-topic" content="생산성">
+<meta name="vault-date" content="2026-10-25">
+<meta name="description" content="앞쪽 고리가 한 템포 쉬었고, 과업 길이 계기판은 공식 은퇴했다. 전력 가격 압력은 조금 풀렸지만 병목은 여전히 전력 — 6회 연속">
+<style>
+  :root{--bg:#EBE4D3;--card:#FDF6E3;--ink:#1f2328;--muted:#5b6472;--line:#e8e1cf;
+    --indigo:#2d3a6b;--indigo-soft:#eceef6;--red:#b3261e;--red-soft:#f9ebe9;
+    --green:#2f6b46;--green-soft:#ebf3ee;--amber:#8a5d10;--amber-soft:#f7efdc;--teal:#1a56db;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic",sans-serif;
+    line-height:1.75;font-size:16px}
+  .wrap{max-width:940px;margin:0 auto;padding:0 20px 90px}
+  header{background:linear-gradient(160deg,#2d3a6b,#46579c);color:#fff;margin:0 -20px;padding:46px 40px 38px;border-radius:0 0 6px 6px}
+  header .k{font-size:12px;letter-spacing:.26em;text-transform:uppercase;opacity:.75;margin:0 0 12px}
+  header h1{font-size:31px;margin:0 0 12px;font-weight:800;letter-spacing:-.01em}
+  header .s{opacity:.93;font-size:15.5px;margin:0 0 16px;max-width:720px}
+  header .s b{color:#ffd98a}
+  header .m{font-size:12.5px;opacity:.72;border-top:1px solid rgba(255,255,255,.22);padding-top:13px}
+  .takeaway{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--red);
+    border-radius:8px;padding:20px 26px;margin:26px 0 18px}
+  .takeaway .lbl{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin:0 0 10px}
+  ol.sum{margin:0;padding-left:20px}
+  ol.sum li{margin:9px 0;font-size:15px;line-height:1.68}
+  section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:26px 30px;margin:18px 0}
+  h2{font-size:21px;margin:0 0 16px;font-weight:800;letter-spacing:-.01em}
+  h2 .n{display:inline-block;font-size:12px;color:#fff;background:var(--indigo);width:26px;height:26px;
+    line-height:26px;text-align:center;border-radius:50%;margin-right:9px;vertical-align:2px}
+  h3{font-size:16.5px;margin:22px 0 8px;font-weight:700;color:var(--indigo)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px;background:#fff}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--indigo-soft);color:var(--indigo);font-weight:700;font-size:12.5px}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.hl{background:#fffaf0}
+  tr:last-child td{border-bottom:none}
+  .sig{font-weight:700;white-space:nowrap;font-size:13px}
+  .sig.r{color:var(--red)} .sig.a{color:var(--amber)} .sig.g{color:var(--green)}
+  .dashbox{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:12.5px;background:#22252a;color:#f2efe6;
+    padding:16px 18px;border-radius:8px;line-height:1.8;margin:14px 0;overflow-x:auto;white-space:pre}
+  .call{border-radius:8px;padding:15px 19px;margin:16px 0;font-size:14.5px;border:1px solid;line-height:1.7}
+  .call .l{font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:6px}
+  .key{background:var(--indigo-soft);border-color:#ccd2e8} .key .l{color:var(--indigo)}
+  .warn{background:var(--amber-soft);border-color:#e6d5ab} .warn .l{color:var(--amber)}
+  .verdict{background:var(--indigo);color:#fff;border-radius:8px;padding:18px 22px;margin:6px 0 18px}
+  .verdict p{margin:9px 0;font-size:15px} .verdict b{color:#ffd98a}
+  .gapwrap{margin:18px 0}
+  .gaprow{display:grid;grid-template-columns:104px 1fr;gap:0;margin:4px 0}
+  .gaprow .y{font-size:12.5px;font-weight:700;padding:8px 10px;background:#f0ead9;border-radius:6px 0 0 6px;
+    display:flex;flex-direction:column;justify-content:center}
+  .gaprow .y .sub{font-weight:400;font-size:11px;color:var(--muted)}
+  .gaprow .b{padding:8px 10px;background:#fff;border-radius:0 6px 6px 0;border:1px solid var(--line)}
+  .bar{height:20px;border-radius:3px;margin:3px 0;font-size:11px;color:#fff;line-height:20px;padding:0 9px;
+    white-space:nowrap;font-weight:600;overflow:hidden;text-overflow:ellipsis;min-width:120px}
+  .cog{background:#b3261e} .cogl{background:#d08a84} .abs{background:#2f6b46}
+  .wd{background:repeating-linear-gradient(45deg,#8a5d10,#8a5d10 5px,#a5762a 5px,#a5762a 10px)}
+  a{color:var(--teal);text-decoration:none;border-bottom:1px solid #b9c8ee}
+  .src{font-size:12px;color:var(--muted);border-top:1px dashed var(--line);margin-top:18px;padding-top:11px}
+  .note{font-size:13.5px;color:var(--muted);line-height:1.7}
+  .pill{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:20px;margin-left:6px;vertical-align:1px}
+  .pill.a{background:#fff;color:var(--amber);border:1px solid #e6d5ab}
+  ul.tight{margin:10px 0;padding-left:20px} ul.tight li{margin:7px 0;font-size:14.5px;line-height:1.7}
+  footer{margin-top:26px;padding:20px 24px;background:var(--card);border:1px solid var(--line);border-radius:10px;
+    font-size:13px;color:var(--muted)}
+  footer p{margin:4px 0} footer .fine{font-size:11.5px;opacity:.8}
+  @media(max-width:640px){.gaprow{grid-template-columns:1fr}section{padding:20px 18px}header{padding:34px 22px 28px}}
+  @media print{body{background:#fff}.wrap{max-width:none}section,table,.takeaway,footer{background:#fff}
+    header{background:#2d3a6b !important;-webkit-print-color-adjust:exact}}
+
+  
+  /* ===== report-viz.css INLINE (canonical _shared/report-viz) ===== */
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+  .dd-fig{background:#fff;border-color:#e8e1cf}
+
+  .fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:16px 18px 12px;margin:16px 0 20px;page-break-inside:avoid}
+  .fig .cap{font-size:12.5px;color:#555;margin:0 0 10px;line-height:1.6} .fig .cap b{color:#1a1a1a}
+  .lg{display:flex;flex-wrap:wrap;gap:16px;margin-top:8px;font-size:12px;color:#444}
+  .lg span{display:inline-flex;align-items:center;gap:6px}
+  .sw{display:inline-block;width:18px;height:0;border-top:3px solid}
+  .sw.d{border-top-style:dashed}
+  .sw.b{width:12px;height:12px;border:none;border-radius:3px}
+  .one{background:#f4efe1;border-left:4px solid #2d3a6b;padding:9px 14px;border-radius:0 6px 6px 0;margin:16px 0 4px;font-size:14.5px}
+  .one b.k{color:#2d3a6b;margin-right:6px}
+  .fix{font-size:13px;color:#8a5d10;background:#fbf4e3;border:1px solid #ecdcb6;border-radius:6px;padding:7px 11px;margin:10px 0}
+
+</style>
+
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+<meta name="vault-published" content="2026-10-25">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="k">tfp-monitor · 월간 실행 #7</p>
+  <h1>생산성 7-고리 진단 — 2026-10-25</h1>
+  <p class="s">실질 GDP 성장의 7개 직렬 고리 중 <b>지금 어디가 막혀 있는가</b>, 그리고 그 병목이 <b>다음 고리로 옮겨가는가</b>를 진단한다. 숫자는 판정의 재료이지 보고 대상이 아니다.</p>
+  <p class="m">직전 실행 2026-09-30 대비 델타 (25일) · 지난 회차에 등록한 분기점 6건 채점</p>
+</header>
+
+<div class="takeaway">
+<p class="lbl">한 장 요약</p>
+<ol class="sum">
+<li><b>7개 고리 등급은 이번에도 그대로다.</b> 막힌 곳은 <b>전력(#2) 단독, 여섯 번째 연속</b>이다. 지난달 앞쪽 세 고리가 한꺼번에 움직였다면, 이번 달은 <b>앞쪽이 한 템포 쉬었다.</b></li>
+<li>🔴 <b>AI 능력을 재던 1차 계기판이 공식적으로 은퇴했다.</b> 과업 길이 지표를 만든 연구단체가 9월 8일 "이 페이지는 더 이상 적극 갱신하지 않는다"고 적었다. 마지막 측정은 5월 8일, 170일 전이다. 이제 역량 고리는 보조 지표 하나로만 판정한다.</li>
+<li>🟠 <b>실전 자동화율은 거의 제자리다 — 20.83% → 21.25%.</b> 실제 일감 240개 중 50개에서 51개로, 하나가 더 풀렸다.</li>
+<li>🟠 <b>전력 가격 압력이 조금 풀렸다.</b> 12개월 평균으로 전기 가격이 생산량보다 빨리 오르는 정도가 <b>연 2.87%p → 1.73%p</b>로 줄었다. 9월 전력 생산이 1년 전보다 9.6% 늘어난 영향이다. 한 번으로는 등급을 바꾸지 않는다.</li>
+<li>🟠 <b>날씨를 빼고 봐도 미국 3대 전력망의 새벽 최저 수요가 모두 1년 새 5% 안팎 올랐다.</b> 텍사스만의 일이 아니라 전국 공통의 24시간 부하 증가다. 두 번 연속 같은 그림이다.</li>
+<li>🟠 <b>AI를 쓰는 기업 비율은 24.6%로 한 칸 더 올랐다.</b> 한 회차는 제자리였지만 오르는 속도(한 달 약 +0.9%p)는 그대로다. 일하는 방식을 바꿨는지를 보는 자료는 파일 날짜만 바뀌고 내용은 한 글자도 같다.</li>
+<li>🟠 <b>돈 쪽 꼬리가 굵어졌다.</b> 가장 위험한 회사채에서 급락이 나왔고, AI 데이터센터 회사의 무담보채 금리는 15% 근처다. 연준은 이번 주 "매파적 동결"이 유력하다.</li>
+</ol>
+</div>
+
+<section>
+<h2><span class="n">1</span>binding 대시보드</h2>
+
+<div class="dashbox">고리              신호   이번 달 방향      판정 근거 (1줄)
+─────────────────────────────────────────────────────────────────────────────────────
+#1 역량           🟢     ↗ (보조 지표)     종합 역량 점수 새 1위 66.5 · 과업 길이 지표는 공식 은퇴
+#2 전력·물리      🔴     ↗ 소폭 완화       12개월 평균 가격 괴리 연 2.87 → 1.73%p · 대기열 판 그대로
+#3 신뢰성         🟡     →                실전 자동화율 20.83 → 21.25% (240개 중 +1개)
+#4 확산·재조직    🟡     ↗ 넓이 · → 깊이   사용률 24.6% · 기울기 유지 · 조직 변화 자료 불변
+#5 재배치         🟡     →                고용률 3개월 평균 하락 거의 멈춤 · 창업 증가세 둔화
+#6 측정 생존      🟡     →                새 1차 발표 없음 (11/5 생산성 · 10/29 GDP 대기)
+#7 순증           🟡     ↘                최저 등급 회사채 급락 · AI 회사채 금리 약 15%
+─────────────────────────────────────────────────────────────────────────────────────
+현재 binding : #2 전력 (단독 · 6회 연속)
+전환         : 없음 — 전력 가격 괴리가 다음 달에도 줄면 🟡 검토
+레짐         : 교착 (Patient 우위) — 앞쪽이 한 템포 쉰 달</div>
+
+<div class="dd-fig">
+  <p class="cap"><b>7-고리 binding 레이더</b> — 안으로 패인 축이 제약이다. 직렬 사슬이라 <b>가장 작은 축 하나가 전체를 결정</b>하며 면적·평균은 의미가 없다. 실선(이번 달)과 점선(지난달)이 완전히 겹친다. 이번 달 움직임은 등급 안쪽, 위 표의 방향 열에 있다.</p>
+  <div id="fig-chain"></div>
+  <div class="dd-legend" id="leg-chain"></div>
+</div>
+
+<p class="one"><b class="k">한 줄로 말하면</b>등급은 여섯 달째 그대로이고, 이번 달은 앞쪽이 쉬고 전력 쪽이 조금 풀렸다.</p>
+</section>
+
+<section>
+<h2><span class="n">2</span>지난 회차 분기점 채점 — 2건 해소 · 1건 영구 정지 · 3건 대기</h2>
+
+<p>9월 30일 보고서가 적어 둔 질문 여섯 개를, 그때 적은 조건 그대로 채점한다.</p>
+
+<table>
+<tr><th style="width:24%">등록한 질문</th><th style="width:20%">당시 조건</th><th style="width:32%">결과</th><th>채점</th></tr>
+<tr><td><b>① 9월 고용</b></td><td>"3개월 평균 고용률의 하락 둔화가 이어지는가"</td>
+<td class="hl">고용률 9월 <b>59.2%</b> · 3개월 평균 59.3 → 59.1 → <b>59.07</b> · 노동력 +48.5만 명(두 달 연속 복귀)</td><td class="sig g">✅ 해소 — 하락이 거의 멈춤</td></tr>
+<tr><td><b>② 기업 AI 사용 조사 다음 회차</b></td><td>"한 달 +0.9%p 속도가 유지되는가"</td>
+<td class="hl">9/21~10/4 회차 <b>23.8%(제자리)</b> → 10/5~10/18 회차 <b>24.6%</b> · 5월 이후 회귀 기울기 한 달 <b>+0.93%p</b></td><td class="sig g">✅ 해소 — 한 회차 쉬고 속도 유지</td></tr>
+<tr><td><b>③ 과업 길이 지표 재개</b></td><td>"145일 정지가 풀리는가"</td>
+<td class="hl">9월 8일 업데이트 기록에 <b>"더 이상 적극 갱신하지 않는다"</b> 명시</td><td class="sig r">❌ 영구 정지 확인</td></tr>
+<tr><td><b>④ 3분기 GDP 속보</b></td><td>디플레이터 괴리 · 성장</td><td class="hl">10월 29일 발표 예정</td><td class="sig">⏳ 대기</td></tr>
+<tr><td><b>⑤ 3분기 생산성 예비치</b></td><td>노동 몫이 더 내려가는가</td><td class="hl">11월 5일 발표 예정</td><td class="sig">⏳ 대기</td></tr>
+<tr><td><b>⑥ 3분기 사모대출 펀드 데이터</b></td><td>사모 쪽 스트레스 전이</td><td class="hl">11월 공개 예정</td><td class="sig">⏳ 대기</td></tr>
+</table>
+
+<p class="src">출처: FRED <a href="https://fred.stlouisfed.org/series/EMRATIO">EMRATIO</a> · <a href="https://fred.stlouisfed.org/series/CLF16OV">CLF16OV</a> · <a href="https://www.census.gov/hfp/btos/api/periods/111/data">인구조사국 기업 동향 조사 10/5~10/18 회차</a> · <a href="https://metr.org/time-horizons/">METR 과업 길이 지표 (업데이트 기록)</a></p>
+</section>
+
+<section>
+<h2><span class="n">3</span>역량(#1)·신뢰성(#3) — 앞쪽이 한 템포 쉬었다</h2>
+
+<p>역량 고리는 "AI가 할 수 있는 일의 크기"를, 신뢰성 고리는 "사람이 다시 손보지 않아도 되는가"를 본다. 지난달 이 두 고리는 동시에 위를 향했다. 이번 달은 둘 다 속도를 늦췄다.</p>
+
+<h3>역량 — 1차 계기판의 은퇴, 보조 지표의 새 1위</h3>
+<ul class="tight">
+<li><b>과업 길이 지표</b>는 "AI가 절반 확률로 해내는 소프트웨어 과제가 사람 기준 몇 시간짜리인가"를 잰다. 이 모니터가 역량 고리의 1차 계기판으로 써 왔다. 만든 곳이 9월 8일 <b>"이 페이지는 더 이상 적극 갱신하지 않는다"</b>고 업데이트 기록에 적었다. 마지막 측정은 5월 8일(17시간)이다. 지난 두 달 동안 "정지"라고 적은 것이 사실은 "은퇴"였다.</li>
+<li>보조 지표인 안전연구단체의 <b>종합 역량 점수</b>(텍스트 역량 지수)에는 <b>새 1위가 66.5점</b>으로 올라왔다. 지난달 1위는 63.9점이었다. 기존 모델 네 개의 점수가 지난달과 소수점까지 같아 점수 체계 재조정은 없었다. 그래서 +2.6점은 비교할 수 있다.</li>
+<li>새 1위도 지난달처럼 <b>긴 텍스트 게임을 끝까지 푸는 시험(77.3)</b>에서 앞섰고, 지식·추론 시험(55.6)에서는 다른 모델과 비슷했다. 늘어나는 것은 지식보다 긴 과제를 끌고 가는 힘이다.</li>
+<li><b>🟢 유지.</b> 다만 이제 근거가 보조 지표 하나뿐이다. 시험·게임 점수는 실제 업무 능력과 다를 수 있어 근거의 질은 지난달보다 약해졌다.</li>
+</ul>
+
+<h3>신뢰성 — 실전 자동화율 21.25%</h3>
+<p>실전 자동화율은 실제로 프리랜서에게 돈 주고 맡겼던 일감 240개를 AI에게 똑같이 맡겨, 발주자가 "돈 주고 받을 만하다"고 인정한 비율이다.</p>
+<ul class="tight">
+<li>새로 측정된 모델이 <b>21.25%</b>로 1위가 됐다. 지난달 1위는 20.83%였다. 공개 값이 모두 240분의 1 단위로 떨어져, <b>50개 → 51개</b>로 역산된다. 하나 더 풀린 셈이다.</li>
+<li>지난달 한 번에 12개가 더 풀린 것과 비교하면 사실상 멈춤이다. 이번 달 종합 역량 점수 1위 모델은 아직 실전 자동화율 측정이 없다.</li>
+<li><b>🟡 유지.</b> 다섯 건 중 네 건은 여전히 사람이 다시 해야 한다.</li>
+</ul>
+<p class="one"><b class="k">한 줄로 말하면</b>능력 점수는 한 칸 올랐지만, 그 능력을 재던 1차 자는 사라졌고 실전 성공은 하나 늘었을 뿐이다.</p>
+<p class="src">출처: <a href="https://metr.org/time-horizons/">METR Time Horizons (2026-09-08 업데이트 기록)</a> · <a href="https://dashboard.safe.ai/">CAIS AI Dashboard</a> · <a href="https://www.remotelabor.ai/">Remote Labor Index</a> · <a href="https://www.anthropic.com/economic-index">Anthropic Economic Index (마지막 갱신 6/26 · 변동 없음)</a></p>
+</section>
+
+<section>
+<h2><span class="n">4</span>전력·물리(#2) — 가격 압력은 조금 풀렸고, 바닥 부하는 전국에서 오른다</h2>
+
+<p>전력 고리는 "AI를 돌릴 전기가 제때 깔리는가"를 본다. 연 1회 나오는 접속 대기열 보고서는 이번에도 같은 판이다(대기 2,060GW 이상 · 신청부터 가동까지 중간값 5년 초과). 그래서 매달 움직이는 눈금 두 개로 방향을 본다.</p>
+
+<h3>월간 눈금 — 전기 값이 양보다 빨리 오르는가</h3>
+<p>전력 생산지수(양)와 배전 생산자물가(값)의 1년 상승률을 나란히 놓고, <b>값 − 양</b>을 본다. 양으로 수요를 못 맞추면 값이 대신 오른다. 한 달치 차이는 날씨에 크게 출렁여서, 판정은 12개월 평균으로만 한다.</p>
+<div class="fig">
+<p class="cap"><b>전기 가격 상승률 − 생산 상승률 (월별, %p)</b> — 빨간 막대 = 값이 양보다 빨리 오름, 초록 = 양이 더 빠름. 진한 막대가 최근 두 달. 막대에 마우스를 올리면 월별 값이 나온다.</p>
+<svg viewBox="0 0 860 230" width="100%" role="img" aria-label="전력 가격-물량 괴리 14개월"><line x1="46" y1="168.7" x2="844" y2="168.7" stroke="#e8e1cf"/><text x="40" y="172.7" font-size="11" text-anchor="end" fill="#666">-5</text><line x1="46" y1="123.2" x2="844" y2="123.2" stroke="#999"/><text x="40" y="127.2" font-size="11" text-anchor="end" fill="#666">+0</text><line x1="46" y1="77.7" x2="844" y2="77.7" stroke="#e8e1cf"/><text x="40" y="81.7" font-size="11" text-anchor="end" fill="#666">+5</text><line x1="46" y1="32.2" x2="844" y2="32.2" stroke="#e8e1cf"/><text x="40" y="36.2" font-size="11" text-anchor="end" fill="#666">+10</text><rect x="56.3" y="60.0" width="36.5" height="63.2" fill="#b3261e" opacity="0.55"><title>2025-08: 물량 -0.34% · 가격 +6.61% · 괴리 +6.95%p</title></rect><text x="74.5" y="218" font-size="10.5" text-anchor="middle" fill="#666">25.08</text><rect x="113.3" y="93.4" width="36.5" height="29.8" fill="#b3261e" opacity="0.55"><title>2025-09: 물량 +1.85% · 가격 +5.13% · 괴리 +3.28%p</title></rect><text x="131.5" y="218" font-size="10.5" text-anchor="middle" fill="#666">25.09</text><rect x="170.3" y="97.6" width="36.5" height="25.6" fill="#b3261e" opacity="0.55"><title>2025-10: 물량 +2.27% · 가격 +5.08% · 괴리 +2.81%p</title></rect><text x="188.5" y="218" font-size="10.5" text-anchor="middle" fill="#666">25.10</text><rect x="227.3" y="77.2" width="36.5" height="46.0" fill="#b3261e" opacity="0.55"><title>2025-11: 물량 +2.56% · 가격 +7.62% · 괴리 +5.06%p</title></rect><text x="245.5" y="218" font-size="10.5" text-anchor="middle" fill="#666">25.11</text><rect x="284.3" y="92.1" width="36.5" height="31.1" fill="#b3261e" opacity="0.55"><title>2025-12: 물량 +4.04% · 가격 +7.46% · 괴리 +3.42%p</title></rect><text x="302.5" y="218" font-size="10.5" text-anchor="middle" fill="#666">25.12</text><rect x="341.3" y="47.6" width="36.5" height="75.6" fill="#b3261e" opacity="0.55"><title>2026-01: 물량 -1.00% · 가격 +7.31% · 괴리 +8.31%p</title></rect><text x="359.5" y="218" font-size="10.5" text-anchor="middle" fill="#666">26.01</text><rect x="398.3" y="23.0" width="36.5" height="100.2" fill="#b3261e" opacity="0.55"><title>2026-02: 물량 +1.03% · 가격 +12.04% · 괴리 +11.01%p</title></rect><text x="416.5" y="218" font-size="10.5" text-anchor="middle" fill="#666">26.02</text><rect x="455.3" y="123.2" width="36.5" height="2.9" fill="#2f6b46" opacity="0.55"><title>2026-03: 물량 +2.91% · 가격 +2.59% · 괴리 -0.32%p</title></rect><text x="473.5" y="218" font-size="10.5" text-anchor="middle" fill="#666">26.03</text><rect x="512.3" y="123.2" width="36.5" height="3.3" fill="#2f6b46" opacity="0.55"><title>2026-04: 물량 +2.36% · 가격 +2.00% · 괴리 -0.36%p</title></rect><text x="530.5" y="218" font-size="10.5" text-anchor="middle" fill="#666">26.04</text><rect x="569.3" y="114.6" width="36.5" height="8.6" fill="#b3261e" opacity="0.55"><title>2026-05: 물량 +2.42% · 가격 +3.36% · 괴리 +0.94%p</title></rect><text x="587.5" y="218" font-size="10.5" text-anchor="middle" fill="#666">26.05</text><rect x="626.3" y="112.6" width="36.5" height="10.6" fill="#b3261e" opacity="0.55"><title>2026-06: 물량 +1.36% · 가격 +2.52% · 괴리 +1.16%p</title></rect><text x="644.5" y="218" font-size="10.5" text-anchor="middle" fill="#666">26.06</text><rect x="683.3" y="116.8" width="36.5" height="6.4" fill="#b3261e" opacity="0.55"><title>2026-07: 물량 +1.78% · 가격 +2.48% · 괴리 +0.70%p</title></rect><text x="701.5" y="218" font-size="10.5" text-anchor="middle" fill="#666">26.07</text><rect x="740.3" y="123.2" width="36.5" height="47.2" fill="#2f6b46" opacity="1"><title>2026-08: 물량 +7.18% · 가격 +1.99% · 괴리 -5.19%p</title></rect><text x="758.5" y="218" font-size="10.5" text-anchor="middle" fill="#666">26.08</text><rect x="797.3" y="123.2" width="36.5" height="56.4" fill="#2f6b46" opacity="1"><title>2026-09: 물량 +9.57% · 가격 +3.37% · 괴리 -6.20%p</title></rect><text x="815.5" y="218" font-size="10.5" text-anchor="middle" fill="#666">26.09</text></svg>
+</div>
+<ul class="tight">
+<li>9월 단월: 생산 <b>+9.57%</b>, 가격 +3.37% → 괴리 −6.2%p. 8월(−5.2%p)에 이어 두 달 연속 양이 더 빨랐다.</li>
+<li>12개월 평균: 생산 +3.01%, 가격 +4.74% → <b>연 +1.73%p</b>. 지난달 +2.87%p에서 줄었다. 값이 양보다 빠른 구조는 남아 있지만 폭이 좁아졌다.</li>
+<li>주의할 점: 9월 생산 급증에는 더운 날씨와 1년 전 낮은 기저가 섞여 있다. 그래서 <b>한 번 줄었다고 등급을 바꾸지 않는다.</b> 다음 달에도 줄면 🟡을 검토한다.</li>
+</ul>
+
+<h3>새벽 최저 수요 — 24시간 켜진 부하가 늘고 있는가</h3>
+<p>데이터센터와 채굴 설비는 밤낮없이 같은 전기를 쓴다. 냉방은 낮에 몰린다. 그래서 <b>하루 중 가장 수요가 낮은 새벽 시간</b>의 1년 변화가 상시 부하 증가를 잘 보여 준다. 연방 에너지정보청의 시간별 실제 수요에, 기상청 기온(밤 최저 기온 포함)으로 날씨 몫을 빼서 본다. 최근 30일(~10/22)과 1년 전 같은 날짜를 비교했다.</p>
+<table>
+<tr><th>전력망</th><th class="num">새벽 최저 1년 변화</th><th class="num">그중 날씨 몫</th><th class="num">날씨 뺀 변화</th><th class="num">지난 회(10/14)</th></tr>
+<tr><td>텍사스(ERCOT)</td><td class="num">+8.0%</td><td class="num">+2.4%p</td><td class="num"><b>+5.6%</b></td><td class="num">+5.8%</td></tr>
+<tr><td>동부(PJM)</td><td class="num">+3.5%</td><td class="num">−1.7%p</td><td class="num"><b>+5.2%</b></td><td class="num">+5.7%</td></tr>
+<tr><td>중서부(MISO)</td><td class="num">+4.5%</td><td class="num">−0.4%p</td><td class="num"><b>+4.9%</b></td><td class="num">+5.7%</td></tr>
+</table>
+<ul class="tight">
+<li>세 전력망 모두 날씨를 빼고도 <b>5% 안팎</b> 올랐다. 텍사스가 다른 두 곳보다 2%p 이상 커야 "텍사스만의 대형 부하"로 읽는데, 차이는 0.4~0.7%p다. <b>전국 공통의 24시간 부하 증가</b>로 읽는다. 두 번 연속 같은 그림이다.</li>
+<li>텍사스 안에서는 <b>서부 구역(부하 비중 3%)의 날씨 뺀 새벽 최저가 +47.6%</b>로 지난 회(+39.0%)에 이어 두 번 연속 크게 올랐다. 새 대형 부하가 붙었을 가능성이 있지만, 이를 뒷받침하는 공시나 보도가 아직 없어 특정 회사와 연결하지 않는다. 구역 경계·집계 변경일 수도 있다.</li>
+<li>방향 해석: 전기 <b>값</b>의 압력은 조금 풀렸고, 실제로 <b>켜진</b> 상시 부하는 계속 늘고 있다. 공급이 따라붙기 시작했다고 볼 수도, 날씨 덕을 봤다고 볼 수도 있다. 둘을 가르려면 한두 달이 더 필요하다.</li>
+<li>현장 쪽 사건: 데이터센터 세금으로 학교·공원을 지어 온 버지니아 라우던 카운티도 추가 성장에 제한을 걸기 시작했다(블룸버그 10/24 영상). 지역 인허가가 병목의 한 갈래로 남아 있다.</li>
+</ul>
+<p><b>🔴 유지 · ↗ 소폭 완화.</b></p>
+<p class="one"><b class="k">한 줄로 말하면</b>전기 값의 압력은 조금 줄었지만, 밤에도 꺼지지 않는 부하는 전국에서 5%씩 늘고 있다.</p>
+<p class="src">출처: <a href="https://emp.lbl.gov/queues">LBNL Queued Up 2026 Edition</a> · FRED <a href="https://fred.stlouisfed.org/series/IPG2211S">IPG2211S</a> · <a href="https://fred.stlouisfed.org/series/PCU221122221122">PCU221122221122</a> · <a href="https://www.eia.gov/electricity/gridmonitor/dashboard/electric_overview/balancing_authority/ERCO">EIA-930 전력망 모니터</a> · <a href="https://ftp.cpc.ncep.noaa.gov/htdocs/degree_days/weighted/daily_data/">NOAA CPC 인구가중 도일</a> · <a href="https://data.rcc-acis.org/">NOAA ACIS 관측소 기온</a> · <a href="https://www.bloomberg.com/news/videos/2026-10-24/how-this-county-made-the-data-center-boom-pay-off-video">Bloomberg — How This County Made the Data Center Boom Pay Off (10/24)</a></p>
+</section>
+
+<section>
+<h2><span class="n">5</span>확산(#4) — 넓이는 같은 속도로, 깊이는 같은 자리에</h2>
+
+<p>인구조사국은 기업들에게 <b>2주마다</b> "지난 2주 동안 업무에 AI를 썼는가"를 묻는다. 이번 달 새 회차 두 개가 나왔다.</p>
+<div class="fig">
+<p class="cap"><b>AI를 쓰는 미국 기업 비율 — 2주 단위 24개 회차</b>(2025년 11월 ~ 2026년 10월). 같은 질문 구간만 그렸다. 굵은 점이 이번 달 새 회차 두 개. 점에 마우스를 올리면 값이 나온다.</p>
+<svg viewBox="0 0 860 260" width="100%" role="img" aria-label="기업 AI 사용률 24회차"><line x1="46" y1="226.0" x2="844" y2="226.0" stroke="#e8e1cf"/><text x="40" y="230.0" font-size="11" text-anchor="end" fill="#666">15%</text><line x1="46" y1="156.0" x2="844" y2="156.0" stroke="#e8e1cf"/><text x="40" y="160.0" font-size="11" text-anchor="end" fill="#666">20%</text><line x1="46" y1="86.0" x2="844" y2="86.0" stroke="#e8e1cf"/><text x="40" y="90.0" font-size="11" text-anchor="end" fill="#666">25%</text><line x1="46" y1="16.0" x2="844" y2="16.0" stroke="#e8e1cf"/><text x="40" y="20.0" font-size="11" text-anchor="end" fill="#666">30%</text><polyline points="46.0,193.8 80.7,195.2 115.4,186.8 150.1,188.2 184.8,181.2 219.5,171.4 254.2,191.0 288.9,181.2 323.6,171.4 358.3,168.6 393.0,158.8 427.7,158.8 462.3,163.0 497.0,147.6 531.7,147.6 566.4,147.6 601.1,132.2 635.8,135.0 670.5,130.8 705.2,122.4 739.9,111.2 774.6,102.8 809.3,102.8 844.0,91.6" fill="none" stroke="#2980b9" stroke-width="2.2" stroke-dasharray=""/><circle cx="46.0" cy="193.8" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>88 (2025-11-17~2025-11-30): 17.3%</title></circle><circle cx="80.7" cy="195.2" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>89 (2025-12-01~2025-12-14): 17.2%</title></circle><circle cx="115.4" cy="186.8" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>90 (2025-12-15~2025-12-28): 17.8%</title></circle><circle cx="150.1" cy="188.2" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>91 (2025-12-29~2026-01-11): 17.7%</title></circle><circle cx="184.8" cy="181.2" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>92 (2026-01-12~2026-01-25): 18.2%</title></circle><circle cx="219.5" cy="171.4" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>93 (2026-01-26~2026-02-08): 18.9%</title></circle><circle cx="254.2" cy="191.0" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>94 (2026-02-09~2026-02-22): 17.5%</title></circle><circle cx="288.9" cy="181.2" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>95 (2026-02-23~2026-03-08): 18.2%</title></circle><circle cx="323.6" cy="171.4" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>96 (2026-03-09~2026-03-22): 18.9%</title></circle><circle cx="358.3" cy="168.6" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>97 (2026-03-23~2026-04-05): 19.1%</title></circle><circle cx="393.0" cy="158.8" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>98 (2026-04-06~2026-04-19): 19.8%</title></circle><circle cx="427.7" cy="158.8" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>99 (2026-04-20~2026-05-03): 19.8%</title></circle><circle cx="462.3" cy="163.0" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>100 (2026-05-04~2026-05-17): 19.5%</title></circle><circle cx="497.0" cy="147.6" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>101 (2026-05-18~2026-05-31): 20.6%</title></circle><circle cx="531.7" cy="147.6" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>102 (2026-06-01~2026-06-14): 20.6%</title></circle><circle cx="566.4" cy="147.6" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>103 (2026-06-15~2026-06-28): 20.6%</title></circle><circle cx="601.1" cy="132.2" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>104 (2026-06-29~2026-07-12): 21.7%</title></circle><circle cx="635.8" cy="135.0" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>105 (2026-07-13~2026-07-26): 21.5%</title></circle><circle cx="670.5" cy="130.8" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>106 (2026-07-27~2026-08-09): 21.8%</title></circle><circle cx="705.2" cy="122.4" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>107 (2026-08-10~2026-08-23): 22.4%</title></circle><circle cx="739.9" cy="111.2" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>108 (2026-08-24~2026-09-06): 23.2%</title></circle><circle cx="774.6" cy="102.8" r="2.6" fill="#fff" stroke="#2980b9" stroke-width="1.5"><title>109 (2026-09-07~2026-09-20): 23.8%</title></circle><circle cx="809.3" cy="102.8" r="4.5" fill="#2980b9" stroke="#2980b9" stroke-width="1.5"><title>110 (2026-09-21~2026-10-04): 23.8%</title></circle><circle cx="844.0" cy="91.6" r="4.5" fill="#2980b9" stroke="#2980b9" stroke-width="1.5"><title>111 (2026-10-05~2026-10-18): 24.6%</title></circle><polyline points="46.0,140.6 80.7,143.4 115.4,137.8 150.1,122.4 184.8,126.6 219.5,126.6 254.2,142.0 288.9,130.8 323.6,123.8 358.3,121.0 393.0,114.0 427.7,116.8 462.3,118.2 497.0,104.2 531.7,101.4 566.4,104.2 601.1,93.0 635.8,95.8 670.5,73.4 705.2,73.4 739.9,53.8 774.6,49.6 809.3,48.2 844.0,35.6" fill="none" stroke="#c2621b" stroke-width="2.2" stroke-dasharray="5,4"/><circle cx="46.0" cy="140.6" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>88 (2025-11-17~2025-11-30): 21.1%</title></circle><circle cx="80.7" cy="143.4" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>89 (2025-12-01~2025-12-14): 20.9%</title></circle><circle cx="115.4" cy="137.8" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>90 (2025-12-15~2025-12-28): 21.3%</title></circle><circle cx="150.1" cy="122.4" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>91 (2025-12-29~2026-01-11): 22.4%</title></circle><circle cx="184.8" cy="126.6" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>92 (2026-01-12~2026-01-25): 22.1%</title></circle><circle cx="219.5" cy="126.6" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>93 (2026-01-26~2026-02-08): 22.1%</title></circle><circle cx="254.2" cy="142.0" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>94 (2026-02-09~2026-02-22): 21.0%</title></circle><circle cx="288.9" cy="130.8" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>95 (2026-02-23~2026-03-08): 21.8%</title></circle><circle cx="323.6" cy="123.8" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>96 (2026-03-09~2026-03-22): 22.3%</title></circle><circle cx="358.3" cy="121.0" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>97 (2026-03-23~2026-04-05): 22.5%</title></circle><circle cx="393.0" cy="114.0" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>98 (2026-04-06~2026-04-19): 23.0%</title></circle><circle cx="427.7" cy="116.8" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>99 (2026-04-20~2026-05-03): 22.8%</title></circle><circle cx="462.3" cy="118.2" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>100 (2026-05-04~2026-05-17): 22.7%</title></circle><circle cx="497.0" cy="104.2" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>101 (2026-05-18~2026-05-31): 23.7%</title></circle><circle cx="531.7" cy="101.4" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>102 (2026-06-01~2026-06-14): 23.9%</title></circle><circle cx="566.4" cy="104.2" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>103 (2026-06-15~2026-06-28): 23.7%</title></circle><circle cx="601.1" cy="93.0" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>104 (2026-06-29~2026-07-12): 24.5%</title></circle><circle cx="635.8" cy="95.8" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>105 (2026-07-13~2026-07-26): 24.3%</title></circle><circle cx="670.5" cy="73.4" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>106 (2026-07-27~2026-08-09): 25.9%</title></circle><circle cx="705.2" cy="73.4" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>107 (2026-08-10~2026-08-23): 25.9%</title></circle><circle cx="739.9" cy="53.8" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>108 (2026-08-24~2026-09-06): 27.3%</title></circle><circle cx="774.6" cy="49.6" r="2.6" fill="#fff" stroke="#c2621b" stroke-width="1.5"><title>109 (2026-09-07~2026-09-20): 27.6%</title></circle><circle cx="809.3" cy="48.2" r="4.5" fill="#c2621b" stroke="#c2621b" stroke-width="1.5"><title>110 (2026-09-21~2026-10-04): 27.7%</title></circle><circle cx="844.0" cy="35.6" r="4.5" fill="#c2621b" stroke="#c2621b" stroke-width="1.5"><title>111 (2026-10-05~2026-10-18): 28.6%</title></circle><text x="46.0" y="248" font-size="10.5" text-anchor="middle" fill="#666">25.11</text><text x="150.1" y="248" font-size="10.5" text-anchor="middle" fill="#666">25.12</text><text x="254.2" y="248" font-size="10.5" text-anchor="middle" fill="#666">26.02</text><text x="358.3" y="248" font-size="10.5" text-anchor="middle" fill="#666">26.03</text><text x="462.3" y="248" font-size="10.5" text-anchor="middle" fill="#666">26.05</text><text x="566.4" y="248" font-size="10.5" text-anchor="middle" fill="#666">26.06</text><text x="670.5" y="248" font-size="10.5" text-anchor="middle" fill="#666">26.07</text><text x="774.6" y="248" font-size="10.5" text-anchor="middle" fill="#666">26.09</text><text x="844.0" y="248" font-size="10.5" text-anchor="middle" fill="#666">26.10</text><text x="838.0" y="109.6" font-size="11.5" text-anchor="end" fill="#2980b9" font-weight="700">24.6%</text><text x="838.0" y="26.6" font-size="11.5" text-anchor="end" fill="#c2621b" font-weight="700">28.6%</text></svg>
+<div class="lg"><span><i class="sw" style="border-color:#2980b9"></i>지난 2주 동안 AI를 썼다</span><span><i class="sw d" style="border-color:#c2621b"></i>앞으로 6개월 안에 쓸 것이다</span></div>
+</div>
+<ul class="tight">
+<li>9/21~10/4 회차는 <b>23.8%로 제자리</b>, 10/5~10/18 회차는 <b>24.6%</b>다. "앞으로 6개월 안에 쓸 것"은 27.7% → 28.6%.</li>
+<li>한 회차 쉰 것만 보면 둔화 같지만, 5월 이후 12개 회차로 회귀선을 그으면 기울기는 <b>한 달 +0.93%p</b>로 지난달(+0.91%p)과 같다. 속도는 유지다.</li>
+<li>최근 여섯 회차는 다시 받아 지난달 값과 대조했다. 바뀐 값은 없다.</li>
+<li>이번 달부터 본 조사의 <b>기업 규모별</b> 값도 본다. 최신 회차에서 가장 작은 규모(직원 1~4명)는 24.3%, 가장 큰 규모(250명 이상)는 <b>43.6%</b>다. 큰 회사일수록 많이 쓴다는 방향은 연 1회 부록과 같다. 다만 조사 창이 달라 부록 숫자(30.6%)와 직접 비교하지 않는다.</li>
+</ul>
+<p>깊이, 곧 <b>AI 때문에 일하는 방식을 바꿨는가</b>는 연 1회 부록에서만 본다. 부록 파일의 날짜가 10월 22일로 바뀌었지만, 내려받아 대조해 보니 9월 사본과 <b>바이트 단위로 같았다</b>. "조직 변화 없음 64.3% · 고용 변화 없음 95.7%"가 그대로다.</p>
+<p>같은 방향의 바깥 증거도 있다. 아폴로의 수석 이코노미스트는 AI가 기술 업종 밖의 S&P 493 기업에는 "제로 수익"을 냈다고 말했다(블룸버그 10/25). 쓰는 회사는 늘어도 이익으로 돌아온 흔적이 기술 업종 밖에서는 안 보인다는 주장이다. 하우스 의견이라 방향 참고로만 쓴다.</p>
+<p><b>🟡 유지.</b> 넓이만 보고 확산 고리를 풀림으로 올리지 않는다.</p>
+<p class="one"><b class="k">한 줄로 말하면</b>AI를 쓰는 회사는 같은 속도로 늘고, 일하는 방식을 바꾼 회사는 같은 자리에 있다.</p>
+<p class="src">출처: <a href="https://www.census.gov/hfp/btos/api/periods/110/data">기업 동향 조사 9/21~10/4 회차</a> · <a href="https://www.census.gov/hfp/btos/api/periods/111/data">10/5~10/18 회차</a> · <a href="https://www.census.gov/hfp/btos/data_downloads">기업 동향 조사 자료실 (AI 부록 · 10/22 수정)</a> · <a href="https://www.bloomberg.com/news/articles/2026-10-25/ai-provides-zero-payoff-to-s-p-493-outside-tech-apollo-economist-says">Bloomberg — AI Provides 'Zero Payoff' to S&amp;P 493 Outside Tech, Apollo Economist Says (10/25)</a></p>
+</section>
+
+<section>
+<h2><span class="n">6</span>재배치(#5) — 고용률 하락은 멈춰 가고, 창업 열기는 식어 간다</h2>
+
+<p>재배치 고리는 "AI로 밀려난 일손이 다른 일자리나 새 사업으로 옮겨 가는가"를 본다. 밀려나는 쪽은 거시 주간 보고서가 보고, 여기서는 받아 주는 쪽을 본다.</p>
+<table>
+<tr><th>지표</th><th class="num">이번 값</th><th>읽는 법</th></tr>
+<tr><td>고용률 (9월)</td><td class="num">59.2%</td><td>3개월 평균 59.3 → 59.1 → <b>59.07</b> — 하락 폭이 0.03%p로 거의 멈춤</td></tr>
+<tr><td>노동력 · 취업자 (8→9월)</td><td class="num">+48.5만 · +40.6만</td><td>두 달 연속 복귀 · 참가율 61.64 → 61.79%</td></tr>
+<tr><td>장기 실업자(27주 이상) 전년비</td><td class="num"><b>+7.1%</b></td><td>지난달 +0.3% → 껑충. 9월 194.4만 명</td></tr>
+<tr><td>신규 사업 신청 (9월)</td><td class="num">534,947</td><td>전년비 +11.4% → <b>+4.4%</b> · 최근 3개월 vs 직전 3개월 +4.7%</td></tr>
+<tr><td>채용·이직률 (8월)</td><td class="num">3.3% · 1.9%</td><td>9월분 미발표 — 지난달과 같음</td></tr>
+</table>
+<ul class="tight">
+<li>"생산성은 오르는데 고용률이 떨어지고 창업도 멈춘다"가 이 고리의 나쁜 시나리오다. 이번 달은 생산성 ✅ · 고용률 하락은 거의 멈춤 · 창업은 아직 증가(+4.4%) — 나쁜 시나리오 조건을 다 채우지 않는다.</li>
+<li>반대쪽 신호: 노동력은 돌아오는데 <b>장기 실업자가 1년 새 7% 늘었다.</b> 일자리를 찾는 사람이 다시 늘었지만, 오래 못 찾는 사람도 늘었다. 9월 일자리 증가는 2.9만 개로 적었다. 받아 주는 쪽의 힘이 약하다는 신호로 읽는다.</li>
+<li>거시 주간 보고서(10/24) 인용: 대졸 실업률 2.5%로 안정, 20~24세와 핵심 연령층의 실업률 차이는 4.4%p로 벌어졌다. 대기업 감원 발표는 쌓이는데 실업수당 청구는 낮다. 종합은 "화이트칼라 약화 시작, 속도는 느림".</li>
+</ul>
+<p><b>🟡 유지.</b></p>
+<p class="one"><b class="k">한 줄로 말하면</b>사람은 노동시장으로 돌아오지만, 오래 일자리를 못 찾는 사람도 늘고 창업 열기는 식어 간다.</p>
+<p class="src">출처: FRED <a href="https://fred.stlouisfed.org/series/EMRATIO">EMRATIO</a> · <a href="https://fred.stlouisfed.org/series/CLF16OV">CLF16OV</a> · <a href="https://fred.stlouisfed.org/series/CE16OV">CE16OV</a> · <a href="https://fred.stlouisfed.org/series/UEMP27OV">UEMP27OV</a> · <a href="https://fred.stlouisfed.org/series/PAYEMS">PAYEMS</a> · <a href="https://fred.stlouisfed.org/series/BABATOTALSAUS">BABATOTALSAUS</a> · <a href="https://fred.stlouisfed.org/series/JTSHIR">JTSHIR</a> · <a href="https://fred.stlouisfed.org/series/JTSQUR">JTSQUR</a> · 거시 주간 보고서(10/24)</p>
+</section>
+
+<section>
+<h2><span class="n">7</span>측정 생존(#6)·순증(#7) — 측정은 발표 대기, 돈 쪽 꼬리는 굵어졌다</h2>
+
+<h3>측정 생존 — 변동 없음</h3>
+<p>새 1차 발표가 없다. 2분기 생산성 +1.4%(연율) · 노동 몫 52.8%(1947년 이후 최저) · 비금융기업 단위이익 +43%가 최신이다. 국내총생산 디플레이터와 소비자물가의 괴리(분기 평균)도 +0.23%p 그대로다. 소프트웨어 개발을 맡아 주는 컴퓨터 시스템 설계 업종 고용은 1년 전보다 1.35% 적다. 다음 판정은 <b>10월 29일 3분기 국내총생산 속보</b>와 <b>11월 5일 3분기 생산성 예비치</b>다. <b>🟡 유지.</b></p>
+
+<h3>순증 — 사람 쪽은 그대로, 돈 쪽은 악화</h3>
+<ul class="tight">
+<li><b>노동력</b> 전년비 −0.58%(지난달 −0.57%), 일할 나이 인구 +0.48%. 사람 쪽 차감은 그대로다.</li>
+<li><b>금융 꼬리</b>(거시 주간 보고서 10/24 인용 + 블룸버그 헤드라인): AI 데이터센터 회사의 2032년 만기 무담보채 금리가 약 15%, 투기등급 회사채 가산금리 3.40%p, AI 토큰 지출 증가세는 1년 만에 가장 약했다. 10월 22일엔 최저 등급 회사채에서 "전면 붕괴"로 불린 급락이 있었다. 연준은 10월 27~28일 회의에서 추가 인상 여지를 남긴 동결이 유력하다.</li>
+</ul>
+<p><b>🟡 유지 · ↘.</b> 돈을 빌려 전력과 설비를 까는 비용이 올라가는 중이다. 이 꼬리가 굵어지면 전력 고리를 푸는 투자 자체가 늦어질 수 있다.</p>
+<p class="one"><b class="k">한 줄로 말하면</b>통계는 발표를 기다리는 중이고, 그 사이 AI 투자에 드는 돈의 값이 올랐다.</p>
+<p class="src">출처: <a href="https://www.bls.gov/news.release/prod2.nr0.htm">노동통계국 생산성·비용 2분기 개정 (9/3 · 변동 없음)</a> · FRED <a href="https://fred.stlouisfed.org/series/GDPDEF">GDPDEF</a> · <a href="https://fred.stlouisfed.org/series/CPIAUCSL">CPIAUCSL</a> · <a href="https://fred.stlouisfed.org/series/CES6054150001">CES6054150001</a> · <a href="https://fred.stlouisfed.org/series/CNP16OV">CNP16OV</a> · <a href="https://www.bloomberg.com/news/articles/2026-10-24/-total-meltdown-in-riskiest-debt-unnerves-market-credit-weekly">Bloomberg — 'Total Meltdown' in Riskiest Debt (10/24)</a> · <a href="https://www.bloomberg.com/news/articles/2026-10-24/fed-set-to-lead-g7-trio-in-hawkish-rate-pause-eco-week-ahead">Bloomberg — Fed Set to Lead G7 Trio in Hawkish Rate Pause (10/24)</a> · <a href="https://www.apollo.com/wealth/insights-news/insights/daily-spark/slowing-token-spend-shows-compute-demand-is-not-unlimited">Apollo — Slowing Token Spend (10/20)</a> · 거시 주간 보고서(10/24)</p>
+</section>
+
+<section>
+<h2><span class="n">8</span>변위-흡수 시차 — 넓은 채로 멈춰 있다</h2>
+
+<div class="gapwrap">
+  <div class="gaprow"><div class="y">인지 변위<br><span class="sub">능력</span></div><div class="b">
+    <div class="bar cog" style="width:82%">실전 자동화율 21.25% — 한 달 +1개</div>
+    <div class="bar cogl" style="width:16%">실제 발현: 고용 변화 없음 95.7% — 그대로</div>
+  </div></div>
+  <div class="gaprow"><div class="y">물리 흡수<br><span class="sub">용량</span></div><div class="b">
+    <div class="bar abs" style="width:6%">휴머노이드 — 첫 단위경제성 공개(약속 단계)</div>
+    <div class="bar abs" style="width:34%">돈은 "배치"와 "데이터" 회사로</div>
+  </div></div>
+</div>
+<ul class="tight">
+<li><b>인지 쪽</b>: 실전 자동화율 +1개, 과업 길이 지표 은퇴, AI 토큰 지출 증가세 둔화. 머리 쪽 곡선이 이번 달은 쉬었다.</li>
+<li><b>물리 쪽</b>(로봇 주간 보고서 10/10 인용): 휴머노이드 회사 하나가 처음으로 한 대당 원가·마진·회수 기간을 공개 문서(증권 당국 제출 발표자료)로 냈다. 다만 전부 아직 나오지 않은 로봇에 대한 약속이고, 고객 이름은 끝내 나오지 않았다. 투자금은 로봇을 현장에 깔고 유지하는 회사(6,200만 달러 · "병목은 배치")와 사람 동작 데이터 회사(6,000만 달러)로 몰렸다.</li>
+</ul>
+<p><b>갭 판정: 넓은 채 유지.</b> 이번 달은 벌어지지도 좁혀지지도 않았다. 최대 격차 시기 추정 <b>2029~2033년</b> 유지.</p>
+<p class="one"><b class="k">한 줄로 말하면</b>머리도 몸도 이번 달은 제자리였고, 둘 사이의 거리는 그대로 넓다.</p>
+<p class="src">출처: <a href="https://www.sec.gov/Archives/edgar/data/2074973/000121390026107259/ea030784201ex99-1.htm">Agility 애널리스트·투자자 데이 발표자료 (SEC 425 · 10/6)</a> · <a href="https://x.com/Ultraroboticsco/status/2108565469682688330">Ultra 투자 유치 (X · 10/9)</a> · 로봇 주간 보고서(10/10) · <a href="https://www.remotelabor.ai/">Remote Labor Index</a></p>
+</section>
+
+<section>
+<h2><span class="n">9</span>종합 — 쉬어 가는 앞쪽, 조금 풀린 전력, 비싸진 돈</h2>
+
+<div class="verdict">
+<p><b>막힌 고리</b> — #2 전력·물리 <b>단독, 6회 연속</b>. 전환 신호 없음. 다만 처음으로 전력 가격 괴리가 줄었다. 다음 달에도 줄면 등급 조정을 검토한다.</p>
+<p><b>레짐</b> — <b>교착 유지.</b> 지난달은 "앞은 달리고 뒤는 멈췄다"였다. 이번 달은 <b>앞도 한 템포 쉬었다.</b> 능력의 1차 자가 사라졌고, 실전 성공은 하나 늘었고, 쓰는 회사 수만 같은 속도로 늘었다. 전력이 풀리면 다음 병목 1순위는 여전히 확산 고리의 깊이, 곧 조직 개편이다.</p>
+<p><b>통화정책과의 관계</b> — 연준은 9월 인상 뒤 이번 주 "매파적 동결"이 유력하다. 이 모니터가 가정한 두 경로(워시 의장식 "내리면서 조이기", 굴스비 총재식 "묶어 두고 조이기") 밖의 인상 경로가 이어진다. 생산성은 평년 수준이고 이득은 이익으로 가며, 그 사이 AI 투자에 드는 자금 비용이 올라간다. "생산성이 도착하면 금리를 내릴 명분이 생긴다"는 이야기는 이번 달에도 작동하지 않았다.</p>
+<p><b>해석·시사점</b> — 전력 고리를 푸는 데 필요한 것은 돈을 빌려 까는 발전·송전·설비다. 그 돈의 값이 오르는 달에 전력 가격 압력이 줄었다는 것은, 공급이 따라붙었다기보다 날씨와 기저의 도움일 가능성을 함께 열어 둬야 한다는 뜻이다. 반대로 날씨를 빼도 24시간 부하가 전국에서 5%씩 오르는 것은 수요 쪽 압력이 사라지지 않았다는 증거다.</p>
+</div>
+<p class="one"><b class="k">한 줄로 말하면</b>병목은 여전히 전력이고, 이번 달은 사슬 전체가 숨을 고른 달이다.</p>
+
+<h3>다음 분기점</h3>
+<table>
+<tr><th>시점</th><th>이벤트</th><th>어느 고리를 가르나</th></tr>
+<tr><td><b>10/27~28</b></td><td>연준 회의</td><td>레짐 — 동결의 말투가 얼마나 매파적인가</td></tr>
+<tr><td><b>10/29</b></td><td>3분기 국내총생산 속보</td><td>#6·#7 — 디플레이터 괴리 · 성장</td></tr>
+<tr><td><b>11/5</b></td><td>3분기 생산성 예비치</td><td>#6 — 노동 몫이 더 내려가는가 · 단위이익</td></tr>
+<tr><td>11/6</td><td>10월 고용상황</td><td>#5 — 장기 실업 증가가 이어지는가</td></tr>
+<tr><td>11월 초</td><td>기업 AI 사용 조사 10/19~11/1 회차</td><td>#4 — 기울기 유지</td></tr>
+<tr><td>11월 중순</td><td>10월 전력 생산·물가</td><td>#2 — 12개월 괴리가 두 번 연속 줄어드는가</td></tr>
+<tr><td>11월</td><td>3분기 사모대출 펀드 데이터</td><td>#7 — 사모 쪽 스트레스 전이</td></tr>
+</table>
+
+<p class="note">⚠️ 한계 — 전력 괴리 축소와 장기 실업 급증은 한 달치 변화라 등급에 반영하지 않았다. 역량 고리는 이제 보조 지표 하나로 판정한다. 기업 AI 사용 조사는 기업의 자기 응답이라 수준보다 방향을 읽는다. 텍사스 서부 구역 급증은 원인을 확인하지 못했다.</p>
+</section>
+
+<footer>
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p>
+<p class="fine">tfp-monitor · 생산성 7-고리 진단 · 2026-10-25 · 수집 게이트 통과(FRED 17/17 · 브라우저 피드 3/3)</p>
+</footer>
+
+</div>
+<script>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+const VIZ = {"chain": {"axes": ["#1 역량", "#2 전력", "#3 신뢰성", "#4 확산", "#5 재배치", "#6 측정", "#7 순증"], "max": 3, "scoreLabels": {"1": "🔴 binding", "2": "🟡 진행", "3": "🟢 풀림"}, "label": "생산성 7-고리 binding 레이더", "series": [{"name": "생산성 사슬 (2026-10-25)", "color": "#2980b9", "scores": [3, 1, 2, 2, 2, 2, 2]}, {"name": "직전 (2026-09-30)", "color": "#b0b6ba", "dash": true, "scores": [3, 1, 2, 2, 2, 2, 2]}]}};
+DDViz.renderRadar('fig-chain','leg-chain',VIZ.chain);
+</script>
+</body>
+</html>
