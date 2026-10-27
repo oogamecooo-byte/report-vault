@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="vault-unlisted" content="1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOUN (SoundHound AI) R-Dive — 제품·수익모델 정밀 해부 (2026-10-27)</title>
+<style>body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Apple SD Gothic Neo','Segoe UI',sans-serif;line-height:1.65;margin:0;padding:32px 12px;}
+.container{max-width:1000px;margin:0 auto;background:#FDF6E3;border-radius:14px;padding:36px 44px;box-shadow:0 2px 16px rgba(80,60,20,.12);}
+h1{font-size:1.7em;border-bottom:3px solid #c44;padding-bottom:10px;margin-top:0;}
+h2{font-size:1.3em;border-bottom:1px solid #d9cfb3;padding-bottom:6px;margin-top:32px;}
+h3{font-size:1.08em;margin-top:22px;color:#7a3a10;}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.9em;}
+th,td{border:1px solid #ddd0ad;padding:7px 10px;text-align:left;vertical-align:top;}
+thead th{background:#efe6cb;}
+tbody tr:nth-child(even) td{background:#f7efd9;}
+blockquote{background:#f5edd6;border-left:4px solid #c9a84a;margin:14px 0;padding:12px 16px;border-radius:0 6px 6px 0;font-size:.95em;}
+blockquote.explain{background:#eef3e6;border-left:4px solid #6b8e4e;color:#2e3a24;}
+blockquote.explain strong:first-child{color:#3f5f2e;}
+blockquote.simple{background:#F3F7E9;border-left:4px solid #7FA650;color:#2f3a24;}
+blockquote.simple strong:first-child{color:#4E6B2C;}
+a{color:#0a66c2;text-decoration:none;} a:hover{text-decoration:underline;}
+ul{padding-left:22px;} li{margin:4px 0;}
+hr{border:none;border-top:1px solid #e0d6b8;margin:24px 0;}
+strong{color:#3a2c10;} em{color:#5c4a00;}
+code{background:#efe6cb;padding:1px 5px;border-radius:4px;font-size:.9em;}
+del{color:#8a7a5a;}
+@media print{body{background:#fff;padding:0;}.container{box-shadow:none;max-width:100%;}table,blockquote{break-inside:avoid;}}
+  tr.sig-r td { background: #f8ded8 !important; }
+  tr.sig-o td { background: #fbe7cf !important; }
+  tr.sig-y td { background: #f8f0cc !important; }
+  tr.sig-g td { background: #e3f0de !important; }
+  h2.sig-r, h3.sig-r, h4.sig-r { border-left: 5px solid #c0392b; padding-left: 10px; }
+  h2.sig-o, h3.sig-o, h4.sig-o { border-left: 5px solid #d9822b; padding-left: 10px; }
+  h2.sig-y, h3.sig-y, h4.sig-y { border-left: 5px solid #b89400; padding-left: 10px; }
+  .guard { background: #f8ded8; border-left: 4px solid #c0392b; padding: 8px 12px; border-radius: 0 6px 6px 0; margin: 8px 0; }
+  @media print { tr[class^="sig-"] td { background: #fff !important; } }
+</style>
+
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+<style>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+</style>
+<meta name="vault-stage" content="Dive">
+<meta name="vault-topic" content="SOUN">
+<meta name="vault-skill" content="R-Dive">
+<meta name="vault-date" content="2026-10-27">
+<meta name="vault-published" content="2026-10-27">
+<meta name="description" content="SOUN (SoundHound AI) R-Dive — 제품·수익모델 정밀 해부 (2026-10-27)">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="container">
+<header class="rp-head"><h1>SOUN (SoundHound AI) R-Dive — 제품·수익모델 정밀 해부 (2026-10-27)</h1>
+<p>첫 실행이다(직전 R-Dive 보고서 없음). Deep-Dive 선행 하위 Dive로 만들었다. 시세는 야후 기준(10/26 종가 $4.24). 매수신호 0.</p>
+<p>1차 자료(SEC 원문 · 회사 IR):</p>
+<ul>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1840856/000184085626000006/soun-20251231.htm">10-K FY2025 (2026-03-02)</a></li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1840856/000184085626000015/soun-20260331.htm">10-Q 1분기 2026 (2026-05-11)</a></li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1840856/000184085626000022/soun-20260630.htm">10-Q 2분기 2026 (2026-08-10)</a></li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1840856/000184085625000018/soun-20251006ex991earnings.htm">실적 보도자료 3분기 2025</a></li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1840856/000184085626000002/soun-20260226ex991earnings.htm">실적 보도자료 4분기 2025</a></li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1840856/000184085626000012/soun-20260507ex991earnings.htm">실적 보도자료 1분기 2026</a></li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1840856/000184085626000019/soun-20260806ex991earnings.htm">실적 보도자료 2분기 2026</a></li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1840856/000184085625000028/soun-20251024ex991financia.htm">인터랙션스 2024년 감사 재무제표 (8-K/A 2025-11-17 별첨 99.1)</a></li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1840856/000121390026045987/ea028711701ex99-1.htm">LivePerson 인수 발표 공동 보도자료 (8-K 2026-04-21)</a></li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1840856/000121390026076371/ea0292090-03.htm">합병 등록서류 S-4/A (2026-07-08 · LivePerson 경영진 추정치 수록)</a></li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1840856/000121390026077663/ea029773601ex99-1.htm">합산 추정 재무 (8-K 2026-07-13 별첨 99.1)</a></li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1840856/000121390026097712/ea030469101ex99-1.htm">인수 완료 보도자료 (8-K 2026-09-04)</a></li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1840856/000121390026097476/ea0304524-424b7_soundhound.htm">채권자 대가 주식 재판매 등록 (424B7 2026-09)</a></li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1102993/000110299326000014/lpsn-20251231.htm">LivePerson 10-K FY2025</a></li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1102993/000110299326000084/lpsn-20260630.htm">LivePerson 10-Q 2분기 2026</a></li>
+<li><a href="https://investors.soundhound.com/news-releases/news-release-details/soundhound-ai-announce-third-quarter-2026-financial-results">3분기 2026 실적 발표일 공지 (회사 IR 2026-10-22)</a></li>
+</ul>
+<hr></header>
+<section class="card"><h2>📄 한 장 요약</h2>
+<ul>
+<li><strong>확정 아키타입</strong>: 주 ⑥ 구독·사용량형(2025년 매출의 64%가 호스팅 서비스) + 부 ① 믹스 시프트형. 자동차 음성 로열티 회사가 고객센터 AI 회사로 바뀌었는데, 그 전환은 거의 전부 <strong>인수로 샀다</strong>.</li>
+<li><strong>핵심 edge</strong>: 음성을 글자로 바꾸는 단계를 건너뛰고 곧바로 뜻을 잡는 자체 엔진, 그리고 인터넷 없이 차 안에서 도는 내장형 버전. 완성차가 자기 브랜드로 음성 비서를 달게 해 준다. 이 자동차 로열티 줄기는 2025년 +25%, 1분기 2026 +88%로 혼자 크고 있다.</li>
+<li>🔴 <strong>치명 함정 ① 산 매출이 줄고 있다</strong> — 인수한 회사들을 처음부터 가진 것처럼 합친 매출(회사 공시)은 2024년 $225.6M → 2025년 $211.7M, −6.1%다.<br>인터랙션스는 1년 새 −20%, 9월에 합친 LivePerson은 −22%였다(기존 고객 매출 유지율 78%).</li>
+<li>🔴 <strong>치명 함정 ② 장부 이익과 현금</strong> — 2025년 순손실 $14.0M은 주가 하락으로 인수 대가 부채가 줄며 생긴 장부 이익 $163.1M 덕이다.<br>이 이익을 빼면 영업손실은 $186.4M이다. 영업현금흐름은 3년 연속 적자(2025년 −$98.2M)이고, 구멍은 새 주식 발행으로 메웠다.</li>
+<li>🟠 <strong>반복성</strong> — 아직 매출로 안 잡힌 계약 잔고(RPO)는 $60.0M으로 최근 12개월 매출의 30%뿐이고, 6개월 새 24.5% 줄었다.<br>2분기 2026 매출의 33%는 한 번에 인식된 라이선스였다.</li>
+<li>🟠 <strong>계약 구조</strong> — 큰 고객과의 기본 계약(MSA)은 1년 자동갱신이고, 고객이 6~12개월 전 통보로 끝낼 수 있다. 2분기 2026에는 두 고객이 분기 매출의 25%였다.</li>
+<li>🟠 <strong>주식 수</strong> — 7월 아멜리아 성과 대가 813만 주, 9월 LivePerson 채권자 몫 3,689만 주가 더해졌다. LivePerson 주주 몫은 별도다.</li>
+<li><strong>종합 판정</strong>: 예측가능성 🔴 · 수익성 🔴 · 과금 강도 🟡 · 고객 묶임 🟡.</li>
+<li><strong>thesis 함의</strong>: 성패는 "음성 기술이 좋은가"가 아니라 <strong>"싸게 산 고객센터 매출의 감소를 OASYS 교차판매가 이기는가"</strong>에 달렸다. 첫 시험은 LivePerson이 처음 섞이는 3분기 실적(11/5)이다.</li>
+</ul>
+<blockquote>💡 <strong>🔤 RPO(잔여 이행의무)</strong> — 계약은 맺었지만 아직 매출로 잡히지 않은 금액. 미래에 들어오기로 "예약된" 매출이다. 이 회사는 쓰는 만큼 내는 사용량 요금과 대당 로열티는 여기에 넣지 않는다.</blockquote>
+<blockquote>💡 <strong>🔤 합산 추정 매출(pro forma)</strong> — 인수한 회사를 "처음부터 갖고 있었다면" 매출이 얼마였을지 회사가 계산해 공시한 숫자. 인수 효과를 빼고 같은 묶음끼리 비교할 때 쓴다.</blockquote>
+<hr>
+<details><summary>&lt;b&gt;배경&lt;/b&gt; (접이식)</summary>
+<p>SoundHound는 2005년 스탠퍼드 졸업생들이 세운 음성 AI 회사다. 처음엔 노래 찾기 앱으로 알려졌고, 2015년 개발자용 음성 플랫폼 Houndify를 내놨다. 2022년 4월 SPAC 합병으로 나스닥에 올랐다. 창업자들이 1주 10표인 B주를 갖고 회사를 이끈다.</p>
+<p>2024년부터 인수를 이어 왔다. 2024년에는 1월 식당 음성주문 SYNQ3, 6월 이름 없는 소형 인수, 8월 기업용 대화형 AI Amelia를 샀다.<br>2025년 9월에는 고객센터 AI Interactions를 샀다.<br>2026년에는 5월 비상장사 자산 인수(최대 $30.2M)에 이어 9월 디지털 메시징 LivePerson을 합쳤다.</p>
+<p>회사는 사업부를 하나로만 보고한다. 그래서 <strong>제품별·사업별 이익은 공시하지 않는다</strong>. 재무 책임자는 2026년 4월 퇴임 뒤 공동창업자가 임시로 맡았고, 9월 LivePerson 출신 John Collins로 바뀌었다. 10-Q는 "거의 모든 계정과 공시"에 걸친 내부통제의 중대한 약점을 밝히고 있다.<br></details></p>
+<hr></section>
+<section class="card"><h2>Part A — 아키타입 확정</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 겉모습은 구독형 소프트웨어 회사다. 하지만 구독 매출 대부분은 인수로 산 것이고, 산 회사들의 매출은 줄고 있다. 그래서 "전환 중인 회사"로 함께 봐야 한다.</blockquote>
+<p><strong>주 ⑥ 구독·사용량형 + 부 ① 믹스 시프트형(인수 주도) · 보조 과금 = 라이선스·로열티.</strong></p>
+<ul>
+<li><strong>과금 근거</strong>: 2025년 매출을 인식 방식으로 나누면 호스팅 서비스 64% · 라이선스 27% · 용역 9% · 광고 0.3%다. 호스팅은 정액 구독 또는 쓰는 만큼 내는 사용량 요금이다.</li>
+<li><strong>전환 근거</strong>: 서비스 구독 비율이 2023년 4% → 2024년 67% → 2025년 79%로 뛰었다. 같은 기간 SYNQ3·Amelia·Interactions가 들어왔다.</li>
+<li><strong>전환의 질</strong>: 합산 추정 매출은 2025년 −6.1%다. 전환이 회사 안에서 일어난 게 아니라 <strong>남의 매출을 사서 옮겨 심은 것</strong>이다.</li>
+<li>라이선스·로열티(27%)는 따로 떼지 않고 ⑥의 변형으로 본다. 대당 로열티는 쓰는 만큼 반복되지만, 고정 라이선스·최소 보장액은 계약 시점에 한꺼번에 잡힌다.</li>
+<li>회사가 말하는 3번째 기둥 "음성 커머스·광고 수익 공유"(② 통행료형 후보)는 2025년 매출 $0.46M(음악 앱 광고)뿐이다 (고객 검증 D). 아키타입에 넣지 않았다.</li>
+</ul>
+<blockquote>💡 <strong>🔤 호스팅 서비스</strong> — 회사 서버(클라우드)에 소프트웨어를 띄워 두고 고객이 접속해 쓰게 하는 방식. 고객은 프로그램을 사지 않고 쓰는 기간·양만큼 돈을 낸다.</blockquote>
+<hr></section>
+<section class="card"><h2>Part B.0 — 제품·서비스·기술 이해</h2>
+<h3>B.0.1 주력 제품 5개</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 돈을 버는 제품은 크게 두 무리다. 차·TV에 들어가는 음성 엔진(로열티)과 기업 고객센터 전화·채팅을 대신 받는 AI 상담원(구독)이다. 뒤쪽은 대부분 인수로 들어왔다.</blockquote>
+<p><strong>① Houndify 음성 AI 플랫폼 — 차량·TV·기기용 (로열티)</strong></p>
+<ul>
+<li><strong>무엇</strong>: 제조사가 자기 제품에 자기 브랜드 음성 비서를 다는 소프트웨어 묶음이다. 깨우는 말("Hey Peugeot" 같은 호출어), 음성 인식, 뜻 이해, 음성 합성까지 한 번에 판다.</li>
+<li><strong>작동</strong>: 보통 음성 비서는 소리를 먼저 글자로 바꾸고, 그 글자를 다시 뜻으로 푼다. 사운드하운드는 두 일을 동시에 돌려 말이 끝나기 전에 뜻을 잡는다고 한다(회사 용어 Speech-to-Meaning). 첫 단계의 오타가 다음 단계로 번지지 않아 빠르고 정확하다는 설명이다.</li>
+<li>차 안에서 인터넷 없이 도는 내장형, 클라우드형, 둘을 섞은 혼합형이 있다. 날씨·스포츠·식당 같은 정보 영역 100여 개를 붙이고, 생성형 답변은 OpenAI ChatGPT 같은 외부 언어모델과 섞어 낸다(10-K).</li>
+<li><strong>고객·용도</strong>: 완성차(보도자료상 현대·기아·Stellantis·Iveco)와 TV·가전 제조사. "에어컨 끄고 창문 내려" 같은 명령, 차 안에서 식당 주문 같은 쓰임이다. 구글·아마존 비서를 달면 브랜드와 사용자 데이터를 넘겨야 하는데, 그걸 피하려는 제조사가 산다.</li>
+<li><strong>차별점</strong>: 회사 주장은 세 가지다. 고객과 경쟁하지 않는 독립 공급자, 고객 브랜드를 그대로 쓰는 화이트 라벨, 25개 언어와 내장형. 1차 근거로 확인되는 것은 특허 수와 완성차 쪽의 반복 매출이다. "업계 최고 속도·정확도"는 독립 시험 결과가 1차 자료에 없어 <strong>주장</strong>으로 둔다.</li>
+<li><strong>매출 위치</strong>: "제품 로열티" 매출 $34.9M(2025년 21%). 가장 빨리 크는 줄기지만 규모는 작다.</li>
+</ul>
+<p><strong>② Amelia 7 · OASYS — 기업용 AI 상담원 플랫폼 (구독·라이선스)</strong></p>
+<ul>
+<li><strong>무엇</strong>: 은행·보험·병원·통신사가 고객 문의와 사내 IT 요청을 AI 상담원에게 맡기는 플랫폼이다. 2024년 8월 인수한 Amelia를 바탕으로, 2026년 여러 AI 상담원을 지휘하는 OASYS로 묶었다(회사 표현 "스스로 배우는 지휘 시스템").</li>
+<li><strong>작동</strong>: 고객 말을 알아듣고, 뒤쪽 시스템(계좌 조회·예약·IT 접수)에 직접 들어가 일을 끝낸다. 회사 클라우드에서 쓰면 호스팅 구독, 고객 서버에 깔면 설치 시점에 잡히는 라이선스로 판다.</li>
+<li><strong>고객·용도</strong>: 금융·보험·의료 대기업. 2분기 2026 보도자료에는 직원 3만 명 병원 그룹의 7자리(100만 달러대) 계약, Rakuten Securities 갱신 등이 있다. 사람 상담원 비용을 줄이려는 수요다.</li>
+<li><strong>차별점</strong>: 음성 엔진을 직접 가진 채로 기업 업무 처리까지 붙였다는 점(회사 주장). 맞춤 연동 용역이 따라붙어 바꾸기 번거롭다.</li>
+<li><strong>매출 위치</strong>: "서비스 구독"과 라이선스 일부. 제품별 매출은 미공시.</li>
+</ul>
+<p><strong>③ Interactions — 고객센터 가상 상담원 (사용량 구독)</strong></p>
+<ul>
+<li><strong>무엇</strong>: 2025년 9월 인수. 대기업 콜센터 전화를 AI가 먼저 받아 처리하는 서비스다.</li>
+<li><strong>작동</strong>: 인터랙션스 재무제표는 매출을 "고객이 회사가 운영하는 소프트웨어와 직접 지원 서비스를 써서 고객 응대를 자동화하는 것"으로 설명한다. 사운드하운드 10-K는 원가에 "콜센터 인력비"가 들어간다고 적었다. 사람 손이 섞인 서비스라는 뜻이다.</li>
+<li><strong>고객·용도</strong>: 포춘 100대 기업 등(회사 표현). 2024년 상위 2곳이 매출의 29%(17%·12%)였다.</li>
+<li><strong>차별점</strong>: 오래된 대기업 관계. 인수 성과 조건이던 핵심 고객 계약은 2026년 초 갱신됐다(10-K).</li>
+<li><strong>매출 위치</strong>: 호스팅 서비스. 2024년 $82.1M → 2025년 약 $65.9M(인수 전 $42.8M + 인수 후 $23.1M).</li>
+</ul>
+<p><strong>④ LivePerson Conversational Cloud — 디지털 메시징 (구독)</strong></p>
+<ul>
+<li><strong>무엇</strong>: 2026년 9월 4일 인수 완료. 웹·앱·문자·SNS 채팅으로 기업과 고객을 잇는 메시징 플랫폼이다(회사 표현 월 10억 건).</li>
+<li><strong>작동</strong>: 플랫폼 이용료를 계약 기간에 나눠 인식하고, 일부는 대화량에 따라 받는다. 사운드하운드는 여기에 음성 AI를 얹어 "음성·문자 한 플랫폼"으로 팔 계획이다.</li>
+<li><strong>고객·용도</strong>: 은행·항공·통신 대기업. 기업 고객 1곳당 연평균 매출(ARPC)은 2025년 $68만이다.</li>
+<li><strong>차별점</strong>: 10년 넘은 고객 관계가 많다. 그러나 기존 고객 매출 유지율이 2025년 78%(2024년 82%)로, 고객이 줄이거나 떠나고 있다. LivePerson은 이유로 "회사 재무 안정성에 대한 고객 불안"을 들었다.</li>
+<li><strong>매출 위치</strong>: 3분기 2026부터 연결 매출에 들어간다.<br>LivePerson 매출은 2025년 $243.7M, 2분기 2026 $52.5M(전년 대비 −12%)였다.</li>
+</ul>
+<p><strong>⑤ 레스토랑 음성 주문·전화 응대 (구독)</strong></p>
+<ul>
+<li><strong>무엇</strong>: Smart Ordering(전화·드라이브스루·키오스크 주문), Smart Answering(영업시간·예약 등 전화 응대), Employee Assist(직원용 메뉴 도우미). 2024년 1월 SYNQ3 인수로 커졌다.</li>
+<li><strong>작동</strong>: 매장 메뉴를 배워 주문을 받고 매장 결제 단말(POS)에 바로 넣는다. 추가 메뉴 권유도 한다.</li>
+<li><strong>고객·용도</strong>: Chipotle·IHOP·Jersey Mike's·Five Guys·Red Lobster 등(보도자료). 인건비와 놓치는 전화를 줄이려는 체인이다.</li>
+<li><strong>차별점</strong>: 음성 엔진 자체 보유와 POS 연동. 다만 경쟁 신생사가 많은 영역이다.</li>
+<li><strong>매출 위치</strong>: 서비스 구독. 매장 수와 매장당 요금은 미공시.</li>
+</ul>
+<p>그 밖(이름만): SoundHound Chat AI · 음악 찾기 앱(광고) · 음성 커머스(차·TV에서 식당 주문 후 수익 공유, 고객 검증 D) · 개발자 플랫폼 · 맞춤 정보 영역 · 음성 합성 · OASYS Edge(차량 내장형 AI 상담원).</p>
+<h3>B.0.2 기술·IP·해자</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 기술 자산은 "음성 엔진을 처음부터 직접 만들었다"는 데 모인다. 특허는 많지만, 그 기술이 고객센터 쪽 가격으로 이어진 증거는 아직 없다.</blockquote>
+<ul>
+<li><strong>기반 기술</strong>: 인식과 이해를 동시에 하는 Speech-to-Meaning, 조건이 여러 겹인 질문을 푸는 Deep Meaning Understanding, 정보 영역끼리 서로 배우는 Collective AI, 호출어 없이 끼어들며 대화하는 Dynamic Interaction, 그리고 내장형·클라우드·혼합 배치.</li>
+<li><strong>IP</strong>: 10-K 기준 등록 특허 359건 + 출원 102건. 그중 40건 이상이 대화형 광고·수익화 특허다. LivePerson 합병 뒤 회사는 "750건 이상"이라고 밝혔다(회사 표현).</li>
+<li><strong>재현 난이도</strong>: 10-K는 "완전한 음성 AI 플랫폼을 가진 회사는 매우 적다"고 하면서도, 빅테크의 자원이 훨씬 크고 경쟁사가 같은 기능을 더 큰 제품에 끼워 싸게 또는 무료로 줄 수 있다고 적었다. 회사 스스로 생성형 답변에 외부 언어모델을 쓴다. 언어모델이 퍼질수록 음성 이해의 기술 격차는 좁아지는 쪽으로 압력을 받는다.</li>
+<li><strong>R&amp;D</strong>: 2025년 연구개발비 $98.3M, 매출의 58%다(2023년엔 112%). 다음 베팅은 OASYS(AI 상담원 지휘), OASYS Edge(차량 내장), 자체 모델이다.</li>
+<li><strong>주장과 실증의 구분</strong>: "세계 최고", "세계 최초 스스로 배우는 에이전트 플랫폼"은 <strong>주장</strong>이다. 실증으로 볼 수 있는 것은 특허 수, 완성차의 반복 매출, 2분기 라이선스 계약(중국 차량 소프트웨어 7자리 · 중남미 파트너 8자리)이다.</li>
+</ul>
+<h3>B.0.3 제품 → 수익모델 연결</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 기술 해자가 돈으로 바뀌는 곳은 자동차 쪽 "한 번 채택되면 그 차가 팔리는 내내 묶인다"는 점이다. 매출 대부분인 고객센터 쪽은 고객이 줄이고 떠나는 중이라, 해자가 가격으로 이어지지 않는다.</blockquote>
+<table><thead><tr><th>주력 제품</th><th>과금 유형</th><th>아키타입</th><th>가격 결정력</th><th>전환비용·묶임</th><th>운영 레버리지</th></tr></thead><tbody>
+<tr><td>① Houndify 차량·기기</td><td>라이선스·로열티(대당·사용량·기간 · 고정액·최소 보장) + 개발 용역</td><td>⑥ 변형</td><td>🟡 고유 기술 vs 완성차 구매력·연간 가격 인하 요구(10-K)</td><td>🟢 차종 설계 단계 채택 → 판매 기간 내내</td><td>🟢 한 대 더 팔아도 추가 원가 작음(클라우드 질의 원가는 별도)</td></tr>
+<tr><td>② Amelia·OASYS</td><td>호스팅 구독 또는 설치형 라이선스 + 용역</td><td>⑥</td><td>🟡</td><td>🟡 시스템 연동 깊음 · 단 1년 단위 해지권</td><td>🟡 맞춤 용역 비율 큼</td></tr>
+<tr><td>③ Interactions</td><td>사용량 호스팅(통화·건당)</td><td>⑥</td><td>🔴 매출 1년 −20%</td><td>🟡 핵심 고객 갱신은 확인</td><td>🔴 원가에 상담 인력 포함</td></tr>
+<tr><td>④ LivePerson</td><td>정액 구독 + 일부 대화량 연동 + 용역</td><td>⑥</td><td>🔴 매출 유지율 78%</td><td>🟡 오랜 관계 · 그러나 순감소</td><td>🟡 통합 후 비용 절감 여지</td></tr>
+<tr><td>⑤ 레스토랑</td><td>월 구독(정액·사용량 · 매장 단가 미공시)</td><td>⑥</td><td>🟡 경쟁 신생사 다수</td><td>🟡 POS 연동</td><td>🟢</td></tr>
+<tr><td>음성 커머스·광고</td><td>수익 공유·광고</td><td>② 후보</td><td>미확인</td><td>—</td><td>— (매출 $0.46M)</td></tr>
+</tbody></table>
+<ul>
+<li><strong>해자 → 수익 전환</strong>: 음성 엔진·내장형·특허라는 해자는 지금 <strong>자동차 쪽 묶임(전환비용)</strong>과 <strong>라이선스 계약의 높은 마진</strong>으로만 돈이 된다. 매출의 약 80%인 고객센터 구독 쪽에서는 가격 인상도 고객 유지도 확인되지 않는다. 기술 우위가 매출 다수 쪽의 가격결정력으로 바뀌는 고리가 비어 있다 🚩.</li>
+</ul>
+<hr></section>
+<section class="card"><h2>Part B — 수익모델 정밀 해부</h2>
+<h3>B.1 매출 스트림 분해</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 보고 매출은 2년에 3.7배가 됐다. 그러나 인수 회사를 처음부터 있던 것처럼 합치면 2025년 매출은 줄었다. 혼자 크는 것은 작은 자동차 로열티 줄기 하나다.</blockquote>
+<p><strong>서비스 종류별 매출 ($M)</strong></p>
+<table><thead><tr><th>기간</th><th>서비스 구독</th><th>제품 로열티</th><th>광고</th><th>합계</th><th>구독 비율</th></tr></thead><tbody>
+<tr><td>2023</td><td>1.9</td><td>43.3</td><td>0.6</td><td>45.9</td><td>4.2%</td></tr>
+<tr><td>2024</td><td>56.3</td><td>28.0</td><td>0.4</td><td>84.7</td><td>66.5%</td></tr>
+<tr><td>2025</td><td>133.5</td><td>34.9</td><td>0.5</td><td>168.9</td><td>79.1%</td></tr>
+<tr><td>상반기 2025</td><td>56.6</td><td>15.0</td><td>0.2</td><td>71.8</td><td>78.9%</td></tr>
+<tr><td>상반기 2026</td><td>82.8</td><td>23.2</td><td>0.1</td><td>106.1</td><td>78.0%</td></tr>
+</tbody></table>
+<p>출처: 10-K 매출 주석 · 10-Q 2분기 2026 매출 주석.</p>
+<p><strong>인식 방식별 매출 ($M)</strong></p>
+<table><thead><tr><th>기간</th><th>호스팅</th><th>라이선스</th><th>용역</th><th>광고</th><th>합계</th></tr></thead><tbody>
+<tr><td>2023</td><td>18.4</td><td>18.6</td><td>8.3</td><td>0.6</td><td>45.9</td></tr>
+<tr><td>2024</td><td>57.2</td><td>17.6</td><td>9.5</td><td>0.4</td><td>84.7</td></tr>
+<tr><td>2025</td><td>108.3</td><td>45.1</td><td>15.1</td><td>0.5</td><td>168.9</td></tr>
+<tr><td>1분기 2025</td><td>22.0</td><td>3.8</td><td>3.3</td><td>0.1</td><td>29.1</td></tr>
+<tr><td>2분기 2025</td><td>20.9</td><td>18.3</td><td>3.3</td><td>0.1</td><td>42.7</td></tr>
+<tr><td>1분기 2026</td><td>32.0</td><td>7.7</td><td>4.4</td><td>0.1</td><td>44.2</td></tr>
+<tr><td>2분기 2026</td><td>32.2</td><td>21.4</td><td>8.3</td><td>0.1</td><td>61.9</td></tr>
+</tbody></table>
+<ul>
+<li>가장 반복적인 줄기인 호스팅은 1분기 2026 $32.0M → 2분기 $32.2M로 제자리다.</li>
+<li>인터랙션스가 온전히 들어간 상반기 2026 호스팅($64.2M)은, 넉 달만 들어간 하반기 2025($65.4M)보다 오히려 적다. 회사는 매출이 하반기에 60% 몰리는 계절성을 언급한다.</li>
+<li>2분기 2026 증가분 $19.2M의 내역은 호스팅 +$11.3M(대부분 인터랙션스), 용역 +$5.0M, 라이선스 +$3.0M이다.<br>2분기는 2025년에도 라이선스가 몰린 분기였다.</li>
+</ul>
+<p><strong>인수 효과를 뺀 성장 — 같은 회사 묶음 기준 ($M)</strong></p>
+<table><thead><tr><th>묶음</th><th>2024</th><th>2025</th><th>변화</th></tr></thead><tbody>
+<tr><td>합산 추정 매출 (SYNQ3·Amelia·Interactions 1년 내내 보유 가정 · 회사 공시)</td><td>225.6</td><td>211.7</td><td>−6.1%</td></tr>
+<tr><td>그중 인터랙션스 (감사 재무제표 / 인수 전·후 합)</td><td>82.1</td><td>65.9</td><td>−19.7%</td></tr>
+<tr><td>나머지 = 본체 + Amelia + SYNQ3 (위 두 줄의 차이)</td><td>143.5</td><td>145.8</td><td>+1.6%</td></tr>
+<tr><td>그중 제품 로열티 (본체 자동차·기기)</td><td>28.0</td><td>34.9</td><td>+24.8%</td></tr>
+<tr><td>참고: LivePerson (2026-09 인수 · LivePerson 10-K)</td><td>312.5</td><td>243.7</td><td>−22.0%</td></tr>
+</tbody></table>
+<ul>
+<li>"나머지" 줄은 공시 숫자끼리 뺀 값이다. 합산 추정치 안의 세부 조정 때문에 $1~2M 오차는 있을 수 있다.</li>
+<li>참고 계산(추정): 인터랙션스의 2025년 1~8월 월평균 매출을 상반기에 그대로 넣으면, 상반기 2026의 같은 묶음 기준 성장률은 약 +2%다. 회사는 2026년 인수 기여액을 따로 밝히지 않는다.</li>
+<li>회사는 1분기 2026에 "인수 효과를 빼면 자동차·IoT 매출 +88%"라고 했다. 공시 표의 제품 로열티($4.4M → $8.4M)와 같은 숫자다. 크는 줄기인 것은 맞지만 그 분기 매출의 19%다.</li>
+</ul>
+<p><strong>지역별 매출 ($M · 청구지 기준)</strong></p>
+<table><thead><tr><th></th><th>2023</th><th>2024</th><th>2025</th><th>2분기 2026</th></tr></thead><tbody>
+<tr><td>미국</td><td>6.8</td><td>46.8</td><td>108.4</td><td>36.4</td></tr>
+<tr><td>한국</td><td>23.0</td><td>12.3</td><td>10.3</td><td>— (기타에 포함)</td></tr>
+<tr><td>프랑스</td><td>4.1</td><td>8.8</td><td>7.3</td><td>—</td></tr>
+<tr><td>중국</td><td>—</td><td>—</td><td>—</td><td>9.0</td></tr>
+<tr><td>콜롬비아</td><td>—</td><td>—</td><td>—</td><td>7.6</td></tr>
+<tr><td>그 외</td><td>12.1</td><td>16.9</td><td>42.9</td><td>8.9</td></tr>
+</tbody></table>
+<ul>
+<li>한국 매출은 3년 연속 줄었다. 2023년 최대 고객(매출 49%)과 크기가 비슷해, 초기 핵심 자동차 고객의 금액이 줄어든 것으로 보인다(10-K는 고객명 비공개).</li>
+<li>2분기 2026에는 중국(14.5%)과 콜롬비아(12.4%)가 새로 큰 줄로 나타났다. 같은 분기 보도자료의 중국 차량 소프트웨어 계약·중남미 파트너 계약과 겹친다.</li>
+<li>매출 구성의 방향: 형태로는 "한 번에 잡히는 라이선스"에서 "매일 쌓이는 호스팅"으로 옮겨 갔다(질 개선). 그러나 옮겨 온 호스팅 매출 자체가 줄고 있어 개선이 숫자로 이어지지 않는다.</li>
+</ul>
+<h3>B.2 과금·가격 모델 + 정량 지표</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 통행료나 이자 같은 "율"이 없는 사업이다. 대신 볼 것은 한 번에 잡히는 매출의 비율과 계약 잔고의 크기다. 둘 다 반복성이 약하다는 쪽을 가리킨다.</blockquote>
+<ul>
+<li><strong>주력</strong>: 구독. 10-K는 큰 고객 계약의 요금을 "고정 월 최소 호스팅료 + 사용량 초과 요금", 또는 "고객이 판 제품 수량 기준"으로 설명한다. 구독은 정액·사용량·질의당·사용자당 방식이 섞여 있다.</li>
+<li><strong>2차</strong>: 라이선스·로열티. 대당·사용량·기간 방식은 쓰는 시점에 잡히고, 고정액·최소 보장액은 사용 권리를 넘기는 시점에 한꺼번에 잡힌다.</li>
+<li><strong>보조</strong>: 맞춤 개발 용역. 완성차 프로그램 초기에 선불로 받기도 한다(10-K).</li>
+</ul>
+<table><thead><tr><th>정량 지표</th><th>산식</th><th>값</th><th>해석</th></tr></thead><tbody>
+<tr><td>거래 수수료율</td><td>수수료 ÷ 거래액</td><td>해당 없음</td><td>커머스 중개 매출 0 (음악 앱 광고 $0.46M만)</td></tr>
+<tr><td>관리자산 수수료율</td><td>매출 ÷ 관리자산</td><td>해당 없음</td><td>—</td></tr>
+<tr><td>예치금 수익률</td><td>이자수익 ÷ 예치금</td><td>해당 없음</td><td>이자수익 $9.8M(2025)은 회사 현금 운용분</td></tr>
+<tr><td>로열티율</td><td>로열티 ÷ 고객 제품 매출</td><td>❌ 미공시</td><td>대당 단가·탑재 대수 미공시</td></tr>
+<tr><td>한 번에 잡히는 매출 비율</td><td>시점 인식 매출 ÷ 총매출</td><td>25.5% (2025) · 33.1% (2분기 2026)</td><td>높을수록 분기가 들쭉날쭉</td></tr>
+<tr><td>계약 잔고 ÷ 최근 12개월 매출</td><td>RPO ÷ TTM 매출</td><td>29.5% ($60.0M ÷ $203.2M)</td><td>낮음 · 사용량 요금이 빠지는 점 감안</td></tr>
+<tr><td>LivePerson 기존 고객 매출 유지율</td><td>1년 뒤 같은 고객 매출 ÷ 1년 전</td><td>78% (2025) · 82% (2024)</td><td>100% 미만 = 고객 묶음이 해마다 준다</td></tr>
+<tr><td>LivePerson 고객당 연매출 (ARPC)</td><td>반복 매출 ÷ 기업 고객 수</td><td>$68만 (2025) · $62.5만 (2024)</td><td>남은 고객은 더 크게 쓴다</td></tr>
+</tbody></table>
+<blockquote>💡 <strong>🔤 시점 인식 vs 기간 인식</strong> — 라이선스처럼 권리를 넘기는 순간 한꺼번에 매출로 잡으면 "시점 인식", 구독처럼 쓰는 날만큼 나눠 잡으면 "기간 인식"이다. 시점 인식이 많으면 분기 실적이 계약 체결 시기에 따라 크게 출렁인다.</blockquote>
+<blockquote>💡 <strong>📐 매출 유지율</strong> — 1년 전 고객들이 올해 낸 돈 ÷ 1년 전 그 고객들이 낸 돈. 늘려 쓴 고객과 줄이거나 떠난 고객을 모두 반영한다. 📊 구독 소프트웨어에서 100% 이상이면 건강, 90% 아래면 고객 기반이 녹는 중으로 본다(교육용 일반 범위).</blockquote>
+<h3>B.3 단위 경제학</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 고객 한 곳, 차 한 대당 얼마를 버는지는 공시되지 않는다. 회사 전체로 보면 매출 1달러를 벌려고 연구개발에 58센트, 판매에 36센트를 쓰는 단계다.</blockquote>
+<table><thead><tr><th>지표</th><th>값</th><th>출처</th></tr></thead><tbody>
+<tr><td>고객당 매출 · 자동차 대당 로열티 · 탑재 대수</td><td>❌ 미공시</td><td>—</td></tr>
+<tr><td>레스토랑 매장 수 · 매장당 요금</td><td>❌ 미공시</td><td>—</td></tr>
+<tr><td>GAAP 총마진</td><td>75.4% (2023) → 48.9% (2024) → 42.4% (2025) · 45.1% (2분기 2026)</td><td>10-K · 10-Q</td></tr>
+<tr><td>비GAAP 총마진 (인수 기술 상각·주식보상 제외)</td><td>58.5% (2024) · 58.0% (2025) · 58.4% (2분기 2026)</td><td>실적 보도자료</td></tr>
+<tr><td>매출 대비 연구개발 · 판매 · 관리비</td><td>58% · 36% · 49% (2025)</td><td>10-K</td></tr>
+<tr><td>직원 1인당 매출</td><td>약 $17.7만 (954명 · 2025 말)</td><td>10-K</td></tr>
+<tr><td>고객 평생가치 ÷ 고객 획득 비용 · 회수 기간</td><td>❌ 미공시</td><td>—</td></tr>
+<tr><td>LivePerson 고객당 연매출</td><td>$68만</td><td>LivePerson 10-K</td></tr>
+</tbody></table>
+<ul>
+<li>총마진이 75%에서 42%로 내려온 것은 인수한 고객센터 사업 때문이다. 그 사업의 원가에는 클라우드 사용료와 상담 인력이 들어 있다.</li>
+<li>비GAAP 총마진은 2년째 58% 근처에 머문다. 2분기 2026에 고마진 라이선스가 들어왔는데도 비GAAP 총마진은 1년 전과 같았다.</li>
+</ul>
+<blockquote>💡 <strong>📊 숫자 감각 — 총마진</strong> — 성숙한 구독 소프트웨어는 GAAP 총마진 70~80%대가 흔하고, 사람 손이 섞인 콜센터 대행 서비스는 30~50%대가 흔하다(교육용 일반 범위). 본 종목 실제 값은 위 표만 쓴다.</blockquote>
+<h3>B.4 매출 품질 + 고객 집중도</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 연간으로는 큰 고객 쏠림이 풀렸다. 그러나 계약은 1년 단위로 끝낼 수 있고, 잔고는 줄었으며, 분기로 보면 다시 두 곳이 4분의 1을 차지했다.</blockquote>
+<ul>
+<li><strong>반복성</strong>: 기간 인식 매출 비율은 2023년 56% → 2024년 80% → 2025년 75%였다.<br>2분기 2026에는 67%로 내려갔다.<br>형태는 반복이지만 사용량 연동분은 쓰는 만큼만 들어온다.</li>
+<li><strong>계약 잔고(RPO)</strong>: 2025년 말 $79.5M → 1분기 말 $64.7M → 2분기 말 $60.0M.<br>6개월 새 −24.5%다.</li>
+<li>이 잔고는 1년 안 $37.3M · 2~5년 $20.1M · 5년 뒤 $2.6M으로 나뉘어 인식된다.<br>사용량·로열티 매출은 원래 빠지므로 잔고가 작게 보이는 구조지만, 같은 기준으로 비교해도 줄었다.</li>
+<li>LivePerson 잔고 $147.3M(96%가 24개월 안 인식)이 3분기부터 더해진다. 단순 합은 약 $207M이다(인수 회계 조정 전).</li>
+<li><strong>선수금</strong>: 2025년 말 $32.2M → 2분기 말 $28.9M. 미리 받은 돈은 줄고, 매출로 잡았지만 아직 청구 못 한 돈은 늘었다(C.10).</li>
+<li><strong>해지권</strong>: 10-K 원문 요지 — 큰 고객과의 MSA는 보통 1년씩 자동 갱신되고, 고객은 6개월~1년 전 서면 통보로 끝낼 수 있다.</li>
+</ul>
+<p><strong>고객 집중도</strong></p>
+<table><thead><tr><th>기간</th><th>매출 10% 넘는 고객</th><th>출처</th></tr></thead><tbody>
+<tr><td>2023</td><td>고객 C 49% · 고객 G 13% (합 62%)</td><td>10-K</td></tr>
+<tr><td>2024</td><td>고객 C 14%</td><td>10-K</td></tr>
+<tr><td>2025</td><td>없음</td><td>10-K</td></tr>
+<tr><td>2분기 2025 (분기)</td><td>고객 C 16% · H 13% · I 13%</td><td>10-Q</td></tr>
+<tr><td>2분기 2026 (분기)</td><td>고객 B 13% · G 12%</td><td>10-Q</td></tr>
+<tr><td>상반기 2026</td><td>없음</td><td>10-Q</td></tr>
+<tr><td>미청구 채권 (2분기 말)</td><td>상위 4곳 = 19% · 19% · 17% · 14%</td><td>10-Q</td></tr>
+</tbody></table>
+<p><strong>고객 검증 등급</strong> (고객 증거가 얼마나 단단한가 · A 가장 단단 ~ E 가장 약함)</p>
+<table><thead><tr><th>고객 관계</th><th>등급</th><th>근거</th></tr></thead><tbody>
+<tr><td>한국 자동차 고객 (10-K 「고객 C」로 보임)</td><td>B</td><td>2023년 49% · 2024년 14% · 한국 매출 3년 반복 기록(감소 중). 10-K 고객명 비공개 · 계약은 1년 자동갱신 MSA</td></tr>
+<tr><td>2분기 2026 10% 고객 2곳 (B 13% · G 12%)</td><td>B</td><td>이름 비공개 · 10-Q로 대형 고객 확인. 지역 매출·보도자료로 보면 중국 차량 소프트웨어·중남미 파트너 라이선스일 가능성 → 반복성은 미확인</td></tr>
+<tr><td>인터랙션스 핵심 고객 (인수 성과 조건의 갱신 대상)</td><td>B</td><td>10-K가 2025년 말 이후 갱신 확인 · 인터랙션스 2024년 상위 고객 17%</td></tr>
+<tr><td>LivePerson 기존 기업 고객</td><td>B</td><td>LivePerson 10-K: 고객당 $68만 · 유지율 78% · 잔고 $147.3M (고객명 비공개)</td></tr>
+<tr><td>레스토랑 체인 (Chipotle · IHOP · Jersey Mike's 등)</td><td>C</td><td>실명·배포 범위는 보도자료뿐 · 매출 규모·계약 기간 미공시</td></tr>
+<tr><td>Stellantis · 현대 생성형 AI 확대 · TV 제조사 커머스</td><td>C</td><td>보도자료 실명(10-K는 "Hey Peugeot" 예시만) · 금액 미공시</td></tr>
+<tr><td>음성 커머스 생태계 (OpenTable · Parkopedia · 차량 내 주문)</td><td>D</td><td>보도자료 · 10-K상 커머스 매출 0</td></tr>
+</tbody></table>
+<ul>
+<li>종합: <strong>최고 B · 주력 B~C · 성장 서사의 확장분(음성 커머스·교차판매) D</strong>. 회사가 내건 "$500M"과 "2027년 $350~400M"은 고객 증거가 아니라 회사 전망이다.</li>
+<li><strong>비용·공급 집중</strong>: 클라우드 제공업체와 $64.0M 약정(2027년 이후 지급)이 있다. 생성형 답변은 외부 언어모델(OpenAI 등)에 기댄다. 매출 유통을 한 파트너가 쥔 구조는 아니다(직판 중심 + 2분기 중남미 채널 계약).</li>
+</ul>
+<blockquote>💡 <strong>🔤 MSA(기본 서비스 계약)</strong> — 큰 고객과 먼저 맺는 큰 틀의 계약. 요금·조건을 정해 두고, 실제 주문·사용은 그 위에서 따로 일어난다. 이 회사의 MSA는 1년마다 갱신되는 구조다.</blockquote>
+<h3>B.5 가치사슬 내 수익 포착 지점</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 사운드하운드는 사람 상담원 비용과 빅테크 음성 비서 사이에서 값을 받는다. 앞쪽은 언어모델이 퍼지며 경쟁이 쉬워지고, 뒤쪽은 큰 고객이 협상력을 쥔다.</blockquote>
+<ul>
+<li><strong>자동차·기기</strong>: 운전자 → 완성차(차 값에 포함) → 사운드하운드(대당·기간 로열티, 고정 라이선스) → 클라우드·언어모델 공급자(질의 원가).</li>
+<li><strong>고객센터</strong>: 소비자(전화·채팅) → 기업(은행·보험·병원·통신·식당) → 사운드하운드(월 최소료 + 사용량, 또는 설치 라이선스) → 클라우드·언어모델·일부 상담 인력.</li>
+<li><strong>떼는 길목</strong>: 기업이 사람 상담원을 덜 쓰는 비용 절감분의 일부다. 가격 기준이 "사람 인건비"라 높게 잡을 수 있는 자리지만, 같은 자리를 노리는 경쟁(빅테크 고객센터 AI, 언어모델 기반 신생사)이 늘고 있다(10-K 경쟁 위험).</li>
+<li><strong>지불자 경로</strong>: 비용을 내는 큰손(완성차·대기업 고객센터)에게 <strong>직접</strong> 판다. 그만큼 큰손의 협상력에 눌리는 자리다 — 2분기 두 고객 25% · 고객 검증 최고 B · 가격 인상 공시 없음(10-K는 오히려 완성차의 연간 가격 인하 요구를 위험으로 적었다).</li>
+</ul>
+<h3>B.6 매출·총마진 궤적 차트</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 분기 매출은 오르지만, 2분기마다 라이선스가 몰려 들어오는 톱니 모양이다. 총마진도 같은 톱니를 따라 움직여, 라이선스가 마진을 끌어올리는 구조가 보인다.</blockquote>
+<div class="dd-fig"><p class="cap">분기 매출(좌축, $M)과 GAAP 총마진(우축, %) — 출처: 각 분기 실적 보도자료(SEC 8-K 별첨 99.1). 구독형의 핵심 율인 고객 매출 유지율은 회사가 공시하지 않아 총마진으로 대신했다. 전망 점은 찍지 않았다(LivePerson 합산 전 기준).</p><div id="fig-rate"></div><div class="dd-legend" id="leg-rate"></div></div>
+<table><thead><tr><th>분기</th><th>매출 ($M)</th><th>GAAP 총마진</th><th>비GAAP 총마진</th><th>조정 EBITDA ($M)</th></tr></thead><tbody>
+<tr><td>2분기 2025</td><td>42.7</td><td>39.0%</td><td>58.4%</td><td>−14.3</td></tr>
+<tr><td>3분기 2025</td><td>42.0</td><td>42.6%</td><td>59.3%</td><td>−14.5</td></tr>
+<tr><td>4분기 2025</td><td>55.1</td><td>47.9%</td><td>60.5%</td><td>−7.4</td></tr>
+<tr><td>1분기 2026</td><td>44.2</td><td>31.1%</td><td>49.7%</td><td>−26.7</td></tr>
+<tr><td>2분기 2026</td><td>61.9</td><td>45.1%</td><td>58.4%</td><td>−9.6</td></tr>
+</tbody></table>
+<p>출처: 각 분기 실적 보도자료.</p>
+<hr></section>
+<section class="card"><h2>Part C — 12 함정 체크리스트</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 12개 중 8개에 적신호, 3개에 주의 신호가 켜졌다. 가장 무거운 둘은 "인수로 산 매출이 줄고 있다"와 "장부 손익이 실제 사업보다 좋아 보인다"이다.</blockquote>
+<h3>C.1 마진 분모 — 🚩</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 2025년 "순손실 1,400만 달러"는 주가가 떨어져 생긴 장부 이익 덕이다. 그것을 빼면 영업 단계 적자는 훨씬 크고, 줄지도 않았다.</blockquote>
+<ul>
+<li>인수 대가 중 "성과에 따라 나중에 줄 주식"은 부채로 잡고, 매 분기 주가로 다시 잰다. 주가가 내리면 부채가 줄어 영업비용에 이익으로 들어간다. 2025년 이 이익이 $163.1M, 2024년엔 반대로 손실 $222.7M이었다.</li>
+</ul>
+<table><thead><tr><th>($M)</th><th>2023</th><th>2024</th><th>2025</th><th>상반기 2026</th></tr></thead><tbody>
+<tr><td>보고 영업손실</td><td>−68.6</td><td>−341.4</td><td>−23.3</td><td>−66.0</td></tr>
+<tr><td>인수 대가 재평가 (손실 + / 이익 −)</td><td>0</td><td>+222.7</td><td>−163.1</td><td>−43.1</td></tr>
+<tr><td>재평가를 뺀 영업손실</td><td>−68.6</td><td>−118.7</td><td>−186.4</td><td>−109.1</td></tr>
+<tr><td>순손익</td><td>−88.9</td><td>−350.7</td><td>−14.0</td><td>−67.8</td></tr>
+<tr><td>조정 EBITDA (회사 정의)</td><td>—</td><td>−61.9</td><td>−58.4</td><td>−36.3</td></tr>
+</tbody></table>
+<ul>
+<li>2025년 재평가를 뺀 영업손실($186.4M)은 보고 순손실의 약 13배다.</li>
+<li><strong>총마진 분모</strong>: 2025년 GAAP 42.4% vs 비GAAP 58.0%로 15.6%p 차이가 난다.<br>차이는 원가에 들어간 인수 기술 상각 $17.2M(매출의 10%)과 주식보상 $8.9M(5%)이다.</li>
+<li><strong>조정 EBITDA</strong>는 주식보상 $80.6M(매출의 48%)을 빼고 계산한 숫자다.</li>
+<li><strong>내부통제</strong>: 10-Q는 "거의 모든 계정과 공시"에 대한 통제가 효과적으로 설계·유지되지 않았다는 중대한 약점을 밝혔다. 숫자 자체에 대한 신뢰를 한 단계 낮춰 읽어야 한다.</li>
+<li>진짜 사업 분모는 "재평가를 뺀 영업손실"과 "영업현금흐름"이다.</li>
+</ul>
+<blockquote>💡 <strong>🔤 인수 대가 재평가</strong> — 인수할 때 "매출 목표를 넘으면 주식을 더 준다"고 약속한 몫을 부채로 잡고 주가로 매번 다시 재는 회계. 현금이 오가지 않는데도 주가가 떨어지면 이익, 오르면 손실이 생긴다.</blockquote>
+<blockquote>💡 <strong>🔤 조정 EBITDA·비GAAP</strong> — 회사가 "본업과 무관하다"고 보는 비용(주식보상·상각·인수 비용 등)을 빼고 다시 계산한 이익. 회계 기준 숫자(GAAP)보다 좋게 나오는 경우가 많아 무엇을 뺐는지 같이 봐야 한다.</blockquote>
+<h3>C.2 반복매출 프리미엄 — 🚩</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 겉으로는 4분의 3이 반복 매출이다. 하지만 1년 단위로 끝낼 수 있는 계약이고, 인수로 산 반복 매출은 해마다 줄고 있어 반복의 질이 낮다.</blockquote>
+<ul>
+<li>기간 인식 비율은 75%(2025) · 67%(2분기 2026)다.</li>
+<li>큰 고객 계약은 1년 자동갱신 + 6~12개월 전 통보 해지 구조다.</li>
+<li>인수로 산 반복 매출: 인터랙션스 1년 −20% · LivePerson 기존 고객 유지율 78%.</li>
+<li>사운드하운드 자체의 고객 매출 유지율은 ❌ 미공시다.</li>
+</ul>
+<h3>C.3 발표 숫자 ↔ 장부 매출 — 🚩</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 회사가 내건 2027년 매출 전망과 "5억 달러" 구상은 계약으로 잠긴 돈이 아니다. 실제 계약 잔고는 오히려 줄고 있다.</blockquote>
+<table><thead><tr><th>발표 숫자</th><th>성격</th><th>장부·계약 근거</th></tr></thead><tbody>
+<tr><td>2026 매출 $230~260M (8/5 상향 · LivePerson 제외)</td><td>가이던스</td><td>상반기 $106.1M · 상반기 비율이 2025년(43%)과 같다면 연 $250M 안팎</td></tr>
+<tr><td>2027 매출 "최소 $350~400M" (LivePerson 최소 $100M 포함)</td><td>회사 전망</td><td>2026 단독 중간값 + LivePerson 최소치 ≈ 산술 합</td></tr>
+<tr><td>"기존 고객만으로 $500M"</td><td>교차판매 천장</td><td>계약 근거 없음</td></tr>
+<tr><td>중남미 "8자리 첫 계약" (2분기)</td><td>보도자료</td><td>콜롬비아 매출 $7.6M (2분기 2026)</td></tr>
+<tr><td>LivePerson 경영진 자체 추정: 2027 $183.4M · 2029 $205.1M</td><td>S-4 수록</td><td>2025 실적 $243.7M보다 낮은 계획</td></tr>
+</tbody></table>
+<ul>
+<li>사운드하운드는 LivePerson 기여를 "최소 $100M"으로 잡았다. LivePerson 경영진 자체 추정(2027년 $183.4M)보다 훨씬 낮다. 보수적으로 잡았을 수도, 남길 고객만 골라 남긴다는 뜻일 수도 있다. 1차 자료는 이유를 말하지 않는다.</li>
+<li>연간 반복 매출(ARR) 같은 지표는 공시하지 않는다.</li>
+</ul>
+<h3>C.4 백로그 품질 — 🚩</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 확정된 계약 잔고는 작고, 줄고 있다. 헤드라인 숫자 대부분은 가능성의 천장이다.</blockquote>
+<ul>
+<li><strong>확정</strong>: 사운드하운드 RPO $60.0M(6개월 −24.5%) + LivePerson RPO $147.3M.</li>
+<li><strong>천장·잠재</strong>: "$500M" 교차판매, 2027년 전망, 음성 커머스 생태계(고객 검증 D), 보도자료의 "7자리·8자리 계약"(금액·기간 미공시).</li>
+<li>인수 성과 대가가 걸린 인터랙션스 핵심 고객 갱신은 확정(10-K)이다. 확정 쪽에 넣을 수 있는 몇 안 되는 근거다.</li>
+</ul>
+<h3>C.5 가격 결정력 — 🚩</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 회사 스스로 "고객의 가격 인하 압력"과 "경쟁사가 무료로 끼워 줄 수 있다"를 위험으로 적었다. 높은 마진은 라이선스 계약에서만 확인된다.</blockquote>
+<ul>
+<li>10-K 위험 요인 요지: 완성차의 강한 구매력, 장기 계약의 연간 가격 인하 약속 요구, 경쟁사가 더 큰 제품에 같은 기능을 싸게 또는 무료로 끼워 줄 가능성.</li>
+<li>가격 인상 공시는 없다.</li>
+<li>LivePerson은 회사 발표 기업가치 약 $250M, 즉 2025년 매출의 약 1.0배에 샀다. 이 업종의 고객센터 매출이 시장에서 싸게 거래된다는 뜻이기도 하다.</li>
+<li>반대 증거: 2분기 2026 GAAP 총마진이 39% → 45%로 오른 이유를 회사는 "새로운 고마진 라이선스 계약"으로 설명했다. 자동차·기기 IP에는 값을 받는 힘이 있다.</li>
+<li>원자재처럼 시장가에 묶인 매출은 없다. 다만 음성 이해 기능 자체가 언어모델로 흔해지는 압력을 받는다.</li>
+</ul>
+<h3>C.6 고객·유통 집중 — 🟡</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 연간 쏠림은 인수로 희석됐다. 다만 분기마다 라이선스 고객 몇 곳이 크게 잡히고, 아직 못 받은 돈은 소수 고객에게 몰려 있다.</blockquote>
+<ul>
+<li>연간 10% 넘는 고객: 2023년 62%(두 곳) → 2025년 없음.</li>
+<li>분기 기준: 2분기 2025 세 곳 42%, 2분기 2026 두 곳 25%. 2분기마다 반복되는 라이선스 쏠림이다.</li>
+<li>미청구 채권 상위 4곳이 69%다. 매출로 잡은 돈의 회수가 소수 고객에 달려 있다.</li>
+<li>비용 쪽: 클라우드 약정 $64.0M, 외부 언어모델 의존(B.4).</li>
+</ul>
+<h3>C.7 매크로 민감도 — 🟡</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 한 방에 매출 절반을 흔들 단일 변수는 없다. 자동차 생산 경기와 기업 IT 예산이 두 축이다.</blockquote>
+<ul>
+<li>10-K 요지: "가장 큰 고객들은 현재 자동차 산업에 있고, 자동차 생산·판매는 경기에 크게 좌우된다."</li>
+<li>자동차·기기 로열티는 매출의 21%다. 나머지 79%는 기업 고객센터 구독이다. 비용 절감 수요라 경기 둔화 때 오히려 늘 수도 있는 양면이 있다.</li>
+<li>해외 매출은 36%(2025)다. 환율 노출이 있다.</li>
+</ul>
+<h3>C.8 금리 비대칭 — 해당 없음</h3>
+<ul>
+<li>예치금 이자로 버는 사업이 아니다. 이자수익 $9.8M(2025)은 보유 현금 운용분이고, 현금이 줄며 상반기 2026에 −24%였다. 빚은 없다.</li>
+</ul>
+<h3>C.9 운영 레버리지 — 🚩</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 2025년 매출이 두 배가 됐는데 조정 EBITDA 적자는 거의 그대로였다. 매출을 사 오면서 비용도 같이 사 왔기 때문이다.</blockquote>
+<table><thead><tr><th></th><th>매출 증가</th><th>조정 EBITDA 개선</th><th>늘어난 매출 1달러당 개선</th></tr></thead><tbody>
+<tr><td>2025 vs 2024</td><td>+$84.2M</td><td>+$3.5M</td><td>4센트</td></tr>
+<tr><td>2분기 2026 vs 2분기 2025</td><td>+$19.2M</td><td>+$4.7M</td><td>24센트</td></tr>
+</tbody></table>
+<ul>
+<li>원래 소프트웨어는 원가가 고정비에 가까워 매출이 늘면 이익이 크게 뛴다. 그러나 인수한 고객센터 사업은 상담 인력·클라우드 사용량 원가가 매출과 같이 움직인다.</li>
+<li>매출이 두 배일 때의 이익 배수는 단위 원가가 공시되지 않아 ❌ 산출 불가다.</li>
+</ul>
+<h3>C.10 현금 전환 — 🚩</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 장부 손실보다 현금 손실이 더 크고 꾸준하다. 매출로 잡았지만 아직 청구도 못 한 몫이 빠르게 불어나고, 구멍은 매번 새 주식으로 채웠다.</blockquote>
+<table><thead><tr><th>($M)</th><th>2023</th><th>2024</th><th>2025</th><th>상반기 2026</th></tr></thead><tbody>
+<tr><td>순손익</td><td>−88.9</td><td>−350.7</td><td>−14.0</td><td>−67.8</td></tr>
+<tr><td>영업현금흐름</td><td>−68.3</td><td>−108.9</td><td>−98.2</td><td>−60.0</td></tr>
+<tr><td>설비·자체 소프트웨어 투자</td><td>−0.4</td><td>−0.6</td><td>−4.9</td><td>−6.2</td></tr>
+<tr><td>잉여현금흐름</td><td>−68.7</td><td>−109.5</td><td>−103.1</td><td>−66.2</td></tr>
+<tr><td>주식보상 (현금 안 나가는 비용)</td><td>27.9</td><td>33.1</td><td>80.6</td><td>39.2</td></tr>
+<tr><td>시장 주식 매각 조달 (총액)</td><td>84.0</td><td>407.3</td><td>201.5</td><td>48.5</td></tr>
+<tr><td>계약자산 증가 (현금 유출 효과)</td><td>−19.6</td><td>−7.3</td><td>−22.4</td><td>−16.9</td></tr>
+</tbody></table>
+<ul>
+<li>계약자산 + 미청구 채권은 2025년 말 $68.1M → 2분기 말 $82.9M로 늘었다. 그중 1년 넘게 걸릴 몫이 $29.9M → $48.1M이다.</li>
+<li>외상($27.1M)까지 합친 "받을 돈" 전체는 $110.0M, 2분기 매출의 1.8배다.</li>
+<li><strong>AI 기업 운전자본 점검</strong>: 상반기 매출은 +48%인데 영업현금흐름은 1년 전보다 37% 나빠졌다(−$43.7M → −$60.0M). 계약자산도 함께 불었다. "매출과 현금이 같이 느는 칸"이 아니라 "매출 숫자만 느는 칸"이다.</li>
+<li>2분기 말 현금 $202.8M, 빚 없음. 상반기 잉여현금 소진을 1년으로 늘리면 약 $132M이라, 새 조달 없이 약 1.5년이다.</li>
+<li>완충 장치: 인수 발표 때 회사는 LivePerson 현금 $74M을 넘겨받을 것으로 봤다(2026년 만기 전환사채 $20.1M 상환 전). 3번째 주식 수시 발행(ATM) 한도 $300M도 남아 있다.</li>
+</ul>
+<blockquote>💡 <strong>🔤 계약자산·미청구 채권</strong> — 일은 했고 매출로도 잡았지만 아직 고객에게 청구서를 보내지 못한 돈. 라이선스를 먼저 매출로 잡고 대금은 몇 년에 나눠 받을 때 쌓인다. 많이 쌓이면 "장부 매출 ≠ 현금"이 된다.</blockquote>
+<blockquote>💡 <strong>🔤 ATM(수시 주식 발행)</strong> — 회사가 증권사를 통해 시장에서 매일 조금씩 새 주식을 팔아 현금을 모으는 방식. 큰 할인 없이 돈을 모으지만 기존 주주의 몫은 그만큼 얇아진다.</blockquote>
+<blockquote>💡 <strong>🔤 주식보상(SBC)</strong> — 직원 급여 일부를 주식으로 주는 비용. 현금은 안 나가지만 주식 수가 늘어 주주 몫을 나눠 갖는 실제 비용이다.</blockquote>
+<h3>C.11 주당 희석 — 🟡</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 지난 2년은 매출이 주식보다 빨리 늘어 한 주의 몫이 커졌다. 하지만 그 성장은 대부분 인수 몫이고, 7월 이후 주식이 다시 크게 늘었다.</blockquote>
+<table><thead><tr><th></th><th>2023</th><th>2024</th><th>2025</th><th>2분기 2026</th></tr></thead><tbody>
+<tr><td>가중평균 주식 (백만 주 · 기본)</td><td>229.3</td><td>338.5</td><td>405.4</td><td>430.5</td></tr>
+<tr><td>매출 ($M)</td><td>45.9</td><td>84.7</td><td>168.9</td><td>61.9 (분기)</td></tr>
+<tr><td>주당 매출 ($)</td><td>0.20</td><td>0.25</td><td>0.42</td><td>—</td></tr>
+</tbody></table>
+<ul>
+<li>2023 → 2025 연평균: 매출 +92% · 주식 +33% · 주당 매출 +44%.</li>
+<li>같은 묶음 기준 매출이 −6.1%였던 2025년에 주당 매출 +67%가 나온 것은 매출을 인수로 들여왔기 때문이다.</li>
+</ul>
+<p><strong>6월 말 이후 늘어난 주식</strong></p>
+<table><thead><tr><th>시점</th><th>내용</th><th>주식 수</th></tr></thead><tbody>
+<tr><td>2026-06-30</td><td>A주 + B주 발행 주식</td><td>4억 3,582만</td></tr>
+<tr><td>2026-07</td><td>아멜리아 2025년분 성과 대가</td><td>+813만</td></tr>
+<tr><td>2026-08-31</td><td>A주 (424B7) · B주 3,254만 별도</td><td>4억 1,158만</td></tr>
+<tr><td>2026-09-04</td><td>LivePerson 채권자 몫</td><td>+3,689만</td></tr>
+<tr><td>2026-09-04</td><td>LivePerson 주주 몫 (1주당 0.4673주)</td><td>이번 자료에 수치 없음</td></tr>
+</tbody></table>
+<ul>
+<li>남은 희석 장치: 아멜리아 2026년분 성과 주식(한도 기준 최대 약 870만 주), 3번째 ATM 한도 $300M, 워런트 365만 주(행사가 $11.50).</li>
+</ul>
+<h3>C.12 모델 전환 신호 — 🚩 (양면 · 부정 우세)</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 겉의 전환(로열티에서 구독으로)은 이미 끝났다. 진짜 전환 신호는 "인수한 고객센터 매출의 감소가 멈추는가"이고, 첫 확인이 3분기 실적이다.</blockquote>
+<ul>
+<li><strong>부정 신호</strong>: 인터랙션스 1년 −20% · LivePerson −22%(2025) · −12%(상반기 2026, "고객 해지와 축소" 때문).<br>합산 추정 매출 −6.1% · 호스팅 매출 전분기 대비 제자리 · 계약 잔고 6개월 −24.5%.</li>
+<li><strong>긍정 신호</strong>: 자동차·기기 로열티 +25%(2025) · +88%(1분기 2026) · 현대·Stellantis의 생성형 AI 확대(보도자료) · 2분기 고마진 라이선스 · OASYS 출시와 교차판매 계획 · LivePerson을 매출 약 1배에 산 싼 인수가.</li>
+<li><strong>변곡 시점</strong>: 3분기 2026 실적(11/5 · LivePerson 약 4주 포함) → 4분기 2026(LivePerson 첫 온전한 분기)과 2027년 가이던스.</li>
+<li><strong>확인할 숫자</strong>: 호스팅 매출의 전분기 대비 변화, 계약 잔고, LivePerson 기여액을 따로 밝히는지, 2분기 같은 라이선스 쏠림이 3분기에도 나오는지.</li>
+</ul>
+<hr></section>
+<section class="card"><h2>Part D — 종합 판정</h2>
+<h3>D.1 자가점검</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 아홉 질문 모두 답할 수 있다. 다만 제품별 매출, 대당 로열티, 회사 자체의 고객 유지율처럼 가장 중요한 칸이 "회사가 공시하지 않는다"로 비어 있다.</blockquote>
+<table><thead><tr><th>#</th><th>질문</th><th>답</th></tr></thead><tbody>
+<tr><td>0</td><td>주력 제품 5개를 문단으로, 기술·해자·수익 연결까지</td><td>Houndify · Amelia/OASYS · Interactions · LivePerson · 레스토랑 (B.0)</td></tr>
+<tr><td>1</td><td>무엇을 누구에게 왜</td><td>완성차·기기 제조사(B2B)와 대기업 고객센터·식당(B2B)에 음성·대화 AI</td></tr>
+<tr><td>2</td><td>매출 주머니·비율·추세</td><td>구독 79% · 로열티 21% · 광고 0.3% (2025) · 구독 쪽이 인수로 급증</td></tr>
+<tr><td>3</td><td>주력 과금</td><td>구독(정액 최소 + 사용량) · 2차 라이선스·로열티</td></tr>
+<tr><td>4</td><td>내년에 또 들어오나</td><td>형태상 75% 반복 · 1년 해지권 · 잔고 감소 → 약함</td></tr>
+<tr><td>5</td><td>단일 고객 10% 넘나</td><td>연간 없음 · 분기 2곳 25% · 미청구 채권 상위 4곳 69%</td></tr>
+<tr><td>6</td><td>마진 분모</td><td>GAAP 42% vs 비GAAP 58% · 순손실 $14M vs 재평가 뺀 영업손실 $186M</td></tr>
+<tr><td>7</td><td>매출 흔들 외부 변수</td><td>자동차 생산 경기 · 기업 IT 예산 · 언어모델 범용화</td></tr>
+<tr><td>8</td><td>발표 숫자 vs 장부</td><td>2027 전망·$500M = 전망·천장 / 확정 잔고 $60M</td></tr>
+<tr><td>9</td><td>매출 믹스 방향</td><td>형태는 라이선스 → 호스팅(개선) · 인수 호스팅 자체는 감소</td></tr>
+</tbody></table>
+<h3>D.2 수익모델 등급</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 넷 중 둘이 빨간불이다. 그나마 버티는 것은 자동차 쪽의 묶임과 라이선스에서 받는 값이다.</blockquote>
+<table><thead><tr><th>차원</th><th>등급</th><th>근거</th></tr></thead><tbody>
+<tr class="sig-r"><td>예측가능성 (반복성)</td><td>🔴</td><td>잔고가 매출의 30% · 6개월 −24.5% · 2분기 매출 3분의 1이 한 번에 인식 · 1년 해지권</td></tr>
+<tr class="sig-r"><td>수익성 (마진 구조)</td><td>🔴</td><td>재평가 뺀 영업손실 −$186.4M · 조정 EBITDA −$58.4M · GAAP 총마진 42%</td></tr>
+<tr class="sig-y"><td>과금 강도</td><td>🟡</td><td>자동차·기기 IP 라이선스 고마진 vs 고객센터 가격 압박·싼 인수가</td></tr>
+<tr class="sig-y"><td>고객 묶임 (전환비용)</td><td>🟡</td><td>차종 설계 단계 묶임(강함) vs 인수 고객 이탈(유지율 78%)</td></tr>
+</tbody></table>
+<h3>D.3 종합</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 음성 엔진이라는 진짜 기술은 있다. 그러나 매출의 대부분은 줄어드는 고객센터 사업을 사서 붙인 것이라, 산 매출이 멈추고 다시 크는지가 전부다.</blockquote>
+<ul>
+<li><strong>아키타입</strong>: ⑥ 구독·사용량형 + ① 믹스 시프트형(인수 주도).</li>
+<li><strong>핵심 edge 1</strong>: 자체 음성 엔진(인식+이해 동시 처리 · 내장형 · 25개 언어 · 특허 461건). 완성차의 차종 설계 단계에 들어가 그 차가 팔리는 내내 로열티를 받는 자리다. 이 줄기는 실제로 크고 있다.</li>
+<li><strong>치명 함정 1</strong> (C.12·C.3): 인수로 산 고객센터 매출이 줄고 있다. 합산 추정 매출 −6.1%, 인터랙션스 −20%, LivePerson −22%·유지율 78%.<br>회사 전망(2027년 하한과 "$500M" 구상)은 확정 잔고($60M)가 받쳐 주지 않는다.</li>
+<li><strong>치명 함정 2</strong> (C.1·C.10): 장부 손익이 주가 재평가로 크게 좋아 보인다. 실제로는 재평가 뺀 영업손실 −$186M, 3년 연속 현금 적자이며, 그 구멍은 주식 발행으로 메웠다. 매출로 잡고 못 받은 돈도 불어나는 중이다.</li>
+<li><strong>thesis 함의</strong>: 사운드하운드는 "싸게 산 고객센터 매출 + 크는 자동차 로열티 + OASYS 교차판매"의 합이다. 앞의 것이 녹는 속도보다 뒤의 둘이 빨리 커지는지, 그리고 그 사이 주당 현금이 버티는지가 판정을 가른다. 3분기 실적(11/5)과 2027년 가이던스가 첫 증거다.</li>
+</ul>
+<hr></section>
+<section class="card"><h2>📋 12 함정 🚩 요약</h2>
+<table><thead><tr><th>#</th><th>함정</th><th>판정</th><th>핵심 근거</th></tr></thead><tbody>
+<tr><td>C.1</td><td>마진 분모</td><td>🚩</td><td>순손실 $14.0M vs 재평가 뺀 영업손실 $186.4M · 내부통제 중대한 약점</td></tr>
+<tr><td>C.2</td><td>반복매출</td><td>🚩</td><td>1년 해지권 · 인수 반복 매출 감소</td></tr>
+<tr><td>C.3</td><td>발표↔장부</td><td>🚩</td><td>2027 전망·$500M vs 잔고 $60M</td></tr>
+<tr><td>C.4</td><td>백로그 품질</td><td>🚩</td><td>확정 잔고 작고 감소 · 헤드라인은 천장</td></tr>
+<tr><td>C.5</td><td>가격 결정력</td><td>🚩</td><td>가격 인하 압력·무료 끼워팔기 위험 · 인수가 매출 1배</td></tr>
+<tr><td>C.6</td><td>고객·유통 집중</td><td>🟡</td><td>연간 해소 · 분기 2곳 25% · 미청구 채권 69%</td></tr>
+<tr><td>C.7</td><td>매크로 민감도</td><td>🟡</td><td>자동차 경기·기업 IT 예산 · 단일 변수 50% 넘는 노출 없음</td></tr>
+<tr><td>C.8</td><td>금리 비대칭</td><td>해당 없음</td><td>예치금 사업 아님 · 무차입</td></tr>
+<tr><td>C.9</td><td>운영 레버리지</td><td>🚩</td><td>매출 2배 · 조정 EBITDA 개선 4센트/달러</td></tr>
+<tr><td>C.10</td><td>현금 전환</td><td>🚩</td><td>3년 연속 현금 적자 · 계약자산 팽창 · 주식 발행 충당</td></tr>
+<tr><td>C.11</td><td>주당 희석</td><td>🟡</td><td>과거 주당 매출 +44%/년 · 7월 이후 4,500만 주 이상 추가</td></tr>
+<tr><td>C.12</td><td>모델 전환</td><td>🚩 양면</td><td>인수 매출 감소 vs 자동차 로열티 성장</td></tr>
+</tbody></table>
+<hr></section>
+<section class="card"><h2>⚠️ 수집 실패·불완전</h2>
+<ul>
+<li>제품별·사업별 매출과 이익 — ❌ 미공시(단일 사업부 보고).</li>
+<li>자동차 탑재 대수·대당 로열티, 레스토랑 매장 수·요금, 사운드하운드 자체 고객 매출 유지율 — ❌ 미공시.</li>
+<li>2026년 인수 기여액(인터랙션스·5월 자산 인수) — ❌ 미공시. 같은 묶음 기준 상반기 성장률은 추정으로만 적었다.</li>
+<li>LivePerson 주주에게 발행한 주식 수 — 이번 실행 자료에서 미확인(9/4 8-K는 교환 비율만 기재).</li>
+<li>2023년 조정 EBITDA — 이번 실행에서 미수집.</li>
+<li>3분기 2025 10-Q 원문 — 미열람. 분기별 인식 방식 분해는 상·하반기로 대신했다.</li>
+<li>5월 자산 인수 상대방의 이름과 사업 — 10-Q 비공개.</li>
+<li>실적 컨퍼런스콜 발언 — 이 보고서 범위 밖.</li>
+</ul>
+<hr>
+<p>시세(10/26 종가, 야후): $4.24 · 52주 범위 $4.20~19.09.</p>
+<p>8/31 종가는 $7.16였다(424B7).</p>
+<p>야후 시총 $1.88B는 A주 4억 1,158만 주 기준이다(B주와 LivePerson 발행분 미반영).</p>
+<p>다음 실적: 11/5 장 마감 후(회사 IR 10/22 공지).</p>
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p></section>
+</div>
+<script>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+const VIZ={"trajectory": {"periods": ["2Q25", "3Q25", "4Q25", "1Q26", "2Q26"], "forecastFrom": 5, "series": [{"key": "rev", "label": "분기 매출 ($M)", "axis": "left", "color": "#2980b9", "values": [42.7, 42.0, 55.1, 44.2, 61.9]}, {"key": "rate", "label": "GAAP 총마진 (%)", "axis": "right", "color": "#c0392b", "values": [39.0, 42.6, 47.9, 31.1, 45.1]}]}};
+DDViz.renderTrajectory("fig-rate","leg-rate",VIZ.trajectory);
+</script>
+</body>
+</html>
