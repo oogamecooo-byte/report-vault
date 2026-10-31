@@ -1,0 +1,2178 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>로켓랩(RKLB) Deep-Dive — 2026-10-31</title>
+<meta name="vault-stage" content="Dive"><meta name="vault-topic" content="RKLB"><meta name="vault-date" content="2026-10-31">
+<meta name="vault-skill" content="Deep-Dive"><meta name="description" content="로켓랩(RKLB) 단일 종목 심층 분석 — 뉴트론 2027 연기·브리지론 해지 후 재점검 · 64점/100 · 밸류 고평가 · 내구성 조건부">
+<style>/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+
+body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Helvetica Neue','Apple SD Gothic Neo',sans-serif;line-height:1.65;margin:0;padding:0;}
+.container{max-width:940px;margin:24px auto;background:#FDF6E3;padding:36px 44px;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.08);}
+h1{font-size:1.7em;border-bottom:3px solid #c0392b;padding-bottom:.3em;margin-top:.2em;}
+h2{font-size:1.32em;border-bottom:1px solid #c9bfa3;padding-bottom:.24em;margin-top:1.7em;color:#8a2415;}
+h3{font-size:1.1em;margin-top:1.3em;color:#5c4a00;}
+h4{font-size:1.0em;margin-top:1.1em;color:#5c4a00;}
+blockquote{border-left:4px solid #c9a227;background:#f5ecd3;margin:.8em 0;padding:.5em 1em;color:#4a4230;border-radius:0 6px 6px 0;}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.9em;display:block;overflow-x:auto;}
+th,td{border:1px solid #e8e1cf;padding:6px 9px;text-align:left;vertical-align:top;}
+th{background:#efe6cc;color:#5c4a00;font-weight:600;}
+tr:nth-child(even) td{background:#faf4e2;}
+code{background:#efe6cc;padding:1px 5px;border-radius:4px;font-size:.88em;}
+pre{background:#f0e8cf;padding:12px;border-radius:6px;overflow-x:auto;border:1px solid #e8e1cf;}
+a{color:#b0562a;text-decoration:none;} a:hover{text-decoration:underline;}
+hr{border:none;border-top:1px solid #d8cca8;margin:1.6em 0;}
+strong{color:#3a2f18;}
+.judge{background:#f3ead0;border:2px solid #c0392b;border-radius:8px;padding:16px 20px;margin:1.2em 0;}
+.judge h2{border:none;color:#8a2415;margin-top:0;}
+.dd-fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:12px;margin:1em 0;}
+.dd-fig figcaption{font-size:.82em;color:#6b5d3a;margin-top:6px;text-align:center;}
+.footer{margin-top:2em;padding-top:1em;border-top:1px solid #d8cca8;font-size:.85em;color:#6b5d3a;}
+@media print{body{background:#fff;}.container{box-shadow:none;background:#fff;}}
+@media (max-width:640px){.container{padding:20px 16px;}}
+</style>
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+<meta name="vault-published" content="2026-10-31">
+<meta name="robots" content="noindex, nofollow">
+</head><body>
+<!--dive-hub:start-->
+<nav id="dive-hub" aria-label="하위 Dive 모음" style="max-width:1100px;margin:12px auto 18px;padding:12px 16px;background:#F3EBD6;border:1px solid #e8e1cf;border-radius:10px;font:14px/1.6 'Pretendard','Noto Sans KR',sans-serif;color:#1f2328">
+<div style="font-weight:700;margin-bottom:4px">🤿 RKLB 하위 Dive 모음 <span style="font-weight:400;font-size:12px;color:#6b6457">— 이 Deep-Dive가 참고한 개별 보고서</span></div>
+<ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px">
+<li><a href="2026-10-31_rklb-rdive.html" title="RKLB (Rocket Lab) R-Dive — 제품·수익모델 정밀 해부 (2026-10-31)" style="color:#1F6F8B;font-weight:600;text-decoration:none">💰 R-Dive</a> <span style="font-size:12px;color:#6b6457">제품·수익모델 · 10/31</span></li>
+<li><a href="2026-10-31_historydive-rocketlab.html" title="History-Dive — Rocket Lab (RKLB) — 2026-10-31" style="color:#1F6F8B;font-weight:600;text-decoration:none">📜 History-Dive</a> <span style="font-size:12px;color:#6b6457">기업 역사 · 10/31</span></li>
+<li style="color:#8a8270">👤 People-Dive <span style="font-size:12px">사람·리더 — 미수행</span></li>
+<li style="color:#8a8270">📈 chart-dive <span style="font-size:12px">타이밍 — 🔒 로컬 전용 · 10/31</span></li>
+<li><a href="2026-10-31_rklb-specificdive.html" title="RKLB Specific-Dive — 업종 전문가 체크리스트 보완 (발사 · 정부 고정가 위성 제작 · 인수 예정 L대역 위성 통신) — 2026-10-31" style="color:#1F6F8B;font-weight:600;text-decoration:none">🔎 Specific-Dive</a> <span style="font-size:12px;color:#6b6457">업종 특수 점검 · 10/31</span></li>
+<li style="color:#8a8270">📄 One-Pager <span style="font-size:12px">1p 압축 — 미수행</span></li>
+</ul>
+</nav>
+<!--dive-hub:end-->
+<div class="container">
+<h1>🚀 로켓랩(RKLB) Deep-Dive — 2026-10-31</h1>
+<blockquote>
+<p>기준가 54.73달러(2026-10-30 종가) · 직전 Deep-Dive 2026-06-30 · 모드 --full · 3분기 실적 11/9(월) 미국 장 마감 후</p>
+</blockquote>
+<h2>한 장 요약</h2>
+<ul>
+<li><strong>종합 64점 / 100 (⭐3.58 병기) · 보통(경계 양호/보통)</strong> — 6월 약 65점(구 체계 환산 ±3점)과 동급이다(5점 이내 = 동급). 점수 = 사업·thesis 매력도이고 밸류는 재지 않는다. 감점이 큰 칸 = 현금 창출 🔴 −3.1 · 경쟁 포지션 ⚪ −2.6 · 날씨 거시 🔴 4칸 각 −2.1.</li>
+<li>🔴 <strong>뉴트론 첫 발사가 2027년으로 밀렸다(10/14 8-K).</strong> 2021년 발표 때는 2024년이었다. 회사가 다시 말한 날짜 5번이 모두 빗나갔고, 그 기록대로면 기본값은 2028년 중반~2029년 상반기다.</li>
+<li>🔴 <strong>36억 달러 브리지론은 9/15 전액 해지됐다.</strong> 대신 신주 약 2,930만 주(약 19.4억 달러)를 팔았고, 이리듐의 기존 대출 17.75억 달러(변동금리)를 인수 뒤에도 안고 간다. 6월의 최대 갈림길 변수가 사라진 대신 희석이 늘었다.</li>
+<li>🔴 <strong>늘어난 매출이 이익으로 거의 안 남는다.</strong> 2분기 매출이 1년 새 8,960만 달러 늘었는데 영업손실은 210만 달러만 줄었다. 매출은 +62%, 매출총이익률은 3년째 올랐다.</li>
+<li>🟠 <strong>이리듐은 흑자 구독이지만 성장 구독은 아니다.</strong> 인수 효과를 빼면 3분기 서비스 성장은 0%이고, 가입자당 매출은 내려갔다. 경영진 전망에서 잉여현금이 2031년에 마이너스로 뒤집힌다.</li>
+<li>🟠 <strong>기록 정정</strong> — "벡 CEO 매도 0건"은 틀렸다. 가족 신탁이 2023년 이후 약 5.77억 달러를 팔았다(2021년 보유분의 약 79%는 유지).</li>
+<li><strong>분면</strong> 6월 "강한데 비싼" → 가운데 쪽(아직 비싼 쪽) · <strong>독점 판정</strong> 틸 7문 3/7(불운 위험) · 화법 혼재.</li>
+<li><strong>밸류</strong> 🔴 고평가 · 신뢰도 중간 · 🟢 조건 0/3 · 🎯 현재가 진입 보류(낮은 신뢰도 · 더 싸게 사는 기준 ≈ 37달러) · 병목 렌트 괴리 −0.46 🔴(약한 신호). 자기 최근 15개월 대비로는 바닥이지만, 버는 돈 대비로는 비싸다.</li>
+<li><strong>내구성</strong> ⚪ 조건부 · 지금은 무차입이고, 인수 뒤 헤지 없는 변동금리 빚 약 19.8억 달러 · 관건 = 로켓랩 자체 적자를 새 주식 없이 끄는 기간(기준 2.4~4.9년).</li>
+<li><strong>시나리오 기댓값 약 1.05배(5년)</strong> — 6월 약 1.66배에서 내려왔다(⚠️ 1.5배 미만 · 기준 2년 0.90배 = 낙관 꼬리 의존). 주가가 36% 내렸지만 지연·희석·이리듐 저성장으로 기대치도 같이 내려갔다.</li>
+</ul>
+<figure class="dd-fig"><div id="fig-score7"></div><div class="dd-legend" id="fig-score7-leg"></div><figcaption id="fig-score7-cap"></figcaption></figure>
+
+<h3>실적 뒤 다시 볼 칸 (11/9)</h3>
+<table>
+<thead>
+<tr>
+<th>무엇</th>
+<th>왜</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>우주 시스템 매출총이익률 · 원가 추정 누적 조정</td>
+<td>가이던스 29~31% 하락이 믹스인지 원가 초과인지</td>
+</tr>
+<tr>
+<td>분기 영업손실 절대액</td>
+<td>늘어난 매출이 처음으로 이익에 남는지</td>
+</tr>
+<tr>
+<td>9월 신주 반영 현금 · 3분기 현금 소진</td>
+<td>인수 대금을 내고 남는 돈</td>
+</tr>
+<tr>
+<td>뉴트론 1단 정적 연소 시험 일정 · 화법</td>
+<td>"첫 발사" 대신 "발사대 인도"를 말하면 추가 연기 선행 신호</td>
+</tr>
+<tr>
+<td>정부 고객 비중 · MDA 지체상금</td>
+<td>쏠림이 50%를 넘는지</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<div class="judge"><h2>🧑‍⚖️ 종합 매수 판단 (Fable 판사 · 쉬운 말 판정 원문)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 🔴 지금 가격 진입 보류 — 많이 빠졌어도 낙관·기준·비관을 섞은 5년 기대 수익이 투자금의 약 1.05배에 그친다. 낮은 신뢰도의 참고 판단이다. (판사 요약 1줄 원문)</p>
+</blockquote>
+<p>① 한 줄 답 — 🔴 지금 가격에는 사지 않는 게 낫다. 많이 빠졌어도 아직 모든 일이 잘 풀려야 맞는 값이다.</p>
+<p>② 왜 그렇게 보나</p>
+<ol>
+<li>
+<p>가격이 미래를 너무 많이 미리 받아 놓았다. 지금 값이 맞으려면 로켓 사업 매출이 10년간 해마다 40~50%씩 크고 영업이익률도 20%를 넘어야 한다.</p>
+</li>
+<li>
+<p>기대 수익이 거의 없다. 낙관·기준·비관을 섞어 보면 5년 뒤 투자금은 약 1.05배에 그치고, 가장 가능성 큰 경우는 0.81배다.</p>
+</li>
+<li>
+<p>회사가 약속을 자주 미룬다. 새 로켓 뉴트론 첫 발사는 처음 2024년 목표가 2027년으로 밀렸고, 공식 연기만 4번째다.</p>
+</li>
+</ol>
+<p>③ 언제 다시 보나 — 11월 9일 실적 발표와 같은 날 끝나는 미국 통신위원회 반박 절차를 보고 다시 본다. 가격은 37달러 안팎이면 다시 따져 볼 만하고, 뉴트론 첫 발사가 성공해도 다시 본다.</p>
+<p>④ 반대로 볼 이유 — 회사 자신의 최근 두 해 기준으로는 지금이 바닥권이고, 증권사 분석가 20명 목표가가 모두 현재가 위다. 내년 중반 이리듐 인수가 끝나면 흑자 회사가 합쳐져 숫자가 갑자기 좋아 보일 수 있다.</p>
+<p>⑤ 아직 모르는 것 — 이번 분기 보고서가 나오기 전이라 원가와 현금 소진 속도의 최신 값을 모른다.</p>
+<p>낮은 신뢰도의 참고 판단이며, 최종 판단은 독자 몫이다.</p>
+</div><hr />
+<h2 id="a">Section A. 🌦️ 날씨 — 지정학 + 거시 (장기 구조) ⭐2.92</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 안보 우주 수요라는 바람은 6월보다 더 세졌다. 그러나 금리는 내려가지 않고 오히려 인상 이야기가 나온다. 단기 대출 위험이 사라진 대신, 이제 금리 역풍은 회사 빚이 아니라 주가 배수 쪽으로 옮겨 붙었다.</p>
+</blockquote>
+<h3>A.1 핵심 질문</h3>
+<p>5~10년 지정학·거시 기후가 로켓랩(이리듐 포함)에 순풍인가. 답은 6월과 같다 — <strong>지정학은 순풍, 거시는 역풍</strong>이다. 바뀐 것은 역풍이 걸리는 자리다.</p>
+<p>6월에는 36억 달러 364일 단기 대출(브리지론)이 금리 역풍의 정면에 서 있었다. 9월 15일 회사가 이 약정을 <strong>전액 해지</strong>했다(<a href="https://www.sec.gov/Archives/edgar/data/1819994/000175392626001769/g085951_8k.htm">8-K 2026-09-15</a>). 그 자리는 신주 약 2,930만 주(약 19.4억 달러)와, 이리듐이 원래 갖고 있던 대출 17.75억 달러를 인수 뒤에도 유지하는 것으로 메웠다. 그래서 금리가 회사 빚을 직접 치는 크기는 줄었다. 대신 남은 역풍은 "배수가 높은 적자 성장주는 금리가 높을수록 값이 깎인다"는 쪽이다.</p>
+<h3>A.2 지정학</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 안보 우주 수요와 서방 대안 발사 필요성은 순풍이다. 인수 규제와 주파수 경쟁은 마찰이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>점검</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>안보 우주 수요</td>
+<td style="text-align: center;">🟢</td>
+<td>미 우주군 HASTE 12회(최대 2.66억 달러) · SB-AMTI(최대 3.97억 달러 · 옵션 포함) · SDA 트랜치 3 · 골든돔 확대(<a href="https://www.sec.gov/Archives/edgar/data/1819994/000181999426000062/rklb-20260630.htm">10-Q 2Q26</a>)</td>
+</tr>
+<tr>
+<td>서방 대안 발사 필요성</td>
+<td style="text-align: center;">🟢</td>
+<td>스페이스X가 소형 위성 합승 발사(Transporter)를 줄여 전용 소형 발사 수요가 일렉트론으로 옮겨옴(CFO 확인 · Ars 7/10). 일렉트론 2026년 10/23까지 19회</td>
+</tr>
+<tr>
+<td>규제·인수 마찰</td>
+<td style="text-align: center;">🟡</td>
+<td>이리듐 주주 99.6% 찬성(9/24) · 미국 반독점 대기 기간 종료(8/12) · 남은 것 = FCC 심사(문서함 GN 26-257 · 재반박 마감 11/9) · 해외 승인(통신 면허 5개국·외국인 투자 3개국) · 국방 보안 기관 점검. 스페이스X는 10/15 서한에서 인수의 공익성에 "심각한 우려"를 적었다(공식 이의 신청은 0건)</td>
+</tr>
+<tr>
+<td>L대역 주파수 = 안보 자산</td>
+<td style="text-align: center;">🟡</td>
+<td>위치·통신 대체 수단으로서 가치 · 단 아마존이 같은 1.6GHz 대역에 위성 직접 통신 5,105기 신청(7/24)</td>
+</tr>
+</tbody>
+</table>
+<p>수출 통제·관세는 노출이 작다(매출 79%가 미국 · FY25 10-K). 대만·이란 같은 사건은 방산 수요를 키우는 쪽이다.</p>
+<h3>A.3 거시</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 금리와 위험 회피 국면이 역풍이다. 회사 빚 자체의 금리 민감도는 브리지론 해지로 줄었다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>점검</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>금리 사이클</td>
+<td style="text-align: center;">🔴</td>
+<td>연준 3.75~4.00% 동결, 2명이 인상 주장 · 10년물 4.93% (주간 거시 보고서 10/31)</td>
+</tr>
+<tr>
+<td>순유동성</td>
+<td style="text-align: center;">⚪</td>
+<td>주간 −784억 달러 수축 · 한 주 수치라 구조 판정엔 약함</td>
+</tr>
+<tr>
+<td>위험 선호 민감도</td>
+<td style="text-align: center;">🔴</td>
+<td>베타 2.94 · 적자 · 매출 대비 시가총액 45배 · 나스닥100 고점 대비 −10% 국면</td>
+</tr>
+<tr>
+<td>회사 빚의 금리 민감도</td>
+<td style="text-align: center;">🟡</td>
+<td>브리지론 해지로 지금은 빚이 거의 없다(장기부채 1,310만 달러 · 2Q26). 인수 완료 뒤 이리듐 대출 17.75억 달러가 변동금리(SOFR+2.50~3.00%)로 붙는다</td>
+</tr>
+</tbody>
+</table>
+<h3>A.4 거시 thesis 노출 (재분석 없이 노출만)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 기존 거시 판단 틀에 대한 노출은 6월과 같다. 금리 역풍이 걸리는 자리만 빚에서 주가 배수로 옮겨갔다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>기준 틀</th>
+<th style="text-align: center;">노출</th>
+<th>변화</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>대만 억제(동맹 우주 감시·통신 분산)</td>
+<td style="text-align: center;">🟡</td>
+<td>공급망의 한 고리 · 변동 없음</td>
+</tr>
+<tr>
+<td>달러 패권·컴퓨트 달러</td>
+<td style="text-align: center;">⚪</td>
+<td>간접 · 변동 없음</td>
+</tr>
+<tr>
+<td>워시 이중 전략(표면 완화·실질 긴축)</td>
+<td style="text-align: center;">🔴</td>
+<td>6월엔 브리지론 차환이 정면 충돌 → 지금은 배수 압박으로 이동</td>
+</tr>
+<tr>
+<td>사용자 거시 관점(고베타 적자주 조정 민감)</td>
+<td style="text-align: center;">🔴</td>
+<td>업종 동반 하락 1개월 −22%</td>
+</tr>
+</tbody>
+</table>
+<h3>A.5 매크로 민감도</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 가장 센 변수는 장기 금리다. 정책금리 민감도는 브리지론 해지로 한 단계 낮아졌다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>변수</th>
+<th style="text-align: center;">오를 때 영향</th>
+<th style="text-align: center;">강도</th>
+<th>6월 대비</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>정책금리·SOFR</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">중</td>
+<td>강 → 중(브리지론 해지 · 인수 뒤 변동금리 대출만 남음)</td>
+</tr>
+<tr>
+<td>10년물</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">강</td>
+<td>변동 없음 — 배수 압박 채널</td>
+</tr>
+<tr>
+<td>달러</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">약</td>
+<td>변동 없음</td>
+</tr>
+<tr>
+<td>유가</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">약</td>
+<td>변동 없음</td>
+</tr>
+<tr>
+<td>엔 캐리 청산</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">중</td>
+<td>변동 없음 — 고베타 위험 회피 채널</td>
+</tr>
+</tbody>
+</table>
+<h3>A.6 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지정학은 높고 거시는 낮아, 날씨 축은 6월보다 조금 내려갔다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>묶음</th>
+<th>칸</th>
+<th>환산</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>지정학 4칸</td>
+<td>🟢 · 🟢 · 🟡 · 🟡</td>
+<td>5 · 5 · 4 · 4</td>
+</tr>
+<tr>
+<td>거시 4칸</td>
+<td>🔴 · ⚪ · 🔴 · 🟡</td>
+<td>1 · 2.5 · 1 · 4</td>
+</tr>
+<tr>
+<td>노출 4칸</td>
+<td>🟡 · ⚪ · 🔴 · 🔴</td>
+<td>4 · 2.5 · 1 · 1</td>
+</tr>
+</tbody>
+</table>
+<p>평균 = 35 ÷ 12 = <strong>⭐2.92</strong> → 득점 = 25 × (2.92 − 1) ÷ 4 = <strong>12.0 / 25</strong>. 6월(⭐3.2)보다 낮다. 빚 위험이 줄어든 몫보다 금리 인상 쪽 발언과 위험 회피 국면이 더 무겁게 걸렸다.</p>
+<p>▶ 🟢 강화 = 연준 인하 재개·10년물 4.5% 아래 · 골든돔 우주 요격체 대형 계약 발표 / 🔴 훼손 = 12월 인상 실행 · FCC가 인수 승인에 조건을 붙이거나 심사를 늦춤</p>
+<hr />
+<h2 id="b">Section B. ⛰️ 산 — 산업 (우주 발사 + 위성 제작 + 위성 통신) ⭐4.25</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 우주 산업이 세상을 바꾸는 산업이고 국가 돈이 들어온다는 판단은 그대로다. 산업 전체 성장률이 연 30%에 못 미친다는 한계도 그대로다.</p>
+</blockquote>
+<h3>B.1 세상을 바꾸는 산업인가</h3>
+<p><strong>예(✅).</strong> 저궤도 위성망·국방 우주·위성 직접 통신이 5~10년 안에 통신·감시·위치 서비스의 기반을 바꾼다. 다만 "세상을 바꾼다"만으로는 신호가 아니다 — 2021년 우주 SPAC 대부분이 같은 말을 하고 무너졌다.</p>
+<h3>B.2 국가 자본 투입</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 미국 국방·우주 예산이 계속 커지고 있어 산업의 돈줄은 단단하다.</p>
+</blockquote>
+<ul>
+<li>미국 국가안보 발사(NSSL) 1구간 계약 상한이 56억 → 170억 달러로 커졌다(회사 2분기 콜 설명).</li>
+<li>골든돔·SDA 군 위성망·우주군 대응형 우주 예산이 계속 집행 중이다.</li>
+<li>중국도 대형 위성망(궈왕·첸판)에 국가 자본을 넣는다. 미국이 손 놓으면 5~10년 열세가 굳는 분야다.</li>
+</ul>
+<p>등급 🟢.</p>
+<h3>B.3 내러티브 다중성 5축</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 정책·지정학·기술 이야기가 함께 모인다. 자본 쪽 이야기는 위험 회피로 식었다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">해당</th>
+<th style="text-align: center;">깊이</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔧 기술</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">4</td>
+<td>재사용 중형 로켓·평판형 위성(Flatellite)·위성 직접 통신</td>
+</tr>
+<tr>
+<td>👥 사회</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">3</td>
+<td>위성 인터넷·재난 통신 수요 · 대중 서사는 스페이스X 몫</td>
+</tr>
+<tr>
+<td>🏛️ 정책</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">5</td>
+<td>골든돔·NSSL·SDA 예산</td>
+</tr>
+<tr>
+<td>🌐 지정학</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">5</td>
+<td>미중 우주 경쟁 · 서방 대안 발사</td>
+</tr>
+<tr>
+<td>💰 자본</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">3</td>
+<td>스페이스X 상장(6/12)으로 우주 자본은 커졌지만, 10월 위험 회피에 소형 우주주 동반 하락</td>
+</tr>
+</tbody>
+</table>
+<p>4축 수렴(🔴 강한 수렴) · 가장 강한 축 ⭐5. 깊이 평균 = 20 ÷ 5 = 4.0.</p>
+<figure class="dd-fig"><div id="fig-c3"></div><div class="dd-legend" id="fig-c3-leg"></div><figcaption id="fig-c3-cap"></figcaption></figure>
+
+<h3>B.4 산업 크기와 성장</h3>
+<p>우주 경제 전체는 연 한 자릿수 후반 성장이다(업계 추정 · 변동 없음). 로켓랩이 노는 칸(전용 발사·국방 위성·위성 통신)은 그보다 빠르지만, 산업 기준 "연 30% 이상"에는 못 미친다. 등급 ⚠️.</p>
+<h3>B.5 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 산업 매력은 높지만 산업 전체 성장 속도가 기준에 못 미쳐 만점은 아니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">환산</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>세상을 바꾸는 산업</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>국가 자본</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>내러티브 깊이</td>
+<td style="text-align: center;">평균 4.0</td>
+<td style="text-align: center;">4.0</td>
+</tr>
+<tr>
+<td>산업 성장률</td>
+<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">3</td>
+</tr>
+</tbody>
+</table>
+<p>평균 = 17 ÷ 4 = <strong>⭐4.25</strong> → 득점 = 12.5 × 3.25 ÷ 4 = <strong>10.2 / 12.5</strong>. 6월(⭐4.5)보다 약간 낮다 — 자본 축이 위험 회피로 식었다.</p>
+<p>▶ 🟢 강화 = 골든돔 우주 요격체 생산 계약 · NSSL 3구간 진입 / 🔴 훼손 = 국방 예산 삭감·우주 예산 이관</p>
+<hr />
+<h2 id="c">Section C. 🌲 숲 — 섹터 (전용 발사 + 국방 위성 + L대역 통신) ⭐3.57</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금 실제로 막혀 있는 곳은 "위성을 궤도에 올릴 자리"이고, 로켓랩은 그 막힌 자리에서 값을 올리고 있다. 그러나 다음 병목(중형 발사)에는 뉴트론이 늦어 못 들어가고, 그다음 자산(L대역 통신)은 값을 올리지 못하고 있다.</p>
+</blockquote>
+<h3>C.1 병목 시점 매트릭스</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금 병목에서는 값을 올리고 있다. 다음 병목은 뉴트론이 늦어 못 잡고, 그다음 자산은 값을 못 올리고 있다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>병목</th>
+<th>로켓랩 위치</th>
+<th style="text-align: center;">유지 기간</th>
+<th>해소 경로</th>
+<th style="text-align: center;">렌트 포획</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>지금(0~6개월)</td>
+<td>소형 위성 전용 발사 자리</td>
+<td>일렉트론 = 서방 2위 · 발사 잔고 100회+</td>
+<td style="text-align: center;">1~2년</td>
+<td>스페이스X 합승 재개 · Isar·Firefly 등 신규 소형 발사체 정상 가동</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>6~24개월</td>
+<td>중형 발사 자리(국가안보·위성망)</td>
+<td>뉴트론 미비행 — 첫 발사 2027년</td>
+<td style="text-align: center;">추정 불가</td>
+<td>블루오리진 뉴글렌·Stoke·ULA 발사 횟수 증가</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>2~5년</td>
+<td>위성 직접 통신·위치 대체(L대역)</td>
+<td>이리듐 인수 완료 뒤(2027 중반)</td>
+<td style="text-align: center;">3~5년</td>
+<td>스타링크 직접 통신 · 아마존 1.6GHz 대역 신청</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+</tbody>
+</table>
+<p><strong>지불자 경로</strong> — 큰손 = 미 우주군·SDA(이름 비공개 정부 고객이 상반기 매출의 42% · 고객 검증 B) + 상업 위성망 운영사(Synspective 등). 막힘 = 스페이스X 합승이 줄어 "만든 위성을 원하는 궤도에 원하는 때 올릴 자리"가 없다. 경로 = <code>직접</code>. 직접 파는 자리라 큰손의 협상력이 마진을 누를 수 있다 — 고객 집중 42% · 가격 인상 테스트 🟡(아래 D.6)와 같이 읽는다.</p>
+<p><strong>렌트 포획 판정</strong></p>
+<ul>
+<li><strong>지금 칸 🟡</strong> — 일렉트론 발사 1회 평균 매출이 FY23 710만 → 2026 상반기 920만 달러로 올랐고, 같은 기간 1회 원가는 700만 → 490만 달러로 내려 발사 매출총이익률이 11% → 44%가 됐다(10-Q · 상품 해부 보고서). 물량도 늘었다. 그러나 회사는 단가 상승을 "고객 구성·임무 난도 변화"로 설명한다. 순수 판가 인상과 갈라지지 않아 🟢을 주지 않는다.</li>
+<li><strong>6~24개월 칸 🟡</strong> — 뉴트론 판가 5,000만~5,500만 달러 고정·할인 없음(회사 설명)이라 계약 구조는 포착형이지만, 구매자(우주군)의 협상력이 크고 대체 발사체가 늘고 있다.</li>
+<li><strong>2~5년 칸 🔴</strong> — 이리듐 3분기 가입자당 매출이 IoT −4%, 광대역 −7%, 정부 EMSS는 같은 단가로 연장됐다(이리듐 3분기 보도자료). 희소 주파수인데 값을 못 올리고 있다.</li>
+</ul>
+<h3>C.2 4중 필터 (섹터 단위)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 경쟁자가 적고 순위·마진도 괜찮다. 다만 영업이익은 아직 적자다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>필터</th>
+<th style="text-align: center;">판정</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 수요·공급</td>
+<td style="text-align: center;">🟡</td>
+<td>지금 칸을 따름(렌트 포획 🟡 상한)</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">🟡 과점</td>
+<td>전용 소형 발사는 서방 소수(로켓랩·Firefly·Isar 등)</td>
+</tr>
+<tr>
+<td>③ 섹터 순위</td>
+<td style="text-align: center;">⭐4</td>
+<td>2025년 세계 2위 발사 빈도 · 1위 스페이스X와 격차 큼</td>
+</tr>
+<tr>
+<td>④ 마진</td>
+<td style="text-align: center;">🟡</td>
+<td>매출총이익률 37% — 우주 동종(23%대)보다 높음 · 영업이익률은 −25%</td>
+</tr>
+</tbody>
+</table>
+<h3>C.3 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 병목 칸 두 개가 '값을 올린 증거가 약하다'는 이유로 상한에 걸렸다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">원래</th>
+<th style="text-align: center;">상한 적용 후</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>지금</td>
+<td style="text-align: center;">🟢5</td>
+<td style="text-align: center;">🟡4 (렌트 포획 🟡)</td>
+</tr>
+<tr>
+<td>6~24개월</td>
+<td style="text-align: center;">⚪2.5</td>
+<td style="text-align: center;">2.5 (뉴트론 미비행)</td>
+</tr>
+<tr>
+<td>2~5년</td>
+<td style="text-align: center;">⚪2.5</td>
+<td style="text-align: center;">2.5 (렌트 포획 🔴 → 상한 2.5)</td>
+</tr>
+<tr>
+<td>① 수요·공급</td>
+<td style="text-align: center;">🟢5</td>
+<td style="text-align: center;">🟡4</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>③ 섹터 순위</td>
+<td style="text-align: center;">⭐4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>④ 마진</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+</tbody>
+</table>
+<p>평균 = 25 ÷ 7 = <strong>⭐3.57</strong> → 득점 = 12.5 × 2.57 ÷ 4 = <strong>8.0 / 12.5</strong>. 렌트 포획 상한이 두 칸에서 각 1점씩 깎았다(합 −0.9점).</p>
+<p>▶ 🟢 강화 = 일렉트론 판가 인상을 회사가 직접 밝힘 · 이리듐 가입자당 매출 반등 / 🔴 훼손 = 스페이스X 합승 재개 · Isar·Firefly 정상 발사 cadence</p>
+<hr />
+<h2 id="d">Section D. 🌳 나무 — 기업 ⭐3.85</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금 로켓랩은 "정부 위성 공장 + 값이 오르는 소형 발사 대행사"다. 회사 자체는 6월보다 단단해졌지만, 사업 모델을 바꿀 두 사건(뉴트론, 이리듐)이 모두 2027년 이후로 밀려 있다.</p>
+</blockquote>
+<h3>D.0 제품·수익모델 (상품 해부 보고서 요약 · <a href="../../RDive_Reports/RKLB/RKLB_RDive_2026-10-31.html">R-Dive 2026-10-31</a>)</h3>
+<ul>
+<li><strong>아키타입</strong>: 지금은 장기 잔고·여러 수도꼭지형에 정부 집중형이 붙어 있다. 이름이 공개되지 않은 정부 고객 한 곳이 상반기 매출의 42%다(FY24 11% → FY25 28%). 2027년 중반 이리듐이 들어오면 구독형 통신 매출이 결합 매출의 약 36%가 되는 믹스 전환형으로 바뀐다(2026 상반기 기준 계산).</li>
+<li><strong>주력 제품</strong>: 매출은 위성 제작이 끈다(상반기 매출의 75%). 마진은 일렉트론 발사가 끈다(발사 매출총이익률 43.7%, 위성 34.9%). 뉴트론은 매출이 0이다.</li>
+<li><strong>치명 함정 ① 늘어난 매출이 이익으로 거의 안 남는다</strong> — 2분기 매출이 1년 새 8,960만 달러 늘었는데 영업손실은 210만 달러만 줄었다. 늘어난 매출 1달러당 2센트다. 뉴트론 개발비·인수한 회사 비용·인수 거래비용이 가져갔다.</li>
+<li><strong>치명 함정 ② 수익모델을 바꿀 두 사건이 모두 2027년 이후다</strong> — 회사 공식("첫 발사 성공 → 다음 분기 조정 EBITDA 흑자 → 18~24개월 뒤 잉여현금 흑자")에 넣으면 잉여현금 흑자는 빨라야 2029년 안팎이다.</li>
+<li><strong>이리듐은 흑자 구독이지만 성장 구독은 아니다</strong> — 3분기 서비스 성장 +13%는 거의 전부 Aireon 인수 효과이고, 이를 빼면 0%다. 이리듐 경영진 전망에서 무차입 잉여현금이 2030년 5.29억 → 2031년 −0.21억 달러로 뒤집힌다(위성망 교체 구간 · <a href="https://www.sec.gov/Archives/edgar/data/1819994/000175392626001639/g085904_424b3.htm">424B3</a>).</li>
+<li><strong>시너지가 장부에 잡히는 자리</strong> — 로켓랩이 이리듐 차세대 위성을 만들고 쏘면 같은 회사 안의 거래라 결합 매출에서 지워진다. 매출 성장이 아니라 설비투자 절감으로 나타난다.</li>
+<li><strong>수익모델 등급</strong>: 예측가능성 🟡 · 수익성 🟡 · 과금 강도 🟡 · 고객 묶임 🟢 · 12함정 중 🚩 6개.</li>
+</ul>
+<figure class="dd-fig"><div id="fig-d0"></div><div class="dd-legend" id="fig-d0-leg"></div><figcaption id="fig-d0-cap"></figcaption></figure>
+
+<h3>D.0.5 고객 검증 등급</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 큰 고객은 대부분 공시된 계약으로 확인된다. 뉴트론 수요와 자체 위성망 구상은 아직 약한 증거다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>고객·관계</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>미 정부(이름 비공개 "정부 고객")</td>
+<td style="text-align: center;">B</td>
+<td>상반기 매출 42% · 업종상 비공개 관행</td>
+</tr>
+<tr>
+<td>미 우주군 HASTE 12회 · SB-AMTI · SDA 트랜치 2·3 · MDA 위성 버스 17기 · Synspective · 이리듐 EMSS</td>
+<td style="text-align: center;">A</td>
+<td>10-Q·10-K·보도자료 계약</td>
+</tr>
+<tr>
+<td>뉴트론 상업 수요</td>
+<td style="text-align: center;">C</td>
+<td>국가안보 발사 입찰 자격만 · 대형 상업 계약 공시 없음</td>
+</tr>
+<tr>
+<td>이리듐 차세대 위성 제작·발사</td>
+<td style="text-align: center;">D</td>
+<td>회사 구상 · 계약 없음</td>
+</tr>
+</tbody>
+</table>
+<p>국방 업종은 계약 금액을 다 공개하지 않는 관행이라, B를 약점으로 읽지 않는다. 다만 뉴트론의 수요는 아직 C이고, "자체 위성망을 자체 로켓으로"는 D다.</p>
+<h3>D.5 곡괭이 질 — <strong>(B) 자본갈증형</strong> (변동 없음)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 여전히 외부 돈(주식 매각)으로 성장하는 회사다. 다만 비쌀 때 팔아 통장은 두둑하다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 마진</td>
+<td style="text-align: center;">🟡</td>
+<td>매출총이익률 37% · 영업이익률 −25%</td>
+</tr>
+<tr>
+<td>② 설비투자 강도</td>
+<td style="text-align: center;">🟡</td>
+<td>FY25 1.56억 달러(매출의 26%) → 2026 상반기 5,310만(12%)</td>
+</tr>
+<tr>
+<td>③ 외부 자금 의존</td>
+<td style="text-align: center;">🔴</td>
+<td>2026년 시장가 분할 매각(ATM)으로 약 34.7억 달러 조달 — 상반기 15.3억 + 9월 19.4억</td>
+</tr>
+<tr>
+<td>④ 자체 현금 충당</td>
+<td style="text-align: center;">🔴</td>
+<td>잉여현금 FY25 −3.22억 · 2026 상반기 −1.88억 달러</td>
+</tr>
+</tbody>
+</table>
+<p><strong>마진의 출처</strong> — 사업의 가격결정력(발사 판가)이 중심이다. 정부 보조금은 없다. 원가 추정 변경 순액은 2025년 −792만 · 1Q26 −112만 · 2Q26 +809만 달러로, 1년 반 합계 약 −95만 달러다(거의 0 · 업종 점검 보고서). 이를 빼면 매출총이익률은 1Q26 약 38.5% → 2Q26 약 33.9%로 내려갔다. 정책렌트형(P)은 아니다.</p>
+<p>해석 — 6월과 같은 (B)다. 다른 점은 "비싸게 판 주식"으로 돈을 마련했다는 것이다. 2분기 조달 단가는 주당 131달러, 9월은 약 66달러였다. 지금 현금은 인수 대금을 내고도 남지만, 뉴트론 지연으로 돈을 태우는 기간이 1년 늘었다.</p>
+<h3>D.6 해자 (5종 + AI 침식)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 갈아타기 어려움과 원가 우위는 작동한다. 값을 올리는 힘은 반쯤만 확인돼 해자 점수에 상한이 걸렸다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>유형</th>
+<th style="text-align: center;">작동</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 네트워크 효과</td>
+<td style="text-align: center;">❌</td>
+<td>이리듐 가입자 +6%(규모↑) · IoT 가입자당 매출 −4%, 광대역 −7%(렌트↓) + 스타링크·아마존 직접 통신이라는 다른 망 동시 사용 가능 → 동질화</td>
+</tr>
+<tr>
+<td>② 브랜드</td>
+<td style="text-align: center;">⚠️</td>
+<td>일렉트론 발사 이력(98회)은 강하지만 동종 대비 판가 프리미엄은 공시로 확인 안 됨</td>
+</tr>
+<tr>
+<td>③ 전환 비용</td>
+<td style="text-align: center;">✅</td>
+<td>정부 다년 프로그램 · Synspective 누적 47회 계약 · 이리듐 안전·항공·정부 단말 묶임</td>
+</tr>
+<tr>
+<td>④ 비용 우위</td>
+<td style="text-align: center;">✅</td>
+<td>부품 내재화(태양전지·반작용휠·별추적기) · 매출총이익률 37% vs 우주 동종 23%대(yfinance TTM) · 발사 1회 원가 700만 → 440만 달러</td>
+</tr>
+<tr>
+<td>⑤ 법적 보호</td>
+<td style="text-align: center;">⚠️</td>
+<td>L대역 주파수 면허는 인수 완료 뒤 자산 · 막은 증거 ⓐ는 약해지는 중(이리듐이 10/14 스페이스X 상대 청원 116건 철회 · 주파수 약 0.95MHz를 Globalstar와 공유) · 남은 기간 ⓑ = 위성 면허 2032-02-23 만료 · 가격 테스트 ⓒ 🔴 → ✅ 불가</td>
+</tr>
+</tbody>
+</table>
+<p><strong>가격 인상 테스트</strong> — 🟡. 일렉트론은 1회 단가가 3년 새 30% 올랐고 물량도 늘었지만 회사가 "고객 구성 변화"로 설명한다. 이리듐은 가입자당 매출이 내려가고 정부 계약은 같은 단가로 연장됐다(🔴 쪽). 위성 제작은 단가 미공시.</p>
+<p><strong>D.6-a 환산</strong> — ✅ 2개(③④) → ⭐4 · 가격 테스트 🟡 상한 → <strong>⭐3</strong>.</p>
+<p><strong>D.6-b 자산 균형</strong> — 오래가는 자산(발사장 4곳 · 정부 다년 계약 · 인수 후 주파수)과 바뀌는 자산(뉴트론·평판형 위성 기술)이 같이 있다. 단 뉴트론이 늦어 바뀌는 자산 쪽이 아직 매출로 검증되지 않았다 → <strong>⭐4</strong>.</p>
+<p><strong>D.6 = (3 + 4) ÷ 2 = ⭐3.5</strong> · 해자 내구성 = 전환 비용이 중심이라 정부 프로그램 주기(4~5년)만큼으로 추정.</p>
+<p><strong>🤖 AI 침식 점검</strong> — <code>해당 없음</code>. 위성·로켓 제작과 발사는 고객의 사무 업무 흐름에 박힌 소프트웨어가 아니다.</p>
+<h3>D.7 수직 통합 + 산업 횡단 확장성 ⭐5</h3>
+<p>발사·위성 본체·부품·우주선 운용에 2027년 위성 통신 서비스까지 걸친다. 국방·상업 위성망·심우주·통신 3개 이상 시장에 동시에 들어가 있다(다중 캐즘형). 실행 증거 = 인수한 SolAero(태양전지)가 정상 마진으로 올라온 선례. 반대 증거 = Mynaric(레이저 통신)은 지급불능 절차를 거친 자산이고 마진 공개를 거부했다(2분기 콜).</p>
+<h3>D.8 하방 닫힘 / 상방 열림 ⭐4</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 파산 위험은 낮다. 큰 상방은 뉴트론과 이리듐이 실제로 돌아가는 2027년 이후에 열린다.</p>
+</blockquote>
+<ul>
+<li><strong>하방</strong>: 6/30 현금·유가증권 23.0억 달러 + 9월 신주 약 19.4억 달러. 이리듐 현금 대가 약 28.6억 달러를 내도 10억 달러대가 남는다(계산 · 3분기 현금 소진 전). 잔고 23.6억 달러 = 최근 1년 매출의 3.1배. 파산 위험은 낮다.</li>
+<li><strong>상방</strong>: 뉴트론이 날면 중형 발사 시장(NSSL 1구간 170억 달러 상한)에 들어간다. 이리듐 편입으로 매출이 2배 넘게 커진다.</li>
+<li><strong>현금 젖소</strong>: 인수 완료 뒤 이리듐(9개월 현금이익 3.7억 달러 · 설비투자 7,900만 달러)이 뉴트론 개발비의 자금줄이 될 수 있다. 단 이리듐 대출 약정상 부채가 현금이익의 3.5배를 넘으면 남는 현금 일부를 빚 갚는 데 먼저 써야 하고, 로켓랩으로 올려 보내는 돈도 한도에 묶인다(내구성 정밀 진단 · 이리듐 신용계약). 지금 이리듐 순부채는 4.2배라, 당장은 이 길이 좁다. 그 전까지는 주식 매각이 자금줄이다.</li>
+</ul>
+<h3>D.9 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 브리지론 해지로 하방이 닫혀 나무 축은 6월보다 조금 올랐다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">환산</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D.0 수익모델</td>
+<td style="text-align: center;">4.25</td>
+<td>🟡 · 🟡 · 🟡 · 🟢 평균</td>
+</tr>
+<tr>
+<td>D.5 곡괭이 질</td>
+<td style="text-align: center;">2.5</td>
+<td>(B) 자본갈증형</td>
+</tr>
+<tr>
+<td>D.6 해자</td>
+<td style="text-align: center;">3.5</td>
+<td>(3 + 4) ÷ 2</td>
+</tr>
+<tr>
+<td>D.7 수직 통합</td>
+<td style="text-align: center;">5</td>
+<td>다중 캐즘</td>
+</tr>
+<tr>
+<td>D.8 하방·상방</td>
+<td style="text-align: center;">4</td>
+<td>현금 충분 · 상방은 2027년 이후</td>
+</tr>
+</tbody>
+</table>
+<p>평균 = 19.25 ÷ 5 = <strong>⭐3.85</strong> → 득점 = 12.5 × 2.85 ÷ 4 = <strong>8.9 / 12.5</strong>. 6월(⭐3.64)보다 높다 — 브리지론 해지로 하방이 닫혔다.</p>
+<p>▶ 🟢 강화 = 3분기 영업손실이 매출 증가 속도만큼 줄어듦 · 이리듐 규제 승인 / 🔴 훼손 = 뉴트론 2027년 안 첫 발사 실패 · 정부 고객 비중 50% 초과 · MDA 지체상금 청구 공시</p>
+<hr />
+<h2 id="e">Section E. 🌲🌳 옆의 나무 — 경쟁 ⭐3.50</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 같은 우주 상장사 중 매출총이익률은 가장 높은 축이고 성장도 빠르다. 그러나 1위 스페이스X와의 격차는 뉴트론 지연으로 더 벌어졌고, 소형 발사 쪽엔 신규 경쟁자가 붙고 있다.</p>
+</blockquote>
+<h3>E.1 비교 매트릭스 (전 열 TTM · GAAP · USD · yfinance 2026-10-30)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매출총이익률과 성장은 동종 상위권이지만, 영업이익률과 주가 배수는 동종과 거리가 멀다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>회사</th>
+<th style="text-align: right;">시가총액</th>
+<th style="text-align: right;">매출</th>
+<th style="text-align: right;">매출 증가</th>
+<th style="text-align: right;">매출총이익률</th>
+<th style="text-align: right;">영업이익률</th>
+<th style="text-align: right;">매출 대비 시총</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>로켓랩</strong></td>
+<td style="text-align: right;">350억</td>
+<td style="text-align: right;">7.7억</td>
+<td style="text-align: right;">+62%</td>
+<td style="text-align: right;">37.3%</td>
+<td style="text-align: right;">−24.6%</td>
+<td style="text-align: right;">45.5배</td>
+<td>본 종목</td>
+</tr>
+<tr>
+<td>스페이스X</td>
+<td style="text-align: right;">1조8,296억</td>
+<td style="text-align: right;">320.4억</td>
+<td style="text-align: right;">+161%</td>
+<td style="text-align: right;">56.8%</td>
+<td style="text-align: right;">+27.6%</td>
+<td style="text-align: right;">57.1배</td>
+<td>섹터 대장 · 우월</td>
+</tr>
+<tr>
+<td>Kratos</td>
+<td style="text-align: right;">77억</td>
+<td style="text-align: right;">15.2억</td>
+<td style="text-align: right;">+31%</td>
+<td style="text-align: right;">23.0%</td>
+<td style="text-align: right;">−0.2%</td>
+<td style="text-align: right;">5.1배</td>
+<td>방산 우주</td>
+</tr>
+<tr>
+<td>AeroVironment</td>
+<td style="text-align: right;">64억</td>
+<td style="text-align: right;">20.0억</td>
+<td style="text-align: right;">+6%</td>
+<td style="text-align: right;">26.5%</td>
+<td style="text-align: right;">−2.3%</td>
+<td style="text-align: right;">3.2배</td>
+<td>방산</td>
+</tr>
+<tr>
+<td>Firefly</td>
+<td style="text-align: right;">30억</td>
+<td style="text-align: right;">2.9억</td>
+<td style="text-align: right;">+657%</td>
+<td style="text-align: right;">22.9%</td>
+<td style="text-align: right;">−80.9%</td>
+<td style="text-align: right;">10.5배</td>
+<td>소형 발사 직접 경쟁</td>
+</tr>
+<tr>
+<td>AST SpaceMobile</td>
+<td style="text-align: right;">159억</td>
+<td style="text-align: right;">1.2억</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">38.9%</td>
+<td style="text-align: right;">−545%</td>
+<td style="text-align: right;">138.3배</td>
+<td>위성 직접 통신 경쟁</td>
+</tr>
+<tr>
+<td>이리듐</td>
+<td style="text-align: right;">48억</td>
+<td style="text-align: right;">9.0억</td>
+<td style="text-align: right;">+8%</td>
+<td style="text-align: right;">71.5%</td>
+<td style="text-align: right;">+12.9%</td>
+<td style="text-align: right;">5.3배</td>
+<td>인수 대상</td>
+</tr>
+</tbody>
+</table>
+<p>(단위: 달러. 스페이스X는 xAI·X를 포함한 결합 회사다.)</p>
+<figure class="dd-fig"><div id="fig-e1"></div><div class="dd-legend" id="fig-e1-leg"></div><figcaption id="fig-e1-cap"></figcaption></figure>
+
+<h3>E.2 종합 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 수익모델은 동종과 비슷한 수준이고, 1위와의 경쟁에서는 방어하는 처지다.</p>
+</blockquote>
+<ul>
+<li><strong>(a) 수익모델 우월성 — 동등(🟡)</strong>: 매출총이익률은 방산·소형 우주 동종(23~27%)보다 10%p 이상 높다. 그러나 영업이익률은 Kratos·AeroVironment보다 낮다. 운영 레버리지가 아직 안 나와서다.</li>
+<li><strong>(b) 정부 대 민간 — 방어적 균형(🟡)</strong>: 정부 매출 비중이 빠르게 올라(이름 비공개 고객 42%) 안정성은 커졌지만 쏠림도 커졌다. 이리듐이 들어오면 상업 구독이 섞여 균형이 돌아온다.</li>
+<li><strong>(c) 경쟁 포지션 — 방어(⚪)</strong>: 최대 위협은 스페이스X다. 중형 발사 시장(NSSL 1구간 7/29 태스크오더 18회 전부 스페이스X)에 뉴트론이 들어가지 못하는 기간이 1년 늘었다. 소형 쪽에선 Isar가 Astroscale 2개 임무를 가져갔다(Ars 9/11). 위성 통신에선 스타링크·아마존이 같은 대역을 노린다.</li>
+<li><strong>종합</strong>: 수익모델은 동등, 경쟁 포지션은 방어. 모방 난이도는 발사 이력과 부품 내재화 덕에 높지만, 1위와의 격차를 좁힐 수단(뉴트론)이 늦어졌다.</li>
+</ul>
+<h3>E.3 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 경쟁 포지션 칸이 가장 낮아 옆의 나무 축을 끌어내렸다.</p>
+</blockquote>
+<p>(a) 🟡4 · (b) 🟡4 · (c) ⚪2.5 → 평균 = 10.5 ÷ 3 = <strong>⭐3.50</strong> → 득점 = 12.5 × 2.5 ÷ 4 = <strong>7.8 / 12.5</strong>. 6월(⭐3.3)과 동급.</p>
+<p>▶ 🟢 강화 = 뉴트론 첫 비행 성공 · NSSL 1구간 태스크오더 첫 수주 / 🔴 훼손 = Firefly·Isar 연 10회 이상 발사 · 스타링크 직접 통신 L대역 승인</p>
+<hr />
+<h2 id="f">Section F. 👤 사람 — 경영진 ⭐3.86 (객관 7축 · 비전축 사용자 ⭐ 대기)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 피터 벡은 운영과 위기 극복에서는 검증된 창업자다. 날짜 약속은 반복해서 늦었다. 6월 기록의 "벡은 주식을 판 적이 없다"는 틀렸고, 2023년 이후 약 5.77억 달러를 팔았다.</p>
+</blockquote>
+<h3>F.1 임원 8축 — 창업자·CEO·의장 피터 벡 (2006~) <a href="../../PeopleDive_Reports/RKLB/PeopleDive_PeterBeck_2026-10-31.html">사람 해부 보고서 2026-10-31</a></h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 약력·명성·능력·도덕성은 높다. 지분 정렬과 거버넌스는 중간이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 약력</td>
+<td style="text-align: center;">⭐4.5</td>
+<td>대학 대신 공장 견습(1993) → 정부 연구소 → 2006년 창업 · 20년째 CEO · 2024년 뉴질랜드 기사 작위</td>
+</tr>
+<tr>
+<td>② 명성</td>
+<td style="text-align: center;">⭐4.5</td>
+<td>영국 왕립항공학회 금메달 · 뉴질랜드 왕립학회 Pickering 메달 · 직원 평가 사이트 CEO 지지 93%(276건)</td>
+</tr>
+<tr>
+<td>③ 능력</td>
+<td style="text-align: center;">⭐4.0</td>
+<td>일렉트론 97회 발사·56회 연속 성공 · 소형 인수 8건 손실 처리 0건 ↔ 뉴트론 공식 연기 4회 · 상장 때 흑자 목표 미달</td>
+</tr>
+<tr>
+<td>④ 도덕성</td>
+<td style="text-align: center;">⭐4.0</td>
+<td>증권 집단소송 재소 불가 조건 기각(2026-04-16) · 파생 소송 종결(2026-05-28) · 미확정 주식보상 39만 2,155주(약 2,250만 달러) 자진 포기</td>
+</tr>
+<tr>
+<td>⑤ 비전</td>
+<td style="text-align: center;">💬 사용자 ⭐ 대기</td>
+<td>아래 의견</td>
+</tr>
+<tr>
+<td>⑥ 지분·이해 정렬</td>
+<td style="text-align: center;">⭐3.5</td>
+<td>의결권 7.5%(3/30) → 지금 약 6.5%(약 23.6억 달러) · 2023년 이후 약 5.77억 달러 매도 · 매수 0</td>
+</tr>
+<tr>
+<td>⑦ 거버넌스</td>
+<td style="text-align: center;">⭐3.0</td>
+<td>이사 7명 중 6명 독립 · 선임 독립이사 있음 ↔ CEO·의장 겸직 · 3년 시차 임기 · 벡 몫 우선주 이사 지명권 · CFO 주식 담보 예외 승인</td>
+</tr>
+<tr>
+<td>⑧ 외부 평가</td>
+<td style="text-align: center;">⭐3.5</td>
+<td>직원·개인투자자 신뢰 높음 ↔ 뉴트론 날짜 냉소 · "개발 기간이 두 배가 됐다"(Ars Technica)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>도덕성 관문 = 통과</strong>(적신호 0 · 관찰 신호 4). 관찰 신호는 ① 날짜 낙관 반복(9/1 인터뷰 "연말까지 발사대에 올려 발사" → 6주 뒤 2027년) ② 매도 계획을 만든 시점 — 신탁 계획(3/27)은 이리듐 자료실 접근(3/20) 일주일 뒤, CFO 계획(6/3)은 인수 협상 막바지(위법을 시사하는 자료는 없지만 이사회가 설명할 수 있어야 하는 모양새) ③ 우선주 교환이 이사 지명권과 상속·세금 효율을 함께 줌 ④ 지연 신고 Form 4 1건.</p>
+<p><strong>언행일치</strong> — 본인 이름으로 한 약속 8건 중 지킴 3 · 일부 2 · 실패 3. "언제"를 말한 약속은 늦고, "어떻게"를 말한 약속(날아야 증명된다 · 서두르지 않는다)은 지킨다. 역사 해부 보고서의 지연 계수와 같은 결이다.</p>
+<p><strong>💬 비전·가치관 의견(별점 아님)</strong> — 추진력은 매우 높다(학위 없이 시작 · 발사 실패 3회 · 상장 뒤 주가 −83% · 탱크 파열을 같은 사람이 넘음). 의미주의자 정렬은 판단이 갈린다: 2006~2023년 행동(보유 유지·바닥에서 버팀)은 "사명 &gt; 개인 부" 쪽이고, 2025년 이후 대규모 분산 매도는 반대쪽 증거다. 분산 매도 자체는 20년 집중 보유 뒤의 자연스러운 행동일 수 있어, 어느 쪽을 무겁게 볼지는 사용자 몫으로 남긴다. 후광 효과 반론: 같은 추진력·서사를 가진 창업자가 실패한 사례(테라노스형)도 있으므로, 이 의견은 도덕성 관문 통과와 행동 증거 범위에서만 유효하다.</p>
+<h3>F.2 핵심 인재</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — CFO의 계획 매도와 주식 담보, COO의 뉴트론 양산 시험대, 이리듐 CEO의 미정 역할이 관찰 대상이다.</p>
+</blockquote>
+<ul>
+<li><strong>아담 스파이스(CFO)</strong> — 2025-09 이후 약 1.64억 달러 매도 · 62만 2,452주 대출 담보(회사 예외 승인) · 매달 같은 크기 계획 매도가 이어질 가능성.</li>
+<li><strong>프랭크 클라인(COO · 2024-09~)</strong> — 전 Rivian COO · 전 Magna Steyr 사장. 뉴트론 양산이 시험대인데, 재임 중 복합재 결함이 두 번 났다.</li>
+<li><strong>맷 데쉬(이리듐 CEO)</strong> — 인수 투자설명서에 유지 보상 없음 · 해고 시 약 525만 달러 지급 조항만 있음. 인수 뒤 역할 미정(통합 위험 ⑥과 연결).</li>
+<li><strong>아르준 캄파니(법무총괄)</strong> — 6/18 계획 매도 8만 8,000주(약 950만 달러).</li>
+</ul>
+<h3>F.⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 사람 축은 6월과 동급이다. 도덕성 근거는 단단해졌고 지분 축은 기록 정정으로 내려갔다.</p>
+</blockquote>
+<p>객관 7축 ①4.5 · ②4.5 · ③4.0 · ④4.0 · ⑥3.5 · ⑦3.0 · ⑧3.5 → 평균 = 27 ÷ 7 = <strong>⭐3.86</strong> → 득점 = 12.5 × 2.86 ÷ 4 = <strong>8.9 / 12.5</strong>. 비전축은 사용자 ⭐ 대기라 빠져 있다. 6월(⭐3.71)과 동급 — 소송 기각·보상 포기로 도덕성 근거가 단단해졌고, "매도 0" 정정으로 지분 축은 4.0 → 3.5로 내렸다.</p>
+<p>▶ 🟢 강화 = 뉴트론 날짜를 처음으로 지킴 · 벡 공개시장 매수 / 🔴 훼손 = 신탁 13D 개정으로 새 매도 계획 · 핵심 엔지니어링 리더 이탈 · 이리듐 경영진 대거 이탈</p>
+<hr />
+<h2 id="g">Section G. 🔢 숫자 — 재무건전성 ⭐3.75</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매출은 빠르게 늘고 매출총이익률도 3년째 오른다. 현금은 여전히 빠져나가지만, 비싸게 판 주식 덕에 통장은 두둑하다. 빚은 인수 완료 뒤에 생긴다.</p>
+</blockquote>
+<h3>G.1 기본 정량 (SEC XBRL · 2Q26 기준)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매출은 빠르게 늘고 영업손실은 같은 크기로 이어진다. 현금은 두둑하고 빚은 거의 없다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매출(최근 4분기)</td>
+<td>7.69억 달러 · 2Q26 2.34억(+62%)</td>
+</tr>
+<tr>
+<td>매출총이익률</td>
+<td>2Q25 32.1% → 3Q25 36.9% → 1Q26 38.2% → 2Q26 36.1%(과거 원가 추정 변경 일회성 약 2.2%p 포함 · 빼면 33.9%)</td>
+</tr>
+<tr>
+<td>영업손실</td>
+<td>분기 −5,600만 ~ −5,960만 달러로 1년째 같은 크기</td>
+</tr>
+<tr>
+<td>영업현금흐름 · 잉여현금흐름</td>
+<td>FY25 −1.66억 · −3.22억 / 2026 상반기 −1.34억 · −1.88억</td>
+</tr>
+<tr>
+<td>현금 + 유가증권</td>
+<td>23.0억 달러(6/30) · 9월 신주 약 19.4억 달러 추가</td>
+</tr>
+<tr>
+<td>장기부채</td>
+<td>1,310만 달러(전환사채 상환 완료)</td>
+</tr>
+<tr>
+<td>주식보상</td>
+<td>FY25 7,110만 · 2026 상반기 4,770만 달러</td>
+</tr>
+</tbody>
+</table>
+<p>참고(점수 밖): 시가총액 350억 달러(yfinance · 6/30 보통주 기준). 9월 신주와 우선주까지 넣으면 약 6.68억 주 × 54.73달러 = <strong>약 366억 달러</strong>다. 매출 대비 45.5배 · 52주 범위 37.57~151.00달러.</p>
+<h3>G.1.5 🎯 시총 10배 랜드마크</h3>
+<p>지금 약 366억 달러 → 10배면 3,660억 달러. 💡 지금은 방산 기업 L3Harris(517억 달러)보다 작고, 텐배거면 P&amp;G(3,745억)·오라클(3,961억) 사이 크기다(yfinance 10/30 · 규모 비교일 뿐). 현존 최대 기업보다 작으니 수학적으로 불가능한 크기는 아니다. 다만 우주 섹터에 그 크기는 스페이스X 하나뿐이다.</p>
+<figure class="dd-fig"><div id="fig-g15"></div><div class="dd-legend" id="fig-g15-leg"></div><figcaption id="fig-g15-cap"></figcaption></figure>
+
+<h3>G.3 4축</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 성장과 금리 내구성은 좋고, 현금 창출은 나쁘다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>측정</th>
+<th style="text-align: center;">등급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 매출 성장</td>
+<td>FY23 → FY25 연 57% · 2Q26 +62% · 3분기 가이던스 2.50~2.65억(+61~71%)</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>② 마진</td>
+<td>매출총이익률 21% → 27% → 34% → 37% · 영업이익률 −41% → −25%(2Q 비교) · 3분기 가이던스 29~31%로 일시 하락</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>③ 현금 창출</td>
+<td>잉여현금 3년 연속 마이너스 · 2026 상반기 −1.88억 · 소진 속도로 현금 수명 10년+</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>④ 고금리 내구성</td>
+<td>G.4-a 5칸 중 🟢 5(지금 기준 · 차입 거의 0)</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+</tbody>
+</table>
+<h3>G.4 고금리·고물가 내구성 (빠른 점검)</h3>
+<p><strong>G.4-a 금리·부채</strong> — 지금은 사실상 무차입(장기부채 1,310만 달러 · 현금 23억 달러+)이라 차환 위험이 구조적으로 없다. 🔴 단 이것은 인수 완료 전 숫자다. 완료 뒤에는 이리듐 대출 17.75억 달러가 전부 변동금리로 붙고, 이리듐 순부채는 현금이익의 4.2배다(이리듐 3분기). 그 그림은 아래 정밀 진단이 다룬다.</p>
+<p><strong>G.4-b 물가·원자재</strong> — 물가 부호 = 중립. 10-K상 미국 정부와의 계약은 고정가 계약이고, 정부 관련 매출 비중은 31% → 33% → 47%(FY23 → FY25)로 올랐다. 원가가 오르면 회사가 진다(전가력 🟡). 원자재 비중은 탄소 복합재·전자부품 중심이라 크지 않다. 재고가 6개월 새 1.83억 → 2.67억 달러로 늘었다(+46%). 뉴트론·위성 생산 준비분이다.</p>
+<h3>G.5 궤적</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매출과 잔고는 오르고, 현금 소진과 희석도 함께 이어진다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>줄기</th>
+<th>흐름</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매출</td>
+<td>FY22 2.11억 → FY25 6.02억 → 2026E 약 9.7억(상반기 + 3분기 가이던스 중간 + 4분기 추정)</td>
+</tr>
+<tr>
+<td>마진</td>
+<td>매출총이익률 3년 상승 · 3분기 일시 하락(위성 제작 비중↑)</td>
+</tr>
+<tr>
+<td>현금</td>
+<td>소진 지속 · 회사 공식상 잉여현금 흑자 2029년 안팎</td>
+</tr>
+<tr>
+<td>희석</td>
+<td>2분기 가중평균 주식 +22.2%(1년) · 인수 완료까지 약 7,900만 주 추가</td>
+</tr>
+<tr>
+<td>잔고</td>
+<td>9.95억(2Q25) → 18.47억(FY25) → 23.56억(2Q26)</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-g5"></div><div class="dd-legend" id="fig-g5-leg"></div><figcaption id="fig-g5-cap"></figcaption></figure>
+
+<h3>G.7 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 숫자 축은 6월과 동급이다. 현금 창출 칸 하나가 점수를 크게 깎는다.</p>
+</blockquote>
+<p>① 🟢5 · ② 🟡4 · ③ 🔴1 · ④ 🟢5 → 평균 = 15 ÷ 4 = <strong>⭐3.75</strong> → 득점 = 12.5 × 2.75 ÷ 4 = <strong>8.6 / 12.5</strong>. 6월(⭐3.7)과 동급.</p>
+<p>▶ 🟢 강화 = 분기 영업손실 축소 시작 · 3분기 이후 매출총이익률 35%+ 복귀 / 🔴 훼손 = 매출총이익률 30% 아래 2분기 연속 · 추가 대규모 주식 매각 공시</p>
+<hr />
+<h2 id="g8">고금리·고물가 내구성 정밀 진단 (별도 서브에이전트 · 점수 밖)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금은 빚이 없고 고금리에 오히려 이자를 버는 회사다. 2027년 중반 인수가 끝나면 헤지 없는 변동금리 빚 약 19.8억 달러를 안는 회사로 바뀐다. 이리듐 쪽 빚은 버틸 만하고, 진짜 관건은 로켓랩 자체 적자를 새 주식 없이 몇 년 끌고 갈 수 있느냐다.</p>
+</blockquote>
+<p><strong>🏷️ 종합 = ⚪ 조건부 · 신뢰도 낮음~중간 · 6월과 같은 판정, 갈림길 변수만 바뀌었다.</strong> 6월의 갈림길(36억 달러 브리지 처리)은 해소됐다. 브리지 기준 연 이자는 약 2.86억 달러였고, 지금 구조로는 약 1.28~1.43억 달러다.</p>
+<table>
+<thead>
+<tr>
+<th>기둥</th>
+<th style="text-align: center;">판정</th>
+<th>고금리가 이어지면</th>
+<th>금리가 내리면</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>금리 — 지금~인수 완료</td>
+<td style="text-align: center;">🟢</td>
+<td>+ 이자수익(2분기 1,650만 달러 = 매출의 7.0%)</td>
+<td>− 이자수익 감소</td>
+</tr>
+<tr>
+<td>금리 — 인수 완료 뒤</td>
+<td style="text-align: center;">⚪</td>
+<td>− 변동금리 순부채 10~13억 달러 · 헤지 0 · 신용등급 미달 시 가산금리 +0.5%p</td>
+<td>+ SOFR 하락 즉시 반영</td>
+</tr>
+<tr>
+<td>금리 — 2030~2035</td>
+<td style="text-align: center;">🔴 쪽</td>
+<td>− 텀론 약 17억 달러 2030-09 일시 상환 × 2031년 위성망 교체 × 뉴트론 미회수</td>
+<td>+ 차환 쉬움</td>
+</tr>
+<tr>
+<td>물가</td>
+<td style="text-align: center;">⚪</td>
+<td>− 정부 고정가 계약(FY25 매출 47%) · 원자재·환 헤지 0</td>
+<td>+ 고정가가 마진 순풍</td>
+</tr>
+<tr>
+<td>세 변수 동시 충격</td>
+<td style="text-align: center;">⚪</td>
+<td>원가 +10% · 금리 +200bp · 물량 −10%가 함께 오면 연결 이자보상이 불리한 끝에서 0.6배</td>
+<td>디플레형 침체에도 이자보상 2.2배+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>1차 원문에서 새로 나온 것</strong></p>
+<ul>
+<li>이리듐 금리 캡(10억 달러)이 <strong>2026년 11월</strong>, 인수 완료보다 먼저 끝난다 → 연 이자 2,330만 달러 증가(이리듐 공시).</li>
+<li>이리듐 텀론에는 분기마다 걸리는 유지 약정이 없다. 회전 한도에 걸리는 6.25배 약정은 실측 3.0~3.5배와 여유가 크다. 더 가까운 문턱은 <strong>3.5배</strong>다 — 이 위에서는 남는 현금 일부를 빚 상환에 써야 하고 로켓랩으로 올리는 배당도 한도에 묶인다.</li>
+<li>2분기 매출총이익률 36.1% 중 약 2.2%p는 과거 원가 추정을 바꾼 일회성 조정이다(빼면 33.9%).</li>
+<li>선도매도 745만 주는 주당 약 63.6달러 바닥이라, 결제 시 최소 4.74억 달러가 들어온다.</li>
+</ul>
+<p>🎯 <strong>버티는가</strong> — ⚪ 조건부. 빚은 버틴다(가장 심한 시나리오에서도 이리듐 단독 이자보상 1.2배 이상). 관건은 로켓랩 단독 적자를 주식 조달 없이 끄는 기간이다 — 기준 약 2.4~4.9년, 가장 심한 경우 1.3~3.4년. 나빠지는 신호 = 인수 완료 직후 신용등급 BB-/Ba3 미달 · 새 ATM이 주당 60달러 아래에서 시작. 좋아지는 신호 = 뉴트론 첫 비행 성공 · 이리듐 새 금리 헤지 공시. (낮은 신뢰도 참고 · 장기 thesis에 매도 신호 아님 · 7축 점수 미반영)</p>
+<p>전문 = 내부 작업 파일(G8_output).</p>
+<hr />
+<h2 id="h">Section H. 시나리오 · 일정 · 리스크 신호</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 주가가 6월보다 크게 내렸지만, 뉴트론이 1년 늦어지고 주식 수가 늘어난 만큼 5년 뒤 기대치도 같이 내려갔다. 기댓값은 약 1.05배로 6월(약 1.66배)보다 낮아졌다.</p>
+</blockquote>
+<h3>H.1 시나리오 (5년 · 밴드)</h3>
+<p><strong>기준 정리</strong> — 이리듐 인수가 끝나면 주식 수는 약 7.18억 주가 된다(6/30 보통주·우선주 6.39억 + 9월 신주 0.29억 + 이리듐 주주 몫 0.42억 + 선도매도 0.07억). 여기에 54.73달러를 곱하면 지분가치 약 393억 달러다. 순부채 약 11억 달러(추정)를 더하면 결합 기업가치 약 404억 달러다. 2026년 결합 매출은 약 19.5억 달러로 추정한다(로켓랩 약 9.7억 + 이리듐 약 9.8억).</p>
+<table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: center;">확률</th>
+<th style="text-align: right;">2031 매출</th>
+<th style="text-align: center;">가정 배수(기업가치 ÷ 매출)</th>
+<th style="text-align: center;">2년</th>
+<th style="text-align: center;">3년</th>
+<th style="text-align: center;">5년</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🟢 낙관</td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: right;">65억 달러</td>
+<td style="text-align: center;">15배</td>
+<td style="text-align: center;">1.65x</td>
+<td style="text-align: center;">1.80x</td>
+<td style="text-align: center;">2.30x</td>
+</tr>
+<tr>
+<td>🟡 기준</td>
+<td style="text-align: center;">50%</td>
+<td style="text-align: right;">38억 달러</td>
+<td style="text-align: center;">9배</td>
+<td style="text-align: center;">0.90x</td>
+<td style="text-align: center;">0.90x</td>
+<td style="text-align: center;">0.81x</td>
+</tr>
+<tr>
+<td>🔴 비관</td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: right;">28억 달러</td>
+<td style="text-align: center;">4.5배</td>
+<td style="text-align: center;">0.45x</td>
+<td style="text-align: center;">0.38x</td>
+<td style="text-align: center;">0.27x</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>낙관 가정</strong>: 뉴트론이 2027년에 날고 2031년 연 20회 이상 쏜다 · 자체 위성망(평판형 위성) 서비스가 붙는다 · 로켓랩 단독 매출 52억 달러 + 이리듐 13.2억 달러. 큰손(우주군·SDA)이 계속 웃돈을 낸다는 가정은 고객 검증 A~B 계약에 기댄다. 다만 뉴트론 상업 수요는 고객 검증 C다.</li>
+<li><strong>기준 가정</strong>: 역사 해부 보고서의 지연 계수(뉴트론 공언 대비 최소 1.5배 · 1~1.5년 앞 날짜는 2.2~2.4배)를 적용해 첫 비행을 <strong>2028년 중반</strong>으로 둔다. 로켓랩 단독 매출 26억 달러(연 22%) + 이리듐 경영진 전망 13.2억 달러 − 내부거래. 회사 공언(2027년)을 그대로 쓰면 기준 5년 배수는 약 0.90배다.</li>
+<li><strong>비관 가정</strong>: 뉴트론 첫 비행 실패 또는 2028년 이후 · 로켓랩 단독 16억 달러 · 위성 통신은 스타링크·아마존에 밀림.</li>
+<li>2031년 주식 수는 주식보상 희석(연 1.5% 안팎)을 넣어 약 7.7억 주로 잡았다(비관은 추가 자금 조달로 8억 주).</li>
+</ul>
+<p><strong>기댓값</strong> = 0.25 × 2.30 + 0.50 × 0.81 + 0.25 × 0.27 = <strong>약 1.05배(5년)</strong> · 2년 0.98배 · 3년 1.00배. ⚠️ 5년 1.5배 미만 = thesis 약함 표시. ⚠️ 기준 시나리오 2년 0.90배 &lt; 2.0배 = 낙관 꼬리 의존.</p>
+<p><strong>암묵 출구 배수 점검</strong> — 낙관 15배 · 기준 9배는 성숙한 우주·방산 동종(3~6배)보다 높다. 이리듐 자문사가 비교한 위성 통신사 배수(현금이익의 5.9~10.1배)로 바꿔도 기준 시나리오는 그 상단을 넘는다. → <strong>재평가 의존: 낙관 높음 · 기준 중간~높음.</strong> 매출이 계획대로 커져도, 시장이 지금처럼 높은 배수를 계속 쳐줘야 본전이 된다는 뜻이다.</p>
+<p><strong>6월과의 차이</strong> — 6월 기댓값(약 1.66배)은 주가 85달러·뉴트론 2026년 4분기 가정이었다. 주가가 36% 내렸는데 기댓값이 더 낮아진 것은 ① 뉴트론 지연(공언 1년 + 역사 보정 약 1년)으로 2031년 발사 매출이 줄었고 ② 주식 수가 약 7.18억 주로 늘었으며 ③ 이리듐 성장 전망(연 3%대)이 424B3로 확인됐기 때문이다.</p>
+<figure class="dd-fig"><div id="fig-h1"></div><div class="dd-legend" id="fig-h1-leg"></div><figcaption id="fig-h1-cap"></figcaption></figure>
+
+<h3>H.2 일정표</h3>
+<table>
+<thead>
+<tr>
+<th>날짜</th>
+<th>일</th>
+<th style="text-align: center;">영향</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-11-09</td>
+<td>3분기 실적(미국 장 마감 후 · <a href="https://investors.rocketlabcorp.com/news-releases/news-release-details/rocket-lab-announces-date-third-quarter-2026-financial-results">회사 공지 10/20</a>) — 우주 시스템 마진·뉴트론 비용·9월 신주 반영 현금</td>
+<td style="text-align: center;">🔴</td>
+<td>IR</td>
+</tr>
+<tr>
+<td>2026-11~12</td>
+<td>뉴트론 1단 정적 연소 시험(회사 제시 최대 관문)</td>
+<td style="text-align: center;">🔴</td>
+<td>2분기 콜</td>
+</tr>
+<tr>
+<td>≤ 2026-12 중하순</td>
+<td>NASA 화성 통신 궤도선 GAO 이의제기 결정(B-424825.1)</td>
+<td style="text-align: center;">🟡</td>
+<td>GAO</td>
+</tr>
+<tr>
+<td>2027-03</td>
+<td>이리듐 EMSS(우주군) 계약 연장 만료 · 재계약</td>
+<td style="text-align: center;">🟡</td>
+<td>이리듐 3분기</td>
+</tr>
+<tr>
+<td>2026-11-09</td>
+<td>FCC 인수 심사 재반박 마감(실적일과 같은 날)</td>
+<td style="text-align: center;">🟡</td>
+<td>FCC GN 26-257</td>
+</tr>
+<tr>
+<td>2027 중반</td>
+<td>이리듐 인수 완료(FCC·해외 승인) · 종료일 2027-06-28(자동 연장 12/28)</td>
+<td style="text-align: center;">🔴</td>
+<td>8-K 9/15 · 424B3</td>
+</tr>
+<tr>
+<td>2027</td>
+<td>뉴트론 첫 발사</td>
+<td style="text-align: center;">🔴</td>
+<td>8-K 10/14</td>
+</tr>
+<tr>
+<td>2028-04</td>
+<td>선도매도 745만 주 결제 만기</td>
+<td style="text-align: center;">🟡</td>
+<td>10-Q</td>
+</tr>
+<tr>
+<td>2032-02-23</td>
+<td>이리듐 위성 면허 만료</td>
+<td style="text-align: center;">🟡</td>
+<td>업종 점검 보고서</td>
+</tr>
+</tbody>
+</table>
+<h3>H.3 ⚠️ Thesis 리스크 신호</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>신호</th>
+<th style="text-align: center;">상태(10/31)</th>
+<th>6월 대비</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td>뉴트론 추가 지연·첫 발사 실패</td>
+<td style="text-align: center;">🔴 <strong>발현</strong></td>
+<td>10/14 8-K로 첫 발사 2027년. 원인은 1단 탱크 돔 탄소 복합재 기공(Ars 보도 · 2차). 2021년 발표 당시 목표는 2024년 · 역사 보정 기본값 2028년 중반~2029년 상반기 · 선행 신호 = 회사가 "첫 발사"를 "발사장 도착·발사대 인도"로 바꿔 말하기(과거 2회)</td>
+</tr>
+<tr>
+<td>②</td>
+<td>스페이스X 가격·스타링크 직접 통신이 이리듐 잠식</td>
+<td style="text-align: center;">🟠</td>
+<td>아마존이 2026년 위성 서비스 개시를 재확인(10/30) · 1.6GHz 대역 직접 통신 신청 유지</td>
+</tr>
+<tr>
+<td>③</td>
+<td>추가 대규모 증자 희석</td>
+<td style="text-align: center;">🔴 <strong>발현</strong></td>
+<td>9월 신주 약 2,930만 주(약 19.4억 달러). 대신 브리지론이 사라짐</td>
+</tr>
+<tr>
+<td>④</td>
+<td>매출 둔화 + 적자 지속</td>
+<td style="text-align: center;">🟢</td>
+<td>매출 +62% · 3분기 가이던스 +61~71%</td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>CEO·CFO 대량 매도 클러스터</td>
+<td style="text-align: center;">🟡</td>
+<td>CFO가 10b5-1 계획으로 9/2(약 878만 달러)·10/1(약 993만 달러) 매달 옵션 행사 매도 · CEO 신규 매도 없음(신탁 계획 7/8 만료). 🔧 "벡 매도 0건" 기록 정정 — 2023년 이후 약 5.77억 달러</td>
+</tr>
+<tr>
+<td>⑥</td>
+<td>인수 통합 실패</td>
+<td style="text-align: center;">🟡</td>
+<td>Mynaric 마진 공개 거부 · 지급불능 절차를 거친 자산</td>
+</tr>
+<tr>
+<td>⑦</td>
+<td>브리지론 차환 악화 → <strong>이리듐 변동금리 대출로 교체</strong></td>
+<td style="text-align: center;">🟡</td>
+<td>브리지론은 9/15 해지(🟢). 남은 위험 = 클로징 후 변동금리 17.75억 달러 + 이리듐 순부채 4.2배</td>
+</tr>
+<tr>
+<td>🆕 ⑧</td>
+<td>정부 고객 집중</td>
+<td style="text-align: center;">🟡</td>
+<td>이름 비공개 정부 고객이 상반기 매출의 42%(FY24 11%)</td>
+</tr>
+<tr>
+<td>🆕 ⑨</td>
+<td>증분 이익 부재(운영 레버리지 0)</td>
+<td style="text-align: center;">🟠</td>
+<td>늘어난 매출 1달러당 영업이익 2센트(2분기)</td>
+</tr>
+<tr>
+<td>🆕 ⑩</td>
+<td>FCC 인수 조건·지연</td>
+<td style="text-align: center;">🟡</td>
+<td>스페이스X 10/15 "심각한 우려" · Ligado 10/16 · 공식 이의 0건 · 재반박 마감 11/9</td>
+</tr>
+<tr>
+<td>🆕 ⑪</td>
+<td>고정가 계약 원가 초과</td>
+<td style="text-align: center;">관찰</td>
+<td>원가 추정 변경 순액 음수 2분기 연속 · 새 손실 충당금 · MDA 지체상금 금액 확정 시 발현</td>
+</tr>
+</tbody>
+</table>
+<p>발현 2개(①③) · 🟠 2개(②⑨) · 🟡 5개(⑤⑥⑦⑧⑩) · 관찰 1개(⑪). 6월에는 발현이 0개였다. ① 보강 — 로켓·발사장 손실은 보험이 없다.</p>
+<h3 id="h5">H.5 🧭 CAE·Edge Grid 좌표</h3>
+<p><strong>(a) 걸친 층</strong> — 제약층(발사 용량·주파수) · 조정층(정부 조달·국가안보 발사 배정) · 표현층(위성 서비스). 무게중심은 제약층이다. 🔴 가장 약한 고리 = <strong>뉴트론 실행</strong>(제약층에서 중형 발사 자리를 잡는 유일한 수단).</p>
+<p><strong>(b) 중요도·엣지</strong> — 중요도 다층성 2 · 비가역성 2 · 병목 경도 2 → <strong>중</strong>. 엣지 선반영 격차 2 · 연료 잔량 2 · 컨센서스 반증 1 → <strong>중</strong>.
+- <strong>시장이 보는 가설</strong>: 최근 60일 주가 상관이 이리듐 0.88(1위) · 나스닥 0.73 · 위성 직접 통신(AST) 0.68 · 스페이스X 0.57 · 방산 ETF 0.20 순이다. 이리듐 1위는 인수 비율이 0.4000으로 묶여 이리듐 주가가 로켓랩 주가를 따라가는 구조 때문이 크다(인과 아님). 애널리스트 비교군은 스페이스X·Firefly 같은 발사사다. 둘을 같이 보면 시장은 아직 "위성 통신 회사"보다 "고베타 우주 성장주"로 값을 매긴다 — 내 thesis(수직 통합 우주 2위)와 대체로 같다(엣지 낮춤 방향).</p>
+<p><strong>(c) 분면</strong></p>
+<figure class="dd-fig"><svg viewBox="0 0 520 300" width="100%" style="max-width:520px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="20" width="220" height="130" fill="#fdeee9"/><rect x="280" y="20" width="220" height="130" fill="#eef6f0"/>
+<rect x="60" y="150" width="220" height="130" fill="#eeeeee"/><rect x="280" y="150" width="220" height="130" fill="#e8f0f8"/>
+<line x1="280" y1="20" x2="280" y2="280" stroke="#999" stroke-dasharray="4,3"/><line x1="60" y1="150" x2="500" y2="150" stroke="#999" stroke-dasharray="4,3"/>
+<text x="170" y="40" font-size="11" text-anchor="middle" fill="#8a2415">강한데 비싼 → 트림·회피</text>
+<text x="390" y="40" font-size="11" text-anchor="middle" fill="#1f6f3b">강하고 싼 → 집중매수 후보</text>
+<text x="170" y="270" font-size="11" text-anchor="middle" fill="#555">약하고 비싼 → 회피·청산</text>
+<text x="390" y="270" font-size="11" text-anchor="middle" fill="#2c5282">약하고 싼 → 정찰</text>
+<text x="280" y="295" font-size="11" text-anchor="middle" fill="#444">← 엣지 소진(비싼)   ·   엣지 잔량(싼) →</text>
+<text x="20" y="150" font-size="11" text-anchor="middle" fill="#444" transform="rotate(-90 20,150)">중요도 약 → 강</text>
+<line x1="190" y1="95" x2="237.099" y2="120.69" stroke="#c0392b" stroke-width="1.5" marker-end="url(#h5ar)"/>
+<circle cx="190" cy="95" r="6" fill="#2980b9" opacity="0.5"/>
+<text x="200" y="85" font-size="10" text-anchor="start" fill="#2980b9">6/30 강한데 비싼</text>
+<circle cx="245" cy="125" r="7" fill="#c0392b"/>
+<text x="255" y="143" font-size="10" text-anchor="start" fill="#c0392b">10/31 가운데 쪽(아직 비싼 쪽)</text><defs><marker id="h5ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c0392b"/></marker></defs>
+</svg><figcaption>중요도 중 · 엣지 중 — 주가는 크게 내렸지만 기대치도 같이 내려가 아직 싼 칸은 아니다</figcaption></figure>
+
+<p><strong>(d) 판정</strong> — 6월 "강한데 비싼"에서 가운데 쪽으로 이동했다. 주가는 크게 내렸지만 기댓값도 같이 내려가 아직 싸진 않다. 행동 = 트림·회피 쪽 칸의 경계(트림 판단은 이 보고서가 하지 않는다). 집중 매수 후보 잠금장치 3개는 통과하지 못한다(실현 확률 교차 = 뉴트론 미비행).</p>
+<p><strong>(e) 과목 적합도</strong> — 이 thesis는 <code>문학형</code>(미래 뉴트론 매출·자체 위성망)이 중심이고, 이리듐 편입분만 <code>수학형</code>이다. 지금 시장 과목은 주간 거시 보고서 기준 위험 회피·AI 대형주 투매 국면이라 문학형 종목에 불리하다(10/31). 레버리지 ETF 노출은 유통 시총의 1.40%(아래 I.3b).</p>
+<h3>H.6 💎 0to1 독점 판정 (틸 7문 · 점수 밖)</h3>
+<table>
+<thead>
+<tr>
+<th>문항</th>
+<th style="text-align: center;">판정</th>
+<th>한 줄 근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 기술 10배</td>
+<td style="text-align: center;">⚠️</td>
+<td>대응형 우주(16시간 42분 발사)는 독보적이나 10배 우위 근거는 일부 영역뿐</td>
+</tr>
+<tr>
+<td>② 시기</td>
+<td style="text-align: center;">⚠️</td>
+<td>지금 병목(소형 발사)엔 맞지만, 다음 병목(중형)엔 뉴트론이 늦음</td>
+</tr>
+<tr>
+<td>③ 작은 시장 독점</td>
+<td style="text-align: center;">✅</td>
+<td>서방 전용 소형 발사에서 압도적 1위</td>
+</tr>
+<tr>
+<td>④ 사람</td>
+<td style="text-align: center;">✅</td>
+<td>창업자 CEO 20년 · 발사 98회 실적(사람 축 참조)</td>
+</tr>
+<tr>
+<td>⑤ 유통</td>
+<td style="text-align: center;">✅</td>
+<td>정부 다년 계약 · 이리듐 유통 파트너 500여 곳</td>
+</tr>
+<tr>
+<td>⑥ 존속성</td>
+<td style="text-align: center;">⚠️</td>
+<td>스페이스X와 1→n 경쟁 · 위성 통신은 스타링크와 격돌</td>
+</tr>
+<tr>
+<td>⑦ 숨겨진 비밀</td>
+<td style="text-align: center;">⚠️</td>
+<td>"끝에서 끝까지 우주 회사"는 이제 모두가 아는 이야기</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Track A 3/7 → 불운 위험</strong> · Track B ⭐4.0 · 시장 정의 화법 = <strong>혼재</strong>(회사는 "end-to-end space company"라는 넓은 시장 화법을 쓰고, 매출총이익률은 높지만 영업이익은 적자 — 말과 숫자가 반쯤만 맞는다). 6월과 같다.</p>
+<hr />
+<h3 id="h7">H.7 💰 밸류에이션 정밀 판정 (별도 서브에이전트 · 점수 밖)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회사는 좋아지고 있다. 그런데 지금 주가에 깔린 기대는 "10년 동안 매년 40~50%씩 크고, 방산 대기업보다 높은 이익률을 낸다"는 수준이다. 자기 최근 역사로 보면 주가 배수는 바닥 근처지만, 버는 돈 대비로는 여전히 비싸다.</p>
+</blockquote>
+<p><strong>🏷️ 판정 = 🔴 고평가 · 신뢰도 중간 · 🟢 조건 0/3 충족(① ❌ 역산 가정이 현실 범위 밖 · ② △ 창에 따라 갈림 · ③ ❌ 성장 감안 배수가 동종 중앙값의 3.7배)</strong></p>
+<table>
+<thead>
+<tr>
+<th>렌즈</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 거꾸로 푼 할인현금흐름</td>
+<td>로켓랩 단독 기업가치 약 325~360억 달러가 성립하려면 5년 매출 연 54~86% · 10년 연 38~58% · 영업이익률 20~25% · 고성장 10~22년이 <strong>동시에</strong> 맞아야 한다. 산업 성장 상한·동종 최고 마진·해자 기간을 모두 넘는다 → 현실 범위 밖 🔴 · 어느 한 가정을 바꿔도 안 뒤집힌다</td>
+</tr>
+<tr>
+<td>② 아키타입별</td>
+<td>고성장 적자형 기준 기업가치 ÷ 매출총이익 113배 = 비쌈 · 이리듐분(자산·현금흐름형)은 현금이익의 약 15배 = 적정~다소 비쌈(자문사 비교 5.9~10.1배)</td>
+</tr>
+<tr>
+<td>③ 상대가치</td>
+<td>동종 기업가치 ÷ 매출총이익 89백분위 · 자기 역사는 창에 따라 갈림 — 5년 전체 71백분위 ↔ 마진 구조가 바뀐 뒤 15개월만 보면 7백분위. 표준편차 점수(Z)는 매출총이익률이 28%p 구조적으로 바뀌어 과거 분포가 무효라 해당 없음</td>
+</tr>
+<tr>
+<td>④ 컨센서스</td>
+<td>애널리스트 20명 평균 목표가 102달러(고 150 · 저 64) — 전원 현재가 위 · 그러나 추정치는 하향 중(FY27 주당순익 −0.03 → −0.09달러 · 10월 목표가 인하 4건) → 역베팅(낮은 신뢰)</td>
+</tr>
+<tr>
+<td>⑤ 시나리오 정합</td>
+<td>시나리오의 출구 배수(낙관 15배 · 기준 9배)와 같은 방향 → 진입·청산 양 끝이 다 낙관에 기댄다</td>
+</tr>
+<tr>
+<td>병목 렌트 괴리</td>
+<td>정규화 0.43 − 동종 백분위 0.89 = −0.46 → 🔴 고평가 사칭(약한 신호) · 구속 인자 = 포획 효율(자본갈증) · 지금 병목은 소유 · 다음 병목은 미소유</td>
+</tr>
+</tbody>
+</table>
+<p><strong>🎯 매수 적정성</strong> — 🔴 <strong>현재가 진입 보류</strong>. 더 싸게 사는 기준은 주가 37달러 안팎(52주 저점 37.57달러 · 가장 관대한 가정에서 역산 결과가 "현실 범위 상단에 기대는" 수준으로 내려오는 구간 · 추론). 핵심 갈림길 변수 = 뉴트론 첫 발사 시점·성공. (낮은 신뢰도 참고 · 강제 신호 아님 · 정찰성 소액 진입을 규율 위반으로 보지 않음 · 최종 판단은 독자 몫 · 7축 점수 미반영)</p>
+<p><strong>렌즈끼리 엇갈리는 곳(봉합하지 않음)</strong> — "자기 최근 역사 대비 싸졌다"와 "버는 돈 대비 비싸다"가 동시에 참이다. 회사를 하나의 현금흐름으로 보는 계산은 뉴트론·자체 위성망·주파수 같은 옵션 가치를 못 잡는다. 다만 가장 큰 옵션(뉴트론)은 2024 → 2027년으로 3년 밀려 시간 가치가 깎이고 있다.</p>
+<p>참고: 서브에이전트는 기준 시나리오 0.90배(지연 계수 적용 전)를 소비했다. 지연 계수 적용 뒤에도 출구 배수(9배)는 그대로라 렌즈⑤ 결론은 같다. 전문 = 내부 작업 파일(H7_output).</p>
+<hr />
+<h2 id="i">Section I. 자금 흐름 · 내부 정보</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 나스닥100 편입으로 지수 펀드 몫이 크게 늘었고, 성장주 펀드 한 곳은 절반 가까이 팔았다. CFO는 계획 매매로 매달 옵션을 행사해 팔고 있다. 공매도 비율은 7%대로 높지만 급증은 아니다.</p>
+</blockquote>
+<h3>I.0 지분 구조</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 창업자 몫은 줄었지만 여전히 크고, 지수 펀드 몫이 늘었다. 인수 완료까지 주식이 더 늘어난다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>주체</th>
+<th style="text-align: right;">비율</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>창업자 CEO 피터 벡(주로 Equatorial Trust 우선주)</td>
+<td style="text-align: right;">의결권 약 7.5%</td>
+<td>DEF 14A(2026-03-30) · 7/6 신탁 보통주 327만 주 계획 매도 뒤</td>
+</tr>
+<tr>
+<td>임원·이사 합계</td>
+<td style="text-align: right;">약 8.4%</td>
+<td>DEF 14A</td>
+</tr>
+<tr>
+<td>기관 합계</td>
+<td style="text-align: right;">약 62.5%</td>
+<td>yfinance</td>
+</tr>
+<tr>
+<td>BlackRock</td>
+<td style="text-align: right;">6.78%</td>
+<td>13F(6/30)</td>
+</tr>
+<tr>
+<td>Vanguard(두 법인 합)</td>
+<td style="text-align: right;">약 8.8%</td>
+<td>13F(6/30) · 13G 5.19%(7/31)</td>
+</tr>
+<tr>
+<td>Invesco</td>
+<td style="text-align: right;">3.07%</td>
+<td>13F(6/30) · 직전 대비 +410%(나스닥100 편입)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>유통 vs 발행</strong>: 유통 약 5.57억 주(yfinance) · 6/30 보통주 5.98억 + 우선주 0.41억.</li>
+<li><strong>잠재 희석</strong>(클로징까지): 9월 신주 0.29억 · 이리듐 주주 몫 0.42억 · 선도매도 0.07억 = 약 0.79억 주(6/30 대비 +12.4%). 전환사채는 상환 끝.</li>
+<li>차등의결권: 시리즈A 전환우선주(벡 신탁) 외 별도 이중 주식 구조 없음.</li>
+</ul>
+<h3>I.1 기관 추이 (13F · 6/30 기준 · 45일 지연)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지수 편입으로 패시브 자금이 들어오고, 장기 성장주 펀드 일부는 빠졌다.</p>
+</blockquote>
+<ul>
+<li>나스닥100 편입(6/22)으로 Invesco(QQQ 운용사) +410%.</li>
+<li>Baillie Gifford −43.7% — 장기 성장주 펀드의 절반 가까운 축소.</li>
+<li>9/24 무렵 ARK(캐시 우드) 약 2,500만 달러 매수 보도가 있다(2차 · 13F 미반영).</li>
+</ul>
+<h3>I.2 내부자 (Form 4 · 최근)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — CFO는 계획 매매로 매달 팔고 있다. CEO 신탁의 과거 매도 기록은 바로잡았다.</p>
+</blockquote>
+<ul>
+<li><strong>CFO 아담 스파이스</strong>: 6/3 채택한 10b5-1 계획으로 9/2 옵션 14만 157주(행사가 1.09달러) 행사·매도 약 878만 달러, 10/1 같은 수량 약 993만 달러(Form 144 10/1 · Form 4 10/2). 2025-09 이후 누적 약 1.64억 달러를 팔았고, 62만 2,452주를 대출 담보로 잡혔다(회사가 예외 승인). 매달 같은 크기라 계획 매매 성격이 뚜렷하다. 행사 후 매도라 직접 보유 주식 수는 그대로다.</li>
+<li><strong>CEO 피터 벡</strong>: 7/6~8 신탁 계획 매도(327만 주 · 약 2.86억 달러) 뒤 신규 매도 없음(계획은 7/8 만료). 🔧 <strong>정정</strong> — 6월 Deep-Dive와 종목 메모리의 "벡 공개시장 매도 0건"은 틀렸다. 가족 신탁은 2023년 이후 약 1,191만 주(약 5.77억 달러)를 팔았다: 2023-09 골드만삭스 블록 360만 주(주당 5.62달러 · 재량) · 2025-09·12 계획 매도 각 250만 주 · 2026-07 327만 주(사람 해부 보고서 · Form 4 원본 10건). 2021년 보유분의 약 79%는 남아 있고 공개시장 매수는 한 번도 없다. 이 신탁은 매도 계획을 매번 13D 개정으로 먼저 알려, 가장 빠른 조기 경보 창구다.</li>
+<li>8/26 임원 5명 매도는 전부 주식보상 세금 원천징수분이었다.</li>
+</ul>
+<h3>I.3 공매도</h3>
+<ul>
+<li>4,530만 주 · 유통의 7.62% · 상환 소요 2.0일(yfinance · 전월 4,348만 주 대비 +4.2%).</li>
+<li>인수 차익거래(이리듐 매수 + 로켓랩 공매도)가 공매도의 일부를 차지한다고 보는 것이 자연스럽다[추론].</li>
+</ul>
+<h3>I.3b 레버리지·인버스 단일종목 ETF</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 레버리지 ETF가 주가를 끌고 다닐 힘은 작다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>ETF</th>
+<th style="text-align: right;">배율</th>
+<th style="text-align: right;">운용 규모</th>
+<th style="text-align: right;">명목 노출</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RKLX</td>
+<td style="text-align: right;">+2배</td>
+<td style="text-align: right;">2.05억 달러</td>
+<td style="text-align: right;">4.11억</td>
+</tr>
+<tr>
+<td>RKLZ</td>
+<td style="text-align: right;">−2배</td>
+<td style="text-align: right;">700만</td>
+<td style="text-align: right;">−1,400만</td>
+</tr>
+<tr>
+<td>RKX</td>
+<td style="text-align: right;">+2배</td>
+<td style="text-align: right;">70만</td>
+<td style="text-align: right;">140만</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>명목 노출 합계 4.26억 달러 = 유통 시총의 <strong>1.40%</strong>(하한 · 검색으로 못 찾은 ETF가 있을 수 있음).</li>
+<li>주가가 하루 ±10% 움직이면 리밸런싱 강제 매매 약 4,540만 달러 = 20일 평균 거래대금의 <strong>3.9%</strong>. 공매도(7.62%)보다 작은 힘이다.</li>
+</ul>
+<h3>I.4 옵션</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 옵션 시장은 실적 뒤 큰 움직임을 예상하고 있다.</p>
+</blockquote>
+<ul>
+<li>11월~2027년 3월 만기 미결제약정: 콜 43.5만 · 풋 33.4만 계약 → 풋/콜 0.77.</li>
+<li>등가격 내재변동성 77~97% · 실적 주간(11/13 만기) 97%로 가장 높다. 시장이 실적 뒤 큰 움직임을 예상한다는 뜻이다.</li>
+</ul>
+<hr />
+<h2 id="j">Section J. 산업 · 규제 · 정책 리스크</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회사는 일렉트론에서는 약속을 늦게라도 지켜 왔고, 뉴트론에서는 일정을 계속 미뤄 왔다. 규제 쪽 가장 큰 일은 이리듐 인수 승인이고, 정책은 국방 예산 하나에 많이 기대고 있다.</p>
+</blockquote>
+<h3>J.1 회사·산업 역사 (역사 해부 보고서 요약)</h3>
+<p><a href="../../HistoryDive_Reports/RKLB/HistoryDive_RocketLab_2026-10-31.html">역사 해부 보고서 2026-10-31</a>에서 가져온 것:</p>
+<ul>
+<li><strong>기업 DNA 셋</strong> — ① 운영·거래 약속(연간 발사 횟수·발사장 개장·소형 인수 종결)은 지키고, 새 로켓 날짜와 흑자 시점은 지키지 못한다. ② 필요한 기술은 만들기보다 산다(이리듐 이전 8건 · 약 7억 달러 · 영업권 감액 0회). ③ 주식은 비쌀 때 팔고 바닥에서는 빚으로 버틴다(2022~2024년 신주 매각 0 · 2025~2026년 ATM 약 46억 달러).</li>
+<li><strong>뉴트론 지연 계수</strong> — 2021년 "2024년 첫 발사"로 시작해 공식 연기 4번(2024-05 · 2025-11 · 2026-02 · 2026-10). 다시 말한 날짜 5번이 모두 빗나갔다. 처음 약속한 기간 대비 최소 1.5배, 1~1.5년 앞을 말한 날짜는 최소 2.2~2.4배가 걸렸다. 일렉트론도 2015년 "2015년 첫 발사" 대비 약 4.3배였다.</li>
+<li><strong>약속 이행률</strong> — 판정 난 독립 약속 8건 중 제때 3건(38%) · 늦게 2건(25%) · 실패 3건(38%). 제때 지킨 3건은 모두 운영·거래 약속이다.</li>
+<li><strong>상장(2021) 전망 대비</strong> — 2021~2025년 누적 매출은 전망의 91%였다. 누적 조정 EBITDA는 전망 +2.45억 달러, 실제 −3.71억 달러. "2023년 EBITDA 흑자"·"2024년 현금흐름 흑자"는 실패했다.</li>
+<li><strong>희석</strong> — 우선주 포함 주식 4.49억(2021-11) → 6.68억(2026-09) · +49%. 이리듐 대가·선도매도까지 넣으면 약 7.18억 · +60%.</li>
+<li><strong>위기 대응</strong> — 사고 공개는 빠르다(일렉트론 실패 3번 모두 빨리 복귀 · 탱크 파열은 당일 8-K). 다만 뉴트론은 공식 연기 전에 "첫 발사"를 "발사장 도착·발사대 인도"로 바꿔 말한 일이 두 번 있었다(2025-11 · 2026-08). 이 바꿔 말하기는 연기의 선행 신호로 쓸 만하다.</li>
+<li><strong>이리듐</strong> — 기업가치 약 80억 달러는 앞의 인수 전부를 합친 것의 11배가 넘고 업종도 통신 서비스라, 과거 인수 성적으로는 판정할 수 없다.</li>
+</ul>
+<h3>J.2 규제·법적 리스크</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 남은 규제 관문은 FCC와 해외 승인이다. 경쟁사 서한이 늘었지만 공식 이의 신청은 없다.</p>
+</blockquote>
+<ul>
+<li><strong>이리듐 인수 승인</strong>: 주주 승인(9/24 · 99.6%)과 미국 반독점 대기 기간(8/12 종료)은 끝났다. 인수 투자설명서(424B3)에 CFIUS는 나오지 않는다. 남은 것 = FCC 심사(문서함 GN 26-257 · 재반박 마감 11/9 · 미국 안보 심사기구에는 정식 회부 안 됨) · 해외 승인(통신 면허 5개국 · 외국인 투자 3개국) · 국방 보안 기관(DCSA) 점검.</li>
+<li><strong>경쟁사 서한</strong>: 스페이스X는 8/27 "반대하지 않는다"에서 10/15 "심각한 우려"(이리듐이 공유 Ka대역에서 거부권을 요구한다는 주장)로 바뀌었다. Ligado도 10/16 이리듐의 과거 규제 다툼을 심사에서 따지라고 요구했다. 이리듐은 10/14 스페이스X 상대 청원 116건을 철회했고, 로켓랩은 10/22 FCC 위원장실을 만나 "반대 없는 거래"라고 설명했다. 공식 이의 신청은 0건이다.</li>
+<li><strong>인수 무산 시</strong>: 로켓랩이 낼 위약금은 없지만, 인수 자금으로 판 주식 약 2,930만 주는 그대로 남는다. 인수 종료일은 2027-06-28(규제만 남으면 12/28까지 자동 연장).</li>
+<li><strong>보험</strong>: 로켓랩은 로켓·발사장 자기 손실을 보험으로 덮지 않고, 이리듐도 궤도 위성 보험이 없다(업종 점검 보고서).</li>
+<li><strong>MDA 위성 버스 납기 지연</strong>: 고객이 지체상금을 청구할 수 있다(10-Q). 로켓랩도 공급사에 같은 청구를 할 수 있다.</li>
+<li><strong>NASA 화성 통신 궤도선</strong>: 블루오리진 선정에 GAO 이의제기(9/11 · 결정 12월 중하순까지).</li>
+<li>진행 중인 중대 소송·제재는 10-Q 기준 없음.</li>
+</ul>
+<h3>J.3 정책 민감도</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 국방 예산 집행 속도가 곧 매출 속도다. 정부 프로그램 주기가 단기 충격을 완충한다.</p>
+</blockquote>
+<ul>
+<li>골든돔·SDA·우주군 대응형 우주 예산이 위성 제작 매출의 큰 몫을 받친다. 정부 고객 한 곳이 매출의 42%라 국방 예산 집행 속도가 곧 매출 속도다.</li>
+<li>국가안보 발사(NSSL) 1구간 상한 170억 달러는 뉴트론이 날아야 열리는 문이다.</li>
+<li>정권 교체·예산 삭감 위험은 4~5년 정부 프로그램 주기 안에서 완충된다.</li>
+</ul>
+<hr />
+<h2 id="k">Section K. 공시 · 어닝콜 · 가이던스</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 2분기 콜에서 회사는 "연내 발사 창이 좁아진다"고 했고, 두 달 뒤 공시로 2027년을 확정했다. 매출 가이던스는 꾸준히 맞히고 있지만, 마진 가이던스는 3분기에 내려간다.</p>
+</blockquote>
+<h3>K.1 최근 어닝콜 핵심 (2Q26 · 8/10)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회사는 뉴트론 지연 가능성을 미리 알렸고, 흑자 전환 순서를 공식으로 제시했다.</p>
+</blockquote>
+<ul>
+<li>3분기 가이던스: 매출 2.50~2.65억 달러 · GAAP 매출총이익률 29~31% · 조정 EBITDA −1,700만~−2,300만 달러 · 가중평균 주식 6.41억.</li>
+<li>흑자 전환 공식(CFO): 뉴트론 첫 시험 발사 성공 → 다음 분기 조정 EBITDA 흑자 → 18~24개월 뒤 잉여현금 흑자. "이리듐 종결 시 표가 리셋"이라는 단서가 붙었다.</li>
+<li>뉴트론 판가 5,000만~5,500만 달러 · 할인 없음 · 램프 1-3-5회.</li>
+<li>벡: "연말 발사 창이 좁아지고 있다" — 10/14 8-K로 2027년 확정.</li>
+<li>답하지 않은 것: 뉴트론 첫 발사 날짜 · 브리지 상환 계획 · Mynaric 현재 마진(공개 거부).</li>
+</ul>
+<h3>K.2 경영진 화법</h3>
+<ul>
+<li>뉴트론 표현이 "4분기 첫 발사"(1분기) → "연내 창이 좁아진다"(2분기 콜) → "process improvements로 내년"(10/14)으로 단계적으로 낮아졌다. 발표자료 목표도 "첫 발사"에서 "발사대 인도"로 바뀌었다.</li>
+<li>이리듐은 "1+1=3 · 서비스 도약"으로 강조하지만, 브로드밴드 경쟁은 스스로 피했다("L대역은 브로드밴드용이 아니다").</li>
+</ul>
+<h3>K.3 가이던스 대비 실적</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매출 가이던스는 꾸준히 맞히고 있다. 일회성 조정을 빼면 2분기는 하단이었다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>분기</th>
+<th>매출 가이던스</th>
+<th style="text-align: right;">실제</th>
+<th>위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1Q26</td>
+<td>❌ 원문 미대조</td>
+<td style="text-align: right;">2.003억</td>
+<td>—</td>
+</tr>
+<tr>
+<td>2Q26</td>
+<td>2.25~2.40억</td>
+<td style="text-align: right;">2.341억</td>
+<td>중상단(소급 조정 809만 제외 시 2.260억 = 하단)</td>
+</tr>
+<tr>
+<td>3Q26</td>
+<td>2.50~2.65억 · 컨센 2.572억</td>
+<td style="text-align: right;">11/9 발표</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3>K.4 주요 공시·발표 (최근 3개월)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 최근 3개월 공시의 핵심은 브리지론 해지와 뉴트론 연기, 두 가지다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>날짜</th>
+<th>공시</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-08-10</td>
+<td>8-K · 10-Q</td>
+<td>2Q26 실적 · 상반기 ATM 15.3억 달러</td>
+</tr>
+<tr>
+<td>2026-08-13</td>
+<td>8-K · 424B5 · S-4</td>
+<td>신규 ATM 프로그램(약 19.44억 달러 · DB·WF) · 인수 등록서</td>
+</tr>
+<tr>
+<td>2026-08-26</td>
+<td>424B3 · EFFECT</td>
+<td>이리듐 확정 투자설명서 · 주총 9/24</td>
+</tr>
+<tr>
+<td>2026-09-15</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1819994/000175392626001769/g085951_8k.htm">8-K</a></td>
+<td>브리지론 36억 달러 해지 · ATM 약 2,930만 주 조달 완료 · 이리듐 대출 개정</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td>보도자료</td>
+<td>Synspective 20회 추가(2028~2031) · 누적 47회</td>
+</tr>
+<tr>
+<td>2026-10-14</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1819994/000181999426000067/rklb-20261014.htm">8-K</a></td>
+<td>뉴트론 첫 발사 2027년</td>
+</tr>
+<tr>
+<td>2026-10-02</td>
+<td>Form 4</td>
+<td>CFO 10b5-1 옵션 행사 매도</td>
+</tr>
+</tbody>
+</table>
+<h3>K.4c 외부 비판 리포트 분해표</h3>
+<p>최근 12개월 공매도 리포트·신용등급 하향·평가 보고서 하위 등급은 없다. 증권사 목표가 하향(시티즌스 90달러 · TD Cowen)과 매체 해설(뉴트론 지연)은 비판 리포트가 아니라 해당 없음으로 둔다.</p>
+<hr />
+<h2 id="l">Section L. 동적 발견</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이번에 새로 찾은 것 가운데 셋은 지난 기록을 고쳐야 하는 것이다. 벡의 주식 매도 기록, 브리지론의 운명, 실적 발표 날짜다. 나머지 둘은 인수 뒤 빚 구조에 숨어 있던 시한이다.</p>
+</blockquote>
+<h4>L.1 벡 "매도 0건" 기록 정정 — 🔴</h4>
+<ul>
+<li>발견: 사람 해부 보고서가 Form 4 원본 10건 대조.</li>
+<li>내용: 가족 신탁이 2023년 이후 약 1,191만 주(약 5.77억 달러)를 팔았다. 2023-09 골드만삭스 블록은 재량 매도였다.</li>
+<li>영향: 사람 축 ⑥ 4.0 → 3.5. 리스크 신호 ⑤의 해석 기준선이 바뀐다(매도 0이 기준이 아니라 "계획 매도는 13D로 예고됨"이 기준).</li>
+<li>결론 영향: 사람 축 소폭 하향 · thesis 유지.</li>
+</ul>
+<h4>L.2 브리지론 해지 → 주식 + 이리듐 대출로 교체 — 🔴</h4>
+<ul>
+<li>발견: 8-K 2026-09-15 원문.</li>
+<li>내용: 36억 달러 364일 브리지론 전액 해지 · ATM 약 2,930만 주(약 19.44억 달러) · 이리듐 텀론 17.75억 달러 존속(SOFR+2.50~3.00%).</li>
+<li>영향: 6월의 최대 갈림길 변수(브리지 차환)가 사라졌다. 리스크 신호 ⑦을 "이리듐 변동금리 대출"로 바꿨다. 희석은 늘었다(③ 발현).</li>
+<li>결론 영향: 하방은 닫히고 상방은 희석으로 얇아짐 · 날씨 축 빚 칸 🟡.</li>
+</ul>
+<h4>L.3 이리듐 금리 캡 만료(2026-11)와 3.5배 문턱 — 🟠</h4>
+<ul>
+<li>발견: 내구성 정밀 진단(이리듐 10-Q·신용계약 원문).</li>
+<li>내용: 10억 달러 금리 캡이 인수 완료 전에 끝나 연 이자 2,330만 달러가 는다. 이리듐 부채가 현금이익의 3.5배를 넘으면 남는 현금 일부가 빚 상환에 묶이고 로켓랩으로 올리는 배당도 한도에 걸린다.</li>
+<li>영향: 나무 축 D.8 "이리듐 = 뉴트론 자금줄"을 조건부로 고쳤다.</li>
+<li>결론 영향: 내구성 ⚪ 유지.</li>
+</ul>
+<h4>L.4 2030년 텀론 일시 상환 × 2031년 이리듐 잉여현금 반전 — 🟠</h4>
+<ul>
+<li>발견: 내구성 정밀 진단 + 424B3 경영진 전망.</li>
+<li>내용: 텀론 약 17억 달러가 2030년 9월 한꺼번에 만기 · 이리듐 무차입 잉여현금이 2030년 5.29억 → 2031년 −0.21억 달러(위성망 교체 추정). 424B3에 따르면 이 장기 전망은 로켓랩에 제공되지 않았다.</li>
+<li>영향: 2030~35 금리 기둥 🔴 쪽. 로켓랩이 차세대 이리듐 위성을 직접 만들면 이 설비투자가 줄어드는 것이 시너지의 실체다.</li>
+<li>결론 영향: 시나리오 기준선에 이미 반영(이리듐 매출만 쓰고 현금 기여는 낙관 쪽에만).</li>
+</ul>
+<h4>L.5 3분기 실적일 = 11/9(월) 미국 장 마감 후 — 🟡</h4>
+<ul>
+<li>발견: 회사 IR 공지(10/20). 야후 달력 11/10은 한국 날짜와 섞인 표기다.</li>
+<li>결론 영향: 일정표 정정.</li>
+</ul>
+<h3>L.deferred (다음 실행 우선 조사)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 다음 실행에서는 3분기 10-Q와 인수 신용등급, 뉴트론 설명 자료부터 확인한다.</p>
+</blockquote>
+<ul>
+<li><strong>3분기 10-Q(11/9)</strong> — 우주 시스템 마진 · 원가 추정 누적 조정 · 9월 신주 반영 현금 · MDA 지체상금 · 매매 계획(10b5-1) 공시 항목.</li>
+<li><strong>10/14 뉴트론 설명 자료</strong> — IR 발표자료 페이지에서 찾지 못했다(investors.rocketlabcorp.com/events-presentations/presentations 재확인).</li>
+<li><strong>이리듐 인수 완료 시 신용등급</strong> — 가산금리 2.50% 대 3.00%를 가른다.</li>
+<li><strong>이리듐 새 금리 헤지 공시</strong> — 캡 만료(11월) 전후.</li>
+<li><strong>CFO Form 144의 8/17·8/18 기재 불일치</strong> — 여전히 미해소.</li>
+</ul>
+<hr />
+<h2 id="s">Section S. 🔎 Specific-Dive — 업종 전문가 체크리스트 보완</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 발사·정부 고정가 위성 제작·위성 통신 인수 업종 전문가의 질문 15개로 이 보고서를 감사했다. 별점을 바꾸는 항목은 없다. 다만 인수에 남은 규제는 FCC와 해외 승인이고, 경쟁사 두 곳이 FCC에 이리듐을 문제 삼는 서한을 냈다. 2분기 원가 추정 상향도 2025년엔 반대로 깎였다.</p>
+</blockquote>
+<h3>체크리스트 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 15개 중 6개는 이미 충분했고, 9개를 새로 조사했다. 결론이 뒤집힌 항목은 없다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>체크 항목</th>
+<th style="text-align: center;">판정</th>
+<th>결론 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>주파수 면허 이전 · 남은 규제</td>
+<td style="text-align: center;">❌ → 조사</td>
+<td>반독점 대기 8/12 종료 · CFIUS 필요 목록에 없음 · 남은 것 = FCC(심사 문서함 GN 26-257 · 재반박 마감 11/9) + 해외 통신 5개국·외국인 투자 3개국 + 국방 보안 점검 → 문구 정정 · 신호 추가</td>
+</tr>
+<tr>
+<td>FCC 심사판의 반대 서한</td>
+<td style="text-align: center;">❌ → 조사</td>
+<td>스페이스X(10/15)·Ligado(10/16)가 이리듐의 규제 다툼을 문제 삼음 · 이리듐 청원 116건 철회(10/14) · 공식 이의 0 → 해자 법적 보호 ⚠️ 유지(근거 약화 방향)</td>
+</tr>
+<tr>
+<td>원가 추정 변경 순액</td>
+<td style="text-align: center;">◐ → 조사</td>
+<td>2025년 −790만 · 2026년 1분기 −110만 · 2분기 +810만 달러 → 1년 반 합 거의 0 · 문구 보강 · 신호 추가</td>
+</tr>
+<tr>
+<td>계약 유형</td>
+<td style="text-align: center;">◐ → 조사</td>
+<td>미국 정부 계약 = 전부 고정가(10-K) · 정부 관련 매출 47% → 내구성 물가 판정 근거 강화</td>
+</tr>
+<tr>
+<td>인수 회계</td>
+<td style="text-align: center;">❌ → 조사</td>
+<td>주파수 33.2억 달러 상각 없음(매년 손상 시험) · 영업권 약 16.6억(지금 주가 · 계산) · 위성 면허 2032-02-23 만료</td>
+</tr>
+<tr>
+<td>인수 계약 해지 조건</td>
+<td style="text-align: center;">❌ → 조사</td>
+<td>로켓랩 위약금 0 · 종료일 2027-06-28(12/28까지 자동 연장) · 이미 판 주식은 남음</td>
+</tr>
+<tr>
+<td>발사 사고·보험</td>
+<td style="text-align: center;">❌ → 조사</td>
+<td>자기 로켓·발사장·위성 손실 무보험 · 이리듐도 궤도 보험 없음</td>
+</tr>
+<tr>
+<td>정부 계약 조건 · 해외 발사장</td>
+<td style="text-align: center;">◐/❌ → 조사</td>
+<td>성과 연동 지급(환불 가능) · 보안 허가 = 외국 지배 차단 요건 · 뉴질랜드 발사장은 양국 협정에 기댐 → 관찰</td>
+</tr>
+<tr>
+<td>발사 매출 인식 · 고객 집중 · 부채·위성망 교체 · 가격 경쟁 · 내부 거래 제거 · 이리듐 현금 한도</td>
+<td style="text-align: center;">✅</td>
+<td>상품 해부 보고서·내구성 정밀 진단으로 충분</td>
+</tr>
+</tbody>
+</table>
+<h3>새로 안 것</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 규제 일정, 경쟁사 서한, 원가 추정의 실제 모양, 무보험, 위약금 0이다.</p>
+</blockquote>
+<ul>
+<li><strong>인수 규제</strong>: 미국 반독점 대기 기간은 2026-08-12에 끝났고, CFIUS는 필요 승인 목록에 없다. FCC는 미국 안보 심사기구에 정식으로 넘기지 않았다. 이리듐의 기존 보안 협정이 이어지기 때문이다. FCC 서류 절차는 11/9 재반박 마감으로 끝난다. 이날은 3분기 실적일과 같다.</li>
+<li><strong>경쟁사 서한</strong>: 스페이스X는 공유 Ka대역에서 이리듐이 거부권을 요구한다며 "공익에 맞는지 심각한 우려"를 적었다. Ligado는 이리듐이 규제 절차로 경쟁사를 막아 왔다며 이를 심사에 넣으라고 했다. 이리듐은 그 전날 스페이스X 상대 청원 116건을 거뒀다. 승인의 대가로 이리듐의 "규제로 막기"가 줄어드는 방향이다.</li>
+<li><strong>원가 추정</strong>: 2분기 매출을 올린 810만 달러는 2025년에 깎인 790만 달러와 짝을 이룬다. 추정 변경을 뺀 바탕 매출총이익률은 1분기 약 38.5%에서 2분기 약 33.9%로 내려갔다(계산).</li>
+<li><strong>보험·위약금</strong>: 로켓랩은 자기 로켓·발사장 손실에 보험이 없다. 인수가 규제로 깨져도 위약금은 없지만, 인수 자금으로 판 주식 약 2,930만 주는 그대로 남는다.</li>
+</ul>
+<p>출처: <a href="https://www.sec.gov/Archives/edgar/data/1819994/000181999426000013/rklb-20251231.htm">로켓랩 10-K 2025</a> · <a href="https://www.sec.gov/Archives/edgar/data/1819994/000181999426000062/rklb-20260630.htm">로켓랩 10-Q 2026 2분기</a> · <a href="https://www.sec.gov/Archives/edgar/data/1819994/000175392626001639/g085904_424b3.htm">인수 투자설명서 424B3</a> · <a href="https://www.sec.gov/Archives/edgar/data/1418819/000141881926000009/irdm-20251231.htm">이리듐 10-K 2025</a> · <a href="https://docs.fcc.gov/public/attachments/DA-26-985A1.txt">FCC 공고 DA 26-985</a> · <a href="https://www.fcc.gov/ecfs/document/26110081829/1">스페이스X 서한 10/15</a> · <a href="https://www.fcc.gov/ecfs/document/26110081802/1">Ligado 서한 10/16</a> · <a href="https://www.fcc.gov/ecfs/document/26110083545/1">로켓랩 면담 보고 10/22</a> · <a href="https://www.sec.gov/Archives/edgar/data/1835512/000095017024099534/llap-20240815.htm">Terran Orbital 8-K 2024-08-21</a> · <a href="https://www.sec.gov/Archives/edgar/data/1843388/000162828023010459/vorb-20230330.htm">Virgin Orbit 8-K 2023-04-04</a></p>
+<hr />
+<h2 id="verdict">종합 판단</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회사는 6월보다 단단해졌고(빚 위험 해소·매출 가속), 성장의 다음 단계는 1~2년 늦어졌다. 주가는 크게 내렸지만 기대치도 같이 내려가 아직 싼 자리는 아니다. thesis는 "부분 수정"이다.</p>
+</blockquote>
+<p><strong>7축 종합</strong> — 64점 / 100(⭐3.58) · 보통(경계 양호/보통) · 5점 이내 = 동급 · 벡터: 날씨 12.0/25 · 산 10.2 · 숲 8.0 · 나무 8.9 · 옆의 나무 7.8 · 사람 8.9 · 숫자 8.6(각 /12.5). 점수 = 사업·thesis 매력도이고 밸류는 재지 않는다. 밸류·분면·독점 판정·내구성은 점수 밖 별도 렌즈다.</p>
+<h3>시간 지평 종합</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 단기는 역풍, 중기는 갈림길, 장기는 조건부 순풍이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>지평</th>
+<th>결론</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>단기(0~6개월)</td>
+<td>역풍</td>
+<td>금리 인상 쪽 발언 · 고베타 위험 회피 · 3분기 이익률 가이던스 하락 · 뉴트론 공백</td>
+</tr>
+<tr>
+<td>중기(6개월~3년)</td>
+<td>갈림길</td>
+<td>이리듐 인수 완료(2027 중반)로 흑자 구독 편입 ↔ 뉴트론 첫 비행(역사 보정 2028년 중반) 전까지 자체 적자 · 희석</td>
+</tr>
+<tr>
+<td>장기(3~10년)</td>
+<td>순풍 조건부</td>
+<td>안보 우주·전용 발사 수요는 구조적 · 단 중형 발사에서 스페이스X와의 격차를 좁힐 수단이 뉴트론 하나뿐</td>
+</tr>
+</tbody>
+</table>
+<p>단기와 장기가 반대 방향이다. 장기 순풍이 도착하기 전에 단기 역풍과 희석이 먼저 정산되는 경로가 가장 큰 위험이다.</p>
+<p><strong>리스크 신호 집계</strong> — 발현 2(① 뉴트론 지연 · ③ 대규모 희석) · 🟠 2(② 스타링크·아마존 · ⑨ 증분 이익 0) · 🟡 5(⑤ 경영진 매도 · ⑥ 통합 · ⑦ 이리듐 변동금리 · ⑧ 정부 집중 · ⑩ FCC 조건) · 관찰 1(⑪ 고정가 원가 초과). 6월은 발현 0이었다.</p>
+<h3>종합 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 사업의 뼈대는 그대로이고, 일정과 자본 구조에 대한 기본값을 고쳤다.</p>
+</blockquote>
+<p><strong>부분 수정.</strong> 바뀐 것은 셋이다. ① 뉴트론 일정의 기본값을 회사 공언(2027년)이 아니라 역사 보정치(2028년 중반)로 둔다. ② 6월의 최대 위험(브리지론 차환)은 해소됐고, 그 자리에 희석과 인수 뒤 변동금리 빚이 들어왔다. ③ 이리듐은 "성장 엔진"이 아니라 "흑자 완충재"로 읽는다. 사업의 뼈대(서방 전용 발사 2위 · 고마진 위성 제작 · 수직 통합)는 그대로다.</p>
+<p>⚠️ 6월 판정문의 "기댓값 1.62~1.66배"는 이번에 약 1.05배로 바뀌었다 — 주가 하락보다 기대치 하락이 컸다.</p>
+<hr />
+<h2>수집하지 못한 것</h2>
+<ul>
+<li>⚠️ 3분기 10-Q(11/9 발표 예정) — 이번 판정은 2분기 10-Q까지의 1차 자료 기준이다.</li>
+<li>⚠️ 10/14 뉴트론 설명 자료 — IR 발표자료 페이지에서 찾지 못했다(지연 원인 "탱크 돔 탄소 복합재 기공"은 Ars 보도 · 2차).</li>
+<li>⚠️ 이리듐 인수 완료 시 신용등급 · 로켓랩 원가 구성 정량 분해 · 원자재 ±10% 민감도(미공시).</li>
+<li>⚠️ 1Q26 매출 가이던스 원문 · 2021~2023년 실적 콜 녹취.</li>
+<li>⚠️ 비전·가치관 축 사용자 ⭐(대기).</li>
+</ul>
+<h2>다음 실행 시 보완 목록</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 실적·인수 승인·뉴트론 시험 결과가 다음 판단을 바꿀 세 사건이다.</p>
+</blockquote>
+<ul>
+<li>3분기 실적(11/9) 뒤 숫자 축·나무 축 재확인 — 위 "실적 뒤 다시 볼 칸" 5개.</li>
+<li>이리듐 금리 캡 만료(11월) 전후 새 헤지 공시 · 인수 완료 신용등급.</li>
+<li>뉴트론 1단 정적 연소 시험 결과 · 회사 화법 변화.</li>
+<li>벡 가족 신탁 13D 개정(매도 계획의 가장 빠른 경보).</li>
+<li>NASA 화성 통신 궤도선 GAO 결정(12월 중하순).</li>
+</ul>
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p>
+<div class="footer">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const VIZ = {"score7": {"label": "확신도 7축", "max": 5, "axes": ["🌦️날씨", "⛰️산", "🌲숲", "🌳나무", "🌲🌳옆나무", "👤사람", "🔢숫자"], "series": [{"name": "RKLB 10/31", "color": "#0068b5", "scores": [2.92, 4.25, 3.57, 3.85, 3.5, 3.86, 3.75]}, {"name": "6/30(구 체계)", "color": "#9aa5b1", "scores": [3.2, 4.5, 3.5, 3.64, 3.3, 3.71, 3.7]}], "score100": 64, "band": "보통(경계 양호/보통)", "composite": 3.58}, "narrative": {"label": "내러티브 5축", "max": 5, "axes": ["🔧기술", "👥사회", "🏛️정책", "🌐지정학", "💰자본"], "series": [{"name": "우주 발사·위성·위성 통신", "color": "#8e44ad", "scores": [4, 3, 5, 5, 3]}]}, "trajectory": {"periods": ["2Q25", "3Q25", "4Q25", "1Q26", "2Q26", "3Q26 가이던스"], "forecastFrom": 5, "series": [{"label": "분기 매출($M)", "axis": "left", "color": "#2980b9", "values": [144.5, 155.1, 179.6, 200.3, 234.1, 257.5]}, {"label": "매출총이익률(%·오른축)", "axis": "right", "color": "#c0392b", "values": [32.1, 36.9, 38.0, 38.2, 36.1, 30.0]}]}, "peers": {"metrics": [{"key": "g", "label": "매출 증가율", "unit": "%", "better": "high"}, {"key": "gm", "label": "매출총이익률", "unit": "%", "better": "high"}, {"key": "om", "label": "영업이익률", "unit": "%", "better": "high"}, {"key": "ps", "label": "매출 대비 시총", "unit": "x", "better": "low"}], "rows": [{"name": "로켓랩", "subject": true, "vals": {"g": 62, "gm": 37.3, "om": -24.6, "ps": 45.5}}, {"name": "스페이스X", "note": "섹터 대장", "vals": {"g": 161, "gm": 56.8, "om": 27.6, "ps": 57.1}}, {"name": "Kratos", "vals": {"g": 30.5, "gm": 23.0, "om": -0.2, "ps": 5.1}}, {"name": "AeroVironment", "vals": {"g": 5.7, "gm": 26.5, "om": -2.3, "ps": 3.2}}, {"name": "Firefly", "vals": {"g": 657, "gm": 22.9, "om": -80.9, "ps": 10.5}}, {"name": "이리듐", "note": "인수 대상", "vals": {"g": 8.3, "gm": 71.5, "om": 12.9, "ps": 5.3}}]}, "scenario": {"horizonLabel": "5년 · 10/30 종가 기준", "threshold": 1.5, "cases": [{"label": "낙관", "tone": "bull", "prob": 0.25, "mult": 2.3}, {"label": "기준", "tone": "base", "prob": 0.5, "mult": 0.81}, {"label": "비관", "tone": "bear", "prob": 0.25, "mult": 0.27}]}, "landmark": {"current": {"label": "로켓랩", "mcap": 36.6}, "target": {"label": "×10", "mcap": 366}, "refs": [{"name": "L3Harris", "mcap": 51.7}, {"name": "록히드마틴", "mcap": 147.1}, {"name": "P&G", "mcap": 374.5}, {"name": "오라클", "mcap": 396.1}]}, "bars": {"title": "2026 상반기 매출 구성 ($434.4M)", "mode": "share", "unit": "$M", "items": [{"label": "위성·부품 제품", "value": 308.8}, {"label": "발사", "value": 108.2}, {"label": "우주 시스템 서비스", "value": 17.3}]}, "h5": {"points": [{"label": "6/30 강한데 비싼", "x": 190, "y": 95, "prior": true}, {"label": "10/31 가운데 쪽(아직 비싼 쪽)", "x": 245, "y": 125}], "caption": "중요도 중 · 엣지 중 — 주가는 크게 내렸지만 기대치도 같이 내려가 아직 싼 칸은 아니다"}, "captions": {"fig-h1": "5년 시나리오 (10/30 종가 $54.73 · 완전 희석 7.18억 주 기준) — 기댓값 약 1.05배(⚠️ 1.5배 미만) · 기준 2년 0.90배 = 낙관 꼬리 의존 (게이트 아님)", "fig-g5": "분기 매출·매출총이익률 + 3분기 가이던스 중간값(점선) — 매출은 늘고 이익률은 위성 제작 비중 증가로 3분기 일시 하락", "fig-e1": "동종 비교 (yfinance 2026-10-30 · 전 열 최근 4분기 · GAAP · 달러) — 스페이스X는 xAI·X 포함 결합 회사", "fig-d0": "2026 상반기 매출 구성 — 위성·부품 제품 71% · 발사 25% · 서비스 4%", "fig-c3": "내러티브 5축 — 정책·지정학 5 · 기술 4 · 사회·자본 3"}};
+try{
+DDViz.renderRadar('fig-score7','fig-score7-leg',VIZ.score7);
+DDViz.renderRadar('fig-c3','fig-c3-leg',VIZ.narrative);
+DDViz.renderTrajectory('fig-g5','fig-g5-leg',VIZ.trajectory);
+DDViz.renderHeatmap('fig-e1',VIZ.peers);
+DDViz.renderScenario('fig-h1',null,VIZ.scenario);
+DDViz.renderMcapLadder('fig-g15','fig-g15-cap',VIZ.landmark);
+DDViz.renderBars('fig-d0',VIZ.bars);
+var c7=document.getElementById('fig-score7-cap'); if(c7)c7.textContent="7축 종합 64점 / 100 (⭐3.58 병기) · 보통(경계 양호/보통) · 5점 이내 차이 = 동급 · 사업·thesis 매력도·밸류 미반영";
+var CAPS={"fig-h1": "5년 시나리오 (10/30 종가 $54.73 · 완전 희석 7.18억 주 기준) — 기댓값 약 1.05배(⚠️ 1.5배 미만) · 기준 2년 0.90배 = 낙관 꼬리 의존 (게이트 아님)", "fig-g5": "분기 매출·매출총이익률 + 3분기 가이던스 중간값(점선) — 매출은 늘고 이익률은 위성 제작 비중 증가로 3분기 일시 하락", "fig-e1": "동종 비교 (yfinance 2026-10-30 · 전 열 최근 4분기 · GAAP · 달러) — 스페이스X는 xAI·X 포함 결합 회사", "fig-d0": "2026 상반기 매출 구성 — 위성·부품 제품 71% · 발사 25% · 서비스 4%", "fig-c3": "내러티브 5축 — 정책·지정학 5 · 기술 4 · 사회·자본 3"};
+for (var k in CAPS){ var el=document.getElementById(k+'-cap'); if(el) el.textContent=CAPS[k]; }
+}catch(e){console.error('viz',e);}
+</script></body></html>
