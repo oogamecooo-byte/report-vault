@@ -1,0 +1,2080 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kratos(KTOS) Deep-Dive — 2026-11-01</title>
+<meta name="vault-stage" content="Dive"><meta name="vault-topic" content="KTOS"><meta name="vault-date" content="2026-11-01">
+<meta name="vault-skill" content="Deep-Dive"><meta name="description" content="Kratos(KTOS) 단일 종목 심층 분석 — 8월 판사 가격 조건 도달 후 재점검 · 63점/100 · 밸류 고평가(약) · 판사 관망">
+<style>/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+
+body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Helvetica Neue','Apple SD Gothic Neo',sans-serif;line-height:1.65;margin:0;padding:0;}
+.container{max-width:940px;margin:24px auto;background:#FDF6E3;padding:36px 44px;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.08);}
+h1{font-size:1.7em;border-bottom:3px solid #c0392b;padding-bottom:.3em;margin-top:.2em;}
+h2{font-size:1.32em;border-bottom:1px solid #c9bfa3;padding-bottom:.24em;margin-top:1.7em;color:#8a2415;}
+h3{font-size:1.1em;margin-top:1.3em;color:#5c4a00;}
+h4{font-size:1.0em;margin-top:1.1em;color:#5c4a00;}
+blockquote{border-left:4px solid #c9a227;background:#f5ecd3;margin:.8em 0;padding:.5em 1em;color:#4a4230;border-radius:0 6px 6px 0;}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.9em;display:block;overflow-x:auto;}
+th,td{border:1px solid #e8e1cf;padding:6px 9px;text-align:left;vertical-align:top;}
+th{background:#efe6cc;color:#5c4a00;font-weight:600;}
+tr:nth-child(even) td{background:#faf4e2;}
+code{background:#efe6cc;padding:1px 5px;border-radius:4px;font-size:.88em;}
+pre{background:#f0e8cf;padding:12px;border-radius:6px;overflow-x:auto;border:1px solid #e8e1cf;}
+a{color:#b0562a;text-decoration:none;} a:hover{text-decoration:underline;}
+hr{border:none;border-top:1px solid #d8cca8;margin:1.6em 0;}
+strong{color:#3a2f18;}
+.judge{background:#f3ead0;border:2px solid #c0392b;border-radius:8px;padding:16px 20px;margin:1.2em 0;}
+.judge h2{border:none;color:#8a2415;margin-top:0;}
+.dd-fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:12px;margin:1em 0;}
+.dd-fig figcaption{font-size:.82em;color:#6b5d3a;margin-top:6px;text-align:center;}
+.footer{margin-top:2em;padding-top:1em;border-top:1px solid #d8cca8;font-size:.85em;color:#6b5d3a;}
+@media print{body{background:#fff;}.container{box-shadow:none;background:#fff;}}
+@media (max-width:640px){.container{padding:20px 16px;}}
+</style>
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+<meta name="vault-published" content="2026-11-01">
+<meta name="robots" content="noindex, nofollow">
+</head><body>
+<!--dive-hub:start-->
+<nav id="dive-hub" aria-label="하위 Dive 모음" style="max-width:1100px;margin:12px auto 18px;padding:12px 16px;background:#F3EBD6;border:1px solid #e8e1cf;border-radius:10px;font:14px/1.6 'Pretendard','Noto Sans KR',sans-serif;color:#1f2328">
+<div style="font-weight:700;margin-bottom:4px">🤿 KTOS 하위 Dive 모음 <span style="font-weight:400;font-size:12px;color:#6b6457">— 이 Deep-Dive가 참고한 개별 보고서</span></div>
+<ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px">
+<li><a href="2026-10-31_ktos-rdive.html" title="KTOS (Kratos Defense &amp; Security Solutions) R-Dive — 제품·수익모델 정밀 해부 (2026-10-31)" style="color:#1F6F8B;font-weight:600;text-decoration:none">💰 R-Dive</a> <span style="font-size:12px;color:#6b6457">제품·수익모델 · 10/31</span></li>
+<li><a href="2026-11-01_historydive-kratos.html" title="History-Dive — Kratos Defense &amp; Security Solutions (NASDAQ: KTOS) · 2026-11-01" style="color:#1F6F8B;font-weight:600;text-decoration:none">📜 History-Dive</a> <span style="font-size:12px;color:#6b6457">기업 역사 · 11/01</span></li>
+<li><a href="2026-11-01_peopledive-ericdemarco.html" title="People-Dive — 에릭 드마르코 (Eric DeMarco) — 2026-11-01" style="color:#1F6F8B;font-weight:600;text-decoration:none">👤 People-Dive</a> <span style="font-size:12px;color:#6b6457">사람·리더 · 11/01</span></li>
+<li style="color:#8a8270">📈 chart-dive <span style="font-size:12px">타이밍 — 🔒 로컬 전용 · 10/31</span></li>
+<li><a href="2026-11-01_ktos-specificdive.html" title="KTOS Specific-Dive — 업종 전문가 체크리스트 보완 (표적드론 · 소모형 무인기 · 소형 제트엔진 · 고체로켓·극초음속 시험 · 이스라엘 마이크로파) — 2026-11-01" style="color:#1F6F8B;font-weight:600;text-decoration:none">🔎 Specific-Dive</a> <span style="font-size:12px;color:#6b6457">업종 특수 점검 · 11/01</span></li>
+<li style="color:#8a8270">📄 One-Pager <span style="font-size:12px">1p 압축 — 미수행</span></li>
+</ul>
+</nav>
+<!--dive-hub:end-->
+<div class="container">
+<h1>🛩️ Kratos(KTOS) Deep-Dive — 2026-11-01</h1>
+<blockquote>
+<p>기준가 41.09달러(2026-10-30 종가) · 직전 Deep-Dive 2026-08-06 · 모드 --full · 3Q FY26 실적 11/5(목) 미국 장 마감 후 · FY27 가이던스 첫 제시</p>
+</blockquote>
+<h2>한 장 요약</h2>
+<ul>
+<li><strong>종합 63점 / 100 (⭐3.53 병기) · 보통(경계 양호/보통)</strong> — 8월 약 68점(구 체계 환산 ±3점)보다 5점 낮다(경계). 하락분 대부분은 10월에 생긴 규칙(병목 자리에서 값을 올린 증거가 없으면 상한)과 사람 축 정정이다. 점수 = 사업·thesis 매력도이고 밸류는 재지 않는다. 감점이 큰 칸 = 숫자 마진 🔴 −3.1 · 숫자 현금 🔴 −3.1 · 숲 병목 칸 렌트 포획 상한 합 −2.9.</li>
+<li>🟡 <strong>8월 판사의 가격 조건(41달러)에 닿았다.</strong> 남은 조건은 11/5에 처음 나올 FY27 가이던스의 GAAP 영업이익률 3% 이상이다.</li>
+<li>🔴 <strong>늘어난 매출이 이익으로 안 남는다.</strong> 2분기 매출이 1년 새 1.07억 달러 늘었는데 부문 영업이익은 320만 달러만 늘었다. 매출총이익률은 3년 새 25.9% → 23.0%로 내려갔고, 고정가 계약이라 원가 상승을 넘기지 못한다.</li>
+<li>🔴 <strong>현금이 고객 쪽에 묶인다.</strong> 순 계약자산이 6개월 새 42% 늘었고, 상반기 영업현금은 −3,840만 달러다. 주식보상 세금 현금 대납(5,910만 달러)으로 잉여현금흐름 밖에서도 현금이 샌다.</li>
+<li>🟢 <strong>엔진이 처음으로 이름 있는 무기 사업에 들어갔다</strong> — JASSM 순항미사일 2차 엔진 개발(8/17) · 보잉 JDAM LR 엔진 선정(8/24). 금액은 미공시이고, 엔진 협업 마진은 아직 0%다.</li>
+<li>🔧 <strong>기록 정정 3건</strong> — Valkyrie는 "1년 지연"이 아니라 길어야 한 분기 · 재무약정은 있다(여유는 큼) · "CEO 매도 0건"은 틀렸다(2022년 이후 약 8,400만 달러 매도 · 8/14 30만 주).</li>
+<li><strong>분면</strong> 8월 "강한데 비싼" → 가운데 쪽 · <strong>독점 판정</strong> 틸 7문 4/7(불운 위험) · 화법 혼재.</li>
+<li><strong>밸류</strong> 🔴 고평가(약) · ⚪ 적정과 경계 · 신뢰도 낮음 · 🟢 조건 1/3 · 🎯 관망(조건 대기 · 더 싸게 사는 기준 ≈ 35달러) · 매출 대비로는 싸졌지만 그 매출이 이익으로 바뀌지 않는다.</li>
+<li><strong>내구성</strong> ⚪ 조건부 · 무차입 · 버틸 수 있는 기간 5.7~8.0년 → 4.4~7.0년.</li>
+<li><strong>시나리오 기댓값 약 1.41배(5년)</strong> — 8월 1.10배에서 주가 하락분만큼 올라왔다(⚠️ 1.5배 미만 · 기준 2년 1.16배 = 낙관 꼬리 의존).</li>
+</ul>
+<figure class="dd-fig"><div id="fig-score7"></div><div class="dd-legend" id="fig-score7-leg"></div><figcaption id="fig-score7-cap"></figcaption></figure>
+
+<h3>실적 뒤 다시 볼 칸 (11/5)</h3>
+<table>
+<thead>
+<tr>
+<th>무엇</th>
+<th>왜</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY27 가이던스 GAAP 영업이익률</td>
+<td>3% 이상이면 남은 조건 충족 · 터미널 마진 가정의 첫 실측</td>
+</tr>
+<tr>
+<td>영업현금 · 순 계약자산 · 재고</td>
+<td>하반기 약 +6,800만 달러가 들어와야 FY26 현금 가이던스를 지킨다</td>
+</tr>
+<tr>
+<td>주식보상 세금 대납</td>
+<td>잉여현금흐름 밖 누수가 계속되는지</td>
+</tr>
+<tr>
+<td>엔진 양산 계약·금액</td>
+<td>엔진 thesis가 개발에서 양산으로 넘어가는지 — 단 12/11까지 임시 예산이 새 양산 계약을 막는다</td>
+</tr>
+<tr>
+<td>Valkyrie·Prometheus 일정 문구</td>
+<td>양산 공언이 다시 밀리는지</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<div class="judge"><h2>🧑‍⚖️ 종합 매수 판단 (Fable 판사 · 쉬운 말 판정 원문)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — ⚪ 관망 — 값은 석 달 새 26% 싸졌지만 이익이 나는지는 나흘 뒤 실적 발표가 처음 답하므로 그때 다시 본다. 낮은 신뢰도 참고 판단. (판사 요약 1줄 원문)</p>
+</blockquote>
+<p>① <strong>한 줄 답</strong>: ⚪ 지금은 기다린다 — 이익이 나는지를 나흘 뒤 실적 발표가 처음 답한다.</p>
+<p>② <strong>왜 그렇게 보나</strong></p>
+<ul>
+<li>
+<p>값은 석 달 전보다 26% 싸졌지만 아직 싸지는 않다. 지금 값이 성립하려면 앞으로 5년간 매출이 해마다 33% 자라고 영업이익률도 12%를 넘어야 한다.</p>
+</li>
+<li>
+<p>매출은 잘 크는데 이익으로 바뀌는 증거가 아직 없다. 지금까지 영업이익률은 1%대이고, 곧 나올 내년 목표가 그 답을 처음 보여준다.</p>
+</li>
+<li>
+<p>경영진은 팔고 있고, 임시 예산은 새 양산을 막고 있다. 대표는 8월 중순 가진 주식의 27%를 팔았고, 12월 11일까지 쓰는 임시 예산은 새 양산 시작을 금지한다.</p>
+</li>
+</ul>
+<p>③ <strong>언제 다시 보나</strong>: 11월 5일 장 마감 뒤 3분기 실적과 내년 첫 목표 발표. 내년 영업이익률 목표가 3% 이상이면 값과 상관없이 다시 보고, 아니면 35달러 아래에서 다시 본다.</p>
+<p>④ <strong>반대로 볼 이유</strong>: 이번 하락이 이 회사 탓이 아니라 드론 방산주 전체가 함께 빠진 것이라면, 지금이 긴 투자자가 사는 자리일 수 있다. 발표에서 이익률이 열리면 주가가 하루에 크게 뛰어 기다린 값을 치를 수 있다.</p>
+<p>⑤ <strong>아직 모르는 것</strong>: 이번 분기의 실제 현금흐름과 내년 목표 숫자, 그리고 공시되지 않은 원가 추정 변경액.</p>
+<p>낮은 신뢰도의 참고 판단이며, 최종 판단은 독자 몫이다.</p>
+</div><hr />
+<h2 id="a">Section A. 🌦️ 날씨 — 지정학 + 거시 (장기 구조) ⭐3.95</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 싸고 많이 만드는 무기(드론·미사일 엔진·극초음속 시험)에 대한 국가 수요는 8월보다 더 단단해졌다. 금리 역풍은 이 회사엔 약하다. 빚이 없고 현금이 많기 때문이다.</p>
+</blockquote>
+<h3>A.1 핵심 질문</h3>
+<p>5~10년 지정학·거시 기후가 Kratos에 순풍인가. <strong>순풍이다.</strong> 우크라이나·중동 전쟁이 "비싼 소수 무기보다 싼 다수 무기"의 가치를 보여 줬고, 미국 국방부가 그 방향으로 예산을 옮기고 있다. 거시 쪽은 금리 인상 쪽 발언이 나오지만, 순현금 13억 달러대의 회사라 직접 피해는 작다.</p>
+<h3>A.2 지정학</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 국방 예산·소모형 무기·극초음속·대만 억제 네 축이 모두 이 회사 쪽을 향한다. 이스라엘 사업장은 순풍이자 꼬리 위험이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>점검</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>국방 예산·소모형 무기 수요</td>
+<td style="text-align: center;">🟢</td>
+<td>미 정부 매출 69% · 최근 1년 수주/매출 1.3배 · 잔고 20.84억 달러(10-Q 2Q26)</td>
+</tr>
+<tr>
+<td>극초음속·골든돔 시험 수요</td>
+<td style="text-align: center;">🟢</td>
+<td>MACH-TB 2.0(천장 14.5억 달러) · 극초음속 시험 인프라 지위</td>
+</tr>
+<tr>
+<td>미중 패권·대만 억제</td>
+<td style="text-align: center;">🟢</td>
+<td>대량·저가 무기 = 억제 전략의 핵심 공급원</td>
+</tr>
+<tr>
+<td>지정학 사건 노출</td>
+<td style="text-align: center;">🟡</td>
+<td>이스라엘 인력 700명+(Orbit·마이크로파) · 셰켈 강세가 원가를 올림(10-Q)</td>
+</tr>
+</tbody>
+</table>
+<h3>A.3 거시</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 금리는 높지만 이 회사는 빚이 없어 직접 피해가 작다. 위험 회피 국면에 고성장 방산주로 묶여 주가가 먼저 빠진 것이 거시의 실제 영향이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>점검</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>금리 사이클</td>
+<td style="text-align: center;">🟡</td>
+<td>연준 3.75~4.00% 동결 · 2명 인상 주장 · 10년물 4.93%(주간 거시 보고서 10/31) — 이 회사는 무차입·순현금</td>
+</tr>
+<tr>
+<td>순유동성</td>
+<td style="text-align: center;">⚪</td>
+<td>주간 −784억 달러 수축 · 한 주 수치</td>
+</tr>
+<tr>
+<td>위험 선호 민감도</td>
+<td style="text-align: center;">⚪</td>
+<td>베타 1.11 · 52주 고점 대비 −69% · 드론 방산주와 동반 하락</td>
+</tr>
+</tbody>
+</table>
+<h3>A.4 거시 thesis 노출</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 대만 억제 틀에 가장 직접 걸리는 종목 중 하나다. 이란·이스라엘 축은 수요와 원가 양쪽으로 걸린다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>기준 틀</th>
+<th style="text-align: center;">노출</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>대만 억제(분산·대량 무기)</td>
+<td style="text-align: center;">🟢</td>
+<td>표적드론·소모형 무인기·미사일 엔진 = 억제 기둥의 물량 공급</td>
+</tr>
+<tr>
+<td>이란 전쟁 매크로</td>
+<td style="text-align: center;">🟡</td>
+<td>방산 수요↑ ↔ 이스라엘 사업장 원가·안전</td>
+</tr>
+<tr>
+<td>워시 이중 전략</td>
+<td style="text-align: center;">🟡</td>
+<td>순현금이라 실질 긴축 피해 작음</td>
+</tr>
+<tr>
+<td>사용자 거시 관점(고베타 조정)</td>
+<td style="text-align: center;">⚪</td>
+<td>성장 방산 묶음으로 조정</td>
+</tr>
+</tbody>
+</table>
+<h3>A.5 매크로 민감도</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 셰켈 강세가 가장 직접적인 원가 역풍이다. 금리는 빚이 없어 약하게만 걸린다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>변수</th>
+<th style="text-align: center;">오를 때 영향</th>
+<th style="text-align: center;">강도</th>
+<th>8월 대비</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>정책금리</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">약</td>
+<td>변동 없음 — 현금 이자수익이 오히려 늘어남(2분기 순이자 1,020만 달러)</td>
+</tr>
+<tr>
+<td>10년물</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">중</td>
+<td>변동 없음 — 배수 압박</td>
+</tr>
+<tr>
+<td>달러</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">약</td>
+<td>해외 매출 20%</td>
+</tr>
+<tr>
+<td>셰켈</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">중</td>
+<td>셰켈 강세 = 이스라엘 인건비 상승 · 선물환 명목 3,020만 달러 · 헤지회계 미적용</td>
+</tr>
+<tr>
+<td>유가·원자재</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">중</td>
+<td>고정가 67%라 원가 상승을 못 넘김</td>
+</tr>
+</tbody>
+</table>
+<h3>A.6 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지정학 칸이 대부분 만점이라 날씨 축은 높다. 8월과 동급이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>묶음</th>
+<th>칸</th>
+<th>환산</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>지정학 4칸</td>
+<td>🟢 · 🟢 · 🟢 · 🟡</td>
+<td>5 · 5 · 5 · 4</td>
+</tr>
+<tr>
+<td>거시 3칸</td>
+<td>🟡 · ⚪ · ⚪</td>
+<td>4 · 2.5 · 2.5</td>
+</tr>
+<tr>
+<td>노출 4칸</td>
+<td>🟢 · 🟡 · 🟡 · ⚪</td>
+<td>5 · 4 · 4 · 2.5</td>
+</tr>
+</tbody>
+</table>
+<p>평균 = 43.5 ÷ 11 = <strong>⭐3.95</strong> → 득점 = 25 × 2.95 ÷ 4 = <strong>18.5 / 25</strong>. 8월(⭐4.0)과 동급.</p>
+<p>▶ 🟢 강화 = 2027 국방 예산에서 소모형 무인기·탄약 엔진 별도 항목 증액 / 🔴 훼손 = 국방 예산 동결·삭감 · 이스라엘 사업장 직접 피해</p>
+<hr />
+<h2 id="b">Section B. ⛰️ 산 — 산업 (소모형 무인기 · 탄약 엔진 · 극초음속 시험) ⭐4.25</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 전쟁의 방식이 바뀌는 산업이고 국가 돈이 계속 들어온다. 산업 전체 성장률이 연 30%에 못 미친다는 점만 만점을 막는다.</p>
+</blockquote>
+<h3>B.1 세상을 바꾸는 산업인가</h3>
+<p><strong>예(✅).</strong> 무인·자율 무기와 대량 생산 탄약이 전장의 기본 단위를 바꾸고 있다. 다만 "세상을 바꾼다"는 단독 신호가 아니다 — 같은 서사를 가진 드론 상장사가 많다.</p>
+<h3>B.2 국가 자본 투입</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 미국은 탄약·무인기 대량 생산에 예산을 붙이고 있고, 중국도 같은 방향이다.</p>
+</blockquote>
+<ul>
+<li>미 국방부 탄약 생산 확대(JASSM·LRASM·JDAM LR) · 소모형 무인기·협업 전투기 예산 · 골든돔. 이 회사는 이 가운데 미사일 엔진 2개 프로그램에 처음 이름을 올렸다(8/17 JASSM 2차 엔진 개발 · 8/24 JDAM LR 엔진 선정).</li>
+<li>중국도 대량 드론·미사일에 국가 자본을 붓는다. 미국이 손 놓으면 물량 열세가 굳는다.</li>
+</ul>
+<p>등급 🟢.</p>
+<h3>B.3 내러티브 다중성 5축</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 정책·지정학 이야기가 가장 강하고, 기술 이야기가 뒤를 받친다. 자본 쪽은 성장 방산주 조정으로 식었다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">해당</th>
+<th style="text-align: center;">깊이</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔧 기술</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">4</td>
+<td>저가 제트엔진 · 소모형 무인 전투기 · 고체로켓</td>
+</tr>
+<tr>
+<td>👥 사회</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">3</td>
+<td>"싼 무기" 서사는 대중보다 군 내부 논쟁</td>
+</tr>
+<tr>
+<td>🏛️ 정책</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">5</td>
+<td>탄약 증산 · 무인기 예산</td>
+</tr>
+<tr>
+<td>🌐 지정학</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">5</td>
+<td>우크라이나·중동 교훈 · 대만 억제</td>
+</tr>
+<tr>
+<td>💰 자본</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">3</td>
+<td>2026년 2월 공모(주당 84달러 · 순 13.5억 달러) 뒤 주가 −51% · 52주 고점 대비 −69%</td>
+</tr>
+</tbody>
+</table>
+<p>4축 수렴(강한 수렴) · 가장 강한 축 ⭐5. 깊이 평균 = 20 ÷ 5 = 4.0.</p>
+<figure class="dd-fig"><div id="fig-c3"></div><div class="dd-legend" id="fig-c3-leg"></div><figcaption id="fig-c3-cap"></figcaption></figure>
+
+<h3>B.4 산업 크기와 성장</h3>
+<p>국방 전체는 한 자릿수 성장이다. 소모형 무인기·탄약 엔진은 그보다 빠르지만 산업 기준 연 30%에는 못 미친다. 등급 ⚠️.</p>
+<h3>B.5 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 산업 매력은 높지만 성장 속도 칸이 점수를 깎는다.</p>
+</blockquote>
+<p>✅ 5 · 🟢 5 · 깊이 4.0 · ⚠️ 3 → 평균 = 17 ÷ 4 = <strong>⭐4.25</strong> → 득점 = 12.5 × 3.25 ÷ 4 = <strong>10.2 / 12.5</strong>. 8월(⭐4.5)보다 조금 낮다 — 자본 축이 식었다.</p>
+<p>▶ 🟢 강화 = 소모형 무인기 대량 조달 계약 공고 / 🔴 훼손 = 탄약 증산 예산 축소</p>
+<hr />
+<h2 id="c">Section C. 🌲 숲 — 섹터 (표적드론 · 소형 제트엔진 · 극초음속·고체로켓) ⭐2.93</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — Kratos는 실제로 막힌 자리(미사일 엔진·고체로켓·표적드론)에 서 있다. 그러나 그 자리에서 값을 올린 증거가 없다. 그래서 병목 칸들이 모두 상한에 걸렸다.</p>
+</blockquote>
+<h3>C.1 병목 시점 매트릭스</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 병목은 맞지만, 병목인 덕에 돈을 더 버는 증거는 없다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>병목</th>
+<th>Kratos 위치</th>
+<th style="text-align: center;">유지 기간</th>
+<th>해소 경로</th>
+<th style="text-align: center;">렌트 포획</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>지금(0~6개월)</td>
+<td>표적드론 · 극초음속 시험 · 고체로켓</td>
+<td>3군 표적드론 단독 공급 · 시험 인프라</td>
+<td style="text-align: center;">3~5년</td>
+<td>경쟁 표적 업체 진입 · 정부 자체 시험장 확충</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>6~24개월</td>
+<td>순항미사일·활공탄 엔진</td>
+<td>JASSM 2차 엔진 개발 · JDAM LR 엔진 선정(양산 전)</td>
+<td style="text-align: center;">추정 불가</td>
+<td>1순위 공급사(Williams International) 증설</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2~5년</td>
+<td>소모형 무인 전투기 대량 생산</td>
+<td>Valkyrie 연 40대 "2028년 초까지"</td>
+<td style="text-align: center;">추정 불가</td>
+<td>Anduril·General Atomics 등 경쟁 기체 양산</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+</tbody>
+</table>
+<p><strong>지불자 경로</strong> — 큰손 = 미 국방부·대형 원청(록히드·보잉). 막힘 = 탄약 증산 목표를 채울 엔진·고체로켓 공급이 모자라 미사일 조립 라인이 기다린다. 경로 = <code>직접</code>(표적·시험) + <code>1단계 간접</code>(원청을 거치는 엔진). 직접 파는 자리는 고객 집중(미 정부 69%) · 가격 인상 테스트 🔴(아래 D.6)와 같이 읽는다 — 큰손의 협상력이 마진을 누르고 있다.</p>
+<p><strong>렌트 포획 판정</strong></p>
+<ul>
+<li><strong>지금 칸 🔴</strong> — 매출이 FY23 → 최근 1년 47% 늘 때 매출총이익률은 25.9% → 23.0%로 내려갔다. 10-K는 "다년 고정가 계약에서는 인플레·인건비 상승을 회수할 수 없다"고 적는다(고정가 67%). 병목인데 마진이 정체·하락 = 포획 실패.</li>
+<li><strong>6~24개월 칸 🔴</strong> — 엔진은 원청을 거치는 하청 자리이고, GE 엔진 협업은 누적 매출 3,450만 = 누적 원가 3,450만 달러(마진 0%). 구매자 협상력 상한.</li>
+<li><strong>2~5년 칸 🔴</strong> — Valkyrie는 "저가가 곧 전략"이고 경쟁 기체가 있다. 우회 비용이 낮다.</li>
+</ul>
+<h3>C.2 4중 필터</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 경쟁자가 적고 순위도 높지만, 마진이 이 숲을 약하게 만든다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>필터</th>
+<th style="text-align: center;">판정</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 수요·공급</td>
+<td style="text-align: center;">🔴 상한</td>
+<td>지금 칸을 따름</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">🟡 과점</td>
+<td>표적드론 단독 · 소형 엔진 2강 · 무인기는 다수</td>
+</tr>
+<tr>
+<td>③ 섹터 순위</td>
+<td style="text-align: center;">⭐4</td>
+<td>표적드론 1위 · 소형 엔진 2위</td>
+</tr>
+<tr>
+<td>④ 마진</td>
+<td style="text-align: center;">⚪</td>
+<td>매출총이익률 23% · 영업이익률 0% 근처</td>
+</tr>
+</tbody>
+</table>
+<h3>C.3 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 병목 세 칸과 수요·공급 칸이 모두 렌트 포획 🔴 상한에 걸려 숲 축이 크게 내려갔다. 8월엔 이 상한 규칙이 없었다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">원래</th>
+<th style="text-align: center;">상한 적용 후</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>지금</td>
+<td style="text-align: center;">🟢5</td>
+<td style="text-align: center;">⚪2.5 (렌트 포획 🔴)</td>
+</tr>
+<tr>
+<td>6~24개월</td>
+<td style="text-align: center;">🟡4</td>
+<td style="text-align: center;">⚪2.5 (렌트 포획 🔴)</td>
+</tr>
+<tr>
+<td>2~5년</td>
+<td style="text-align: center;">⚪2.5</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>① 수요·공급</td>
+<td style="text-align: center;">🟢5</td>
+<td style="text-align: center;">⚪2.5</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>③ 섹터 순위</td>
+<td style="text-align: center;">⭐4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>④ 마진</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+</tbody>
+</table>
+<p>평균 = 20.5 ÷ 7 = <strong>⭐2.93</strong> → 득점 = 12.5 × 1.93 ÷ 4 = <strong>6.0 / 12.5</strong>. 렌트 포획 상한이 세 칸에서 합 −2.9점을 깎았다.</p>
+<p>⚠️ 8월 숲 ⭐4.0 → 2.93은 회사가 나빠져서가 아니라 10/11부터 적용된 "병목 칸은 값을 올린 증거가 있어야 만점" 규칙 때문이다. 같은 규칙으로 8월을 다시 매기면 비슷한 값이 나온다.</p>
+<p>▶ 🟢 강화 = 엔진 양산 계약에서 개발 단계보다 높은 마진 공시 · 매출총이익률 25% 회복 / 🔴 훼손 = 고정가 계약 손실 충당금 · 매출총이익률 20% 아래 2분기 연속</p>
+<hr />
+<h2 id="d">Section D. 🌳 나무 — 기업 ⭐3.53</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — Kratos는 "고객이 떠나지 못하는 자리"는 점점 더 확보하고 있다. 그 자리에서 버는 돈은 아직 확인되지 않았다.</p>
+</blockquote>
+<h3>D.0 제품·수익모델 (상품 해부 보고서 요약 · <a href="../../RDive_Reports/KTOS/KTOS_RDive_2026-10-31.html">R-Dive 2026-10-31</a>)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 정부 집중형 하드웨어 회사가 표적드론에서 엔진·로켓·무인기로 옮겨 가는 중이다. 이번에 엔진이 처음으로 계약 단계에 올라섰고, 마진과 현금은 나빠졌다.</p>
+</blockquote>
+<ul>
+<li><strong>아키타입</strong>: 주 = 정부 집중형(2분기 미 정부 매출 69%) · 부 = 믹스 전환형(표적드론 → 엔진·로켓·무인기). 8월과 같다.</li>
+<li><strong>8월 이후 새 사실</strong>: 소형 제트엔진 GEK800(군 형식명 F143)이 공대지 순항미사일 JASSM의 2차 엔진 개발 계약을 받았고(8/17), J85가 보잉 JDAM LR 활공탄 엔진으로 선정됐다(8/24). 두 건 모두 금액 미공시. 10/9 Jetset Airmotive를 주식 54만 7,249주로 인수했다(424B3 10/14).</li>
+<li><strong>반대 방향</strong>: Valkyrie 연 40대 체제가 "2027년 말까지"(2·5월) → "2028년 초까지"(8/4 보도자료)로 바뀌었다. 밀린 폭은 길어야 한 분기다 — 🔧 8월 Deep-Dive의 "1년 지연"은 과장이었다(역사 해부 보고서 원문 대조). 회사는 바꾼 이유를 설명하지 않았다. 에어버스와 만든 유럽형 U740은 첫 비행을 했지만 실전 목표는 2029년이다.</li>
+<li><strong>치명 함정 ① 늘어난 매출이 이익으로 안 남는다</strong> — 2분기 매출이 1년 새 1.073억 달러 늘었는데 부문 영업이익은 320만 달러만 늘었다(1달러당 3센트). GAAP 영업이익은 −160만 달러였고, 세전 흑자는 순이자 1,020만 달러 덕이다.</li>
+<li><strong>치명 함정 ② 현금이 고객 쪽에 묶인다</strong> — 순 계약자산(일은 했지만 아직 청구·회수 못 한 돈)이 6개월 새 2.19억 → 3.12억 달러(+42%). 매출채권 회수일수 138일. FY26 영업현금 가이던스 +6,000만~7,000만 → +3,000만~5,000만 달러.</li>
+<li><strong>좋아진 것</strong>: 희석이 사실상 멈췄다(5/1 대비 약 +0.4% · Jetset 대가가 거의 전부).</li>
+<li><strong>수익모델 등급</strong>: 예측가능성 🟡 · 수익성 🔴 · 과금 강도 ⚪ · 고객 묶임 🟢 · 12함정 🚩 7개(직전 8개).</li>
+</ul>
+<figure class="dd-fig"><div id="fig-d0"></div><div class="dd-legend" id="fig-d0-leg"></div><figcaption id="fig-d0-cap"></figcaption></figure>
+
+<h3>D.0.5 고객 검증 등급</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 기존 사업과 엔진 개발은 계약으로 확인된다. Valkyrie 대량 수요와 고체로켓 외부 판매는 아직 계약이 없다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>고객·관계</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3군 표적드론 · MACH-TB 2.0 · 우주군 지상국 · JASSM 2차 엔진 개발 · Javelin 탐색기</td>
+<td style="text-align: center;">A</td>
+<td>10-K·보도자료 계약(일부 금액 미공시·천장)</td>
+</tr>
+<tr>
+<td>보잉 JDAM LR 엔진 · 에어버스 파트너십</td>
+<td style="text-align: center;">B</td>
+<td>공시된 선정·파트너</td>
+</tr>
+<tr>
+<td>Sentinel(Northrop Grumman 하청 · 미사일·탑재물 운반 차량)</td>
+<td style="text-align: center;">B</td>
+<td>10-K가 미래 4대 사업으로 명시 · Kratos 몫 금액 미공시</td>
+</tr>
+<tr>
+<td>Valkyrie 연 40대 수요</td>
+<td style="text-align: center;">C</td>
+<td>해병대 24대 로트는 "고객과의 협의 기반" 생산 · 대량 양산 계약 없음</td>
+</tr>
+<tr>
+<td>독일군 U740 주문 · Prometheus 외부 판매 · 엔진 2029년 연 1만 대</td>
+<td style="text-align: center;">D</td>
+<td>회사 구상 · 계약 없음</td>
+</tr>
+</tbody>
+</table>
+<p>엔진 "2027년 3,000대"는 고객 주문이 아니라 회사가 미리 산 부품 재고다(운전자본 1,900만~2,100만 달러).</p>
+<h3>D.5 곡괭이 질 — <strong>(B) 자본갈증형</strong> (변동 없음)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 현금은 많지만 그건 공모로 모은 돈이다. 사업이 스스로 현금을 만들지는 못하고 있다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 마진</td>
+<td style="text-align: center;">🔴</td>
+<td>매출총이익률 23% · 부문 영업이익률 3~4%</td>
+</tr>
+<tr>
+<td>② 설비투자 강도</td>
+<td style="text-align: center;">🟡</td>
+<td>드론 자재를 설비투자에서 재고로 옮김(분류 변경)</td>
+</tr>
+<tr>
+<td>③ 외부 자금 의존</td>
+<td style="text-align: center;">🟡</td>
+<td>2026년 2월 공모 1회 · 이후 인수 대가 주식(Nomad 97.2만 주 · Jetset 54.7만 주)만 나감</td>
+</tr>
+<tr>
+<td>④ 자체 현금 충당</td>
+<td style="text-align: center;">🔴</td>
+<td>상반기 영업현금 −3,840만 달러 · 최근 1년 잉여현금 약 −1.16억 달러</td>
+</tr>
+</tbody>
+</table>
+<p><strong>마진의 출처</strong> — 정부 보조금 의존은 없다(정책렌트형 P 아님). 마진 자체가 얇고, 고정가 계약이라 원가 상승을 회사가 진다. 무인기에 13년간 자체 투자 3.1억 달러 넘게 넣었는데, 무인기 부문 영업이익률은 1.5%다(업종 점검 보고서).</p>
+<h3>D.6 해자 (5종 + AI 침식)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 해자는 "갈아타기 어려움" 하나다. 값을 올리지 못해 해자 점수에 상한이 걸렸다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>유형</th>
+<th style="text-align: center;">작동</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 네트워크 효과</td>
+<td style="text-align: center;">❌</td>
+<td>해당 구조 없음</td>
+</tr>
+<tr>
+<td>② 브랜드</td>
+<td style="text-align: center;">❌</td>
+<td>동종 대비 판가 프리미엄 없음(매출총이익률 23% vs L3Harris 25.6%·AeroVironment 26.5%)</td>
+</tr>
+<tr>
+<td>③ 전환 비용</td>
+<td style="text-align: center;">✅</td>
+<td>3군 표적드론 수십 년 단독 공급 — 경쟁 없는 확정 고정가 계약(해군 2.39억 · 공군 천장 3.74억 달러) · 엔진이 미사일 설계에 들어감</td>
+</tr>
+<tr>
+<td>④ 비용 우위</td>
+<td style="text-align: center;">⚠️</td>
+<td>"저비용이 곧 기술"은 회사 주장 · 마진으로 확인되지 않음</td>
+</tr>
+<tr>
+<td>⑤ 법적 보호</td>
+<td style="text-align: center;">⚠️</td>
+<td>수출 통제·보안 인가·단독 공급 지정이 진입을 막는 증거는 있음 · 국방장관이 2025-04-30 메모로 정부 수리권 계약 수정을 지시(독점 수리 매출이 약해질 수 있음) · 가격 테스트 🔴이라 ✅ 불가</td>
+</tr>
+</tbody>
+</table>
+<p><strong>가격 인상 테스트</strong> — 🔴. 물량이 47% 늘 때 매출총이익률이 2.9%p 내려갔다. 10-K가 고정가 계약의 원가 전가 불가를 명시한다. 엔진 협업은 원가에 팔리고 있다.</p>
+<p><strong>D.6-a 환산</strong> — ✅ 1개 → ⭐3 · 가격 테스트 🔴 상한 → <strong>⭐2</strong>. <strong>D.6-b</strong> — 오래가는 자산(정부 단독 공급 지위·시험 인프라·이스라엘 마이크로파 공장)과 바뀌는 자산(엔진·무인기·고체로켓 기술)이 고루 있다 → <strong>⭐4</strong>. <strong>D.6 = (2 + 4) ÷ 2 = ⭐3.0</strong> · 해자 내구성 = 정부 단독 공급 주기만큼 길지만 이익을 지켜 주지는 못한다.</p>
+<p><strong>🤖 AI 침식 점검</strong> — <code>해당 없음</code>(물리 무기 하드웨어). 오히려 AI 데이터센터의 전자부품 쟁탈이 원가를 올리는 반대 방향 영향이 있다(10-Q).</p>
+<h3>D.7 수직 통합 + 산업 횡단 확장성 ⭐5</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 무인기·엔진·로켓·우주 지상국·마이크로파 부품까지 여러 시장에 걸친 확장형이다.</p>
+</blockquote>
+<p>다중 캐즘형. 확장 증거 = 엔진의 미사일 프로그램 진입. 반대 증거 = 엔진(GE)·유럽 무인기(에어버스)·고체로켓(RAFAEL) 모두 파트너와 나눠 갖는 구조라 성공해도 몫이 줄어든다.</p>
+<h3>D.8 하방 닫힘 / 상방 열림 ⭐4</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 망할 위험은 낮다. 큰 상방은 엔진·무인기 양산이 시작되는 2027~2028년 이후에 열린다.</p>
+</blockquote>
+<ul>
+<li><strong>하방</strong>: 현금 14.38억 달러(6/28) · 장기 차입 0 · 미인출 회전 한도 3억 달러 · 잔고 20.84억 달러(그중 예산 확정분 15.72억 달러).</li>
+<li><strong>상방</strong>: 탄약 엔진 양산(연 수천 대) · Valkyrie 대량 생산 · 고체로켓 판매.</li>
+<li><strong>현금 젖소</strong>: 표적드론·정부솔루션이 버팀목이지만 현금을 크게 남기지는 못한다.</li>
+</ul>
+<h3>D.9 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 수익모델과 곡괭이 질이 낮고, 확장성과 하방이 높다. 8월과 동급이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">환산</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D.0 수익모델</td>
+<td style="text-align: center;">3.125</td>
+<td>🟡4 · 🔴1 · ⚪2.5 · 🟢5 평균</td>
+</tr>
+<tr>
+<td>D.5 곡괭이 질</td>
+<td style="text-align: center;">2.5</td>
+<td>(B)</td>
+</tr>
+<tr>
+<td>D.6 해자</td>
+<td style="text-align: center;">3.0</td>
+<td>(2 + 4) ÷ 2</td>
+</tr>
+<tr>
+<td>D.7 확장성</td>
+<td style="text-align: center;">5</td>
+<td>다중 캐즘</td>
+</tr>
+<tr>
+<td>D.8 하방·상방</td>
+<td style="text-align: center;">4</td>
+<td>현금 충분 · 상방 지연</td>
+</tr>
+</tbody>
+</table>
+<p>평균 = 17.625 ÷ 5 = <strong>⭐3.53</strong> → 득점 = 12.5 × 2.53 ÷ 4 = <strong>7.9 / 12.5</strong>. 8월(⭐3.4 · 구 체계)과 동급.</p>
+<p>▶ 🟢 강화 = 엔진 양산 계약·금액 공시 · 순 계약자산 감소 전환 / 🔴 훼손 = Valkyrie 양산 시점 추가 후퇴 · 고정가 손실 충당금</p>
+<hr />
+<h2 id="e">Section E. 🌲🌳 옆의 나무 — 경쟁 ⭐3.00</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 성장은 동종 가운데 가장 빠르다. 그러나 마진은 동종 중간 이하이고, 대형 방산 원청보다 영업이익률이 10%p 이상 낮다.</p>
+</blockquote>
+<h3>E.1 비교 매트릭스 (전 열 TTM · GAAP · USD · yfinance 2026-10-30)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 같은 드론 방산인 AeroVironment와 주가가 가장 같이 움직인다. 대형 원청과 비교하면 성장은 앞서고 이익은 뒤진다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>회사</th>
+<th style="text-align: right;">시가총액</th>
+<th style="text-align: right;">매출</th>
+<th style="text-align: right;">매출 증가</th>
+<th style="text-align: right;">매출총이익률</th>
+<th style="text-align: right;">영업이익률</th>
+<th style="text-align: right;">매출 대비 시총</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Kratos</strong></td>
+<td style="text-align: right;">77억</td>
+<td style="text-align: right;">15.2억</td>
+<td style="text-align: right;">+30.5%</td>
+<td style="text-align: right;">23.0%</td>
+<td style="text-align: right;">−0.2%</td>
+<td style="text-align: right;">5.1배</td>
+<td>본 종목</td>
+</tr>
+<tr>
+<td>록히드마틴</td>
+<td style="text-align: right;">1,471억</td>
+<td style="text-align: right;">791억</td>
+<td style="text-align: right;">+11.3%</td>
+<td style="text-align: right;">11.7%</td>
+<td style="text-align: right;">11.4%</td>
+<td style="text-align: right;">1.9배</td>
+<td>섹터 대장</td>
+</tr>
+<tr>
+<td>L3Harris</td>
+<td style="text-align: right;">517억</td>
+<td style="text-align: right;">233억</td>
+<td style="text-align: right;">+7.1%</td>
+<td style="text-align: right;">25.6%</td>
+<td style="text-align: right;">14.3%</td>
+<td style="text-align: right;">2.2배</td>
+<td>우월(마진)</td>
+</tr>
+<tr>
+<td>AeroVironment</td>
+<td style="text-align: right;">64억</td>
+<td style="text-align: right;">20.0억</td>
+<td style="text-align: right;">+5.7%</td>
+<td style="text-align: right;">26.5%</td>
+<td style="text-align: right;">−2.3%</td>
+<td style="text-align: right;">3.2배</td>
+<td>드론 직접 경쟁</td>
+</tr>
+<tr>
+<td>General Dynamics</td>
+<td style="text-align: right;">1,007억</td>
+<td style="text-align: right;">565억</td>
+<td style="text-align: right;">+12.9%</td>
+<td style="text-align: right;">15.0%</td>
+<td style="text-align: right;">10.5%</td>
+<td style="text-align: right;">1.8배</td>
+<td></td>
+</tr>
+<tr>
+<td>Leidos</td>
+<td style="text-align: right;">179억</td>
+<td style="text-align: right;">176억</td>
+<td style="text-align: right;">+7.2%</td>
+<td style="text-align: right;">17.8%</td>
+<td style="text-align: right;">11.7%</td>
+<td style="text-align: right;">1.0배</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>(단위: 달러)</p>
+<figure class="dd-fig"><div id="fig-e1"></div><div class="dd-legend" id="fig-e1-leg"></div><figcaption id="fig-e1-cap"></figcaption></figure>
+
+<h3>E.2 종합 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 수익모델은 열위, 정부 의존은 방어적, 경쟁 포지션은 지키는 쪽이다.</p>
+</blockquote>
+<ul>
+<li><strong>(a) 수익모델 — 열위(⚪)</strong>: 매출총이익률은 동종 중간이지만 영업이익률이 대형 원청(10~14%)보다 10%p 이상 낮다. 성장률만 앞선다.</li>
+<li><strong>(b) 정부 대 민간 — 방어적(🟡)</strong>: 미 정부 69% · 해외 20%(+47%) · 상업 11%. 계약 하나가 5%를 넘지 않는다.</li>
+<li><strong>(c) 경쟁 포지션 — 방어(⚪)</strong>: 표적드론은 1위지만, 공군 협업 전투기 1차 사업 시제기는 Anduril·General Atomics가 맡았고(2024), 소형 엔진은 Williams International이 1순위다. 무인기 기체 경쟁자가 늘고 있다.</li>
+</ul>
+<h3>E.3 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 수익모델과 경쟁 포지션 칸이 낮아 옆의 나무 축은 중간 아래다.</p>
+</blockquote>
+<p>(a) ⚪2.5 · (b) 🟡4 · (c) ⚪2.5 → 평균 = 9 ÷ 3 = <strong>⭐3.00</strong> → 득점 = 12.5 × 2 ÷ 4 = <strong>6.3 / 12.5</strong>. 8월(⭐3.0)과 같다.</p>
+<p>▶ 🟢 강화 = 엔진 양산에서 1순위 공급사와 물량 분할 확정 · 협업 전투기 2차 사업 진입 / 🔴 훼손 = 표적드론 경쟁 입찰 전환</p>
+<hr />
+<h2 id="f">Section F. 👤 사람 — 경영진 ⭐3.64 (객관 7축 · 비전축 사용자 ⭐ 대기)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 에릭 데마르코는 20년 넘게 한 전략(저비용 대량 무기)을 밀어 온 경영자다. 다만 "CEO 본인은 주식을 안 판다"는 7월 기록은 틀렸고, 그는 2022년 이후 꾸준히 팔아 왔다.</p>
+</blockquote>
+<h3>F.1 임원 8축 — 회장·CEO 에릭 데마르코 <a href="../../PeopleDive_Reports/KTOS/PeopleDive_EricDeMarco_2026-11-01.html">사람 해부 보고서 2026-11-01</a></h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 약력·평판·도덕성은 높고, 지분 정렬이 크게 내려갔다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">7/28 → 11/1</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 약력</td>
+<td style="text-align: center;">⭐4.5 → 4.5</td>
+<td>변동 없음</td>
+</tr>
+<tr>
+<td>② 명성</td>
+<td style="text-align: center;">⭐4.0 → 4.0</td>
+<td>업계 평판 유지</td>
+</tr>
+<tr>
+<td>③ 능력</td>
+<td style="text-align: center;">⭐3.0 → 3.0</td>
+<td>매출 전망 2회 상향 · 엔진 무기 사업 진입 ↔ 영업현금 전망 하향 · Valkyrie 한 분기 지연</td>
+</tr>
+<tr>
+<td>④ 도덕성</td>
+<td style="text-align: center;">⭐4.5 → 4.0</td>
+<td>위반·제재 없음 · 매도와 계획 확대 모두 공시 · 8/4 "주문 없이 먼저 짓지 않는다" 발언이 회사 공시 기록(엔진 부품 선매입)과 맞지 않는 과장</td>
+</tr>
+<tr>
+<td>⑤ 비전</td>
+<td style="text-align: center;">💬 사용자 ⭐ 대기</td>
+<td>아래 의견</td>
+</tr>
+<tr>
+<td>⑥ 지분·이해 정렬</td>
+<td style="text-align: center;">⭐3.5 → 2.5</td>
+<td>시장 매수 약 100만 달러(2024~25) vs 매도 약 8,400만 달러(2022년 8회 + 2025-12 이후 4회 110만 주) · 5/15 매도 계획 한도 80만 → 150만 주 확대 · 남은 한도 최대 약 120만 주</td>
+</tr>
+<tr>
+<td>⑦ 거버넌스</td>
+<td style="text-align: center;">⭐3.5 → 3.5</td>
+<td>승계 검토 문구 확인 · 장기 성과급이 조정 EBITDA 총액에만 연동 · 장기 이사 반대표 6.9~10.1% · 후계 후보 미공개</td>
+</tr>
+<tr>
+<td>⑧ 외부 평가</td>
+<td style="text-align: center;">⭐4.0 → 4.0</td>
+<td>직원 평가 CEO 지지 70% → 72%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>도덕성 관문 = 통과</strong>(과장 발언 1건 기록).</p>
+<p><strong>언행일치</strong> — 8/4 실적 발표에서 회사가 "가장 가치 있는 방산 회사"라고 말한 열흘 뒤(8/14) 소유 주식의 약 27%인 30만 주(약 1,930만 달러)를 팔았다. 8/14는 5/15 계획 수정 뒤 대기 기간이 끝나 처음 팔 수 있는 날이고, 계획 확대도 같은 날 10-Q에 공시됐다 — 숨긴 것은 없다. 2026-02 회사 공모(84달러) 직전 두 달 동안 CEO 개인도 73~90달러에 80만 주를 팔았다. 매출·극초음속 공언은 지켜지는 쪽이고, 영업현금 전망은 5,000만~6,000만 → 6,000만~7,000만 → 3,000만~5,000만 달러로 내려갔다.</p>
+<p><strong>💬 비전·가치관 의견(별점 아님)</strong> — 추진력은 상위권이다(극초음속 "적어도 7억 달러" · 엔진 연 1만 대). 의미주의자 정렬은 "창업자형"보다 "전문경영인형" 읽기가 더 단단해졌다 — 사업 끈기는 강하지만 받은 보상 주식은 정기적으로 현금화해 왔다. 후광 효과 반론: 장기 재임 CEO의 일관된 서사가 곧 주주 이익 정렬을 뜻하지는 않는다. 판단은 사용자 몫.</p>
+<h3>F.2 핵심 인재</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — CFO도 매달 팔고 있고, 엔진·무인기 책임자가 다음 2년의 시험대에 서 있다.</p>
+</blockquote>
+<ul>
+<li><strong>디애나 룬드(CFO)</strong> — 2025-06부터 거의 매달 5,000~7,000주 매도 · 6월 새 계획 한도 19만 9,285주 = 소유 주식의 약 75%.</li>
+<li><strong>스티브 펜들리(무인시스템 사장)</strong> — Valkyrie 책임자 · 7/28 이후 2건 매도 · 회사 소유 Valkyrie 첫 판매(930만 달러).</li>
+<li><strong>스테이시 록(엔진 사업부 사장)</strong> — 엔지니어 출신 35년+ · 엔진 3,000 → 5,000 → 연 1만 대 공언의 실무 책임자.</li>
+<li><strong>빌 윌슨(C5ISR 사업부 사장)</strong> — 9/28 내부 승진 · 사업부 CFO 출신 · 전임 퇴임 사유 미공시.</li>
+</ul>
+<h3>F.⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지분 정렬 칸 하나가 사람 축을 끌어내렸다.</p>
+</blockquote>
+<p>객관 7축 ①4.5 · ②4.0 · ③3.0 · ④4.0 · ⑥2.5 · ⑦3.5 · ⑧4.0 → 평균 = 25.5 ÷ 7 = <strong>⭐3.64</strong> → 득점 = 12.5 × 2.64 ÷ 4 = <strong>8.2 / 12.5</strong>. 8월(⭐4.0 · 구 체계)보다 낮다.</p>
+<p>▶ 🟢 강화 = CEO 시장 매수 · 매도 계획 축소 · 후계 후보 공개 / 🔴 훼손 = 남은 한도(약 120만 주) 집중 매도 · 엔진·무인기 책임자 이탈</p>
+<hr />
+<h2 id="g">Section G. 🔢 숫자 — 재무건전성 ⭐3.00</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매출은 빠르게 늘고 통장은 두둑하다. 마진과 현금 창출은 둘 다 나쁘다. 점수는 8월과 같지만, 나쁜 두 칸은 이미 최저점이라 더 나빠져도 점수에 안 잡힌다.</p>
+</blockquote>
+<h3>G.1 기본 정량 (SEC XBRL · 2Q FY26 = 2026-06-28)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 분기 매출은 4.59억 달러로 1년 새 31% 늘었고, 영업이익은 0 근처다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>분기 매출</td>
+<td>2Q25 3.52억 → 3Q25 3.48억 → 1Q26 3.71억 → 2Q26 4.59억 달러</td>
+</tr>
+<tr>
+<td>매출총이익률</td>
+<td>21.0% → 22.2% → 24.2% → 21.8%</td>
+</tr>
+<tr>
+<td>영업이익</td>
+<td>370만 → 710만 → 470만 → −160만 달러</td>
+</tr>
+<tr>
+<td>순이익</td>
+<td>290만 → 870만 → 1,190만 → 440만 달러(이자수익 포함)</td>
+</tr>
+<tr>
+<td>영업현금</td>
+<td>FY25 −4,210만 · 2026 상반기 −3,840만 달러(전년 −4,090만)</td>
+</tr>
+<tr>
+<td>현금</td>
+<td>14.38억 달러(6/28) · 장기 차입 0 · 리스 포함 총부채 1.94억</td>
+</tr>
+<tr>
+<td>잔고(잔여 수행의무)</td>
+<td>14.14억(6/25) → 15.73억(12/25) → 20.84억 달러(6/26)</td>
+</tr>
+<tr>
+<td>주식보상</td>
+<td>FY25 3,550만 · 2026 상반기 3,130만 달러</td>
+</tr>
+</tbody>
+</table>
+<p>참고(점수 밖): 시가총액 77.4억 달러(1억 8,827만 주 × 41.09달러) · 매출 대비 5.1배 · 기업가치 ÷ EBITDA 74배 · 52주 범위 36.37~134.00달러.</p>
+<h3>G.1.5 🎯 시총 10배 랜드마크</h3>
+<p>77억 달러 → 10배면 774억 달러. 💡 지금은 AeroVironment(64억) 바로 위이고, 텐배거면 노스럽그러먼(792억) 크기다(yfinance 10/30 · 규모 비교일 뿐).</p>
+<figure class="dd-fig"><div id="fig-g15"></div><div class="dd-legend" id="fig-g15-leg"></div><figcaption id="fig-g15-cap"></figcaption></figure>
+
+<h3>G.3 4축</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 성장과 금리 내구성은 만점, 마진과 현금은 최저점이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>측정</th>
+<th style="text-align: center;">등급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 매출 성장</td>
+<td>2Q +30.5%(유기 +19.1%) · FY26 매출 가이던스 +5,000만 달러 상향(8/4) · 3Q 컨센 4.70억 달러</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>② 마진</td>
+<td>매출총이익률 FY23 25.9% → 최근 1년 23.0% · GAAP 영업이익 2Q 적자 · 3Q 영업이익 가이던스 100만~400만 달러 · 원가 추정 변경액은 "중요하지 않음" 문구만 있고 금액 비공시(매출의 1%만 돼도 약 1,500만 달러로 3Q 영업이익 가이던스보다 큼)</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>③ 현금 창출</td>
+<td>영업현금 상반기 −3,840만(전년과 같은데 매출은 +27%) · 매출채권 회수일수 138일 · FY26 영업현금 가이던스 하향</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>④ 고금리 내구성</td>
+<td>무차입 · 순현금 · 미인출 회전 한도 3억 달러</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+</tbody>
+</table>
+<h3>G.4 고금리·고물가 내구성 (빠른 점검)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 금리는 문제가 아니다. 물가가 문제다 — 고정가 계약이라 원가가 오르면 회사가 고스란히 진다.</p>
+</blockquote>
+<p><strong>G.4-a 금리·부채</strong> — 무차입·순현금이라 차환 위험이 구조적으로 없다. 🔧 단 신용약정에 분기마다 확인하는 재무약정(순차입 배수 4.00배 이하 · 이자보상 3.00배 이상)이 있다 — 8월에 쓴 "약정 없음"을 정정한다. 여유는 EBITDA가 69~88% 빠져도 버틸 만큼 크다(내구성 정밀 진단). 금융리스 신규 체결은 8월 점검 때 연환산 약 8,500만 달러로 둔화했다.</p>
+<p><strong>G.4-b 물가·원자재</strong> — 물가 부호 = 피해자 쪽(−). 고정가 비중 65.3% → 67.3%(1년 새 고정가 매출 +7,910만 달러) · 10-K가 원가 전가 불가를 명시 · 셰켈 강세(이스라엘 인력 700명+) · AI 데이터센터發 전자부품·SD카드 쟁탈(10-Q 원문). 회사는 부품을 미리 대량으로 사서 대응했고, 그만큼 재고·운전자본이 묶였다.</p>
+<h3>G.5 궤적</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매출과 잔고는 오르고, 마진과 현금은 제자리이거나 나빠진다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>줄기</th>
+<th>흐름</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매출</td>
+<td>FY23 10.37억 → 최근 1년 15.22억 달러 · FY26 가이던스 상향</td>
+</tr>
+<tr>
+<td>마진</td>
+<td>매출총이익률 3년 하락 후 23% 근처 정체</td>
+</tr>
+<tr>
+<td>현금</td>
+<td>영업현금 3년째 마이너스 근처 · 상반기 패턴 반복</td>
+</tr>
+<tr>
+<td>희석</td>
+<td>2026 상반기 공모 후 정지(5/1 대비 약 +0.4%)</td>
+</tr>
+<tr>
+<td>잔고</td>
+<td>1년 새 +47%</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-g5"></div><div class="dd-legend" id="fig-g5-leg"></div><figcaption id="fig-g5-cap"></figcaption></figure>
+
+<h3>G.7 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 숫자 축은 8월과 같다. 마진·현금 두 칸이 최저점이라 실제 악화가 점수에 반영되지 못하는 상태다.</p>
+</blockquote>
+<p>① 🟢5 · ② 🔴1 · ③ 🔴1 · ④ 🟢5 → 평균 = 12 ÷ 4 = <strong>⭐3.00</strong> → 득점 = 12.5 × 2 ÷ 4 = <strong>6.3 / 12.5</strong>.</p>
+<p>▶ 🟢 강화 = 영업현금 분기 흑자 전환 · 순 계약자산 감소 / 🔴 훼손 = FY26 영업현금 가이던스 추가 하향 · 매출총이익률 20% 아래</p>
+<hr />
+<h2 id="g8">고금리·고물가 내구성 정밀 진단 (별도 서브에이전트 · 점수 밖)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚이 없어 회사가 망하는 경로는 보이지 않는다. 다만 현금이 잉여현금흐름 밖(인수·합작 출자·주식보상 세금 대납)으로도 새고 있어, 투자를 줄이고 버틸 수 있는 기간이 8월보다 짧아졌다.</p>
+</blockquote>
+<p><strong>🏷️ 종합 = ⚪ 조건부 · 신뢰도 낮음~중간(하단) · 8월과 같은 등급.</strong> 2분기 재무제표(6/28)를 다시 쓴 판정이라 11/5 3분기 10-Q로 곧 갱신된다.</p>
+<table>
+<thead>
+<tr>
+<th>8월 대비</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>금리 기둥</td>
+<td>"약정 없음" → <strong>약정은 있지만 멀다</strong>(순차입 4.00배 이하 · 이자보상 3.00배 이상 · EBITDA 69~88% 하락까지 여유). 위반은 원가 +20%·물량 −20%가 겹치는 최악에서만 처음 생기고, 대가는 회전 한도 상실이지 지급불능이 아니다</td>
+</tr>
+<tr>
+<td>조달 쪽</td>
+<td>악화 — 상반기 주식보상 세금 현금 대납 5,910만 달러(전년 1,830만) · 주가 −25.7%로 증자 여력 31.7억 → 17.3억~23.3억 달러</td>
+</tr>
+<tr>
+<td>물가 쪽</td>
+<td>엇갈림 — 셰켈 약세(달러 대비 +3.9%)는 플러스 · 이미 약정한 구매주문 4.80억 달러(1년 안 2.94억)는 재고를 되돌리기 어렵다는 쪽</td>
+</tr>
+<tr>
+<td>버틸 수 있는 기간</td>
+<td>투자 축소 시 5.7~8.0년 → <strong>4.4~7.0년</strong>(세금 대납 유지 가정)</td>
+</tr>
+</tbody>
+</table>
+<p>🎯 <strong>버티는가</strong> — ⚪ 여전히 버틴다. 관건은 "현금으로 무엇을 계속 사 주느냐"다. 갈림길 변수(불변) = 2027 양산용으로 미리 산 재고를 필요할 때 되돌릴 수 있는가 — 판별 시점은 11/5 3분기 10-Q의 재고·순 계약자산·영업현금. (낮은 신뢰도 참고 · 매도 신호 아님 · 7축 점수 미반영)</p>
+<p>전문 = 내부 작업 파일(G8_output).</p>
+<hr />
+<h2 id="h">Section H. 시나리오 · 일정 · 리스크 신호</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회사에 대한 판단은 8월과 거의 같고, 주가만 26% 내렸다. 그래서 같은 미래를 가정해도 기대 수익이 1.10배에서 1.41배로 올라왔다. 아직 1.5배 문턱 아래다.</p>
+</blockquote>
+<h3>H.1 시나리오 (5년 · 밴드)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 5년 뒤 목표 크기는 8월 그대로 두고, 진입 가격만 바꿨다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: center;">확률</th>
+<th style="text-align: right;">5년 목표 시총</th>
+<th style="text-align: center;">2년</th>
+<th style="text-align: center;">3년</th>
+<th style="text-align: center;">5년</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🟢 낙관</td>
+<td style="text-align: center;">20%</td>
+<td style="text-align: right;">약 195억 달러</td>
+<td style="text-align: center;">1.99x</td>
+<td style="text-align: center;">2.21x</td>
+<td style="text-align: center;">2.40x</td>
+</tr>
+<tr>
+<td>🟡 기준</td>
+<td style="text-align: center;">55%</td>
+<td style="text-align: right;">약 115억 달러</td>
+<td style="text-align: center;">1.16x</td>
+<td style="text-align: center;">1.28x</td>
+<td style="text-align: center;">1.42x</td>
+</tr>
+<tr>
+<td>🔴 비관</td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: right;">약 48억 달러</td>
+<td style="text-align: center;">0.67x</td>
+<td style="text-align: center;">0.60x</td>
+<td style="text-align: center;">0.59x</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>기준 시총</strong>: 1억 8,827만 주 × 41.09달러 = 77.4억 달러. 2031년 주식 수는 주식보상 희석을 넣어 약 1억 9,800만 주로 잡았다.</li>
+<li><strong>목표·확률을 왜 안 바꿨나</strong>: 8월 이후 실적은 새로 나오지 않았다. 새 사실은 엔진 2개 프로그램 진입(좋은 쪽)과, 마진·현금 개선 없음·내부자 매도(나쁜 쪽)로 상쇄된다. 역사 해부의 지연 계수가 ×4.2 → ×4.4로 올랐지만, Valkyrie 지연 폭이 8월 가정(1년)보다 짧은 것(한 분기)으로 정정돼 서로 상쇄된다.</li>
+<li><strong>낙관 가정</strong>: 엔진 연 수천 대 양산 · Valkyrie 대량 생산 · 영업이익률 두 자릿수. 큰손(국방부·원청)이 계속 물량을 사 준다는 가정은 엔진 개발 계약(고객 검증 A)과 대량 수요(C)에 기댄다.</li>
+<li><strong>비관 가정</strong>: 양산이 계속 밀리고 마진이 0% 근처에 머문다 · 표적드론·시험 서비스만 남는다.</li>
+</ul>
+<p><strong>기댓값</strong> = 0.20 × 2.40 + 0.55 × 1.42 + 0.25 × 0.59 = <strong>약 1.41배(5년)</strong> · 2년 1.20배 · 3년 1.30배. ⚠️ 5년 1.5배 미만 = thesis 약함 표시(8월 1.10배에서 개선). ⚠️ 기준 2년 1.16배 &lt; 2.0배 = 낙관 꼬리 의존.</p>
+<p><strong>암묵 출구 배수 점검</strong> — 기준 115억 달러 ÷ 5년 매출 27억~31억 달러 = 매출의 3.7~4.3배 · 낙관 4.3~4.9배 · 비관 2.2배. 대형 원청은 1.0~2.2배, AeroVironment는 3.2배다 → <strong>재평가 의존: 기준 중간 · 낙관 높음.</strong> 지금 FY27 예상 매출 대비 배수(3.47배)는 기준 출구 배수 하단보다 낮다 — 8월과 달리 "진입이 출구보다 비싼" 역풍은 사라졌다.</p>
+<figure class="dd-fig"><div id="fig-h1"></div><div class="dd-legend" id="fig-h1-leg"></div><figcaption id="fig-h1-cap"></figcaption></figure>
+
+<h3>H.2 일정표</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 11/5 실적이 가장 큰 판별점이다. FY27 가이던스가 처음 나온다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>날짜</th>
+<th>일</th>
+<th style="text-align: center;">영향</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-11-05</td>
+<td>3Q FY26 실적(미국 장 마감 후) · <strong>FY27 가이던스 첫 제시</strong> — GAAP 영업이익률 · 영업현금 · 재고·순 계약자산</td>
+<td style="text-align: center;">🔴</td>
+<td>회사 공지</td>
+</tr>
+<tr>
+<td>2026-12-11</td>
+<td>임시 예산(P.L. 119-103) 만료 — 이 법 제102조가 2026년에 양산 예산이 없던 품목의 새 양산·증산·새 다년 일괄 구매를 금지한다. F143은 아직 개발 계약이라, 정식 예산 전에는 양산 계약이 나오기 어렵다</td>
+<td style="text-align: center;">🔴</td>
+<td>업종 점검 보고서</td>
+</tr>
+<tr>
+<td>2026 말</td>
+<td>Sentinel(대륙간탄도미사일) 개발 단계 재승인 — Kratos는 Northrop Grumman 밑에서 미사일·탑재물 운반 차량을 만든다</td>
+<td style="text-align: center;">🟡</td>
+<td>10-K · 업종 점검 보고서</td>
+</tr>
+<tr>
+<td>2027-12-31</td>
+<td>공군 표적드론 계약 발주 기간 종료 — 후속이 경쟁·최저가 방식으로 바뀌는지</td>
+<td style="text-align: center;">🟡</td>
+<td>업종 점검 보고서</td>
+</tr>
+<tr>
+<td>2027-02</td>
+<td>FY26 연간 실적 — 「영업현금 전망 2년 연속 미달」 확정 여부</td>
+<td style="text-align: center;">🔴</td>
+<td>역사 해부</td>
+</tr>
+<tr>
+<td>2027</td>
+<td>Prometheus 고체로켓 양산 · 엔진 3,000대</td>
+<td style="text-align: center;">🟡</td>
+<td>회사 목표</td>
+</tr>
+<tr>
+<td>2028 초</td>
+<td>Valkyrie 연 40대 체제</td>
+<td style="text-align: center;">🔴</td>
+<td>8/4 보도자료</td>
+</tr>
+</tbody>
+</table>
+<h3>H.3 ⚠️ Thesis 리스크 신호</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 현금 약속 훼손은 이미 발동돼 있다. 새로 켜진 신호는 없고, 내부자 매도가 관찰 칸에 올라왔다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>신호</th>
+<th>관측 trigger</th>
+<th style="text-align: center;">상태</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>현금 thesis 훼손</td>
+<td>FY26 영업현금 가이던스 하향</td>
+<td style="text-align: center;">🔴 발동(8월)</td>
+<td>+6,000만~7,000만 → +3,000만~5,000만 달러</td>
+</tr>
+<tr>
+<td>마진 thesis 훼손</td>
+<td>매출총이익률 20% 아래 2분기 연속 · 부문 영업이익률 4% 아래 2분기 연속</td>
+<td style="text-align: center;">🟠 부분</td>
+<td>2분기 부문 영업이익률 3.4%(1분기만)</td>
+</tr>
+<tr>
+<td>양산 공언 재지연</td>
+<td>양산 시점 공언이 직전 대비 6개월 이상 후퇴</td>
+<td style="text-align: center;">🟡 관찰</td>
+<td>Valkyrie "2027년 말 → 2028년 초"(한 분기 · 문턱 미달) · 🔧 8월 "🔴 관측"에서 정정</td>
+</tr>
+<tr>
+<td>말≠숫자</td>
+<td>넓은 시장 화법 + 마진 훼손</td>
+<td style="text-align: center;">🟠</td>
+<td>화법 유지 · 매출총이익률 23% 정체</td>
+</tr>
+<tr>
+<td>희석 재개</td>
+<td>저가 대규모 증자</td>
+<td style="text-align: center;">🟢 미발동</td>
+<td>2026-02 이후 공모 없음</td>
+</tr>
+<tr>
+<td>숨은 레버리지</td>
+<td>금융리스 신규 연환산 1.5억 달러 초과</td>
+<td style="text-align: center;">🟢 미발동</td>
+<td>연환산 약 8,500만 달러</td>
+</tr>
+<tr>
+<td>🆕 내부자 매도 집중</td>
+<td>CEO·임원 매도 클러스터 · 매수 0</td>
+<td style="text-align: center;">🟡 관찰</td>
+<td>7/28 이후 Form 4 13건 전부 매도 · 약 38.9만 주·2,410만 달러 · CEO 30만 주(8/14 · 계획 5/15 수정)</td>
+</tr>
+<tr>
+<td>🆕 현금 누수</td>
+<td>주식보상 세금 현금 대납 확대</td>
+<td style="text-align: center;">🟡 관찰</td>
+<td>상반기 5,910만 달러(전년 1,830만) · Prometheus 남은 출자 약정(Kratos 몫 약 7,500만 달러 · 계산값) 검토 대상</td>
+</tr>
+<tr>
+<td>🆕 예산 공백</td>
+<td>12/12 정부 기능 정지 · 1년짜리 임시 예산</td>
+<td style="text-align: center;">관찰</td>
+<td>작년 기능 정지 2회 · 지금 임시 예산 12/11까지</td>
+</tr>
+<tr>
+<td>🆕 보이지 않는 원가 조정</td>
+<td>손실 준비금 급증 · "중요한" 원가 추정 변경 첫 공시 · 초기 양산 고정가 단가 미공시</td>
+<td style="text-align: center;">관찰</td>
+<td>원가 추정 변경액 비공시 · 손실 계약 준비금 2025년 말 350만 달러</td>
+</tr>
+<tr>
+<td>🆕 표적드론 후속 계약</td>
+<td>2027년 말 이후 경쟁·최저가 방식 전환</td>
+<td style="text-align: center;">관찰</td>
+<td>지금은 경쟁 없는 확정 고정가(해군 2.39억 · 공군 천장 3.74억 달러)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h5">H.5 🧭 CAE·Edge Grid 좌표</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 중요도는 높고, 가격이 내려와 엔진(가격 여유)이 생겼다. 8월 "강한데 비싼"에서 가운데 쪽으로 이동했다.</p>
+</blockquote>
+<p><strong>(a) 걸친 층</strong> — 제약층(엔진·고체로켓·시험 인프라 공급) · 조정층(국방 조달·예산) · 표현층(무인기·탄약 전력화). 무게중심은 제약층. 🔴 가장 약한 고리 = <strong>마진으로의 전환</strong>(병목 자리에서 값을 받는 고리).</p>
+<p><strong>(b) 중요도·엣지</strong> — 중요도 다층성 2 · 비가역성 2 · 병목 경도 2 → <strong>중상</strong>. 엣지 선반영 격차 2 · 연료 잔량 2 · 컨센서스 반증 2 → <strong>중</strong>.
+- <strong>시장이 보는 가설</strong>: 60일 상관 AeroVironment 0.85(1위) · 방산 ETF 0.70 · 로켓랩 0.51 · L3Harris 0.46 · 록히드 0.45 → "드론 방산" 가설이 우세하다. 애널리스트 비교군(드론·방산 전자)과도 같다. 내 thesis("저가 대량 무기 공급망 + 엔진")와 대체로 같은 방향이라 엣지는 크지 않다. 다만 시장은 엔진·고체로켓 공급망 가치를 드론과 한 덩어리로 묶어 본다 — 엔진 양산 계약이 공시되면 시장이 가설을 갈아탈 계기가 된다.</p>
+<p><strong>(c) 분면</strong></p>
+<figure class="dd-fig"><svg viewBox="0 0 520 300" width="100%" style="max-width:520px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="20" width="220" height="130" fill="#fdeee9"/><rect x="280" y="20" width="220" height="130" fill="#eef6f0"/>
+<rect x="60" y="150" width="220" height="130" fill="#eeeeee"/><rect x="280" y="150" width="220" height="130" fill="#e8f0f8"/>
+<line x1="280" y1="20" x2="280" y2="280" stroke="#999" stroke-dasharray="4,3"/><line x1="60" y1="150" x2="500" y2="150" stroke="#999" stroke-dasharray="4,3"/>
+<text x="170" y="40" font-size="11" text-anchor="middle" fill="#8a2415">강한데 비싼 → 트림·회피</text>
+<text x="390" y="40" font-size="11" text-anchor="middle" fill="#1f6f3b">강하고 싼 → 집중매수 후보</text>
+<text x="170" y="270" font-size="11" text-anchor="middle" fill="#555">약하고 비싼 → 회피·청산</text>
+<text x="390" y="270" font-size="11" text-anchor="middle" fill="#2c5282">약하고 싼 → 정찰</text>
+<text x="280" y="295" font-size="11" text-anchor="middle" fill="#444">← 엣지 소진(비싼)   ·   엣지 잔량(싼) →</text>
+<text x="20" y="150" font-size="11" text-anchor="middle" fill="#444" transform="rotate(-90 20,150)">중요도 약 → 강</text>
+<line x1="200" y1="90" x2="261.09" y2="98.7272" stroke="#c0392b" stroke-width="1.5" marker-end="url(#h5ar)"/>
+<circle cx="200" cy="90" r="6" fill="#2980b9" opacity="0.5"/>
+<text x="210" y="80" font-size="10" text-anchor="start" fill="#2980b9">8/06 강한데 비싼</text>
+<circle cx="270" cy="100" r="7" fill="#c0392b"/>
+<text x="280" y="118" font-size="10" text-anchor="start" fill="#c0392b">11/01 가운데(덜 비싼 쪽 경계)</text><defs><marker id="h5ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c0392b"/></marker></defs>
+</svg><figcaption>중요도 중상 · 엣지 중 — 주가가 내려와 가격 역풍은 줄었고, 마진 전환은 아직 확인 전</figcaption></figure>
+
+<p><strong>(d) 판정</strong> — 강한데 비싼 → 가운데(강하고 덜 비싼 쪽 경계). 집중 매수 후보 잠금장치 3개 중 ① 실현 확률 교차(마진 전환 미확인) 미통과.</p>
+<p><strong>(e) 과목 적합도</strong> — thesis는 <code>혼합</code>(지금 실적 = 표적·시험 · 미래 = 엔진·무인기 양산). 지금 시장은 위험 회피·AI 대형주 투매 국면이라 미래형 이야기에 불리하다(주간 거시 보고서 10/31). 레버리지 ETF 노출 0.27%.</p>
+<h3>H.6 💎 0to1 독점 판정 (틸 7문 · 점수 밖)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 작은 시장 독점과 유통·존속성은 있지만, 기술 10배 우위와 "남들이 모르는 비밀"은 약하다. 8월과 같은 판정 틀이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>문항</th>
+<th style="text-align: center;">판정</th>
+<th>한 줄 근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 기술 10배</td>
+<td style="text-align: center;">⚠️</td>
+<td>엔진·무인기 가격 우위는 있으나 10배 근거는 일부</td>
+</tr>
+<tr>
+<td>② 시기</td>
+<td style="text-align: center;">✅</td>
+<td>탄약 증산·소모형 무기 수요가 지금 온다</td>
+</tr>
+<tr>
+<td>③ 작은 시장 독점</td>
+<td style="text-align: center;">✅</td>
+<td>3군 표적드론 단독 공급</td>
+</tr>
+<tr>
+<td>④ 사람</td>
+<td style="text-align: center;">✅</td>
+<td>20년+ 장기 CEO · 일관된 저비용 전략(사람 축 참조)</td>
+</tr>
+<tr>
+<td>⑤ 유통</td>
+<td style="text-align: center;">✅</td>
+<td>국방부 직판 + 원청 공급 이중 경로</td>
+</tr>
+<tr>
+<td>⑥ 존속성</td>
+<td style="text-align: center;">⚠️</td>
+<td>단독 공급은 길지만 이익 보호력 약함</td>
+</tr>
+<tr>
+<td>⑦ 숨겨진 비밀</td>
+<td style="text-align: center;">⚠️</td>
+<td>"싼 무기의 시대"는 이제 모두가 아는 이야기</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Track A 4/7 → 불운 위험</strong> · Track B ⭐4.14 → 4.0(0.5 단위) · 시장 정의 화법 = <strong>혼재</strong>(넓은 시장 화법 + 얇은 마진).</p>
+<h3 id="h7">H.7 💰 밸류에이션 정밀 판정 (별도 서브에이전트 · 점수 밖)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 아직 비싼 쪽이지만, 적정과의 경계까지 내려왔다. 지금 가격이 성립하려면 성장 30%와 영업이익률 12~14%가 동시에 맞아야 하는데, 회사 가이던스상 마진은 약 1%다.</p>
+</blockquote>
+<p><strong>🏷️ 판정 = 🔴 고평가(약) · ⚪ 적정과 경계 · 신뢰도 낮음(상단) · 🟢 조건 1/3 충족(① ❌ 역산 가정 범위 밖 · ② ❌ 5년 역사 73백분위 · ③ ✅ 성장 감안 배수 동종 8사 중 최저)</strong></p>
+<table>
+<thead>
+<tr>
+<th>렌즈</th>
+<th>결과</th>
+<th>8월 대비</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 거꾸로 푼 할인현금흐름</td>
+<td>요구 5년 매출 연 33.4% + 터미널 영업이익률 12~14% 동시 → 범위 밖</td>
+<td>요구 성장률 40.9% → 33.4%로 약화</td>
+</tr>
+<tr>
+<td>② 아키타입별</td>
+<td>🔴/⚪</td>
+<td>—</td>
+</tr>
+<tr>
+<td>③ 상대가치</td>
+<td>성장 감안 기업가치 ÷ 매출 동종 8사 최저 🟢 · 5년 역사 68~73백분위(분포 의존적)</td>
+<td>비교사 구성 변경 — 순위만 비교</td>
+</tr>
+<tr>
+<td>④ 컨센서스</td>
+<td>25인 평균 목표가 93.44달러 · 매출 추정 상향</td>
+<td>8월의 "가이던스보다 낮은 컨센" 문제 해소</td>
+</tr>
+<tr>
+<td>⑤ 시나리오 정합</td>
+<td>FY27 예상 매출 대비 3.47배 &lt; 기준 출구 3.7배 → ⚪</td>
+<td>🔴 → ⚪ 전환</td>
+</tr>
+<tr>
+<td>병목 렌트 괴리</td>
+<td>−0.37~−0.62 → 🔴 고평가 사칭(약한 신호) · 지속성 0.55 → 0.50</td>
+<td>그대로</td>
+</tr>
+</tbody>
+</table>
+<p><strong>🎯 매수 적정성</strong> — ⚪ <strong>관망(trigger 대기)</strong>. 8월에 정한 가격 조건 41달러는 채웠다. 남은 조건은 같은 날 정한 측정 조건 — <strong>11/5 FY27 가이던스의 GAAP 영업이익률 3.0% 이상</strong>이다. 지금 사는 것은 그 판별 정보를 4일 앞두고 먼저 베팅하는 것이다. 더 싸게 사는 기준 = <strong>35달러 이하</strong>(측정 조건을 못 채우면). 갈림길 변수 = 터미널 GAAP 영업이익률(12%면 요구 성장 33.4% · 8%면 52.4% · 5% 이하면 어떤 성장률로도 성립 안 함). (낮은 신뢰도 참고 · 강제 신호 아님 · 최종 판단은 독자 몫 · 7축 점수 미반영)</p>
+<p><strong>렌즈끼리 엇갈리는 곳(봉합하지 않음)</strong> — 현금흐름 렌즈(①·병목 렌트)는 비싸다고 하고, 배수 렌즈(③·⑤)는 이제 싸다고 한다. 둘 다 참이다: 매출 대비로는 싸졌지만, 그 매출이 이익으로 바뀌지 않는다.</p>
+<p>전문 = 내부 작업 파일(H7_output).</p>
+<hr />
+<h2 id="i">Section I. 자금 흐름 · 내부 정보</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 기관 보유는 86%로 높고, 최대 주주 BlackRock은 한 분기에 4분의 1을 줄였다. CEO는 8월에 30만 주를 팔았다. 공매도는 줄고 있고, 옵션은 콜 쪽으로 기울어 있다.</p>
+</blockquote>
+<h3>I.0 지분 구조</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지수·대형 운용사가 대부분을 갖고 있고, 내부자 몫은 1%대다. 희석은 멈췄다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>주체</th>
+<th style="text-align: right;">비율</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기관 합계</td>
+<td style="text-align: right;">약 85.8%</td>
+<td>yfinance</td>
+</tr>
+<tr>
+<td>BlackRock</td>
+<td style="text-align: right;">12.8%</td>
+<td>13F(6/30) · 직전 대비 −24.1%</td>
+</tr>
+<tr>
+<td>State Street · Vanguard(두 법인)</td>
+<td style="text-align: right;">4.8% · 약 8.8%</td>
+<td>13F</td>
+</tr>
+<tr>
+<td>First Trust</td>
+<td style="text-align: right;">3.2%</td>
+<td>+122.7%</td>
+</tr>
+<tr>
+<td>ARK</td>
+<td style="text-align: right;">2.5%</td>
+<td>+33.8%</td>
+</tr>
+<tr>
+<td>내부자</td>
+<td style="text-align: right;">약 1.3%</td>
+<td>yfinance</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>발행 1억 8,827만 주(yfinance · SEC 7/31 1억 8,772만 주 + Jetset 대가 54만 7,249주와 같아 이미 포함) + 조건부 추가 최대 12만 1,592주. 차등 의결권 없음.</li>
+</ul>
+<h3>I.1 기관 추이 (13F · 6/30 기준 · 45일 지연)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 최대 주주가 줄이고, 테마형 운용사가 늘렸다.</p>
+</blockquote>
+<p>BlackRock −24% · Geode −29% · Invesco −20% ↔ First Trust +123% · ARK +34%. 방산 ETF·테마 펀드로 손이 바뀌는 중이다.</p>
+<h3>I.2 내부자 (Form 4 · 최근 3개월)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — CEO의 30만 주 매도가 가장 크고, 나머지 임원은 소량 정기 매도다. 매수는 없다.</p>
+</blockquote>
+<ul>
+<li><strong>CEO 에릭 데마르코</strong>: 8/14 30만 주 · 약 1,930만 달러(주당 약 64달러 · yfinance 내부자 표).</li>
+<li>CFO 디애나 룬드 7/27~10/26 매달 5,000~7,000주 · 이사 스콧 자비스 8/18 1만 주(약 63만 달러) · 임원 필립 카라이 8/17·9/15 합 3만 3,000주.</li>
+<li>9/28 Form 3 = C5ISR 사업부 사장 승진에 따른 신규 내부자 등록.</li>
+</ul>
+<h3>I.3 공매도</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 공매도 비율은 보통 수준이고 줄고 있다.</p>
+</blockquote>
+<p>969만 주 · 유통의 5.91% · 상환 소요 2.1일 · 전월 1,006만 주 대비 −3.6%.</p>
+<h3>I.3b 레버리지·인버스 단일종목 ETF</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 레버리지 ETF가 주가를 흔들 힘은 거의 없다.</p>
+</blockquote>
+<p>KTUP(+2배 · 운용 1,040만 달러) 하나 → 명목 2,080만 달러 = 유통 시총의 <strong>0.27%</strong> · ±10% 하루 리밸런싱 210만 달러 = 20일 평균 거래대금의 <strong>1.1%</strong>(하한).</p>
+<h3>I.4 옵션</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 옵션 시장은 콜 쪽으로 크게 기울어 있고, 실적 주간 변동성을 크게 본다.</p>
+</blockquote>
+<p>11월~2027년 1월 만기 미결제약정 콜 11.3만 · 풋 2.7만 → 풋/콜 0.24. 11/6 만기 등가격 내재변동성 108%(실적 주간) · 11/20 67%.</p>
+<hr />
+<h2 id="j">Section J. 산업 · 규제 · 정책 리스크</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회사는 매출 약속은 지키고, 양산 시점과 현금 약속은 반복해서 미룬다. 정책 위험은 국방 예산 하나에 몰려 있다.</p>
+</blockquote>
+<h3>J.1 회사·산업 역사 (역사 해부 보고서 요약)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 아래 요약은 역사 해부 보고서에서 가져왔다.</p>
+</blockquote>
+<p><a href="../../HistoryDive_Reports/KTOS/HistoryDive_Kratos_2026-11-01.html">역사 해부 보고서 2026-11-01</a>에서 가져온 것(7/28 대비 갱신):</p>
+<ul>
+<li><strong>DNA 6개 유지</strong> — 그중 「수주보다 먼저 만든다」와 「매출은 지키고 현금은 못 지킨다」가 강해졌다. 둘 다 같은 사건에서 나왔다: 고객 주문 전에 엔진 3,000대분 부품을 샀고, 그 탓에 올해 영업현금 전망을 내렸다. 상반기 영업현금이 −3,840만 달러라, 가이던스를 지키려면 하반기에만 약 +6,800만 달러가 들어와야 한다.</li>
+<li><strong>약속 이행률 64.3%(9/14 기준) 그대로</strong> — 7/28 이후 연도가 끝난 약속이 없다. 판정을 기다리는 약속이 6건 새로 생겼다(올해 매출·현금 · 엔진 3,000대·연 1만 대 · Valkyrie 40대 · Prometheus 2027 · 에어버스 U740 2029).</li>
+<li><strong>양산 지연 계수 ×4.2 → ×4.4</strong> — 정부 채택에 기대는 양산 약속은 2019-07 첫 공언 뒤 88개월이 지났다. "2028년 초 시작"이 지켜져도 최종 계수는 ×4.3~5.7이다.</li>
+<li>🔧 <strong>정정 2건</strong> — ① 8월 Deep-Dive의 "Valkyrie 1년 지연"은 과장이다("2027년 말까지" → "2028년 초까지" · 길어야 한 분기). ② 7/28 역사 보고서의 "2024년 SEC 서류에 협업 전투기 문구 0건"은 틀렸다(2024-02 연차보고서에 1회).</li>
+<li><strong>새로 판정 난 약속(부분 이행)</strong> — 2019년 엔진 회사 인수 명분이 90개월 만에 실제 무기 사업 두 곳(JASSM 2차 엔진 개발 · JDAM LR 엔진)에 들어갔다. Kratos 몫 금액은 미공시이고 GE 협업 누적 마진은 0%다.</li>
+<li><strong>희석 정지</strong> — 2026년 공모는 2월 한 번(1,643만 주 · 주당 84달러 · 순 13.5억 달러)뿐이다. 그 뒤로는 인수 대가 주식(Nomad 97.2만 주 · 주당 약 91달러 / Jetset 54.7만 주 · 약 42달러)만 나갔다.</li>
+<li><strong>인수·공시</strong> — 올해 산 Orbit(3.53억 달러)은 2분기 영업손실 −350만 달러로 출발했다. 7/28 이후 중요 공시(8-K)는 8/4 실적 1건뿐이다.</li>
+<li><strong>역사가 경고하는 신호 6개 중 켜진 것 0개</strong> — 가장 가까운 것은 「영업현금 전망 2년 연속 미달」로, 내년 2월 연간 실적에서 확정된다.</li>
+</ul>
+<h3>J.2 규제·법적 리스크</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 중대 소송은 없다. 이스라엘 사업장과 수출 통제가 상시 규제 표면이다.</p>
+</blockquote>
+<ul>
+<li>10-Q 기준 중대 소송·제재 없음.</li>
+<li>수출 통제(ITAR)·보안 인가가 진입 장벽이자 해외 판매 제약이다. 에어버스와 만든 유럽형 U740은 미국·독일 양쪽 승인이 필요하다.</li>
+<li>이스라엘 사업장(Orbit·마이크로파)은 전쟁 상황에서 인력·시설 위험을 진다.</li>
+</ul>
+<h3>J.3 정책 민감도</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 국방 예산 집행 속도가 곧 매출 속도이고, 고정가 계약이라 인플레는 회사가 진다.</p>
+</blockquote>
+<ul>
+<li>매출의 69%가 미 정부. 계약 하나는 5% 미만으로 흩어져 있어 단일 프로그램 취소 충격은 작다.</li>
+<li>의회 예산 확정분이 잔고의 75%(15.72억 달러)다.</li>
+<li>탄약 증산·소모형 무인기 예산이 줄면 상방 경로가 직접 막힌다.</li>
+</ul>
+<hr />
+<h2 id="k">Section K. 공시 · 어닝콜 · 가이던스</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회사가 고른 지표(매출·조정 EBITDA)는 가이던스를 맞히거나 넘는다. 감사받는 지표(GAAP 영업이익·영업현금)는 계속 미달한다.</p>
+</blockquote>
+<h3>K.1 최근 실적 핵심 (2Q FY26 · 8/4)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매출은 가이던스를 크게 넘었고, 이익과 현금 가이던스는 내렸다.</p>
+</blockquote>
+<ul>
+<li>매출 4.588억 달러로 회사 가이던스 상단(4.10억)을 11.9% 넘었다. GAAP 영업이익 −160만 달러는 회사가 5/6에 예고한 −600만~−800만 달러보다 나았다.</li>
+<li>3Q 가이던스: 매출 4.60억~4.80억 · GAAP 영업이익 100만~400만 · 조정 EBITDA 4,000만~4,500만 달러.</li>
+<li>FY27 가이던스는 3Q 실적(11/5)에서 처음 나온다.</li>
+</ul>
+<h3>K.2 경영진 화법</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — "저비용이 곧 기술"과 "마진은 오를 계획"이 반복된다. 양산 날짜는 매번 뒤로 간다.</p>
+</blockquote>
+<ul>
+<li>보도자료는 "defense, national security and commercial markets"라는 넓은 시장 화법을 유지한다.</li>
+<li>원가 상승·셰켈 강세에도 "마진이 늘어나도록 계획하고 있다"는 주장 — 실측 근거는 아직 없다.</li>
+<li>Valkyrie 연 40대: 2027년 → "2028년 초까지"(8/4).</li>
+</ul>
+<h3>K.3 FY26 가이던스 개정 (5/6 → 8/4)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매출은 올렸고, GAAP 영업이익과 영업현금은 내렸다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>5/6</th>
+<th>8/4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매출</td>
+<td>17.00억~17.60억</td>
+<td>17.50억~18.10억 달러</td>
+</tr>
+<tr>
+<td>조정 EBITDA</td>
+<td>1.70억~1.76억</td>
+<td>1.73억~1.76억 달러</td>
+</tr>
+<tr>
+<td>GAAP 영업이익</td>
+<td>1,800만~2,300만</td>
+<td>1,600만~2,200만 달러</td>
+</tr>
+<tr>
+<td>영업현금</td>
+<td>6,000만~7,000만</td>
+<td>3,000만~5,000만 달러</td>
+</tr>
+<tr>
+<td>잉여현금</td>
+<td>−8,500만~−1.05억</td>
+<td>그대로</td>
+</tr>
+</tbody>
+</table>
+<p>영업현금 하향 2,500만 달러 중 약 40%는 드론 자재를 설비투자에서 재고로 옮긴 분류 변경, 약 60%는 엔진 3,000대분 부품 선매입이다. 현금 가이던스 하향은 FY24·25·26 3년 연속이다.</p>
+<h3>K.4 주요 공시·발표 (8/6 이후)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 8/6 이후 새 자금 조달은 없고, 엔진 계약 2건과 소형 인수 1건이 핵심이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>날짜</th>
+<th>공시·발표</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-08-04</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1069258/000106925826000075/ktos-20260804.htm">8-K</a> · <a href="https://www.sec.gov/Archives/edgar/data/1069258/000106925826000077/ktos-20260628.htm">10-Q</a></td>
+<td>2Q FY26 실적</td>
+</tr>
+<tr>
+<td>2026-08-06</td>
+<td>보도자료</td>
+<td>육군 Javelin 탐색기 개발</td>
+</tr>
+<tr>
+<td>2026-08-17</td>
+<td>보도자료</td>
+<td>GEK800(F143) JASSM 2차 엔진 개발 계약</td>
+</tr>
+<tr>
+<td>2026-08-24</td>
+<td>보도자료</td>
+<td>J85 보잉 JDAM LR 엔진 선정</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td>Form 3</td>
+<td>C5ISR 사업부 사장 신규 내부자</td>
+</tr>
+<tr>
+<td>2026-10-09</td>
+<td>인수</td>
+<td>Jetset Airmotive(주식 54만 7,249주 + 조건부 추가)</td>
+</tr>
+<tr>
+<td>2026-10-14</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1069258/000162828026065829/kratos-424b3october2026.htm">424B3</a> · POSASR</td>
+<td>Jetset 매도인 주식 재매도 등록(새 자금 조달 아님)</td>
+</tr>
+</tbody>
+</table>
+<h3>K.4c 외부 비판 리포트 분해표</h3>
+<p>최근 12개월 공매도 리포트·신용등급 하향·평가 보고서 하위 등급은 확인되지 않았다. 해당 없음.</p>
+<hr />
+<h2 id="l">Section L. 동적 발견</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이번에 찾은 것 가운데 셋은 8월 기록을 고치는 것이고, 둘은 현금이 새는 새 통로다.</p>
+</blockquote>
+<h4>L.1 Valkyrie "1년 지연"은 과장 — 🔴</h4>
+<ul>
+<li>발견: 역사 해부 보고서 원문 대조.</li>
+<li>내용: 2·5월 "2027년 말까지" → 8월 "2028년 초까지". 밀린 폭은 길어야 한 분기.</li>
+<li>결론 영향: 8월 리스크 신호 "양산 공언 재지연 🔴 관측"을 🟡 관찰로 정정 · 시나리오 확률은 지연 계수 상승(×4.4)과 상쇄돼 불변.</li>
+</ul>
+<h4>L.2 재무약정은 있다 — 🟠</h4>
+<ul>
+<li>발견: 내구성 정밀 진단(신용약정 원문).</li>
+<li>내용: 순차입 4.00배 이하 · 이자보상 3.00배 이상(분기 확인). 8월 "약정 구조적 부재"는 틀렸다. 여유는 크다.</li>
+<li>결론 영향: 숫자 축 점수 변동 없음 · 내구성 ⚪ 유지.</li>
+</ul>
+<h4>L.3 잉여현금흐름 밖 현금 누수 — 🟠</h4>
+<ul>
+<li>발견: 내구성 정밀 진단(10-Q 현금흐름표).</li>
+<li>내용: 상반기 주식보상 세금 현금 대납 5,910만 달러(전년 1,830만) · 약정 구매주문 4.80억 달러.</li>
+<li>결론 영향: 버틸 수 있는 기간 4.4~7.0년으로 단축 · 리스크 신호 「현금 누수」 신설(관찰).</li>
+</ul>
+<h4>L.4 "CEO 본인 매도 0건" 기록 정정 + 8월 이후 매도 전부 — 🔴</h4>
+<ul>
+<li>발견: yfinance 내부자 표 · 역사·사람 해부 보고서.</li>
+<li>내용: 7/28 이후 Form 4 13건 · 약 38.9만 주 · 2,410만 달러 · 매수 0 · CEO 30만 주(8/14 · 주당 63~66달러 · 10b5-1 계획 5/15 수정).</li>
+<li>🔧 정정: 7월 사람 해부의 "CEO 본인 매도 0건"은 틀렸다 — 2022년 이후 매도 약 8,400만 달러(2022년 8회 + 2025-12 이후 4회 110만 주) vs 시장 매수 약 100만 달러. 매도 계획 한도를 5/15에 80만 → 150만 주로 늘렸고, 남은 한도는 최대 약 120만 주다.</li>
+<li>결론 영향: 리스크 신호 「내부자 매도 집중」 신설(관찰) · 사람 축 ⑥ 3.5 → 2.5.</li>
+</ul>
+<h4>L.5 직전 판사 가격 조건 도달 — 🟡</h4>
+<ul>
+<li>내용: 8/6 판사가 정한 재검토 가격 41달러에 10/30 종가 41.09달러로 닿았다. 남은 조건은 11/5 FY27 가이던스 GAAP 영업이익률 3% 이상.</li>
+</ul>
+<h3>L.deferred (다음 실행 우선 조사)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 11/5 실적의 FY27 가이던스와 3분기 10-Q가 최우선이다.</p>
+</blockquote>
+<ul>
+<li><strong>3Q FY26 10-Q(11/5)</strong> — 순 계약자산 · 재고 · 영업현금 · 고정가 손실 충당금 · 주식보상 세금 대납.</li>
+<li><strong>FY27 가이던스</strong> — GAAP 영업이익률(3% 문턱) · 영업현금.</li>
+<li><strong>F143·J85 Kratos 몫 계약 금액</strong> · Jetset 사업 내용 · 2분기 Valkyrie 구매자.</li>
+<li><strong>8/4 컨퍼런스콜 녹취</strong>(이번 실행 미수집).</li>
+</ul>
+<hr />
+<h2 id="s">Section S. 🔎 Specific-Dive — 업종 전문가 체크리스트 보완</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 방산 하드웨어 업종 전문가의 질문 15개로 이 보고서를 감사했다. 별점을 바꾸는 항목은 없다. 다만 지금 국방부는 12/11까지 임시 예산이라 새 양산·증산 계약이 법으로 막혀 있고, 회사가 꼽은 미래 4대 사업 중 Sentinel이 빠져 있었으며, 원가 추정 변경 금액은 공시되지 않는다.</p>
+</blockquote>
+<h3>체크리스트 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 15개 중 4개는 이미 충분했고, 11개를 새로 조사했다. 결론이 뒤집힌 항목은 없다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>체크 항목</th>
+<th style="text-align: center;">판정</th>
+<th>결론 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>예산 집행 상태(임시 예산·정부 기능 정지)</td>
+<td style="text-align: center;">❌ → 조사</td>
+<td>2027 회계연도 임시 예산 10/1~12/11 · 새 양산·증산·새 다년 구매 금지(제102조) → 일정표 "11~12월 엔진 양산 계약" 수정 · 신호 추가</td>
+</tr>
+<tr>
+<td>회사가 꼽은 큰 미래 사업</td>
+<td style="text-align: center;">❌ → 조사</td>
+<td>10-K 4대 사업 = BQM-167·BQM-177·Sentinel·MACH-TB 2.0 · Sentinel(미사일 운반 차량) 본문 0회 → 고객 표·일정표 추가</td>
+</tr>
+<tr>
+<td>원가 추정 변경 순액·손실 준비금</td>
+<td style="text-align: center;">❌ → 조사</td>
+<td>금액 비공시("중요하지 않음") · 손실 준비금 350만 달러(2025 말) → 마진 근거 보강 · 신호 추가</td>
+</tr>
+<tr>
+<td>표적드론 계약 만기·후속 형태</td>
+<td style="text-align: center;">◐ → 조사</td>
+<td>경쟁 없는 확정 고정가 · 공군 Lots 17–21 발주 기간 2027-12-31 · 해군 BQM-177A 2028-08 → 해자 ③ 근거 강화 · 신호 추가</td>
+</tr>
+<tr>
+<td>부문별 계약 유형</td>
+<td style="text-align: center;">◐ → 조사</td>
+<td>1년 새 고정가 +7,910만 달러 · 무인기는 원가가산 2배 → 물가 문장 보강</td>
+</tr>
+<tr>
+<td>자체 투자 대비 회수</td>
+<td style="text-align: center;">◐ → 조사</td>
+<td>무인기 13년 3.1억 달러+ · 부문 영업이익률 1.5% → 곡괭이 질 문장 보강</td>
+</tr>
+<tr>
+<td>기술 자료·지식재산권</td>
+<td style="text-align: center;">◐ → 조사</td>
+<td>국방장관 2025-04 수리권 지시 · 단독 수주 감소(10-K) → 해자 ⑤ ⚠️ 유지</td>
+</tr>
+<tr>
+<td>고정가 초기 양산 손실 · 파트너 몫 · 이스라엘·영업권 · 원가 감사</td>
+<td style="text-align: center;">◐/❌ → 조사</td>
+<td>업종 사례 대조 · Prometheus 약정 최대 1.75억(합산) · 영업권+무형 = 자본의 32% · 감사 범위 미추정 → 관찰</td>
+</tr>
+<tr>
+<td>조정 EBITDA · 재고 선제 조달 · 경영진 매도 · 인수 대가 주식</td>
+<td style="text-align: center;">✅</td>
+<td>상품 해부·내구성 진단·사람 해부·역사 해부로 충분</td>
+</tr>
+</tbody>
+</table>
+<h3>새로 안 것</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 예산 시계, 빠진 큰 사업, 보이지 않는 원가 조정, 표적드론 계약의 실제 모양이다.</p>
+</blockquote>
+<ul>
+<li><strong>예산 시계</strong>: 2027 회계연도는 정식 예산 없이 시작했다. 임시 예산법(P.L. 119-103)은 12/11까지 작년 수준으로만 돈을 쓰게 하고, 2026년에 양산 예산이 없던 품목의 새 양산과 증산을 금지한다. 개발 단계인 F143 엔진의 양산 전환, Valkyrie 대량 생산은 정식 예산 뒤로 밀린다. 12/12에 정부 기능이 멈추면 4분기 회수도 늦어진다(작년엔 10/1~11/12 정지).</li>
+<li><strong>Sentinel</strong>: 회사가 미래 큰 매출원으로 꼽은 사업이다. Kratos는 Northrop Grumman 밑에서 미사일·탑재물 운반 차량을 만든다. 공군은 2026년 말 개발 단계 재승인 · 2027 첫 발사 · 2030년대 초 첫 배치를 목표로 한다. 운반 차량의 큰 매출은 배치 시점과 맞물린다.</li>
+<li><strong>보이지 않는 원가 조정</strong>: 회사는 원가 추정 변경을 "단일·합계 모두 중요하지 않다"고만 쓴다. 매출 1%(약 1,500만 달러 · 계산)도 "중요하지 않을" 수 있지만, 3분기 영업이익 가이던스는 100만~400만 달러다.</li>
+<li><strong>표적드론 계약</strong>: 해군 BQM-177A 2.39억 달러(2023-01~2028-08), 공군 Lots 17–21 천장 3.74억 달러(발주 기간 2027-12-31) — 둘 다 경쟁 없는 확정 고정가다. 단독 공급은 맞지만 값은 고정돼 있다.</li>
+</ul>
+<p>출처: <a href="https://www.sec.gov/Archives/edgar/data/1069258/000106925826000013/ktos-20251228.htm">10-K 2025</a> · <a href="https://www.sec.gov/Archives/edgar/data/1069258/000106925826000077/ktos-20260628.htm">10-Q 2026 2분기</a> · <a href="https://www.congress.gov/crs-product/R49353">의회조사국 R49353</a> · <a href="https://www.af.mil/News/Article-Display/article/4407679/delivering-deterrence-sentinel-restructure-to-complete-in-2026-initial-capabili/">미 공군 Sentinel 2026-02-17</a> · <a href="https://www.kratosdefense.com/newsroom/kratos-selected-by-northrop-grumman-to-support-u-s-air-force-ground-based-strategic-deterrent-gbsd-program">Kratos 보도자료 2020-02-26</a> · <a href="https://www.geaerospace.com/news/press-releases/ge-aerospace-and-kratos-gek800-engine-receives-us-military-type-designation-f143-zz">GE Aerospace 보도자료 2026-08-17</a> · <a href="https://www.usaspending.gov/award/CONT_AWD_N0001923C0021_9700_-NONE-_-NONE-">BQM-177A 계약</a> · <a href="https://www.usaspending.gov/award/CONT_IDV_FA867821D0001_9700">공군 표적 Lots 17–21 계약</a> · <a href="https://media.defense.gov/2025/May/01/2003702281/-1/-1/1/ARMY-TRANSFORMATION-AND-ACQUISITION-REFORM.PDF">국방장관 메모 2025-04-30</a> · <a href="https://www.sec.gov/Archives/edgar/data/1133421/000113342125000023/noc-20250331.htm">Northrop 10-Q 2025 1분기</a> · <a href="https://www.sec.gov/Archives/edgar/data/12927/000001292725000015/ba-20241231.htm">Boeing 10-K 2024</a></p>
+<hr />
+<h2 id="verdict">종합 판단</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회사가 서 있는 자리(저가 대량 무기 공급망)는 더 단단해졌고, 그 자리에서 버는 돈은 여전히 확인되지 않는다. 주가가 내려와 가격 쪽 역풍은 줄었고, 판단은 11/5 FY27 가이던스로 넘어갔다.</p>
+</blockquote>
+<p><strong>7축 종합</strong> — 63점 / 100(⭐3.53) · 보통(경계 양호/보통) · 5점 이내 = 동급 · 벡터: 날씨 18.4/25 · 산 10.2 · 숲 6.0 · 나무 7.9 · 옆의 나무 6.2 · 사람 8.2 · 숫자 6.2(각 /12.5). 점수 = 사업·thesis 매력도이고 밸류는 재지 않는다.</p>
+<h3>시간 지평 종합</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 단기는 실적 한 번에 달려 있고, 중기는 양산 전환, 장기는 안보 수요라는 순풍이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>지평</th>
+<th>결론</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>단기(0~6개월)</td>
+<td>갈림길</td>
+<td>11/5 FY27 가이던스 GAAP 영업이익률 · 영업현금</td>
+</tr>
+<tr>
+<td>중기(6개월~3년)</td>
+<td>역풍 쪽</td>
+<td>엔진·고체로켓·무인기 양산 전환 전까지 마진 0% 근처 · 현금 누수</td>
+</tr>
+<tr>
+<td>장기(3~10년)</td>
+<td>순풍</td>
+<td>탄약 증산·소모형 무기·대만 억제 수요는 구조적</td>
+</tr>
+</tbody>
+</table>
+<p><strong>리스크 신호 집계</strong> — 발동 1(현금 thesis 훼손 · 8월) · 🟠 2(마진 부분 · 말≠숫자) · 🟡 관찰 3(양산 재지연[정정] · 내부자 매도 집중 · 현금 누수) · 신설 관찰 3(예산 공백 · 보이지 않는 원가 조정 · 표적드론 후속 계약) · 미발동 2(희석 재개 · 숨은 레버리지).</p>
+<h3>종합 판정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — thesis는 유지하되, 사람과 섹터에 대한 기본값을 고쳤다.</p>
+</blockquote>
+<p><strong>유지(부분 수정).</strong> 바뀐 것은 셋이다. ① 섹터의 병목 자리는 인정하되, 값을 받는 증거가 없어 매력도에 상한을 둔다. ② CEO를 "팔지 않는 창업자형"이 아니라 정기적으로 현금화하는 전문경영인형으로 읽는다. ③ Valkyrie 지연은 1년이 아니라 한 분기로 바로잡는다. 가격은 8월 판사의 조건에 닿았고, 남은 판별은 마진이다.</p>
+<hr />
+<h2>수집하지 못한 것</h2>
+<ul>
+<li>⚠️ 3Q FY26 10-Q(11/5 예정) — 이번 판정은 2분기 10-Q 기준이다.</li>
+<li>⚠️ F143·J85 Kratos 몫 계약 금액 · Jetset 사업 내용 · 2분기 Valkyrie 구매자(미공시).</li>
+<li>⚠️ 8/4 컨퍼런스콜 회사 공식 녹취(사람 해부는 제3자 전사본 사용).</li>
+<li>⚠️ 비전·가치관 축 사용자 ⭐(대기).</li>
+</ul>
+<h2>다음 실행 시 보완 목록</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 11/5 실적 직후 마진·현금 칸부터 다시 매긴다.</p>
+</blockquote>
+<ul>
+<li>11/5 실적 뒤 숫자 축 ②③ · 숲 렌트 포획 · 밸류 렌즈 ①⑤ 재판정 — 위 "실적 뒤 다시 볼 칸" 5개.</li>
+<li>CEO 남은 매도 한도(약 120만 주) 집행 여부.</li>
+<li>엔진 양산 계약·금액 공시.</li>
+</ul>
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p>
+<div class="footer">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const VIZ = {"score7": {"label": "확신도 7축", "max": 5, "axes": ["🌦️날씨", "⛰️산", "🌲숲", "🌳나무", "🌲🌳옆나무", "👤사람", "🔢숫자"], "series": [{"name": "KTOS 11/01", "color": "#0068b5", "scores": [3.95, 4.25, 2.93, 3.53, 3.0, 3.64, 3.0]}, {"name": "8/06(구 체계)", "color": "#9aa5b1", "scores": [4.0, 4.5, 4.0, 3.4, 3.0, 4.0, 3.0]}], "score100": 63, "band": "보통(경계 양호/보통)", "composite": 3.53}, "narrative": {"label": "내러티브 5축", "max": 5, "axes": ["🔧기술", "👥사회", "🏛️정책", "🌐지정학", "💰자본"], "series": [{"name": "소모형 무인기·탄약 엔진·극초음속", "color": "#8e44ad", "scores": [4, 3, 5, 5, 3]}]}, "trajectory": {"periods": ["2Q25", "3Q25", "4Q25", "1Q26", "2Q26", "3Q26 가이던스"], "forecastFrom": 5, "series": [{"label": "분기 매출($M)", "axis": "left", "color": "#2980b9", "values": [351.5, 347.6, 345.1, 371.0, 458.8, 470.0]}, {"label": "매출총이익률(%·오른축)", "axis": "right", "color": "#c0392b", "values": [21.0, 22.2, 24.2, 24.2, 21.8, 22.0]}]}, "peers": {"metrics": [{"key": "g", "label": "매출 증가율", "unit": "%", "better": "high"}, {"key": "gm", "label": "매출총이익률", "unit": "%", "better": "high"}, {"key": "om", "label": "영업이익률", "unit": "%", "better": "high"}, {"key": "ps", "label": "매출 대비 시총", "unit": "x", "better": "low"}], "rows": [{"name": "Kratos", "subject": true, "vals": {"g": 30.5, "gm": 23.0, "om": -0.2, "ps": 5.1}}, {"name": "록히드마틴", "note": "섹터 대장", "vals": {"g": 11.3, "gm": 11.7, "om": 11.4, "ps": 1.9}}, {"name": "L3Harris", "note": "우월", "vals": {"g": 7.1, "gm": 25.6, "om": 14.3, "ps": 2.2}}, {"name": "AeroVironment", "vals": {"g": 5.7, "gm": 26.5, "om": -2.3, "ps": 3.2}}, {"name": "General Dynamics", "vals": {"g": 12.9, "gm": 15.0, "om": 10.5, "ps": 1.8}}, {"name": "Leidos", "vals": {"g": 7.2, "gm": 17.8, "om": 11.7, "ps": 1.0}}]}, "scenario": {"horizonLabel": "5년 · 10/30 종가 기준", "threshold": 1.5, "cases": [{"label": "낙관", "tone": "bull", "prob": 0.2, "mult": 2.4}, {"label": "기준", "tone": "base", "prob": 0.55, "mult": 1.42}, {"label": "비관", "tone": "bear", "prob": 0.25, "mult": 0.59}]}, "landmark": {"current": {"label": "Kratos", "mcap": 7.74}, "target": {"label": "×10", "mcap": 77.4}, "refs": [{"name": "AeroVironment", "mcap": 6.41}, {"name": "Leidos", "mcap": 17.94}, {"name": "노스럽그러먼", "mcap": 79.2}, {"name": "General Dynamics", "mcap": 100.7}]}, "bars": {"title": "2Q FY26 매출 구성 ($458.8M)", "mode": "share", "unit": "$M", "items": [{"label": "정부솔루션(엔진·로켓·마이크로파·지상국)", "value": 379.7}, {"label": "무인시스템(표적드론·Valkyrie)", "value": 79.1}]}, "h5": {"points": [{"label": "8/06 강한데 비싼", "x": 200, "y": 90, "prior": true}, {"label": "11/01 가운데(덜 비싼 쪽 경계)", "x": 270, "y": 100}], "caption": "중요도 중상 · 엣지 중 — 주가가 내려와 가격 역풍은 줄었고, 마진 전환은 아직 확인 전"}, "captions": {"fig-h1": "5년 시나리오 (10/30 종가 $41.09 기준) — 기댓값 약 1.41배(⚠️ 1.5배 미만) · 기준 2년 1.16배 = 낙관 꼬리 의존 (게이트 아님)", "fig-g5": "분기 매출·매출총이익률 + 3분기 가이던스(점선 · 매출 중간값 · 이익률은 보강 추정) — 매출은 오르고 이익률은 22~24%에 머문다", "fig-e1": "동종 비교 (yfinance 2026-10-30 · 전 열 최근 4분기 · GAAP · 달러)", "fig-d0": "2Q FY26 매출 구성 — 정부솔루션 83% · 무인시스템 17%", "fig-c3": "내러티브 5축 — 정책·지정학 5 · 기술 4 · 사회·자본 3"}};
+try{
+DDViz.renderRadar('fig-score7','fig-score7-leg',VIZ.score7);
+DDViz.renderRadar('fig-c3','fig-c3-leg',VIZ.narrative);
+DDViz.renderTrajectory('fig-g5','fig-g5-leg',VIZ.trajectory);
+DDViz.renderHeatmap('fig-e1',VIZ.peers);
+DDViz.renderScenario('fig-h1',null,VIZ.scenario);
+DDViz.renderMcapLadder('fig-g15','fig-g15-cap',VIZ.landmark);
+DDViz.renderBars('fig-d0',VIZ.bars);
+var c7=document.getElementById('fig-score7-cap'); if(c7)c7.textContent="7축 종합 63점 / 100 (⭐3.53 병기) · 보통(경계 양호/보통) · 5점 이내 차이 = 동급 · 사업·thesis 매력도·밸류 미반영";
+var CAPS={"fig-h1": "5년 시나리오 (10/30 종가 $41.09 기준) — 기댓값 약 1.41배(⚠️ 1.5배 미만) · 기준 2년 1.16배 = 낙관 꼬리 의존 (게이트 아님)", "fig-g5": "분기 매출·매출총이익률 + 3분기 가이던스(점선 · 매출 중간값 · 이익률은 보강 추정) — 매출은 오르고 이익률은 22~24%에 머문다", "fig-e1": "동종 비교 (yfinance 2026-10-30 · 전 열 최근 4분기 · GAAP · 달러)", "fig-d0": "2Q FY26 매출 구성 — 정부솔루션 83% · 무인시스템 17%", "fig-c3": "내러티브 5축 — 정책·지정학 5 · 기술 4 · 사회·자본 3"};
+for (var k in CAPS){ var el=document.getElementById(k+'-cap'); if(el) el.textContent=CAPS[k]; }
+}catch(e){console.error('viz',e);}
+</script></body></html>
