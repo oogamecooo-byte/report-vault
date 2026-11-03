@@ -1,0 +1,1927 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>tZERO Deep-Dive — 인가는 다 갖췄는데, 그 인가로 버는 돈이 아직 없다 — 2026-11-03</title>
+<meta name="vault-stage" content="Dive"><meta name="vault-topic" content="tZERO"><meta name="vault-date" content="2026-11-03">
+<meta name="vault-skill" content="Deep-Dive"><meta name="description" content="tZERO Deep-Dive 2026-11-03">
+<style>/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+
+body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Helvetica Neue','Apple SD Gothic Neo',sans-serif;line-height:1.65;margin:0;padding:0;}
+.container{max-width:940px;margin:24px auto;background:#FDF6E3;padding:36px 44px;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.08);}
+h1{font-size:1.7em;border-bottom:3px solid #c0392b;padding-bottom:.3em;margin-top:.2em;}
+h2{font-size:1.32em;border-bottom:1px solid #c9bfa3;padding-bottom:.24em;margin-top:1.7em;color:#8a2415;}
+h3{font-size:1.1em;margin-top:1.3em;color:#5c4a00;}
+h4{font-size:1.0em;margin-top:1.1em;color:#5c4a00;}
+blockquote{border-left:4px solid #c9a227;background:#f5ecd3;margin:.8em 0;padding:.5em 1em;color:#4a4230;border-radius:0 6px 6px 0;}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.9em;display:block;overflow-x:auto;}
+th,td{border:1px solid #e8e1cf;padding:6px 9px;text-align:left;vertical-align:top;}
+th{background:#efe6cc;color:#5c4a00;font-weight:600;}
+tr:nth-child(even) td{background:#faf4e2;}
+code{background:#efe6cc;padding:1px 5px;border-radius:4px;font-size:.88em;}
+pre{background:#f0e8cf;padding:12px;border-radius:6px;overflow-x:auto;border:1px solid #e8e1cf;}
+a{color:#b0562a;text-decoration:none;} a:hover{text-decoration:underline;}
+hr{border:none;border-top:1px solid #d8cca8;margin:1.6em 0;}
+strong{color:#3a2f18;}
+.judge{background:#f3ead0;border:2px solid #c0392b;border-radius:8px;padding:16px 20px;margin:1.2em 0;}
+.judge h2{border:none;color:#8a2415;margin-top:0;}
+.dd-fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:12px;margin:1em 0;}
+.dd-fig figcaption{font-size:.82em;color:#6b5d3a;margin-top:6px;text-align:center;}
+.footer{margin-top:2em;padding-top:1em;border-top:1px solid #d8cca8;font-size:.85em;color:#6b5d3a;}
+@media print{body{background:#fff;}.container{box-shadow:none;background:#fff;}}
+@media (max-width:640px){.container{padding:20px 16px;}}
+</style>
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+<meta name="vault-published" content="2026-11-03">
+<meta name="robots" content="noindex, nofollow">
+</head><body>
+<!--dive-hub:start-->
+<nav id="dive-hub" aria-label="하위 Dive 모음" style="max-width:1100px;margin:12px auto 18px;padding:12px 16px;background:#F3EBD6;border:1px solid #e8e1cf;border-radius:10px;font:14px/1.6 'Pretendard','Noto Sans KR',sans-serif;color:#1f2328">
+<div style="font-weight:700;margin-bottom:4px">🤿 tZERO 하위 Dive 모음 <span style="font-weight:400;font-size:12px;color:#6b6457">— 이 Deep-Dive가 참고한 개별 보고서</span></div>
+<ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px">
+<li><a href="2026-11-03_tzero-rdive.html" title="tZERO Group (tZERO · 상장 후 예정 티커 TZRO) R-Dive — 제품·수익모델 정밀 해부 (2026-11-03)" style="color:#1F6F8B;font-weight:600;text-decoration:none">💰 R-Dive</a> <span style="font-size:12px;color:#6b6457">제품·수익모델 · 11/03</span></li>
+<li><a href="2026-11-03_tzero-historydive.html" title="History-Dive — tZERO Group (비상장 · 합병 후 예정 티커 TZRO) — 2026-11-03" style="color:#1F6F8B;font-weight:600;text-decoration:none">📜 History-Dive</a> <span style="font-size:12px;color:#6b6457">기업 역사 · 11/03</span></li>
+<li><a href="2026-11-03_peopledive-alankonevsky.html" title="사람 해부 — tZERO의 리더 앨런 코네프스키 (Alan Konevsky · CEO 겸 이사회 의장) | 2026-11-03" style="color:#1F6F8B;font-weight:600;text-decoration:none">👤 People-Dive</a> <span style="font-size:12px;color:#6b6457">사람·리더 · 11/03</span></li>
+<li style="color:#8a8270">📈 chart-dive <span style="font-size:12px">타이밍 — 🔒 로컬 전용 · 미수행</span></li>
+<li><a href="2026-11-03_tzero-specificdive.html" title="tZERO Specific-Dive — 토큰 증권 인프라·CFTC 청산·SPAC 합병 대상 전문가 체크리스트 보완 — 2026-11-03" style="color:#1F6F8B;font-weight:600;text-decoration:none">🔎 Specific-Dive</a> <span style="font-size:12px;color:#6b6457">업종 특수 점검 · 11/03</span></li>
+<li style="color:#8a8270">📄 One-Pager <span style="font-size:12px">1p 압축 — 미수행</span></li>
+</ul>
+</nav>
+<!--dive-hub:end-->
+<div class="container">
+<div class="kicker">DEEP-DIVE · 단일 종목 심층 · v1.44 --full · 비상장 적응 모드 · 하위 Dive 3종 선행</div>
+
+<h1>tZERO Deep-Dive — 인가는 다 갖췄는데, 그 인가로 버는 돈이 아직 없다</h1>
+<p class="sub">2026-11-03 · 비상장(SPAC 합병 대기) · 합병 전 지분가치 3.25억 달러(주당 $10 · 어닝아웃 별도) · 합병 후 기업가치(EV) 약 4.1억 달러 · 합병 상대 FG Imperii(Nasdaq: FGII) 11/2 종가 $10.09 · 상장 예정 NYSE American 「TZRO」 · 합병 기한 2027-03-15</p>
+
+<div class="meta">1차 자료: <a href="https://www.sec.gov/Archives/edgar/data/2090452/000110465926120989/tm2628734d1_8k.htm">FGII 합병 8-K(2026-11-02)</a> · <a href="https://www.sec.gov/Archives/edgar/data/2090452/000110465926120989/tm2628734d1_ex99-2.htm">투자자 설명자료(2026년 10월)</a> · <a href="https://www.sec.gov/Archives/edgar/data/2090452/000110465926120989/tm2628734d1_ex99-1.htm">합병 보도자료</a> · <a href="https://www.sec.gov/Archives/edgar/data/2090452/000110465926120989/tm2628734d1_ex2-1.htm">합병계약</a> · <a href="https://www.sec.gov/Archives/edgar/data/2090452/000110465926086404/tmb-20260630x10q.htm">FGII 10-Q(2026-06-30)</a> · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001726726">tZERO EDGAR</a> · <a href="https://www.tzero.com/news/tzero-and-ice-agree-to-collaborate-on-infrastructure-for-public-tokenized-securities-markets">tZERO×ICE 공동 발표(2026-08-31)</a> · <a href="https://www.coindesk.com/business/2026/11/01/tokenization-firm-tzero-plans-to-go-public-in-usd350-million-spac-deal">CoinDesk(2026-11-01)</a></div>
+
+<div class="judge">
+<h4>🧑‍⚖️ 종합 매수 판단 (Fable 판사가 직접 쓴 쉬운 말 판정)</h4>
+<p>① <strong>한 줄 답</strong> — 🔴 합병 뒤 tZERO 주식을 주당 10달러에 사는 것은 보류 — 연 매출 200만 달러 회사에 기업가치 4억 달러를 내는 셈이다. 다만 합병 투표 전의 스팩(합병용 상장 껍데기 회사) FGII 주식은 ⚪ — 환매권이 붙어 거의 현금처럼 움직인다.</p>
+<p>② <strong>왜 그렇게 보나</strong>
+- 값이 회사 전망을 전부 믿을 때만 맞는다. 2027년 매출 3,210만 달러라는 회사 계획을 가격이 이미 100% 반영했다. 그 계획이 맞아도 그 뒤 10년 가까이 매출이 매년 절반 가까이 더 커져야 지금 값이 정당화된다.
+- 다섯 가지 잣대가 모두 같은 쪽을 가리킨다. 낙관·기본·비관을 섞은 5년 기대 수익이 본전의 0.59배이고, 독점 여부를 묻는 7개 질문에 '예'가 하나도 없다.
+- 합병 뒤 현금이 얼마나 남을지가 전부인데, 그 숫자는 투표 전엔 보이지 않는다. 스팩 투자자 환매가 업계 보통 수준(90% 이상)이면 합병 뒤 현금은 1년 안팎에 바닥나 싼값 증자로 간다. 이 회사의 과거 약속은 평균 1.6배 늦었다.</p>
+<p>③ <strong>언제 다시 보나</strong> — 올해 11~12월 합병 등록 서류(S-4)의 감사 재무, 그리고 2027년 1분기 주주총회의 환매율 발표. 가격은 합병 뒤 기업가치 2억 달러 이하, 주당 약 5~6달러에서 다시 본다.</p>
+<p>④ <strong>반대로 볼 이유</strong> — 매출 배수는 바닥이 너무 작아 의미가 없을 수 있다 — 가치가 인가 묶음·특허 103건·뉴욕증권거래소 모회사와의 관계에 있다면 지금 값은 터무니없지 않다. 또 환매가 많아 유통 주식이 적으면 합병 직후 주가가 거꾸로 급등해 '보류'가 기회를 놓칠 수 있다.</p>
+<p>⑤ <strong>아직 모르는 것</strong> — 감사받은 연결 재무제표·현금 잔고·브리지 자금 금액·거래소 모회사의 투자액과 특허 사용료가 전부 미공개다.</p>
+<p>낮은 신뢰도의 참고 판단이며, 최종 판단은 독자 몫이다.</p>
+</div>
+<h2>한 장 요약</h2>
+<div class="summary">
+<ul>
+<li>🔴 <strong>2025년 매출 200만 달러 가운데 바깥 고객이 낸 수수료는 1~2할입니다.</strong> 두 증권사 자회사의 감사보고서를 맞춰 보면, 증권사 매출의 약 74%는 모회사와 합작사에서 나옵니다. 연결 매출의 약 80%는 내역이 공개되지 않은 기술 법인 몫입니다.</li>
+<li>🔴 <strong>적자는 커지는 중입니다.</strong> 분기 EBITDA 손실은 2025년 1분기 320만 달러에서 2026년 2분기 500만 달러로 늘었습니다. 2026년 상반기 매출 80만 달러는 전년과 거의 같습니다.</li>
+<li>🔴 <strong>2027년 전망 3,210만 달러는 감사받지 않은 회사 주장입니다.</strong> 지금보다 고객 1곳당 매출이 6~10배 커져야 나오는 숫자입니다. 과거 장기 약속 15건 중 제때 지킨 것은 5건이고, 날짜 약속은 평균 1.6배 늦었습니다.</li>
+<li>🔴 <strong>생존 기간은 SPAC 환매율 하나에 달려 있고, 업계 보통 환매율은 90%를 넘습니다.</strong> 환매가 50% 이하면 5~8년, 80% 이상이면 1~2년입니다. 합병계약에 최소 현금 조건이 없어 현금이 거의 없어도 마감될 수 있습니다. FGII 주가($10.09)가 주당 신탁 추정치(약 $10.28)보다 낮아 주주에게는 환매가 유리합니다.</li>
+<li>🟠 <strong>CFTC 파생 청산소(DCO)는 10월 16일 등록됐고, 파생 거래소(DCM)는 11개월째 심사 중입니다.</strong> 같은 시기 다른 청산소도 3곳 등록돼 인가 자체는 희소하지 않습니다.</li>
+<li>🟠 <strong>특허 103건과 이전대리인 등록은 아직 매출 0입니다.</strong> ICE 라이선스는 대가가 공개되지 않았고, ICE는 투자자이기도 합니다. 이전대리인은 2024·2025년 처리 건수가 0입니다.</li>
+<li>🟠 <strong>합병 발표의 브리지 참여자 "Neighborhood Intelligence"는 최대 주주 Bed Bath &amp; Beyond 자신입니다.</strong> 지분 38.7%·이사 1석·조건부 자금을 함께 쥔 실질적 상사입니다. SPAC 스폰서가 과거 맡은 5건 중 4건은 합병 후 $10 아래입니다.</li>
+<li><strong>7축 종합 42점 / 100 (⭐2.69 병기 · 약함)</strong> · 감점이 큰 칸 = 옆의 나무 수익모델 🔴 −4.2 · 날씨 금리 🔴 −4.2 · 날씨 순유동성 🔴 −4.2 · 사업·thesis 매력도 · 밸류 멀티플 미반영 · 5점 이내 차이 = 동급</li>
+<li><strong>5년 기댓값 0.59배(1.5배 미만 · thesis 약함)</strong> · <strong>분면 「약하고 비싼」</strong> · <strong>0to1 예 0/7 · ⭐2.5 · 시장정의 화법 과장🔴</strong> · <strong>밸류 공식 무판정(합병 마감 전) · 참고 🔴 고평가 쪽(신뢰도 낮음 · 🟢 조건 0/3)</strong> · <strong>내구성 🔴 결합충격 취약(환매율 의존)</strong> · <strong>🎯 투표 전 FGII = ⚪ 신탁 현금 + 옵션 / 합병 후 보유 = 🔴 진입 보류</strong></li>
+<li>🧑‍⚖️ 판사 한 줄: "🔴 보류(낮은 신뢰도 참고) — 연 매출 200만 달러 회사를 기업가치 4억 달러에 사는 값이라서; 투표 전 스팩 주식만 ⚪ 현금 대체 성격."</li>
+</ul>
+</div>
+<h2>⚠️ 비상장 한계 (이 보고서 신뢰도의 상한)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이 회사는 정기공시를 낸 적이 없어서, 숫자 대부분이 합병 투자자 설명자료와 자회사 감사보고서에서 나왔습니다. 감사받은 연결 재무제표는 S-4가 나와야 처음 공개됩니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>연결 재무</td>
+<td>2025년만 "감사" 표기(원문 미공개) · 2026년 분기·전망은 미감사 경영 자료</td>
+</tr>
+<tr>
+<td>현금 잔고·현금흐름표</td>
+<td>❌ 미공시</td>
+</tr>
+<tr>
+<td>자회사·고객별 매출</td>
+<td>증권사 자회사 2곳만 연차 감사보고서(X-17A-5)로 확인 · 나머지 ❌</td>
+</tr>
+<tr>
+<td>브리지 금액·ICE 투자액·경영진 보상</td>
+<td>❌ 미공시</td>
+</tr>
+<tr>
+<td>주가 시계열·컨센서스</td>
+<td>없음(비상장 · 커버 애널리스트 0) → 기술 분석(chart-dive)은 미수행</td>
+</tr>
+<tr>
+<td>첫 공개 예정</td>
+<td>FGII의 S-4(합병 등록서류)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>하위 분석: <a href="../../RDive_Reports/tZERO/tZERO_RDive_2026-11-03.html">R-Dive(제품·수익모델)</a> · <a href="../../HistoryDive_Reports/tZERO/tZERO_HistoryDive_2026-11-03.html">History-Dive(기업 역사)</a> · <a href="../../PeopleDive_Reports/tZERO/PeopleDive_AlanKonevsky_2026-11-03.html">People-Dive(CEO Alan Konevsky)</a> · <a href="../../SpecificDive_Reports/tZERO/tZERO_SpecificDive_2026-11-03.html">Specific-Dive(업종 체크리스트)</a></li>
+</ul>
+<h2>7축 점수</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 산업은 세상을 바꾸는 쪽이라 점수가 높지만, 회사가 선 자리·회사 자체·경쟁·숫자가 모두 약합니다. 사업 매력도 점수이고, 가격이 싼지 비싼지는 따로 봅니다.</p>
+</blockquote>
+<figure class="dd-fig"><div id="fig-score7"></div><div class="dd-legend" id="fig-score7-leg"></div><figcaption id="fig-score7-cap"></figcaption></figure>
+
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">⭐</th>
+<th style="text-align: right;">득점 / 배점</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🌦️ 날씨</td>
+<td style="text-align: center;">2.67</td>
+<td style="text-align: right;">10.4 / 25</td>
+</tr>
+<tr>
+<td>⛰️ 산</td>
+<td style="text-align: center;">4.75</td>
+<td style="text-align: right;">11.7 / 12.5</td>
+</tr>
+<tr>
+<td>🌲 숲</td>
+<td style="text-align: center;">2.07</td>
+<td style="text-align: right;">3.3 / 12.5</td>
+</tr>
+<tr>
+<td>🌳 나무</td>
+<td style="text-align: center;">2.70</td>
+<td style="text-align: right;">5.3 / 12.5</td>
+</tr>
+<tr>
+<td>🌲🌳 옆의 나무</td>
+<td style="text-align: center;">2.00</td>
+<td style="text-align: right;">3.1 / 12.5</td>
+</tr>
+<tr>
+<td>👤 사람</td>
+<td style="text-align: center;">2.92</td>
+<td style="text-align: right;">6.0 / 12.5</td>
+</tr>
+<tr>
+<td>🔢 숫자</td>
+<td style="text-align: center;">1.75</td>
+<td style="text-align: right;">2.3 / 12.5</td>
+</tr>
+<tr>
+<td><strong>종합</strong></td>
+<td style="text-align: center;"><strong>⭐2.69</strong></td>
+<td style="text-align: right;"><strong>42 / 100 · 약함</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>종합 점수(100점) = 사업·thesis 매력도(가중합) · 밸류 멀티플 미반영 · W-2026-10-11 · DD-v2.0 · 5점 이내 차이는 같은 점수로 봅니다.</li>
+<li>감점표: 옆의 나무 수익모델 우월성 🔴 −4.2 · 날씨 금리·할인율 🔴 −4.2 · 날씨 순유동성·위험 선호 🔴 −4.2.</li>
+</ul>
+<hr />
+<h1>Part 1 — 위에서 아래로 7계층</h1>
+<h2>🌦️ 날씨 — 지정학 + 거시경제 (배점 25)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 규제의 바람은 순풍이지만, 돈의 날씨는 적자 소형 상장 예정 기업에게 역풍입니다. 둘을 합치면 보통보다 조금 나쁜 날씨입니다.</p>
+</blockquote>
+<h3>지정학</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 미국이 토큰화와 스테이블코인을 달러를 넓히는 수단으로 밀고 있어 방향은 tZERO 편입니다. 다만 tZERO는 미국 안에서 영업하는 회사라 지정학 사건에 직접 노출되는 정도는 작습니다.</p>
+</blockquote>
+<ul>
+<li>미국 정부는 스테이블코인법(GENIUS)과 SEC의 토큰화 우호 조치(2026-09-17 혁신 면제, 이전대리인 규칙 현대화 제안)로 "달러 자산을 블록체인에 올리는 일"을 국가 전략으로 다룹니다. tZERO의 사업은 이 흐름의 한가운데에 있습니다.</li>
+<li>수출통제·제재 노출은 작습니다. 해외 연결은 Archax(영국)·Eddid(홍콩계) 제휴 수준입니다.</li>
+<li>🔴 약한 고리: 정책 순풍은 모든 경쟁사에게 똑같이 붑니다. 같은 바람을 Securitize·Superstate·DTCC·NYSE도 받습니다.</li>
+</ul>
+<h3>거시</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 장기금리가 높고 위험자산 선호가 흔들리는 국면은 돈을 계속 태우는 작은 회사에 가장 불리합니다. SPAC 투자자가 현금을 돌려받아 나갈 유인도 커집니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>변수</th>
+<th>지금 상태</th>
+<th>tZERO에 미치는 방향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>미국 10년물</td>
+<td>4.9%대(연중 약 +0.8%p · 재무부 11월 차입 성명)</td>
+<td>🔴 적자 성장주의 할인율 상승</td>
+</tr>
+<tr>
+<td>순유동성</td>
+<td>9~10월 재무부 현금 계좌가 늘며 지준 감소</td>
+<td>🔴 소형 위험자산 수급 약화</td>
+</tr>
+<tr>
+<td>크립토·토큰화 위험 선호</td>
+<td>같은 테마 상장사 약세(Securitize 11/2 종가 $7.24 · 9/3 이후 최저)</td>
+<td>🔴 신규 상장의 가격 기준이 낮아짐</td>
+</tr>
+<tr>
+<td>거래량 연동</td>
+<td>회사가 내세운 매출 구성의 약 60%가 체결·청산·보관 수수료</td>
+<td>🟡 시장이 식으면 매출이 먼저 줄어드는 구조</td>
+</tr>
+</tbody>
+</table>
+<h3>기준 틀 대조</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 토큰화가 온다는 큰 방향과는 맞지만, 그 가치가 이 회사에 쌓이느냐는 별개입니다. 금리 환경은 이 회사에 불리합니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>기준 틀</th>
+<th style="text-align: center;">정합</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>토큰화 공리 — "모든 자산은 결국 토큰화되며, 기존 인프라 위에 쌓인다"</td>
+<td style="text-align: center;">🟢</td>
+<td>기존 금융사에 보이지 않게 깔아주는 모델이 정확히 '쌓이는' 형태</td>
+</tr>
+<tr>
+<td>공리와 가치 포획은 별개</td>
+<td style="text-align: center;">🔴</td>
+<td>배관 자체는 수수료 압축 압력이 큰 자리 · 매출 200만 달러가 그 위험을 그대로 보여줌</td>
+</tr>
+<tr>
+<td>달러 패권·스테이블코인 확장</td>
+<td style="text-align: center;">🟢</td>
+<td>Lynq(토큰화 현금 실시간 결제망)·스테이블코인 결제 레일 보유</td>
+</tr>
+<tr>
+<td>워시 연준의 표면 완화·실질 긴축</td>
+<td style="text-align: center;">🔴</td>
+<td>소형 적자 기업이 실제로 빌리는 금리는 내려가지 않음(브리지 12% 현물 이자 + 25% 할인 전환이 증거)</td>
+</tr>
+<tr>
+<td>중간선거(11/3) 이후 규제 연속성</td>
+<td style="text-align: center;">⚪</td>
+<td>결과 미확정 · 토큰화 우호는 양당 공통 부분이 큼</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>미국 국가 전략 정합</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>지정학 사건 노출(작음)</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>정책 순풍의 독점성(경쟁사와 공유)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>금리·할인율</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>순유동성·위험 선호</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>거래량 연동 경기 민감도</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>2.67</strong> → 10.4 / 25</td>
+</tr>
+</tbody>
+</table>
+<h2>⛰️ 산 — 산업 (배점 12.5)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 토큰화는 세상을 바꾸는 산업이 맞고, 미국 정부와 대형 금융사가 실제 돈을 넣고 있습니다. 다만 아직 돈이 되는 칸은 국채 펀드 같은 좁은 곳에 몰려 있습니다.</p>
+</blockquote>
+<ul>
+<li><strong>세상을 바꾸는 산업인가 — 예</strong>: 증권의 발행·거래·결제·명부를 하나의 프로그램 가능한 장부로 묶으면 결제일이 즉시로 줄고 24시간 거래가 가능해집니다. NYSE·나스닥·DTCC가 모두 토큰화 거래장을 준비 중입니다. 다만 2017~2018년 증권형 토큰 붐 때 tZERO 자신이 그 상징이었고, 그때 약속은 대부분 실현되지 않았습니다.</li>
+<li><strong>국가·민간 자본</strong>: 스테이블코인법 시행(2027-01) · SEC 혁신 면제 · CFTC의 예측시장·크립토 파생 허가 확대 · ICE(NYSE 모회사)의 tZERO 투자와 특허 라이선스 · 골드만삭스·블랙록의 토큰 펀드.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>내러티브 축</th>
+<th style="text-align: center;">해당</th>
+<th style="text-align: center;">깊이</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔧 기술</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⭐4</td>
+<td>즉시 결제·프로그램 가능한 증권</td>
+</tr>
+<tr>
+<td>👥 사회</td>
+<td style="text-align: center;">△</td>
+<td style="text-align: center;">⭐2</td>
+<td>개인 투자자 직접 효용은 아직 약함</td>
+</tr>
+<tr>
+<td>🏛️ 정책</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⭐5</td>
+<td>스테이블코인법·SEC 혁신 면제·CFTC 확대</td>
+</tr>
+<tr>
+<td>🌐 지정학</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⭐3</td>
+<td>달러의 디지털 확장</td>
+</tr>
+<tr>
+<td>💰 자본</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⭐4</td>
+<td>ICE·골드만·블랙록 직접 참여</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-c3"></div><div class="dd-legend" id="fig-c3-leg"></div><figcaption id="fig-c3-cap"></figcaption></figure>
+
+<ul>
+<li><strong>시장 크기</strong>: 회사 덱은 2033년 토큰화 자산 18.9조 달러(BCG·Ripple 2025)를 인용합니다. 업계 자체 추정이고, 지금 실측은 국채·MMF 토큰에 몰린 수백억 달러 수준입니다. tZERO가 걸친 칸(상장주식 토큰화·사모 증권 거래장)은 시장 평균보다 늦게 열리는 칸입니다.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>세상을 바꾸는 산업</td>
+<td style="text-align: center;">예</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>국가·민간 자본 투입</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>내러티브 다중성(4축)</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>시장 성장률(업계 추정 · tZERO 칸은 늦게 열림)</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>4.75</strong> → 11.7 / 12.5</td>
+</tr>
+</tbody>
+</table>
+<h2>🌲 숲 — 섹터 (배점 12.5)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — tZERO가 선 자리는 '토큰 증권을 발행·거래·보관·명부 관리하는 인가 묶음'입니다. 이 자리는 지금 병목이 아니라 공급이 남는 자리이고, 들어온 회사가 많아 값을 올리기 어렵습니다.</p>
+</blockquote>
+<p>섹터 정의 = 규제된 토큰 증권 인프라 대행(브로커딜러·대체거래소·보관·이전대리인) + CFTC 파생 청산·거래 인프라.</p>
+<h3>병목 시점 매트릭스</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금 모자란 것은 인가가 아니라 거래량입니다. 1~2년 뒤 NYSE 토큰 거래장이 열리면 승인 이전대리인 자리가 생기지만, 그 자리도 6곳이 나눠 갖습니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>병목</th>
+<th>tZERO 위치</th>
+<th style="text-align: center;">유지 기간</th>
+<th>해소 경로</th>
+<th style="text-align: center;">렌트 포획</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>지금(0~6개월)</td>
+<td>토큰 증권의 거래량·사는 사람</td>
+<td>병목 아래 — 인가는 있지만 실어 나를 물량이 없음</td>
+<td style="text-align: center;">추정 불가</td>
+<td>NYSE·나스닥 토큰 거래장 개장</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>6~24개월</td>
+<td>NYSE 토큰 주식 거래장의 승인 디지털 이전대리인 명단</td>
+<td>6곳 중 1곳(11/2 발표)</td>
+<td style="text-align: center;">1~2년</td>
+<td>명단 확대 · SEC 이전대리인 규칙 현대화로 진입 문턱 하락</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2~5년</td>
+<td>토큰 증권 준법 이전 로직의 특허 표준</td>
+<td>특허·출원 103건 보유</td>
+<td style="text-align: center;">추정 불가</td>
+<td>회피 설계 · 무효 심판 · 소송 패소</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>렌트 포획 4문</strong>(지금·6~24개월 칸): Lynq 운영은 "원가 + 10%"로 마진 상한이 박혀 있습니다. 가장 큰 상대 ICE가 투자자·라이선스 상대·플랫폼 주인을 겸합니다. 인가는 자기 것이지만, NYSE가 같은 역할을 다섯 곳에 더 맡겼습니다. 상한이 2개 이상이라 🔴입니다.</li>
+<li><strong>지불자 경로</strong>: 큰손 = ICE(NYSE 모회사). 막힘 = NYSE가 토큰 주식 거래장을 열려면 블록체인 명부를 관리할 승인 이전대리인과 브로커딜러 구독자가 필요합니다. 경로 = 직접. 함께 볼 것 — 고객 검증 C(대가·물량 미공개) · 가격 인상 테스트 N/A. 큰손이 지분까지 쥐고 있어 가격 협상력은 큰손 쪽에 있습니다.</li>
+</ul>
+<h3>4중 필터</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 수요는 약하고 경쟁자는 많으며 이익은 적자입니다. 네 칸 중 셋이 나쁩니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>필터</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">🔴</td>
+<td>인가는 남고 거래량이 없음 — 이전대리인 처리 건수 2024·2025년 0 · 외부 고객 수수료가 연결 매출의 8~16%</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">🔴 다수</td>
+<td>NYSE 파트너 5곳(Securitize·Superstate·Broadridge·Computershare·Equiniti) · DTCC · Ondo · Figure · CFTC 청산소는 9~10월에만 Coinbase·Sporttrade·XV 등록</td>
+</tr>
+<tr>
+<td>③ 섹터 1~2등</td>
+<td style="text-align: center;">⚪</td>
+<td>인가 폭은 최상위권 · 분기 매출은 Securitize의 약 36분의 1</td>
+</tr>
+<tr>
+<td>④ 이익률</td>
+<td style="text-align: center;">🔴</td>
+<td>2025년 EBITDA −1,650만 달러 · 매출 200만 달러</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">원 등급</th>
+<th style="text-align: center;">렌트 포획 상한</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>지금</td>
+<td style="text-align: center;">⚪ 2.5</td>
+<td style="text-align: center;">🔴 → 최대 2.5</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>6~24개월</td>
+<td style="text-align: center;">🟡 4</td>
+<td style="text-align: center;">🟡4 → ⚪2.5</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>2~5년</td>
+<td style="text-align: center;">🟡 4</td>
+<td style="text-align: center;">🟡(최대 4)</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>수요/공급</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>경쟁사 수</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>섹터 순위</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>이익률</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>2.07</strong> → 3.3 / 12.5</td>
+</tr>
+</tbody>
+</table>
+<h2>🌳 나무 — 기업 (배점 12.5)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 인가는 거의 다 갖췄는데 그 인가로 버는 돈이 아직 거의 없습니다. 2025년 매출 가운데 바깥 고객이 낸 수수료는 1~2할이고, 나머지는 모회사·합작사 거래와 내역이 공개되지 않은 기술 법인 매출입니다.</p>
+</blockquote>
+<h3>무엇을 만들어 파는가 (R-Dive 요약)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 다섯 제품 중 통행세로 이어지는 길은 거래장 체결과 보관 둘뿐이고, 둘 다 거래량이 작습니다. 결제망은 원가만 돌려받고, 특허와 파생은 아직 돈길이 없습니다.</p>
+</blockquote>
+<ul>
+<li><strong>회사 구조</strong>: tZERO Securities(브로커딜러·대체거래소 운영) · tZERO Digital Asset Securities(디지털 자산 보관 특수목적 브로커딜러) · tZERO Transfer Services(SEC 등록 이전대리인) · tZERO Introducing Broker(CFTC 소개 브로커) · tZERO DCO(2026-10 등록) · tZERO DCM(심사 중) · tZERO Technologies(기술) · tZERO IP(특허 보유).</li>
+<li><strong>아키타입</strong>: 주 = 믹스 시프트형(자기 토큰 중심의 소매 거래장 → 기관용 인가 대행 + 파생 청산) · 부 = 곡괭이 수수료·보관 자산형(체결 1% · 보관 연 0.35%) · 덧씌움 = 관계사 의존.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>주력</th>
+<th style="text-align: right;">2025 매출</th>
+<th>과금</th>
+<th>현재 상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 거래장(ATS)·대리 청산</td>
+<td style="text-align: right;">42만 달러</td>
+<td>체결 1%·실사료</td>
+<td>거래 종목 5개(자기 토큰 TZROP 포함) · Archax·Eddid 대리 청산 계약(9월)</td>
+</tr>
+<tr>
+<td>② 디지털 자산 보관</td>
+<td style="text-align: right;">20만 달러</td>
+<td>보관 자산의 0.35%</td>
+<td>보관료 대부분이 모회사 몫</td>
+</tr>
+<tr>
+<td>③ 기술 플랫폼(발행·명부·API·화이트라벨)</td>
+<td style="text-align: right;">약 150만~170만 달러(추정)</td>
+<td>라이선스·구독·수익 분배</td>
+<td>법인·수수료 내역 ❌</td>
+</tr>
+<tr>
+<td>④ Lynq 결제망 운영</td>
+<td style="text-align: right;">14만 달러</td>
+<td>원가 + 10%</td>
+<td>골드만 국채 펀드(FTIXX) 연결(9/28)</td>
+</tr>
+<tr>
+<td>⑤ CFTC 파생 인프라</td>
+<td style="text-align: right;">0</td>
+<td>체결·청산 수수료(예정)</td>
+<td>DCO 등록(완전 담보 상품만) · DCM 심사 중</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-d0"></div><div class="dd-legend" id="fig-d0-leg"></div><figcaption id="fig-d0-cap"></figcaption></figure>
+
+<ul>
+<li><strong>2025년 매출 분해</strong>(두 브로커딜러 연차 감사보고서): 두 자회사 합계 62만 달러 · 그중 외부 고객 수수료 16만~33만 달러 · 나머지 연결 매출의 76~85%는 다른 법인 몫(내역 ❌).</li>
+<li><strong>회사가 말한 "거래·변동 수수료 약 60%"는 목표 모델로 읽힙니다.</strong> 2025년 체결 수수료는 연결 매출의 약 7%입니다.</li>
+<li>상세 = <a href="../../RDive_Reports/tZERO/tZERO_RDive_2026-11-03.html">R-Dive</a></li>
+</ul>
+<h3>고객 검증 등급</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이름과 계약이 공개된 고객은 대리 청산 2곳 정도이고, 덱이 내세운 대형 고객은 이름이 없습니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>고객·관계</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ICE — 협업·특허 라이선스·투자</td>
+<td style="text-align: center;">C</td>
+<td>공동 발표 공개 · 대가·물량·구속력 미공개</td>
+</tr>
+<tr>
+<td>Archax·Eddid — 대리 청산</td>
+<td style="text-align: center;">B</td>
+<td>계약 발표 · Eddid는 FINRA 승인 확인 · 매출 규모 미공개</td>
+</tr>
+<tr>
+<td>Temple Digital Group — 증권사·거래장 운영 대행</td>
+<td style="text-align: center;">D</td>
+<td>"구현 대기"</td>
+</tr>
+<tr>
+<td>골드만삭스 FTIXX — Lynq 연결</td>
+<td style="text-align: center;">C</td>
+<td>tZERO 9/28 원문 · 매출 귀속 경로 불명</td>
+</tr>
+<tr>
+<td>"상위 5위 독립 운용사"·"미국 10대 은행 중 1곳"</td>
+<td style="text-align: center;">E</td>
+<td>이름 없는 덱 문구</td>
+</tr>
+</tbody>
+</table>
+<h3>곡괭이 판정 — 구조는 곡괭이, 질은 자본갈증형</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 누가 이기든 배관을 빌려주는 자리라 설계는 곡괭이입니다. 그러나 매출의 8배를 잃고 외부 돈으로 버티는 중이라, 스스로 투자금을 대는 곡괭이는 아닙니다.</p>
+</blockquote>
+<ul>
+<li>마진 = EBITDA 적자(매출의 약 8배 손실) · 설비투자 강도 = 낮음 · 외부 자금 의존 = 높음(연 12% 현물 이자 전환사채 · SPAC 신탁 현금) · 현금 자가 충당 = 불가 → <strong>자본갈증형</strong>.</li>
+</ul>
+<h3>해자</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 다시 받기 어려운 인가 묶음은 진짜 자산이지만, 값을 올려도 고객이 남는지 시험해 볼 거래 실적이 없습니다. 그래서 해자는 아직 '잠재 해자'입니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>유형</th>
+<th style="text-align: center;">작동</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>네트워크 효과</td>
+<td style="text-align: center;">❌</td>
+<td>규모 자체가 미미 — 커질수록 강해지는지 볼 수 없음</td>
+</tr>
+<tr>
+<td>브랜드</td>
+<td style="text-align: center;">❌</td>
+<td>2018년 증권형 토큰 붐의 상징이었으나 그 기대가 꺾인 이력</td>
+</tr>
+<tr>
+<td>전환 비용</td>
+<td style="text-align: center;">⚠️</td>
+<td>대리 청산 계좌·보관 지갑은 옮기기 어렵지만 묶인 고객이 적음</td>
+</tr>
+<tr>
+<td>비용 우위</td>
+<td style="text-align: center;">❌</td>
+<td>근거 없음</td>
+</tr>
+<tr>
+<td>법적 보호</td>
+<td style="text-align: center;">⚠️</td>
+<td>특허 103건 + 인가 6종 · 막은 증거는 Securitize 상대 정지요구서·반소(판결 없음)와 ICE 라이선스(대가 미공개) · 계쟁 특허 두 건 만료 2036-02·2039-09(기간은 충분하나 청구항이 넓어 무효 다툼 소재) · 가격 시험 N/A → 3조건 미충족</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>가격 인상 테스트 = N/A</strong> — 판가 이력이 사실상 없어 <code>잠재 해자</code> 라벨만 붙이고 별점은 주지 않습니다.</li>
+<li><strong>AI 침식 점검</strong>: 쌓아 둔 고객 데이터 없음 · 고객 업무 흐름에 박혀 있지 않음 → ⚠️ AI 노출.</li>
+<li><strong>자산 내구성</strong>: 인가 묶음(브로커딜러 2·대체거래소·이전대리인·CFTC 소개 브로커·청산소)은 다시 받으려면 수년이 걸리는 오래가는 자산 · 기술은 소수 인력·외부 업체 의존 → 오래가는 자산만 있음 = ⭐3. 단 2026-08-21부터 일반 증권 고객 계좌는 외부 청산 증권사(Clear Street)가 통합 계좌로 보관합니다. 토큰 증권 보관만 자체 법인에 남아, "자체 청산까지 갖춘 묶음"이라는 회사 서술에는 단서가 붙습니다.</li>
+</ul>
+<h3>확장성 · 하방과 상방</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 증권·파생·특허 세 갈래로 넓게 깔았지만 셋 다 매출이 작습니다. 현금이 SPAC 환매에 달려 하방도 열려 있고, 인가가 한꺼번에 돈이 되면 상방도 열려 있습니다.</p>
+</blockquote>
+<ul>
+<li>SEC 증권 + CFTC 파생 + 특허 라이선스로 폭은 넓지만 실증은 약함 → ⭐3.</li>
+<li>하방: 현금 잔고 미공시 · 환매율이 높으면 합병 후 현금이 크게 줄어듦. 상방: DCM 지정 + NYSE 토큰 거래장 개장 + 특허 라이선스가 겹치면 매출이 수십 배 커질 수 있는 구조. 자금줄(캐시카우) 없음 → ⚪.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>수익모델(예측가능성 🔴 · 수익성 🔴 · 과금 🟡 · 묶임 🟡)</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>곡괭이(구조 ○ · 질 자본갈증형)</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>해자(자산 내구성 단독)</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td>확장성</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td>하방·상방</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"><strong>2.70</strong> → 5.3 / 12.5</td>
+</tr>
+</tbody>
+</table>
+<h2>🌲🌳 옆의 나무 — 경쟁사 비교 (배점 12.5)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 같은 길목의 Securitize는 tZERO보다 분기 매출이 약 36배 크고, 기존 명부 관리 강자와 DTCC도 같은 길에 들어왔습니다. tZERO가 앞서는 칸은 CFTC 파생 인가와 특허인데 둘 다 아직 돈이 되지 않았습니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>tZERO</th>
+<th>Securitize</th>
+<th>Figure</th>
+<th>Broadridge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>상장</td>
+<td>비상장(SPAC 예정)</td>
+<td>NYSE</td>
+<td>Nasdaq</td>
+<td>NYSE</td>
+</tr>
+<tr>
+<td>몸값</td>
+<td>합병 후 EV 약 4.1억 달러</td>
+<td>시총 약 11.8억 달러</td>
+<td>시총 약 48.9억 달러</td>
+<td>시총 약 208억 달러</td>
+</tr>
+<tr>
+<td>매출</td>
+<td>2025년 200만 달러</td>
+<td>2026년 2분기 1,444만 달러(−5.4%)</td>
+<td>❌ 미수집</td>
+<td>❌ 미수집</td>
+</tr>
+<tr>
+<td>이익</td>
+<td>EBITDA −1,650만 달러(2025)</td>
+<td>영업손실 −971만 달러(2분기)</td>
+<td>—</td>
+<td>흑자</td>
+</tr>
+<tr>
+<td>주력 과금</td>
+<td>체결·보관·서비스료</td>
+<td>토큰 펀드 관리·이전 대리</td>
+<td>대출·거래장</td>
+<td>명부·의결 대행</td>
+</tr>
+<tr>
+<td>고객 검증(최고)</td>
+<td>B</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+</tr>
+<tr>
+<td>CFTC 파생 인가</td>
+<td>소개 브로커·청산소 · 거래소 심사</td>
+<td>없음</td>
+<td>없음</td>
+<td>없음</td>
+</tr>
+<tr>
+<td>특허 분쟁</td>
+<td>공격(정지요구서·반소)</td>
+<td>방어(비침해 확인의 소)</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>NYSE 이전대리인 파트너</td>
+<td>○</td>
+<td>○</td>
+<td>—</td>
+<td>○</td>
+</tr>
+</tbody>
+</table>
+<p>(시총 = 11/2 yfinance · Securitize 매출 = 회사 10-Q)</p>
+<figure class="dd-fig"><div id="fig-e1"></div><div class="dd-legend" id="fig-e1-leg"></div><figcaption id="fig-e1-cap"></figcaption></figure>
+
+<ul>
+<li><strong>수익 모델</strong>: 열위 — 반복 매출 근거·규모 모두 Securitize·Broadridge보다 약합니다.</li>
+<li><strong>정부 vs 민간</strong>: 민간 기업 대상 100% · 정부 매출 없음.</li>
+<li><strong>경쟁 포지션</strong>: 취약하지만 고유 칸 2개(CFTC 파생 인가·특허)가 있습니다. 최대 위협은 큰손이 공급자를 계속 늘려 tZERO 몫을 얇게 만드는 것입니다(NYSE 이전대리인 파트너 2곳 → 6곳).</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>수익 모델</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>정부/민간 구성</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>경쟁 포지션</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"><strong>2.00</strong> → 3.1 / 12.5</td>
+</tr>
+</tbody>
+</table>
+<h2>👤 사람 — 경영진 (배점 12.5)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — CEO는 대형 로펌·골드만·마스터카드 법무 출신으로 규제 일을 잘 끝내는 사람입니다. 취임 14개월 동안 인가·제휴·합병은 해냈지만 매출과 비용은 아직 나아지지 않았고, 이사회 견제는 약합니다.</p>
+</blockquote>
+<ul>
+<li><strong>CEO 겸 이사회 의장 Alan Konevsky</strong> — 2025-09-04 취임(전임 David Goone). 하버드 로스쿨 → Sullivan &amp; Cromwell 12년 → 골드만삭스 법무 상무 → 마스터카드 수석부사장. tZERO 이전 경영 책임자 이력은 없습니다. 상세 = <a href="../../PeopleDive_Reports/tZERO/PeopleDive_AlanKonevsky_2026-11-03.html">People-Dive</a></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">⭐</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 약력</td>
+<td style="text-align: center;">4</td>
+<td>규제·거래 법무의 최상위 경력 · 경영 기록 없음</td>
+</tr>
+<tr>
+<td>② 명성</td>
+<td style="text-align: center;">2.5</td>
+<td>NYSE 협력·상원 의원실 면담 · 업계 밖 인지도 낮음</td>
+</tr>
+<tr>
+<td>③ 능력</td>
+<td style="text-align: center;">3</td>
+<td>14개월 동안 자기 토큰 지분 전환·ICE 라이선스·청산소 등록·투자 라운드·SPAC 계약 완료 · 매출·비용 개선 증거 없음</td>
+</tr>
+<tr>
+<td>④ 도덕성</td>
+<td style="text-align: center;">3</td>
+<td>본인 제재·소송 0 · "이미 최상위 기관에 상용화"라는 홍보가 실적보다 앞섬</td>
+</tr>
+<tr>
+<td>⑤ 비전</td>
+<td style="text-align: center;">사용자 ⭐ 대기</td>
+<td>💬 Claude 의견: 방향은 일관되나 "하지 않을 일"이 드러나지 않음</td>
+</tr>
+<tr>
+<td>⑥ 본인 지분</td>
+<td style="text-align: center;">❌</td>
+<td>합병계약상 RSU 전액 조기 확정 · 배정량 비공개</td>
+</tr>
+<tr>
+<td>⑦ 거버넌스</td>
+<td style="text-align: center;">2</td>
+<td>CEO 겸 의장 · 이사회 서기는 옛 부하 · 합병 후 이사 전원 회사 지명 + 시차 이사회 · 장기 보상 풀 12%에 매년 5% 자동 증가</td>
+</tr>
+<tr>
+<td>⑧ 외부 평가</td>
+<td style="text-align: center;">3</td>
+<td>칭찬은 투자자 쪽에서만 · 개인 주주는 "실질 매출은 언제냐"고 묻는 중</td>
+</tr>
+<tr>
+<td><strong>평균(객관 6칸)</strong></td>
+<td style="text-align: center;"><strong>2.92</strong></td>
+<td>→ 6.0 / 12.5</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>언행일치</strong>: 결과가 난 본인 공언 9건 = 지킴 4 · 일부 4 · 미달 1. 지킨 4건은 모두 회사 안에서 할 수 있는 일입니다. 날짜·숫자 약속(파생 "올해", 우선주 첫 유동성 창구 "11월")은 이번 달이 시험대입니다.</li>
+<li><strong>최대 주주</strong>: Bed Bath &amp; Beyond(옛 Overstock · 2026-08 사명 Neighborhood Intelligence) 지분 38.7% · 이사 1석 · 조건부 브리지 자금.</li>
+<li><strong>핵심 인재</strong>: CFO James Knight(tZERO 7년+ · 상장사 재무 보고는 처음) · CLO Vanessa Savino(CEO 옛 부하 · 이사회 서기 겸임) · CTO Christopher Russell(보안 전문가 · 지연된 플랫폼 출시 책임).</li>
+<li><strong>SPAC 측</strong>: 스폰서는 창업자 주식 575만 주를 1만 달러에 받아 합병 후 약 9.9%를 갖습니다. FG 계열이 브리지 대출·선도매입을, 사장 Tony Scuderi 계열 Imperii Securities가 공동 배정 대리인 겸 자문(수수료 상한 300만 달러)을 맡습니다. CEO Larry Swets가 맡았던 SPAC 5건의 합병 후 성적은 +369% · −44% · 파산 청산 · 약 −76% · −79%입니다.</li>
+</ul>
+<h2>🔢 숫자 — 재무건전성 (배점 12.5)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 1년에 1,400만~1,700만 달러를 쓰는데 매출은 연 200만~400만 달러입니다. 합병으로 들어올 신탁 현금이 거의 유일한 생명줄이고, 그 현금은 SPAC 주주가 얼마나 돈을 돌려받아 나가느냐에 달려 있습니다.</p>
+</blockquote>
+<h3>기본 정량</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 2025년 순손실이 EBITDA보다 작은 것은 투자자산 매각 차익 덕분입니다. 본업 적자는 EBITDA 쪽이 더 정직하고, 분기마다 커지고 있습니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th style="text-align: right;">2025A</th>
+<th style="text-align: right;">2026 상반기</th>
+<th style="text-align: right;">2026E</th>
+<th style="text-align: right;">2027E</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매출</td>
+<td style="text-align: right;">200만 달러</td>
+<td style="text-align: right;">80만 달러</td>
+<td style="text-align: right;">430만 달러</td>
+<td style="text-align: right;">3,210만 달러</td>
+</tr>
+<tr>
+<td>EBITDA</td>
+<td style="text-align: right;">−1,650만 달러</td>
+<td style="text-align: right;">−930만 달러</td>
+<td style="text-align: right;">−1,390만 달러</td>
+<td style="text-align: right;">−20만 달러</td>
+</tr>
+<tr>
+<td>순손익</td>
+<td style="text-align: right;">−1,000만 달러</td>
+<td style="text-align: right;">−1,080만 달러</td>
+<td style="text-align: right;">−1,700만 달러</td>
+<td style="text-align: right;">−70만 달러</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>분기</th>
+<th style="text-align: right;">25년 1Q</th>
+<th style="text-align: right;">2Q</th>
+<th style="text-align: right;">3Q</th>
+<th style="text-align: right;">4Q</th>
+<th style="text-align: right;">26년 1Q</th>
+<th style="text-align: right;">2Q</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매출(백만 달러)</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: right;">0.6</td>
+<td style="text-align: right;">0.7</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right;">0.4</td>
+</tr>
+<tr>
+<td>EBITDA(백만 달러)</td>
+<td style="text-align: right;">−3.2</td>
+<td style="text-align: right;">−3.9</td>
+<td style="text-align: right;">−3.1</td>
+<td style="text-align: right;">−6.3</td>
+<td style="text-align: right;">−4.3</td>
+<td style="text-align: right;">−5.0</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-g5"></div><div class="dd-legend" id="fig-g5-leg"></div><figcaption id="fig-g5-cap"></figcaption></figure>
+
+<ul>
+<li>2025년 2분기 순이익 흑자(+410만 달러)는 투자자산 매각 차익 840만 달러 덕분입니다.</li>
+<li>2026E 달성에는 9~12월 약 310만 달러가 필요합니다(430만 − 8월까지 누적 116만). 7~8월은 회사 추정을 넘었습니다(38만 vs 24만 달러).</li>
+<li>2021~2025년 연 매출은 160만~280만 달러 범위였습니다. 2026E 430만 달러는 이 회사가 넘어 본 적 없는 크기입니다.</li>
+<li>tZERO Securities의 2025년 말 순자본은 52만 달러로 최소 요건(25만 달러)의 약 2배이고, 감사보고서의 계속기업 문단은 모회사 지원으로 해소됐습니다. 고객 보호 적립금(386만 달러)은 고객 부채(341만 달러)보다 많습니다.</li>
+</ul>
+<h3>시총 10배 랜드마크</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금 규모는 소형 상장사 수준이고, 10배가 되면 지금의 Figure보다 조금 큰 회사가 됩니다(규모 비교일 뿐).</p>
+</blockquote>
+<figure class="dd-fig"><div id="fig-g15"></div><div class="dd-legend" id="fig-g15-leg"></div><figcaption id="fig-g15-cap"></figcaption></figure>
+
+<h3>4축</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 매출은 제자리, 적자는 확대, 현금은 외부 의존입니다. 버티는 힘은 SPAC 환매율이 정합니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 매출 성장</td>
+<td style="text-align: center;">⚪ 정체</td>
+<td>2026 상반기 80만 달러 ≈ 전년 70만 달러</td>
+</tr>
+<tr>
+<td>② 이익률</td>
+<td style="text-align: center;">🔴</td>
+<td>분기 EBITDA 적자 확대</td>
+</tr>
+<tr>
+<td>③ 현금 창출</td>
+<td style="text-align: center;">🔴</td>
+<td>연 1,400만~1,700만 달러 소진 · 현금흐름표·잔고 미공시</td>
+</tr>
+<tr>
+<td>④ 고금리·고물가 내구성</td>
+<td style="text-align: center;">⚪</td>
+<td>소형주 예외(시총 10억 달러·매출 1억 달러 미만) → 현금 생존 기간으로 판정 · 환매율에 따라 1년 미만~10년 이상</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"><strong>1.75</strong></td>
+<td>→ 2.3 / 12.5</td>
+</tr>
+</tbody>
+</table>
+<h3>고금리·고물가 내구성 정밀 진단 (별도 렌즈 · 점수 미합산)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 원가·금리·물량을 함께 흔들어도 생존 기간은 1~2할만 줄어듭니다. 생존을 가르는 것은 거시 충격이 아니라 SPAC 환매율이고, 고금리는 그 환매를 키우는 쪽으로 작용합니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">환매율</th>
+<th style="text-align: right;">합병 후 현금</th>
+<th style="text-align: right;">지금 비용 기준 순소진</th>
+<th style="text-align: right;">생존 기간</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0%</td>
+<td style="text-align: right;">2.16억 달러</td>
+<td style="text-align: right;">연 700만~1,000만 달러</td>
+<td style="text-align: right;">20년 이상</td>
+</tr>
+<tr>
+<td style="text-align: right;">50%</td>
+<td style="text-align: right;">1.00억 달러</td>
+<td style="text-align: right;">연 1,200만~1,500만 달러</td>
+<td style="text-align: right;">약 7~8년</td>
+</tr>
+<tr>
+<td style="text-align: right;">80%</td>
+<td style="text-align: right;">3,100만 달러</td>
+<td style="text-align: right;">연 1,500만~1,700만 달러</td>
+<td style="text-align: right;">약 1.8~2.1년</td>
+</tr>
+<tr>
+<td style="text-align: right;">90%</td>
+<td style="text-align: right;">800만 달러</td>
+<td style="text-align: right;">연 1,600만~1,800만 달러</td>
+<td style="text-align: right;">약 0.4~0.5년</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>🔴 업계 SPAC 환매율 중앙값은 2025년 1분기 91.7%, 직전 3년 평균 95.9%입니다(업계 자료 · Specific-Dive). 업계 보통 수준이면 위 표의 90% 행이 기본값에 가깝고, 91.7%를 대면 남는 현금은 약 400만 달러입니다(🧮). 합병계약에는 최소 현금 조건이 없습니다.</li>
+<li>현금 = 신탁 2.31억 달러 × (1 − 환매율) − 거래비용 1,500만 달러. 선도매입(최대 250만 주)이 새 현금으로 들어오면 최대 약 2,500만 달러가 더해집니다.</li>
+<li>2027년 계획은 영업비용을 3,230만 달러로 늘립니다. 매출이 늦으면 소진이 오히려 커집니다.</li>
+<li>파생 인가는 돈을 묶습니다. CFTC 규칙상 청산소는 1년치 운영비를 자기 자본으로 상시 보유해야 하고(규칙 39.11), 거래소는 신청 단계부터 1년치 운영비와 6개월치 현금성 자산을 요구합니다(규칙 38.1101 · Specific-Dive 원문 확인). 위 표의 현금 일부는 쓸 수 없는 돈이 됩니다.</li>
+<li><strong>지금 이 회사가 실제로 구할 수 있는 돈의 가격</strong>: 브리지 = 거래가 대비 25% 할인 전환 + 연 12% 현물 이자. 4~6개월 뒤 합병이 마감되면 투자자 수익은 약 39~41%이고, 1년으로 환산하면 100% 이상입니다(🧮).</li>
+<li><strong>금리 방향</strong>: 고금리가 이어지면 환매 증가·증자 창 닫힘·거래량 감소로 순 마이너스입니다. 금리가 내려가야 유리한 주식이고, 현금 이자를 근거로 고금리 수혜주로 보면 안 됩니다.</li>
+<li>🏷️ <strong>판정: 🔴 결합충격 취약 — 단 합병 마감 시 현금(환매율)에 의존 · 신뢰도 낮음.</strong> 🎯 버티는가 = 주주 가치 기준 🔴(환매 80% 이상 → 1~2년 안에 할인 증자) · 회사 존속 기준 ⚪(기존 주주가 10년 넘게 다시 돈을 넣어 왔으나 매번 조건이 나빠짐). 회복 신호 = 마감 현금 약 1억 달러 이상 · 악화 신호 = 합병 기한 연장 또는 더 나쁜 조건의 새 브리지.</li>
+<li>장기 thesis를 멈추는 신호로 쓰지 않고, 리스크 신호의 입력으로만 씁니다. 7축 점수에는 넣지 않았습니다.</li>
+</ul>
+<hr />
+<h1>Part 2 — 추가 심층</h1>
+<h2>시나리오 · 촉매 · 렌즈</h2>
+<h3>시나리오 (기준 = 합병 후 주당 $10 · 환매하지 않고 남는 경우)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 5년 기댓값은 약 0.6배로 본전보다 낮습니다. 회사 전망이 다 맞는 낙관 경로는 약 2.7배지만 확률을 10%로 봤습니다. 업계 SPAC 환매율이 보통 90%를 넘고 과거 약속이 평균 1.6배 늦었다는 점이 기본·비관 경로를 무겁게 합니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시나리오</th>
+<th style="text-align: center;">확률</th>
+<th style="text-align: center;">2년</th>
+<th style="text-align: center;">3년</th>
+<th style="text-align: center;">5년</th>
+<th>핵심 가정</th>
+<th>촉매</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🟢 낙관</td>
+<td style="text-align: center;">10%</td>
+<td style="text-align: center;">1.8배</td>
+<td style="text-align: center;">2.2배</td>
+<td style="text-align: center;">2.7배</td>
+<td>2027년 매출 2,500만~3,200만 달러 · DCM 지정 · NYSE 토큰 거래장 승인 이전대리인으로 실가동 · 유료 특허 라이선스 2건 이상</td>
+<td>DCM 지정 · 첫 파생 체결 · 라이선스 대가 공시</td>
+</tr>
+<tr>
+<td>🟡 기본</td>
+<td style="text-align: center;">40%</td>
+<td style="text-align: center;">0.6배</td>
+<td style="text-align: center;">0.55배</td>
+<td style="text-align: center;">0.55배</td>
+<td>마감은 되나 환매 높음 · 2027년 매출 800만~1,200만 달러(지연 1.6배 적용) · 추가 증자로 주식 수 약 7,500만~8,000만 주</td>
+<td>2026년 4분기 매출 · S-4 재무</td>
+</tr>
+<tr>
+<td>🔴 비관</td>
+<td style="text-align: center;">50%</td>
+<td style="text-align: center;">0.3배</td>
+<td style="text-align: center;">0.25배</td>
+<td style="text-align: center;">0.2배</td>
+<td>업계 보통 수준의 환매(90% 이상) → 현금 거의 없이 마감 → 할인 증자 반복(최소 현금 조건이 없어 이 상태로도 마감 가능) · 또는 합병 무산(2027-03-15 기한)</td>
+<td>환매율 발표 · 기한 연장 공시</td>
+</tr>
+<tr>
+<td><strong>기댓값</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>0.57배</strong></td>
+<td style="text-align: center;"><strong>0.57배</strong></td>
+<td style="text-align: center;"><strong>0.59배</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-h1"></div><div class="dd-legend" id="fig-h1-leg"></div><figcaption id="fig-h1-cap"></figcaption></figure>
+
+<ul>
+<li>⚠️ 당초 낙관 15%·비관 45%(5년 기댓값 0.72배)였으나, Specific-Dive가 확인한 업계 환매율 중앙값(2025년 1분기 91.7% · 직전 3년 평균 95.9% · 업계 자료)과 최소 현금 조건 부재를 반영해 낙관 10%·비관 50%로 낮췄습니다.</li>
+<li>⚠️ 5년 기댓값이 1.5배에 못 미쳐 thesis가 약합니다. 기본 경로 2년 배수가 2.0배 미만이라 "낙관 꼬리 의존"입니다.</li>
+<li>낙관 가정은 검증 등급 C 이하 고객(ICE 대가 미공개 · 은행·파생 파트너 이름 없음)에 기댑니다.</li>
+<li><strong>암묵 출구 배수</strong>: 낙관 5년 기업가치 약 20억 달러 ÷ 매출 약 2억 달러 = 약 10배 · 기본 약 4억 ÷ 약 5천만 = 약 8배. 동종 범위 안이라 배수 확장보다 매출 성장 한 변수에 거는 값입니다.</li>
+</ul>
+<h3>촉매 일정</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이번 달부터 넉 달 안에 판정이 몰려 있습니다. 가장 먼저 볼 것은 S-4에 실릴 감사 재무와 SPAC 환매율입니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>사건</th>
+<th style="text-align: center;">영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-11</td>
+<td>CEO가 X에서 건 "우선주 첫 유동성 창구" · FGII 3분기 10-Q(신탁 주당 가치 확인)</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>2026-11~12</td>
+<td>FGII의 S-4 제출(감사 재무·자회사별 매출·경영진 보상 첫 공개)</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2026-12-31</td>
+<td>"파생을 올해 플랫폼에"(보도자료) · 2026년 매출 430만 달러 달성 여부</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2025-11-21부터</td>
+<td>CFTC DCM 지정 심사 — 347일째로 법정 180일의 약 1.9배(심사 시계가 멈췄을 수 있어 거절 신호로 단정하지 않음)</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>마감 전</td>
+<td>마감 조건 = FINRA 규칙 1017(증권사 2곳 지배권 변경 승인) + 비공개 별표의 SEC·CFTC 승인</td>
+<td style="text-align: center;">🟠</td>
+</tr>
+<tr>
+<td>2026년 4분기~2027년 1분기</td>
+<td>NYSE 토큰 증권 플랫폼 승인 · 승인 디지털 이전대리인 명단</td>
+<td style="text-align: center;">🟠</td>
+</tr>
+<tr>
+<td>2027년 초</td>
+<td>FGII 주주총회 · 환매율 확정</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>2027-03-15</td>
+<td>합병 기한(FGII 자체 기한은 2028-01-20 · 연장 투표 이력 0회)</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>진행 중</td>
+<td>Securitize 대 tZERO 특허 소송(델라웨어 연방법원 1:26-cv-00722) · tZERO 반소</td>
+<td style="text-align: center;">🟠</td>
+</tr>
+<tr>
+<td>마감 후 12개월</td>
+<td>어닝아웃 조건 — 조정 EBITDA 흑자 3개월 연속 구간 2번</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+</tbody>
+</table>
+<h3>⚠️ Thesis 리스크 신호 (조기경보)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 앞의 세 개가 가장 무겁습니다. 매출이 안 따라오거나, SPAC 현금이 대부분 빠지거나, DCM이 해를 넘기면 성장 이야기가 크게 흔들립니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>신호</th>
+<th>관측 trigger</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>성장 훼손</td>
+<td>2026년 매출 300만 달러 미만 또는 S-4 재무가 덱 숫자와 어긋남</td>
+</tr>
+<tr>
+<td>현금 훼손</td>
+<td>FGII 환매율 80% 이상 + 추가 증자·할인 전환 발표</td>
+</tr>
+<tr>
+<td>파생 인가 지연</td>
+<td>DCM 지정이 2027년 상반기를 넘김</td>
+</tr>
+<tr>
+<td>큰손 공급자 확대</td>
+<td>NYSE·나스닥이 디지털 이전대리인·브로커딜러 구독자를 계속 늘리고 tZERO의 고유 역할이 사라짐</td>
+</tr>
+<tr>
+<td>특허 무력화</td>
+<td>Securitize 소송에서 비침해·무효 판단 또는 특허 심판 개시</td>
+</tr>
+<tr>
+<td>관계사 의존 지속</td>
+<td>S-4에서 최대 고객이 여전히 관계사·합작사</td>
+</tr>
+<tr>
+<td>사람·거버넌스</td>
+<td>CFO·CTO 이탈 · 최대 주주와의 이해충돌 거래</td>
+</tr>
+<tr>
+<td>합병 무산</td>
+<td>기한 연장 또는 해지</td>
+</tr>
+</tbody>
+</table>
+<p>| 마감 현금 부족 〔Specific-Dive〕 | 투표 직후 8-K의 남은 신탁 + 선도매입 + 브리지가 거래비용과 12개월 소진(합계 약 3,000만 달러)에 못 미침 |
+| 파생 인가 조건부 지정 〔Specific-Dive〕 | CFTC가 DCM을 재무 자원 조건부로 지정하거나 신청 철회·재제출 |
+| 마감 규제 승인 지연 〔Specific-Dive〕 | FINRA 규칙 1017 임시 제한 또는 SEC·CFTC 승인 지연 → 기한 연장 공시 |
+| 특허 무효 다툼 〔Specific-Dive〕 | 법원 무효 신청 또는 특허심판원 무효 심판 개시 |
+| 보관 구조 변경 〔Specific-Dive〕 | Clear Street 통합 계좌 계약 해지·변경 또는 고객 자산 관련 신규 규제·분쟁 등록 |
+| 대체거래소 공시 재위반 〔Specific-Dive〕 | 상장주식 거래장(Temple 등) 개시 전 거래장 공시서류 재제출 부재 또는 신규 조치 |</p>
+<h3>🧭 CAE · Edge Grid 좌표</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이야기는 여러 층에 걸쳐 있지만 가장 약한 고리가 실제 거래량입니다. 중요도는 낮은 편이고, 값은 이미 과거 몸값보다 많이 올라 있어 '약한데 비싼' 칸에 놓입니다.</p>
+</blockquote>
+<p>〔CAE = 제약(C) · 조정(A) · 표현(E) 층 / 중요도 L 다층성 · R 비가역성 · H 병목 경도 · 엣지 G 선반영 격차 · P 연료 잔량 · D 컨센서스 반증, 각 0~3〕</p>
+<ul>
+<li><strong>층</strong>: 제약 층(규제 인가 묶음) · 조정 층(청산·결제·명부) · 표현 층(토큰 증권 상품·파생·예측시장). 무게중심 = 제약 층. 가장 약한 고리 = 표현 층의 거래량.</li>
+<li><strong>프로파일</strong>: 중요도 L 2 · R 1 · H 1 → 下~中 / 엣지 G 1 · P 1 · D 1 → 下. 합병 전 지분가치는 2025년 말 몸값 추정의 약 5.4배라 개선 기대가 이미 값에 들어 있고, 촉매는 많지만 환매가 연료를 빼며, 발표일 FGII +0.5%로 시장은 이미 회의적입니다.</li>
+<li><strong>판정</strong>: 약하고 비싼 = 회피·관찰. 시장이 보는 가설(주가 상관)은 비상장이라 판정 불가 · thesis 과목 = 미래 매출에 거는 문학형.</li>
+</ul>
+<figure class="dd-fig"><svg viewBox="0 0 520 300" width="100%" style="max-width:520px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="20" width="220" height="130" fill="#fdeee9"/><rect x="280" y="20" width="220" height="130" fill="#eef6f0"/>
+<rect x="60" y="150" width="220" height="130" fill="#eeeeee"/><rect x="280" y="150" width="220" height="130" fill="#e8f0f8"/>
+<line x1="280" y1="20" x2="280" y2="280" stroke="#999" stroke-dasharray="4,3"/><line x1="60" y1="150" x2="500" y2="150" stroke="#999" stroke-dasharray="4,3"/>
+<text x="170" y="40" font-size="11" text-anchor="middle" fill="#8a2415">강한데 비싼 → 트림·회피</text>
+<text x="390" y="40" font-size="11" text-anchor="middle" fill="#1f6f3b">강하고 싼 → 집중매수 후보</text>
+<text x="170" y="270" font-size="11" text-anchor="middle" fill="#555">약하고 비싼 → 회피·청산</text>
+<text x="390" y="270" font-size="11" text-anchor="middle" fill="#2c5282">약하고 싼 → 정찰</text>
+<text x="280" y="295" font-size="11" text-anchor="middle" fill="#444">← 엣지 소진(비싼)   ·   엣지 잔량(싼) →</text>
+<text x="20" y="150" font-size="11" text-anchor="middle" fill="#444" transform="rotate(-90 20,150)">중요도 약 → 강</text>
+<circle cx="190" cy="215" r="7" fill="#c0392b"/>
+<text x="200" y="205" font-size="10" text-anchor="start" fill="#c0392b">11/3 약하고 비싼</text>
+</svg><figcaption>CAE·Edge Grid 2×2 분면 — 중요도 下~中 · 엣지 下(과거 몸값 대비 이미 비쌈)</figcaption></figure>
+
+<h3>💎 0to1 독점 판정 (틸 7문 · 별도 렌즈)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 일곱 질문 중 자신 있게 "예"라고 답할 것이 없습니다. 회사는 거대한 시장 숫자를 앞세우지만 매출은 아주 작아, 말과 숫자가 어긋납니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>문항</th>
+<th style="text-align: center;">판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 기술(대체재 대비 10배)</td>
+<td style="text-align: center;">⚠️</td>
+<td>특허 폭은 넓지만 10배 근거 없음</td>
+</tr>
+<tr>
+<td>② 시기</td>
+<td style="text-align: center;">⚠️</td>
+<td>NYSE 토큰 거래장에 걸려 있으나 아직 열리지 않음</td>
+</tr>
+<tr>
+<td>③ 작은 시장 독점</td>
+<td style="text-align: center;">아니오</td>
+<td>NYSE 이전대리인 파트너 6곳 · 청산소 9~10월에만 3곳 추가</td>
+</tr>
+<tr>
+<td>④ 사람</td>
+<td style="text-align: center;">⚠️</td>
+<td>규제 실행력 ○ · 경영 실적·거버넌스 약함</td>
+</tr>
+<tr>
+<td>⑤ 유통</td>
+<td style="text-align: center;">⚠️</td>
+<td>화이트라벨·API 구조는 있으나 공개 계약 소수</td>
+</tr>
+<tr>
+<td>⑥ 존속성</td>
+<td style="text-align: center;">⚠️</td>
+<td>인가는 오래가지만 그 위의 렌트가 없음</td>
+</tr>
+<tr>
+<td>⑦ 숨겨진 비밀</td>
+<td style="text-align: center;">⚠️</td>
+<td>"증권과 파생을 한 인가 묶음에" — 남들이 못 본 진실인지, 아무도 원하지 않는 조합인지 미판정</td>
+</tr>
+<tr>
+<td>〔보조〕 시장정의 화법</td>
+<td style="text-align: center;">과장 🔴</td>
+<td>"토큰화 경제의 연결 조직"·18.9조 달러 시장 ↔ 매출 200만 달러</td>
+</tr>
+</tbody>
+</table>
+<p><strong>예 0/7 → 불운 위험 ‖ ⭐2.5 ‖ 시장정의 화법 = 과장 🔴</strong> · 7축 점수에 합산하지 않습니다.</p>
+<h3>💰 밸류에이션 정밀 판정 (별도 렌즈 · 점수 미합산)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금 FGII를 사는 것과 합병 뒤 tZERO 주식을 갖는 것은 다른 일입니다. 투표 전에는 돈을 돌려받을 권리가 붙어 거의 현금처럼 움직이고, 그 권리를 쓰지 않고 남으면 매출 200만 달러짜리 회사를 기업가치 4억 달러에 사는 셈이 됩니다.</p>
+</blockquote>
+<ul>
+<li><strong>공식 판정 = 무판정</strong>: FGII 업종이 셸 회사이고 합병 마감 전, S-4 미제출입니다. 다만 거래 가격이 주당 $10으로 고정되고 기업가치가 환매율과 거의 무관하게 약 4.1억 달러라서, 합병 후 기준으로 참고 판정을 함께 적습니다.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>렌즈</th>
+<th>결론</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>역산(이 가격이 맞으려면)</td>
+<td>10년 매출이 연 46~57% 커져 2036년 약 1.9억~4.0억 달러가 돼야 함(현금 마진 25%) → 성장은 상한 근처, 고성장 지속 기간은 상한 밖 · 할인율 하나로 결론이 뒤집혀 불안정</td>
+</tr>
+<tr>
+<td>아키타입(흑자 전 고성장)</td>
+<td>매출총이익 미공시 · 기업가치 ÷ 최근 12개월 매출 약 195배 · ÷ 2027E 12.7배 = 회사 전망 100% 달성을 이미 값에 넣음</td>
+</tr>
+<tr>
+<td>동종 비교</td>
+<td>동종 기업가치 ÷ 매출(최근 12개월·GAAP 통일) 3.2~12.4배 중 tZERO가 가장 높음 · 성장·마진·질 모두 프리미엄 근거 없음</td>
+</tr>
+<tr>
+<td>시장 기대</td>
+<td>커버 애널리스트 0 → 컨센서스 아님 · 대신 FGII가 신탁 추정치보다 약 1.8% 낮게 거래 = 시장이 거래 프리미엄을 0 이하로 매김</td>
+</tr>
+<tr>
+<td>시나리오 교차</td>
+<td>출구 배수 8~10배는 동종 범위 안 → 배수가 아니라 매출 성장 한 변수에 거는 값</td>
+</tr>
+<tr>
+<td>병목 렌트 괴리(약한 신호)</td>
+<td>렌트 포획 정규화 0.27 vs 동종 배수 백분위 1.00 → 고평가 사칭 쪽 · 구속 인자 = 가격결정력·현금 전환</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>🏷️ <strong>참고 판정: 🔴 고평가 쪽 · 신뢰도 낮음 · 🟢 조건 0/3 충족(역산 ❌ · 역사 비교 N/A · 동종 할인 ❌)</strong> · 바뀔 변수 = 2026년 4분기~2027년 실제 매출.</li>
+<li>🎯 <strong>매수 적정성 한 줄 (낮은 신뢰도 · 강제 아님 · 최종 판단 = 독자)</strong></li>
+<li><strong>(가) 합병 투표 전 FGII 보유(환매권 유지)</strong>: ⚪ tZERO 매수가 아니라 "신탁 현금 + 옵션"입니다. 신탁은 6/30 기준 주당 $10.156이고, 이자 속도로 늘리면 지금 약 $10.28 · 투표 때 약 $10.35~10.42로 추정됩니다(🧮). 현재가 $10.09보다 높아 하방이 신탁가 근처에서 막힙니다. 단서 = 3분기 10-Q로 신탁 값 확인 전 · 마감 전에 직접 환매 신청 필요 · 평소 거래량이 하루 4만 주 수준으로 얇음 · 자금이 2027년 1분기까지 묶임.</li>
+<li><strong>(나) 환매하지 않고 합병 후 보유</strong>: 🔴 진입 보류. 다시 볼 가격 = 합병 후 기업가치 2억 달러 이하(환매율에 따라 주당 약 $5~6).</li>
+</ul>
+<h2>자금흐름 · 지분 구조</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 합병 후에도 옛 모회사가 가장 큰 주주로 남고, SPAC 스폰서는 1만 달러로 산 주식으로 약 10%를 갖습니다. 상장 직후 매물 압력은 환매·워런트·잠금 해제에서 옵니다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>주체</th>
+<th style="text-align: center;">합병 전</th>
+<th style="text-align: center;">합병 후(환매 0%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bed Bath &amp; Beyond(옛 Overstock)</td>
+<td style="text-align: center;">38.7%</td>
+<td style="text-align: center;">약 20%(🧮 38.7% × 52.0%)</td>
+</tr>
+<tr>
+<td>기존 tZERO 주주 전체</td>
+<td style="text-align: center;">100%</td>
+<td style="text-align: center;">52.0%</td>
+</tr>
+<tr>
+<td>FGII 공모 주주</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">36.4%</td>
+</tr>
+<tr>
+<td>FGII 스폰서</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">9.9%</td>
+</tr>
+<tr>
+<td>전환사채 투자자(FG 계열·ICE·Dinari·최대 주주)</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">1.7%</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>희석 대기</strong>: 어닝아웃 250만 주 · 선도매입 최대 250만 주 · FGII 워런트 약 1,250만 개(행사가 $11.50 · 사모 일부 $15) · 장기 보상 풀 12%(매년 5% 자동 증가).</li>
+<li>환매율이 높을수록 공모 주주 비중이 줄고 기존 주주 비중이 커집니다(환매 90%면 기존 주주 약 77%).</li>
+<li>잠금 계약은 서식만 공개(기간은 S-4에서 확인). 기관 보유·내부자 거래·공매도·옵션·레버리지 ETF는 상장 전이라 해당 없습니다.</li>
+</ul>
+<h2>산업 · 규제 · 정책 위험</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이 회사는 규제를 해자로 내세우지만, 과거에 SEC 조사와 제재금 이력이 있고 지금도 인가 하나(DCM)가 심사 중입니다.</p>
+</blockquote>
+<ul>
+<li><strong>과거</strong>: 2018-02 SEC 조사(2017~18 토큰 공모) · 2022-01-10 SEC 명령(대체거래소 규정 위반 · 제재금 80만 달러 · 사기 아님 — FINRA 브로커체크에 등록된 규제 사건 1건과 같은 사건) · 2022년 감사인의 계속기업 의문 · 디지털 자산 증권 자회사는 공시 사건 0건.</li>
+<li><strong>진행 중</strong>: CFTC DCM 지정 심사 · Securitize와의 특허 소송·반소 · SEC 이전대리인 규칙 현대화 제안(의견 수렴 중 — 진입 문턱이 낮아지면 tZERO의 인가 해자도 얕아짐).</li>
+<li><strong>정책 민감도</strong>: 토큰화·예측시장 우호 기조는 순풍이지만, 같은 순풍이 경쟁사 진입도 쉽게 만듭니다.</li>
+</ul>
+<h2>공시 · 약속 · 가이던스</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 실적 발표 콜은 없고, 회사가 직접 낸 숫자는 투자자 설명자료뿐입니다. 7~8월은 회사 예상보다 잘 나왔지만, 과거 장기 약속은 3분의 1만 제때 지켜졌습니다.</p>
+</blockquote>
+<ul>
+<li><strong>최근 가이던스 대비</strong>: 2026년 7~8월 매출 38만 달러(회사 추정 24만) · 8월까지 누적 116만 달러(추정 102만). 짧은 구간이지만 처음 확인되는 '추정 상회'입니다.</li>
+<li><strong>장기 약속(History-Dive)</strong>: 판정 15건 중 제때 온전 5 · 늦음/일부 4 · 불이행 6 · 날짜 약속 평균 1.6배 지연 · 바깥 투자 약속 3건 전부 불발. 이 배수를 "파생을 2026년에"에 적용하면 기본값은 2027년 3분기입니다(추론).</li>
+<li><strong>몸값 궤적</strong>: 2018년 15억 달러 투자 합의(무산) → 2022년 약 2.21억 → 2023년 약 1.33억 → 2025년 말 약 6천만(모회사 공정가치 비례 계산 · 방향만 신뢰) → 이번 SPAC 3.25억.</li>
+<li><strong>최근 12개월 주요 사건</strong>: 2026-04-29 자기 토큰(TZROP) 지분 전환 · 2026-08-31 ICE 협업·특허 라이선스 · 2026-09 Archax·Eddid 대리 청산 · 2026-10-16 CFTC 청산소 등록 · 2026-10 Temple 운영 계약 · 2026-10-31 SPAC 합병계약.</li>
+<li><strong>외부 비판 리포트</strong>: 최근 12개월 공매도·평가 보고서 없음.</li>
+<li>상세 = <a href="../../HistoryDive_Reports/tZERO/tZERO_HistoryDive_2026-11-03.html">History-Dive</a></li>
+</ul>
+<h2>동적 발견</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 표준 틀 밖에서 네 가지가 나왔습니다. 최대 주주가 다른 이름으로 브리지에 들어와 있고, 같은 회사 문서끼리 인가 상태가 엇갈리며, 이전대리인은 실적이 없고, 스폰서의 과거 성적이 나쁩니다.</p>
+</blockquote>
+<h3>브리지 참여자 "Neighborhood Intelligence" = 최대 주주 자신 — 🔴</h3>
+<ul>
+<li>2026-08 Bed Bath &amp; Beyond가 사명을 바꾼 것입니다. 덱의 "ICE·Dinari·Neighborhood Intelligence·기존 투자자"는 사실상 셋 + 최대 주주입니다. 최대 주주가 지분·이사 1석·조건부 자금을 함께 쥐어 CEO의 실질적 상사입니다.</li>
+</ul>
+<h3>같은 회사 문서끼리 청산소 상태가 엇갈림 — 🟠</h3>
+<ul>
+<li>CFTC 목록 = 10-16 등록 · 보도자료(10-20) = 등록 · 덱·8-K(10-31) = "대기". 사실 판단은 CFTC 기준입니다. 공시 정밀도 문제이자, 어닝아웃 조건 문구가 DCM 하나만 남은 상태와 맞지 않습니다.</li>
+</ul>
+<h3>이전대리인 처리 실적 0 — 🟠</h3>
+<ul>
+<li>연차 보고(TA-2)상 2024·2025년 처리 건수·주주 계좌가 0입니다. NYSE 이전대리인 파트너로 이름이 올랐지만 실제 명부 관리 경험은 아직 없다는 뜻입니다.</li>
+</ul>
+<h3>SPAC 스폰서의 과거 성적 — 🟠</h3>
+<ul>
+<li>5건 중 4건이 공모가 $10 아래, 1건 파산 청산입니다. 스폰서 몫은 1만 달러로 산 주식이라 합병 후 주가가 $10 아래여도 스폰서는 이익을 냅니다. 합병 성사 유인과 주주 수익이 다릅니다.</li>
+</ul>
+<h3>다음 실행 때 확인</h3>
+<ul>
+<li>S-4 제출 후: 자회사·고객별 매출 · 현금 잔고 · 브리지 금액 · ICE 투자액 · 경영진 보상 · 잠금 기간 · 최소 현금 조건(합병계약 원문).</li>
+<li>특허 원문 대조(계쟁 5건) · FINRA 규제 사건 원문 · Dinari에 판 자산의 정체.</li>
+</ul>
+<h2>🔎 Specific-Dive — 업종 전문가 체크리스트 보완</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 토큰 증권 인프라·파생 청산·SPAC 합병 대상용 체크리스트 15개를 새로 만들어 감사했다. 별점을 직접 뒤집는 사실은 없다. 다만 합병계약에 최소 현금 조건이 없고 업계 환매율 중앙값이 90%를 넘어, 시나리오의 기본 환매율을 다시 잡아야 한다.</p>
+</blockquote>
+<h3>체크리스트 대조</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 관계사 매출·이전대리인 실적·워런트·대체거래소 공시는 충분했다. 빈칸은 최소 현금 조건, 환매 기저율, 파생 인가 자본 요건, 보관 구조, 특허 만료, 마감 규제 조건이었다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th>체크 항목</th>
+<th style="text-align: center;">판정</th>
+<th>결론 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td>증권사 순자본·모회사 의존</td>
+<td style="text-align: center;">◐→조사</td>
+<td>순자본 $0.52M(최소 $0.25M) · 부채 대 순자본 2.5배 · 모회사 지원 전제</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td>고객 보호 규칙·고객 자산 보관 위치</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>2026-08-21부터 일반 고객 계좌 = Clear Street 옴니버스 보관</strong> · 2025말 적립금 $3.86M &gt; 고객 부채 $3.41M</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td>대체거래소 거래량·공시·공정 접근</td>
+<td style="text-align: center;">✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td>이전대리인 처리 실적</td>
+<td style="text-align: center;">✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td>관계사 매출 공정성</td>
+<td style="text-align: center;">✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td>청산기관(DCO) 재무 자원</td>
+<td style="text-align: center;">◐→조사</td>
+<td>1년치 운영비 자기 자본 상시 보유(규칙 39.11 원문)</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td>거래소(DCM) 법정 기간·신청자 요건</td>
+<td style="text-align: center;">◐→조사</td>
+<td>법정 180일 대비 347일(약 1.9배) · 신청자도 1년치 운영비 + 6개월치 현금성 자산</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td>특허 만료·무효 위험</td>
+<td style="text-align: center;">◐→조사</td>
+<td><strong>만료 2036-02·2039-09</strong> · 첫 청구항이 넓어 제101조 다툼 노출[추론]</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td>신탁·합병 기한·연장 이력</td>
+<td style="text-align: center;">◐→조사</td>
+<td>SPAC 기한 2028-01-20 · 연장 투표 0회 · 이번이 첫 환매 기회</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td>최소 현금 조건·PIPE·선도매입</td>
+<td style="text-align: center;">❌→조사</td>
+<td><strong>최소 현금 조건 없음(합병계약 제8조)</strong> · PIPE 없음 · 선도매입 텀시트만</td>
+</tr>
+<tr>
+<td style="text-align: center;">11</td>
+<td>환매율·상장 후 주가 기저율</td>
+<td style="text-align: center;">◐→조사</td>
+<td><strong>업계 환매 중앙값 91.7~95.9% · 마감 7일 뒤 중앙값 −56.6%(근거 2차)</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">12</td>
+<td>워런트·스폰서 몫·잠금</td>
+<td style="text-align: center;">✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: center;">13</td>
+<td>마감 규제 승인 조건</td>
+<td style="text-align: center;">❌→조사</td>
+<td>FINRA 규칙 1017(31일 경로) + 비공개 별표 5.5(SEC·CFTC)</td>
+</tr>
+<tr>
+<td style="text-align: center;">14</td>
+<td>규제 징계 이력</td>
+<td style="text-align: center;">◐→조사</td>
+<td>브로커체크 1건 = 2022 SEC 명령(제재금 $80만 · 사기 아님)</td>
+</tr>
+<tr>
+<td style="text-align: center;">15</td>
+<td>보관 사고·제3자 보관</td>
+<td style="text-align: center;">❌→조사</td>
+<td>공시 사고 0건 · 디지털 자산 보관은 자체</td>
+</tr>
+</tbody>
+</table>
+<h3>새로 안 것</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 환매가 업계 보통 수준이면 마감 현금은 약 400만 달러에서 0 근처이고, 계약은 그때도 합병을 멈추지 않는다. 파생 인가는 돈을 버는 자리이기 전에 돈을 묶는 자리다.</p>
+</blockquote>
+<ol>
+<li><strong>합병계약 마감 조건에 최소 현금 조건이 없다.</strong> 환매가 거의 100%여도 합병은 성립할 수 있다. 비관 경로는 "무산"보다 "현금 없이 상장한 뒤 할인 증자"가 더 가능하다.</li>
+<li><strong>업계 SPAC 환매율 중앙값은 2025년 1분기 91.7%, 직전 3년 평균 95.9%다(근거 2차).</strong> 같은 분기 마감 10건의 마감 7일 뒤 주가는 중앙값 −56.6%였다. 91.7%를 대면 남는 신탁 약 $19M에서 거래비용 $15M을 빼고 약 $4M이다(🧮). FGII가 신탁가 아래($10.09 &lt; 약 $10.28)에서 거래되는 것도 같은 방향이다.</li>
+<li><strong>청산기관과 거래소 인가는 각각 1년치 운영비를 자기 자본으로 요구한다.</strong> 거래소는 신청 단계부터다. 그래서 거래소 지정이 SPAC 현금이 들어온 뒤로 밀리는 구조일 수 있다[추론].</li>
+<li><strong>일반 증권 고객 계좌는 2026년 8월부터 외부 청산 증권사(Clear Street)가 맡는다.</strong> 토큰 증권 보관은 자체 법인에 남았다. "자체 청산을 포함한 인가 묶음"이라는 해자 서술에 단서가 붙는다.</li>
+<li><strong>계쟁 특허 두 건은 2036년·2039년까지 살아 있다.</strong> 걱정할 것은 기간이 아니라 "일반 컴퓨터 + 준법 규칙 실행" 수준의 넓은 청구항이다.</li>
+</ol>
+<ul>
+<li>상세 = <a href="../../SpecificDive_Reports/tZERO/tZERO_SpecificDive_2026-11-03.html">Specific-Dive</a></li>
+</ul>
+<h2>🔴 종합 판단</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 토큰화는 오지만, 그 가치가 tZERO에 쌓인다는 증거는 아직 없습니다. 지금 숫자로 판정이 가능한 것은 "투표 전 FGII는 현금에 가깝고, 합병 후 주식은 비싸다"는 것 하나입니다.</p>
+</blockquote>
+<ul>
+<li><strong>7축 종합 42점 / 100(⭐2.69 · 약함)</strong> — 산업은 강하지만 회사가 선 자리·회사·경쟁·숫자가 모두 약합니다. 사업·thesis 매력도이며 밸류는 따로 봤습니다.</li>
+<li><strong>시간 지평</strong>: 단기(0~6개월)는 S-4 재무·환매율·DCM이라는 세 판정이 몰립니다. 중기(6개월~3년)는 합병 직후 흔한 매물 압력(환매 후 유통 주식 적음 · 워런트 약 1,250만 개 · 25% 할인 전환사채 · 선도매입)과 현금 소진이 겹칩니다. 장기(3~10년)는 NYSE 토큰 거래장이 커지고 파생 거래가 붙으면 고정비 구조라 개선 폭이 큽니다. 세 지평의 결론이 서로 다릅니다.</li>
+<li><strong>리스크 신호 집계</strong>: 성장·현금·파생 인가·큰손 공급자 확대·특허·관계사 의존·거버넌스·합병 무산 8개에 Specific-Dive가 6개(마감 현금 부족·조건부 지정·마감 승인 지연·특허 무효 다툼·보관 구조 변경·거래장 공시 재위반)를 더해 14개가 관찰 대상입니다. 지금 발동한 것은 없습니다.</li>
+<li><strong>종합 판정 = 추가 검증</strong>: S-4의 감사 재무와 환매율이 나오기 전까지 판단을 확정하기 어렵습니다.</li>
+</ul>
+<h2>수집 상태 (실패·불완전 항목만)</h2>
+<ul>
+<li>⚠️ 연결 재무제표 원문·현금 잔고·브리지 금액·ICE 투자액 = S-4 전 미공시</li>
+<li>⚠️ 기술 분석(chart-dive) = 비상장이라 미수행</li>
+<li>⚠️ Figure·Broadridge 매출 · FINRA 규제 사건 원문 · 특허 원문 대조 = 이번 실행 미수집</li>
+<li>⚠️ SEC 문서는 Chrome으로 열어 읽음(명령줄 다운로드는 SEC가 차단)</li>
+</ul>
+<hr />
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p>
+<div class="footer">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const VIZ = {"score7": {"label": "확신도 7축", "max": 5, "axes": ["🌦️날씨", "⛰️산", "🌲숲", "🌳나무", "🌲🌳옆나무", "👤사람", "🔢숫자"], "series": [{"name": "tZERO 11/3", "color": "#c0392b", "scores": [2.67, 4.75, 2.07, 2.7, 2.0, 2.92, 1.75]}]}, "narrative": {"label": "내러티브 5축", "max": 5, "axes": ["🔧기술", "👥사회", "🏛️정책", "🌐지정학", "💰자본"], "series": [{"name": "토큰화 산업", "color": "#2980b9", "scores": [4, 2, 5, 3, 4]}]}, "bars": {"title": "2025년 매출 구성(백만 달러 · 일부 추정)", "mode": "share", "unit": "백만 달러", "items": [{"label": "외부 고객 수수료(증권사 2곳)", "value": 0.25, "color": "#27ae60"}, {"label": "모회사·합작사(증권사 2곳)", "value": 0.37, "color": "#c0392b"}, {"label": "증권사 밖 법인(내역 미공시)", "value": 1.38, "color": "#95a5a6"}]}, "peers": {"metrics": [{"key": "rev", "label": "최근 분기 매출(백만 달러)", "unit": "", "better": "high"}, {"key": "cap", "label": "몸값(억 달러)", "unit": "", "better": "low"}, {"key": "lic", "label": "CFTC 파생 인가(0~2)", "unit": "", "better": "high"}], "rows": [{"name": "tZERO", "subject": true, "vals": {"rev": 0.4, "cap": 4.1, "lic": 1.5}}, {"name": "Securitize", "vals": {"rev": 14.44, "cap": 11.8, "lic": 0}}, {"name": "Figure", "vals": {"rev": null, "cap": 48.9, "lic": 0}}, {"name": "Broadridge", "vals": {"rev": null, "cap": 208, "lic": 0}}]}, "trajectory": {"periods": ["Q1'25", "Q2'25", "Q3'25", "Q4'25", "Q1'26", "Q2'26"], "forecastFrom": 6, "series": [{"label": "매출(백만 달러)", "axis": "left", "color": "#2980b9", "values": [0.4, 0.3, 0.6, 0.7, 0.4, 0.4]}, {"label": "EBITDA(백만 달러 · 오른축)", "axis": "right", "color": "#c0392b", "values": [-3.2, -3.9, -3.1, -6.3, -4.3, -5.0]}]}, "scenario": {"horizonLabel": "5년", "threshold": 1.5, "cases": [{"label": "낙관", "tone": "bull", "prob": 0.1, "mult": 2.7}, {"label": "기본", "tone": "base", "prob": 0.4, "mult": 0.55}, {"label": "비관", "tone": "bear", "prob": 0.5, "mult": 0.2}]}, "landmark": {"current": {"label": "tZERO 합병 후(환매 0%)", "mcap": 0.625}, "target": {"label": "×10", "mcap": 6.25}, "refs": [{"name": "Securitize", "mcap": 1.18}, {"name": "Figure", "mcap": 4.89}, {"name": "Broadridge", "mcap": 20.8}], "sentence": "💡 지금 $0.6B ≈ Securitize($1.2B)의 절반 → 텐배거면 $6.3B ≈ 지금의 Figure($4.9B)보다 조금 큰 규모. (규모 비교일 뿐)", "warn": false}, "h5": {"points": [{"label": "11/3 약하고 비싼", "x": 190, "y": 215}], "caption": "CAE·Edge Grid 2×2 분면 — 중요도 下~中 · 엣지 下(과거 몸값 대비 이미 비쌈)"}, "captions": {}};
+try{
+DDViz.renderRadar('fig-score7','fig-score7-leg',VIZ.score7);
+DDViz.renderRadar('fig-c3','fig-c3-leg',VIZ.narrative);
+DDViz.renderTrajectory('fig-g5','fig-g5-leg',VIZ.trajectory);
+DDViz.renderHeatmap('fig-e1',VIZ.peers);
+DDViz.renderScenario('fig-h1',null,VIZ.scenario);
+DDViz.renderMcapLadder('fig-g15','fig-g15-cap',VIZ.landmark);
+DDViz.renderBars('fig-d0',VIZ.bars);
+var c7=document.getElementById('fig-score7-cap'); if(c7)c7.textContent="7축 종합 42점 / 100 (⭐2.69 병기) · 약함 · 5점 이내 차이 = 동급 · 사업·thesis 매력도·밸류 미반영";
+var CAPS={};
+for (var k in CAPS){ var el=document.getElementById(k+'-cap'); if(el) el.textContent=CAPS[k]; }
+}catch(e){console.error('viz',e);}
+</script></body></html>
