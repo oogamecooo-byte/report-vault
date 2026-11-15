@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGX (Argan) Deep-Dive — 2026-11-15 (--light 재채점)</title>
+<style>body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Apple SD Gothic Neo','Segoe UI',sans-serif;line-height:1.65;margin:0;padding:32px 12px;}
+.container{max-width:1000px;margin:0 auto;background:#FDF6E3;border-radius:14px;padding:36px 44px;box-shadow:0 2px 16px rgba(80,60,20,.12);}
+h1{font-size:1.7em;border-bottom:3px solid #c44;padding-bottom:10px;margin-top:0;}
+h2{font-size:1.3em;border-bottom:1px solid #d9cfb3;padding-bottom:6px;margin-top:32px;}
+h3{font-size:1.08em;margin-top:22px;color:#7a3a10;}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.9em;}
+th,td{border:1px solid #ddd0ad;padding:7px 10px;text-align:left;vertical-align:top;}
+thead th{background:#efe6cb;}
+tbody tr:nth-child(even) td{background:#f7efd9;}
+blockquote{background:#f5edd6;border-left:4px solid #c9a84a;margin:14px 0;padding:12px 16px;border-radius:0 6px 6px 0;font-size:.95em;}
+blockquote.explain{background:#eef3e6;border-left:4px solid #6b8e4e;color:#2e3a24;}
+blockquote.explain strong:first-child{color:#3f5f2e;}
+blockquote.simple{background:#F3F7E9;border-left:4px solid #7FA650;color:#2f3a24;}
+blockquote.simple strong:first-child{color:#4E6B2C;}
+a{color:#0a66c2;text-decoration:none;} a:hover{text-decoration:underline;}
+ul{padding-left:22px;} li{margin:4px 0;}
+hr{border:none;border-top:1px solid #e0d6b8;margin:24px 0;}
+strong{color:#3a2c10;} em{color:#5c4a00;}
+code{background:#efe6cb;padding:1px 5px;border-radius:4px;font-size:.9em;}
+del{color:#8a7a5a;}
+@media print{body{background:#fff;padding:0;}.container{box-shadow:none;max-width:100%;}table,blockquote{break-inside:avoid;}}
+  tr.sig-r td { background: #f8ded8 !important; }
+  tr.sig-o td { background: #fbe7cf !important; }
+  tr.sig-y td { background: #f8f0cc !important; }
+  tr.sig-g td { background: #e3f0de !important; }
+  h2.sig-r, h3.sig-r, h4.sig-r { border-left: 5px solid #c0392b; padding-left: 10px; }
+  h2.sig-o, h3.sig-o, h4.sig-o { border-left: 5px solid #d9822b; padding-left: 10px; }
+  h2.sig-y, h3.sig-y, h4.sig-y { border-left: 5px solid #b89400; padding-left: 10px; }
+  .guard { background: #f8ded8; border-left: 4px solid #c0392b; padding: 8px 12px; border-radius: 0 6px 6px 0; margin: 8px 0; }
+  @media print { tr[class^="sig-"] td { background: #fff !important; } }
+</style>
+
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+<meta name="vault-stage" content="Dive">
+<meta name="vault-topic" content="AGX">
+<meta name="vault-skill" content="Deep-Dive">
+<meta name="vault-date" content="2026-11-15">
+<meta name="vault-published" content="2026-11-15">
+<meta name="description" content="AGX (Argan) Deep-Dive — 2026-11-15 (--light 재채점)">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<!--dive-hub:start-->
+<nav id="dive-hub" aria-label="하위 Dive 모음" style="max-width:1100px;margin:12px auto 18px;padding:12px 16px;background:#F3EBD6;border:1px solid #e8e1cf;border-radius:10px;font:14px/1.6 'Pretendard','Noto Sans KR',sans-serif;color:#1f2328">
+<div style="font-weight:700;margin-bottom:4px">🤿 AGX 하위 Dive 모음 <span style="font-weight:400;font-size:12px;color:#6b6457">— 이 Deep-Dive가 참고한 개별 보고서</span></div>
+<ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px">
+<li style="color:#8a8270">💰 R-Dive <span style="font-size:12px">제품·수익모델 — 미수행</span></li>
+<li style="color:#8a8270">📜 History-Dive <span style="font-size:12px">기업 역사 — 미수행</span></li>
+<li style="color:#8a8270">👤 People-Dive <span style="font-size:12px">사람·리더 — 미수행</span></li>
+<li style="color:#8a8270">📈 chart-dive <span style="font-size:12px">타이밍 — 🔒 로컬 전용 · 미수행</span></li>
+<li style="color:#8a8270">🔎 Specific-Dive <span style="font-size:12px">업종 특수 점검 — 미수행</span></li>
+<li style="color:#8a8270">📄 One-Pager <span style="font-size:12px">1p 압축 — 미수행</span></li>
+</ul>
+</nav>
+<!--dive-hub:end-->
+
+<div class="container">
+<header class="rp-head"><h1>AGX (Argan) Deep-Dive — 2026-11-15 (--light 재채점)</h1>
+<p>작성 2026-11-15 · 기준가 $306.48(2026-11-13 종가) · 1차 출처 SEC EDGAR(CIK 0000100591) · 직전 Deep-Dive 2026-06-27(기준가 약 $733) 대비 변경분 중심</p>
+<p><strong>🧑‍⚖️ 종합 매수 판단</strong></p>
+<p>① <strong>한 줄 답</strong>: ⚪ 지금은 지켜볼 때다. 이익은 늘고 있지만 새 일감이 줄어서, 지금 가격을 싸다고 보기 어렵다.<br>② <strong>왜 그렇게 보나</strong></p>
+<ul>
+<li>주가가 떨어진 건 이익이 줄어서가 아니다. 시장이 이익에 매기는 값이 낮아졌을 뿐이고, 버는 힘은 오히려 커졌다.</li>
+<li>남은 일감이 반년 사이 29억 달러에서 25억 달러로 줄었다. 그동안 새로 따낸 일은 매출의 절반에도 못 미쳤다.</li>
+<li>지금 가격이 맞으려면 회사가 5년 동안 매년 15% 넘게 커야 한다. 좋은 경우와 나쁜 경우를 섞어 보면 5년 뒤 기대치는 지금 가격과 비슷하다.</li>
+</ul>
+<p>③ <strong>언제 다시 보나</strong>: 12월 초 3분기 실적에서 남은 일감과 새 대형 수주를 확인한다. 가격으로는 약 235달러 아래에서 다시 본다.<br>④ <strong>반대로 볼 이유</strong>: 빚이 없고 현금이 10억 달러 넘게 있다. 큰 발전소 공사 한 건만 따내도 일감 감소는 바로 뒤집힌다. 주가가 고점보다 60% 넘게 빠져서, 나쁜 소식은 이미 가격에 들어갔을 수 있다.<br>⑤ <strong>아직 모르는 것</strong>: 정해진 가격으로 맺은 계약에서 비용이 아직 확정되지 않은 몫이 얼마인지 회사가 밝히지 않았다.<br>낮은 신뢰도의 참고 판단이며, 최종 판단은 독자 몫이다.</p>
+<blockquote>판사: Fable 한도로 대체 모델 실행</blockquote></header>
+<section class="card"><h2>한 장 요약</h2>
+<ul>
+<li>🟠 <strong>주가는 6월 고점 $805.75에서 약 62% 내려왔지만 이익은 늘었다.</strong> 2분기(7월 말) 매출은 $384.0M으로 1년 전보다 61.5% 늘었고 순이익은 $53.3M으로 사상 최대다. 하락의 대부분은 AI 인프라 시공주 전체의 배수 압축이다(같은 기간 FIX −43.8% · STRL −65.2%).</li>
+<li>🔴 <strong>일감 잔고(백로그)가 줄고 있다.</strong> $2.9B(1월 말) → $2.5B(7월 말). 상반기 새 수주가 매출의 약 0.4배에 그쳤다. 지금 속도면 잔고는 약 1.6년치다.</li>
+<li>🟠 <strong>해자는 약하다.</strong> 다섯 가지 해자 유형 중 실제로 작동한다고 확인된 것이 0개다. 이익률은 올랐지만 회사 설명은 "프로젝트 믹스와 실행"이고, 값을 올렸다는 증거는 없다.</li>
+<li>🟢 <strong>재무는 최상급이다.</strong> 빚 0 · 현금과 투자 $1.03B · 상반기 영업현금흐름 $210M. 단 현금 중 $627M은 고객이 미리 낸 공사비다.</li>
+<li><strong>종합 68점 / 100 (⭐3.71)</strong> · 구간 = 경계(양호/보통) · 사업·thesis 매력도이며 밸류 멀티플은 반영하지 않았다. 5점 이내 차이는 같은 점수로 본다.</li>
+<li>분면: 강하지만 아주 강하지는 않은 중요도 · 엣지는 중간(배수 압축으로 일부 회복) → <strong>강한데 비싼 쪽에서 가운데로 이동</strong>.</li>
+<li>0to1(피터 틸 7문): 7문 중 YES 2개 → 「불운 위험」 · ⭐3.0 · 시장 정의 화법 = 혼재.</li>
+<li>밸류: <strong>⚪ 적정(비싼 쪽으로 기울어짐)</strong> · 신뢰도 낮음 · 현재가는 연 15~17.5% 성장을 5년간 요구한다(낙관 시나리오 수준) · 🎯 ⚪ 관망.</li>
+<li>고금리·고물가 내구성: <strong>⚪ 조건부</strong> — 회사 자체(유동성·차입)는 버티지만, 고정가 계약이라 원가 충격은 이익이 떠안는다.</li>
+</ul></section>
+<section class="card"><h2>7축 점수</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 재무와 섹터 위치가 점수를 끌어올리고, 해자와 산업 근거·경영진 지분이 점수를 깎는다. 6월보다 회사 숫자는 좋아졌지만 점수 체계가 바뀌어 직접 비교는 어렵다.</blockquote>
+<p>종합 <strong>68점 / 100</strong> (W-2026-10-11 · DD-v2.0) · (⭐3.71) · 구간 경계(양호/보통) · 5점 이내 차이는 같은 점수로 본다.</p>
+<table><thead><tr><th>축</th><th>⭐</th><th>배점</th><th>득점</th><th>한 줄 근거</th></tr></thead><tbody>
+<tr><td>🌦️ 날씨(지정학+거시)</td><td>3.50</td><td>25</td><td>15.6</td><td>전력 안보·AI 인프라 순풍 vs 관세·금리·고베타</td></tr>
+<tr><td>⛰️ 산(산업)</td><td>3.38</td><td>12.5</td><td>7.4</td><td>미국 발전 신증설 재개 · 산업 규모 1차 수치 미수집</td></tr>
+<tr><td>🌲 숲(섹터)</td><td>4.14</td><td>12.5</td><td>9.8</td><td>가스발전 시공 상장 1위 · 렌트 포획 🟡 상한</td></tr>
+<tr><td>🌳 나무(기업)</td><td>3.30</td><td>12.5</td><td>7.2</td><td>자가조달형 곡괭이 · 해자 ⭐1.5</td></tr>
+<tr><td>🌲🌳 옆의 나무</td><td>3.88</td><td>12.5</td><td>9.0</td><td>동종 최상위 재무·마진 · 규모·다각화 열위</td></tr>
+<tr><td>👤 사람</td><td>3.21</td><td>12.5</td><td>6.9</td><td>실행력 양호 · 내부자 지분 4.6%·고점 매도</td></tr>
+<tr><td>🔢 숫자</td><td>4.78</td><td>12.5</td><td>11.8</td><td>무차입·현금창출·마진 확장 · 앞으로 12개월 성장 둔화</td></tr>
+</tbody></table>
+<p>산식: 축 득점 = 배점 × (⭐ − 1) ÷ 4 → 합계 67.8 → 68점.</p>
+<p><strong>감점표 (잃은 점수가 큰 칸)</strong></p>
+<ul>
+<li>나무 · 해자 ⭐1.5 · −2.2점</li>
+<li>날씨 · 관세 노출 ⚪ · −2.0점 (금리·고베타·실질긴축 칸도 각각 −2.0점)</li>
+<li>산 · 산업 규모·성장률 ⚪(1차 수치 미수집) · −2.0점</li>
+<li>(상한) 숲 · 지금 병목 칸과 수요/공급 칸이 렌트 포획 🟡 때문에 🟢5 → 🟡4로 묶임 · 각 −0.4점</li>
+</ul>
+<p>직전 회차(2026-06-27)는 구 체계(⭐ 0.5 반올림 · 7축 일부 미산정 · 약 ⭐3.7)였다. 구 체계 환산(±3점) 기준으로 대략 68점 안팎이라 <strong>동급</strong>이다.</p></section>
+<section class="card"><h2>🌦️ 날씨 — 지정학 + 거시경제 (장기 구조)</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 미국 안에서 전기를 더 만들어야 한다는 장기 흐름은 순풍이다. 다만 관세가 고정가 계약의 원가를 올릴 수 있고, 주가는 AI 기술주처럼 움직여 긴축기에 흔들린다.</blockquote>
+<p>이 회사는 미국·아일랜드·영국에서 가스발전소를 짓는다. 장기 구조로 보면 데이터센터·제조업 귀환·전기화로 미국 전력 수요가 20년 정체를 끝냈다는 흐름 위에 있다. 사용자 장기 관점(AI = 산업혁명 인프라 1단계)과 같은 방향이다.</p>
+<table><thead><tr><th>하위 칸</th><th>등급</th><th>근거</th></tr></thead><tbody>
+<tr class="sig-y"><td>미·중 경쟁·공급망 귀환</td><td>🟡</td><td>미국 본토 발전소 건설 · 직접 수혜는 아님(간접)</td></tr>
+<tr class="sig-y"><td>지정학 사건(이란·중동)</td><td>🟡</td><td>미국산 가스는 국내 조달 · 연료비 급등 시 발주 심리만 영향</td></tr>
+<tr><td>관세·수출통제</td><td>⚪</td><td>10-Q가 "무역 제한이 길어지면 프로젝트 원가·일정·고객 수요에 불리"하다고 직접 적음</td></tr>
+<tr class="sig-g"><td>국가안보·정부 우선순위</td><td>🟢</td><td>급전 가능한 전원(가스)을 늘리라는 정책 방향</td></tr>
+<tr><td>순유동성·금리</td><td>⚪</td><td>이자수익은 늘지만 고객(발전사업자)의 사업 자금 조달 비용이 오름</td></tr>
+<tr><td>경기·위험선호 민감도</td><td>⚪</td><td>흑자·무차입이지만 주가가 반도체 지수와 60일 상관 0.65</td></tr>
+<tr class="sig-g"><td>AI 인프라 장기 관점</td><td>🟢</td><td>데이터센터 전력 수요의 직접 시공자</td></tr>
+<tr><td>실질 긴축(정책금리↓·조달금리↑)</td><td>⚪</td><td>발전사업 금융비용 경로로 간접 역풍</td></tr>
+</tbody></table>
+<p><strong>⭐ 산출 근거</strong>: 4·4·2.5·5·2.5·2.5·5·2.5 → 평균 3.50 → 득점 15.6 / 25.</p>
+<ul>
+<li>직전 대비 변화: 관세 칸이 새로 들어감(10-Q 문구). 나머지는 변동 없음.</li>
+<li>🔴 훼손 신호: 관세로 인한 손실 계약 인식 · 정부의 가스발전 우호 정책 후퇴.</li>
+</ul></section>
+<section class="card"><h2>⛰️ 산 — 산업 (미국 발전소 신증설)</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 산업 자체는 다시 커지는 중이지만, 이번 실행에서 산업 규모를 1차 자료로 확인하지 못해 점수를 보수적으로 매겼다.</blockquote>
+<table><thead><tr><th>하위 칸</th><th>등급</th><th>근거</th></tr></thead><tbody>
+<tr><td>세상을 바꾸는 산업인가(5~10년)</td><td>⚠️</td><td>바꾸는 것은 AI·전기화이고, 가스발전 시공은 그 흐름의 오래된 수단</td></tr>
+<tr class="sig-y"><td>국가 자본 투입</td><td>🟡</td><td>발전 신뢰성 정책은 있으나 반도체법 같은 직접 자금은 아님</td></tr>
+<tr class="sig-y"><td>내러티브 다중성(기술·사회·정책·지정학·자본)</td><td>🟡</td><td>사회·정책·자본 3축 강함 · 기술·지정학은 약함</td></tr>
+<tr><td>산업 규모·연 30% 성장</td><td>⚪</td><td>1차 산업 수치 미수집 · 상류 가스터빈 수주잔고 116GW(2026-07 보도)만 확인</td></tr>
+</tbody></table>
+<p><strong>⭐ 산출 근거</strong>: 3·4·4·2.5 → 평균 3.38 → 득점 7.4 / 12.5.</p></section>
+<section class="card"><h2>🌲 숲 — 섹터 (가스발전 일괄도급 시공)</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 지금 병목에 올라탄 자리는 맞다. 다만 그 병목이 이 회사의 값 올리기 힘으로 바뀌었다는 증거는 아직 없다.</blockquote>
+<h3>병목 시점과 렌트 포획</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 가장 좁은 병목은 가스터빈 제조사가 쥐고 있고, 이 회사는 그다음 단계다. 이익률은 올랐지만 회사가 밝힌 이유는 믹스와 실행이라 한 단계 낮춰 평가했다.</blockquote>
+<table><thead><tr><th>시점</th><th>병목</th><th>이 회사 위치</th><th>유지 기간 · 해소 경로</th><th>렌트 포획</th></tr></thead><tbody>
+<tr><td>지금(0~6개월)</td><td>숙련 인력·시공 여력 + 가스터빈 공급</td><td>시공 여력 보유자</td><td>추정 불가 · 해소 경로 = 터빈 증설과 비상장 대형 시공사(Kiewit·Bechtel·Zachry 등)의 인력 확충</td><td>🟡</td></tr>
+<tr><td>6~24개월</td><td>터빈 납품분이 풀리며 새 발주</td><td>수주 경쟁</td><td>터빈 공급 확대 시점에 달림</td><td>🟡</td></tr>
+<tr><td>2~5년</td><td>가스 vs 원전·배터리·송전 증설</td><td>대체 전원 경쟁</td><td>—</td><td>🟡</td></tr>
+</tbody></table>
+<ul>
+<li><strong>렌트 포획 판정 근거</strong>: 영업이익률이 6.4%(FY24) → 10.1% → 14.3%(FY26)로 SEC 연간 기준 확장했고 물량도 늘었다. 그러나 회사는 원인을 "프로젝트·계약 유형 믹스와 강한 실행"으로 설명했고, 판가 인상 공시는 없다. FY24의 낮은 마진에는 영국 Kilroot 손실이 섞여 있어 회복분도 있다. 값 결정 4문(계약 구조·구매자 협상력·여력 소유·우회 비용) 중 상한에 걸리는 것은 없다 → 🟡.</li>
+<li><strong>지불자 경로</strong>: 큰손 = 데이터센터 전력이 급한 하이퍼스케일러 · 막힘 = 확보한 GPU를 돌릴 전력망 연결 부지와 급전 가능한 발전소 · 경로 = 이 회사는 발전사업자·유틸리티에 발전소를 지어 준다 → <strong>1단계 간접</strong>.</li>
+</ul>
+<table><thead><tr><th>4중 필터</th><th>등급</th><th>비고</th></tr></thead><tbody>
+<tr class="sig-y"><td>수요/공급</td><td>🟡(상한)</td><td>지금 칸을 따름</td></tr>
+<tr class="sig-y"><td>경쟁사 수(상장)</td><td>🟡</td><td>상장 순수 가스발전 시공사는 사실상 이 회사뿐 · 비상장 대형사 다수</td></tr>
+<tr><td>섹터 순위</td><td>⭐4</td><td>미국 가스발전 시공 상위권</td></tr>
+<tr class="sig-g"><td>매출총이익률·영업이익률</td><td>🟢</td><td>20% · 15%로 시공업 상단</td></tr>
+</tbody></table>
+<p><strong>⭐ 산출 근거</strong>: 지금 🟢5→🟡4(렌트 포획 🟡) · 6~24개월 4 · 2~5년 4 · 수요/공급 🟢5→🟡4(상한) · 경쟁 4 · 순위 4 · 마진 5 → 평균 4.14 → 득점 9.8 / 12.5.</p>
+<h3>업종 흐름 판정과의 대조</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 돈이 이 산업으로 들어온다는 판정은 맞다. 이익이 시공 단계에 쌓인다는 판정은 절반만 맞다 — 가장 큰 몫은 터빈 제조사 쪽이다.</blockquote>
+<ul>
+<li><strong>돈은 어디로 왜 흐르나 — 업종 판정과 일치.</strong> 하이퍼스케일러가 데이터센터 전력을 서둘러 확보하려고 설비투자를 늘렸고, 그 돈은 발전사업자를 거쳐 터빈 제조사와 시공사로 내려온다. 이 회사의 백로그(최대 $2.9B)와 고객 선수금($627M)이 그 증거다.</li>
+<li><strong>이익은 가치사슬 어디에 쌓이나 — 부분 불일치.</strong> 대형 시공사 영업이익률 확장은 FIX(6.1%→14.4%)·STRL(9.1%→16.6%)에선 뚜렷하지만 EME는 마지막 해에 멈췄고(9.2%→9.2%) PWR은 거의 평평하다(4.9%→5.6%)(yfinance 연간 보조 수치 · SEC 1차 교차 미수행). 이 회사도 이익률이 올랐지만 판가 증거가 없다. 가장 좁은 병목은 수주잔고 116GW를 쌓은 가스터빈 제조사이고, 6월 이후 시공주 배수 압축은 시장도 "시공 단계 이익의 지속성"을 의심한다는 뜻이다.</li>
+</ul></section>
+<section class="card"><h2>🌳 나무 — 기업</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 남의 돈(선수금)으로 공사하고 설비투자가 거의 없는 우량 시공사다. 그러나 고정가 계약이라 원가 위험을 직접 지고, 경쟁을 막는 구조적 방어벽은 확인되지 않았다.</blockquote>
+<h3>사업 구조와 주력 서비스</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 매출의 약 78%가 발전소 시공이고, 나머지는 산업 설비 제작과 통신 설비 공사다.</blockquote>
+<ul>
+<li><strong>사업부</strong>: Power(Gemma Power Systems · 아일랜드·영국의 Atlantic Projects Company) — 2분기 매출 $301M(+53%), 매출총이익률 22% · Industrial(The Roberts Company · 배관·압력용기 제작, 데이터센터용 용기 수요 대응 신공장 3분기 완공 예정) · Teledata(SMC · 2026년 ValCor 인수).</li>
+<li><strong>주력 1 — 가스복합화력 일괄도급(설계·조달·시공)</strong>: 무엇 = 가스터빈과 증기터빈을 묶은 발전소를 설계부터 시운전까지 한 번에 책임지는 서비스. 작동 = 고객이 산 터빈을 받아 부지 공사·배관·전기·제어를 맞춰 발전소로 완성. 누가 왜 = 독립 발전사업자·유틸리티가 "제때 켜지는 발전소"를 산다. 차별점 = 미국 본토 실적과 일정 준수 평판, 무차입이라 큰 보증을 감당할 여력. 매출 위치 = 최대 매출원(주력).</li>
+<li><strong>진행 중 대형 프로젝트(10-Q)</strong>: Sandow Lakes 1.2GW(텍사스, 2028 완공) · Ward County 1.4GW(텍사스, 2029) · 860MW 가스(텍사스 전력망, 2028) · 170MW(아일랜드, 2028) · Tarbert 300MW 바이오연료(아일랜드).</li>
+<li><strong>과금 구조</strong>: 대부분 고정가 계약, 나머지 시간·자재 계약. 백로그는 착공 승인(NTP)을 받아야 포함한다.</li>
+<li><strong>단위 경제</strong>: 프로젝트당 매출·마진은 미공시.</li>
+<li><strong>고객 집중</strong>: 상반기 Power 고객 4곳이 매출의 15%·14%·11%·11%. 고객 검증 등급 = A(공시된 대형 계약·반복 거래) 수준이나 이름은 프로젝트명으로만 공개.</li>
+</ul>
+<h3>곡괭이 질</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 이익으로 성장 자금을 스스로 대는 자가조달형이다. 마진은 정부 보조금이나 일회성이 아니라 사업에서 나온다.</blockquote>
+<ul>
+<li>설비투자 = 상반기 $7.7M(매출의 1% 남짓) · 빚 0 · 희석 없음(자사주 매입·배당 40% 인상) · 영업현금흐름 &gt; 순이익.</li>
+<li>마진 출처: 사업(계약·실행) · 정부 이전지출 아님 · 유효세율 정상(상반기 17.6%).</li>
+<li>단서: 현금흐름의 상당 부분이 선수금 증가에서 나온다. 수주가 멈추면 선수금이 소진되며 현금흐름이 거꾸로 돈다.</li>
+</ul>
+<h3>해자 (5종 + 가격 인상 테스트 + AI 침식)</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 실제로 작동한다고 확인된 해자가 하나도 없다. 평판과 비용 구조는 장점이지만 숫자로 증명된 방어벽은 아니다.</blockquote>
+<table><thead><tr><th>유형</th><th>작동</th><th>근거</th></tr></thead><tbody>
+<tr><td>① 네트워크 효과</td><td>❌</td><td>프로젝트 단위 계약 · 고객이 많아진다고 가치가 커지지 않음</td></tr>
+<tr><td>② 브랜드</td><td>⚠️</td><td>일정 준수 평판(회사 서술) · 매출총이익률 20%는 FIX 25.7%보다 낮아 가격 프리미엄 증거 없음</td></tr>
+<tr><td>③ 전환 비용</td><td>❌</td><td>발전소마다 새로 입찰 · 고객이 다른 시공사로 옮기는 비용이 구조적으로 작음</td></tr>
+<tr><td>④ 비용 우위</td><td>⚠️</td><td>설비가 가볍고 이익률이 동종 상단이지만, 구조적으로 더 싸게 짓는다는 원가 증거 없음</td></tr>
+<tr><td>⑤ 법적 보호</td><td>❌</td><td>배타적 면허·특허 없음(일반 시공 면허)</td></tr>
+</tbody></table>
+<ul>
+<li><strong>가격 인상 테스트: 🟡</strong> — 이익률은 올랐으나 판가 인상 공시가 없고 회사가 믹스와 실행을 원인으로 듦. 고정가 계약이라 원가 상승분을 진행 중 계약에 넘기지 못한다.</li>
+<li><strong>환산</strong>: 작동 0개 → ⭐1 (가격 테스트 🟡 상한 ⭐3은 영향 없음) · 자산 기반(D.6-b) = 기술·인력 위주라 ⭐2 → 해자 ⭐1.5.</li>
+<li><strong>해자 내구성</strong>: 추정 불가(구조적 해자 없음 — 실행 평판과 보증 여력이 전부).</li>
+<li><strong>🤖 AI 침식: 해당 없음</strong> — 현장 시공·설비 설치(물리 인프라) · 데이터 소유 = 없음 · 일하는 흐름 = AI 에이전트가 대신할 구조 없음. <strong>업종 라벨(해당 없음)과 일치.</strong></li>
+</ul>
+<h3>확장성 · 하방</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 한 산업에 깊이 박힌 회사이고, 순현금 덕분에 하방은 비교적 단단하다. 다만 백로그가 줄면 그 하방도 얇아진다.</blockquote>
+<ul>
+<li>수직통합·확장: 단일 산업 깊이(인접 산업 설비·통신 약 22%) → ⭐3.</li>
+<li>하방·상방: 순현금 약 $401M(선수금 제외 기준 · 시총의 약 9%) · 백로그 $2.5B · 상방은 수주 재충전에 달림 → ⭐4.</li>
+</ul>
+<p><strong>⭐ 산출 근거</strong>: 수익모델 3 · 곡괭이 질 5 · 해자 1.5 · 확장성 3 · 하방 4 → 평균 3.30 → 득점 7.2 / 12.5.</p></section>
+<section class="card"><h2>🌲🌳 옆의 나무 — 경쟁사</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 이익률과 재무는 동종 최상위지만, 규모가 10분의 1 수준이고 한 가지 사업에 몰려 있다.</blockquote>
+<table><thead><tr><th>항목</th><th>AGX</th><th>FIX(대장주)</th><th>STRL</th><th>PWR</th><th>EME</th><th>GEV(상류)</th></tr></thead><tbody>
+<tr><td>시가총액</td><td>$4.3B</td><td>$38.9B</td><td>$8.9B</td><td>$90.7B</td><td>$28.9B</td><td>$212.6B</td></tr>
+<tr><td>매출(최근 12개월)</td><td>$1.19B</td><td>$12.5B</td><td>$4.3B</td><td>$37.3B</td><td>$19.8B</td><td>$44.0B</td></tr>
+<tr><td>매출 성장(최근 분기, 전년 대비)</td><td>+61.5%</td><td>+53.7%</td><td>+127%</td><td>+57.4%</td><td>+28.8%</td><td>+26.8%</td></tr>
+<tr><td>매출총이익률 / 영업이익률</td><td>20.7% / 15.4%</td><td>25.7% / 16.8%</td><td>23.8% / 18.6%</td><td>15.8% / 6.8%</td><td>19.6% / 9.9%</td><td>21.8% / 8.2%</td></tr>
+<tr><td>주력 과금</td><td>고정가 일괄도급</td><td>기계·전기 시공</td><td>현장 시공</td><td>송배전 시공</td><td>전기·기계 시공</td><td>장비 판매</td></tr>
+<tr><td>고객 집중(최대)</td><td>15%</td><td>미공시</td><td>미공시</td><td>미공시</td><td>미공시</td><td>미공시</td></tr>
+<tr><td>6/30 이후 주가</td><td>−61.5%</td><td>−43.8%</td><td>−65.2%</td><td>−16.4%</td><td>−20.5%</td><td>−31.6%</td></tr>
+</tbody></table>
+<p>출처: yfinance 2026-11-13(보조) · AGX는 SEC 10-Q 교차. 동종 마진은 SEC 1차 교차 미수행.</p>
+<ul>
+<li><strong>수익 모델</strong>: 마진은 동종 상단(우위) · 반복 매출 없음(열위) → 동등~우위 🟡.</li>
+<li><strong>정부 vs 민간</strong>: 민간 발전사업자 100% · 정부 계약의 끈끈함 없음 ⚪.</li>
+<li><strong>경쟁 포지션</strong>: 상장 순수 가스발전 시공 1위 · 최대 위협 = 터빈 제조사·비상장 대형 시공사가 묶어 파는 일괄 계약 → 방어 🟡.</li>
+<li><strong>재무 상대 위치</strong>: 동종 중 유일하게 빚 0·현금 $1B → 🟢.</li>
+</ul>
+<p><strong>⭐ 산출 근거</strong>: 4 · 2.5 · 4 · 5 → 평균 3.88 → 득점 9.0 / 12.5.</p></section>
+<section class="card"><h2>👤 사람 — 경영진</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 재무 출신 경영진의 보수적 실행은 좋다. 그러나 내부자 지분이 작고, 6월 고점 부근에서 이사·CEO가 큰 금액을 팔았다.</blockquote>
+<p>People-Dive 보고서가 없어(90일 내 미수행) 표준 깊이로만 평가했다.</p>
+<table><thead><tr><th>축</th><th>⭐</th><th>근거</th></tr></thead><tbody>
+<tr><td>① 약력</td><td>3</td><td>David Watson CEO = 재무 책임자 출신 내부 승진 · 창업 회장 Rainer Bosselmann 장기 재임</td></tr>
+<tr><td>② 명성</td><td>3</td><td>애널리스트 6명 커버의 소형주 · 스타 경영자 아님</td></tr>
+<tr><td>③ 능력</td><td>4</td><td>마진 확장·현금 축적·대형 프로젝트 실행 · FY20·FY24 해외 손실 전례</td></tr>
+<tr><td>④ 도덕성</td><td>3</td><td>소송·부정 확인 없음(심층 검증 미수행)</td></tr>
+<tr><td>⑥ 지분·이해 일치</td><td>2.5</td><td>내부자 지분 4.6% · 2026-06 이사 Griffin 5만 주 $37.0M · CEO $7.8M 매도(고점 부근)</td></tr>
+<tr><td>⑦ 거버넌스</td><td>4</td><td>무차입·배당·자사주의 절제된 자본배분 · 배당 4년 연속 인상</td></tr>
+<tr><td>⑧ 외부 평가</td><td>3</td><td>목표가 $273~$785로 분산이 매우 넓음</td></tr>
+</tbody></table>
+<ul>
+<li>⑤ 비전 축: <strong>사용자 ⭐ 대기</strong>. 💬 Claude 의견 — 사명형 창업자-CEO는 아니다. 슈퍼사이클에서도 "맞는 프로젝트를 맞는 파트너와"라는 선별 규율을 반복한다. 공격적 확장 야망은 약하지만, 과거 해외 손실을 감안하면 그 규율이 미덕일 수 있다.</li>
+</ul>
+<p><strong>⭐ 산출 근거</strong>: 3·3·4·3·2.5·4·3 → 평균 3.21 → 득점 6.9 / 12.5.</p></section>
+<section class="card"><h2>🔢 숫자 — 재무건전성</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 성장·마진·현금·부채 모두 좋다. 유일한 걸림돌은 앞으로 12개월 매출이 지금 수준에서 크게 늘기 어렵다는 백로그 계산이다.</blockquote>
+<table><thead><tr><th>FY(1월 결산)</th><th>매출</th><th>매출총이익률</th><th>영업이익률</th><th>영업현금흐름</th></tr></thead><tbody>
+<tr><td>FY22</td><td>$509.3M</td><td>19.6%</td><td>8.7%</td><td>$28.4M</td></tr>
+<tr><td>FY23</td><td>$455.1M</td><td>19.0%</td><td>9.2%</td><td>−$30.1M</td></tr>
+<tr><td>FY24</td><td>$573.3M</td><td>14.1%</td><td>6.4%</td><td>$116.9M</td></tr>
+<tr><td>FY25</td><td>$874.2M</td><td>16.1%</td><td>10.1%</td><td>$167.6M</td></tr>
+<tr><td>FY26</td><td>$944.6M</td><td>20.5%</td><td>14.3%</td><td>$414.7M</td></tr>
+<tr><td>FY27 상반기</td><td>$674.9M(+56.5%)</td><td>20.1%</td><td>15.1%</td><td>$210.4M</td></tr>
+</tbody></table>
+<p>출처: SEC XBRL(매출총이익 + 매출원가로 매출 재구성) · <a href="https://www.sec.gov/Archives/edgar/data/100591/000110465926104735/agx-20260902xex99d1.htm">Q2 FY27 실적 발표</a> · <a href="https://www.sec.gov/Archives/edgar/data/100591/000110465926104745/agx-20260731x10q.htm">10-Q 2026-07-31</a>.</p>
+<table><thead><tr><th>축</th><th>등급</th><th>근거</th></tr></thead><tbody>
+<tr class="sig-y"><td>① 이익 성장</td><td>🟡</td><td>과거는 가속(상반기 +56.5%) · 백로그의 48%($1.2B)가 12개월 내 매출 → 최근 12개월 매출 $1.19B와 비슷해 앞으로는 평탄</td></tr>
+<tr class="sig-g"><td>② 마진 확장</td><td>🟢</td><td>영업이익률 6.4% → 14.3% → 15.1%</td></tr>
+<tr class="sig-g"><td>③ 현금 창출</td><td>🟢</td><td>영업현금흐름 FY26 $414.7M · 단 선수금 의존</td></tr>
+<tr class="sig-g"><td>④ 고금리·고물가 내구성(금리 5칸)</td><td>🟢</td><td>아래 5칸 중 4칸 🟢</td></tr>
+<tr class="sig-g"><td>㉠ 이자보상</td><td>🟢</td><td>이자부 부채 없음</td></tr>
+<tr class="sig-g"><td>㉡ 순부채/EBITDA</td><td>🟢</td><td>순현금</td></tr>
+<tr class="sig-g"><td>㉢ 만기 분산</td><td>🟢</td><td>만기 도래 부채 없음</td></tr>
+<tr class="sig-g"><td>㉣ 변동금리 비중</td><td>🟢</td><td>없음</td></tr>
+<tr class="sig-y"><td>㉤ 즉시 유동성</td><td>🟡</td><td>(현금+투자) ÷ 유동부채 = 1,028 ÷ 878 = 1.17배</td></tr>
+</tbody></table>
+<p><strong>⭐ 산출 근거</strong>: 4·5·5·5 + 5·5·5·5·4 → 평균 4.78 → 득점 11.8 / 12.5.</p>
+<h3>고금리·고물가 내구성 정밀 진단</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 빌린 돈이 없어 금리 충격에는 강하고 오히려 이자수익이 는다. 그러나 고정가 계약이라 원가가 크게 오르면 이익이 깎이고, 최악의 결합 상황에선 은행 약정 조건까지 닿을 수 있다.</blockquote>
+<ul>
+<li>🏷️ <strong>⚪ 단일 충격은 견디나 결합 시 압박</strong> · 신뢰도 낮음 · [모드: embedded]</li>
+<li><strong>금리 🟢</strong>: 만기벽·헤지 절벽 없음 · 은행 신용 약정(인출 0 · 2027-05-31 만료 갱신 이벤트)의 재무 조건은 "12개월 조정 EBITDA 양수" 하나 · 금리 100bp 변화 시 연간 투자수익 약 $7M(10-K) → 고금리 지속 시 +, 금리 하락 시 −.</li>
+<li><strong>물가 ⚪</strong>: 원자재 헤지 없음 · 물가 연동 조항 공시 없음 · 손실 예상 계약은 그 분기에 전액 반영 → 고물가면 기존 고정가 백로그 기준 −, 디스인플레면 +. 전례 = FY20 영국 TeesREP 손실(매출총손실 $6.8M · 매출 대비 −2.8%) · FY24 영국 Kilroot 약 $13.6M.</li>
+<li><strong>결합 시나리오(원가·금리·물량 동시)</strong>: 경미·기준 시나리오는 영업이익이 줄어도 흑자. <strong>심각 시나리오에서 아직 가격이 묶이지 않은 원가 몫이 약 65% 이상이면</strong> 영업적자와 약정 위반 가능. 유동성 절벽은 없음(최악 현금 소진 연 약 $75M).</li>
+<li><strong>장부 밖 약정</strong>: 이행보증 보증보험 약 <strong>$0.9B</strong>(7월 말 · 1월 말 약 $0.5B에서 1.8배) · 하자·유보금 보증 <strong>$104.3M</strong>(1월 말 $44.7M) · 은행 신용장 $0.5M · 영국 자회사 발주처의 $9.8M 신용장 인출과 소송 진행 중.</li>
+<li>🎯 <strong>버티는가: ⚪ 조건부</strong> — 회사는 버티고, 이익은 고정가 원가 충격을 1~3년 떠안는다. 낮은 신뢰도 참고 · 매수/매도 신호 아님 · 최종 판단은 독자 · 장기 thesis를 멈추는 신호가 아니며 7축 점수에 넣지 않는다.</li>
+<li>핵심 변수: 남은 백로그 원가 중 아직 가격이 확정되지 않은 몫(미공시).</li>
+</ul></section>
+<section class="card"><h2>시나리오 · 분면 · 밸류</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 이익이 늘었는데도 지금 가격은 낙관 시나리오에 가까운 성장을 요구한다. 5년 기댓값은 약 1배라 "좋은 회사, 보통 가격"에 가깝다.</blockquote>
+<h3>5년 시나리오</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 신규 수주가 다시 쌓이면 1.5배, 지금 속도면 본전, 수주 가뭄이면 반 토막 아래다. 확률을 곱하면 약 1배다.</blockquote>
+<table><thead><tr><th>시나리오</th><th>확률</th><th>2년</th><th>3년</th><th>5년 시총(배수)</th><th>핵심 가정</th></tr></thead><tbody>
+<tr class="sig-g"><td>🟢 낙관</td><td>30%</td><td>1.3x</td><td>1.4x</td><td>$6.6B (1.53x)</td><td>터빈이 풀리며 가스발전 신규 수주 연 2~3건 → FY31 매출 $2.4B · 영업이익률 14% · 주가수익비율 22</td></tr>
+<tr class="sig-y"><td>🟡 기준</td><td>45%</td><td>1.05x</td><td>1.0x</td><td>$4.3B (1.0x)</td><td>소진 속도만큼 재충전 → 매출 $1.8B · 영업이익률 13% · 주가수익비율 20</td></tr>
+<tr class="sig-r"><td>🔴 비관</td><td>25%</td><td>0.6x</td><td>0.5x</td><td>$1.8B (0.42x)</td><td>2020~21형 수주 가뭄 → 매출 $0.8B · 영업이익률 8%</td></tr>
+</tbody></table>
+<ul>
+<li>5년 기댓값 = 0.3×1.53 + 0.45×1.0 + 0.25×0.42 = <strong>1.01배</strong> → ⚠️ 1.5배 미만(thesis 약함) · 기준 2년 1.05배 → ⚠️ 낙관 꼬리 의존.</li>
+<li>매출 성장 vs 배수 재평가 분해: 5년 뒤 암묵 매출 배수(P/S) = 낙관 2.75배 · 기준 2.4배. 과거 5년 범위(약 0.8~11배)와 동종(FIX 3.1 · PWR 2.4)보다 낮거나 비슷 → <strong>재평가 의존 낮음~중간</strong>(배수가 줄어드는 보수적 가정이라 성과는 매출 성장에만 달림).</li>
+<li>시가총액 10배 크기 감: 지금 $4.3B ≈ 중형 시공사 규모 → 10배면 $43B ≈ 대장주 FIX 수준(규모 비교일 뿐).</li>
+<li>6~12개월 일정: 3분기(10월 말) 실적 — 통상 12월 초 발표(백로그·신규 착공 승인이 핵심) · 텍사스 대형 부하 전력 승인 동결 관련 ERCOT 일정(12/10) · 신용 약정 만료 2027-05-31.</li>
+</ul>
+<h3>중요도·엣지 분면 (CAE · Edge Grid)</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 이 회사가 걸친 층은 "전력 공급 제약" 하나이고 가장 약한 고리는 수주 재충전이다. 6월보다 가격이 싸져 행동 칸은 가운데 쪽으로 옮겨왔다.</blockquote>
+<ul>
+<li><strong>걸친 층</strong>: 제약 층(C — 전력·발전 설비 공급) 중심 · 조정 층(A — 전력 시장 규칙·인허가) 일부. 가장 약한 고리 = 신규 수주(터빈 납품 시점과 고객 금융).</li>
+<li><strong>중요도</strong>: 다층성 1 · 비가역성 1 · 병목 경도 2 → 中. <strong>엣지</strong>: 선반영 격차 2(배수 압축으로 회복) · 연료 잔량 1(백로그 1.6년치) · 컨센서스 반증 1 → 中.</li>
+<li><strong>시장이 보는 가설</strong>: 60일 상관 PWR 0.82 · FIX 0.80 · GEV 0.71 · SMH 0.65 · 유틸리티 0.16 → 시장은 이 회사를 "AI 인프라 시공" 묶음으로 가격 매긴다(1·2위 차이 0.01 = 혼재). 본 보고서 가설(가스발전 시공 = 전력 병목 곡괭이)과 같은 방향 → 선반영 쪽.</li>
+<li><strong>분면 판정</strong>: 6/27 「강한데 비싼」 → 11/15 「중간 · 가운데」. 행동 = 관찰(정찰 조건은 아래 밸류 참고). 3 잠금장치(실현확률 교차·반증 게이트·유효범위) = 미통과(수주 재충전 미확인).</li>
+<li><strong>과목 적합도</strong>: 이 종목은 현재 실적으로 설명되는 「수학형」에 가깝다. 지금 시장 과목은 이번 실행에서 확인하지 않았다.</li>
+</ul>
+<p>〔범례: CAE C=제약/A=조정/E=표현 · 중요도 L 다층성·R 비가역성·H 병목경도 · 엣지 G 선반영격차·P 연료잔량·D 컨센서스반증, 각 0~3〕</p>
+<h3>0to1 독점 판정 (피터 틸 7문)</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 창조적 독점이라기보다 좋은 시기에 잘 실행하는 경쟁 사업이다.</blockquote>
+<ul>
+<li>YES 2/7(② 시기 · ④ 팀) · ⚠️ 3개(③ 작은 시장 지배 · ⑤ 유통 · ⑥ 존속성) · NO 2개(① 10배 기술 · ⑦ 숨겨진 비밀) → 「불운 위험」 · ⭐3.0(7문 평균 3.0) · 시장 정의 화법 = 혼재(IR은 "전례 없는 수요"를 말하지만 마진은 시공업 상단 수준에 머묾).</li>
+<li>7축 점수에 합산하지 않는 별도 렌즈.</li>
+</ul>
+<h3>밸류에이션 정밀 판정</h3>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 동종·과거와 비교하면 적정이지만, 현금흐름을 거꾸로 풀면 낙관 시나리오 수준의 성장을 요구한다. 그래서 "적정, 다만 비싼 쪽"이다.</blockquote>
+<ul>
+<li>🏷️ <strong>⚪ 적정(비싼 쪽으로 기울어짐)</strong> · 신뢰도 낮음 · 풀 Deep-Dive 승격 우선순위 중간 · [모드: embedded]</li>
+<li>아키타입: 백로그형 → 자산·현금흐름형(기업가치/EBITDA · 정상화 현금흐름 수익률 · 정상화 주가수익비율).</li>
+<li><strong>역-DCF(가격이 정당하려면 미래에 무엇이 참이어야 하나)</strong>: 할인율 10.5% · 영구성장 3%에서 연 15~17.5% 성장 5년 요구 → 「상단 의존」 · 할인율 하나만 바꿔도 결론이 흔들림. 경기 평균 마진(11%)을 넣으면 현실 범위 밖.</li>
+<li>자산·현금흐름형 지표: 기업가치/EBITDA 17.7배(고객 선수금을 부채로 보면 21.1배) · 보고된 현금흐름 수익률 10.9%는 선수금 착시, 정상화 4.6%.</li>
+<li>상대가치: 동종 중앙값(13.5배) 대비 +31% — 성장·마진으로 대체로 설명되지만 대장주 FIX(16.3배)보다 비싼 것은 설명되지 않음.</li>
+<li>과거 위치(5년 월말 60개 · 최근 12개월 기준): 기업가치/EBITDA 59백분위 / +0.02σ · 주가수익비율 46백분위 / −0.26σ — 방향 일치. 주가 하락은 이익 감소가 아니라 배수 압축(최근 12개월 EBITDA는 $137M → $185M).</li>
+<li>컨센서스: 애널리스트 6명 · 목표가 $273~$785(분산 매우 넓음) · FY27 주당순이익 추정 90일간 +8.4% 상향 · FY28은 보합 → 선반영(중립).</li>
+<li>시나리오 대조: 시나리오는 배수 축소를 가정 → 성과는 매출 성장 실현에만 달림(역-DCF와 같은 결론).</li>
+<li>병목 렌트 괴리(약한 신호): −0.245 🔴 고평가 쪽 · 구속 인자 = 직렬 병목성·지속성 · 〔올라탐〕 — 터빈 병목에 올라탄 시공사라 이 낮은 점수를 회피 근거로 믿지 않는다.</li>
+<li>🟢 저평가 조건 0/3 충족(① 상단 의존 ② 59백분위 ③ 동종 대비 프리미엄).</li>
+<li>🎯 <strong>매수 적정성: ⚪ 관망</strong> — 약 $235 이하(기준 성장 역산 가치) 또는 백로그 $3B 이상 회복 시 재검토. 핵심 변수 = 신규 대형 수주.</li>
+<li>라벨: 낮은 신뢰도 참고 · 강제 신호 아님(최종 판단은 독자) · 장기 thesis를 멈추는 신호 아님 · 7축 점수 미합산.</li>
+</ul></section>
+<section class="card"><h2>⚠️ Thesis 리스크 신호</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 가장 먼저 볼 것은 백로그 방향이고, 그다음이 고정가 계약의 원가 손실이다.</blockquote>
+<table><thead><tr><th>신호</th><th>관측 trigger</th></tr></thead><tbody>
+<tr><td>수주 공백</td><td>백로그 $2B 미만 또는 수주/매출 &lt; 0.5가 2개 분기 연속</td></tr>
+<tr><td>마진 훼손</td><td>Power 매출총이익률 18% 미만 또는 손실 계약 첫 인식</td></tr>
+<tr><td>원가 충격</td><td>관세·자재비로 인한 원가 추정 하향 공시</td></tr>
+<tr><td>보증 부담</td><td>이행보증 잔액 급증 뒤 보증 용량 제약 언급</td></tr>
+<tr><td>사람</td><td>CEO·CFO 이탈 · 내부자 대량 매도 재개</td></tr>
+<tr><td>지역 정책</td><td>텍사스 대형 부하 승인 동결 장기화로 ERCOT 신규 발전 발주 지연</td></tr>
+</tbody></table></section>
+<section class="card"><h2>동적 발견</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 이번 회차에서 새로 드러난 것은 보증 규모 급증과 수주 둔화, 그리고 고점 부근 내부자 매도다.</blockquote>
+<ul>
+<li><strong>보증 규모 1.8배</strong>: 이행보증 약 $0.5B → $0.9B · 하자·유보금 보증 $44.7M → $104.3M(6개월). 진행 공사가 늘어난 결과지만, 손실이 나면 보증사 상환 의무와 신규 수주 여력 제약으로 번진다. 장부 밖 약정 등급은 금융성 약정 $0이라 🟢을 유지하되, 이 증가를 내구성 진단에서 다뤘다.</li>
+<li><strong>수주 둔화</strong>: 1~7월 신규 대형 착공 승인 공시 없음 · 백로그 −$0.41B. 반면 CEO는 "전례 없는 수요"를 말한다 — 말과 숫자의 간격이 다음 실적의 핵심.</li>
+<li><strong>고점 부근 내부자 매도</strong>: 2026-06 이사·CEO 매도 합계 $50M 이상(주가 $700대).</li>
+<li><strong>직전 보고서 수치 정정</strong>: 직전 회차의 "FY20 매출총이익률 −0.8%"는 SEC 1차 기준 −2.8%(매출총손실 $6.8M ÷ 매출 $239.0M)로 바로잡는다.</li>
+</ul></section>
+<section class="card"><h2>종합 판단</h2>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — 회사는 6월보다 좋아졌고 가격은 훨씬 싸졌다. 그러나 해자가 약하고 백로그가 줄고 있어 "수주가 다시 쌓이는지"를 확인하기 전까지는 판단을 보류할 자리다.</blockquote>
+<ul>
+<li><strong>7축 종합</strong>: 68점 / 100 (⭐3.71) · 경계(양호/보통) · 사업·thesis 매력도이며 밸류 멀티플 미반영. 별도 렌즈 3종(분면·0to1·밸류)은 점수 밖이다.</li>
+<li><strong>시간 지평</strong>: 단기(0~6개월) = 이익 상향·배수 압축 완료로 하방이 막혀 있을 수 있다 · 중기(6개월~3년) = 백로그 1.6년치라 수주 재충전이 실적을 결정 · 장기(3~10년) = 가스발전 수요가 원전·배터리·송전 증설로 분산될 위험. 텐배거는 현실적이지 않다(낙관 1.53배).</li>
+<li><strong>판정</strong>: 부분 수정 — 6월 "강한데 비싼"에서 "괜찮은 회사, 적정 가격, 수주 확인 대기"로.</li>
+</ul></section>
+<section class="card"><h2>수집 상태</h2>
+<ul>
+<li>⚠️ 선행 하위 Dive(R-Dive·History-Dive·People-Dive·chart-dive): 90일 이내 보고서 없음 · --light라 새로 실행하지 않음(직전 R-Dive 2026-06-27은 141일 경과).</li>
+<li>⚠️ Specific-Dive: 같은 업종(발전소 일괄도급 시공) 라이브러리 없음 → --light 규칙상 생략.</li>
+<li>⚠️ 산업 규모·성장률 1차 자료 미수집(산 축 ⚪ 처리).</li>
+<li>⚠️ 어닝콜 원문·가이던스 미수집 · 원가 분해·고정가 매출 비중·노조 비중·신용등급 미공시 또는 미수집.</li>
+<li>⚠️ 동종 마진·성장률은 yfinance 보조 수치(SEC 1차 교차 미수행).</li>
+<li>⚠️ 판사: Fable 한도로 대체 모델 실행.</li>
+</ul></section>
+<section class="card"><h2>다음 실행 때 보완</h2>
+<ul>
+<li>3분기 실적(12월 초)의 백로그·신규 착공 승인 확인 · 어닝콜 원문(가격 전가 발언) · 산업 신규 가스발전 용량 1차 통계(EIA) · People-Dive.</li>
+</ul>
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p></section>
+</div>
+</body>
+</html>
