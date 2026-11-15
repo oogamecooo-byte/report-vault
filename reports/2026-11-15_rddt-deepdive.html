@@ -1,0 +1,1309 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reddit (RDDT) Deep-Dive — 돈은 더 잘 벌지만 손님이 들어오는 길이 좁아진다 — 2026-11-15</title>
+<meta name="vault-stage" content="Dive"><meta name="vault-topic" content="RDDT"><meta name="vault-date" content="2026-11-15">
+<meta name="vault-skill" content="Deep-Dive"><meta name="description" content="RDDT Deep-Dive 2026-11-15">
+<style>/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+
+body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Helvetica Neue','Apple SD Gothic Neo',sans-serif;line-height:1.65;margin:0;padding:0;}
+.container{max-width:940px;margin:24px auto;background:#FDF6E3;padding:36px 44px;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.08);}
+h1{font-size:1.7em;border-bottom:3px solid #c0392b;padding-bottom:.3em;margin-top:.2em;}
+h2{font-size:1.32em;border-bottom:1px solid #c9bfa3;padding-bottom:.24em;margin-top:1.7em;color:#8a2415;}
+h3{font-size:1.1em;margin-top:1.3em;color:#5c4a00;}
+h4{font-size:1.0em;margin-top:1.1em;color:#5c4a00;}
+blockquote{border-left:4px solid #c9a227;background:#f5ecd3;margin:.8em 0;padding:.5em 1em;color:#4a4230;border-radius:0 6px 6px 0;}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.9em;display:block;overflow-x:auto;}
+th,td{border:1px solid #e8e1cf;padding:6px 9px;text-align:left;vertical-align:top;}
+th{background:#efe6cc;color:#5c4a00;font-weight:600;}
+tr:nth-child(even) td{background:#faf4e2;}
+code{background:#efe6cc;padding:1px 5px;border-radius:4px;font-size:.88em;}
+pre{background:#f0e8cf;padding:12px;border-radius:6px;overflow-x:auto;border:1px solid #e8e1cf;}
+a{color:#b0562a;text-decoration:none;} a:hover{text-decoration:underline;}
+hr{border:none;border-top:1px solid #d8cca8;margin:1.6em 0;}
+strong{color:#3a2f18;}
+.judge{background:#f3ead0;border:2px solid #c0392b;border-radius:8px;padding:16px 20px;margin:1.2em 0;}
+.judge h2{border:none;color:#8a2415;margin-top:0;}
+.dd-fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:12px;margin:1em 0;}
+.dd-fig figcaption{font-size:.82em;color:#6b5d3a;margin-top:6px;text-align:center;}
+.footer{margin-top:2em;padding-top:1em;border-top:1px solid #d8cca8;font-size:.85em;color:#6b5d3a;}
+@media print{body{background:#fff;}.container{box-shadow:none;background:#fff;}}
+@media (max-width:640px){.container{padding:20px 16px;}}
+</style>
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+<meta name="vault-published" content="2026-11-15">
+<meta name="robots" content="noindex, nofollow">
+</head><body>
+<!--dive-hub:start-->
+<nav id="dive-hub" aria-label="하위 Dive 모음" style="max-width:1100px;margin:12px auto 18px;padding:12px 16px;background:#F3EBD6;border:1px solid #e8e1cf;border-radius:10px;font:14px/1.6 'Pretendard','Noto Sans KR',sans-serif;color:#1f2328">
+<div style="font-weight:700;margin-bottom:4px">🤿 RDDT 하위 Dive 모음 <span style="font-weight:400;font-size:12px;color:#6b6457">— 이 Deep-Dive가 참고한 개별 보고서</span></div>
+<ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px">
+<li style="color:#8a8270">💰 R-Dive <span style="font-size:12px">제품·수익모델 — 미수행</span></li>
+<li style="color:#8a8270">📜 History-Dive <span style="font-size:12px">기업 역사 — 미수행</span></li>
+<li style="color:#8a8270">👤 People-Dive <span style="font-size:12px">사람·리더 — 미수행</span></li>
+<li style="color:#8a8270">📈 chart-dive <span style="font-size:12px">타이밍 — 🔒 로컬 전용 · 미수행</span></li>
+<li style="color:#8a8270">🔎 Specific-Dive <span style="font-size:12px">업종 특수 점검 — 미수행</span></li>
+<li style="color:#8a8270">📄 One-Pager <span style="font-size:12px">1p 압축 — 미수행</span></li>
+</ul>
+</nav>
+<!--dive-hub:end-->
+<div class="container">
+<div class="kicker">DEEP-DIVE · 단일 종목 심층 · v1.44 --light · 첫 실행</div>
+
+<h1>Reddit (RDDT) Deep-Dive — 돈은 더 잘 벌지만 손님이 들어오는 길이 좁아진다</h1>
+<p class="sub">2026-11-15 · 기준가 $98.45(11/13 종가) · 완전희석 시총 약 203억 달러 · 빚 0 · 현금성 자산 30.3억 달러 · 다음 실적 2027년 2월 초 예상</p>
+
+<div class="meta">1차 자료: <a href="https://www.sec.gov/Archives/edgar/data/1713445/000171344526000022/rddt-20251231.htm">10-K FY2025</a> · <a href="https://www.sec.gov/Archives/edgar/data/1713445/000171344526000116/rddt-20260930.htm">10-Q 2026-09 분기</a> · <a href="https://www.sec.gov/Archives/edgar/data/1713445/000171344526000114/earningspressreleaseq326.htm">8-K 2026-10-29(실적 보도자료)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1713445/000171344526000107/rddt-20260812.htm">8-K 2026-08-12(법무총괄 교체)</a> · <a href="https://www.sec.gov/Archives/edgar/data/1713445/000171344526000060/rddt-20260423.htm">위임장 2026</a> · 보도: <a href="https://www.reuters.com/business/reddit-pinterest-shares-tumble-weak-user-revenue-growth-2026-10-30/">Reuters 10/30</a> · <a href="https://www.cnbc.com/2026/10/30/reddit-stock-q3-earnings.html">CNBC 10/30</a></div>
+
+<div class="judge">
+<h4>🧑‍⚖️ 종합 매수 판단 (판사 · 낮은 신뢰도 · enforcement 아님 · 최종 판단 = 사용자)</h4>
+<p class="sub">Fable 한도로 대체 모델 실행</p>
+<p>① <strong>한 줄 답</strong>: ⚪ 지금은 지켜보는 게 낫다. 값은 싸 보이지만 사용자가 줄어드는 흐름이 아직 멈추지 않았다.</p>
+<p>② <strong>왜 그렇게 보나</strong>
+- 값은 싸다. 지금 주가는 앞으로 5년 동안 매출이 해마다 8~11%만 늘어도 설명된다.
+- 그런데 사용자가 줄고 있다. AI 검색 요약 때문에 구글에서 들어오는 방문이 줄었다. 회사도 다음 분기에 사용자가 줄 수 있다고 미리 경고했다.
+- 회사 자체는 튼튼하다. 빚이 없고 현금이 약 30억 달러 있다. 광고 경기가 나빠져도 버틸 힘은 있다.</p>
+<p>③ <strong>언제 다시 보나</strong>: 2027년 2월 초 4분기 실적에서 사용자 감소 폭이 회사가 경고한 범위 안인지 확인한다. 주가가 85달러 근처로 내려오면 그때도 다시 본다.</p>
+<p>④ <strong>반대로 볼 이유</strong>: 주가가 올해 들어 이미 절반 넘게 빠졌다. 나쁜 소식이 값에 상당 부분 들어갔을 수 있다. 실적을 기다리는 사이 주가가 반등하면 더 비싸게 사게 된다.</p>
+<p>⑤ <strong>아직 모르는 것</strong>: 로그인을 의무로 바꾼 뒤 사용자가 얼마나 남을지, 데이터 판매 계약이 얼마짜리인지 모른다.</p>
+<p>낮은 신뢰도의 참고 판단이며, 최종 판단은 독자 몫이다.</p>
+</div>
+<h2>한 장 요약</h2>
+<div class="summary">
+<ul>
+<li>🔴 <strong>실적은 최고인데 주가는 상장 후 최악의 하루를 보냈다.</strong> 3분기 매출은 8.95억 달러로 1년 전보다 53% 늘었고 순이익률은 32%였다. 그런데 10/30 하루에 29% 떨어졌다. 4분기 매출 전망(10억~10.3억 달러)이 시장 예상에 못 미쳤고, 미국 이용자가 줄었기 때문이다.</li>
+<li>🔴 <strong>AI가 손님을 가로채는 일이 실제로 일어나고 있다.</strong> 회사는 10-Q에서 "구글의 AI 요약 때문에 검색 유입이 줄어 이번 분기 이용자 증가에 악영향"이라고 적었다. 미국 하루 이용자는 2% 줄었다(로그인 안 한 이용자 −4%). 4분기에는 전체 하루 이용자가 두 자릿수 초반 % 줄 수 있다고 경고했다.</li>
+<li>🔴 <strong>회사는 로그인 의무화로 맞선다.</strong> 4분기부터 일부 해외 시장에서 실험하고, 이후 미국을 포함해 전 세계에 적용할 계획이다. 남은 이용자의 돈벌이는 커지지만 전체 이용자 수는 더 줄 수 있다.</li>
+<li>🟠 <strong>돈을 버는 체질은 업계 최상급이다.</strong> 매출총이익률 91.5%, 지난 12개월 잉여현금 약 12억 달러, 빚 0, 설비투자는 매출의 0.1%다. 이용자 1인당 매출(미국)은 53% 올랐다.</li>
+<li>🟠 <strong>장부 밖 약정은 깔때기 기록보다 크다.</strong> 10-K 기준 클라우드 최소 구매약정은 3.72억 달러였지만, 2026년 6·8월 아마존·구글과 2029년까지 연장하며 새로 14.6억 달러를 약속했다(연 약 4.9억 달러). 영업용 약정이라 등급은 🟢 그대로지만 규모는 다시 적는다.</li>
+<li><strong>7축 종합 53점 / 100 (⭐3.11 · 보통, 약함 경계)</strong> — 사업·thesis 매력도(가중합) · 밸류 멀티플 미반영 · 5점 이내 차이는 같은 점수로 본다.</li>
+<li><strong>분면 「약하고 싼」</strong> · <strong>0to1 2/7(⭐3.5)</strong> · <strong>밸류 🟢 저평가(신뢰도 낮음) · 🎯 🟢 정찰·2분할</strong> · <strong>내구성 🟢 생존 / ⚪ 이익률</strong></li>
+</ul>
+</div>
+<figure class="dd-fig"><div id="fig-score7"></div><div class="dd-legend" id="fig-score7-leg"></div><figcaption id="fig-score7-cap"></figcaption></figure>
+
+<hr />
+<h2 id="a">Section A. 🌦️ 날씨 — 지정학 + 거시 (장기 구조) ⭐2.50</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 미국 안에서 광고를 파는 회사라 지정학 순풍도 역풍도 거의 없다. 대신 광고는 경기에 민감하고 주가는 시장보다 두 배 넘게 흔들린다.</p>
+</blockquote>
+<h3>A.1 지정학</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 국가 안보·패권 경쟁과 연결 고리가 약해서 대부분 중립 칸이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>점검 항목</th>
+<th style="text-align: center;">판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 미·중 패권</td>
+<td style="text-align: center;">⚪</td>
+<td>매출의 80%가 미국(3분기 7.19억 달러). 중국 사업 없음. 텐센트가 주주(의결권은 CEO에게 위임)라는 점 외 직접 연결 없음</td>
+</tr>
+<tr>
+<td>② 대만·중동 이벤트</td>
+<td style="text-align: center;">⚪</td>
+<td>직접 노출 없음. 큰 사건이 경기를 꺾으면 광고 예산으로 전달</td>
+</tr>
+<tr>
+<td>③ 수출통제·관세</td>
+<td style="text-align: center;">⚪</td>
+<td>관세가 광고주(전자상거래·소비재) 예산을 줄이는 간접 경로뿐</td>
+</tr>
+<tr>
+<td>④ 달러 패권(정치)</td>
+<td style="text-align: center;">⚪</td>
+<td>연결 약함</td>
+</tr>
+<tr>
+<td>⑤ 국가안보 직결도</td>
+<td style="text-align: center;">⚪</td>
+<td>안보 우선순위와 무관</td>
+</tr>
+<tr>
+<td>⑥ 플랫폼 규제</td>
+<td style="text-align: center;">⚪</td>
+<td>영국 개인정보 당국 벌금(2026-02) · 유럽 플랫폼 규제 · 아동 보호법. 사업을 바꿀 규모의 조치는 아직 없음</td>
+</tr>
+</tbody>
+</table>
+<h3>A.2 거시</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚이 없어서 금리가 오르면 오히려 이자수익이 는다. 문제는 광고 경기와 높은 주가 변동성이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>점검 항목</th>
+<th style="text-align: center;">판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>⑦ 순유동성 구조</td>
+<td style="text-align: center;">⚪</td>
+<td>유동성 축소 국면은 고성장주 할인율을 높인다. 사업 자체와는 간접</td>
+</tr>
+<tr>
+<td>⑧ 금리 민감도</td>
+<td style="text-align: center;">🟡</td>
+<td>차입 0 · 2026년 1~9월 순이자수익 7,570만 달러 → 금리 상승이 손익에 소폭 플러스</td>
+</tr>
+<tr>
+<td>⑨ 달러</td>
+<td style="text-align: center;">⚪</td>
+<td>해외 매출 20%. 달러 강세는 환산 매출을 조금 깎는다</td>
+</tr>
+<tr>
+<td>⑩ 경기·광고 사이클</td>
+<td style="text-align: center;">🔴</td>
+<td>광고 예산은 경기 둔화 때 가장 먼저 줄어든다. 주가 베타 2.28</td>
+</tr>
+<tr>
+<td>⑪ 긴축 기조(실질 금리 높게 유지)</td>
+<td style="text-align: center;">⚪</td>
+<td>무차입이라 차환 부담은 없다. 그러나 높은 실질 금리는 먼 미래 이익의 현재 가치를 깎는다</td>
+</tr>
+</tbody>
+</table>
+<h3>A.3 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 중립 칸이 9개라 평균이 중간 아래로 나왔다. 깔때기 대리 점수(날씨 4.0)보다 낮다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①~⑦ · ⑨ · ⑪</td>
+<td style="text-align: center;">⚪×9</td>
+<td style="text-align: center;">2.5×9</td>
+</tr>
+<tr>
+<td>⑧ 금리</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>⑩ 경기·광고 사이클</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>27.5 ÷ 11 = 2.50 → 득점 9.4 / 25</strong></td>
+</tr>
+</tbody>
+</table>
+<p>깔때기 대리 점수는 날씨를 4.0으로 보았다. 원문을 대조해 보면 이 회사를 밀어 주는 국가 자본·안보 순풍은 없다. 그래서 낮게 나왔다(맞추지 않았다).</p>
+<hr />
+<h2 id="b">Section B. ⛰️ 산 — 산업 (디지털 광고 · 정보 탐색) ⭐2.28</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 디지털 광고는 다 큰 산업이다. 지금 세상을 바꾸는 쪽은 AI 답변이고, 이 회사에게 AI는 손님을 빼앗는 쪽과 데이터를 사 주는 쪽 둘 다다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B.1 세상 바꿈</td>
+<td style="text-align: center;">⚠️ ⭐3</td>
+<td>광고는 성숙 산업. 정보 탐색은 AI 답변으로 바뀌는 중이고, 이 회사는 그 변화의 <em>재료</em>(사람이 쓴 대화)를 가졌다</td>
+</tr>
+<tr>
+<td>B.2 국가 자본 투입</td>
+<td style="text-align: center;">🔴 ⭐1</td>
+<td>디지털 광고·커뮤니티에 들어가는 국가 자본 없음</td>
+</tr>
+<tr>
+<td>B.3 내러티브 5축</td>
+<td style="text-align: center;">⭐2.6</td>
+<td>기술 4(AI 학습 데이터) · 사회 3 · 정책 2 · 지정학 1 · 자본 3</td>
+</tr>
+<tr>
+<td>B.4 산업 성장률</td>
+<td style="text-align: center;">⚪ ⭐2.5</td>
+<td>디지털 광고 시장 연 10% 안팎. 상위사(알파벳·메타)는 2026년 1~9월 +24~29%이나 30% 기준에 못 미친다</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"></td>
+<td><strong>9.1 ÷ 4 = 2.28 → 득점 4.0 / 12.5</strong></td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-c3"></div><div class="dd-legend" id="fig-c3-leg"></div><figcaption id="fig-c3-cap"></figcaption></figure>
+
+<hr />
+<h2 id="c">Section C. 🌲 숲 — 섹터 (커뮤니티 기반 정보·광고 플랫폼) ⭐3.43</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 광고주의 돈은 계속 들어온다. 그러나 이익이 쌓이는 자리가 "사람이 처음 질문하는 화면"으로 옮겨 가고 있고, 그 화면의 주인은 이 회사가 아니라 구글과 AI 회사다.</p>
+</blockquote>
+<h3>C.1 돈은 어디로 왜 흐르나 · 이익은 어디에 쌓이나</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 돈의 흐름은 스크리너 판정과 같다. 이익의 자리에 대한 설명은 다르다.</p>
+</blockquote>
+<p><strong>돈의 흐름.</strong> 광고주가 경매로 광고 자리를 산다. 이 회사 매출의 94.6%가 광고, 5.4%가 데이터 라이선스 등 기타다(2026년 1~9월). 광고는 노출(CPM)·클릭(CPC) 단위로 팔리고, 쇼핑 카탈로그 광고 같은 성과형 상품이 늘고 있다.</p>
+<p><strong>왜 지금 흐르나.</strong> 광고주는 "구매 직전에 추천을 찾는 사람"을 사려고 돈을 더 낸다. 미국 이용자 1인당 매출이 9.04달러에서 13.82달러로 53% 올랐다(3분기). 이용자가 줄어도 매출이 크는 이유다. 스크리너 판정(광고주가 검색·SNS 지면에 돈을 더 냄)과 <strong>일치</strong>한다.</p>
+<p><strong>이익이 쌓이는 곳.</strong> 스크리너는 "상위사 이익률이 혼재(메타가 비용으로 이익을 깎음)"라고 보았다. 이 보고서의 판단은 혼재라는 결론은 같고 이유가 다르다. 이익은 <strong>사람이 처음 질문을 던지는 화면을 가진 회사</strong>에 쌓인다. 구글이 AI 요약으로 답을 직접 주면, 답의 재료를 만든 사이트로 가던 클릭이 줄어든다. 이 회사는 그 재료를 라이선스로 팔아 일부를 돌려받지만, 기타 매출은 매출의 5%에 그친다. 그래서 이익의 자리 판정은 스크리너와 <strong>부분 불일치</strong>다.</p>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>병목 단계</th>
+<th>본 종목 위치</th>
+<th>가격 반영</th>
+<th style="text-align: center;">유지 기간</th>
+<th>해소 경로</th>
+<th style="text-align: center;">렌트 포획</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 (0~6개월)</td>
+<td>사람이 쓴 최신 대화 데이터(AI 학습·실시간 답변 근거)</td>
+<td>최대 공개 대화 보관소</td>
+<td>라이선스 매출 소폭(기타 +35% · 3분기)</td>
+<td style="text-align: center;">추정 불가</td>
+<td>무단 수집·합성 데이터·다른 커뮤니티 대체</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>T+6~24개월</td>
+<td>로그인 의무화로 데이터·이용자 접근을 유료화</td>
+<td>실험 시작(4분기 해외)</td>
+<td>반영 안 됨</td>
+<td style="text-align: center;">추정 불가</td>
+<td>AI 에이전트 우회 접속·대체 커뮤니티</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+<tr>
+<td>T+2~5년</td>
+<td>AI 시대 "검증된 사람 의견" 희소성</td>
+<td>잠재</td>
+<td>일부</td>
+<td style="text-align: center;">추정 불가</td>
+<td>구매자 내재화(자체 커뮤니티·자체 수집)</td>
+<td style="text-align: center;">🔴</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>지불자 경로</strong>: 큰손 = AI 회사(구글·오픈AI 등 데이터 구매자)와 성과형 광고주 · 막힘 = <em>AI 답변에 쓸 최신 사람 대화를 합법적으로, 지속적으로 대량 확보해야 하는 일</em> · 경로 = <code>직접</code>. 직접 파는 자리라 큰손의 협상력에 눌린다. 데이터 구매자는 소수이고, 그중 구글은 이 회사의 트래픽 공급자이자 광고 경쟁자다. 가격 인상 테스트는 🟡다(아래 D.6).</li>
+<li><strong>렌트 포획 🔴의 이유</strong>: 4문 중 ② 구매자 협상력(소수 구매자)과 ④ 우회 비용(무단 수집·합성 데이터)이 상한이다. 라이선스 가격을 올렸다는 1차 증거도 없다.</li>
+</ul>
+<h3>C.2 4중 필터</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 경쟁자는 많지만 "공개 토론 커뮤니티"라는 칸에서는 사실상 유일하고 이익률도 높다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>필터</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">⚪ (T0 상한)</td>
+<td>렌트 포획 🔴으로 상한 2.5</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">🟢 다수</td>
+<td>메타·구글(유튜브)·틱톡·X·핀터레스트·스냅·디스코드</td>
+</tr>
+<tr>
+<td>③ 섹터 순위</td>
+<td style="text-align: center;">⭐4</td>
+<td>공개 토론 커뮤니티 1위 · 전체 광고 시장 점유는 작다</td>
+</tr>
+<tr>
+<td>④ 이익률</td>
+<td style="text-align: center;">🟢</td>
+<td>매출총이익률 91.5% · 영업이익률 29.2%(3분기)</td>
+</tr>
+</tbody>
+</table>
+<h3>C.3 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 병목 칸 셋이 모두 렌트 포획 상한에 걸렸다. 이익률·경쟁 구조 칸이 평균을 끌어올렸다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 · T+6~24 · T+2~5Y (렌트 포획 🔴 → 상한 ⚪2.5)</td>
+<td style="text-align: center;">2.5·2.5·2.5</td>
+</tr>
+<tr>
+<td>① 수요/공급 ⚪(상한) · ② 🟢 · ③ ⭐4 · ④ 🟢</td>
+<td style="text-align: center;">2.5·5·4·5</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"><strong>24 ÷ 7 = 3.43 → 득점 7.6 / 12.5</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="d">Section D. 🌳 나무 — 기업 ⭐3.75</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이용자가 공짜로 글을 쓰고 자원봉사자가 관리하는 구조라 원가가 거의 안 든다. 약점은 이용자가 들어오는 문의 상당 부분을 구글이 쥐고 있다는 점이다.</p>
+</blockquote>
+<h3>D.0 제품·수익모델 (R-Dive 미수행 · --light 표준 깊이)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 관심사별 게시판(서브레딧) 수십만 개에 광고를 붙여 팔고, 쌓인 대화를 AI 회사에 학습용으로 빌려준다.</p>
+</blockquote>
+<ul>
+<li><strong>사업 구조</strong>: 보고 부문 1개. 고객은 광고주(B2B)와 데이터 구매자(B2B). 이용자는 무료(B2C).</li>
+<li><strong>주력 제품 ① 광고(94.6%)</strong>: 게시판 글 사이에 끼워 넣는 광고다. 광고주는 경매로 자리를 사고, 관심 게시판·검색어·대화 맥락을 골라 노출한다. 고객은 "추천을 찾는 사람"을 원하는 브랜드·앱·쇼핑몰이다. 차별점은 사람들이 실제 경험을 털어놓는 곳이라는 점이다. 10-K는 이를 "솔직함과 주관성"이라고 쓴다.</li>
+<li><strong>주력 제품 ② 데이터 라이선스(기타 5.4%)</strong>: 270억 건이 넘는 게시물·댓글을 AI 회사가 학습·실시간 검색에 쓰도록 빌려준다. 2026년 1~9월 기타 매출은 1.30억 달러(+25%)다. 개별 계약 금액은 공시되지 않는다.</li>
+<li><strong>과금 모델</strong>: 광고 = 경매(노출·클릭 단가 × 물량). 라이선스 = 기간 계약.</li>
+<li><strong>단위 경제학</strong>: 하루 이용자(DAUq) 1.303억 명(+12%) · 1인당 분기 매출 6.87달러(+36%) · 미국 13.82달러(+53%) · 해외 2.43달러(+32%). 이용자 획득·유지 비용(LTV/CAC)은 ❌ 미공시.</li>
+<li><strong>고객 집중·검증 등급</strong>: 광고주 10% 이상 고객 공시는 확인하지 못했다. 광고주 이름은 비공개지만 반복 매출은 공시로 확인된다 = <strong>B</strong>. 데이터 구매자는 소수다(공개 보도로 구글·오픈AI · 현행 공시 금액 없음 = <strong>B</strong>).</li>
+</ul>
+<h3>D.5 곡괭이 질 — <strong>(A) 자가조달형</strong></h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 어느 AI가 이기든 사람이 쓴 대화는 필요하다는 점에서 일부 곡괭이 성격이 있다. 설비를 거의 안 사서 번 돈이 거의 다 남는다.</p>
+</blockquote>
+<p>마진 출처 3분해: (a) 사업 — 무료 콘텐츠 + 경매 광고 · (b) 정부 이전지출 없음 · (c) 일회성 없음. 2026년 1~9월 영업현금 9.38억 달러, 설비투자 0.03억 달러. 자사주 3.40억 달러를 사고도 현금이 늘었다. 정책렌트형(P) 아님.</p>
+<h3>D.6 해자</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 원가 구조와 이용자 규모가 해자다. 그러나 AI가 이용자의 "찾아오는 습관"을 녹이고 있다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>유형</th>
+<th style="text-align: center;">작동</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 네트워크 효과</td>
+<td style="text-align: center;">✅</td>
+<td>규모 DAUq 1.16억→1.303억 명(+12%) ↔ 렌트 1인당 매출 5.04→6.87달러(+36%). 커질수록 돈벌이가 강해졌다. 단 미국 이용자는 −2%로 규모 증가가 해외에서만 나온다</td>
+</tr>
+<tr>
+<td>② 브랜드</td>
+<td style="text-align: center;">⚠️</td>
+<td>"검색어 뒤에 reddit을 붙인다"는 습관은 주장 수준. 광고 단가 프리미엄을 보여 주는 1차 수치 없음</td>
+</tr>
+<tr>
+<td>③ 전환 비용</td>
+<td style="text-align: center;">❌</td>
+<td>광고주는 예산을 바로 옮길 수 있다. 이용자도 AI 답변으로 바로 옮겨 간다(아래 AI 침식)</td>
+</tr>
+<tr>
+<td>④ 비용 우위</td>
+<td style="text-align: center;">✅</td>
+<td>매출총이익률 91.5% vs 메타 81.0% · 핀터레스트 79.0% · 스냅 59.2%(yfinance 직전 12개월). 콘텐츠를 사지 않고 관리 인력도 대부분 자원봉사자</td>
+</tr>
+<tr>
+<td>⑤ 법적 보호</td>
+<td style="text-align: center;">⚠️</td>
+<td>이용자 약관으로 콘텐츠 이용권을 갖지만 독점 저작권이 아니다. ⓐ 무단 수집을 막았다는 판결은 아직 없다 · ⓒ 가격 테스트가 🟢가 아니다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>가격 인상 테스트: 🟡</strong> — 1인당 매출은 크게 올랐다. 그러나 경매 단가는 광고주 수요의 결과이고, 회사가 값을 올렸다는 1차 증거는 없다. 라이선스 갱신 가격도 미공시다.</li>
+<li><strong>🤖 AI 침식 점검: 🔴 <code>AI 침식 진행</code></strong> — ⓐ 데이터 = <em>일부 소유</em>(이용권은 있으나 비독점 · 무단 수집본 존재) · ⓑ 일하는 흐름 = <em>박힘·AI 취약</em>(정보 탐색 흐름을 AI 답변이 대신함). 10-Q가 "AI 요약으로 검색 유입이 줄어 이번 분기 이용자 증가에 악영향"이라고 명시했고, 4분기 이용자 감소를 경고했다. <strong>업종 라벨(⚠️)과 불일치</strong> — 이 회사는 상위사보다 한 단계 나쁘다. 단 광고주 이탈·단가 인하는 아직 관측되지 않았다.</li>
+<li><strong>D.6-a ⭐</strong> = ✅ 2개 → ⭐4, 가격 테스트 🟡 상한 → <strong>⭐3</strong> · <strong>D.6-b</strong> = 20년 대화 보관소(Durable) 위주, 광고 기술은 대형사보다 약함 → Durable only <strong>⭐3</strong> · <strong>D.6 = (3 + 3) ÷ 2 = 3.0</strong></li>
+<li><strong>해자 내구성(연수)</strong>: <code>추정 불가 · AI 침식 진행</code>.</li>
+</ul>
+<h3>D.7~D.8</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 광고와 데이터 두 갈래로 번다. 빚 없이 현금이 쌓여 망할 걱정은 거의 없다.</p>
+</blockquote>
+<ul>
+<li><strong>D.7 ⭐4</strong> — 광고 + AI 데이터 라이선스, 인접 산업 1개 확장.</li>
+<li><strong>D.8 ⭐4</strong> — 하방: 현금성 30.3억 달러 · 빚 0 · 분기 잉여현금 3.63억 달러. 상방: 시총 10배(약 2,030억 달러)는 지금의 우버 규모 근처로, 이용자가 줄어드는 국면에서는 먼 이야기다(규모 비교일 뿐).</li>
+</ul>
+<h3>D.9 ⭐ 산출 근거</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 현금 창출·고객 분산이 좋고 해자는 중간이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D.0 수익모델 품질(경매 광고 · 계약 반복성 낮음)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>D.0 고객 분산(10% 고객 공시 미확인 · 광고주 다수)</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>D.5 곡괭이 질 (A)</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>D.6 해자</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td>D.7 확장성</td>
+<td style="text-align: center;">⭐4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>D.8 하방 닫힘 + 현금 젖소</td>
+<td style="text-align: center;">⭐4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td><strong>평균</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>22.5 ÷ 6 = 3.75 → 득점 8.6 / 12.5</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="e">Section E. 🌲🌳 옆의 나무 — 경쟁 ⭐2.50</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 성장은 가장 빠르고 매출총이익률도 가장 높다. 하지만 가장 큰 위협인 구글이 트래픽 공급자이자 데이터 구매자이자 광고 경쟁자다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목 (yfinance 11/13 · 직전 12개월)</th>
+<th>RDDT</th>
+<th>META(섹터 대장)</th>
+<th>GOOGL</th>
+<th>PINS</th>
+<th>SNAP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>시총</td>
+<td>190억</td>
+<td>1조 6,403억</td>
+<td>3조 6,362억</td>
+<td>110억</td>
+<td>91억</td>
+</tr>
+<tr>
+<td>매출 / 성장률</td>
+<td>30.9억 / +53%</td>
+<td>2,416억 / +26%</td>
+<td>4,711억 / +25%</td>
+<td>46.8억 / +12%</td>
+<td>65.7억 / +14%</td>
+</tr>
+<tr>
+<td>매출총이익률</td>
+<td>91.5%</td>
+<td>81.0%</td>
+<td>60.9%</td>
+<td>79.0%</td>
+<td>59.2%</td>
+</tr>
+<tr>
+<td>영업이익률</td>
+<td>29.4%</td>
+<td>37.8%</td>
+<td>33.3%</td>
+<td>5.6%</td>
+<td>0.1%</td>
+</tr>
+<tr>
+<td>매출 대비 시총</td>
+<td>6.2배</td>
+<td>6.8배</td>
+<td>7.7배</td>
+<td>2.3배</td>
+<td>1.4배</td>
+</tr>
+</tbody>
+</table>
+<figure class="dd-fig"><div id="fig-e1"></div><div class="dd-legend" id="fig-e1-leg"></div><figcaption id="fig-e1-cap"></figcaption></figure>
+
+<ul>
+<li><strong>(a) 수익모델 우월성</strong>: 성장·매출총이익률 1위, 영업이익률은 메타·구글보다 낮다 → 🟡</li>
+<li><strong>(b) 정부 vs 민간</strong>: 모두 민간 광고. 차별 없음 → ⚪</li>
+<li><strong>(c) 경쟁 포지션</strong>: 커뮤니티라는 고유 칸은 지키지만, 최대 위협(구글의 AI 요약)이 이미 이용자 수치로 나타났다. 메타는 이익률·규모·AI 광고 최적화에서 우월하다(본 종목 열위 peer) → 🔴</li>
+<li><strong>⭐ = (4 + 2.5 + 1) ÷ 3 = 2.50 → 득점 4.7 / 12.5</strong></li>
+</ul>
+<hr />
+<h2 id="f">Section F. 👤 사람 ⭐3.08 (객관 6축 · 비전축 사용자 ⭐ 대기)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 창업자 CEO가 회사를 흑자로 돌려놓았다. 대신 의결권의 약 75%를 혼자 행사하는 구조다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 약력</td>
+<td style="text-align: center;">🟢</td>
+<td>스티브 허프먼 — 2005년 공동창업 · 2015년 CEO 복귀 · 버지니아대 컴퓨터공학(위임장 2026)</td>
+</tr>
+<tr>
+<td>② 명성</td>
+<td style="text-align: center;">⚪</td>
+<td>2023년 외부 앱 정책으로 이용자·모더레이터 반발을 겪었다. 평가가 엇갈린다</td>
+</tr>
+<tr>
+<td>③ 능력</td>
+<td style="text-align: center;">🟢</td>
+<td>매출 8.0억(2023) → 22.0억(2025) 달러 · 영업이익률 −17% → +20% · 2026년 S&amp;P 500 편입</td>
+</tr>
+<tr>
+<td>④ 도덕성</td>
+<td style="text-align: center;">⚪</td>
+<td>증권 집단소송(구글 AI 요약 영향 공시 관련) 1차 기각 후 원고가 재수정 소장 제출 · 회계 부정 공시 없음</td>
+</tr>
+<tr>
+<td>⑥ 이해관계 일치</td>
+<td style="text-align: center;">⚪</td>
+<td>내부자 지분 약 2.0%(yfinance) · 의결권은 위임으로 약 75%</td>
+</tr>
+<tr>
+<td>⑦ 거버넌스</td>
+<td style="text-align: center;">🔴</td>
+<td>지배주주 회사 자격 · B주 1주 10표 · 최대주주 어드밴스(약 22%)가 이사 2명 지명권과 의장 선임 동의권 보유</td>
+</tr>
+<tr>
+<td>⑧ 외부 평가</td>
+<td style="text-align: center;">—</td>
+<td>미수집(산식 제외)</td>
+</tr>
+<tr>
+<td>⑤ 비전축</td>
+<td style="text-align: center;">사용자 ⭐ 대기</td>
+<td>💬 Claude 의견: "로그아웃 접근은 내가 지켜 온 선"이라던 원칙을 트래픽 위기에 바꿨다(CNBC 10/30). 사명보다 생존을 택한 결정으로도, 현실 적응으로도 읽힌다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>핵심 인재: COO 젠 웡(광고 사업) · CFO 드루 볼레로 · 법무총괄 2026-09 교체(벤 리 → 폴 카푸치오, 8-K 8/12).</li>
+<li><strong>⭐ = (5 + 2.5 + 5 + 2.5 + 2.5 + 1) ÷ 6 = 3.08 → 득점 6.5 / 12.5</strong></li>
+</ul>
+<hr />
+<h2 id="g">Section G. 🔢 숫자 — 재무건전성 ⭐4.88</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이익률·현금·재무 상태 모든 칸이 최상위다. 성장 칸만 "빠르지만 느려지는 중"이라 한 단계 낮췄다.</p>
+</blockquote>
+<h3>G.1 기본 정량 (SEC 10-K·10-Q · 단위 백만 달러)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 2년 사이 적자 회사가 매출 40% 가까이를 현금으로 남기는 회사가 됐다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th style="text-align: right;">2023</th>
+<th style="text-align: right;">2024</th>
+<th style="text-align: right;">2025</th>
+<th style="text-align: right;">2026 1~9월</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매출</td>
+<td style="text-align: right;">804.0</td>
+<td style="text-align: right;">1,300.2</td>
+<td style="text-align: right;">2,202.5</td>
+<td style="text-align: right;">2,363.3</td>
+</tr>
+<tr>
+<td>영업이익</td>
+<td style="text-align: right;">−140.2</td>
+<td style="text-align: right;">−560.6</td>
+<td style="text-align: right;">442.0</td>
+<td style="text-align: right;">676.2</td>
+</tr>
+<tr>
+<td>순이익</td>
+<td style="text-align: right;">−90.8</td>
+<td style="text-align: right;">−484.3</td>
+<td style="text-align: right;">529.7</td>
+<td style="text-align: right;">740.1</td>
+</tr>
+<tr>
+<td>영업현금</td>
+<td style="text-align: right;">−75.1</td>
+<td style="text-align: right;">222.1</td>
+<td style="text-align: right;">690.9</td>
+<td style="text-align: right;">937.9</td>
+</tr>
+<tr>
+<td>주식보상</td>
+<td style="text-align: right;">47.6</td>
+<td style="text-align: right;">801.6</td>
+<td style="text-align: right;">343.2</td>
+<td style="text-align: right;">300.6</td>
+</tr>
+</tbody>
+</table>
+<p>2024년 적자는 상장 때 한꺼번에 인식한 주식보상 8.0억 달러 때문이다. 4분기 전망은 매출 10억~10.3억 달러(+38~42%) · 조정 EBITDA 4.8억~5.1억 달러다.</p>
+<figure class="dd-fig"><div id="fig-g5"></div><div class="dd-legend" id="fig-g5-leg"></div><figcaption id="fig-g5-cap"></figcaption></figure>
+
+<h3>G.3·G.4 4축 + 고금리 quick</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚이 없으니 금리 칸은 모두 만점이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 이익 성장</td>
+<td style="text-align: center;">🟡</td>
+<td>매출 +62%(2024) · +69%(2025) · +53%(3Q26) · 4분기 전망 +38~42% → 고성장이지만 감속</td>
+</tr>
+<tr>
+<td>② 이익률 확장</td>
+<td style="text-align: center;">🟢</td>
+<td>영업이익률 −17.4%(2023) → +20.1%(2025) → 28.6%(9M26)</td>
+</tr>
+<tr>
+<td>③ 현금 창출</td>
+<td style="text-align: center;">🟢</td>
+<td>영업현금 −0.75억 → 6.91억 → 9.38억(9M) 달러 · 설비투자 매출의 0.1%</td>
+</tr>
+<tr>
+<td>④-① 이자보상</td>
+<td style="text-align: center;">🟢</td>
+<td>이자비용 사실상 0 · 순이자수익 9M26 7,570만 달러</td>
+</tr>
+<tr>
+<td>④-② 순부채/EBITDA</td>
+<td style="text-align: center;">🟢</td>
+<td>순현금 30.3억 달러(리스 부채 3,140만 달러 제외)</td>
+</tr>
+<tr>
+<td>④-③ 만기 분산</td>
+<td style="text-align: center;">🟢</td>
+<td>차입 없음</td>
+</tr>
+<tr>
+<td>④-④ 변동금리</td>
+<td style="text-align: center;">🟢</td>
+<td>차입 없음</td>
+</tr>
+<tr>
+<td>④-⑤ 단기 유동성</td>
+<td style="text-align: center;">🟢</td>
+<td>현금성 30.33억 ÷ 유동부채 3.57억 = 8.5배</td>
+</tr>
+<tr>
+<td>⑥ 약정 여유(점수 밖)</td>
+<td style="text-align: center;">—</td>
+<td>회전한도 5억 달러 미인출 · 신용장 4건 570만 달러</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>물가 쪽(점수 밖)</strong>: 원자재 노출 없음. 경매 광고라 원가를 판가에 넘기는 지연은 없지만, 반대로 광고 단가가 떨어질 때도 바로 반영된다. 부담 요인은 인건비와 주식보상이다 〔내구성 서브에이전트〕.</li>
+<li><strong>장부 밖 약정: 🟢</strong> — 남의 빚 보증·고객 금융 0. 클라우드 해지 불능 최소 구매약정이 10-K(2025년 말) 3.72억 달러에서, 2026년 6월 아마존 8.8억 달러(2026-07~2029-06)·8월 구글 5.8억 달러(2026-09~2029-08) 연장으로 새로 14.6억 달러가 됐다(연 약 4.9억 달러 · 기존 잔액과 겹치는지는 공시로 확정 불가 → 상한으로 기록). 회사는 "모든 최소 구매약정을 충족했다"고 밝혔다. 자기 신용장 570만 달러(10-Q · 10-K 시점 530만 달러). 증권 집단소송 금액 미정.</li>
+<li><strong>⭐ = (4 + 5 + 5 + 5 + 5 + 5 + 5 + 5) ÷ 8 = 4.88 → 득점 12.1 / 12.5</strong></li>
+</ul>
+<h3>G.8 고금리·고물가 내구성 정밀 진단 (서브에이전트 위임 · 점수 미반영 · 낮은 신뢰도 참고)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 빚이 없어 망할 위험은 사실상 없다. 다만 광고 침체와 이용자 감소가 겹치면 이익은 크게 준다.</p>
+</blockquote>
+<ul>
+<li>🏷️ <strong>종합: 🟢 견딤(생존) · ⚪ 이익률</strong> ‖ 신뢰도 중간 ‖ 풀 DD 승격 낮음.</li>
+<li><strong>금리 🟢</strong> — 차입 0, 순현금 30억 달러. 금리 +1%p마다 이자수익 연 약 3,000만 달러 증가.</li>
+<li><strong>물가 🟢</strong> — 원자재 0 · 클라우드 단가는 약정으로 2029년 중반까지 고정 · 압박은 인건비·주식보상뿐.</li>
+<li><strong>결합 시나리오 ⚪</strong> — 광고 물량 −20%와 원가 +20%가 겹치면 영업이익이 지금 9.08억 달러에서 0.9억~1.85억 달러로 준다. 영업적자로 넘어가는 문턱은 매출 −26~−31%다. 현금·약정 쪽 절벽은 없다.</li>
+<li><strong>클라우드 약정 대비 실제 지출</strong> — 새 약정은 연 약 4.9억 달러, 매출원가는 연 약 2.6억 달러다. 호스팅비 일부가 연구개발비에도 섞여 있어 직접 비교는 공시만으로 불가능하다. 미달 차액을 물어낼 위험은 현재 낮다.</li>
+<li>🎯 <strong>버티는가</strong>: 🟢 버팀 — 생존이 아니라 이익률의 문제다. 악화 신호 = 광고 매출이 전년 대비 감소로 돌아서고 영업이익률이 20% 아래로 내려감.</li>
+<li>반박을 반영해 판정을 고쳤다: 표는 광고 단가가 그대로라고 가정했지만 침체 때는 단가도 같이 떨어진다. 적자 문턱까지 실제 거리는 더 짧을 수 있다. ⚠️ 당초 🟢 단독이었으나 생존 🟢 / 이익률 ⚪로 수정.</li>
+<li>낮은 신뢰도 참고 · 장기 thesis 종목에도 stop sign 아님 · 7축 점수 미반영.</li>
+</ul>
+<hr />
+<h2 id="h">Section H. 시나리오 · 렌즈</h2>
+<h3>H.1 낙관 / 기본 / 비관 (현재 $98.45 · 완전희석 시총 203억 달러 · 배당 없음)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이용자가 줄어도 1인당 매출이 계속 오르면 5년에 1.6배, AI가 광고 단가까지 깎으면 원금 손실이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: center;">확률</th>
+<th style="text-align: center;">2년</th>
+<th style="text-align: center;">3년</th>
+<th style="text-align: center;">5년</th>
+<th>핵심 가정(5년)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>낙관</td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: center;">1.8배</td>
+<td style="text-align: center;">2.1배</td>
+<td style="text-align: center;">3.1배</td>
+<td>2031 매출 90억 달러 · 영업이익률 40% · P/E 22 · 로그인 전환 성공</td>
+</tr>
+<tr>
+<td>기본</td>
+<td style="text-align: center;">50%</td>
+<td style="text-align: center;">1.2배</td>
+<td style="text-align: center;">1.3배</td>
+<td style="text-align: center;">1.6배</td>
+<td>2031 매출 60억 달러 · 영업이익률 33% · P/E 18 · 순현금 누적</td>
+</tr>
+<tr>
+<td>비관</td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: center;">0.65배</td>
+<td style="text-align: center;">0.7배</td>
+<td style="text-align: center;">0.8배</td>
+<td>2031 매출 40억 달러 · 영업이익률 22% · P/E 14 · 검색 유입 잠식 심화</td>
+</tr>
+<tr>
+<td>기대값</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">1.21배</td>
+<td style="text-align: center;">1.35배</td>
+<td style="text-align: center;">1.78배</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>암묵 출구 배수(5년 · 시총 ÷ 매출): 기본 약 5.3배 · 낙관 약 7.1배. 현재 6.2배, 메타 6.8배, 구글 7.7배다. 기본 경로는 배수가 오히려 낮아져도 매출 성장만으로 도달한다(재평가 의존 낮음) · 낙관은 중간.</li>
+<li>2년 기본 1.2배 &lt; 2.0배 — 근시점 비대칭이 약하다(soft flag).</li>
+<li>시장이 보는 가설(60일 상관): 스냅 0.65 · 나스닥(QQQ) 0.50 · 핀터레스트 0.46 · AI 피해 소프트웨어(IGV) 0.36 · 구글 0.32 · 메타 0.31 → 시장은 이 종목을 <strong>"소셜 광고"</strong>로 가격을 매긴다(우세). 이 보고서의 핵심 변수(검색 유입·AI 데이터)와 다르다. 낙관 경로의 계기는 "시장이 이 회사를 AI 데이터 공급자로 다시 보는 사건"(대형 라이선스 공시)이다.</li>
+</ul>
+<figure class="dd-fig"><div id="fig-h1"></div><div class="dd-legend" id="fig-h1-leg"></div><figcaption id="fig-h1-cap"></figcaption></figure>
+
+<h3>H.2 Catalyst</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 다음 실적의 이용자 수와 로그인 실험 결과가 가장 중요하다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>사건</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-11-23</td>
+<td>증권 집단소송 2차 수정 소장에 대한 회사 기각 신청 마감</td>
+</tr>
+<tr>
+<td>2026년 4분기</td>
+<td>해외 일부 시장 로그인 의무화 실험 시작</td>
+</tr>
+<tr>
+<td>2027년 2월 초(예상)</td>
+<td>4분기 실적 — 하루 이용자 감소 폭(회사 경고: 두 자릿수 초반 %) · 2027 전망</td>
+</tr>
+<tr>
+<td>2027년 중</td>
+<td>로그인 의무화 글로벌·미국 확대 여부</td>
+</tr>
+<tr>
+<td>2029년 6·8월</td>
+<td>아마존·구글 클라우드 약정 만료</td>
+</tr>
+</tbody>
+</table>
+<h3>H.3 ⚠️ Thesis 리스크 신호 (종목 Memory 없음 · 본 보고서가 원본)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이용자 수, 1인당 매출, 데이터 라이선스, 지배구조를 지켜본다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>신호</th>
+<th>관측 방법</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>하루 이용자 전년 대비 −10% 이상 + 1인당 매출 성장 둔화 동반</td>
+<td>분기 실적</td>
+</tr>
+<tr>
+<td>2</td>
+<td>🔴 AI 침식 진행 — 검색 유입 감소가 광고 단가 하락·광고주 이탈로 번짐</td>
+<td>10-Q 위험요인 · 실적 콜</td>
+</tr>
+<tr>
+<td>3</td>
+<td>로그인 의무화 뒤 로그인 이용자도 감소</td>
+<td>분기 실적(로그인 DAUq)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>광고 매출 전년 대비 감소 전환 + 영업이익률 20% 미만</td>
+<td>분기 실적 〔내구성 서브에이전트〕</td>
+</tr>
+<tr>
+<td>5</td>
+<td>데이터 라이선스 계약 해지·미갱신(기타 매출 감소)</td>
+<td>10-Q 매출 분해</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2027 이익 추정치 하향 지속(현재 30일 하향 17 · 상향 6)</td>
+<td>컨센서스</td>
+</tr>
+</tbody>
+</table>
+<h3>H.3-0 보유 종목 가설 신선도 — 해당 없음(미보유)</h3>
+<h3>H.5 🧭 CAE · Edge Grid 좌표</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 구조적 중요도는 약한 편이고, 가격은 이미 많이 내려와 있다. 싸 보이는 함정일 수 있는 칸이다.</p>
+</blockquote>
+<ul>
+<li>(a) CAE: 걸친 층 = 〔CAE C=제약/A=조정/E=표현〕 E층(정보 탐색·광고 표현) + A층 일부(AI 데이터 공급) · 무게중심 = 광고 · 🔴 약한 고리 = 검색 유입(남의 손에 있는 문).</li>
+<li>(b) 중요도 L1 · R1 · H1 / 엣지 G2 · P2 · D1 〔중요도 L 다층성·R 비가역성·H 병목경도 · 엣지 G 선반영격차·P 연료잔량·D 컨센서스반증, 각 0~3〕.</li>
+<li>(d) 분면 = <strong>「약하고 싼」</strong> — 행동 = 정찰 · 함정 주의(이용자 감소 + 추정치 하향) · 3 잠금장치 해당 없음(집중매수 분면 아님).</li>
+<li>(e) 과목 적합도: 이 종목은 <code>혼합</code>(현재 실적은 수학형, 데이터 가치는 문학형). 지금 시장의 과목 = 판정 불가(최신 Expect-daily 인용 미수행).</li>
+</ul>
+<figure class="dd-fig"><svg viewBox="0 0 520 300" width="100%" style="max-width:520px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="20" width="220" height="130" fill="#fdeee9"/><rect x="280" y="20" width="220" height="130" fill="#eef6f0"/>
+<rect x="60" y="150" width="220" height="130" fill="#eeeeee"/><rect x="280" y="150" width="220" height="130" fill="#e8f0f8"/>
+<line x1="280" y1="20" x2="280" y2="280" stroke="#999" stroke-dasharray="4,3"/><line x1="60" y1="150" x2="500" y2="150" stroke="#999" stroke-dasharray="4,3"/>
+<text x="170" y="40" font-size="11" text-anchor="middle" fill="#8a2415">강한데 비싼 → 트림·회피</text>
+<text x="390" y="40" font-size="11" text-anchor="middle" fill="#1f6f3b">강하고 싼 → 집중매수 후보</text>
+<text x="170" y="270" font-size="11" text-anchor="middle" fill="#555">약하고 비싼 → 회피·청산</text>
+<text x="390" y="270" font-size="11" text-anchor="middle" fill="#2c5282">약하고 싼 → 정찰</text>
+<text x="280" y="295" font-size="11" text-anchor="middle" fill="#444">← 엣지 소진(비싼)   ·   엣지 잔량(싼) →</text>
+<text x="20" y="150" font-size="11" text-anchor="middle" fill="#444" transform="rotate(-90 20,150)">중요도 약 → 강</text>
+<circle cx="360" cy="215" r="7" fill="#c0392b"/>
+<text x="370" y="205" font-size="10" text-anchor="start" fill="#c0392b">11/15 약하고 싼</text>
+</svg><figcaption>중요도 약 · 엣지 잔량 — 값은 싸졌지만 이용자 감소가 멈추지 않음</figcaption></figure>
+
+<h3>H.6 💎 0to1 (틸 7문 · 별도 렌즈)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 독특한 자산(사람의 대화)은 있지만, 그 문을 지키는 힘이 약하다.</p>
+</blockquote>
+<p>기술 10배 ⚠️ · 시기 ⚠️(AI가 순풍이자 역풍) · 독점 YES(공개 토론 커뮤니티) · 사람 ⚠️(비전축 사용자 ⭐ 대기) · 유통 NO(검색 유입 의존) · 존속성 ⚠️ · 숨겨진 비밀 YES("AI 시대일수록 검증된 사람 의견이 희소해진다") → <strong>YES 2/7 · Track B ⭐3.5(23 ÷ 7 = 3.29 → 0.5 단위) · 불운 위험</strong>. 시장 정의 tell: 회사는 "인터넷 최대 정보원 중 하나"라는 넓은 정의를 쓴다 → 혼재.</p>
+<h3>H.7 💰 밸류에이션 (서브에이전트 위임 · 7축 미합산 · 낮은 신뢰도 참고)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금 값은 앞으로 5년 매출이 연 8~11%만 커져도 맞는 수준이다. 다만 이익 추정치가 내려가는 중이라 싼 값이 함정일 수도 있다.</p>
+</blockquote>
+<ul>
+<li>🏷️ <strong>판정: 🟢 저평가</strong> ‖ 신뢰도 낮음 ‖ 🟢 조건 3/3 충족(①역-DCF 현실범위내 ②역사 매출 대비 시총 3.0%ile ③동종 대비 성장조정 할인) ‖ 풀 DD 승격 중간.</li>
+<li><strong>역-DCF</strong>: 희석 기업가치 173억 달러는 5년 매출 연 8~11% 성장과 현재 영업이익률 29% 유지만 요구한다. 기본 시나리오(12%)보다 낮다.</li>
+<li><strong>아키타입</strong>: Ⓑ 구조적 컴파운더. 매출 대비 시총 ÷ 성장 = 0.12(메타 0.26 · 구글 0.31). 2027 컨센 성장(28%)으로 바꾸면 0.22로 할인 폭이 크게 준다.</li>
+<li><strong>상대·역사</strong>: 매출총이익 대비 기업가치 5.7배(메타 8.5 · 구글 12.4). 매출 대비 시총은 상장 후 33개월 중 두 번째로 낮다(3.0%ile · n=33 · 직전 12개월 기준). Z는 N/A(흑자 전환 = 사업모델 전환) · PER Z도 N/A(흑자 분기 비율 미달).</li>
+<li><strong>컨센서스</strong>: 29명 · 평균 목표가 148.46달러 · 최고 272 / 최저 85달러 · 2027 EPS 추정 범위 3.31~8.47달러(분산 매우 넓음) · <strong>2027 EPS 30일 새 7.10 → 6.82달러 하향</strong> → 선반영 진행 중 · 역사 하위 + 추정치 하향 = 함정 쪽 증거도 함께 기록.</li>
+<li><strong>BRCR</strong>: ⚪ 적정(정규화 0.51 − 백분위 0.50) · 구속 병목 = 내구성(AI 침식) · [소유] · 약한 신호.</li>
+<li>🎯 <strong>매수 적정성: 🟢 현재가 매수 고려 — 정찰 소액 + 2분할</strong>. 2차는 4분기 실적에서 이용자 감소 폭이 회사 경고 범위 안이고 2027 매출 컨센이 40억 달러 위를 지키는지 확인한 뒤. 더 싸게 사는 계기 = 이용자 감소 확인으로 주가가 85달러 부근으로 밀릴 때. 핵심 변수 = 미국 검색 유입(로그인 안 한 이용자 2,730만 명, −4%). 낮은 신뢰도 참고 · 강제 신호 아님 · 최종 판단은 독자 몫.</li>
+</ul>
+<hr />
+<h2>Section I~K (--light 압축)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 공매도 비중이 15%로 높고, 의결권은 CEO에게 몰려 있다.</p>
+</blockquote>
+<ul>
+<li><strong>I. 지분 구조</strong>: A주 1.469억 주 + B주 0.462억 주(10/28) · 완전희석 2.063억 주(분기 −0.3%) · 어드밴스 약 22% · CEO 의결권 약 75%(어드밴스·텐센트 위임 포함) · 기관 보유 98% · 공매도 유통주식의 15.2%(yfinance) · 2026-02 자사주 매입 10억 달러 승인, 9M26 3.40억 달러 집행(3분기 평균 149.81달러).</li>
+<li><strong>K. 공시</strong>: 8-K 10/29 3분기 실적(4분기 전망 컨센 하회) · 8-K 8/12 법무총괄 교체 · 10-Q 3Q26 로그인 의무화 계획·검색 유입 경고·클라우드 약정 연장 신설.</li>
+<li><strong>K.4c 외부 비판 리포트</strong>: 최근 12개월 공매도 보고서는 확인하지 못했다(검색 미수행). 10/30 이후 11곳 넘는 증권사가 목표가를 내렸고(Reuters), 시티즌스는 "구글에 콘텐츠를 파는 것의 문제"를 지적했다(CNBC). 가설을 치는 주장 = 검색 유입 의존 → 리스크 신호 #2로 반영.</li>
+</ul>
+<hr />
+<h2 id="l">Section L. 동적 발견</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 깔때기 기록의 장부 밖 약정 규모를 고쳤고, 로그인 의무화라는 큰 전략 변화를 새로 찾았다.</p>
+</blockquote>
+<ul>
+<li><strong>L.1 클라우드 약정 규모 정정</strong> — 깔때기 기록 3.72억 달러는 10-K(2025년 말) 기준이다. 10-Q 3Q26 Note 9에 아마존 8.8억·구글 5.8억 달러 연장(합 14.6억 달러)이 새로 있다. 영업용이라 등급은 🟢 유지.</li>
+<li><strong>L.2 로그인 의무화 계획</strong> — 4분기 해외 실험 → 미국 포함 글로벌 시행. 회사가 10-K에서 "3분기부터 로그인·로그아웃 이용자 공시를 중단한다"고 했다가, 검색 유입 변동성 때문에 계속 공시하기로 바꿨다(10-Q).</li>
+<li><strong>L.3 구글의 세 얼굴</strong> — 트래픽 공급자(검색) · 데이터 구매자(라이선스) · 클라우드 공급자(5.8억 달러 약정) · 광고 경쟁자. 협상력이 한쪽으로 기운다.</li>
+<li><strong>L.deferred</strong> — 데이터 라이선스 계약별 금액·만기 · 광고주 집중도 주석 · 로그인 이용자 비중 목표 · 회전한도 레버리지 약정 수치 · 직원 평판 · 결론 조사 경로 = 10-K 매출 주석 · 실적 콜 녹취 · 신용계약 원문(10-K 첨부).</li>
+</ul>
+<hr />
+<h2 id="z">🔴 종합 판단</h2>
+<h3>7축 종합</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 재무는 거의 만점, 날씨·산업·경쟁 위치가 깎았다. 보통 구간 아래쪽이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">⭐</th>
+<th style="text-align: center;">득점 / 배점</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🌦️ 날씨</td>
+<td style="text-align: center;">2.50</td>
+<td style="text-align: center;">9.4 / 25</td>
+</tr>
+<tr>
+<td>⛰️ 산</td>
+<td style="text-align: center;">2.28</td>
+<td style="text-align: center;">4.0 / 12.5</td>
+</tr>
+<tr>
+<td>🌲 숲</td>
+<td style="text-align: center;">3.43</td>
+<td style="text-align: center;">7.6 / 12.5</td>
+</tr>
+<tr>
+<td>🌳 나무</td>
+<td style="text-align: center;">3.75</td>
+<td style="text-align: center;">8.6 / 12.5</td>
+</tr>
+<tr>
+<td>🌲🌳 옆의 나무</td>
+<td style="text-align: center;">2.50</td>
+<td style="text-align: center;">4.7 / 12.5</td>
+</tr>
+<tr>
+<td>👤 사람</td>
+<td style="text-align: center;">3.08</td>
+<td style="text-align: center;">6.5 / 12.5</td>
+</tr>
+<tr>
+<td>🔢 숫자</td>
+<td style="text-align: center;">4.88</td>
+<td style="text-align: center;">12.1 / 12.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>종합 53점 / 100 (⭐3.11) · 보통(약함 경계)</strong> (W-2026-10-11 · DD-v2.0) — 사업·thesis 매력도(가중합) · 밸류 멀티플 미반영 · <strong>5점 이내 차이는 같은 점수로 본다.</strong> 깔때기 대리 점수 78점과 25점 차이다. 날씨(4.0 → 2.50)와 산업·숲의 렌트 포획 상한이 원문 확인 뒤 크게 낮게 나왔다. 숫자(4.5 → 4.88)는 비슷하다.</p>
+<p><strong>감점표 (잃은 점수가 큰 칸 3개)</strong>
+- 옆의 나무 (c) 경쟁 포지션 · 🔴 · −4.2점
+- 산 B.2 국가 자본 투입 · 🔴 · −3.1점
+- 날씨 ⑩ 경기·광고 사이클 · 🔴 · −2.3점 (참고: 숲 병목 3칸은 렌트 포획 상한으로 각 −1.1점)</p>
+<h3>시간 지평 종합</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 짧게는 이용자 감소, 길게는 사람 대화의 희소성. 두 그림이 반대 방향이다.</p>
+</blockquote>
+<ul>
+<li>단기(0~6개월): 4분기 이용자 감소 · 로그인 실험 · 추정치 하향 → 변동성 큼.</li>
+<li>중기(6개월~3년): 로그인 전환으로 남은 이용자의 1인당 매출이 얼마나 오르는지가 관건.</li>
+<li>장기(3~10년): AI 답변이 넘쳐날수록 "사람이 직접 쓴 경험담"의 값이 오를 수도, AI가 그 경험담을 요약해 이용자를 영영 데려갈 수도 있다.</li>
+<li>🔴 신호 집계: 리스크 신호 6종 신규 등록(종목 Memory 없음) · AI 침식 진행 1건 roll-up.</li>
+</ul>
+<h3>종합 판정</h3>
+<p><strong>추가 검증</strong> — 돈 버는 체질과 재무는 확실하다. 그러나 손님이 들어오는 문을 남(구글)이 쥐고 있고, 그 문이 실제로 좁아지고 있다. 4분기 이용자 수와 로그인 실험 결과를 보기 전에는 결론을 굳히지 않는다.</p>
+<h3>수집 상태</h3>
+<ul>
+<li>⚠️ 하위 Dive 4종(R·History·People·chart) 미수행 — --light는 기존 보고서 재사용만, 기존 보고서 없음 · Specific-Dive 생략(소셜 광고·커뮤니티 업종 라이브러리 없음)</li>
+<li>⚠️ 데이터 라이선스 계약별 금액·광고주 집중도 주석 미수집</li>
+<li>⚠️ 실적 콜 녹취·주주서한(이미지 파일) 미판독 — 회사 경고 문구는 Reuters·CNBC 보도와 10-Q 위험요인으로 교차</li>
+<li>⚠️ 사람 ⑧ 외부 평가(직원 평판) 미수집 → 산식 제외 · 내부자 매매(Form 4) 개별 내용 미확인</li>
+<li>⚠️ 최종 판사: Fable 한도로 대체 모델 실행</li>
+</ul>
+<p class="foot">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p>
+<div class="footer">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    const items=b.items||[], mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const VIZ = {"score7": {"label": "확신도 7축", "max": 5, "axes": ["🌦️날씨", "⛰️산", "🌲숲", "🌳나무", "🌲🌳옆나무", "👤사람", "🔢숫자"], "series": [{"name": "RDDT 11/15", "color": "#b5651d", "scores": [2.5, 2.28, 3.43, 3.75, 2.5, 3.08, 4.88]}], "score100": 53, "band": "보통(경계 보통/약함)", "composite": 3.11}, "narrative": {"label": "내러티브 5축", "max": 5, "axes": ["🔧기술", "👥사회", "🏛️정책", "🌐지정학", "💰자본"], "series": [{"name": "디지털 광고·정보 탐색", "color": "#8e44ad", "scores": [4, 3, 2, 1, 3]}]}, "trajectory": {"periods": ["2023", "2024", "2025", "9M26 연환산", "3Q26×4"], "forecastFrom": 5, "series": [{"label": "매출(억 달러·연환산)", "axis": "left", "color": "#2980b9", "values": [8.0, 13.0, 22.0, 31.5, 35.8]}, {"label": "영업이익률(%·오른축)", "axis": "right", "color": "#c0392b", "values": [-17.4, -43.1, 20.1, 28.6, 29.2]}]}, "peers": {"metrics": [{"key": "g", "label": "매출 증가율", "unit": "%", "better": "high"}, {"key": "gm", "label": "매출총이익률", "unit": "%", "better": "high"}, {"key": "om", "label": "영업이익률", "unit": "%", "better": "high"}, {"key": "ps", "label": "매출 대비 시총", "unit": "x", "better": "low"}], "rows": [{"name": "Reddit", "subject": true, "vals": {"g": 53.0, "gm": 91.5, "om": 29.4, "ps": 6.2}}, {"name": "Meta", "note": "섹터 대장", "vals": {"g": 26.1, "gm": 81.0, "om": 37.8, "ps": 6.8}}, {"name": "Alphabet", "vals": {"g": 24.7, "gm": 60.9, "om": 33.3, "ps": 7.7}}, {"name": "Pinterest", "vals": {"g": 11.9, "gm": 79.0, "om": 5.6, "ps": 2.3}}, {"name": "Snap", "vals": {"g": 14.3, "gm": 59.2, "om": 0.1, "ps": 1.4}}]}, "scenario": {"horizonLabel": "5년 · 11/13 종가 기준 · 배당 없음", "threshold": 1.5, "cases": [{"label": "낙관", "tone": "bull", "prob": 0.25, "mult": 3.1}, {"label": "기준", "tone": "base", "prob": 0.5, "mult": 1.6}, {"label": "비관", "tone": "bear", "prob": 0.25, "mult": 0.8}]}, "h5": {"points": [{"label": "11/15 약하고 싼", "x": 360, "y": 215}], "caption": "중요도 약 · 엣지 잔량 — 값은 싸졌지만 이용자 감소가 멈추지 않음"}};
+try{
+DDViz.renderRadar('fig-score7','fig-score7-leg',VIZ.score7);
+DDViz.renderRadar('fig-c3','fig-c3-leg',VIZ.narrative);
+DDViz.renderTrajectory('fig-g5','fig-g5-leg',VIZ.trajectory);
+DDViz.renderHeatmap('fig-e1',VIZ.peers);
+DDViz.renderScenario('fig-h1',null,VIZ.scenario);
+var c7=document.getElementById('fig-score7-cap'); if(c7)c7.textContent="7축 종합 53점 / 100 (⭐3.11 병기) · 보통(경계 보통/약함) · 5점 이내 차이 = 동급 · 사업·thesis 매력도·밸류 미반영";
+var CAPS={};
+for (var k in CAPS){ var el=document.getElementById(k+'-cap'); if(el) el.textContent=CAPS[k]; }
+}catch(e){console.error('viz',e);}
+</script></body></html>
