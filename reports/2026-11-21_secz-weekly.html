@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SECZ 주간 심층 분석 — 2026-11-21</title>
+<style>
+:root{--bg:#EBE4D3;--card:#FDF6E3;--ink:#1f2328;--muted:#5b6472;--line:#e8e1cf;--accent:#1a56db;--accent2:#1a56db;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Noto Sans KR',sans-serif;line-height:1.66;font-size:15px}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 22px 80px}
+h1{font-size:25px;line-height:1.35;border-bottom:3px solid var(--accent);padding-bottom:12px;margin:8px 0 18px;color:#111827}
+h2{font-size:19.5px;margin:34px 0 12px;padding:8px 12px;background:linear-gradient(90deg,#F3ECD9,transparent);border-left:4px solid var(--accent);border-radius:4px;color:#1f2937}
+h3{font-size:16.5px;margin:22px 0 8px;color:#2b3242;padding-left:8px;border-left:4px solid #6366f1}
+h4{font-size:14.5px;margin:16px 0 6px;color:var(--muted)}
+p{margin:8px 0}
+a{color:var(--accent2);text-decoration:none;border-bottom:1px solid #c7d3f0}
+a:hover{border-bottom-color:var(--accent2)}
+code{background:#F3ECD9;padding:1px 6px;border-radius:4px;font-size:13px;font-family:'SF Mono',Menlo,monospace}
+del{color:#9aa3b2}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0}
+blockquote{margin:10px 0;padding:10px 16px;background:var(--card);border-left:4px solid #2bb3a3;border-radius:6px;color:#33404e;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.3px;background:var(--card);border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+th{background:#243042;color:#fff;text-align:left;padding:9px 11px;font-weight:600}
+td{padding:8px 11px;border-top:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:#F7F1DF}
+ul{margin:8px 0;padding-left:24px}
+li{margin:4px 0}
+strong{color:#11151d}
+.dd-fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:12px 14px;margin:16px 0}
+@media print{:root{--bg:#fff;--card:#fff;--line:#ddd}body{background:#fff}h2{background:none}tr:nth-child(even) td{background:#fff}}
+.foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+</style>
+<style id="polish-v3">
+body { font-size:17px !important; line-height:1.8 !important; word-break:keep-all; padding:36px 16px 72px !important; }
+.container { max-width:800px !important; background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.container > header.rp-head { margin:0 0 22px; }
+.container > header.rp-head h1 { border:none; padding:0; margin:0 0 6px; font-size:1.7em; line-height:1.35; }
+.container > header.rp-head p { color:#6b6150; font-size:.92em; margin:0 0 .5em; }
+section.card { background:#FDF6E3; border-radius:14px; padding:30px 36px; margin:0 0 26px; box-shadow:0 2px 10px rgba(70,58,30,.08); }
+section.card:first-of-type { border-top:5px solid #b58900; }
+section.card > h2 { border:none !important; padding:0 !important; margin:0 0 16px !important; font-size:1.3em; line-height:1.4; }
+section.card h3 { border-left:4px solid #b58900; padding-left:10px; margin:28px 0 10px; font-size:1.05em; line-height:1.45; }
+section.card h4 { margin:22px 0 8px; }
+p { margin:0 0 1.1em !important; }
+li { margin:0 0 .6em !important; }
+ul, ol { margin:0 0 1.1em !important; padding-left:1.4em !important; }
+table { margin:8px 0 1.3em !important; font-size:.88em !important; }
+th, td { padding:8px 10px !important; line-height:1.6; }
+blockquote { margin:6px 0 1.2em !important; line-height:1.75; }
+section.card > *:last-child { margin-bottom:0 !important; }
+@media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
+@media print { section.card { box-shadow:none; background:#fff; } }
+</style>
+<meta name="vault-stage" content="Monitoring">
+<meta name="vault-topic" content="SECZ">
+<meta name="vault-date" content="2026-11-21">
+<meta name="vault-published" content="2026-11-21">
+<meta name="description" content="SECZ 주간 심층 분석 — 2026-11-21">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body><div class="wrap"><h1>SECZ 주간 심층 분석 — 2026-11-21</h1>
+<blockquote>As-of 미국장 마감 2026-11-20(금) · <strong>창</strong> 미국장 2026-11-16 ~ 11-20 · <strong>직전 weekly</strong> 2026-11-14(as-of 11/13) · daily 5회차 회고 · 수집 게이트 27피드 통과</blockquote>
+<h2>🆕 rwa.xyz 신규 인용 (Press &amp; Citations)</h2>
+<blockquote>출처: <a href="https://app.rwa.xyz/citations" target="_blank">app.rwa.xyz/citations</a> · 판정 = 직전 weekly 이후 등재 목록의 차집합 · 목록 고유 295건 · 누적 297건</blockquote>
+<blockquote>💡 <strong>간단히 말하면</strong> — 이번 주에도 새로 오른 인용이 없다. 가장 최근 등재는 4주째 같은 글이다.</blockquote>
+<ul>
+<li><strong>신규 0건</strong> — 최신 등재: <a href="https://www.avivainvestors.com/en-gb/about/company-news/2026/10/aviva-investors-launches-tokenised-share-class-for-sterling-liquidity-fund/" target="_blank">Aviva Investors, 파운드 유동성 펀드에 토큰화 주식 클래스 출시</a> (Aviva · 2026-10-26 · 운용사 발표)</li>
+<li>11/19 하루 동안 목록이 703건으로 불었다가 다음 날 295건으로 돌아갔다. 사이트가 등재분을 거둬들인 것으로 보이며, 주간 차집합에는 남지 않았다.</li>
+</ul>
+<hr>
+<h2>한 장 요약</h2>
+<ul>
+<li><strong>종합 상태: ⚠️ 주의(직전과 같음)</strong> — ⚠️ Thesis 리스크 신호 <strong>1/9(#8)</strong>. 이번 주 새로 켜지거나 꺼진 신호는 없다.</li>
+<li>🟠 <strong>주가 $8.08 → $6.09(−24.63%).</strong> 같은 주 코인베이스 −20.12% · 서클 −23.62% · S&amp;P 500 −8.6%였다. 회사 소식보다 시장 전체 급락이 크게 작용했다.</li>
+<li>🟠 <strong>Anthropic(ANT) 상장 첫날, 회사가 토큰을 올렸다(11/19).</strong> 그러나 하루 뒤 xStocks는 보유자 1만 7,500명을 알렸고, 회사 ANT 토큰 지갑은 9개였다(<a href="https://x.com/xStocksFi/status/2123807703466434942" target="_blank">xStocks</a>).</li>
+<li>🟠 <strong>Apple 토큰 보유자에게 첫 온체인 배당을 USDC로 바로 보냈다(11/20)</strong>(<a href="https://x.com/carlosdomingo/status/2123822462194643349" target="_blank">CEO X</a>). 주주 권리를 지갑에서 처리한 첫 실물이다.</li>
+<li>🟠 <strong>River One 인수를 끝냈다(11/17).</strong> 상장 후 첫 인수이고, 인수 대가와 전용 공시는 아직 없다(<a href="https://securitize.io/learn/press/securitize-completes-acquisition-of-river-one" target="_blank">Securitize</a>).</li>
+<li>🟠 <strong>회사가 빠진 명단이 셋 늘었다.</strong> 발행사 토큰 연합 12곳, Coinbase·Broadridge 주주 통지 표준, Invesco의 준비금 펀드 뒷단(Superstate)이다.</li>
+<li>🟠 <strong>규칙은 늦어진다.</strong> SEC 국장은 영구 규칙 제안을 2027년 일이라 했고, SEC 위원 후보는 정식 규칙 절차를 요구했다.</li>
+<li>🟠 <strong>기관 보유 집계가 25.15%에서 29.81%로 늘었다(128곳).</strong> Cantor Fitzgerald가 600만 주로 2위에 새로 올랐다(<a href="https://www.nasdaq.com/market-activity/stocks/secz/institutional-holdings" target="_blank">나스닥</a>).</li>
+<li>🟠 <strong>BUIDL $1,653.5M → $1,572.2M(−$81.3M).</strong> 1위 Ondo와의 플랫폼 격차는 $490.9M로 더 벌어졌다.</li>
+</ul>
+<h2>🌌 별 지도 자동 반영</h2>
+<blockquote>💡 <strong>간단히 말하면</strong> — 토큰 펀드 발행 칸의 경쟁자 목록에 Superstate를 더했다. 회사 칸 상태는 바뀌지 않았다.</blockquote>
+<table><thead><tr><th>칸</th><th>전</th><th>후</th><th>근거(1차 URL · 날짜)</th><th>기준</th></tr></thead><tbody>
+<tr><td>만들기 · 발행 × 토큰 펀드</td><td>경쟁 쪽 Circle·Ondo·Franklin·Prometheum</td><td>경쟁 쪽에 Superstate 추가 — Invesco가 FundOS로 스테이블코인 준비금용 등록 MMF「IROXX」 출시</td><td><a href="https://x.com/SuperstateInc/status/2122699784029106242" target="_blank">Superstate X</a> 11/17</td><td>B</td></tr>
+</tbody></table>
+<p>시청자판 커밋 93ae682 · 되돌리려면 말씀해 주세요.</p>
+<ul>
+<li>회사가 명부를 맡은 BlackRock BRSRV와 같은 쓰임새의 펀드가 다른 발행 인프라를 골랐다. 10월 Federated Hermes·Prometheum에 이은 두 번째 대형 운용사 사례로 메모에 적었다.</li>
+</ul>
+<hr>
+<h2>🌍 세상의 흐름 — SECZ 주간 종합</h2>
+<blockquote>⚠️ 5회차 회고 · 커버 2026-11-16 ~ 2026-11-20(미국장 기준)</blockquote>
+<p><strong>① 이번 주의 흐름 축</strong></p>
+<p>1. <strong>권리형 토큰 대 속도형 래퍼, 첫 정면 대결</strong> — 목요일 회사는 Anthropic 상장 첫날 1:1 담보 토큰을 올렸고 창구는 51종이 됐다 (<a href="https://x.com/Securitize/status/2123466628423971056" target="_blank">Securitize</a>). 같은 날 Ondo는 24시간 발행·상환을 내세워 맞섰다 (<a href="https://x.com/Ondo/status/2123491585547735266" target="_blank">Ondo</a>). 금요일 성적은 xStocks 보유자 1만 7,500명 대 회사 토큰 지갑 9개였다. 첫날 수요는 권리보다 속도와 유통망을 따라간 것으로 보인다 [추론]</p>
+<p>2. <strong>규칙은 늦어지고 면제 기간은 길어진다</strong> — 화요일 SEC 국장 Selway는 영구 규칙 제안이 2027년 일이라고 했다 (<a href="https://unchainedcrypto.com/secs-jamie-selway-says-a-permanent-tokenized-stock-rule-proposal-has-got-to-be-a-2027-event/" target="_blank">언체인드</a>). 목요일 SEC 위원 후보 Johnson은 정식 규칙 절차를 요구했다 (<a href="https://www.coindesk.com/policy/2026/11/19/trump-s-democratic-sec-pick-suggests-tokenization-policy-deserves-full-rule-process" target="_blank">코인데스크</a>). 금요일에는 Fairmint까지 면제 거래장 계획을 냈다. 규칙이 늦을수록 면제 아래 먼저 지은 쪽이 사실상의 표준이 될 수 있다 [추론]</p>
+<p>3. <strong>회사는 유통 창구보다 &#x27;뒷단 공급자&#x27; 자리로</strong> — 목요일 CEO가 TSV를 지을 회사들에 발행·KYC·권리 처리를 통째로 맡겠다고 제안했다 (<a href="https://x.com/carlosdomingo/status/2123426699677233383" target="_blank">CEO X</a>). 금요일 CTO는 「실행·유동성은 당신이, 주식은 우리가」라는 글을 주간 소식에 실었다 (<a href="https://x.com/Securitize/status/2123881211944689756" target="_blank">Securitize</a>). 회사 스스로 거래장을 짓겠다는 공지는 한 주 내내 없었다.</p>
+<p>4. <strong>회사가 빠진 줄서기</strong> — 월요일 Coinbase·Broadridge가 온체인 주주 통지 공개 표준을 냈다 (<a href="https://www.coinbase.com/blog/coinbase-and-broadridge-create-an-open-standard-for-onchain-shareholder-communications" target="_blank">코인베이스</a>). 화요일 Bullish·Equiniti 연합은 12곳으로 늘었다 (<a href="https://www.globenewswire.com/news-release/2026/11/17/3405177/0/en/issuer-token-coalition-surges-to-12-firms-as-drw-flow-traders-sofi-and-superstate-join.html" target="_blank">글로브뉴스와이어</a>). 두 명단 모두에 Securitize가 없고, 같은 화요일 Invesco는 준비금 펀드의 뒷단으로 Superstate를 골랐다.</p>
+<p>5. <strong>맡은 자산은 줄고 사업 범위는 넓어졌다</strong> — 화요일 River One 인수가 대가 공개 없이 종결됐다 (<a href="https://securitize.io/learn/press/securitize-completes-acquisition-of-river-one" target="_blank">Securitize</a>). BUIDL 잔고는 한 주 새 $1,653.5M에서 $1,572.2M로 줄었고, 플랫폼 배포 자산은 30일 동안 17.24% 줄었다 (<a href="https://app.rwa.xyz/platforms/securitize" target="_blank">rwa.xyz</a>). 회사 주간 소식은 인수 종결만 싣고 잔고 감소는 싣지 않았다.</p>
+<p><strong>② secz-daily Why/next 회고</strong> (커버: 2026-11-16 ~ 2026-11-20)</p>
+<ul>
+<li>✅ 확인 | (11/17) 회사는 한 진영에 들어갈까, 자체 규격을 밀까? → 두 명단에 모두 없고 CTO가 자체 「TSV Stack」을 공개해 자체 규격 쪽이다.</li>
+<li>✅ 확인 | (11/19) 자체 TSV 공지가 없는 것은 고객과 경쟁하지 않겠다는 신호일까? → CTO 글이 실행·유동성을 사업자 몫으로 명시했다.</li>
+<li>✅ 확인 | (11/19) 이용자는 주주 권리보다 속도와 24시간 거래를 택할까? → 첫날 기준 xStocks 1만 7,500명 대 회사 토큰 지갑 9개였다.</li>
+<li>❌ 기각 | (11/17) 인수 가격·지급 방식이 SEC 공시로 뒤따를까? → 11/21까지 전용 8-K가 없었고, 분기 보고서만 남았다.</li>
+<li>❌ 기각 | (11/18) 상장 전에 Anthropic을 49번째 종목으로 올릴까? → 상장 전이 아니라 첫날에, 다른 두 종목과 함께 올렸다.</li>
+<li>❌ 기각 | (11/19) 경쟁사의 24시간 공세에 거래 시간 확대로 답할까? → 금요일 밤 창구는 「Market closed」였고 확대 공지가 없었다.</li>
+<li>⏳ 열림 | (11/16) 창구 48종과 CEO의 &quot;20개 이상&quot; 차이는 무엇으로 메워질까? → 51종으로 더 늘었지만 CEO 설명이 없다.</li>
+<li>⏳ 열림 | (11/16) 종목 확대가 실제 사용자 유입으로 이어질까? → 지갑은 217→222에 그쳤고 OKXICE 개장 전이다.</li>
+<li>⏳ 열림 | (11/16) 경쟁 발행사들도 SEC와 공개 접점을 만들까? → 이번 주 공개 접점은 Redfearn 대담 한 건뿐이다.</li>
+<li>⏳ 열림 | (11/16) 자기 주식 토큰의 담보 대출 창구를 어디에 열까? → Jupiter 둘째 담보도, 회사 연동 공지도 없었다.</li>
+<li>⏳ 열림 | (11/16) 락업이 풀린 뒤 Cantor는 물량을 쥘까, 넘길까? → 12/28 만료 전이라 변동 공시가 나올 수 없다.</li>
+<li>⏳ 열림 | (11/17) 창고 금융으로 회사가 신용 위험을 자기 장부에 지게 될까? → 장부 처리를 볼 공시가 아직 없다.</li>
+<li>⏳ 열림 | (11/17) 해외 합성 토큰 단속이 규칙보다 먼저 나올까? → 이번 주 단속 발표가 없었다.</li>
+<li>⏳ 열림 | (11/17) Redfearn의 합성 토큰 비판은 영구 규칙 기준선 선점용인가? → Johnson 발언은 절차 얘기였고 기준선은 언급되지 않았다.</li>
+<li>⏳ 열림 | (11/17) 스테이블코인 발행사들이 준비금을 여러 펀드로 나눌까? → IROXX 잔액이 공개되지 않았다.</li>
+<li>⏳ 열림 | (11/17) BlackRock은 BUIDL·BRSRV 보수나 체인을 손볼까? → 잔고는 줄었지만 조정 공지가 없다.</li>
+<li>⏳ 열림 | (11/18) 다른 증권사가 뒤따라 분석을 개시할까? → 새 개시가 없었고 B. Riley 원문도 미공개다.</li>
+<li>⏳ 열림 | (11/18) Anthropic이 자사 주식 토큰에 공개 입장을 낼까? → 회사는 첫날 명단에 들었으나 Anthropic은 침묵했다.</li>
+<li>⏳ 열림 | (11/18) 연합 12곳이 실제 토큰 발행 일정을 내놓을까? → Bullish 실적에 일정이 없었고 Equiniti 종결은 2027-01이다.</li>
+<li>⏳ 열림 | (11/18) 회사는 연합 밖 발행사를 개별 계약으로 끌어올까? → 이번 주 새 발행사 계약 공지가 없다.</li>
+<li>⏳ 열림 | (11/18) 개장 전에 거부 67곳 중 입장을 바꾸는 회사가 나올까? → 새 집계가 나오지 않았다.</li>
+<li>⏳ 열림 | (11/18) SEC가 발행사 동의 없는 토큰 주식 거래에 지침을 낼까? → 11/20 SEC 보도자료에 토큰 언급이 없었다.</li>
+<li>⏳ 열림 | (11/19) 다음 대형 상장에서도 당일 편입이 관행으로 굳을까? → 네 곳이 같은 날 올렸지만 사례가 한 번뿐이다.</li>
+<li>⏳ 열림 | (11/19) Ondo·xStocks도 뒷단 공급자 자리를 두고 TSV 영업에 나설까? → 새로 나온 것은 Fairmint의 거래장 계획뿐이다.</li>
+<li>⏳ 열림 | (11/19) 바이낸스 유통망을 탄 래퍼가 규제 당국의 구분 짓기를 앞당길까? → 당국 반응이 없었다.</li>
+<li>⏳ 열림 | (11/19) 정식 절차 요구가 커지면 면제 아래 지은 사업은 손봐야 할까? → 후보 한 명의 발언 단계다.</li>
+<li>⏳ 열림 | (11/19) 기존 규제 인프라 위 발행사가 그 전환에서 덜 흔들릴까? → 인준 표결 일정조차 없다.</li>
+<li>⏳ 열림 | (11/20) 의결권·주식 분할도 지갑에서 처리하는 사례가 나올까? → 배당 한 건만 확인됐다.</li>
+<li>⏳ 열림 | (11/20) 경쟁 발행사들도 배당을 스테이블코인으로 직접 줄까? → 경쟁사 공지가 없다.</li>
+<li>⏳ 열림 | (11/20) 다음 대형 상장 때 토큰 유통사가 주관사와 미리 물량 계약을 맺을까? → 다음 대형 상장이 오지 않았다.</li>
+<li>⏳ 열림 | (11/20) 두 번째 실패가 래퍼형 토큰의 신뢰 문제로 번질까? → 같은 주 xStocks 보유자는 오히려 빠르게 늘었다.</li>
+<li>⏳ 열림 | (11/20) 수탁형 발행사인 Securitize도 토큰 주식 담보 길을 열까? → 11/16 담보 질문과 같은 상태다.</li>
+<li>⏳ 열림 | (11/20) 규제기관이 미국 외 한정 비상장 노출 상품의 경계를 문제 삼을까? → 당국 언급이 없었다.</li>
+<li>⏳ 열림 | (11/20) SEC가 토큰 주식 규칙에서 발행사 동의를 요건으로 삼을까? → 보도자료만 봤고 개편안 본문은 이번 회차 미확인(원문 미열람)이다.</li>
+</ul>
+<h2>🧠 Why and next ? (주간)</h2>
+<h3>1. Securitize, ANT 첫날 상장 뒤 Apple 첫 온체인 배당</h3>
+<p><strong>Why?</strong></p>
+<ul>
+<li>겉 이유 — 회사는 ANT를 상장 첫날 솔라나에 1:1 담보 토큰으로 올렸다. (<a href="https://x.com/Securitize/status/2123466628423971056" target="_blank">Securitize</a>)</li>
+<li>숨은 이유(상대방) — 수요가 작더라도 래퍼 세 곳만 선 첫날 명단에서 빠지지 않으려 한 걸까? [추론]</li>
+<li>숨은 이유(타이밍) — 하루 뒤 Apple 배당 공개는 비교 기준을 권리 쪽으로 옮기려는 순서였을까? [추론]</li>
+</ul>
+<p><strong>Next?</strong></p>
+<ul>
+<li>xStocks는 하루 만에 ANT 토큰 보유자 1만 7,500명을 알렸다. (<a href="https://x.com/xStocksFi/status/2123807703466434942" target="_blank">xStocks</a>)</li>
+<li>회사는 속도 경쟁 대신 배당·권리 처리 종목을 늘리는 쪽으로 갈까? [추론]</li>
+<li>Anthropic이 승인 여부를 밝히면 네 발행사 중 누가 먼저 물러설까? [추론]</li>
+<li>래퍼 보유자는 첫 배당이나 의결 때 권리 차이를 체감하고 옮겨 올까? [추론]</li>
+<li>⏭️ <strong>다음 관문</strong> — 11/23 주 ANT 토큰 지갑 재집계: 9개에서 늘면 권리형 수요 확인, 그대로면 기각</li>
+</ul>
+<h3>2. CEO·CTO, TSV 사업자에게 뒷단 통째 공급 제안</h3>
+<p><strong>Why?</strong></p>
+<ul>
+<li>겉 이유 — CEO는 TSV를 지을 회사에 발행·KYC·권리 처리를 맡겠다고 제안했다. (<a href="https://x.com/carlosdomingo/status/2123426699677233383" target="_blank">CEO X</a>)</li>
+<li>숨은 이유(돈) — 자체 창구 지갑이 220개 안팎이라 유통은 남의 거래장에 맡기려는 걸까? [추론]</li>
+<li>숨은 이유(타이밍) — 영구 규칙이 2027년으로 밀린 사이 면제 거래장의 기본 뒷단이 되려는 걸까? [추론]</li>
+</ul>
+<p><strong>Next?</strong></p>
+<ul>
+<li>온체인 이전대리인 Fairmint가 면제 거래장 계획을 냈다. (<a href="https://www.coindesk.com/business/2026/11/20/fairmint-plans-tokenized-stock-venue-on-canton-ethereum-under-sec-experiment" target="_blank">코인데스크</a>)</li>
+<li>명부를 직접 쥔 Fairmint·Superstate형 사업자는 뒷단까지 스스로 들고 올까? [추론]</li>
+<li>거래소형 사업자는 한 곳에 묶이지 않으려 뒷단 공급자를 둘 이상 둘까? [추론]</li>
+<li>상장사 67곳의 거부가 이어지면 뒷단 공급자가 발행사 설득까지 떠맡게 될까? [추론]</li>
+<li>⏭️ <strong>다음 관문</strong> — OKXICE 개장 뒤 둘째 TSV 발표: 뒷단 공급자 이름으로 제안의 수요가 확인 또는 기각</li>
+</ul>
+<h3>3. River One 종결과 BUIDL 잔고 감소가 한 주에 겹침</h3>
+<p><strong>Why?</strong></p>
+<ul>
+<li>겉 이유 — 회사는 River One 인수를 마쳐 창고금융 대출 발굴·심사까지 맡게 됐다. (<a href="https://securitize.io/learn/press/securitize-completes-acquisition-of-river-one" target="_blank">Securitize</a>)</li>
+<li>숨은 이유(돈) — 배포 자산이 30일 새 17% 줄자 잔고에 덜 기대는 수입원을 서두른 걸까? [추론]</li>
+<li>숨은 이유(상대방) — Invesco가 Superstate를 고른 뒤 운용사 한 곳 의존을 줄이려는 걸까? [추론]</li>
+</ul>
+<p><strong>Next?</strong></p>
+<ul>
+<li>플랫폼 배포 자산은 $3,567.4M로 1위 Ondo와 $490.9M 차이다. (<a href="https://app.rwa.xyz/platforms/securitize" target="_blank">rwa.xyz</a>)</li>
+<li>회사는 직접 발굴한 대출을 토큰으로 찍어 줄어든 펀드 잔고를 메울까? [추론]</li>
+<li>대가를 밝히지 않는 방식이 다음 인수에서도 되풀이될까? [추론]</li>
+<li>경쟁 발행사들도 자산 발굴 회사를 사들여 같은 길로 따라올까? [추론]</li>
+<li>⏭️ <strong>다음 관문</strong> — 다음 분기 보고서: 인수 대가와 대출 자산의 장부 계상 여부가 드러난다</li>
+</ul>
+<hr>
+<p><strong>배경 (SECZ thesis · 커버 범위)</strong></p>
+<p>Securitize(NYSE: SECZ)는 실물자산 토큰화 인프라 회사다. 미국에서 이전대리인·브로커딜러·대체거래소·투자자문사·펀드행정 인가를 함께 갖고 있고, 블랙록 BUIDL의 발행·명부 관리를 맡는다. 이 보고서는 18개 카테고리를 주 1회 점검한다. 매일 바뀌는 항목은 secz-daily가 맡고, 여기서는 <strong>주간 변화와 구조</strong>를 본다.</p>
+<hr>
+<h2>📊 시장 데이터</h2>
+<blockquote>💡 <strong>간단히 말하면</strong> — 시장 전체가 크게 빠진 주에 회사 주가도 4분의 1이 빠졌다. 동종 크립토 주식과 비슷한 폭이다.</blockquote>
+<table><thead><tr><th>티커</th><th>종가(11/20)</th><th>주간</th></tr></thead><tbody>
+<tr><td><strong>SECZ</strong></td><td><strong>$6.09</strong></td><td><strong>−24.63%</strong></td></tr>
+<tr><td>IREN</td><td>$11.82</td><td>−34.95%</td></tr>
+<tr><td>CRCL</td><td>$47.51</td><td>−23.62%</td></tr>
+<tr><td>COIN</td><td>$101.97</td><td>−20.12%</td></tr>
+<tr><td>BLSH</td><td>$19.07</td><td>−15.21%</td></tr>
+</tbody></table>
+<h3>SECZ 주간 경로</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 닷새 내내 내렸다. 금요일 종가는 8/19 이후 가장 낮다.</blockquote>
+<table><thead><tr><th>날짜</th><th>시가</th><th>고가</th><th>저가</th><th><strong>종가</strong></th><th>거래량</th></tr></thead><tbody>
+<tr><td>11/13(금)</td><td>8.54</td><td>8.78</td><td>8.01</td><td><strong>8.08</strong></td><td>1,671,000</td></tr>
+<tr><td>11/16(월)</td><td>7.74</td><td>7.76</td><td>7.09</td><td><strong>7.33</strong></td><td>2,109,600</td></tr>
+<tr><td>11/17(화)</td><td>7.40</td><td>7.48</td><td>6.67</td><td><strong>6.93</strong></td><td>1,766,200</td></tr>
+<tr><td>11/18(수)</td><td>7.15</td><td>7.29</td><td>6.73</td><td><strong>6.74</strong></td><td>2,192,300</td></tr>
+<tr><td>11/19(목)</td><td>6.90</td><td>6.98</td><td>6.45</td><td><strong>6.58</strong></td><td>1,982,600</td></tr>
+<tr><td>11/20(금)</td><td>6.47</td><td>6.67</td><td>6.06</td><td><strong>6.09</strong></td><td>2,135,066</td></tr>
+</tbody></table>
+<ul>
+<li>시가총액 <strong>$995.9M</strong>(163,536,181주 × $6.09)이다. 직전 weekly $1,321.4M보다 약 3억 2,500만 달러 줄어 10억 달러 아래로 내려갔다.</li>
+<li>11/20 하루에 −7.45%였다. 같은 날 S&amp;P 500은 −3.70%, 나스닥은 −5.28%였다(엔비디아 회계 조사 보도).</li>
+<li>52주 범위 $5.39~$16.63에서 아래쪽 6.2% 위치다.</li>
+</ul>
+<h3>공매도</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 공매도 잔고가 한 번 더 늘었고, 빌릴 수 있는 주식은 바닥났다.</blockquote>
+<table><thead><tr><th>항목</th><th>값</th><th>직전 weekly</th></tr></thead><tbody>
+<tr><td>공매도 잔고(NYSE · 10/30 결제분)</td><td><strong>7,777,137주</strong></td><td>6,531,651주</td></tr>
+<tr><td>자유유통 37,519,492주 대비</td><td><strong>20.7%</strong></td><td>17.4%</td></tr>
+<tr><td>장외 공매도 비중(FINRA · 11/20)</td><td>52.78%</td><td>55.45%</td></tr>
+<tr><td>차입료(11/20)</td><td>7.32%</td><td>6.87%</td></tr>
+<tr><td>대여 가능 물량(11/20 13:20 UTC)</td><td><strong>0주</strong></td><td>2만 5천 주</td></tr>
+</tbody></table>
+<ul>
+<li>출처 <a href="https://fintel.io/ss/us/secz" target="_blank">fintel</a>. fintel이 쓰는 유통주식 기준으로는 5.23%이고, 회수에 걸리는 날은 4.71일이다.</li>
+<li>잔고는 10/30 결제분이다. 11/14 결제분은 11월 하순에 나온다.</li>
+</ul>
+<hr>
+<h2>📉 매크로 환경 요약 (macro-weekly 참조)</h2>
+<blockquote>💡 <strong>간단히 말하면</strong> — 주식 시장이 크게 무너진 주였다. 금리는 내렸지만 위험자산 전체가 함께 빠졌다.</blockquote>
+<blockquote>출처: Macro Weekly 2026-11-21(as-of 11/20) · 직접 조사하지 않음</blockquote>
+<ul>
+<li><strong>레짐 🟠 스태그플레이션 긴장 10주째.</strong> 이번 주는 성장 지표가 함께 꺾였다.</li>
+<li>S&amp;P 500 주간 <strong>−8.6%</strong> · 나스닥100 −10.4% · 반도체 지수 −17.1%였다.</li>
+<li>VIX <strong>35.9</strong>(1년 최고) · 공포·탐욕 지수 <strong>10</strong> · 하이일드 스프레드 352bp(+32bp)다.</li>
+<li>10년물 <strong>4.91%</strong>(주간 −24bp) · 12월 인상 확률 97.4%다.</li>
+<li>순유동성 <strong>$5.85조</strong>(11/18 · 주간 +$22억 · 중립)다.</li>
+<li>비트코인은 11/21 5만 9천 달러 아래로 내려갔다(<a href="https://www.cryptotimes.io/2026/11/21/strategy-mstr-price-drops-8-5-as-bitcoin-slides-below-59k/" target="_blank">Crypto Times</a>).</li>
+</ul>
+<p>🔴 <strong>SECZ 연결</strong>: 회사 매출은 수수료형이라 금리와 직접 묶이지 않는다. 이번 주 하락은 회사 공시가 아니라 <strong>시장 전체 위험 회피</strong>가 이끌었다.</p>
+<hr>
+<h2>🎯 SECZ 핵심 지표</h2>
+<blockquote>💡 <strong>간단히 말하면</strong> — 플랫폼 자산은 또 줄었고, 그 대부분이 블랙록 펀드 감소다. 보유자 수와 월 이전액은 늘었다.</blockquote>
+<table><thead><tr><th>항목</th><th>값</th><th>직전 weekly</th></tr></thead><tbody>
+<tr><td><strong>플랫폼 배포 자산(AUM 대용)</strong></td><td><strong>$3,567.4M</strong>(30일 −17.24%)</td><td>$3,718.3M</td></tr>
+<tr><td>— 자사 주식 토큰 제외</td><td><strong>$3,387.2M</strong></td><td>$3,493.9M</td></tr>
+<tr><td>자사 주식 토큰 평가액</td><td>$180.2M(보유자 99 · 11/18 종가 평가)</td><td>$224.4M · 97</td></tr>
+<tr><td><strong>BUIDL</strong></td><td><strong>$1,572.2M</strong> · 보유자 101</td><td>$1,653.5M · 102</td></tr>
+<tr><td>플랫폼 보유자 / 월 활성주소</td><td>1,546 / 166</td><td>1,521 / 139</td></tr>
+<tr><td>월 이전액</td><td>$955.13M(30일 +130.48%)</td><td>$933.94M</td></tr>
+<tr><td><strong>RWA 시장 규모(배포 가치)</strong></td><td><strong>$41.42B</strong>(30일 −2.43%)</td><td>$39.66B</td></tr>
+<tr><td>토큰화 주식 시장</td><td>$3.56B(30일 −1.01%)</td><td>$3.77B</td></tr>
+<tr><td><strong>스테이블코인 총 시총</strong></td><td><strong>$281.272B</strong>(7일 −1.52%)</td><td>$284.843B</td></tr>
+<tr><td>공매도(자유유통 대비)</td><td>20.7%</td><td>17.4%</td></tr>
+<tr><td>공포·탐욕(Fear &amp; Greed)</td><td>10 — macro-weekly 인용</td><td>39</td></tr>
+</tbody></table>
+<ul>
+<li>출처 <a href="https://app.rwa.xyz/platforms/securitize" target="_blank">rwa.xyz 플랫폼</a> · <a href="https://app.rwa.xyz/" target="_blank">rwa.xyz 대시보드</a> · <a href="https://defillama.com/stablecoins" target="_blank">DefiLlama</a>.</li>
+<li>외부 자산은 $3,493.9M → $3,387.2M로 약 <strong>−3.1%</strong>다. 같은 기간 BUIDL이 $81.3M 줄어 감소분의 약 4분의 3을 설명한다.</li>
+<li>회사 몫은 RWA 배포 시장의 <strong>8.61%</strong>($3,567.4M ÷ $41.42B)로 세 주째 10% 아래다.</li>
+<li>자사 주식 토큰 평가액은 11/18 종가($6.74)로 매겨져 있다. 11/20 종가로 다시 매기면 더 낮다.</li>
+<li>새로 보인 자산 = Mantle Index Four Fund(MI4 · $176.3M · 보유자 1)가 회사 플랫폼 5위로 잡혔다.</li>
+</ul>
+<h3>📑 자문 펀드 Form D</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 회사가 자문하는 펀드의 공식 판매 신고는 이번 주에도 새로 나오지 않았다.</blockquote>
+<p><strong>📑 자문 펀드 Form D</strong>(EDGAR 전문검색 · 창 2026-11-14~ · Chrome 확인 2026-11-21) — 신규 접수 <strong>0건</strong> · 최신 신고: ACRED $110.9M/26명(D/A 2026-02-12) · HL_SCOPE $9.7M/64명(D/A 2025-08-01) · HL_SF6 $6.5M/15명(D/A 2026-02-13) · 자문 7개 신고 판매액 합 $142.8M(누적 신고치 · AUM 아님)</p>
+<ul>
+<li>누적 신고치 ≠ AUM. 대상 9개 펀드의 Form D는 모두 18건이고, 가장 최근 접수는 8/18(HINC)이다(<a href="https://efts.sec.gov/LATEST/search-index?q=&amp;ciks=0002056038,0002095325,0002149525,0001976710,0001993132,0001965971,0002016160,0002013810,0002068562" target="_blank">EDGAR 전문검색</a>).</li>
+<li>STAC 연례 개정 예상일(11/5)이 지난 지 2주가 넘었다. 모집 종료인지 늦은 제출인지는 판정하지 않는다.</li>
+</ul>
+<h3>🏦 토큰화 등록 MMF</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 새 보고월이 없다. 10월 기준으로 회사가 명부를 맡은 블랙록 펀드가 잔고에서 앞선다.</blockquote>
+<p>🏦 토큰화 등록 MMF(N-MFP3): 새 보고월 없음 — 최신 BRSRV 2026-10 $50.4M · BSTBL 2026-10 $12.1M · FOBXX 2026-10 $833.6M · WTGXX 2026-10 $668.3M</p>
+<p>⚖️ BRSRV vs BSTBL (2026-10): Securitize 명부 $50.4M(월 순설정 $0.2M) vs BNY 명부 $12.1M(월 순설정 $-5.9M) → 잔고 우위 Securitize 경로(BRSRV) 4.17배 · 그달 순유입 우위 Securitize 경로(BRSRV) · 🔴 클래스 순자산 ≠ Securitize 매출 · 월 설정에는 배당 재투자 포함</p>
+<ul>
+<li>rwa.xyz 표기 BRSRV는 $50.5M(11/21)이다. 정의가 달라 차이가 나는 것이 정상이다.</li>
+<li>같은 쓰임새의 Invesco IROXX(Superstate)가 11/17 나왔다. 첫 N-MFP3는 12월 초 11월분부터 나올 수 있다.</li>
+</ul>
+<hr>
+<h2>📋 17개 카테고리 점검 결과</h2>
+<h3>Cat 1. SPAC / 합병 · SEC 공시 [🟡]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 이번 주 SEC 공시는 이사 4명의 보상 신고 4건뿐이다. 인수 종결 공시는 없다.</blockquote>
+<p>합병은 2026-07-01 종결. <a href="https://efts.sec.gov/LATEST/search-index?q=&amp;ciks=0002094496" target="_blank">EDGAR 전문검색(CIK 0002094496)</a> 68건 중 창 내 제출은 <strong>4건</strong>이다(<a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0002094496&amp;type=&amp;dateb=&amp;owner=include&amp;count=10" target="_blank">EDGAR 목록</a>).</p>
+<table><thead><tr><th>날짜</th><th>서식</th><th>내용</th></tr></thead><tbody>
+<tr><td>11/17</td><td><a href="https://www.sec.gov/Archives/edgar/data/1366498/000095010326017713/xslF345X06/ownership.xml" target="_blank">Form 4</a></td><td>이사 Stephens · RSU 19,250주 부여(7/13) · 2027-07-01 가득</td></tr>
+<tr><td>11/17</td><td>Form 4 ×3</td><td>이사 Macieira-Kaufmann · Sanchez Rodriquez · Elyashiv · 보상 부여·옵션 행사</td></tr>
+</tbody></table>
+<ul>
+<li>네 건 모두 거래일이 7월(7/1·7/13)이고 제출은 11/17이다. 매도는 0건이다.</li>
+<li>13D/G 신규 0건. River One 인수 종결 전용 8-K는 없다(<a href="https://www.stocktitan.net/sec-filings/SECZ/" target="_blank">StockTitan</a>).</li>
+</ul>
+<p><strong>Cat 1-Q. 10-Q 감지</strong> — 금분기 10-Q는 11/13에 이미 제출됐다. 창 내 새 10-Q·NT 10-Q는 0건이다.</p>
+<h3>Cat 2. 펀더멘탈 [🟠]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 분기 숫자는 그대로이고, 맡은 자산은 한 주 더 줄었다. 새 매출원은 인수와 배당 기능 쪽에서 나왔다.</blockquote>
+<ul>
+<li>분기 실적 사건 없음. 3분기 기준(매출 $18.61M · 토큰화 $11.46M · 조정 EBITDA −$1.98M)이 그대로다.</li>
+<li>플랫폼 배포 자산은 $3,718.3M → <strong>$3,567.4M</strong>(−$150.9M · −4.1%)이다. 3분기 기말 회사 공시 잔고 $4.8B와는 정의가 다르다.</li>
+<li>월 이전액은 $955.13M으로 30일 전의 두 배를 넘었다. 어느 자산에서 나왔는지는 페이지가 나눠 주지 않는다.</li>
+<li><strong>판정: 🟠</strong> — 잔고는 줄고, 잔고 연동 매출의 증거는 아직 없다.</li>
+</ul>
+<h3>Cat 3. 기관투자자 [🟠]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 회사 플랫폼을 쓰는 기관 쪽에서는 BUIDL 감소가 이어졌다. 같은 쓰임새의 경쟁 펀드도 하나 생겼다.</blockquote>
+<ul>
+<li>🟠 <strong>BUIDL $1,653.5M → $1,572.2M</strong>(보유자 102→101). 30일로는 −28.03%다(<a href="https://app.rwa.xyz/" target="_blank">rwa.xyz</a>).</li>
+<li>🟠 <strong><a href="https://x.com/SuperstateInc/status/2122699784029106242" target="_blank">Invesco, Superstate로 스테이블코인 준비금 MMF「IROXX」 출시</a></strong>(11/17) — Superstate의 첫 공모 등록 펀드다.</li>
+<li><strong>SECZ 해석</strong>: 회사가 명부를 맡은 BRSRV와 같은 고객층을 노린다. 대형 운용사가 다른 발행 인프라를 고른 두 번째 사례다.</li>
+<li>B. Riley가 매수 의견·목표가 $14로 분석을 시작했다는 요약 글이 나왔다. 원문은 보지 못했다(<a href="https://x.com/allday_stocks/status/2122975606010716386" target="_blank">X 요약</a>).</li>
+<li><strong>판정: 🟠</strong></li>
+</ul>
+<h3>Cat 4. 경영진 [🟢]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 경영진 이탈은 없다. CEO와 CTO가 거래장 사업자 상대 영업에 직접 나섰다.</blockquote>
+<ul>
+<li><a href="https://securitize.io/about-us/our-story" target="_blank">경영진 12명·이사회 7명 불변</a>. 이탈 0건.</li>
+<li>CEO Carlos Domingo는 Apple 배당·TSV 뒷단 제안·ANT 직접 매수를 X에 올렸다. 첫 팟캐스트(The Real RWA)에도 나왔다.</li>
+<li>CTO Jorge Serna는 「The TSV Stack」 글로 회사 역할을 정리했다(<a href="https://x.com/Securitize/status/2123881211944689756" target="_blank">주간 소식</a>).</li>
+<li><strong>판정: 🟢</strong></li>
+</ul>
+<h3>Cat 5. 경쟁환경 [🟠]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 1위 Ondo와의 격차가 또 벌어졌다. 토큰화 주식에서 회사 외부 몫은 조금 줄었다.</blockquote>
+<p><strong>플랫폼 순위</strong>(<a href="https://app.rwa.xyz/platforms" target="_blank">app.rwa.xyz/platforms</a> · 11/21)</p>
+<table><thead><tr><th>#</th><th>플랫폼</th><th>배포 자산</th><th>보유자</th></tr></thead><tbody>
+<tr><td>1</td><td><strong>Ondo</strong></td><td>$4,058.3M</td><td>588,410</td></tr>
+<tr><td>2</td><td><strong>Securitize</strong></td><td>$3,567.4M</td><td>1,546</td></tr>
+<tr><td>3</td><td>Franklin Templeton Benji</td><td>$3,475.2M</td><td>1,225</td></tr>
+<tr><td>4</td><td>Spiko</td><td>$3,309.3M</td><td>20,596</td></tr>
+</tbody></table>
+<p><strong>토큰화 주식 플랫폼 순위</strong>(<a href="https://app.rwa.xyz/stocks" target="_blank">app.rwa.xyz/stocks</a> · 11/21)</p>
+<table><thead><tr><th>#</th><th>플랫폼</th><th>가치</th><th>30일</th><th>점유</th></tr></thead><tbody>
+<tr><td>1</td><td>bStocks</td><td>$1.3B</td><td>+9.28%</td><td>37.63%</td></tr>
+<tr><td>2</td><td>Ondo</td><td>$857.9M</td><td>−3.35%</td><td>24.10%</td></tr>
+<tr><td>3</td><td>xStocks</td><td>$659.3M</td><td>−8.35%</td><td>18.52%</td></tr>
+<tr><td><strong>4</strong></td><td><strong>Securitize</strong></td><td><strong>$220.6M</strong></td><td>−19.02%</td><td><strong>6.20%</strong></td></tr>
+<tr><td>6</td><td>Robinhood</td><td>$141.9M</td><td>−1.85%</td><td>3.99%</td></tr>
+<tr><td>9</td><td>Superstate Opening Bell</td><td>$28.9M</td><td>−43.54%</td><td>0.81%</td></tr>
+</tbody></table>
+<ul>
+<li>회사 $220.6M 중 <strong>$180.2M이 자사 주식 토큰</strong>이다. 이를 빼면 <strong>$40.4M · 1.13%</strong>로 직전 1.29%보다 낮다.</li>
+<li>Ondo와 플랫폼 격차는 $414.5M → <strong>$490.9M</strong>이다. 3위 Franklin과의 거리는 $92.2M로 좁다.</li>
+<li><strong>판정: 🟠</strong></li>
+</ul>
+<h3>Cat 6. 경쟁사 위협 추적 [🟠]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — ANT 첫날 경쟁에서 래퍼 쪽이 이용자를 훨씬 많이 모았다. 면제 거래장을 짓겠다는 곳도 늘었다.</blockquote>
+<p>🟠 <strong>ANT 첫날 4곳 동시 출시</strong> — 회사(솔라나 · 1:1 담보) · <a href="https://x.com/Ondo/status/2123491585547735266" target="_blank">Ondo</a> · <a href="https://x.com/xStocksFi/status/2123807703466434942" target="_blank">xStocks</a>(체인 3곳) · bStocks(바이낸스 체인). xStocks 보유자 1만 7,500명, 회사 토큰 지갑 9개다.</p>
+<ul>
+<li><strong>SECZ 해석</strong>: 첫날 수요는 미국 밖 래퍼의 유통망을 따라갔다. 반면 바이낸스 지갑은 5억 달러 청약에 실제 주식 2,957주만 구해 환불했다(<a href="https://fr.tradingview.com/news/financemagnates:443b009e6094b:0-a-feeling-of-d-j-vu-as-crypto-exchanges-fall-short-in-anthropic-s-ipo-tokenization/" target="_blank">Finance Magnates</a>).</li>
+</ul>
+<p>🟠 <strong><a href="https://www.coindesk.com/business/2026/11/20/fairmint-plans-tokenized-stock-venue-on-canton-ethereum-under-sec-experiment" target="_blank">Fairmint, 캔톤·이더리움에 혁신 면제 토큰 주식 거래장 계획</a></strong>(CoinDesk 11/20) — 10월 CNTN 발행사 토큰의 명부를 맡은 이전대리인이 거래장까지 짓는다.</p>
+<p>🟠 <strong><a href="https://www.globenewswire.com/news-release/2026/11/17/3405177/0/en/issuer-token-coalition-surges-to-12-firms-as-drw-flow-traders-sofi-and-superstate-join.html" target="_blank">발행사 토큰 연합 12곳(Superstate 합류 · 회사 없음)</a></strong>(11/17) · <a href="https://www.coinbase.com/blog/coinbase-and-broadridge-create-an-open-standard-for-onchain-shareholder-communications" target="_blank">Coinbase×Broadridge 주주 통지 표준</a>(11/16).</p>
+<p>🟡 <a href="https://ondo.finance/blog/ondo-finance-joins-mas-guardian-initiative" target="_blank">Ondo, 싱가포르 MAS Guardian 참여</a>(11/19) · <a href="https://ondo.finance/blog/first-defined-outcome-intelligent-portfolio" target="_blank">Ondo 정해진 결과형 포트폴리오</a>(11/17) · <a href="https://www.theblock.co/news/business/2026-11-17-alpaca-says-tokenization-network-tops-10-billion-minting-redemption-volume-442667" target="_blank">Alpaca 토큰화 네트워크 발행·상환 100억 달러</a>(The Block 11/17).</p>
+<p><strong>★6-H 1차시장(발행·상환) 운영시간 대조</strong> — 확인 시각 2026-11-21 10:38 KST(= 11/20 20:38 ET · 주말 49시간 창 안)</p>
+<table><thead><tr><th>대상</th><th>발행·상환 운영시간(원문)</th><th>직전 weekly 이후 변경</th><th>자사 동시각 상태</th></tr></thead><tbody>
+<tr><td>Ondo</td><td>25개 이상 종목 24시간 발행·상환(10/22 <a href="https://ondo.finance/blog/what-sets-ondo-stocks-apart" target="_blank">원문</a>) · ANT도 24시간 발행·상환 표방(11/19 X) · <a href="https://ondo.finance/" target="_blank">홈</a> 배너 &quot;New Report: Building Toward an Onchain Prime Brokerage&quot;로 교체</td><td>시간 문언 변경 0 · 종목 추가(ANT)</td><td>—</td></tr>
+<tr><td>Backed / xStocks</td><td>*&quot;Issuance and redemption through the issuer operate 24/5&quot;*(<a href="https://docs.xstocks.fi/docs" target="_blank">docs</a>)</td><td>0</td><td>—</td></tr>
+<tr><td>bStocks</td><td>미확보(1차 URL 미확정)</td><td>—</td><td>—</td></tr>
+<tr><td>Robinhood</td><td>미확보(<a href="https://docs.robinhood.com/rhj/" target="_blank">발행사 공시</a>에 운영시간 문언 없음)</td><td>—</td><td>—</td></tr>
+<tr><td>Superstate</td><td>미확보 — <a href="https://superstate.com/" target="_blank">superstate.com</a>에 &quot;24/7 access&quot; 문언만 있음</td><td>0</td><td>—</td></tr>
+<tr><td><strong>Securitize Stocks</strong></td><td>연장 거래시간 → 24/7 목표(10/8 발표)</td><td>0</td><td><strong>&quot;Market closed · Trading resumes at 4:00 AM ET on the next business day&quot;</strong>(<a href="https://stocks.securitize.io/" target="_blank">창구</a>)</td></tr>
+</tbody></table>
+<ul>
+<li>1줄 요약: 1차시장 24/7은 여전히 Ondo뿐이다. 회사 창구는 금요일 밤 휴장 문구를 보여 줬다.</li>
+<li><strong>판정: 🟠 관찰 강화</strong> — ANT 첫날 이용자 격차가 수치로 처음 드러났다. 대형 고객 이탈 사건은 없었다.</li>
+</ul>
+<p><strong>★6-N 나스닥 토큰화 라우팅</strong> — 이번 주 나스닥 경제연구소 원장에 토큰화 행이 0건이다. 직접 명부 경로를 연다는 1차 출처는 없다.</p>
+<h3>Cat 7. 규제 [🟠]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 규칙은 바뀌지 않았다. 다만 SEC 쪽에서 「영구 규칙은 2027년」과 「정식 절차로」라는 말이 같은 주에 나왔다.</blockquote>
+<p>🟠 <strong><a href="https://unchainedcrypto.com/secs-jamie-selway-says-a-permanent-tokenized-stock-rule-proposal-has-got-to-be-a-2027-event/" target="_blank">SEC 국장 Selway, 「토큰화 주식 영구 규칙 제안은 2027년 일」</a></strong>(11/17) — 같은 방송에서 회사 사장 Redfearn은 합성 토큰의 위험을 짚었다.</p>
+<p>🟠 <strong><a href="https://www.coindesk.com/policy/2026/11/19/trump-s-democratic-sec-pick-suggests-tokenization-policy-deserves-full-rule-process" target="_blank">SEC 위원 후보 Johnson, 「토큰화는 정식 규칙 절차로」</a></strong>(11/19 인준 청문회).</p>
+<ul>
+<li><strong>SECZ 해석</strong>: 면제 기간이 길어지면 회사의 TSV 뒷단 제안이 쓰일 시간이 늘어난다. 반대로 정식 절차가 붙으면 면제 위에 지은 사업은 다시 손볼 수 있다.</li>
+</ul>
+<p>🟡 <a href="https://www.coindesk.com/policy/2026/11/20/ecb-s-largarde-warns-europe-could-lose-control-of-growing-tokenized-asset-market" target="_blank">라가르드 ECB 총재, 「유럽이 토큰화 시장 통제권을 잃을 수 있다」</a>(11/20) · <a href="https://www.cryptotimes.io/2026/11/21/digital-chamber-urges-senate-to-advance-two-sec-commissioner-nominees/" target="_blank">Digital Chamber, SEC 위원 후보 인준 촉구</a>(11/21).</p>
+<ul>
+<li><a href="https://www.sec.gov/newsroom/press-releases" target="_blank">SEC 보도자료</a> 신규 = 2026-115 가짜 크립토 거래장 사기 · 2026-116 사기 기소 · 2026-117 <a href="https://www.sec.gov/newsroom/press-releases/2026-117-sec-issues-proposal-restructure-consolidated-audit-trail" target="_blank">통합 감사 추적(CAT) 개편안</a>. CAT 보도자료에 token·blockchain·crypto 언급은 0회다.</li>
+<li><strong>판정: 🟠</strong> — 규칙 변화 0, 시간표에 대한 발언만 나왔다.</li>
+</ul>
+<h3>Cat 7-A. <a href="https://www.occ.gov/news-events/newsroom/?nr=NewsRelease" target="_blank">OCC 20% 토큰화 준비금 상한</a></h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 10월 최종 규칙 이후 새 발표는 없다. 결론은 그대로다.</blockquote>
+<p><a href="https://www.occ.gov/news-events/newsroom/news-issuances-by-year/news-releases/2026-news-releases.html" target="_blank">OCC 2026 보도자료 목록</a> 신규 = <a href="https://www.occ.gov/news-issuances/news-releases/2026/nr-occ-2026-101.html" target="_blank">NR 2026-101</a>(FinCEN 고객 확인 성명 · 11/17) · <a href="https://www.occ.gov/news-issuances/news-releases/2026/nr-occ-2026-102.html" target="_blank">NR 2026-102</a>(감독청장 규제 정비 연설 · 11/18). 10/21 최종 규칙(<a href="https://occ.gov/news-issuances/news-releases/2026/nr-occ-2026-92.html" target="_blank">NR 2026-92</a>)은 토큰화 국채·정부 MMF를 준비금으로 인정하고 전용 상한을 두지 않았다. ⚠️ 신호 #1·#4·#6 영향: <strong>변동 없음</strong>.</p>
+<h3>Cat 7-B. <a href="https://www.congress.gov/committee-schedule/weekly/2026/11/16" target="_blank">CLARITY 마크업·투표</a></h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 상원 은행위는 이번 주 지명 표결과 SEC 위원 후보 청문을 한 자리에서 열었다. CLARITY 법안 진전은 없다.</blockquote>
+<p><a href="https://www.congress.gov/committee-schedule/weekly/2026/11/16" target="_blank">의회 위원회 주간 일정</a>을 전량 파싱했다. 11/16~11/22 주 45건 가운데 상원 은행위 회의는 <strong>1건</strong>이다 — <a href="https://www.congress.gov/event/119th-congress/senate-event/338841" target="_blank">11/19(목) 10:00(미 동부)</a>. 재무부·HUD·수출입은행 지명 표결 뒤 SEC 위원 후보 Kristin N. Johnson·Steven Levine 등의 청문이 이어졌다. 다음 주(11/23~) 일정 1건 중 은행위는 0건이다.</p>
+<ul>
+<li>CLARITY는 <a href="https://www.govtrack.us/congress/bills/119/hr3633" target="_blank">GovTrack</a> 기준 9/15 토론 종결 표결 실패 뒤 「잠정 사망」 상태 그대로다. GovTrack 추정 통과 가능성 30%다.</li>
+<li>법안 401·404·505조(토큰화 증권·스테이블코인 이자·SEC 관할) 진전 0건. 예측시장 통과 확률은 국내 접속 차단으로 확인하지 않았다.</li>
+<li>일정표에는 표결 결과가 없다. 인준 표결 일정도 아직 올라오지 않았다.</li>
+</ul>
+<h3>Cat 7-C. <a href="https://www.dtcc.com/press-releases" target="_blank">DTCC 토큰화 서비스 출시 + 파트너 명단</a></h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — DTCC는 이번 주 새 보도자료를 내지 않았다. 회사 부재는 그대로다.</blockquote>
+<p><a href="https://www.dtcc.com/press-releases" target="_blank">DTCC 보도자료</a> 최신은 11/12 Solana 연결이다. <a href="https://x.com/The_DTCC/status/2122743462084719081" target="_blank">DTCC X</a>는 11/17 블룸버그 TV 출연 예고 1건뿐이다. <strong>판정: 🔴 부재 확정 유지</strong> — ⚠️ 신호 #6은 발동하지 않는다.</p>
+<h3>Cat 8. 매크로 / 금리 / 연준 [🟠]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 금리는 내렸지만 주식 급락이 더 컸다. 회사 주가도 그 흐름을 따랐다.</blockquote>
+<p>위 매크로 환경 요약 참조(macro-weekly). 10년물 4.91% · 12월 인상 확률 97.4% · 순유동성 중립. <strong>판정: 🟠(이번 주는 시장 급락과 함께 움직임)</strong></p>
+<h3>Cat 9. 지정학 [🟠]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 이란 관련 군사 소식이 나왔지만 유가는 오히려 내렸다. 회사 사업에 직접 닿는 재료는 없었다.</blockquote>
+<p>macro-weekly 참조 — 미군 이란 게셈섬 공습(11/17) · 호르무즈 근처 유조선 피격(11/20) · 브렌트 $89.87(11/20). 회사와 직접 연결 0건. <strong>판정: 🟠</strong></p>
+<h3>Cat 10. 기술 / 제품 [🟠]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 상품 목록과 권리 처리 기능은 늘었다. 체인 위 실제 거래는 여전히 거의 자사 주식 토큰뿐이다.</blockquote>
+<ul>
+<li>🟠 <strong><a href="https://x.com/Securitize/status/2123466628423971056" target="_blank">ANT·Amgen·Fox 추가 → 51종</a></strong>(11/19) — ANT는 상장 첫날 올렸다. 11/16에는 Reddit·eBay·PepsiCo 등으로 48종이 됐다.</li>
+<li>🟠 <strong><a href="https://x.com/carlosdomingo/status/2123822462194643349" target="_blank">Apple 토큰 첫 온체인 배당 USDC 지급</a></strong>(11/20) — 보유자 지갑으로 바로 보냈다. 회사 주간 소식에는 빠졌다.</li>
+<li>🟠 <strong><a href="https://securitize.io/learn/press/securitize-completes-acquisition-of-river-one" target="_blank">River One 인수 완료</a></strong>(11/17) — 대출 발굴·심사 플랫폼(Argo)과 신용 팀을 들였다.</li>
+</ul>
+<p><strong>🪙 Securitize Stocks 온체인 주간 합산</strong> (2026-11-13 ~ 2026-11-21 · 7회 측정 · 판정 ❌)</p>
+<table><thead><tr><th>항목</th><th>창 시작</th><th>창 끝</th><th>변화</th></tr></thead><tbody>
+<tr><td>보유 지갑 합계</td><td>217</td><td>222</td><td>+5</td></tr>
+<tr><td>유동성 풀 합계($)</td><td>3,218,566.67</td><td>2,781,645.42</td><td>−436,921</td></tr>
+<tr><td>24h 거래대금 합계($) 일별 합</td><td></td><td></td><td>30,664.23 (일평균 4,380.60)</td></tr>
+</tbody></table>
+<ul>
+<li>보유 지갑 상위 3: SECZ 80 · AAPL 22 · NVDA 16 · 주중 알림 8건(GOOGL·AAPL·AMZN·TSLA·CRCL 유동성 풀 −34~−50%)</li>
+<li>🔴 주간 체결 약 $30,664 대부분이 자사 주식 토큰이다. ANT 토큰은 계기판 밖이며 공급 463개·지갑 9개·체결 0이다(daily 11/21 기록).</li>
+</ul>
+<p><strong>★10-C 담보 등재: 월 1회 점검 — 다음 2026-12-05 · 키워드 그물 걸림 0/7건(회사 자산 기준)</strong> — 담보 관련 소식은 Ondo ANT 래퍼 선물 담보(경쟁사)뿐이다.</p>
+<ul>
+<li><strong>판정: 🟠 상품 폭은 넓어지고 쓰임은 아직 작다</strong></li>
+</ul>
+<h3>Cat 11. 상장 후 이벤트 (락업·워런트·희석) [🟠]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 다음 고비는 5주 남은 12/28 락업 만료다. 자사주 실제 매입은 아직 보이지 않는다.</blockquote>
+<table><thead><tr><th>항목</th><th>값</th></tr></thead><tbody>
+<tr><td>합병 후 경과</td><td><strong>D+142</strong>(11/20) · D+180 = <strong>2026-12-28</strong></td></tr>
+<tr><td>자유 유통</td><td>37,519,492주(22.94%)</td></tr>
+<tr><td>락업 해제 예정</td><td>125,746,191주</td></tr>
+<tr><td>스폰서 $12.50 · 구주주 $15.00·$17.50·$20.00</td><td>11/20 종가는 $12.50의 48.7%</td></tr>
+<tr><td>자사주 매입 한도</td><td>$5,000만(~2027-12-31 · 실제 매입 공시 0)</td></tr>
+</tbody></table>
+<ul>
+<li>이번 주 Form 4 4건은 이사 보상이라 유통 물량을 늘리지 않는다.</li>
+</ul>
+<p><strong>★11-C Computershare 연내: D−40 · 실물 없음 · 이번 주 언급 없음</strong> — 회사 보도자료·SEC 공시·CEO X에서 Computershare 가동 소식은 0건이다.</p>
+<h3>Cat 12. 해자 [🟠]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 블랙록 펀드 잔고는 또 줄었고, 같은 쓰임새의 경쟁 펀드가 다른 회사 인프라로 나왔다.</blockquote>
+<ul>
+<li><strong>BUIDL $1,572.2M · 보유자 101</strong>(직전 $1,653.5M · 102). 한 주 −$81.3M(−4.9%)이다.</li>
+<li><a href="https://securitize.io/blackrock/buidl" target="_blank">BUIDL 상품 페이지</a>는 바뀐 것이 없다. 회사×Ethena 상시 창구의 2단계 소식도 없다.</li>
+<li>🟠 Invesco IROXX가 Superstate로 나와, 준비금 펀드 시장에서 BRSRV와 겨룬다.</li>
+<li><strong>판정: 🟠</strong> — 잔고는 줄고, 경쟁 칸에 대형 운용사가 하나 더 들어왔다.</li>
+</ul>
+<h3>Cat 13. ⚠️ Thesis 리스크 신호 [⚠️ 1/9]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 켜진 신호는 지난주와 같은 하나(분기 이익)다. 경쟁·규제 관련 감시 신호는 노란불 그대로다.</blockquote>
+<p>아래 Thesis 리스크 신호 표 참조.</p>
+<h3>Cat 14. 타임라인 [—]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 다음 주 OKXICE 개장이 회사 거래 쪽 첫 실전이다.</blockquote>
+<p>아래 다음 점검 일정 참조.</p>
+<h3>Cat 15. RWA 산업 뉴스 [🟡]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 은행·중앙은행 쪽 토큰화 시험이 이어졌다. 회사 이름이 든 기사는 ANT·배당·인수 소식이다.</blockquote>
+<ul>
+<li>🟡 <a href="https://www.theblock.co/news/web3/2026-11-16-japan-tokenized-government-bonds-standard-chartered-rwa-2-trillion-441384" target="_blank">일본 토큰화 국채 · Standard Chartered</a>(The Block 11/16) · <a href="https://www.theblock.co/news/business/2026-11-16-dbs-jpmorgan-launch-tokenized-deposit-transfers-440854" target="_blank">DBS·JP모건 예금토큰 이체</a>(11/16).</li>
+<li>🟡 <a href="https://www.coindesk.com/business/2026/11/19/singapore-settles-usd77-5-million-tokenized-bill-sale-in-local-cbdc" target="_blank">싱가포르, 토큰화 단기채 7,750만 달러를 자국 CBDC로 결제</a>(CoinDesk 11/19) · <a href="https://www.coindesk.com/business/2026/11/17/hong-kong-swift-test-tokenized-deposits-as-banks-chase-stablecoin-style-speed" target="_blank">홍콩·스위프트 예금토큰 시험</a>(11/17).</li>
+<li>🟡 <a href="https://www.coindesk.com/business/2026/11/19/sky-s-usds-stablecoin-shrinks-35-as-usd1-5-billion-exits-reserves-after-illicit-finance-report" target="_blank">Sky USDS 35% 축소</a>(11/19) · <a href="https://www.coindesk.com/business/2026/11/18/circle-turns-to-dbs-as-banks-build-rival-digital-payment-systems-across-asia" target="_blank">Circle, 아시아 결제에 DBS 선택</a>(11/18).</li>
+<li>🟡 <a href="https://www.theblock.co/tag/tokenization" target="_blank">The Block 토큰화 태그</a>: 보리스 존슨 토큰화 지지(11/16) · 트럼프 밈코인 출시가 기관 인프라를 시험(11/17).</li>
+<li><a href="https://toptickresearch.substack.com/archive" target="_blank">Top Tick Research</a>는 창 내 새 글이 없다(최신 7/22).</li>
+</ul>
+<h3>Cat 16. 스테이블코인 [🟡]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 스테이블코인 시장은 네 주 연속 줄었다.</blockquote>
+<ul>
+<li>총 시총 <strong>$281.272B</strong> · 7일 −1.52% · 30일 −5.95% · USDT 점유 62.18% · USDC $68.813B(<a href="https://defillama.com/stablecoins" target="_blank">DefiLlama</a> 11/21).</li>
+<li>🔴 <strong>스테이블코인 수혜 경로 주의</strong> — 회사 수익은 수수료형이라 스테이블코인 잔고와 직접 연동되지 않는다. 고리는 BRSRV·BUIDL 같은 준비금·담보용 토큰화 국채 수요이고, 이번 주 그 칸에 Invesco가 들어왔다.</li>
+</ul>
+<h3>Cat 16a. 페트로-스테이블코인 [🟢]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 에너지 결제를 스테이블코인으로 바꾸는 움직임은 이번 주 없었다.</blockquote>
+<p>macro-weekly 참조. 브렌트 $89.87. 창 내 관련 신규 0건. <strong>판정: 변동 없음</strong></p>
+<h3>Cat 16b. 컴퓨트-달러 [🟢]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 반도체가 크게 빠졌지만 회사와 직접 이어진 고리는 없었다.</blockquote>
+<p>macro-weekly 참조. 반도체 지수 주간 −17.1% · 엔비디아 회계 조사 보도. 회사와 직접 연결 0건. <strong>판정: 변동 없음</strong></p>
+<h3>Cat 17. X / Twitter 모니터링 [🟡]</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 회사 계정은 ANT 상장과 규제 대담을 앞세웠다. 지갑 9개와 잔고 감소는 주간 소식에 없었다.</blockquote>
+<table><thead><tr><th>계정</th><th>창 내(11/14~11/20)</th><th>핵심</th></tr></thead><tbody>
+<tr><td><strong><a href="https://x.com/Securitize" target="_blank">@Securitize</a></strong></td><td>19건</td><td>3차 종목 추가(11/16) · River One(11/17) · Selway 대담(11/18) · ANT 첫날(11/19) · 주간 소식(11/20)</td></tr>
+<tr><td><strong><a href="https://x.com/carlosdomingo" target="_blank">@carlosdomingo</a></strong></td><td>11건</td><td>20개+ 토큰 주식(11/16) · River One(11/17) · TSV 제안·ANT 매수(11/19) · Apple 배당(11/20)</td></tr>
+<tr><td><strong>$SECZ 캐시태그</strong></td><td>최신순 68건 + 인기순 14건</td><td>B. Riley 개시 · 「Anthropic 승인 없이 온체인」 지적 · 「블랙록 매도로 자산 지표 하락」 지적</td></tr>
+<tr><td><strong><a href="https://x.com/RWAwatchlist_" target="_blank">@RWAwatchlist_</a></strong></td><td>0건</td><td>최신 글 11/6</td></tr>
+<tr><td><strong><a href="https://x.com/The_DTCC" target="_blank">@The_DTCC</a></strong></td><td>1건</td><td><a href="https://x.com/The_DTCC/status/2122743462084719081" target="_blank">블룸버그 TV 출연 예고(11/17)</a></td></tr>
+</tbody></table>
+<p><strong>🔴 <a href="https://x.com/Securitize/status/2123881211944689756" target="_blank">@Securitize 「Onchain Assets Weekly: 11/20/26」</a> 본문</strong></p>
+<table><thead><tr><th>항목</th><th>내용</th></tr></thead><tbody>
+<tr><td>1</td><td>Unchained: 사장 Redfearn × SEC 국장 Selway, 「토큰화 주식이 미국 기업을 설득할 수 있나」</td></tr>
+<tr><td>2</td><td>Securitize Stocks, Anthropic을 상장 첫날 토큰화</td></tr>
+<tr><td>3</td><td>Crypto Economy: River One 인수 종결</td></tr>
+<tr><td>4</td><td>The Real RWA Podcast 첫 회: CEO 출연</td></tr>
+<tr><td>5</td><td>The Rollup: 생태계 총괄 Ferguson, Breakpoint 인터뷰</td></tr>
+<tr><td>6</td><td>CTO Serna: 「The TSV Stack — 실행·유동성은 당신이, 주식은 우리가」</td></tr>
+</tbody></table>
+<ul>
+<li>🔴 주간 소식은 Apple 첫 배당, ANT 지갑 9개, BUIDL 감소, 연합 명단 부재를 싣지 않았다. 3주 연속 불리한 숫자를 뺀 모양이다.</li>
+<li>최신순 검색은 11/14까지 닿아 7일을 덮었다. 인기순은 기간 지정이 잘 먹지 않아 창 안 14건만 셌다.</li>
+</ul>
+<hr>
+<h2>★18. 주주·지분 심층 (Shareholder Deep Dive)</h2>
+<blockquote>💡 <strong>간단히 말하면</strong> — 늦게 낸 13F가 더해져 기관 보유 집계가 또 늘었다. 합병 스폰서 Cantor가 2위로 올라왔다.</blockquote>
+<p><strong>기관 보유 요약</strong></p>
+<table><thead><tr><th>항목</th><th>값</th><th>직전 weekly</th></tr></thead><tbody>
+<tr><td>기관 보유 비율</td><td><strong>29.81%</strong>(<a href="https://www.nasdaq.com/market-activity/stocks/secz/institutional-holdings" target="_blank">나스닥</a>)</td><td>25.15%</td></tr>
+<tr><td>기관 보유자 수</td><td><strong>128곳</strong></td><td>125곳</td></tr>
+<tr><td>기관 보유 주식</td><td><strong>48,755,410주</strong></td><td>41,054,419주</td></tr>
+<tr><td>총 보유 가치</td><td>$321M</td><td>$332M</td></tr>
+<tr><td>늘린 곳 / 줄인 곳 / 유지</td><td>90곳(4,719만 주) / 36곳(639만 주) / 2곳</td><td>78 / 44 / 3</td></tr>
+<tr><td>Fintel 집계</td><td><strong>0곳</strong>(<a href="https://fintel.io/so/us/secz" target="_blank">fintel</a>)</td><td>0곳</td></tr>
+</tbody></table>
+<p><strong>상위 보유자(9/30 기준 · 나스닥 화면)</strong></p>
+<table><thead><tr><th>순위</th><th>보유자</th><th>주식 수</th><th>변화</th></tr></thead><tbody>
+<tr><td>1</td><td>Morgan Stanley</td><td>8,680,623</td><td>+8,503,182</td></tr>
+<tr><td>2</td><td><strong>Cantor Fitzgerald, L.P.</strong></td><td><strong>6,002,750</strong></td><td>신규</td></tr>
+<tr><td>3</td><td>J Digital 6 LLC</td><td>3,914,087</td><td>신규</td></tr>
+<tr><td>4</td><td>BlackRock, Inc.</td><td>2,841,107</td><td>신규</td></tr>
+<tr><td>5</td><td>Sumitomo Mitsui Trust Group</td><td>2,663,184</td><td>신규</td></tr>
+<tr><td>6</td><td>ARK Investment Management</td><td>2,583,728</td><td>신규</td></tr>
+<tr><td>7</td><td>Amova Asset Management Americas</td><td>2,173,706</td><td>신규</td></tr>
+<tr><td>8</td><td><strong>ParaFi Capital LP</strong></td><td><strong>1,863,727</strong></td><td>신규</td></tr>
+<tr><td>9</td><td>Thrive Capital Management</td><td>1,683,445</td><td>신규</td></tr>
+<tr><td>10</td><td>Geode Capital Management</td><td>1,678,053</td><td>+1,662,618</td></tr>
+</tbody></table>
+<ul>
+<li>🔴 늘어난 몫(약 770만 주)은 대부분 Cantor·ParaFi 등 늦게 낸 13F다. 9/30 기준이라 새 매수가 아니다.</li>
+<li>Cantor는 합병을 꾸린 스폰서다. 600만 주가 스폰서 몫과 같은 물량인지는 신고서로 가르지 못했다.</li>
+<li>보유 가치가 줄어든 것은 화면이 최근 주가로 다시 매겼기 때문이다.</li>
+</ul>
+<p><strong>내부자 (Form 4 / 13D·G)</strong></p>
+<ul>
+<li>창 내 Form 4 <strong>4건</strong>(11/17 · 이사 보상 부여·옵션 행사 · 매도 0). 13D/G 신규 0건(최신 7/9 도밍고 9,016,960주·5.4% / 스티븐스).</li>
+<li>Stephens 이사 신고서에는 Blockchain Capital 펀드 셋을 통한 간접 보유 1,027만 주가 함께 적혀 있다.</li>
+<li>락업 때문에 내부자 매도는 12/28 전까지 불가능한 구간이다.</li>
+</ul>
+<hr>
+<h2>⚠️ Thesis 리스크 신호: 1/9 발현 + roll-up R 해제 유지 (신규 0)</h2>
+<blockquote>💡 <strong>간단히 말하면</strong> — 켜진 신호는 분기 이익 하나 그대로다. 4분기 실적 전까지는 바뀌지 않는다.</blockquote>
+<table><thead><tr><th>#</th><th>신호</th><th>상태</th><th>이번 주</th></tr></thead><tbody>
+<tr><td>1</td><td>BlackRock 파트너십 해지·축소</td><td>🟢</td><td>BUIDL −$81.3M · 보유자 101 · 관계 해지 증거 0</td></tr>
+<tr><td>2</td><td>SEC 집행조치·소송</td><td>🟡 관찰 강화</td><td>tZERO 소송 새 진행 없음 · 규제 절차 0</td></tr>
+<tr><td>3</td><td>CEO 이탈·경영 공백</td><td>🟢</td><td>경영진 12명 불변</td></tr>
+<tr><td>4</td><td>AUM 2분기 연속 감소</td><td>🟢</td><td>3Q 기말 $4.8B · 분기 뒤 rwa.xyz $3.57B — 12/31 기말이 $4.8B 미만이면 감소 1회</td></tr>
+<tr><td>5</td><td>SPAC 합병 무산</td><td>🟢</td><td>종결</td></tr>
+<tr><td>6</td><td>경쟁사가 BlackRock을 가져감</td><td>🟡 감시 강화</td><td>Ondo 격차 $490.9M · Invesco IROXX(Superstate) · BUIDL 이전 증거 0(발동 ❌)</td></tr>
+<tr><td>7</td><td>규제 환경 근본 악화</td><td>🟢</td><td>규칙 변화 0 · 「정식 절차」 발언은 후보 단계</td></tr>
+<tr><td><strong>8</strong></td><td><strong>분기 조정 EBITDA $2M 이하</strong></td><td><strong>🔴</strong></td><td>충족 유지(3Q26 −$1.98M) — 해제는 4Q26 $2M 초과</td></tr>
+<tr><td><strong>9</strong></td><td><strong>NYSE 협력 12개월 내 실체 부재</strong></td><td>🟡</td><td>NYSE 플랫폼 승인 공지 0 · 유료 딜 공시 0 · 시한 ~2027-03</td></tr>
+<tr><td><strong>R</strong></td><td><strong>토큰화 매출 2분기 연속 역성장</strong></td><td><strong>🟢 해제 유지</strong></td><td>4Q26 비교값 $8.3M에서 재확인</td></tr>
+<tr><td>보조A</td><td>밸류 과열(EV/매출 ≥ 35배)</td><td>⚪</td><td>9.3배 — 35배 선 가격 약 $17.88</td></tr>
+<tr><td>보조B</td><td>반복 수수료 압축</td><td>🔘</td><td>판정 불가 확정(10-Q 두 번째)</td></tr>
+</tbody></table>
+<blockquote>🔴 #8·R은 다음 분기 실적으로만 갱신한다. 동시 발현 1개라 종합 상태는 ⚠️ 주의다.</blockquote>
+<hr>
+<h2>📐 밸류에이션 점검 (Valuation Monitor)</h2>
+<h3>매출/자산 비율 — 3분기 기준 유지</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 분기 숫자가 없는 주라 비율은 지난주와 같다.</blockquote>
+<p>혼합 기준 <strong>약 149bps</strong>(3Q26 $18.61M × 4 ÷ 평균 $5.0B). 토큰화 라인만 보면 약 92bps다. 반복 수수료율은 판정 불가 확정(두 번째)이다.</p>
+<h3>EBITDA/자산 비율 — −16bps</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 자산 대비 손실 구간 그대로다.</blockquote>
+<p>−$1.98M × 4 ÷ $5.0B = <strong>약 −16bps</strong>(2Q26 −51bps · 판정 밴드 최하단 아래 음수).</p>
+<h3>적정가 — 4지표 가중</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 주가가 크게 내려 2026년 기준 적정가와의 거리가 좁혀졌다. 기업 숫자가 아니라 가격이 움직인 결과다.</blockquote>
+<p>발행주식 163,496,850주(10-Q 9/30) · FY26 매출 가이던스 $70~80M.</p>
+<table><thead><tr><th>지표</th><th>가중</th><th>FY26</th><th>상태</th></tr></thead><tbody>
+<tr><td>자산 대비 기업가치(벤치 12% · 자산 $6.5B 가정)</td><td>30%</td><td>$4.77</td><td>✅</td></tr>
+<tr><td>매출 대비 기업가치(11.3배 · 매출 $75M)</td><td>25%</td><td>$5.18</td><td>✅</td></tr>
+<tr><td>EBITDA 대비 기업가치(19배)</td><td>20%</td><td>—</td><td>🔴 가이던스 없음</td></tr>
+<tr><td>반복매출 대비 기업가치(12배)</td><td>15%</td><td>—</td><td>🔴 가이던스 없음</td></tr>
+<tr><td><strong>가중 합성(2지표 재정규화)</strong></td><td>—</td><td><strong>$4.96</strong></td><td>현재가 $6.09 대비 <strong>+22.8%</strong></td></tr>
+</tbody></table>
+<ul>
+<li>판정 밴드: <strong>🟠 +20~+50% 프리미엄 구간</strong>(직전 +62.9% 🔴).</li>
+<li>FY31 가중 적정가(Claude 시나리오 가정 · 회사 가이던스 아님): 기본 $23.0(현재가 대비 −73.5%) · 낙관 $31.6(−80.7%).</li>
+<li>🔴 자산 $6.5B는 5월에 세운 낙관 가정이다. 실제 자산은 $3.57B라 이 가정은 상향 편의가 있다.</li>
+</ul>
+<p><strong>보조 배수</strong>: 시총 $995.9M · 현금 $298.9M · 기업가치 <strong>$697.0M</strong> · EV/매출(FY26 중간 $75M) <strong>9.3배</strong> · <strong>자산 대비 기업가치 19.54%</strong>(벤치 12%).</p>
+<blockquote>계산: 6.09 × 163,536,181 = $995.9M → − $298.9M = $697.0M → ÷ $3.567B = 19.54%.</blockquote>
+<p><strong>시나리오(5년 · SECZ-Memory 2026-06-25 Deep-Dive 기준)</strong>: Bull 25% × 3.8배 · Base 50% × 1.5배 · Bear 25% × 0.4배 → 확률 가중 <strong>1.8배</strong>. 이번 주는 확률을 다시 매길 새 실적이 없어 유지한다.</p>
+<h3>자산 구성 — BUIDL 44.1%</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 블랙록 펀드 비중이 조금 더 내려왔다. 다른 자산이 늘어서가 아니라 블랙록 펀드가 줄어서다.</blockquote>
+<p><strong>BUIDL 44.1%</strong>($1,572.2M ÷ $3,567.4M · 🟢 40~50% 밴드 · 직전 44.5%). 자사 토큰 제외 기준 46.4%. 자기 참조분은 <strong>5.05%</strong>($180.2M)다.</p>
+<h3>온체인 주식 거래 수수료 — 🟡 명목 가동·실질 휴면</h3>
+<blockquote>💡 <strong>간단히 말하면</strong> — 회사 토큰화 주식 상품의 거래는 아직 수수료 매출로 볼 크기가 아니다.</blockquote>
+<table><thead><tr><th>항목</th><th>값</th><th>직전 weekly</th></tr></thead><tbody>
+<tr><td>자사 주식 토큰 평가액 / 보유자</td><td>$180.2M / <strong>99</strong></td><td>$224.4M / 97</td></tr>
+<tr><td>회사 토큰화 주식(자산 수 49)</td><td>$220.6M</td><td>$273.2M</td></tr>
+<tr><td>체인 위 주간 거래대금</td><td>$30,664.23</td><td>$4,748.21</td></tr>
+</tbody></table>
+<ul>
+<li>🔴 거래대금이 늘었지만 대부분 자사 주식 토큰 체결이다. 수수료 수취 지갑의 스테이블코인 유입도 관측되지 않는다.</li>
+</ul>
+<hr>
+<div class="dd-fig"><p class="cap">5년(SECZ-Memory 2026-06-25 Deep-Dive) 확률 가중 시나리오 손익비 — 현재가 $6.09 기준 (SECZ-Memory 시나리오 + §9-3 적정가 calibration) <span class="ev-badge" id="ev-scn"></span></p><div id="fig-scn"></div></div>
+<h2>📐 섹터 대장주 비교 매트릭스 (분기 갱신)</h2>
+<blockquote>💡 <strong>간단히 말하면</strong> — 회사와 대장주가 함께 내렸고, 회사가 조금 더 빠져 거리가 약간 벌어졌다.</blockquote>
+<table><thead><tr><th>항목</th><th>값</th><th>평가</th></tr></thead><tbody>
+<tr><td>SECZ 시총</td><td><strong>$0.996B</strong></td><td>직전 weekly 대비 −24.6%</td></tr>
+<tr><td>코인베이스(COIN) 시총</td><td>약 $27.0B</td><td>직전 weekly 대비 약 −20%</td></tr>
+<tr><td><strong>원시 잠재 배수</strong></td><td><strong>27.1배</strong></td><td>직전 25.6배</td></tr>
+<tr><td>5축 평균</td><td>⭐3.3 / 5</td><td>유지</td></tr>
+<tr><td>시간 가중</td><td>5년 × 0.6</td><td></td></tr>
+<tr><td><strong>위험조정 잠재 배수</strong></td><td><strong>약 10.7배</strong></td><td>직전 10.1배</td></tr>
+</tbody></table>
+<p>🔴 5축은 그대로다. 배수가 늘어난 것은 회사 가격이 더 내렸기 때문이지 전망이 좋아져서가 아니다.</p>
+<hr>
+<h2>주간 하이라이트 (Daily 대비 새로 발견된 사항)</h2>
+<blockquote>💡 <strong>간단히 말하면</strong> — daily가 놓친 것은 기관 보유 전체 그림, 경쟁 거래장 계획, 그리고 이사 신고의 시점이다.</blockquote>
+<p>1. 🟠 <strong>나스닥 기관 보유 25.15% → 29.81% · 128곳 · Cantor 2위</strong> — daily는 개별 13F만 봤다. 전체 집계와 순위는 이번에 처음 맞췄다.</p>
+<p>2. 🟠 <strong>Fairmint 면제 거래장 계획(CoinDesk 11/20)</strong> — daily 경쟁사 표에 없던 항목이다.</p>
+<p>3. 🟠 <strong>Invesco IROXX를 별 지도에 반영</strong> — 11/18 daily 후보였으나 회차 상한(3건)으로 빠져 있었다.</p>
+<p>4. 🟡 <strong>이사 Form 4 4건의 거래일은 7월이다</strong> — 거래 뒤 넉 달 만에 냈다.</p>
+<p>5. 🟡 <strong>CAT 개편안 보도자료에 토큰 언급 0회</strong> — daily가 「이번 회차 미확인」으로 남긴 질문을 보도자료 수준에서 닫았다.</p>
+<p>6. 🟡 <strong>Alpaca 토큰화 네트워크 발행·상환 100억 달러(The Block 11/17)</strong> — 경쟁 래퍼의 뒷단 규모다.</p>
+<p>7. 🟡 <strong>공매도 잔고 7,777,137주는 10/30 결제분</strong> — fintel 결제일 표로 시점을 확인했다.</p>
+<hr>
+<h2>신규 이슈 (🆕)</h2>
+<blockquote>💡 <strong>간단히 말하면</strong> — 회사가 권리 처리와 뒷단 공급으로 차별화를 시도한 주이고, 첫날 이용자 수에서는 래퍼에 밀렸다.</blockquote>
+<ul>
+<li>🆕 <strong>ANT 상장 첫날 토큰화 · 51종 · CEO 직접 매수 · 첫날 지갑 9개 vs xStocks 1만 7,500명.</strong></li>
+<li>🆕 <strong>Apple 토큰 첫 온체인 배당(USDC 직접 지급).</strong></li>
+<li>🆕 <strong>River One 인수 종결(대가 미공개).</strong></li>
+<li>🆕 <strong>CEO·CTO의 TSV 뒷단 공급 제안 · Fairmint 거래장 계획.</strong></li>
+<li>🆕 <strong>Invesco IROXX on Superstate · 발행사 연합 12곳 · Coinbase×Broadridge 표준(셋 다 회사 없음).</strong></li>
+<li>🆕 <strong>SEC 「영구 규칙 2027」 · 후보 「정식 절차」 · 기관 29.81%.</strong></li>
+</ul>
+<hr>
+<h2>액션 아이템</h2>
+<blockquote>💡 <strong>간단히 말하면</strong> — 다음 주는 거래장 개장 첫날 숫자와 ANT 토큰 지갑 수를 먼저 본다.</blockquote>
+<ul>
+<li><strong>11/23 OKXICE 개장</strong> — 실제 개장 여부 · 첫날 거래 종목 수 · 회사 보도자료나 공시 여부.</li>
+<li><strong>ANT 토큰 지갑 재집계</strong> — 9개에서 늘어나는지, 래퍼 쪽 보유자 증가와 격차가 어떻게 변하는지.</li>
+<li><strong>두 번째 온체인 배당</strong> — Apple 다음 종목이 나오는지(한 번 시연인지 전 종목 기능인지).</li>
+<li><strong>BUIDL 잔고와 IROXX 첫 잔액</strong> — 11월 말 BUIDL이 $1.5B를 지키는지, IROXX 첫 공시 숫자.</li>
+<li><strong>12/28 락업 만료 소통</strong> — 회사가 만료 전 물량 관리 방안을 밝히는지, Cantor 지분 변동 신고.</li>
+<li><strong>River One 대가·자사주 실제 매입</strong> — 4분기 안 공시 여부.</li>
+</ul>
+<hr>
+<h2>다음 점검 일정</h2>
+<table><thead><tr><th>날짜</th><th>항목</th></tr></thead><tbody>
+<tr><td>11/23</td><td><strong>OKXICE 개장</strong>(회사 = 토큰화 인프라)</td></tr>
+<tr><td>11/25</td><td>공매도 잔고 11/14 결제분 공표 예상</td></tr>
+<tr><td>11/26~27</td><td>추수감사절 휴장·조기 폐장</td></tr>
+<tr><td>12월 첫 주</td><td>N-MFP3 11월분(IROXX 첫 등장 가능) · ★10-C 담보 등재 두 번째 점검(12/5)</td></tr>
+<tr><td>12/28</td><td>락업 D+180(125,746,191주)</td></tr>
+<tr><td>12/31</td><td>Computershare 연내 시한(CEO 구두) · 신호 #4 기말 판정 기준일</td></tr>
+<tr><td>2027-01-18</td><td>GENIUS법·OCC 최종 규칙 시행</td></tr>
+<tr><td>~2027-03</td><td>⚠️ 신호 #9 시한 · 4분기 실적(#8·R 재판정)</td></tr>
+</tbody></table>
+<hr>
+<h2>🔍 Open Verification 항목 점검 결과</h2>
+<blockquote>💡 <strong>간단히 말하면</strong> — 결정적 질문들은 대부분 그대로 열려 있다. 발행사 연합 확대와 기관 보유 증가에 새 재료가 붙었다.</blockquote>
+<table><thead><tr><th>항목</th><th>우선순위</th><th>이번 주 결과</th></tr></thead><tbody>
+<tr><td><strong>상장사 거부가 회사 수탁형 경로에도 적용되는가</strong></td><td>🔴</td><td>⏳ OKXICE 거부 67곳 새 집계 없음 · 회사는 ANT를 발행사 공개 입장 없이 상장</td></tr>
+<tr><td><strong>ICE·NYSE 디지털 이전대리인 프로그램에서 회사 지위</strong></td><td>🔴</td><td>⏳ 승인 공지 0</td></tr>
+<tr><td><strong>DTCC 명단에 회사 포함 여부</strong></td><td>🔴</td><td>⏳ 부재 유지 — 이번 주 DTCC 새 보도자료 0</td></tr>
+<tr><td><strong>tZERO 특허 소송</strong></td><td>🔴</td><td>⏳ 새 진행 0</td></tr>
+<tr><td><strong>발행사 토큰 연합 확대와 회사 가입 여부</strong></td><td>🟠</td><td>🟡 재료 추가 — 12곳(Superstate 합류) · 회사 없음 · 첫 발행 일정 없음</td></tr>
+<tr><td>Securitize Stocks 13종 잔고·거래량</td><td>🟠</td><td>🟡 진행 — 51종 · 보유 지갑 222 · 주간 체결 약 $30,664(대부분 자사 토큰)</td></tr>
+<tr><td>경쟁 발행사 1차시장 운영시간</td><td>🟠</td><td>🟡 진행 — Ondo만 24/7 · bStocks·Robinhood·Superstate 문언 미확보</td></tr>
+<tr><td>ARKVX 역할·규모</td><td>🔴</td><td>⏳ 이번 회차 새 재료 0</td></tr>
+<tr><td>Computershare 연내 실물</td><td>🔴</td><td>⏳ D−40 · 실물 0</td></tr>
+<tr><td>3분기 13F 상위 보유자 물량의 성격</td><td>🟠</td><td>🟡 재료 추가 — Cantor 6,002,750주 신규 2위 · 스폰서 몫과의 관계 미확인</td></tr>
+<tr><td>첫 IST 발행 / IST 회계 / Omnibus 한도</td><td>🔴🟠</td><td>⏳ 새 서술 없음</td></tr>
+</tbody></table>
+<p>🆕 신규 등록 후보 2건(메모리 반영은 사용자 확인 후):</p>
+<p>1. <strong>ANT 토큰 첫 주 확산 격차의 지속성</strong> — 회사 지갑 9개 대 xStocks 1만 7,500명이 한 주 뒤에도 같은 자릿수 차이인가. 권리형 토큰의 수요 가정과 직결된다. 🟠 중요.</p>
+<p>2. <strong>Invesco IROXX 잔액과 BRSRV 흐름</strong> — 첫 N-MFP3에서 IROXX가 BRSRV를 넘는지, BRSRV 순유입이 꺾이는지. 준비금 펀드 칸의 회사 경로 우위가 유지되는지 가른다. 🟠 중요.</p>
+<hr>
+<h2>수집 상태</h2>
+<p>⚠️ 실패·부분 수집 4건(그 밖의 피드는 정상):</p>
+<ul>
+<li><strong>자문 펀드 Form D 스크립트</strong> — 실행이 개인정보 보호 장치에 막혔다(스크립트 안 연락처 정보). 같은 내용을 <a href="https://efts.sec.gov/LATEST/search-index?q=&amp;ciks=0002056038,0002095325,0002149525,0001976710,0001993132,0001965971,0002016160,0002013810,0002068562" target="_blank">EDGAR 전문검색</a>으로 Chrome에서 직접 확인했다(신규 0건). 저장소는 이번 회차 갱신되지 않았다.</li>
+<li><strong>11/20 일봉 종가 결손(SECZ·IREN·CRCL)</strong> — 시세 업체 일봉 종가가 비어 같은 날 정규장 마감가로 채웠다. CNBC 대조 3건 모두 일치했다.</li>
+<li><strong>자사 주식 토큰 평가</strong> — rwa.xyz가 11/18 종가($6.74)로 매겨 실제보다 높다.</li>
+<li><strong>경쟁사 운영시간</strong> — bStocks 1차 주소는 아직 정해지지 않았다. Robinhood·Superstate 공식 페이지에는 1차시장 운영시간 문언이 없다.</li>
+</ul>
+<hr>
+<h2>종합 상태 판단</h2>
+<blockquote>💡 <strong>간단히 말하면</strong> — 회사는 권리 처리와 뒷단 공급으로 차별화를 보여 줬지만, 첫날 수요와 맡긴 돈은 다른 쪽으로 흘렀다.</blockquote>
+<table><thead><tr><th>축</th><th>판정</th><th>직전 weekly 대비</th></tr></thead><tbody>
+<tr><td>회사 발신</td><td>🟡</td><td>ANT·대담·인수 알림 · 배당·지갑 수·잔고 감소는 주간 소식에서 빠짐</td></tr>
+<tr><td>제품·고객</td><td>🟠</td><td>51종 · Apple 배당 · River One · 체인 위 거래 얇음</td></tr>
+<tr><td>펀더멘탈</td><td>🟠</td><td>분기 사건 없음 · 배포 자산 −4.1%</td></tr>
+<tr><td>경쟁</td><td><strong>🟠</strong></td><td>ANT 첫날 격차 · Fairmint · Invesco×Superstate · Ondo 격차 $490.9M</td></tr>
+<tr><td>규제</td><td>🟠</td><td>규칙 변화 0 · 영구 규칙 2027 · 정식 절차 요구</td></tr>
+<tr><td>해자</td><td>🟠</td><td>BUIDL −4.9% · 준비금 펀드 경쟁자 등장</td></tr>
+<tr><td>수급·락업</td><td>🟠</td><td>기관 29.81% · 대여 가능 0주 · 락업까지 5주</td></tr>
+<tr><td>밸류</td><td>🟠</td><td>스프레드 +22.8%(가격 하락) · EV/AUM 19.54%</td></tr>
+<tr><td>⚠️ Thesis 리스크 신호</td><td><strong>⚠️ 1/9</strong></td><td>변동 없음</td></tr>
+</tbody></table>
+<p><strong>한 줄로 말하면</strong> — 지난 회차가 *&quot;숫자가 한 번 돌아왔지만 그 숫자를 한 건짜리 일감이 만든 주&quot;*였다면, 이번 주는 <strong>회사가 권리 처리라는 자기 강점을 처음 실물로 보여 줬지만, 첫날 이용자와 줄 선 명단은 다른 쪽으로 기운 주</strong>였다.</p>
+<hr>
+<h2>📚 출처</h2>
+<p><strong>1차 소스</strong></p>
+<ul>
+<li><a href="https://securitize.io/about-us/press-releases" target="_blank">Securitize 보도자료 목록</a> · <a href="https://securitize.io/learn/press/securitize-completes-acquisition-of-river-one" target="_blank">River One 인수 완료</a> · <a href="https://securitize.io/about-us/our-story" target="_blank">경영진</a> · <a href="https://securitize.io/blackrock/buidl" target="_blank">BUIDL</a> · <a href="https://stocks.securitize.io/" target="_blank">Securitize Stocks 창구</a></li>
+<li>X: <a href="https://x.com/Securitize/status/2123881211944689756" target="_blank">Onchain Assets Weekly 11/20/26</a> · <a href="https://x.com/Securitize/status/2123466628423971056" target="_blank">ANT 상장 11/19</a> · <a href="https://x.com/carlosdomingo/status/2123822462194643349" target="_blank">CEO Apple 배당 11/20</a> · <a href="https://x.com/carlosdomingo/status/2123426699677233383" target="_blank">CEO TSV 제안 11/19</a> · <a href="https://x.com/carlosdomingo/status/2123497615832539238" target="_blank">CEO ANT 매수 11/19</a> · <a href="https://x.com/carlosdomingo/status/2123902784823271858" target="_blank">CEO Grok 인용 11/20</a> · <a href="https://x.com/SuperstateInc/status/2122699784029106242" target="_blank">Superstate IROXX 11/17</a> · <a href="https://x.com/Ondo/status/2123491585547735266" target="_blank">Ondo ANT 11/19</a> · <a href="https://x.com/xStocksFi/status/2123807703466434942" target="_blank">xStocks ANT 11/20</a> · <a href="https://x.com/The_DTCC/status/2122743462084719081" target="_blank">DTCC 11/17</a> · <a href="https://x.com/RWAwatchlist_/status/2118691505603035496" target="_blank">RWAwatchlist 11/6</a> · <a href="https://x.com/ineedsow/status/2123897404378546568" target="_blank">캐시태그 최신 11/20</a></li>
+<li>SEC: <a href="https://efts.sec.gov/LATEST/search-index?q=&amp;ciks=0002094496" target="_blank">EDGAR 전문검색 CIK 0002094496</a> · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0002094496&amp;type=&amp;dateb=&amp;owner=include&amp;count=10" target="_blank">EDGAR 목록</a> · <a href="https://www.sec.gov/Archives/edgar/data/1366498/000095010326017713/xslF345X06/ownership.xml" target="_blank">Stephens Form 4</a> · <a href="https://www.sec.gov/newsroom/press-releases" target="_blank">SEC 보도자료</a> · <a href="https://www.sec.gov/newsroom/press-releases/2026-117-sec-issues-proposal-restructure-consolidated-audit-trail" target="_blank">SEC 2026-117 CAT 개편안</a> · <a href="https://www.stocktitan.net/sec-filings/SECZ/" target="_blank">StockTitan 공시</a> · <a href="https://efts.sec.gov/LATEST/search-index?q=&amp;ciks=0002056038,0002095325,0002149525,0001976710,0001993132,0001965971,0002016160,0002013810,0002068562" target="_blank">자문 펀드 Form D 전문검색</a></li>
+<li><a href="https://www.dtcc.com/press-releases" target="_blank">DTCC 보도자료</a> · <a href="https://www.occ.gov/news-events/newsroom/news-issuances-by-year/news-releases/2026-news-releases.html" target="_blank">OCC 2026 보도자료</a> · <a href="https://occ.gov/news-issuances/news-releases/2026/nr-occ-2026-92.html" target="_blank">OCC NR 2026-92</a> · <a href="https://www.congress.gov/committee-schedule/weekly/2026/11/16" target="_blank">의회 위원회 주간 일정</a> · <a href="https://www.congress.gov/event/119th-congress/senate-event/338841" target="_blank">상원 은행위 11/19 회의</a> · <a href="https://www.govtrack.us/congress/bills/119/hr3633" target="_blank">GovTrack H.R. 3633</a></li>
+<li><a href="https://app.rwa.xyz/platforms/securitize" target="_blank">app.rwa.xyz/platforms/securitize</a> · <a href="https://app.rwa.xyz/platforms" target="_blank">app.rwa.xyz/platforms</a> · <a href="https://app.rwa.xyz/stocks" target="_blank">app.rwa.xyz/stocks</a> · <a href="https://app.rwa.xyz/" target="_blank">app.rwa.xyz</a> · <a href="https://app.rwa.xyz/citations" target="_blank">app.rwa.xyz/citations</a></li>
+<li><a href="https://ondo.finance/" target="_blank">Ondo</a> · <a href="https://ondo.finance/blog" target="_blank">Ondo 블로그</a> · <a href="https://ondo.finance/blog/ondo-finance-joins-mas-guardian-initiative" target="_blank">Ondo MAS Guardian</a> · <a href="https://docs.xstocks.fi/docs" target="_blank">xStocks 문서</a> · <a href="https://superstate.com/" target="_blank">Superstate</a> · <a href="https://docs.robinhood.com/rhj/" target="_blank">Robinhood 발행사 공시</a> · <a href="https://www.coinbase.com/blog/coinbase-and-broadridge-create-an-open-standard-for-onchain-shareholder-communications" target="_blank">Coinbase×Broadridge 표준</a> · <a href="https://www.globenewswire.com/news-release/2026/11/17/3405177/0/en/issuer-token-coalition-surges-to-12-firms-as-drw-flow-traders-sofi-and-superstate-join.html" target="_blank">발행사 토큰 연합 12곳</a></li>
+<li><a href="https://defillama.com/stablecoins" target="_blank">DefiLlama</a> · <a href="https://fintel.io/ss/us/secz" target="_blank">fintel 공매도</a> · <a href="https://fintel.io/so/us/secz" target="_blank">fintel 보유</a> · <a href="https://www.nasdaq.com/market-activity/stocks/secz/institutional-holdings" target="_blank">나스닥 기관 보유</a></li>
+<li>SEC EDGAR N-MFP3(스크립트 수집) · Solscan(계기판 스크립트) · yfinance(SECZ·IREN·CRCL·COIN·BLSH)</li>
+</ul>
+<p><strong>2차 소스</strong></p>
+<ul>
+<li><a href="https://unchainedcrypto.com/secs-jamie-selway-says-a-permanent-tokenized-stock-rule-proposal-has-got-to-be-a-2027-event/" target="_blank">Unchained — Selway 2027</a> · <a href="https://fr.tradingview.com/news/financemagnates:443b009e6094b:0-a-feeling-of-d-j-vu-as-crypto-exchanges-fall-short-in-anthropic-s-ipo-tokenization/" target="_blank">Finance Magnates — 바이낸스 ANT 청약</a> · <a href="https://x.com/allday_stocks/status/2122975606010716386" target="_blank">X 요약 — B. Riley 개시</a></li>
+<li><a href="https://www.coindesk.com/business/2026/11/20/fairmint-plans-tokenized-stock-venue-on-canton-ethereum-under-sec-experiment" target="_blank">CoinDesk — Fairmint 거래장</a> · <a href="https://www.coindesk.com/policy/2026/11/19/trump-s-democratic-sec-pick-suggests-tokenization-policy-deserves-full-rule-process" target="_blank">CoinDesk — Johnson 정식 절차</a> · <a href="https://www.coindesk.com/policy/2026/11/20/ecb-s-largarde-warns-europe-could-lose-control-of-growing-tokenized-asset-market" target="_blank">CoinDesk — 라가르드</a> · <a href="https://www.coindesk.com/business/2026/11/19/singapore-settles-usd77-5-million-tokenized-bill-sale-in-local-cbdc" target="_blank">CoinDesk — 싱가포르 CBDC</a> · <a href="https://www.coindesk.com/business/2026/11/17/hong-kong-swift-test-tokenized-deposits-as-banks-chase-stablecoin-style-speed" target="_blank">CoinDesk — 홍콩 스위프트</a> · <a href="https://www.coindesk.com/business/2026/11/19/sky-s-usds-stablecoin-shrinks-35-as-usd1-5-billion-exits-reserves-after-illicit-finance-report" target="_blank">CoinDesk — Sky USDS</a> · <a href="https://www.coindesk.com/business/2026/11/18/circle-turns-to-dbs-as-banks-build-rival-digital-payment-systems-across-asia" target="_blank">CoinDesk — Circle DBS</a> · <a href="https://www.coindesk.com/business" target="_blank">CoinDesk Business</a> · <a href="https://www.coindesk.com/policy" target="_blank">CoinDesk Policy</a></li>
+<li><a href="https://www.theblock.co/news/business/2026-11-17-alpaca-says-tokenization-network-tops-10-billion-minting-redemption-volume-442667" target="_blank">The Block — Alpaca 100억 달러</a> · <a href="https://www.theblock.co/news/web3/2026-11-16-japan-tokenized-government-bonds-standard-chartered-rwa-2-trillion-441384" target="_blank">The Block — 일본 토큰화 국채</a> · <a href="https://www.theblock.co/news/business/2026-11-16-dbs-jpmorgan-launch-tokenized-deposit-transfers-440854" target="_blank">The Block — DBS·JP모건</a> · <a href="https://www.theblock.co/tag/tokenization" target="_blank">The Block 토큰화 태그</a></li>
+<li><a href="https://www.cryptotimes.io/2026/11/21/digital-chamber-urges-senate-to-advance-two-sec-commissioner-nominees/" target="_blank">Crypto Times — Digital Chamber</a> · <a href="https://www.cryptotimes.io/2026/11/21/strategy-mstr-price-drops-8-5-as-bitcoin-slides-below-59k/" target="_blank">Crypto Times — 비트코인 5만 9천 달러</a> · <a href="https://www.cryptotimes.io/" target="_blank">Crypto Times</a> · <a href="https://toptickresearch.substack.com/archive" target="_blank">Top Tick Research 아카이브</a>(최신 7/22 · 신규 0)</li>
+<li>X: <a href="https://x.com/carlosdomingo" target="_blank">@carlosdomingo</a> · <a href="https://x.com/RWAwatchlist_" target="_blank">@RWAwatchlist_</a> · <a href="https://x.com/The_DTCC" target="_blank">@The_DTCC</a> · $SECZ 캐시태그 검색</li>
+</ul>
+<p><strong>로컬 참조</strong> — Macro Weekly 2026-11-21 · SECZ-Memory(Open Verification · 별 지도 기록) · SECZ Weekly 2026-11-14 · secz-daily 2026-11-17~11-21</p>
+<hr>
+<p>*본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.*</p>
+<div class="foot">secz-weekly · 2026-11-21 정기 시행 · Chrome MCP 전용(WebFetch/WebSearch 0건) · validate_report.py PASS · 7-Day Cover PASS · 크림 테마 자동 생성</div>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    /* 2026-11-15: items[].label 이 없고 name 만 있으면 name 을 label 로 쓴다(텐배거 raw_viz 하위호환) */
+    const items=(b.items||[]).map(it=>(it&&it.label==null&&it.name!=null)?Object.assign({},it,{label:it.name}):it), mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const VIZ={"scenario": {"horizonLabel": "5년(SECZ-Memory 2026-06-25 Deep-Dive)", "threshold": 1.5, "cases": [{"label": "🟢 Bull", "tone": "bull", "prob": 0.25, "mult": 3.8, "note": "곡괭이 완성·거래 점화·표준 지위"}, {"label": "🟡 Base", "tone": "base", "prob": 0.5, "mult": 1.5, "note": "점진 성장·잔고 연동 매출 지연"}, {"label": "🔴 Bear", "tone": "bear", "prob": 0.25, "mult": 0.4, "note": "BUIDL 이탈·DTCC 흡수"}]}};
+try{{ DDViz.renderScenario('fig-scn','ev-scn',VIZ.scenario); }}catch(e){{ console.error('viz render error', e); }}
+</script>
+</body></html>
