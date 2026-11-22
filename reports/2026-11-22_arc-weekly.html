@@ -57,6 +57,44 @@ section.card > *:last-child { margin-bottom:0 !important; }
 @media (max-width:640px) { body { font-size:16px !important; padding:18px 10px !important; } section.card { padding:22px 18px; } }
 @media print { section.card { box-shadow:none; background:#fff; } }
 </style>
+<style id="report-viz-inline">
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+</style>
 <meta name="vault-stage" content="Monitoring">
 <meta name="vault-topic" content="북극">
 <meta name="vault-date" content="2026-11-22">
@@ -105,16 +143,17 @@ section.card > *:last-child { margin-bottom:0 !important; }
 <hr></section>
 <section class="card"><h2>⚠️ 수집 상태 (실패·불완전 항목만)</h2>
 <ul>
-<li>수집 현황: <strong>기존 보고서 재사용 3건 · 새로 조사 31건</strong>(본문 정독 기준). 재사용분에는 출처 보고서 이름을 달았다.</li>
-<li>⚠️ CSIS — 날짜순 검색이 검색어와 상관없이 연구소 전체 최신 글을 보여 준다. 4쪽을 넘겨도 11/18~11/20 사흘치만 보였고, 그 범위에 제목에 북극이 들어간 글은 <strong>0건</strong>이다. 30일 전체를 본 것은 아니다.</li>
+<li>수집 현황: <strong>기존 보고서 재사용 3건 · 새로 조사 34건</strong>(본문 정독 기준 · 점검 보완 TASS 3건 포함). 재사용분에는 출처 보고서 이름을 달았다.</li>
+<li>✅ CSIS (보완 완료) — 연구소 검색은 날짜순·관련도순 모두 검색어를 무시한다(관련도순 'arctic' 결과 3만2,922건 = 사이트 전체). 그래서 <a href="https://www.csis.org/regions/arctic-and-antarctica">북극·남극 지역 페이지</a>와 러시아·유라시아 지역 페이지, X 공식 계정(@CSIS) 검색(10/23 이후 북극·그린란드·극지 단어)까지 세 경로로 30일(10/23~11/22)을 다시 봤다. <strong>30일 안 북극 발간물 0건</strong> — 가장 최근 북극 글은 10/2이다(아래 싱크탱크).</li>
 <li>⚠️ 캐나다 공영방송 북극 모음(Eye on the Arctic) — 최신 글이 <strong>11/3</strong>에 멈춰 있다. 2주 연속 갱신 없음.</li>
 <li>⚠️ High North News 태그 페이지 3종(정치·경제·안보) — 목록이 몇 주 전 글에서 멈춰 있어 <strong>홈페이지 최신 목록으로 대체</strong>했다.</li>
-<li>⚠️ 크렘린 홈페이지 — 열리지 않아 푸틴 APEC 연설 원문을 확인하지 못했다. 해당 항목은 알자지라 보도를 근거로 썼다(1차 원문 접속 불가).</li>
+<li>⚠️ 크렘린 홈페이지 — 영문판·러시아어판의 소식 목록과 첫 화면을 간격을 두고 4번 열어 봤지만 모두 오류 화면이었다(시각별 기록은 원자료에 남김). 그래서 푸틴 발언은 <strong>러시아 관영 통신 TASS 원문</strong>으로 바꿔 확인했고(아래 F2), 세금 감면 같은 연설 세부 내용만 알자지라 보도에 기대고 있다(1차 원문 크렘린 접속 불가 표시 유지).</li>
 <li>⚠️ 중국 외교부(영문·중문)·신화망 중문·환구망 메인 — 북극 관련어 <strong>0건</strong>(환구망 1건은 쇄빙선 쉐룽호의 <strong>남극</strong>행). 메인 화면만 훑은 약한 근거다. 신화 영문 검색(색인 기준, 강한 근거)의 최신 북극 기사는 10/22, 환구시보 검색은 11/12다.</li>
 <li>⚠️ 뉴스 헤드라인 묶음(Bloomberg·WSJ·MarketWatch 61건) — 북극 키워드 <strong>0건</strong>. 가장 가까운 기사는 발트해 핀란드만의 러시아 화물선 무인기 피격(11/21)이다.</li>
 </ul>
 <hr></section>
 <section class="card"><h2>🔥 8축 핵심 어젠다</h2>
+<blockquote>📖 <strong>이 절의 짜임</strong> — 양식에는 Arctic Today 모음과 노르딕 전문 매체(High North News·Barents Observer) 모음이 따로 있지만, 이번 보고서는 두 모음을 따로 두지 않고 <strong>8개 축 안에 합쳐</strong> 실었다. 각 기사 줄에 매체 이름과 원문 링크, 재게재 여부를 그대로 적었다.</blockquote>
 <h3>F1 🇬🇱 그린란드 — fact 변경 ✅ (🟠 유지)</h3>
 <blockquote class="simple">💡 <strong>간단히 말하면</strong> — 2019년부터 이어진 "그린란드를 사겠다" 갈등이 조약으로 정리됐다. 미국은 기지를 넓히고, 덴마크는 주권을 문서로 다시 확인받았다. 다만 새 기지의 세부 조건은 아직 정해지지 않았다.</blockquote>
 <p>🟠 <a href="https://www.arctictoday.com/danish-parliament-ratifies-expanded-us-military-access-to-greenland/"><strong>Danish parliament ratifies expanded US military access to Greenland</strong></a> — <a href="https://www.arctictoday.com/">Arctic Today</a> / 2026-11-19 · 보도: <a href="https://www.reuters.com/world/denmark-expected-ratify-trump-deal-over-greenland-thursday-2026-11-19/">Reuters</a></p>
@@ -140,11 +179,12 @@ section.card > *:last-child { margin-bottom:0 !important; }
 <p>📖 <strong>배경</strong>: 비티노 터미널은 콜라반도 남쪽 칸달락샤만에 있는 석유제품 항구로, 우크라이나에서 약 2,000km 북쪽이다. 2016년 파산했다가 2022년 새 주인에게 넘어갔고, 올해 4월부터 경유·휘발유 수출입에 다시 쓰이고 있다.</p>
 <p>🎯 <strong>의미</strong>: 우크라이나 무인기부대 사령관 브로우디는 이 터미널이 11/11 공격 목표였다고 확인했다. 그날 아침 무르만스크 당국은 2시간 동안 무인기 경보를 냈다. 미국 항공우주국의 화재 감지 자료에는 그날 그 일대에 불이 난 흔적이 없어 <strong>목표에 닿지 못한 것으로 보인다</strong>. 사령관은 지난 50일 동안 러시아 정유·석유 시설 40곳을 노렸다고 밝혔다.</p>
 <p>⚡ <strong>잠재 영향</strong>: 우크라이나 무인기의 사거리가 북극 항구까지 닿는다는 뜻이다. 성공하지 못했더라도, 러시아는 무르만스크·콜라 일대 방공에 더 많은 자원을 써야 한다.</p>
-<p>🟠 <a href="https://www.aljazeera.com/news/2026/11/19/putin-pitches-arctic-route-calls-for-investment-will-it-work"><strong>Putin pitches Arctic route, calls for investment: Will it work?</strong></a> — <a href="https://www.aljazeera.com/">Al Jazeera</a> / 2026-11-19 · 큐레이션: <a href="https://www.thearcticinstitute.org/arctic-week-take-five-week-november-16-2026/">The Arctic Institute Take Five</a> (1차 원문 크렘린 접속 불가)</p>
+<p>🟠 <a href="https://tass.com/politics/2221943"><strong>Russia ready to expand cooperation with China on Northern Sea Route — Putin</strong></a> — <a href="https://tass.com/politics">TASS</a> / 2026-11-19 · 연설 세부: <a href="https://www.aljazeera.com/news/2026/11/19/putin-pitches-arctic-route-calls-for-investment-will-it-work">Al Jazeera</a> (11-19) · 큐레이션: <a href="https://www.thearcticinstitute.org/arctic-week-take-five-week-november-16-2026/">The Arctic Institute Take Five</a> (1차 원문 크렘린 404 — 4회 접속 불가 → TASS 원문 대체)</p>
 <p>📖 <strong>배경</strong>: 북방항로는 러시아 북쪽 바다를 따라 유럽과 아시아를 잇는 길이다. 지금은 여름·가을에만 일반 선박이 다닐 수 있다. 지난주 보고서에서 다룬 것처럼, 서방 연구진과 러시아 전문가 모두 상업 채산성에 의문을 제기했다.</p>
-<p>🎯 <strong>의미</strong>: 푸틴은 11/18 선전 APEC 연설에서 "APEC 경제권의 기업과 투자자들이 러시아 시장의 기회를 알아볼 것"이라며 북극 투자를 호소했다. 내놓은 당근은 이윤·재산·토지세 감면, 급여 부담금 인하, 우대 임대다. 연중 항해를 목표로 다시 내세웠다. Arctic Institute는 러시아가 9월에 제시한 4천억 달러 규모 북극 횡단 운송 회랑 계획의 93%를 민간·예산 외 자금에 기대고 있다고 짚었다.</p>
+<p>🎯 <strong>의미</strong>: TASS에 따르면 푸틴은 11/19 선전 기자회견에서 "첫 배가 이미 북방항로를 지났고, 이 일을 넓힐 준비가 돼 있다"며 중국과 북방항로 협력을 키우겠다고 했다. 또 "APEC 동반자들에게, 이 방향으로 함께 일하려는 어느 나라와도 사업 관계를 맺을 준비가 돼 있다고 말했다"고 덧붙였다. 연설 자체(11/18 APEC 기업인 자문위원회)에 대해 알자지라는 그가 "APEC 경제권의 기업과 투자자들이 러시아 시장의 기회를 알아볼 것"이라며 북극 투자를 호소했다고 전했다. 내놓은 당근은 이윤·재산·토지세 감면, 급여 부담금 인하, 우대 임대다. 연중 항해를 목표로 다시 내세웠다. Arctic Institute는 러시아가 9월에 제시한 4천억 달러 규모 북극 횡단 운송 회랑 계획의 93%를 민간·예산 외 자금에 기대고 있다고 짚었다.</p>
 <p>⚡ <strong>잠재 영향</strong>: 세금 감면이 제재로 막힌 금융·기술 문제를 풀지는 못한다. 실제로 중국 자본이 새로 들어오는지가 확인점이다(아래 F3).</p>
 <p>🟡 <a href="https://tass.com/economy/2220319"><strong>Tourism along Northern Sea Route may be of demand</strong></a> — <a href="https://tass.com/arctic-today">TASS</a> / 2026-11-18 — 러시아 관영 통신의 북극 코너에 북방항로 관광 수요가 있다는 전문가 의견이 실렸다. 같은 코너에 코미 공화국에 계획된 탄광의 산업용 석탄 매장량이 1억3,700만 톤이라는 기사(<a href="https://tass.com/economy/2220313">TASS</a>)도 있다.</p>
+<p>🟡 <a href="https://tass.com/economy/2220489"><strong>Northern Sea Route cargo transportation first time above 40 mln tons — Rosatom</strong></a> — <a href="https://tass.com/economy">TASS</a> / 2026-11-18 — 로사톰 대표 리하초프가 선전에서 "올해 북방항로 화물이 처음으로 4천만 톤을 넘었다"고 말했다(종전 최고 3,700만 톤). 같은 자리에서 그는 중국 교통부와 2030년까지 3,700만 톤을 실어 나르기로 한 각서가 이미 있고, 인도·한국도 비슷한 <strong>고정 물량 협의</strong>를 타진 중이라고 했다(<a href="https://tass.com/economy/2220479">TASS</a> / 11-18). 모두 러시아 쪽 주장이며 독립 통계로는 아직 확인 전이다.</p>
 <h3>F5 🌐 해저 케이블·수중 — fact 변경 ✅ (🟡 → 🟠)</h3>
 <blockquote class="simple">💡 <strong>간단히 말하면</strong> — 해저 케이블 근처를 맴도는 러시아 배가 덴마크에서 노르웨이 북극 해안까지 이어서 나타났다. 노르웨이 법원은 이런 '해저 정찰' 의혹을 이유로 한 제재가 정당하다고 판결했다. 해저 시설을 둘러싼 긴장은 높아지는 쪽이다.</blockquote>
 <p>🟠 <a href="https://www.thebarentsobserver.com/news/russian-tugs-sail-suspiciously-over-underwater-infrastructure/462175"><strong>Russian tugs sail suspiciously over underwater infrastructure</strong></a> — <a href="https://www.thebarentsobserver.com/">Barents Observer</a> / 2026-11-18 · 재게재: <a href="https://www.arctictoday.com/russian-tugs-sail-suspiciously-over-underwater-infrastructure/">Arctic Today</a></p>
@@ -193,7 +233,7 @@ section.card > *:last-child { margin-bottom:0 !important; }
 <p>🟡 <a href="https://tass.com/economy/2222389"><strong>Russia's LNG exports to China up 49.1% to 8.7 million tons in January-October</strong></a> — <a href="https://tass.com/oil-gas-industry">TASS</a> / 2026-11-20 — 중국 해관 자료로 1~10월 러시아산 LNG 수입이 1년 전보다 49.1% 늘어 870만 톤(49억6천만 달러)이 됐다. 러시아는 호주에 이어 중국의 2위 LNG 공급국이 됐다. 같은 기간 카타르산은 64.5% 줄었다. (fact only)</p>
 <p>🟡 <a href="https://tass.com/economy/2220309"><strong>Novatek may redirect volumes from Yamal LNG to China if EU rejects Russian LNG</strong></a> — <a href="https://tass.com/oil-gas-industry">TASS</a> / 2026-11-18 — 노바텍 대표 미헬손은 선전에서 "중국이 야말 LNG 지분 30%를 갖고 있다"며, EU가 러시아 LNG 수입을 끊으면 물량을 중국으로 돌릴 계획이 이미 있다고 말했다. 유럽 가격이 100만 BTU당 28~29달러라 공급을 계속한다고 했다. (fact only)</p>
 <p>🟡 <a href="https://tass.com/economy/2220317"><strong>Rail line from Siberia, through Altai to China's Urumqi estimated at $49 billion</strong></a> — <a href="https://tass.com/arctic-today">TASS</a> / 2026-11-18 — 러시아 철도대학 교수가 시베리아 남부에서 알타이를 넘어 중국 우루무치로 가는 철도 비용을 4조 루블(약 490억 달러)로 추정했다. 북쪽으로는 북방항로 항구 사베타까지 잇는 '북시베리아 철도'의 일부가 될 수 있다는 구상이다. 아직 학자 추정 단계다.</p>
-<p><strong>러시아 극동·시베리아 경제 종속 5신호 점검</strong>: ① 시베리아의 힘2 가스관 — 새 사실 없음 ② 위안화 결제 비중 — 새 자료 없음 ③ 중국 지도 표기 — 새 사실 없음 ④ 극동·북극 자원 중국 지분 — 야말 LNG 중국 지분 30%를 노바텍 대표가 재확인(기존 공시 CNPC 20%+실크로드기금 9.9%와 일치), 새 지분 거래 없음 ⑤ 북방항로 중국 통항 — 시즌 종료, 새 통계 없음. 반대 증거로, 러시아는 같은 주 노바텍을 통해 태국 공급도 협상한다고 밝혀(아래 진영 대조) 중국 한 곳에만 기대지 않으려는 모습도 보였다.</p>
+<p><strong>러시아 극동·시베리아 경제 종속 5신호 점검</strong>: ① 시베리아의 힘2 가스관 — 새 사실 없음 ② 위안화 결제 비중 — 새 자료 없음 ③ 중국 지도 표기 — 새 사실 없음 ④ 극동·북극 자원 중국 지분 — 야말 LNG 중국 지분 30%를 노바텍 대표가 재확인(기존 공시 CNPC 20%+실크로드기금 9.9%와 일치), 새 지분 거래 없음 ⑤ 북방항로 중국 통항 — 시즌 종료, 새 통행 통계 없음. 다만 푸틴이 중국과 북방항로 협력 확대를 말했고(F2 · TASS), 로사톰은 중국과의 2030년 3,700만 톤 각서를 다시 꺼내면서 인도·한국도 비슷한 협의를 타진한다고 했다. 새 계약은 아니므로 등급은 🟡로 둔다. 반대 증거로, 러시아는 같은 주 노바텍을 통해 태국 공급도 협상한다고 밝혀(아래 진영 대조) 중국 한 곳에만 기대지 않으려는 모습도 보였다.</p>
 <h3>F8 ⚖️ 해저 영토·관할권 — fact 변경 ✅ (🟡 유지)</h3>
 <blockquote class="simple">💡 <strong>간단히 말하면</strong> — "바다 밑과 경제수역에서 누가 무엇을 할 수 있나"를 두고 두 가지 사실이 쌓였다. 중국 조사선이 미국이 주장하는 대륙붕 위에서 활동했고, 노르웨이 법원은 경제수역에서도 제재가 유효하다고 봤다.</blockquote>
 <p>🟡 <a href="https://gcaptain.com/u-s-coast-guard-icebreaker-returns-from-133-day-arctic-patrol-monitoring-chinese-research-vessels/"><strong>U.S. Coast Guard Icebreaker Returns…</strong></a> — <a href="https://gcaptain.com/">gCaptain</a> / 2026-11-17 — 위 F6의 스토리스호가 감시한 중국 국적 조사선 4척은 <strong>미국 연장대륙붕</strong>(200해리 너머로 미국이 해저 자원 권리를 주장하는 구역) 위에서 활동했다. 연장대륙붕 위 바다는 공해라 조사선 항해 자체는 막을 수 없지만, 해저 자원 조사는 연안국 동의가 필요하다는 것이 해양법의 구조다.</p>
@@ -209,12 +249,14 @@ section.card > *:last-child { margin-bottom:0 !important; }
 <tr><td>F7 양자·항법·센싱</td><td>✅ 초수평선 탐지 실험·위성 방해 대비 착륙장치</td><td>🟠 (유지)</td><td>성상현 기술 축</td></tr>
 <tr><td>F8 해저 영토·관할권</td><td>✅ 중국 조사선 미국 연장대륙붕</td><td>🟡 (유지)</td><td>Fryman 시간 압박</td></tr>
 </tbody></table>
+<p>&lt;div class="dd-fig"&gt;&lt;p class="cap"&gt;&lt;b&gt;그림 1.&lt;/b&gt; 이번 주 8축 어젠다 온도 — 색은 이번 주 사건의 무게일 뿐 우열 점수가 아니다(🔴=3 · 🟠=2 · 🟡=1 · ⚪=0 · 활동 = 이번 주 새 사실 있음 1).&lt;/p&gt;&lt;div id="fig-arc"&gt;&lt;/div&gt;&lt;/div&gt;</p>
 <hr></section>
 <section class="card"><h2>🇷🇺🇨🇳 진영 대조 (framing은 무시, 정량 사실만)</h2>
 <blockquote class="simple">💡 <strong>간단히 말하면</strong> — 러시아 매체는 이번 주 북극을 '투자처와 수출 통로'로만 다뤘다. 콜라반도의 군사 움직임과 비티노 공격 시도는 확인한 섹션에 나오지 않았다. 중국 매체는 이번 창에 북극 새 기사가 없었다.</blockquote>
 <table><thead><tr><th>확인 경로</th><th>근거 등급</th><th>이번 창(11/15~22) 결과</th></tr></thead><tbody>
 <tr><td>TASS 영문 북극 코너·경제·석유가스</td><td>섹션 목록</td><td>북방항로 관광·코미 탄광·우루무치 철도·LNG 대중 수출·노바텍 발언</td></tr>
 <tr><td>TASS 러시아어 북극 코너</td><td>섹션 목록</td><td>최신 11/13 — 이번 창 <strong>신규 0건</strong></td></tr>
+<tr><td>TASS 영문 사이트맵(11/18~19 정치·경제·국제 318건 제목)</td><td>제목 전수 대조</td><td>푸틴 북방항로 대중 협력 발언 · 로사톰 4천만 톤 · 인도·한국 고정 물량 협의 (보완 조사)</td></tr>
 <tr><td>TASS 전사 RSS(106건)</td><td>키워드 대조</td><td>북극 관련어 <strong>0건</strong></td></tr>
 <tr><td>환구시보 영문 검색</td><td>검색 색인(강)</td><td>최신 11/12 — 이번 창 <strong>0건</strong></td></tr>
 <tr><td>신화 영문 검색</td><td>검색 색인(강)</td><td>최신 10/22 — 이번 창 <strong>0건</strong></td></tr>
@@ -223,6 +265,7 @@ section.card > *:last-child { margin-bottom:0 !important; }
 <p><strong>러시아 측 정량 사실</strong>:</p>
 <ul>
 <li>러시아산 LNG 대중 수출 1~10월 870만 톤(+49.1%)</li>
+<li>북방항로 올해 화물 4천만 톤 돌파(로사톰 · 종전 최고 3,700만 톤)</li>
 <li>노바텍 "유럽 공급은 연말 밤까지 지속, 중국 전환 계획 준비"</li>
 <li>노바텍 태국 공급 협상(<a href="https://tass.com/economy/2220345">TASS</a> / 11-18)</li>
 <li>일본의 러시아산 LNG 수입 10월 반년 최고(<a href="https://tass.com/economy/2220549">TASS</a> / 11-18)</li>
@@ -234,14 +277,14 @@ section.card > *:last-child { margin-bottom:0 !important; }
 </tbody></table>
 <hr></section>
 <section class="card"><h2>🏛️ 싱크탱크</h2>
-<blockquote class="simple">💡 <strong>간단히 말하면</strong> — Arctic Institute는 이번 주 한국 특집을 시작했고 주간 요약도 계속 냈다. 다른 두 곳에서는 이번 주 북극 새 글이 없었다.</blockquote>
+<blockquote class="simple">💡 <strong>간단히 말하면</strong> — Arctic Institute는 이번 주 한국 특집을 시작했고 주간 요약도 계속 냈다. Atlantic Council은 이번 주 새 글이 없었고, CSIS는 30일 동안 북극 새 글이 없었다.</blockquote>
 <ul>
 <li>🟡 <a href="https://www.thearcticinstitute.org/navigating-koreas-arctic-sea-route-policy-origins-status-outlook/"><strong>Navigating Korea's Arctic Sea Route Policy: Origins, Status, and Outlook</strong></a> — 정지훈 / <a href="https://www.thearcticinstitute.org/publications/">The Arctic Institute</a> / 2026-11-19 — 한국 북극 항로 정책의 출발과 현황을 정리한 글이다. 지난주 다룬 한국 첫 북방항로 컨테이너선의 적자·매각과 같은 주제다.</li>
 <li>🟡 <a href="https://www.thearcticinstitute.org/the-arctic-institutes-2026-korea-series-introduction/"><strong>The Arctic Institute's 2026 Korea Series: An Introduction</strong></a> — Nima Khorrami / 2026-11-17 — 한국 특집 시리즈 소개 글.</li>
 <li>🟡 <a href="https://www.thearcticinstitute.org/arctic-week-take-five-week-november-16-2026/"><strong>The Arctic This Week Take Five: Week of November 16, 2026</strong></a> — Fiona De Cuyper / 2026-11-20 — 주간 요약. 이번 보고서는 여기 실린 항목 중 스토리스호와 푸틴 APEC 건을 원문(gCaptain·DVIDS·알자지라)으로 다시 확인해 썼다.</li>
 <li>30일 안의 다른 글: <a href="https://www.thearcticinstitute.org/china-us-relations-arctic-prospects-cooperation/">China-US Relations in the Arctic: Prospects for Cooperation</a> (11-05) · <a href="https://www.thearcticinstitute.org/united-states-greatest-threat-canadas-arctic-sovereignty/">The United States is the Greatest Threat to Canada's Arctic Sovereignty</a> (11-05).</li>
 <li><a href="https://www.atlanticcouncil.org/">Atlantic Council</a> — 제목에 북극이 들어간 최신 글은 <a href="https://www.atlanticcouncil.org/dispatches/the-new-eu-arctic-strategy-shows-ambition-but-also-anxiety/">The new EU Arctic strategy shows ambition—but also anxiety</a> (10-26). 이번 창 신규 0건.</li>
-<li><a href="https://www.csis.org/">CSIS</a> — 확인 범위(11/18~11/20)에서 제목에 북극이 들어간 글 0건(수집 상태 참조).</li>
+<li><a href="https://www.csis.org/">CSIS</a> — 30일(10/23~11/22) 북극 발간물 <strong>0건</strong>. 세 경로로 확인했다: ① <a href="https://www.csis.org/regions/arctic-and-antarctica">북극·남극 지역 페이지</a> 최신 글은 <a href="https://www.csis.org/analysis/trumps-greenland-deal-modest-gains-lasting-costs">Trump's Greenland Deal: Modest Gains, Lasting Costs</a> (Otto Svendsen · 10-02), 그 앞은 <a href="https://www.csis.org/analysis/what-does-greenland-deal-mean-north-american-security">What Does the Greenland Deal Mean for North American Security?</a> (09-30) ② 러시아·유라시아 지역 페이지의 10~11월 글·행사에 북극 관련어 없음 ③ X @CSIS 검색(10/23 이후 arctic·greenland·polar) 0건 — 같은 계정의 11/18 이후 게시물은 정상 검색돼 검색 자체는 작동했다.</li>
 </ul>
 <hr></section>
 <section class="card"><h2>🛡️ NATO·정부 1차 소스</h2>
@@ -311,9 +354,9 @@ section.card > *:last-child { margin-bottom:0 !important; }
 <li>Arctic Institute 주간 요약은 11/20호까지 매주 나왔다. 휴면 판정은 완전히 거둔다.</li>
 <li>High North News 태그 페이지 3종은 몇 주 전 글에서 멈춰 있다. 홈페이지 최신 목록이 실질 경로다.</li>
 <li>Barents Observer 경제 태그는 계속 멈춰 있고 안보 태그는 정상 갱신 중이다.</li>
-<li>CSIS 날짜순 검색은 2주 연속 검색어를 무시했다. 4쪽으로 사흘치만 본다.</li>
+<li>CSIS 검색은 날짜순·관련도순 모두 검색어를 무시한다. 대신 북극·남극 지역 페이지가 북극 글만 날짜순으로 보여 주는 실질 경로다.</li>
 <li>Atlantic Council 전문 검색은 정상 작동했다.</li>
-<li>크렘린 영문 홈페이지는 이번에 열리지 않았다.</li>
+<li>크렘린 영문·러시아어 홈페이지는 4번 모두 열리지 않았다. TASS 영문 사이트맵(제목 전수 대조)이 푸틴 발언 원문을 찾는 대체 경로로 쓸 만했다(TASS 검색창은 여전히 작동하지 않음).</li>
 <li>미 북부사령부 X 검색 결과가 한국어 자동 번역으로 보였다. 인용은 원문 게시물 링크로 달았다.</li>
 <li>노르웨이 정부 목록은 첫 접속 때 보안 확인 화면이 뜨고 약 8초 뒤 열렸다.</li>
 <li>WSJ 뉴스 피드는 이번에도 당일 기사를 줬다(3주 연속 정상).</li>
@@ -321,5 +364,209 @@ section.card > *:last-child { margin-bottom:0 !important; }
 <hr>
 <blockquote>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</blockquote></section>
 </div>
+<script>
+/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    /* 2026-11-15: items[].label 이 없고 name 만 있으면 name 을 label 로 쓴다(텐배거 raw_viz 하위호환) */
+    const items=(b.items||[]).map(it=>(it&&it.label==null&&it.name!=null)?Object.assign({},it,{label:it.name}):it), mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+const VIZ={"peers": {"metrics": [{"key": "imp", "label": "이번주 중요도", "unit": "", "better": "high"}, {"key": "act", "label": "활동(fact변경)", "unit": "", "better": "high"}], "rows": [{"name": "F1 그린란드", "vals": {"imp": 2, "act": 1}}, {"name": "F2 NSR", "vals": {"imp": 2, "act": 1}}, {"name": "F3 Polar Silk Road", "vals": {"imp": 1, "act": 1}}, {"name": "F4 광물·에너지", "vals": {"imp": 2, "act": 1}}, {"name": "F5 해저 케이블", "vals": {"imp": 2, "act": 1}}, {"name": "F6 쇄빙선·항만", "vals": {"imp": 2, "act": 1}}, {"name": "F7 양자·PNT", "vals": {"imp": 2, "act": 1}}, {"name": "F8 해저 영토", "vals": {"imp": 1, "act": 1}}]}};
+try{ if(document.getElementById('fig-arc')){ DDViz.renderHeatmap('fig-arc', VIZ.peers); var th=document.querySelector('#fig-arc table thead th'); if(th && th.textContent.trim()==='기업') th.textContent='8축 어젠다'; } }catch(e){console.error(e);}
+</script>
 </body>
 </html>
