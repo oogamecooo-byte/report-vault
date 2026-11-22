@@ -1,0 +1,1460 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Comfort Systems USA (FIX) Deep-Dive — 장사는 더 잘하는데 주가는 31% 내렸다, 값은 비싼 쪽에서 적정 쪽으로 내려왔다 — 2026-11-22</title>
+<meta name="vault-stage" content="Dive"><meta name="vault-topic" content="FIX"><meta name="vault-date" content="2026-11-22">
+<meta name="vault-skill" content="Deep-Dive"><meta name="description" content="FIX Deep-Dive 2026-11-22">
+<style>/* ============================================================
+   Report 공유 시각화 컴포넌트 — CSS (canonical · _shared/report-viz)
+   v1.6 (2026-06-04) — Deep-Dive/assets → _shared 승격
+   라이트(크림 #FDF6E3 배경) 테마 · figure는 흰색 유지+따뜻한 테두리 · 텍스트 #1a1a1a · 액센트 #c0392b·#2980b9.
+   🔴 보고서에는 <style>로 INLINE 삽입 (외부 참조 ❌ — self-contained 유지).
+   ============================================================ */
+.dd-fig { border:1px solid #e8e1cf; border-radius:8px; padding:16px 18px 12px; margin:16px 0 22px; background:#fff; page-break-inside:avoid; }
+.dd-fig .cap { font-size:12px; color:#666; margin:0 0 10px; }
+.dd-fig .cap b { color:#1a1a1a; }
+.dd-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:11.5px; color:#444; }
+.dd-legend span { display:inline-flex; align-items:center; gap:5px; }
+.dd-swatch { width:14px; height:4px; border-radius:2px; display:inline-block; }
+.dd-swatch.dash { height:0; border-top:2px dashed #999; width:16px; }
+.dd-note { font-size:11px; color:#8a8f93; margin-top:8px; font-style:italic; }
+
+/* peer 히트맵 */
+table.dd-heat { font-size:12px; border-collapse:collapse; width:100%; }
+table.dd-heat th { background:#f3ecd9; text-align:center; border:1px solid #ddd; padding:7px 9px; font-weight:600; }
+table.dd-heat td { text-align:center; border:1px solid #ddd; padding:7px 9px; font-variant-numeric:tabular-nums; }
+table.dd-heat td.name { text-align:left; font-weight:600; background:#fdf9ee; }
+table.dd-heat tr.subj td { border-top:2px solid #c0392b; border-bottom:2px solid #c0392b; }
+table.dd-heat tr.subj td.name { border-left:3px solid #c0392b; }
+
+/* 시나리오 EV 배지 */
+.ev-badge { display:inline-block; background:#1a1a1a; color:#fff; font-weight:700; font-size:12px; padding:3px 9px; border-radius:4px; }
+
+/* 시총 10배 랜드마크 — 한 줄 기억 문장 박스 */
+.dd-ladder-sentence { margin-top:10px; background:#eef6f0; border:1px solid #bfe0cb; border-left:4px solid #27ae60; border-radius:6px; padding:9px 13px; font-size:13.5px; color:#1a1a1a; font-weight:600; }
+.dd-ladder-warn { background:#fdeee9; border-color:#f0c0ad; border-left-color:#c0392b; }
+
+/* value chain 모식도 (가치사슬 단계 가로 흐름) — tenbagger §1.6 ① */
+.dd-vchain { width:100%; }
+.dd-vchain svg text { font-family:inherit; }
+
+@media print { .dd-fig { border-color:#ccc; } .dd-ladder-sentence { background:#fff; } }
+
+
+body{background:#EBE4D3;color:#1f2328;font-family:-apple-system,'Helvetica Neue','Apple SD Gothic Neo',sans-serif;line-height:1.65;margin:0;padding:0;}
+.container{max-width:940px;margin:24px auto;background:#FDF6E3;padding:36px 44px;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.08);}
+h1{font-size:1.7em;border-bottom:3px solid #c0392b;padding-bottom:.3em;margin-top:.2em;}
+h2{font-size:1.32em;border-bottom:1px solid #c9bfa3;padding-bottom:.24em;margin-top:1.7em;color:#8a2415;}
+h3{font-size:1.1em;margin-top:1.3em;color:#5c4a00;}
+h4{font-size:1.0em;margin-top:1.1em;color:#5c4a00;}
+blockquote{border-left:4px solid #c9a227;background:#f5ecd3;margin:.8em 0;padding:.5em 1em;color:#4a4230;border-radius:0 6px 6px 0;}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.9em;display:block;overflow-x:auto;}
+th,td{border:1px solid #e8e1cf;padding:6px 9px;text-align:left;vertical-align:top;}
+th{background:#efe6cc;color:#5c4a00;font-weight:600;}
+tr:nth-child(even) td{background:#faf4e2;}
+code{background:#efe6cc;padding:1px 5px;border-radius:4px;font-size:.88em;}
+pre{background:#f0e8cf;padding:12px;border-radius:6px;overflow-x:auto;border:1px solid #e8e1cf;}
+a{color:#b0562a;text-decoration:none;} a:hover{text-decoration:underline;}
+hr{border:none;border-top:1px solid #d8cca8;margin:1.6em 0;}
+strong{color:#3a2f18;}
+.judge{background:#f3ead0;border:2px solid #c0392b;border-radius:8px;padding:16px 20px;margin:1.2em 0;}
+.judge h2{border:none;color:#8a2415;margin-top:0;}
+.dd-fig{background:#fff;border:1px solid #e8e1cf;border-radius:8px;padding:12px;margin:1em 0;}
+.dd-fig figcaption{font-size:.82em;color:#6b5d3a;margin-top:6px;text-align:center;}
+.footer{margin-top:2em;padding-top:1em;border-top:1px solid #d8cca8;font-size:.85em;color:#6b5d3a;}
+@media print{body{background:#fff;}.container{box-shadow:none;background:#fff;}}
+@media (max-width:640px){.container{padding:20px 16px;}}
+</style><meta name="vault-published" content="2026-11-22">
+<meta name="robots" content="noindex, nofollow">
+</head><body>
+<!--dive-hub:start-->
+<nav id="dive-hub" aria-label="하위 Dive 모음" style="max-width:1100px;margin:12px auto 18px;padding:12px 16px;background:#F3EBD6;border:1px solid #e8e1cf;border-radius:10px;font:14px/1.6 'Pretendard','Noto Sans KR',sans-serif;color:#1f2328">
+<div style="font-weight:700;margin-bottom:4px">🤿 FIX 하위 Dive 모음 <span style="font-weight:400;font-size:12px;color:#6b6457">— 이 Deep-Dive가 참고한 개별 보고서</span></div>
+<ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px">
+<li style="color:#8a8270">💰 R-Dive <span style="font-size:12px">제품·수익모델 — 미수행</span></li>
+<li style="color:#8a8270">📜 History-Dive <span style="font-size:12px">기업 역사 — 미수행</span></li>
+<li style="color:#8a8270">👤 People-Dive <span style="font-size:12px">사람·리더 — 미수행</span></li>
+<li style="color:#8a8270">📈 chart-dive <span style="font-size:12px">타이밍 — 🔒 로컬 전용 · 미수행</span></li>
+<li><a href="2026-11-22_fix-specificdive.html" title="FIX (Comfort Systems USA) Specific-Dive — 업종 전문가 체크리스트 보완 — 2026-11-22" style="color:#1F6F8B;font-weight:600;text-decoration:none">🔎 Specific-Dive</a> <span style="font-size:12px;color:#6b6457">업종 특수 점검 · 11/22</span></li>
+<li style="color:#8a8270">📄 One-Pager <span style="font-size:12px">1p 압축 — 미수행</span></li>
+</ul>
+</nav>
+<!--dive-hub:end-->
+<div class="container">
+<h1>Comfort Systems USA (FIX) Deep-Dive — 장사는 더 잘하는데 주가는 31% 내렸다, 값은 비싼 쪽에서 적정 쪽으로 내려왔다</h1>
+<p>2026-11-22 · 주가 기준 11/20 종가 1,042.47달러 · 재무 기준 2026년 9월 말(3분기 10-Q)
+모드 --light · 방법론 DD-v2.0 · 직전 회차 2026-07-30(115일 전 · 그때 주가 1,519.96달러)</p>
+<p><strong>배경</strong> — Comfort Systems USA는 1997년 휴스턴에서 냉난방·배관 시공사 여러 곳을 묶어 세운 회사다. 지금은 공장·병원·데이터센터 같은 큰 건물에 냉각·공조(기계)와 전기 설비를 깔아 주는 미국 최대급 설비 시공사다. 211개 거점, 155개 도시에서 일한다. 이번 회차는 업종 깔때기(Funnel-screener) 결선 채점용 재점검이고, 지난 7월 보고서와 비교해 <strong>바뀐 것만</strong> 자세히 쓴다.</p>
+<div class="judge"><h2>🧑‍⚖️ 종합 매수 판단 (Fable 판사 · 쉬운 말 판정)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 🔴 지금 가격 진입은 보류 — 사상 최고 이익률의 일부가 반복이 보장되지 않아 적정 가격대 위쪽 끝보다 아직 비싸다(낮은 신뢰도 참고 판단).</p>
+</blockquote>
+<p>① <strong>한 줄 답</strong> — 🔴 지금 가격에 새로 들어가는 것은 보류. 석 달 새 35% 빠졌어도 적정 가격대 위쪽 끝보다 아직 조금 비싸다.</p>
+<p>② <strong>왜 그렇게 보나</strong>
+- 이익의 질이 겉보기보다 약하다. 올해 9개월 영업이익의 최대 39%가 공사 도중 원가 예상을 고쳐 잡으며 생긴 이익이다. 이 몫은 매년 반복된다는 보장이 없다.
+- 그 몫을 덜어내고 계산한 적정 가격대는 약 686~1,028달러다. 현재가 1,042달러는 그 위쪽 끝을 살짝 넘는다.
+- 일감이 몇 곳에 몰려 있다. 최근 석 달 수주 잔고 증가분의 97.5%가 데이터센터 사업장 4곳에서 나왔다. 여기 발주가 멈추면 이익이 매출보다 훨씬 크게 줄어든다.</p>
+<p>③ <strong>언제 다시 보나</strong> — 2027년 2월 연간 실적 공시에서 원가 예상 수정 몫을 뺀 이익률이 유지되는지, 수주가 4곳 밖으로 퍼지는지 본다. 가격으로는 800~870달러대.</p>
+<p>④ <strong>반대로 볼 이유</strong> — 원가 예상 수정 이익은 8분기 연속 흑자라, 일회성이 아니라 입찰가에 숨은 가격 협상력일 수 있다. 그렇다면 지금 가격은 적정 범위 한가운데이고, 증권가 이익 전망도 석 달간 오르기만 했다.</p>
+<p>⑤ <strong>아직 모르는 것</strong> — 주가가 왜 급락했는지 직접 원인과 3분기 실적 발표 질의응답 내용을 확인하지 못했다.</p>
+<p>낮은 신뢰도의 참고 판단이며, 최종 판단은 독자 몫이다.</p>
+<blockquote>
+<p>판사: Fable(별칭 호출) · 2026-11-22</p>
+</blockquote>
+</div><hr />
+<h2>한 장 요약</h2>
+<ul>
+<li>🔴 <strong>7축 종합 66점 / 100(⭐3.64) · 양호(경계 양호/보통)</strong> — 7월 회차를 새 체계로 환산하면 약 70점(구 체계 환산 ±3점)이다. 차이 4점은 5점 이내라 <strong>동급</strong>으로 본다. 재무 축은 거의 만점이고, 가중치가 가장 큰 날씨 축(고객 수요가 금리·자금 사정에 민감)이 끌어내린다. 점수는 사업 매력도이고 값은 넣지 않았다.</li>
+<li>🔴 <strong>실적은 오히려 강해졌다</strong> — 3분기 매출 37.7억 달러(+53.7%), 희석 주당순이익 13.91달러(+68.6%), 백로그(아직 매출로 잡히지 않은 확정 수주) 178.1억 달러(1년 새 +90%). 데이터센터를 뜻하는 Technology 고객 비중은 60.8%까지 올랐다.</li>
+<li>🔴 <strong>그런데 수주 증가가 네 곳에 몰렸다</strong> — 석 달 사이 늘어난 같은 사업장 백로그 36.7억 달러 중 97.5%가 텍사스 3곳·버지니아 1곳의 데이터센터 일감이다. 숫자는 좋아졌지만 한 바구니 의존은 더 깊어졌다.</li>
+<li>🟠 <strong>총이익률이 한 분기 꺾였지만, 원인은 실행 악화가 아니라 「추정 변경 이익」 감소다</strong> — 2분기 26.1% → 3분기 24.8%. 끝나 가는 공사의 원가 추정이 줄어 한꺼번에 잡히는 매출이 매출의 8.1%(1분기) → 4.5%(3분기)로 줄었다. 이 몫을 빼면 바탕 총이익률은 상반기 약 19.7% → 3분기 약 21.3%로 올랐다. 대신 올해 9개월 영업이익의 최대 39%가 이런 추정 변경 이익이라 이익의 질은 7월에 본 것보다 낮다〔Specific-Dive〕.</li>
+<li>🟠 <strong>현금으로 자사주를 크게 샀다</strong> — 올해 1월~11월 16일 155만 주, 18.9억 달러. 그중 약 15억 달러는 주가가 떨어진 10~11월에 샀다. 회사는 여전히 차입이 사실상 없지만, 9월 말 21.6억 달러였던 현금 완충은 추정 6~11억 달러로 얇아졌다.</li>
+<li>🧭 분면 = 「강한데 비싼」 칸 안에서 가운데 쪽으로 이동 · 💎 0to1 = 3/7 불운 위험(변동 없음) · 🏁 주도주 = 주도주 사분면 · 핵심 주도주 등급 · 생애 단계 판정 보류(이익 추정은 오르는데 주가는 200일선 아래).</li>
+<li>💰 밸류 = 🔴 고평가(약함 · 적정과 경계) · 신뢰도 중간(하단) · 주가가 31% 내렸는데도 판정이 7월과 같은 쪽에 남은 이유는 사상 최고 이익률 16.7% 중 약 4~5%포인트가 반복이 보장되지 않는 「추정 변경 이익」이기 때문이다 · 🎯 진입 보류(800~870달러 또는 바탕 이익률 증거 3개 확인 뒤 재고 · 참고). 고금리·고물가 내구성 = 재무로는 🟢 견딤, 수요까지 넣으면 ⚪ 조건부.</li>
+<li>💸 <strong>돈의 흐름</strong> — 하이퍼스케일러(대형 클라우드 회사) 설비투자 → 데이터센터 공사 → 기계·전기 시공사로 흐른다. 방향은 업종 판정과 같다. 다만 「1년 새 약 두 배」라는 크기는 이번 자료로 확인되지 않았다(5개사 설비투자의 GDP 대비 비율 1년 +0.75%포인트 = 약 +37%). 두 배가 된 것은 FIX의 Technology 매출이다(+104%).</li>
+<li>💸 <strong>이익이 쌓이는 단계</strong> — 시공 단계에 이익이 남는다는 업종 판정과 <strong>조건부로 일치</strong>한다. FIX 영업이익률은 8.0 → 10.7 → 14.4% → 최근 1년 16.7%로 계속 올랐다. 다만 그 이익은 단가 인상이 아니라 일감을 고르고 고정비 위에 물량을 얹는 힘에서 나오고, 업종 전체가 아니라 숙련 인력·공장을 가진 상위 소수에 몰린다(EMCOR은 10.1% → 9.9%로 정체).</li>
+</ul>
+<hr />
+<h2>📊 7축 점수 (100점 만점)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 66점, 양호와 보통의 경계다. 재무와 경쟁 우위는 높고, 고객 수요가 금리와 큰손의 자금 사정에 묶여 있다는 점이 점수를 깎는다.</p>
+</blockquote>
+<figure class="dd-fig"><div id="fig-score7"></div><div class="dd-legend" id="fig-score7-leg"></div><figcaption id="fig-score7-cap"></figcaption></figure>
+
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th style="text-align: center;">⭐</th>
+<th style="text-align: center;">가중(배점)</th>
+<th style="text-align: center;">득점</th>
+<th>근거 한 줄</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🌦️ 날씨</td>
+<td style="text-align: center;">2.43</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">8.9</td>
+<td>재무는 금리 수혜, 고객 수요·주가는 금리·AI 설비투자 자금 사정에 역노출</td>
+</tr>
+<tr>
+<td>⛰️ 산</td>
+<td style="text-align: center;">3.90</td>
+<td style="text-align: center;">12.5</td>
+<td style="text-align: center;">9.1</td>
+<td>데이터센터·전동화는 세상을 바꾸는 산업, 국가 자본은 직접 아님</td>
+</tr>
+<tr>
+<td>🌲 숲</td>
+<td style="text-align: center;">3.50</td>
+<td style="text-align: center;">12.5</td>
+<td style="text-align: center;">7.8</td>
+<td>숙련 시공 캐파는 병목이지만 그 병목이 단가로 바뀐 증거는 없다</td>
+</tr>
+<tr>
+<td>🌳 나무</td>
+<td style="text-align: center;">3.88</td>
+<td style="text-align: center;">12.5</td>
+<td style="text-align: center;">9.0</td>
+<td>수익성·자가조달 최상, 반복 매출 비중 하락·해자 1종만 작동</td>
+</tr>
+<tr>
+<td>🌲🌳 옆의 나무</td>
+<td style="text-align: center;">4.10</td>
+<td style="text-align: center;">12.5</td>
+<td style="text-align: center;">9.7</td>
+<td>이익률·재무 1위, 성장·백로그 배수는 대장주 Quanta와 비슷</td>
+</tr>
+<tr>
+<td>👤 사람</td>
+<td style="text-align: center;">4.00</td>
+<td style="text-align: center;">12.5</td>
+<td style="text-align: center;">9.4</td>
+<td>재무 책임자 내부 승계(계획된 교체), 객관 7축 변동 없음</td>
+</tr>
+<tr>
+<td>🔢 숫자</td>
+<td style="text-align: center;">4.89</td>
+<td style="text-align: center;">12.5</td>
+<td style="text-align: center;">12.2</td>
+<td>성장·이익률·현금·무차입 모두 최상, 현금 질만 한 단계 낮음</td>
+</tr>
+<tr>
+<td><strong>종합</strong></td>
+<td style="text-align: center;"><strong>⭐3.64</strong></td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;"><strong>66점</strong></td>
+<td>양호(경계 양호/보통) · W-2026-10-11 · DD-v2.0</td>
+</tr>
+</tbody>
+</table>
+<p>종합 점수(100점) = 사업·thesis 매력도(가중합) · 밸류 멀티플 미반영. 5점 이내 차이는 같은 점수로 본다.</p>
+<p><strong>감점표 (잃은 점수가 큰 칸 3개)</strong>
+- 날씨 · 고객 수요의 금리·자금 채널 · 🔴 · −3.6점
+- 날씨 · 경기 국면(비주거 건설 축소·하이퍼스케일러 설비투자가 영업현금의 95.5%) · 🔴 · −3.6점
+- 날씨 · 시장 민감도(주가 베타 1.64 · AI 설비투자 바구니와 함께 움직임) · 🔴 · −3.6점</p>
+<p>7월 대비: 숲 4.0 → 3.5는 사업이 나빠져서가 아니라 채점법 변경(병목 시점 칸 3개와 렌트 포획 상한을 이번부터 포함) 효과다. 나무 4.0 → 3.88은 반복 매출 비중 하락, 옆의 나무 4.5 → 4.1은 성장·백로그 배수에서 대장주와의 격차가 좁혀진 반영이다.</p>
+<hr />
+<h2>Section A. 🌦️ 날씨 — 지정학 + 거시 (장기 구조) ⭐2.43</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 7월과 같은 결론이다. 무차입이라 금리가 높아도 회사 장부는 괜찮지만, 고객이 짓는 데이터센터·공장이 금리와 자금 사정에 묶여 있어 전체로는 역풍 쪽이다.</p>
+</blockquote>
+<h3>A.1 거시·지정학 노출 (변동분 중심)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 새로 달라진 것은 고객 쪽 자금 사정이다. 대형 클라우드 회사들이 번 돈의 95%를 짓는 데 쓰고 있어, 앞으로는 빚을 더 내야 지금 속도를 유지한다.</p>
+</blockquote>
+<p>7월 보고서가 정리한 구조(재무는 고금리 수혜, 고객 수요는 고금리 피해, 부호가 갈리는 종목)는 <strong>변동 없음</strong>이다. 이번에 더해진 사실은 고객 쪽이다.</p>
+<ul>
+<li>하이퍼스케일러 5개사의 설비투자 ÷ 영업현금(최근 4분기 합)이 81.8% → <strong>95.5%</strong>로 올랐다. 아마존 127.9%, 오라클 161.2%는 이미 번 돈보다 많이 쓴다(주간 매크로 보고서 11/14 산출 인용).</li>
+<li>같은 5개사 설비투자의 미국 GDP 대비 비율은 2.79%로 1년 새 +0.75%포인트다. 돈은 여전히 늘어난다. 다만 이제는 회사채·주식 발행 같은 바깥 돈이 받쳐야 한다.</li>
+<li>시장은 이 위험을 먼저 반영했다. 11/20까지 한 주 동안 S&amp;P 500 −8.6%, 변동성 지수 35.9. FIX는 석 달 −35.2%, 같은 업종 IES −51.9%·Legence −42.7%·EMCOR −21.1%다.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>⭐ 산출 근거 (칸 → ⭐)</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>미·중 패권 노출(리쇼어링·국내 데이터센터)</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>지정학 꼬리 위험(유가·자재·공급망)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>수출통제·관세(자재 원가 경로 · 회사는 "대부분 회수 가능"이라 공시)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>금리 — 회사 재무 노출(순현금·변동금리 차입 0)</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>금리 — 고객 수요·자본비용 채널</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>경기 국면·수요 쪽(비주거 축소·큰손 자금 한계)</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>시장 민감도(베타 1.64 · AI 바구니 동조)</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td><strong>평균 2.43 → 득점 8.9 / 25</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>2.43</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>▶ 판정이 바뀌는 신호</strong> — 🟢 비주거 건설지출 실질 성장 전환 · 하이퍼스케일러 설비투자 ÷ 영업현금 90% 아래로 하락 · 실질금리 하락. 🔴 하이퍼스케일러 설비투자 가이던스 삭감 · 투자등급 회사채 발행 창구 위축 · AI 바구니와의 동조 지속.</p>
+<hr />
+<h2>Section B. ⛰️ 산 — 산업 ⭐3.90</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 데이터센터와 전동화는 세상을 바꾸는 산업이고 FIX는 그 물리 시공층에 서 있다. 국가 돈이 아니라 민간 대기업 돈이 동력이라는 점은 그대로다.</p>
+</blockquote>
+<p><strong>변동 없음(요지만)</strong> — 세상을 바꾸는 산업 ✅ · 산업 단위 국가 자본 ⚪(반도체 공장 지원은 지나갔고 데이터센터는 민간 자본) · 내러티브 3축(사회=숙련 인력 희소 · 자본=하이퍼스케일러 설비투자 · 기술=모듈러 △) · 산업 총량은 축소 중이고 FIX의 성장은 데이터센터 쪽 점유율·믹스 이동에서 나온다.</p>
+<figure class="dd-fig"><div id="fig-c3"></div><div class="dd-legend" id="fig-c3-leg"></div><figcaption id="fig-c3-cap"></figcaption></figure>
+
+<p>이번 회차 덧붙임 한 줄 — 내러티브의 자본 축은 여전히 가장 강하지만, 그 자본이 큰손의 자기 현금에서 차입·주식 발행으로 옮겨 가는 중이다. 자본 축이 사실상 단일 동력이라는 7월의 경고가 더 무거워졌다.</p>
+<table>
+<thead>
+<tr>
+<th>⭐ 산출 근거</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>세상을 바꾸는 산업</td>
+<td style="text-align: center;">🟢 YES</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>산업 단위 국가 자본</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>내러티브 3축</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>가장 강한 축(자본) 깊이</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>산업 성장률·시장 크기(산업 축소 vs 데이터센터 급성장)</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td><strong>평균 3.90 → 득점 9.1 / 12.5</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>3.90</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Section C. 🌲 숲 — 섹터 (미국 미션크리티컬 기계·전기 설비 시공) ⭐3.50</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 숙련 인력과 공장 캐파가 모자란 것은 사실이고 FIX가 그 캐파를 쥐고 있다. 하지만 그것이 단가 인상으로 이어졌다는 증거는 아직 없어서 점수에 상한이 걸렸다.</p>
+</blockquote>
+<h3>C.0 이 산업의 돈은 어디로, 왜 흐르고, 이익은 어디에 쌓이나</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 큰 클라우드 회사의 설비투자가 데이터센터 공사비가 되어 시공사로 흐른다. 이익은 시공 단계 중에서도 인력과 공장을 가진 상위 소수에 쌓이고, 단가가 아니라 물량에서 나온다.</p>
+</blockquote>
+<p><strong>돈이 어디로, 왜 흐르나</strong> — 하이퍼스케일러는 인공지능 연산용 데이터센터를 빨리 지어야 한다. 땅과 전력, 그래픽처리장치(GPU)는 이미 샀지만, 그 위에 냉각·전력 설비를 깔아 줄 숙련 시공 인력이 모자라다. 그래서 설비투자의 일부가 기계·전기 설비 시공사로 들어온다.</p>
+<table>
+<thead>
+<tr>
+<th>근거</th>
+<th>수치</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FIX Technology 고객 매출(3분기)</td>
+<td>22.9억 달러 · 전년 11.2억 대비 +104% · 비중 60.8%</td>
+<td>3분기 10-Q 고객 유형별 매출</td>
+</tr>
+<tr>
+<td>FIX 백로그</td>
+<td>178.1억 달러 · 1년 +90% · 증가분의 대부분이 "technology sector"</td>
+<td>3분기 10-Q MD&amp;A</td>
+</tr>
+<tr>
+<td>하이퍼스케일러 5개사 설비투자</td>
+<td>GDP 대비 2.79%(1년 +0.75%포인트 ≈ +37%) · 영업현금의 95.5%</td>
+<td>주간 매크로 보고서 11/14 산출 인용</td>
+</tr>
+</tbody>
+</table>
+<p><strong>업종 판정과 비교 — 방향 일치, 크기 불일치</strong> — 업종 흐름 판정의 「돈 g」는 맞다. 다만 그 근거로 든 「설비투자를 1년 새 약 두 배로 늘림」은 이번 자료로 확인되지 않았다. 이번 자료에서 1년 새 두 배가 된 것은 큰손의 설비투자가 아니라 FIX의 Technology 매출이다. 큰손 설비투자는 GDP 대비로 약 37% 늘었다(기간·집계 대상이 다를 수 있어 「두 배」를 반박한 것은 아니고 확인하지 못한 것이다).</p>
+<p><strong>이익은 가치사슬의 어디에 쌓이나</strong> — 시공 단계에 이익이 남는다는 업종 판정과 <strong>조건부로 일치</strong>한다.</p>
+<table>
+<thead>
+<tr>
+<th>회사</th>
+<th>영업이익률 3개년 → 최근 1년</th>
+<th>읽기</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FIX</td>
+<td>8.0 → 10.7 → 14.4% → <strong>16.7%</strong></td>
+<td>계속 확장</td>
+</tr>
+<tr>
+<td>EMCOR</td>
+<td>7.0 → 9.2 → 10.1% → <strong>9.9%</strong></td>
+<td>정체</td>
+</tr>
+<tr>
+<td>Quanta</td>
+<td>5.4 → 5.7 → 5.7% → <strong>7.1%</strong></td>
+<td>소폭 확장</td>
+</tr>
+<tr>
+<td>IES</td>
+<td>최근 1년 13.5%</td>
+<td>높음(주가는 석 달 −52%)</td>
+</tr>
+</tbody>
+</table>
+<p>조건은 두 가지다. ① 그 이익은 단가 인상이 아니라 <strong>일감을 고르고 고정비 위에 물량을 얹는 힘</strong>에서 나온다(아래 렌트 포획 🟡). ② 업종 전체가 아니라 <strong>숙련 인력·모듈러 공장을 가진 상위 소수</strong>에 몰린다. 그리고 위쪽의 큰손이 번 돈보다 많이 쓰기 시작해, 지불하는 쪽의 협상력이 커질 수 있는 자리다.</p>
+<h3>C.1 병목 시점 매트릭스 + 렌트 포획</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금(0~6개월)은 FIX가 병목을 쥔 쪽이다. 6~24개월 뒤는 이미 받은 고정가 일감의 마진과 큰손의 자금 사정이 관건이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>병목 단계</th>
+<th>FIX 위치</th>
+<th style="text-align: center;">유지 기간</th>
+<th>해소 경로</th>
+<th style="text-align: center;">렌트 포획</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🕐 0~6개월</td>
+<td>숙련 인력 + 자기 공장 캐파</td>
+<td>보유 쪽 · 백로그 1년 +90%·사업장 4곳 집중</td>
+<td style="text-align: center;">1~2년</td>
+<td>경쟁사 증설·인력 양성, 큰손의 공사 일정 조정</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>🕑 6~24개월</td>
+<td>고정가 백로그의 실현 마진 · 큰손 자금 한계</td>
+<td>피해 가능 쪽</td>
+<td style="text-align: center;">추정 불가</td>
+<td>큰손 설비투자 삭감 또는 회사채·주식 조달 지속</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>🕒 2~5년</td>
+<td>전력 접속 대기열 · 수요 총량</td>
+<td>간접</td>
+<td style="text-align: center;">추정 불가</td>
+<td>전력망 접속 개혁·자가발전 확산</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+</tbody>
+</table>
+<p><strong>렌트 포획 판정 근거</strong> — 입찰 예비비를 8분기 연속 남겼지만, 숨은 가격 결정력인지 보수적 원가 추정인지는 가를 수 없다〔Specific-Dive〕. 계약은 고정가 비중이 높아 원가 전가가 입찰 시점에만 된다(지연). 최대 고객 비중은 12.8%로 협상력 상한(50%)에 못 미친다. 공장·인력은 자기 소유다(포착). 영업이익률 확장은 연간 공시로 확인되지만, 회사가 가격·물량·믹스를 나눠 공시하지 않아 <strong>판가 인상이 원인이라는 증거가 없다</strong>. 3분기 총이익률도 1.3%포인트 내렸다. → 🟡 메커니즘은 있으나 실현 증거 없음.</p>
+<p><strong>지불자 경로</strong> — 큰손 = 하이퍼스케일러 · 막힘 = 이미 산 GPU와 확보한 전력 부지에 냉각·전력 설비를 제때 깔아 줄 숙련 인력과 조립 공장이 모자란 것 · 경로 = 대부분 종합건설사나 개발사를 거치는 <code>1단계 간접</code>(일부 직접) · 같은 줄 병기: 최대 고객 12.8%(FY2025 10-K) · 백로그 증가분 97.5%가 사업장 4곳 · 가격 인상 테스트 🟡.</p>
+<h3>C.2 4중 필터</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 품질 1등이고 이익률도 업종 최고지만, 경쟁자가 여럿이고 매번 다시 입찰하는 구조다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>필터</th>
+<th style="text-align: center;">등급</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">🟡(상한)</td>
+<td>데이터센터 수요 실재 · 산업 총량은 축소 · 렌트 포획 🟡라 🟢 불가</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">⚪ 4~8</td>
+<td>EMCOR·IES·Legence·APi 등 · 매 프로젝트 재입찰</td>
+</tr>
+<tr>
+<td>③ 섹터 1~2등</td>
+<td style="text-align: center;">🟢</td>
+<td>이익률·백로그 증가·재무 1위 · 시총은 Quanta 다음 2위</td>
+</tr>
+<tr>
+<td>④ 마진</td>
+<td style="text-align: center;">🟡</td>
+<td>영업이익률 16.7%(동종 6~13.5%) · 정체는 운영 레버리지</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>⭐ 산출 근거</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0~6개월 칸</td>
+<td style="text-align: center;">🟢5 → 🟡4(렌트 포획 🟡 상한)</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>6~24개월 칸</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>2~5년 칸</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>① 수요/공급</td>
+<td style="text-align: center;">🟡(상한)</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>② 경쟁사 수</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>③ 섹터 순위</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>④ 마진</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td><strong>평균 3.50 → 득점 7.8 / 12.5</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>3.50</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>▶ 판정이 바뀌는 신호</strong> — 🟢 모듈러 매출·마진 별도 공시 · 판가 인상 언급과 총이익률 동반 상승. 🔴 총이익률 2분기 연속 하락 · 상위 4개 사업장 일감 취소·연기 · 보장 최대가격(GMP)·원가보상 계약 비중 증가 언급.</p>
+<hr />
+<h2>Section D. 🌳 나무 — 기업 ⭐3.88</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 돈을 아주 잘 벌고 스스로 투자비를 대는 회사다. 다만 손님을 묶어 두는 장치가 약하고, 해자는 규모에서 오는 비용 우위 하나뿐이다.</p>
+</blockquote>
+<h3>D.0 제품·수익모델 (7월 R-Dive 요약 · 이번 분기 수치로 갱신)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 큰 건물의 냉각·전기 설비를 짓는 일이 매출의 4분의 3이다. 데이터센터 일이 늘면서 반복 매출인 서비스 비중은 더 줄었다.</p>
+</blockquote>
+<p>[재사용: 2026-07-30 R-Dive 산출 · 재사용 창(90일) 밖이라 수치는 이번 10-Q로 다시 확인했다]</p>
+<table>
+<thead>
+<tr>
+<th>주력</th>
+<th style="text-align: center;">3분기 매출 비중</th>
+<th style="text-align: center;">1년 전</th>
+<th>핵심</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 신축 건물 설비 시공</td>
+<td style="text-align: center;">76.2%</td>
+<td style="text-align: center;">65.2%</td>
+<td>발주자는 가장 싼 곳보다 공기를 지킬 곳을 고른다</td>
+</tr>
+<tr>
+<td>② 공장 선조립·모듈러(텍사스)</td>
+<td style="text-align: center;">미공시</td>
+<td style="text-align: center;">—</td>
+<td>백로그 증가 1위 사업장(1년 +27.2억 달러) · 3분기 설비투자 2.1억 달러의 93%가 기계 부문</td>
+</tr>
+<tr>
+<td>③ 기존 건물 시공</td>
+<td style="text-align: center;">14.0%</td>
+<td style="text-align: center;">21.5%</td>
+<td>금액 5.28억 달러로 1년 전과 같다 — 7월에 본 「줄이는 중」은 멈췄다</td>
+</tr>
+<tr>
+<td>④ 서비스·유지보수</td>
+<td style="text-align: center;">9.8%</td>
+<td style="text-align: center;">13.3%</td>
+<td>30~60일 해지 통보 계약 · 금액은 +12%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>백로그의 성격</strong> — 10-K 정의는 「계약했거나 약속받은」 공사다. 「12개월 안 65~75% 매출 전환」 문구는 백로그가 41억 달러이던 2022년 말부터 178억 달러인 지금까지 똑같아 판단 근거로 쓰지 않는다. 발주자가 이유 없이 끊을 때의 보상·지체상금 크기는 공시되지 않는다〔Specific-Dive〕.</p>
+<p><strong>과금</strong> — 고정가 중심 + 일부 원가보상(cost-plus). 원가보상은 전가에 유리하지만 마진이 낮다. 고객 유형은 Technology 60.8% · 제조 16.8% · 병원 6.3% · 교육 4.6% · 정부 3.7%.</p>
+<p><strong>올해 인수 3건</strong> — R.C. Hunt Electric(유타 · 2.06억 달러) · Boys Electrical(플로리다 · 6,300만 달러) · 텍사스 모듈러 회사(4,800만 달러). 매출 성장 53.7% 중 인수 몫은 7.4%포인트다.</p>
+<h3>D.5 곡괭이 판정 — 자가조달형(A) 유지</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이익으로 공장과 인수, 자사주까지 다 댄다. 빚을 낼 필요가 없는 자가조달형이다.</p>
+</blockquote>
+<p>마진 16.7% · 설비투자 매출의 5.0%(1년 전 1.7%) · 자본시장 차입 0(1997년 이후 셸프 등록·수시 증자·전환사채 0건) · 영업현금 9개월 25.4억 달러. 마진 출처는 정부 보조금이 아니라 사업이다. 🔴 설비투자 비중이 세 배가 되어, 7월의 「자산 가벼운 회사」라는 전제는 더 이상 맞지 않는다.</p>
+<h3>D.6 해자 — 5종 + 가격 인상 테스트 + AI 침식</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 남보다 크고 숙련된 인력과 공장을 가진 비용 우위만 작동한다. 값을 올려 번다는 증거는 없고, AI가 대신할 일이 아니라 녹을 해자도 없다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>유형</th>
+<th style="text-align: center;">작동</th>
+<th>근거 (1차)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 네트워크 효과</td>
+<td style="text-align: center;">❌</td>
+<td>고객이 늘수록 서로 가치가 커지는 구조가 아니다</td>
+</tr>
+<tr>
+<td>② 브랜드</td>
+<td style="text-align: center;">⚠️</td>
+<td>총이익률 25.7%로 EMCOR 19.6%보다 높지만 IES 26.6%와 비슷 · 평판은 IR 서술</td>
+</tr>
+<tr>
+<td>③ 전환 비용</td>
+<td style="text-align: center;">⚠️</td>
+<td>반복 매출 9.8% · 30~60일 해지 · 매 프로젝트 재입찰</td>
+</tr>
+<tr>
+<td>④ 비용 우위</td>
+<td style="text-align: center;">✅</td>
+<td>영업이익률 16.7% vs 동종 6~13.5% · 유형자산 8.6억 달러 모듈러 공장 · 규모</td>
+</tr>
+<tr>
+<td>⑤ 법적 보호</td>
+<td style="text-align: center;">❌</td>
+<td>주별 시공 면허는 경쟁사도 보유 · 10-K에 특허 단락 없음 → 막은 증거·남은 기간·가격 테스트 셋 다 미충족</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>가격 인상 테스트 🟡</strong> — 이익률 확장은 연간 공시로 확인되지만 원인이 판가인지 실행·믹스인지 나뉘지 않는다. 3분기 총이익률 −1.3%포인트. 병목 지위만으로 ④를 ✅로 쓰지 않았다(④는 동종 대비 이익률 격차라는 숫자 근거).</li>
+<li><strong>D.6 ⭐</strong> = 해자 유형 1개 ✅ → ⭐3(가격 테스트 🟡 상한 3) 과 자산 기반 ⭐4(부지·인력·공장 = 오래가는 자산 + 모듈러 기술 = 변하는 자산)의 평균 <strong>3.5</strong>.</li>
+<li><strong>해자 내구성</strong> = 약 2~3년 추정(백로그 소진 기간 + 캐파 복제에 걸리는 시간).</li>
+<li><strong>🤖 AI 침식 = 해당 없음</strong> — 현장 시공·설비 설치는 물리 작업이다. 경쟁자가 못 가진 데이터를 소유하지도 않고(ⓐ 없음), AI 에이전트가 대신할 사무 업무 흐름에 박힌 제품도 아니다(ⓑ 안 박힘). 업종 라벨(해당 없음)과 <strong>일치</strong>.</li>
+</ul>
+<h3>D.7~D.8 확장성·하방</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 기계·전기·공장 조립을 한 지붕에 모은 회사라 확장성은 좋다. 파산 걱정은 없지만, 늘린 고정비 때문에 물량이 꺾이면 이익은 빠르게 줄 수 있다.</p>
+</blockquote>
+<p>확장성 ⭐4(기계·전기·모듈러 수직 통합 · 최종시장 5개). 하방 — 차입 4,960만 달러뿐이라 파산 위험은 사실상 없다. 🔴 단 유형자산이 연초 대비 +122%, 인력·급여 미지급액도 크게 늘어 물량이 꺾이면 운영 레버리지가 거꾸로 돈다.</p>
+<table>
+<thead>
+<tr>
+<th>⭐ 산출 근거</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>예측 가능성(백로그 = 확정 수주 전액 · 집중)</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>수익성</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>과금 강도</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>붙잡는 힘(반복 9.8% · 1년 새 하락)</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td>곡괭이 질 (A)</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>해자</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">3.5</td>
+</tr>
+<tr>
+<td>확장성</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>하방 닫힘</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td><strong>평균 3.88 → 득점 9.0 / 12.5</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>3.88</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Section E. 🌲🌳 옆의 나무 — 경쟁 ⭐4.10</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이익률과 재무는 여전히 동종 1등이다. 성장과 백로그 배수는 대장주 Quanta와 비슷해져 7월만큼 압도적이지는 않다.</p>
+</blockquote>
+<p>비교 대상: EMCOR(최근접 · FIX보다 싼 쪽) · Quanta(대장주) · IES(같은 업종 코드) · MYR Group · Legence.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>FIX</th>
+<th>EMCOR</th>
+<th>Quanta</th>
+<th>IES</th>
+<th>MYR</th>
+<th>Legence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>시가총액(11/20)</td>
+<td>365억</td>
+<td>264억</td>
+<td>842억</td>
+<td>66억</td>
+<td>39억</td>
+<td>50억</td>
+</tr>
+<tr>
+<td>매출 성장(최근)</td>
+<td>+53.7%(SEC)</td>
+<td>+28.8%</td>
+<td>+57.4%</td>
+<td>+54.8%</td>
+<td>+32.5%</td>
+<td>+85.1%(상장 효과)</td>
+</tr>
+<tr>
+<td>영업이익률(최근 1년)</td>
+<td><strong>16.7%</strong></td>
+<td>9.9%</td>
+<td>7.1%</td>
+<td>13.5%</td>
+<td>6.1%</td>
+<td>5.6%</td>
+</tr>
+<tr>
+<td>재무</td>
+<td>차입 0.5억 · 순현금</td>
+<td>순현금</td>
+<td>순부채</td>
+<td>순현금</td>
+<td>차입</td>
+<td>—</td>
+</tr>
+<tr>
+<td>반복 매출</td>
+<td>9.8%</td>
+<td>서비스 부문 큼</td>
+<td>장기 계약 많음</td>
+<td>낮음</td>
+<td>장기 계약</td>
+<td>—</td>
+</tr>
+<tr>
+<td>3개월 주가</td>
+<td>−35.2%</td>
+<td>−21.1%</td>
+<td>−9.3%</td>
+<td>−51.9%</td>
+<td>−18.9%</td>
+<td>−42.7%</td>
+</tr>
+</tbody>
+</table>
+<p>시가총액은 달러, 매출 성장·이익률은 FIX만 SEC 1차이고 나머지는 야후 최근 1년 값이다.</p>
+<figure class="dd-fig"><div id="fig-e1"></div><div class="dd-legend" id="fig-e1-leg"></div><figcaption id="fig-e1-cap"></figcaption></figure>
+
+<p>판정 — 수익 모델 <strong>구조적 우위</strong>(이익률·재무 1위) · 경쟁 포지션 <strong>우위</strong>. 최대 위협은 동종이 아니라 발주자다. 큰손이 자금 압박을 받으면 보장 최대가격·원가보상 계약으로 마진을 되가져갈 수 있다.</p>
+<table>
+<thead>
+<tr>
+<th>⭐ 산출 근거</th>
+<th style="text-align: center;">등급</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>마진 우위</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>성장 우위(Quanta·IES와 비슷)</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>백로그 배수(1.42년치 · Quanta와 비슷)</td>
+<td style="text-align: center;">🟡</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>재무 우위</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>반복 매출 열위</td>
+<td style="text-align: center;">⚪</td>
+<td style="text-align: center;">2.5</td>
+</tr>
+<tr>
+<td><strong>평균 4.10 → 득점 9.7 / 12.5</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>4.10</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Section F. 👤 사람 — 경영진 ⭐4.00</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 30년 재무 책임자가 내년 초 은퇴하고 25년 근무한 회계 책임자가 이어받는다. 계획된 내부 승계라 점수는 그대로다.</p>
+</blockquote>
+<p>[재사용: 2026-07-30 People-Dive 산출 · 재사용 창 밖 · 객관 7축 점수는 그대로 쓰고 변동분만 아래에 적는다]</p>
+<ul>
+<li><strong>변동 ① 재무 책임자 교체</strong> — 창업 멤버 Bill George(2005년부터 재무 책임자)가 2026년 연차보고서 제출 뒤 은퇴한다. 1999년 입사한 Julie Shaeff(회계 책임자·공인회계사)가 승진한다(8-K 10/22). 외부 영입이 아닌 내부 승계라 거버넌스 점수 변동 없음.</li>
+<li><strong>변동 ② 자사주 대량 매입</strong> — 주가가 고점 대비 절반 근처일 때 평균 약 1,140달러(추정)에 약 15억 달러를 샀다. 경영진이 자기 백로그의 현금화를 확신한다는 행동 증거로 읽을 수 있다. 같은 행동이 현금 완충을 줄였다는 점은 숫자 축과 내구성에서 따로 본다.</li>
+<li><strong>변동 ③ 내부자 매도 신고</strong> — 8월에 매도 계획 신고(Form 144) 3건과 소유 변동 신고 3건이 있었다. 신고자·규모는 이번 회차에서 열어 보지 않았다.</li>
+<li><strong>CEO 승계</strong> — Brian Lane(69세)의 후계는 사장 Trent McKenna로 7월 판단 그대로다. 회사는 시점을 공개한 적이 없다.</li>
+<li>비전·가치관 축 = 사용자 직접 점검 영역(사용자 ⭐ 대기).</li>
+</ul>
+<p>객관 7축: 약력 4 · 명성 3.5 · 능력 5 · 도덕성 4 · 지분 정렬 3 · 거버넌스 5 · 외부 평가 3.5 → <strong>평균 4.00 → 득점 9.4 / 12.5</strong>.</p>
+<hr />
+<h2>Section G. 🔢 숫자 — 재무건전성 ⭐4.89</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 성장, 이익률, 현금, 무차입 모두 최상이다. 현금 흐름이 고객 선수금에 크게 기대는 점만 한 단계 낮게 본다.</p>
+</blockquote>
+<h3>G.1 기본 정량</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 최근 1년 매출 125억 달러, 영업이익률 16.7%, 차입은 사실상 없다. 주가는 최근 1년 이익의 22.5배다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>값</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3분기 매출</td>
+<td>37.66억 달러(+53.7%)</td>
+<td>3분기 10-Q</td>
+</tr>
+<tr>
+<td>3분기 영업이익(이익률)</td>
+<td>6.25억 달러(16.6%)</td>
+<td>같음</td>
+</tr>
+<tr>
+<td>3분기 희석 주당순이익</td>
+<td>13.91달러(+68.6%)</td>
+<td>같음</td>
+</tr>
+<tr>
+<td>최근 1년 매출</td>
+<td>125.4억 달러</td>
+<td>연간 + 9개월 차감 계산</td>
+</tr>
+<tr>
+<td>최근 1년 영업이익률</td>
+<td>16.7%</td>
+<td>같음</td>
+</tr>
+<tr>
+<td>백로그</td>
+<td>178.1억 달러(최근 1년 매출의 1.42배)</td>
+<td>3분기 10-Q</td>
+</tr>
+<tr>
+<td>현금 · 차입(9/30)</td>
+<td>21.58억 · 0.50억 달러</td>
+<td>같음</td>
+</tr>
+<tr>
+<td>9개월 영업현금 · 잉여현금</td>
+<td>25.38억 · 20.47억 달러</td>
+<td>실적 보도자료</td>
+</tr>
+</tbody>
+</table>
+<p>참고(점수 미반영): 시총 364.7억 달러 · 주가수익배율 22.5배(최근 1년) · 15.5배(내년 컨센) · 매출 대비 시총 2.9배 · EV/EBITDA 15.2배(야후). 야후 매출 증가율 78.5%는 연간 기준 혼입 값이라 SEC 53.7%를 쓴다.</p>
+<h3>G.1.5 시총 10배 랜드마크</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 지금은 EMCOR보다 조금 큰 회사다. 열 배가 되려면 미국 전력 장비 1위 회사보다 훨씬 커져야 해 현실성이 낮다.</p>
+</blockquote>
+<p>지금은 EMCOR(264억 달러)과 Quanta(842억 달러) 사이(365억 달러) → 열 배면 3,650억 달러로, 7월에 확인한 미국 전력·전기 장비 최대 시총(약 2,400억 달러)을 크게 넘는다. 텐배거 산술은 성립하지 않는다(규모 비교일 뿐이다).</p>
+<figure class="dd-fig"><div id="fig-g15"></div><div class="dd-legend" id="fig-g15-leg"></div><figcaption id="fig-g15-cap"></figcaption></figure>
+
+<h3>G.3~G.4 재무건전성 4축 + 금리·부채 내구성</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 성장은 빨라졌고 이익률은 연간으로 계속 올랐다. 차입이 거의 없어 금리 항목은 모두 만점이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>측정</th>
+<th style="text-align: center;">등급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 성장</td>
+<td>3분기 +53.7%(같은 사업장 +46.3%포인트) · 백로그 +90%</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>② 마진</td>
+<td>영업이익률 연간 6.1 → 8.0 → 10.7 → 14.4% → 최근 1년 16.7% · 추정 변경 몫을 뺀 바탕 영업이익률도 5.1%(2022) → 10.9%(2025) → 11.0%(9개월)로 상승〔Specific-Dive〕 → 🟢 변동 없음</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+<tr>
+<td>③ 현금</td>
+<td>9개월 잉여현금 20.5억 달러 · 선수금 증가 16.9억 달러가 큰 몫 · 받을 돈이 선수금보다 3.1억 달러 많아 구조는 유지</td>
+<td style="text-align: center;">🟡</td>
+</tr>
+<tr>
+<td>④ 고금리 내구성(금리·부채 5항목)</td>
+<td>이자보상 순이자수익 · 순현금 · 만기 연 최대 2,400만 달러 · 변동금리 0% · 단기 유동성 압도 → 5/5</td>
+<td style="text-align: center;">🟢</td>
+</tr>
+</tbody>
+</table>
+<p><strong>물가·원자재 내구성(점수 밖)</strong> — 원가 전가 🔴(고정가 · 사후 전가는 변경계약뿐) · 투입재 집약도 🟡 · 전가 속도 🟡 · 실질 마진 🟢(재고가 매출의 1% 미만이라 재고 평가 착시 없음). 인플레 부호 = 고물가 지속 시 피해 / 디스인플레 시 수혜.</p>
+<figure class="dd-fig"><div id="fig-g5"></div><div class="dd-legend" id="fig-g5-leg"></div><figcaption id="fig-g5-cap"></figcaption></figure>
+
+<table>
+<thead>
+<tr>
+<th>⭐ 산출 근거 (4축 + 금리·부채 5항목)</th>
+<th style="text-align: center;">⭐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>성장 🟢 / 마진 🟢 / 현금 🟡 / 내구성 🟢</td>
+<td style="text-align: center;">5 · 5 · 4 · 5</td>
+</tr>
+<tr>
+<td>이자보상·순부채·만기·변동금리·유동성 전부 🟢</td>
+<td style="text-align: center;">5 · 5 · 5 · 5 · 5</td>
+</tr>
+<tr>
+<td><strong>평균 4.89 → 득점 12.2 / 12.5</strong></td>
+<td style="text-align: center;"><strong>4.89</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>▶ 판정이 바뀌는 신호</strong> — 🔴 선수금 감소와 백로그 감소가 같은 분기에 · 총이익률 2분기 연속 하락 · 리볼버 인출 재등장.</p>
+<hr />
+<h2>고금리·고물가 내구성 정밀 진단 (전담 서브에이전트 · 점수 밖 · 낮은 신뢰도)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 재무로는 버틴다. 다만 자사주 매입으로 현금 완충이 절반 이하로 줄어, 수요가 갑자기 멈추면 은행 한도를 써야 하는 구간에 들어섰다.</p>
+</blockquote>
+<p><strong>판정: 🟢 견딤(금융 축 한정) · 수요까지 넣으면 ⚪ 조건부 ‖ 신뢰도 낮음(단독 실행 상한) ‖ 정밀 재점검 우선순위 중간</strong></p>
+<ul>
+<li><strong>금리</strong> 🟢 — 자본시장 차입 0. 전 소유주 앞 어음 4,895만 달러(고정 4.0~5.5% · 2027년 1,070만 · 2028년 1,425만 · 2029년 2,400만 달러)뿐이다. 금리 헤지가 끝나는 절벽도 없다. 은행 약정(재무 비율 조건)은 이익(EBITDA)이 88% 줄어야 걸린다.</li>
+<li><strong>유동성(이번 회차 핵심 변화)</strong> 🟠 — 9/30 현금 21.6억 달러에서 10~11월 자사주 약 15.5억 달러를 빼고 영업현금을 더하면 <strong>추정 6~11억 달러</strong>다. 고객 선수금 38.7억 달러의 4분의 1이 한 분기에 되돌려지는 급정지를 가정하면, 대비 여유가 3.5배 → <strong>1.6~2.2배</strong>로 줄었다. 현금만으로는 못 받고 은행 한도(가용 10.1억 달러)를 쓰게 된다.</li>
+<li><strong>물가</strong> ⚪ — 원가 전가는 입찰 시점뿐이고 원자재 정량 민감도는 공시하지 않는다. 3분기 총이익률 하락은 첫 하락이며 일회성 기저 영향이 크다.</li>
+<li><strong>세 충격 동시(원가 +20% · 금리 +3%포인트 · 물량 −20%)</strong> 🟢 — 영업이익률 8.6~9.8%, 잉여현금 +2~8억 달러로 흑자 유지. 적자 전환은 원가와 물량이 각각 36~42% 동시에 움직여야 한다(7월 계산보다 가까워짐 — 일부는 고정비 증가, 일부는 가정 상향).</li>
+<li><strong>불황 때 순서(보강)</strong> — 지난 금융위기(2008 → 2010)에 매출 −16.2%, 영업이익 −74.8%였고 바닥은 고점 3년 뒤였다. 불황이 오면 추정 변경 이익이 먼저 빠지고, 그다음 입찰 가격이 빠진다〔Specific-Dive〕. 지금 회사에 대 보면 매출 −16%에서 영업이익률 약 7.5~10.5%로, 위 세 충격 동시 계산과 같은 범위다.</li>
+<li><strong>금리 레짐에 따른 부호</strong> — 고금리 지속이면 순 🔴(이자수익은 줄어든 현금만큼 작아지고, 고객 수요가 눌림) / 금리 인하·물가 안정이면 순 🟢. 자사주로 현금을 줄인 것은 회사 스스로 금리 헤지를 줄인 셈이라 이 비대칭이 커졌다.</li>
+<li>🎯 <strong>버티는가</strong> — 재무로는 🟢 버틴다 · 수요 급정지 시 은행 한도 의존으로 넘어가는 ⚪ 조건부. 악화 신호 = 리볼버 인출 재등장(특히 4억 달러 초과) + 같은 사업장 백로그 전분기 대비 감소.</li>
+<li><strong>가장 크게 흔드는 변수</strong> = 텍사스·버지니아 4개 사업장(같은 사업장 백로그 1년 증가분의 89.8%)으로 들어오는 데이터센터 발주가 이어지느냐.</li>
+<li><strong>장부 밖 약정</strong> — 신용장 8,600만 달러(대부분 자가보험 담보 · FY2025 7,900만 달러에서 소폭 증가) · 이행보증 잔액 미공시(역사적으로 매출의 10~20%가 보증 필요 · 보증회사가 해당 프로젝트 자산의 선순위) · 리스 비유동 3.25억 달러 · 금융성 약정(파생상품·특수목적회사) 0. 깔때기 사전 판정 🟢를 유지한다.</li>
+<li>의무 라벨: 낮은 신뢰도 참고 · 버티는가 직접 답(강제 규칙 아님) · 장기 보유 종목 매도 신호로 쓰지 않음 · 7축 점수 미반영.</li>
+</ul>
+<hr />
+<h2>Section H. 렌즈 요약 (--light)</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 값은 처음엔 적정 상단으로 보였지만 추정 변경 이익을 걷어내자 다시 비싼 쪽(약함)으로 판정됐고, 실적과 주가 추세를 함께 보는 주도주 렌즈로는 핵심 주도주다. 독점성 렌즈는 여전히 1→n 실행 기업이다.</p>
+</blockquote>
+<h3>H.3 ⚠️ Thesis 리스크 신호 (조기경보)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 가장 중요한 신호는 데이터센터 일감이 줄어드는지다. 이번 회차에 총이익률 하락, 사업장 집중, 현금 완충 축소 세 가지가 새로 붙었다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>신호</th>
+<th>관측 기준</th>
+<th>지금</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>물량</td>
+<td>같은 사업장 백로그 2분기 연속 감소 · Technology 매출 감소</td>
+<td>미발동(+26.1% 전분기 대비)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>선수금 엔진 반전</td>
+<td>계약부채와 백로그가 같은 분기에 감소</td>
+<td>미발동</td>
+</tr>
+<tr>
+<td>3</td>
+<td>마진 훼손</td>
+<td>추정 변경 몫을 뺀 바탕 총이익률 2분기 연속 하락 · 손실 계약 첫 계상 · 보고 총이익률과 추정 변경 비율을 함께 본다〔Specific-Dive〕</td>
+<td>미발동(보고 26.1 → 24.8%지만 바탕 19.7 → 21.3%)</td>
+</tr>
+<tr>
+<td>3-A</td>
+<td>🆕 추정 변경 이익 소진</td>
+<td>추정 변경 매출 비율 2분기 연속 3% 미만 + 바탕 총이익률 하락〔Specific-Dive〕</td>
+<td>미발동(4.5%, 하락 중)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>🆕 사업장 집중 발현</td>
+<td>상위 4개 사업장 일감 취소·연기 공시 · 백로그 증감 설명에서 상위 사업장 이름이 빠짐(해지 조건 미공시라 결과로 감시)〔Specific-Dive〕</td>
+<td>미발동 · 집중도 97.5%(전분기 대비 증가분)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>자본시장 의존 전환</td>
+<td>증자 등록·전환사채 첫 등장 · 리볼버 4억 달러 초과 2분기</td>
+<td>미발동</td>
+</tr>
+<tr>
+<td>6</td>
+<td>🆕 현금 완충</td>
+<td>연말 현금 5억 달러 미만 + 리볼버 인출</td>
+<td>관찰</td>
+</tr>
+<tr>
+<td>7</td>
+<td>보증 경로</td>
+<td>보증 시장 문구 "adequate"에서 하향 · 신용장 한도 75% 초과</td>
+<td>미발동(43%)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>사람</td>
+<td>후계자 이탈 · 재무 책임자 교체기 공시 오류</td>
+<td>관찰(교체 진행 중)</td>
+</tr>
+<tr>
+<td>9-B</td>
+<td>🆕 공시 문구 갱신</td>
+<td>10-K 평균 공기·평균 계약 금액·「12개월 안 65~75% 인식」 문구 변경(2027-02)〔Specific-Dive〕</td>
+<td>관찰</td>
+</tr>
+<tr>
+<td>9</td>
+<td>큰손 자금</td>
+<td>하이퍼스케일러 설비투자 가이던스 삭감 · 영업현금 대비 100% 초과 지속</td>
+<td>🟠 95.5%</td>
+</tr>
+</tbody>
+</table>
+<h3>H.5 🧭 CAE·Edge Grid 좌표</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 중요도는 중간 이상 그대로이고, 주가가 내려 엣지가 조금 생겼다. 그래서 「강한데 비싼」 칸 안에서 가운데 쪽으로 조금 옮겼다.</p>
+</blockquote>
+<p>〔CAE C=제약 / A=조정 / E=표현〕 〔중요도 L 다층성·R 비가역성·H 병목경도 · 엣지 G 선반영격차·P 연료잔량·D 컨센서스반증, 각 0~3〕</p>
+<ul>
+<li>CAE = 제약층(숙련 인력·자재·전력이라는 물리 제약을 통과시키는 실행자) 70% + 조정층 30% · 가장 약한 고리 = 조정 렌트를 걷지 못하는 조정층(매 프로젝트 재입찰).</li>
+<li>중요도 中上(L2·R1.5·H2) · 엣지 中下(G1.5 = 이익 추정 +12%인데 주가 −31%, 단 추정 변경 이익 몫을 빼면 격차가 줄어든다 · P1 = 큰손 자금 한계 · D1.5 = 최저 목표가 1,050달러도 현재가보다 위인데 시장은 반대로 움직임).</li>
+<li>분면 = 「강한데 비싼」 칸 안에서 가운데 쪽으로 이동(엣지 G는 이익 추정 상향으로 올랐지만 추정 변경 이익을 걷어내면 다시 깎인다). 행동 = 미보유 기준 진입 보류·관망. 3 잠금장치: 실현확률 교차 ⚠️ · 엣지 게이트 ⚠️ · 유효범위(2026~27 백로그 기간) ✅.</li>
+</ul>
+<figure class="dd-fig"><svg viewBox="0 0 520 300" width="100%" style="max-width:520px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="20" width="220" height="130" fill="#fdeee9"/><rect x="280" y="20" width="220" height="130" fill="#eef6f0"/>
+<rect x="60" y="150" width="220" height="130" fill="#eeeeee"/><rect x="280" y="150" width="220" height="130" fill="#e8f0f8"/>
+<line x1="280" y1="20" x2="280" y2="280" stroke="#999" stroke-dasharray="4,3"/><line x1="60" y1="150" x2="500" y2="150" stroke="#999" stroke-dasharray="4,3"/>
+<text x="170" y="40" font-size="11" text-anchor="middle" fill="#8a2415">강한데 비싼 → 트림·회피</text>
+<text x="390" y="40" font-size="11" text-anchor="middle" fill="#1f6f3b">강하고 싼 → 집중매수 후보</text>
+<text x="170" y="270" font-size="11" text-anchor="middle" fill="#555">약하고 비싼 → 회피·청산</text>
+<text x="390" y="270" font-size="11" text-anchor="middle" fill="#2c5282">약하고 싼 → 정찰</text>
+<text x="280" y="295" font-size="11" text-anchor="middle" fill="#444">← 엣지 소진(비싼)   ·   엣지 잔량(싼) →</text>
+<text x="20" y="150" font-size="11" text-anchor="middle" fill="#444" transform="rotate(-90 20,150)">중요도 약 → 강</text>
+<line x1="170" y1="85" x2="226.027" y2="89.3097" stroke="#c0392b" stroke-width="1.5" marker-end="url(#h5ar)"/>
+<circle cx="170" cy="85" r="6" fill="#2980b9" opacity="0.5"/>
+<text x="180" y="75" font-size="10" text-anchor="start" fill="#2980b9">7/30 강한데 비싼</text>
+<circle cx="235" cy="90" r="7" fill="#c0392b"/>
+<text x="245" y="108" font-size="10" text-anchor="start" fill="#c0392b">11/22 강한데 비싼(가운데 쪽)</text><defs><marker id="h5ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c0392b"/></marker></defs>
+</svg><figcaption>중요도 中上(물리 제약층·준하드 병목) · 엣지 下→中下(주가 −31% · 단 이익의 일부가 추정 변경 이익)</figcaption></figure>
+
+<h3>H.6 💎 0to1 · H.8 🏁 주도주</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 독점 렌즈로는 잘 실행하는 1→n 기업으로 그대로이고, 실적과 주가를 함께 보는 렌즈로는 핵심 주도주다. 두 렌즈 모두 매수 신호가 아니다.</p>
+</blockquote>
+<ul>
+<li><strong>0to1 〔틸 렌즈〕</strong>: Track A 3/7 → 불운 위험 ‖ ⭐3.5 ‖ 시장정의 화법 = 혼재~진짜독점(말과 숫자 일치) · 변동 없음.</li>
+<li><strong>🏁 주도주 〔성상현 렌즈 · 7축 미합산 · 매수 신호 아님〕</strong> — 점수 출처: InvestingPro 재무 건전성(사용자 구독 화면 · 11/22 수집) · InvestingPro 적정가치 1,261.33달러(지금 가격보다 21% 높음 · 불확실성 중간).</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th style="text-align: center;">점수(1~5)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>현금흐름</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td>성장</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td>수익성</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td>가격 모멘텀</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td>상대가치</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td>종합(다섯 평균) · 펀더멘털 축</td>
+<td style="text-align: center;">3.4 · 4.0</td>
+</tr>
+</tbody>
+</table>
+<p>사분면: 주도주 · 생애 단계: 판정 보류(신호 엇갈림 — 이익 추정은 오르는데 주가는 50·200일선 아래, 52주 고점의 50%) · 등급: 핵심 주도주 · 함정: 없음 · 거르기: 없음 · 조건 충족: 3/4(펀더멘털 강함·가격 추세 강함·이익 추정 상향) · 같은 바구니 순위: 1/6(Quanta·EMCOR·IES·MYR·Legence). 12개월(최근 1개월 제외) 수익률 +37.7%로 S&amp;P 500보다 21.2%포인트 높다. 알트만 Z 8.25 · 피오트로스키 F 7/9. 스크립트 dd_leader_check.py v0.2(2026-11-15). 상대가치 2점(InvestingPro)은 밸류 렌즈 🔴 고평가(약함)와 같은 방향이다. 다만 InvestingPro 적정가치(1,261달러)는 밸류 렌즈 밴드(686~1,028달러)보다 높아 엇갈린다(어느 쪽도 다시 계산하지 않았다). 원본: 성상현의 매크로비욘드 12부(https://www.youtube.com/watch?v=800GRGf5ceo · InvestingPro 광고 영상).</p>
+<h3>H.7 💰 밸류에이션 (전담 서브에이전트 · 점수 밖 · 낮은 신뢰도)</h3>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 주가가 31% 빠지며 처음 계산은 적정 상단이었다. 그러나 이익률 16.7% 중 약 4~5%포인트가 반복 보장 없는 추정 변경 이익이라, 그것을 걷어내면 지금 가격은 이익률·성장 두 낙관이 동시에 천장이어야 설명된다.</p>
+</blockquote>
+<p><strong>🏷️ 🔴 고평가(약함 · 적정과 경계) ‖ 신뢰도 중간(하단) ‖ 정밀 재점검 우선순위 중간 · <code>🟢 조건 0/3 충족(①❌ 현실 범위 밖 경계 ②❌ 72.1pct·Z 무효 ③❌ 동종 비교 비대칭)</code></strong></p>
+<p>⚠️ 당초 ⚪ 적정(상단 쪽)이었으나 체크리스트 보완에서 나온 추정 변경 이익을 반영해 재판정 — 🔴(약함)로 수정.</p>
+<ul>
+<li>아키타입 = 자산·현금흐름형 주 70% + 구조적 컴파운더 부 30%.</li>
+<li>역산(현재 가격이 요구하는 미래) = 현실 범위 밖 경계 — 장기 이익률 기준을 약 12.5%(추정 변경 몫을 뺀 바탕 11% + 정상 수준 1~2%포인트), 천장을 약 15%로 다시 잡았다. 할인율 10.5%에서 이익률을 천장에 둬도 5년 매출 연 17.8~19.3% 성장이 필요하다(성장 천장 18%). 정당가 밴드 686~1,028달러, 중심 약 850달러(처음 계산 824~1,140달러). 할인율 9%면 중심 약 1,030달러라 결론이 가정에 크게 흔들린다.</li>
+<li>동종 대비 = 보고 EV/EBITDA 15.2배(동종 중앙 12.1배). 추정 변경 이익을 뺀 바탕 기준으로는 약 23배(절대 기준으로만 사용 — 동종도 같은 이익이 섞였을 수 있다). 성장 감안 배수 0.48배의 매력도 상당 부분 이 이익 덕분이다.</li>
+<li>자기 역사 = 매출 대비 시총 2.92배가 5년 중 72.1번째 백분위 · 표준편차 거리(Z)는 무효(Technology 비중 +39.4%포인트 = 사업모델 전환 · n=61개월 · 분모 매출 · 최근 1년 기준).</li>
+<li>컨센 = 목표가 n=11 · 1,050~2,053달러(최저도 현재가 위) · 내년 주당순이익 추정 90일 +12.1%(올림 9 · 내림 0).</li>
+<li>시나리오 재평가 의존 = 산출 없음(--light).</li>
+<li>병목 렌트 괴리(약한 신호) = 🔴 고평가 사칭 −0.34 · 구속 병목 = 지속성 · [올라탐].</li>
+<li>7월 대비 = EV/EBITDA 25.9배 → 15.2배 · 판정 🔴 → 🔴(약함) · 매수 적정성 🔴 보류 → 🔴 보류.</li>
+</ul>
+<p>🎯 <strong>매수 적정성 한 줄: 🔴 현재가(1,042.47달러) 진입 보류</strong> — 바탕 이익률로 다시 대면 현재가가 적정 밴드 상단(1,028달러)보다 위다. 더 싸게 사는 가격대는 800~870달러(새 계산 중심 약 850달러 · 동종 중앙 배수 적용 약 830달러). 또는 2027년 2월 연차보고서에서 세 가지가 모두 확인되면 밴드를 900~1,100달러로 올려 다시 본다 — ① 추정 변경 몫을 뺀 바탕 총이익률 21% 이상 ② 추정 변경 비율 5% 이하에서도 보고 영업이익률 15% 이상 ③ 수주 증가가 4개 사업장 밖으로 확산. 「보고 총이익률 26% 회복」은 바탕이 나빠져도 충족될 수 있어 조건에서 뺐다. 낮은 신뢰도의 가격 판단이며 강제 규칙이 아니다. 최종 판단은 독자 몫이다.</p>
+<p>가장 크게 흔드는 변수 = 2028년 이후에도 데이터센터 수주가 이어지느냐 + 그 아래 「추정 변경 이익의 정상 수준이 1%냐 4%냐」. 가장 강한 반론 = 추정 변경 이익이 8분기 연속 플러스여서 입찰가에 숨은 가격 결정력일 수 있다(2025년 수준 3.9%를 정상으로 보면 판정은 적정 상단에 머문다).</p>
+<hr />
+<h2>Section L. 동적 발견</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 이번에 새로 걸린 것은 세 가지다. 수주가 네 곳에 몰린 것, 현금으로 자사주를 크게 산 것, 7월에 본 기존 건물 공사 감소가 멈춘 것이다.</p>
+</blockquote>
+<h4>L.1 백로그 증가의 사업장 집중이 한 단계 더 깊어졌다</h4>
+<ul>
+<li>발견: 3분기 10-Q MD&amp;A · 중요도 🔴</li>
+<li>같은 사업장 백로그 1년 증가 80.1억 달러 중 89.8%, 전분기 대비 증가 36.7억 달러 중 97.5%가 텍사스 모듈러·텍사스 전기·텍사스 1곳·버지니아 1곳이다. 7월(상위 5곳 90.9%)보다 좁아졌다.</li>
+<li>영향: 리스크 신호 4번 신설 · 내구성 진단의 가장 큰 변수로 사용 · 결론 유지(성장은 실재, 의존은 심화).</li>
+</ul>
+<h4>L.2 하락장에서 현금으로 자사주 약 15억 달러</h4>
+<ul>
+<li>발견: 8-K 11/5·11/17 · 중요도 🟠</li>
+<li>9개월 동안은 20만 주(평균 1,643.85달러)만 샀다가, 10/1~11/16에 약 135만 주를 샀다. 한도를 두 번 다시 채웠다(각 잔여 100만 주). 9/30 현금 21.6억 달러의 약 70%에 해당한다.</li>
+<li>영향: 사람 축(자본 배분 행동 증거) · 내구성(현금 완충 축소) · 리스크 신호 6번 신설. 두 해석(확신 신호 vs 헤지 축소)을 함께 적는다.</li>
+</ul>
+<h4>L.3 기존 건물 공사 감소가 멈췄다</h4>
+<ul>
+<li>발견: 10-Q 활동 유형별 매출 · 중요도 🟡</li>
+<li>3분기 5.28억 달러로 1년 전 5.27억 달러와 같다. 7월에는 「캐파가 모자라 방어 축을 잘라 성장 축에 넣었다」(−20.4%)로 읽었다.</li>
+<li>영향: 캐파 희소성 근거 하나가 약해졌다. 동시에 경기 방어 축이 더 줄지 않았다는 뜻이기도 하다. 결론 유지.</li>
+</ul>
+<h4>L.deferred</h4>
+<ul>
+<li>3분기 실적 발표 질의응답 원문(10/23) 미정독 — 다음 실행 때 회사 IR 다시보기·자막으로 총이익률 하락 설명·2027 전망 확인.</li>
+<li>8월 내부자 신고 3건의 신고자·규모 — EDGAR Form 4 원문.</li>
+<li>주가 −31% 하락의 직접 원인 뉴스 — 로이터 검색이 접근 제한으로 실패. 다음 실행 때 다른 시간대 재시도.</li>
+</ul>
+<hr />
+<h2>Section S. 🔎 Specific-Dive — 업종 전문가 체크리스트 보완</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 시공사 전문가라면 먼저 보는 질문으로 이 보고서를 다시 훑었다. 가장 큰 발견은 이익의 질이다. 올해 9개월 영업이익의 최대 39%가 끝나 가는 공사의 원가 추정이 줄어 한꺼번에 잡힌 이익이고, 3분기 총이익률 하락은 이 몫이 줄어든 탓이다.</p>
+</blockquote>
+<p>같은 업종의 체크리스트가 없어, 장비 회사용 두 체크리스트에서 공사 계약·회계에 관한 질문 14개만 골라 썼다(가벼운 회차 · 상위 3항목만 조사).</p>
+<table>
+<thead>
+<tr>
+<th>질문</th>
+<th style="text-align: center;">판정</th>
+<th>결론 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>원가 추정 변경으로 더해진 이익의 크기</td>
+<td style="text-align: center;">❌ → 조사</td>
+<td>이익률 확장의 절반 가까이와 겹친다 · 총이익률 경보 기준 수정 · 밸류 다시 보기</td>
+</tr>
+<tr>
+<td>백로그 해지 조건·지체상금</td>
+<td style="text-align: center;">◐/❌ → 조사</td>
+<td>공시에 숫자 없음 · 백로그는 "줄어드는지"로만 감시</td>
+</tr>
+<tr>
+<td>불황 때 낙폭과 바닥까지 걸린 시간</td>
+<td style="text-align: center;">◐ → 조사</td>
+<td>매출 −16%에 영업이익 −75%, 바닥은 3년 뒤 · 내구성 결론 유지</td>
+</tr>
+<tr>
+<td>선수금 · 이행보증 · 고객 집중 · 원가 전가 방식</td>
+<td style="text-align: center;">✅</td>
+<td>이미 충분히 다룸</td>
+</tr>
+<tr>
+<td>하자보증 · 노조 연금</td>
+<td style="text-align: center;">✅(이번 확인)</td>
+<td>위험 낮음(노조원 9명 · 연금 납입 0)</td>
+</tr>
+<tr>
+<td>원자재 대 청구 단가 · 계약 형태 전환 · 경쟁사 증설 · 텍사스 공장 재해 노출</td>
+<td style="text-align: center;">◐/❌</td>
+<td>다음 회차</td>
+</tr>
+</tbody>
+</table>
+<p><strong>새로 안 것</strong></p>
+<ul>
+<li><strong>추정 변경 이익이 4년 새 커졌다</strong> — 이전 분기에 시작한 공사에서 추정 변경으로 더해진 매출은 2022년 매출의 1.1% → 2025년 3.9% → 올해 9개월 6.6%다. 분기로는 1분기 8.1%, 2분기 7.7%, 3분기 4.5%. 이 몫을 뺀 바탕 영업이익률은 2022년 약 5.1%에서 올해 약 11.0%로 두 배 넘게 올랐다. 확장의 절반 이상은 실재하지만, 올해 이익률이 오른 몫은 거의 전부 추정 변경이다.</li>
+<li><strong>3분기 총이익률 하락은 실행 악화가 아니다</strong> — 추정 변경 몫을 빼면 상반기 약 19.7% → 3분기 약 21.3%로 오히려 올랐다. 반대로 4분기에 추정 변경이 다시 커지면 바탕이 나빠져도 총이익률은 회복돼 보일 수 있다.</li>
+<li><strong>백로그를 믿을 계약 조건은 공시에 없다</strong> — 백로그는 "계약했거나 약속받은" 공사이고, 발주자가 끊을 때 보상이나 공기 지연 배상의 크기는 나오지 않는다. 12개월 안 매출 전환 비율(65~75%)은 백로그가 41억 달러이던 2022년 말부터 178억 달러인 지금까지 똑같은 문구다.</li>
+<li><strong>지난 불황에서는 이익이 매출보다 4~5배 빨리 줄었다</strong> — 2008→2010년 매출 −16.2%, 영업이익 −74.8%. 물량과 함께 입찰 가격이 깎였다. 지금 회사에 대 보면 매출 −16%에서 영업이익률 약 7.5~10.5%가 나와, 이 보고서의 세 충격 동시 계산(8.6~9.8%)과 같은 범위다. 불황이 오면 추정 변경 이익이 먼저 빠지고, 그다음 입찰 가격이 빠진다.</li>
+</ul>
+<p>상세: 별도 Specific-Dive 보고서(이 보고서 링크 모음).</p>
+<hr />
+<h2>🔴 종합 판단</h2>
+<blockquote>
+<p>💡 <strong>간단히 말하면</strong> — 회사는 7월보다 더 잘 벌고, 주가는 31% 싸졌다. 그래도 이익의 일부가 반복 보장 없는 추정 변경 이익이라 값은 여전히 비싼 쪽이다. 또 일감이 네 곳의 데이터센터에 몰렸고 현금 완충이 얇아져, 큰손의 자금 사정이 꺾이면 충격이 더 빨리 온다.</p>
+</blockquote>
+<ul>
+<li><strong>7축 종합</strong>: 66점 / 100(⭐3.64) · 양호(경계 양호/보통) · 7월 환산 약 70점과 동급 · 감점 상위 3칸 모두 날씨 축 · 사업·thesis 매력도이며 밸류 미반영. 점수 밖 렌즈: 분면 강한데 비싼(가운데 쪽) · 0to1 3/7 · 밸류 🔴 고평가(약함) · 주도주 핵심 주도주.</li>
+<li><strong>시간 지평</strong>: 단기(0~6개월) = 백로그 178억 달러가 매출을 받쳐 실적 하방은 닫혀 있다. 중기(6개월~3년) = 4개 사업장 집중 · 늘린 고정비 · 큰손의 차입 의존이 한꺼번에 시험받는다. 장기(3~10년) = 숙련 시공 캐파의 희소성은 남지만, 텐배거 산술은 성립하지 않는다.</li>
+<li><strong>종합 판정: 유지 + 추가 검증</strong> — 「잘 실행하는 캐파 보유자」라는 결론은 그대로다. 4분기 실적에서 총이익률 회복 여부, 연말 현금, 사업장 집중 완화를 확인해야 한다.</li>
+</ul>
+<hr />
+<h2>⚠️ 수집 실패 · 미확인</h2>
+<ul>
+<li>❌ 3분기 실적 발표 질의응답 원문 미수집(사유: --light 범위 · 다음 실행 보완)</li>
+<li>❌ 주가 하락 원인 뉴스 미수집(사유: 로이터 사이트 접근 일시 제한)</li>
+<li>❌ 8월 내부자 신고 3건 원문 미열람</li>
+<li>❌ 이행보증 잔액·구매약정·리스 유동분 미공시(10-Q)</li>
+<li>⚠️ 하위 Dive(R·History·People·chart) 재사용 창(90일) 밖 — --light라 새로 돌리지 않고 7월 산출을 참고만 했다</li>
+<li>⚠️ 자사주 후 현금은 추정치(6~11억 달러) — 연차보고서에서 확인 필요</li>
+</ul>
+<h2>출처</h2>
+<ul>
+<li>3분기 10-Q(2026-10-22): https://www.sec.gov/Archives/edgar/data/1035983/000110465926118159/fix-20260930x10q.htm</li>
+<li>3분기 실적 보도자료(8-K 2.02): https://www.sec.gov/Archives/edgar/data/1035983/000110465926118156/fix-ex99d1.htm</li>
+<li>재무 책임자 교체(8-K 5.02): https://www.sec.gov/Archives/edgar/data/1035983/000110465926118149/tm2628079d1_ex99-1.htm</li>
+<li>자사주 한도 재충전(8-K 11/5): https://www.sec.gov/Archives/edgar/data/1035983/000110465926122938/tm2629087d1_8k.htm</li>
+<li>자사주 한도 재충전·누적 매입(8-K 11/17): https://www.sec.gov/Archives/edgar/data/1035983/000110465926129104/tm2630100d1_ex99-1.htm</li>
+<li>InvestingPro 적정가치 화면(사용자 구독 · 11/22): https://www.investing.com/pro/NYSE:FIX/fair-value</li>
+<li>주가·컨센서스: yfinance(2026-11-22 실행 · 11/20 종가)</li>
+<li>하이퍼스케일러 설비투자 지표: 주간 매크로 보고서 2026-11-14 산출(주간 AI 보고서 11/21 인용)</li>
+</ul>
+<p>본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</p>
+<div class="footer">본 보고서는 정보 정리·분석 목적이며 투자 권유가 아닙니다.</div>
+</div>
+<script>/* ============================================================
+   Report 공유 시각화 컴포넌트 — JS (canonical · _shared/report-viz · v1.6)
+   - 2026-06-04 Deep-Dive OUST 파일럿 검증 통과 후 Deep-Dive/assets → _shared 승격.
+   - 의존성 0 (순수 JS + inline SVG). CDN ❌ → 오프라인·인쇄 안전.
+   - 모든 차트는 단일 데이터 객체(raw JSON "viz" 블록)로 구동 (하드코딩 ❌).
+   - 전역객체 DDViz 유지 (검증된 API 무변경 — 호출부 호환).
+   - 🔴 보고서에는 이 파일 내용을 <script>로 INLINE 삽입 (외부 src 참조 ❌ — self-contained).
+   - 렌더러: renderRadar(5축 내러티브 + 7축 확신도 겸용) · renderTrajectory · renderHeatmap · renderScenario(비대칭 손익+기댓값 내장) · renderMcapLadder · renderBars(범용 비교/구성비) · renderFootball · renderSensitivity · 🆕 renderValueChain(가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지, 2026-06-14)
+   - 호출: DDViz.renderRadar('elId','legId', data.viz.narrative) — 확신도 7축은 data.viz.score7 (d.label로 제목 구분)
+   - Deep-Dive v1.7 매핑: radar §C.3(내러티브)+요약(확신도 7축) / trajectory §G.5 / heatmap §E.1 / scenario §H.1 / ladder §G.1.5 / bars §D.0·§C
+   - 사용 스킬: Deep-Dive(원조) + 확산 대상(crcl/secz/leu/INFQ/GFS-weekly 등, 단계적)
+   ============================================================ */
+(function (root) {
+  const PAL = { ink:'#1a1a1a', sub:'#666', grid:'#e6e9eb', axis:'#b3bcc2',
+    bull:'#27ae60', base:'#2980b9', bear:'#c0392b', amber:'#f39c12', purple:'#8e44ad' };
+
+  /* ---------- SVG 헬퍼 ---------- */
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const wrap = (w,h,inner,label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(label||'')}" style="max-width:${w}px;display:block;margin:0 auto;font-family:inherit;overflow:visible">${inner}</svg>`;
+  const line = (x1,y1,x2,y2,st,sw,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw||1}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const txt = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||12}" fill="${o.fill||PAL.ink}" text-anchor="${o.anchor||'start'}"${o.weight?` font-weight="${o.weight}"`:''}${o.baseline?` dominant-baseline="${o.baseline}"`:''}>${esc(s)}</text>`;
+  const dot = (cx,cy,r,fill,title) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}">${title?`<title>${esc(title)}</title>`:''}</circle>`;
+  const ring = (cx,cy,r,st) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${st}" stroke-width="1.6"/>`;
+  const poly = (pts,st,sw,dash) => `<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${st}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const rect = (x,y,w,h,fill,o={}) => `<rect x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" width="${Math.max(0,w).toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${fill}"${o.rx?` rx="${o.rx}"`:''}${o.stroke?` stroke="${o.stroke}" stroke-width="${o.sw||1}"`:''}>${o.title?`<title>${esc(o.title)}</title>`:''}</rect>`;
+  const hx = h => { h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; };
+  const mix = (a,b,t) => { const A=hx(a),B=hx(b),m=i=>Math.round(A[i]+(B[i]-A[i])*t); return `rgb(${m(0)},${m(1)},${m(2)})`; };
+  const legend = items => items.map(it => `<span><i class="dd-swatch${it.dash?' dash':''}"${it.dash?'':` style="background:${it.color}"`}></i>${esc(it.label)}</span>`).join('');
+  const $ = id => document.getElementById(id);
+
+  /* ① 레이더 (다축 점수, 1~N series) — §C.3 내러티브(5축) + 요약 확신도(7축, d.label로 제목 구분). 선택 d.scoreLabels={점수:라벨}이면 tooltip에 라벨(없으면 ⭐N). 하위호환 */
+  function renderRadar(elId, legId, d){
+    const W=460,H=360, cx=W/2, cy=H/2+4, R=120, n=d.axes.length, max=d.max;
+    const ang = i => (-90 + i*360/n) * Math.PI/180;
+    let g='';
+    for(let r=1; r<=max; r++){ const rr=R*r/max, p=[]; for(let i=0;i<n;i++){ const a=ang(i); p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } g+=`<polygon points="${p.join(' ')}" fill="${r===max?'#fbfcfd':'none'}" stroke="${PAL.grid}" stroke-width="1"/>`; }
+    for(let i=0;i<n;i++){ const a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a); g+=line(cx,cy,ex,ey,PAL.axis,1); const lx=cx+(R+24)*Math.cos(a), ly=cy+(R+24)*Math.sin(a); const an=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end'); g+=txt(lx,ly,d.axes[i],{size:12.5,anchor:an,baseline:'middle',weight:600}); }
+    d.series.forEach(s=>{ const p=[]; for(let i=0;i<n;i++){ const a=ang(i), rr=R*s.scores[i]/max; p.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]); } g+=`<polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${s.color}" fill-opacity="0.15" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 3"':''}/>`; p.forEach((q,i)=>{ const sl=(d.scoreLabels&&d.scoreLabels[s.scores[i]]!=null)?d.scoreLabels[s.scores[i]]:('⭐'+s.scores[i]); g+=dot(q[0],q[1],3.4,s.color,`${s.name} · ${d.axes[i]}: ${sl}`); }); });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'레이더');
+    if(legId) $(legId).innerHTML = legend(d.series.map(s=>({color:s.color,label:s.name+(s.dash?' (비교)':''),dash:s.dash})));
+  }
+
+  /* ② trajectory (멀티라인·듀얼축·실선/점선) — §G.5 */
+  function renderTrajectory(elId, legId, t){
+    const W=620,H=330, m={t:26,r:52,b:46,l:54}, pw=W-m.l-m.r, ph=H-m.t-m.b, n=t.periods.length, fb=t.forecastFrom;
+    const X = i => m.l + (n===1?pw/2:pw*i/(n-1));
+    const L=t.series.filter(s=>s.axis==='left'), Rr=t.series.filter(s=>s.axis==='right');
+    const lMax=Math.max(...L.flatMap(s=>s.values))*1.12;
+    const rVals=Rr.flatMap(s=>s.values), rMin=Math.min(...rVals,0), rMax=Math.max(...rVals)*1.12;
+    const YL=v=>m.t+ph-ph*(v/lMax), YR=v=>m.t+ph-ph*((v-rMin)/(rMax-rMin||1));
+    let g='', T=4;
+    for(let i=0;i<=T;i++){ const v=lMax*i/T, y=YL(v); g+=line(m.l,y,m.l+pw,y,PAL.grid,1); g+=txt(m.l-8,y,Math.round(v).toLocaleString(),{size:10.5,anchor:'end',fill:PAL.sub,baseline:'middle'}); }
+    if(Rr.length) for(let i=0;i<=T;i++){ const v=rMin+(rMax-rMin)*i/T, y=YR(v); g+=txt(m.l+pw+8,y,Math.round(v)+'%',{size:10.5,anchor:'start',fill:PAL.sub,baseline:'middle'}); }
+    for(let i=0;i<n;i++){ const x=X(i), isF=i>=fb; g+=txt(x,m.t+ph+18,t.periods[i],{size:11,anchor:'middle',fill:isF?PAL.sub:PAL.ink,weight:isF?400:600}); }
+    if(t.inflection){ const x=X(t.inflection.index); g+=line(x,m.t,x,m.t+ph,PAL.amber,1.2,'4 3'); g+=txt(x,m.t-9,'▼',{size:12,anchor:'middle',fill:PAL.amber}); }
+    t.series.forEach(s=>{ const Y=s.axis==='left'?YL:YR, p=s.values.map((v,i)=>[X(i),Y(v)]); if(fb>1) g+=poly(p.slice(0,fb),s.color,2.4,null); if(fb-1<n-1) g+=poly(p.slice(Math.max(0,fb-1)),s.color,2.4,'6 4'); p.forEach((q,i)=>{ g+= i>=fb ? ring(q[0],q[1],3.4,s.color) : dot(q[0],q[1],3.4,s.color,`${s.label} · ${t.periods[i]}: ${s.values[i]}${s.axis==='right'?'%':''}`); }); });
+    g = line(m.l,m.t,m.l,m.t+ph,PAL.axis,1.2) + line(m.l,m.t+ph,m.l+pw,m.t+ph,PAL.axis,1.2) + g;
+    $(elId).innerHTML = wrap(W,H,g,'재무 trajectory');
+    if(legId) $(legId).innerHTML = legend(t.series.map(s=>({color:s.color,label:s.label}))) + '<span><i class="dd-swatch dash"></i>전망</span>';
+  }
+
+  /* ③ 경쟁사 히트맵 (HTML 테이블) — §E.1 */
+  function renderHeatmap(elId, p){
+    const fmt=(mt,v)=> v==null||isNaN(v)?null : mt.unit==='$B'?'$'+(+v).toFixed(1)+'B' : mt.unit==='x'?(+v).toFixed(2)+'x' : mt.unit==='%'?(+v).toFixed(1)+'%' : mt.unit==='/5'?v+'/5' : String(v);
+    const stat={}; p.metrics.forEach(mt=>{ if(mt.better==='neutral') return; const vs=p.rows.map(r=>r.vals[mt.key]).filter(v=>v!=null&&!isNaN(v)); if(vs.length) stat[mt.key]={mn:Math.min(...vs),mx:Math.max(...vs)}; });
+    const tint=(mt,v)=>{ if(v==null||isNaN(v)) return {bg:'#f0f2f4',fg:'#9aa0a4',label:'n/a',title:'미공시/비상장'}; if(mt.better==='neutral') return {bg:'#eef3f7',fg:'#1a1a1a',label:fmt(mt,v),title:'중립(우열 판단 안 함)'}; const s=stat[mt.key]; let tt=s.mx===s.mn?0.5:(v-s.mn)/(s.mx-s.mn); if(mt.better==='low') tt=1-tt; const bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); return {bg,fg:'#1a1a1a',label:fmt(mt,v),title:(mt.better==='low'?'낮을수록 우위':'높을수록 우위')}; };
+    let h='<table class="dd-heat"><thead><tr><th style="text-align:left">기업</th>';
+    p.metrics.forEach(mt=> h+=`<th>${esc(mt.label)}<br><span style="font-weight:400;color:#999;font-size:10px">${mt.unit||''}${mt.better==='low'?' ↓우위':mt.better==='neutral'?' ·중립':' ↑우위'}</span></th>`);
+    h+='</tr></thead><tbody>';
+    p.rows.forEach(r=>{ h+=`<tr class="${r.subject?'subj':''}"><td class="name">${r.subject?'★ ':''}${esc(r.name)}${r.note?`<br><span style="font-weight:400;color:#999;font-size:10px">${esc(r.note)}</span>`:''}</td>`; p.metrics.forEach(mt=>{ const c=tint(mt,r.vals[mt.key]); h+=`<td style="background:${c.bg};color:${c.fg}" title="${esc(c.title)}">${esc(c.label)}</td>`; }); h+='</tr>'; });
+    $(elId).innerHTML = h+'</tbody></table>';
+  }
+
+  /* ④ 시나리오 (확률 누적막대 + 비대칭 배수 막대 + 손익분기 1.0x + 기댓값) — §H.1 */
+  function renderScenario(elId, badgeId, sc){
+    const tone=t=>({bull:PAL.bull,base:PAL.base,bear:PAL.bear}[t]||PAL.base);
+    const ev=sc.cases.reduce((a,c)=>a+c.prob*c.mult,0);
+    const W=620,H=252, bx=14, bw=W-28; let g='';
+    g+=txt(14,18,'확률 배분 (Σ=100%)',{size:12.5,weight:700});
+    let cx=bx; const bY=28,bH=30;
+    sc.cases.forEach(c=>{ const w=bw*c.prob; g+=rect(cx,bY,w,bH,tone(c.tone),{title:`${c.label} ${Math.round(c.prob*100)}%`}); g+=txt(cx+w/2,bY+bH/2+4,Math.round(c.prob*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); cx+=w; });
+    cx=bx; sc.cases.forEach(c=>{ const w=bw*c.prob; g+=txt(cx+w/2,bY+bH+15,c.label,{size:11,anchor:'middle'}); cx+=w; });
+    const sY=108; g+=txt(14,sY,`${sc.horizonLabel||''} 후 배수 (손익비)`,{size:12.5,weight:700});
+    const mMax=Math.max(...sc.cases.map(c=>c.mult),ev,1)*1.12, pX=104, pW=W-pX-46, sx=v=>pX+pW*(v/mMax);
+    let ry=sY+14, rH=24, gp=8;
+    sc.cases.forEach(c=>{ g+=txt(14,ry+rH/2+4,c.label,{size:11.5,weight:600}); g+=rect(pX,ry,sx(c.mult)-pX,rH,tone(c.tone),{rx:3,title:`${c.label}: ${c.mult.toFixed(2)}x`}); g+=txt(sx(c.mult)+6,ry+rH/2+4,c.mult.toFixed(2)+'x',{size:11.5,weight:700,fill:tone(c.tone)}); ry+=rH+gp; });
+    const pb=ry-gp;
+    g+=line(sx(1),sY+8,sx(1),pb+4,'#999',1.2,'4 3')+txt(sx(1),pb+16,'1.0x 손익분기',{size:9.5,anchor:'middle',fill:'#999'});
+    g+=line(sx(ev),sY+8,sx(ev),pb+4,PAL.ink,1.8)+txt(sx(ev),sY+6,`기댓값 ${ev.toFixed(2)}x`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML = wrap(W,H,g,'시나리오');
+    if(badgeId){ const ok=ev>=(sc.threshold||1.5), b=$(badgeId); b.textContent=`기댓값 ${ev.toFixed(2)}x ${ok?'✓ ≥'+(sc.threshold||1.5)+'x':'⚠ <'+(sc.threshold||1.5)+'x'}`; b.style.background=ok?'#1a1a1a':'#c0392b'; }
+    return ev;
+  }
+
+  /* ⑤ 시총 10배 사다리 (로그축 랜드마크) — §G.1.5
+     d = { current:{label,mcap}, target:{label,mcap}, refs:[{name,mcap}], sentence, warn } (mcap $B) */
+  function renderMcapLadder(elId, sentenceId, d){
+    const fmt = v => v>=1000 ? ('$'+(v/1000).toFixed(v>=9950?0:1)+'T') : ('$'+Math.round(v)+'B');
+    const W=720,H=210, m={l:28,r:28}, pw=W-m.l-m.r, axisY=104;
+    const vals=[d.current.mcap,d.target.mcap,...d.refs.map(r=>r.mcap)].filter(v=>v>0);
+    const lo=Math.min(...vals), hi=Math.max(...vals), lmnR=Math.log10(lo), lmxR=Math.log10(hi), sp=(lmxR-lmnR)||1;
+    const lmin=lmnR-sp*0.14, lmax=lmxR+sp*0.14;
+    const X=v=>m.l+pw*((Math.log10(v)-lmin)/(lmax-lmin));
+    let g='';
+    for(let e=Math.ceil(lmin); e<=Math.floor(lmax); e++){ const v=Math.pow(10,e), x=X(v); g+=line(x,axisY-7,x,axisY+7,'#eaedef',1); g+=txt(x,H-8,fmt(v),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    g+=line(m.l,axisY,m.l+pw,axisY,PAL.axis,1.5);
+    d.refs.forEach((r,i)=>{ const x=X(r.mcap), ly=axisY-14-(i%2)*15; g+=line(x,axisY-4,x,axisY+4,'#c4cace',1); g+=dot(x,axisY,2.4,'#c4cace'); g+=txt(x,ly,r.name,{size:10,anchor:'middle',fill:'#8d9398'}); });
+    const cx=X(d.current.mcap), tx=X(d.target.mcap), mid=(cx+tx)/2, dir=tx>=cx?1:-1;
+    g+=`<path d="M ${cx.toFixed(1)} ${axisY-7} Q ${mid.toFixed(1)} ${axisY-52} ${tx.toFixed(1)} ${axisY-7}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=`<path d="M ${(tx-5*dir).toFixed(1)} ${axisY-13} L ${tx.toFixed(1)} ${axisY-6} L ${(tx-9*dir).toFixed(1)} ${axisY-9}" fill="none" stroke="${PAL.bull}" stroke-width="1.8"/>`;
+    g+=txt(mid, axisY-56, '×10 (텐배거)', {size:12,anchor:'middle',weight:700,fill:PAL.bull});
+    g+=dot(cx,axisY,5.5,PAL.base)+txt(cx,axisY+18,d.current.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.base})+txt(cx,axisY+32,fmt(d.current.mcap),{size:10,anchor:'middle',fill:PAL.base});
+    g+=dot(tx,axisY,5.5,PAL.bull)+txt(tx,axisY+18,d.target.label,{size:10.5,anchor:'middle',weight:700,fill:PAL.bull})+txt(tx,axisY+32,fmt(d.target.mcap),{size:10,anchor:'middle',fill:PAL.bull});
+    $(elId).innerHTML = wrap(W,H,g,'시총 10배 사다리');
+    if(sentenceId && d.sentence){ const s=$(sentenceId); s.textContent=d.sentence; if(d.warn) s.classList.add('dd-ladder-warn'); }
+  }
+
+  /* ⑥ 범용 막대 — mode:'bar'(가로 비교: TAM·capacity) / 'share'(구성비 100%: 매출 mix) — §D.0·§C
+     b = { title, mode:'bar'|'share', unit, items:[{label,value,color?,missing?}] }. missing=자료없음 → 점선 박스 "보강" */
+  function renderBars(elId, b){
+    /* 2026-11-15: items[].label 이 없고 name 만 있으면 name 을 label 로 쓴다(텐배거 raw_viz 하위호환) */
+    const items=(b.items||[]).map(it=>(it&&it.label==null&&it.name!=null)?Object.assign({},it,{label:it.name}):it), mode=b.mode||'bar', cols=[PAL.base,PAL.bull,PAL.amber,PAL.purple,PAL.bear,'#16a085'];
+    const W=620, m={l:14,r:14}, top=b.title?34:14;
+    let g = b.title ? txt(14,20,b.title,{size:12.5,weight:700}) : '';
+    if(mode==='share'){
+      const tot=items.reduce((a,it)=>a+(it.missing?0:(+it.value||0)),0)||1, bw=W-m.l-m.r, bH=34;
+      let x=m.l; items.forEach((it,i)=>{ if(it.missing) return; const c=it.color||cols[i%cols.length], w=bw*((+it.value||0)/tot); g+=rect(x,top,w,bH,c,{title:`${it.label} ${Math.round((+it.value||0)/tot*100)}%`}); if(w>30) g+=txt(x+w/2,top+bH/2+4,Math.round((+it.value||0)/tot*100)+'%',{size:12,anchor:'middle',fill:'#fff',weight:700}); x+=w; });
+      let lx=m.l; const ly=top+bH+22; items.forEach((it,i)=>{ const c=it.color||cols[i%cols.length], lab=`${it.label} ${it.missing?'(보강)':Math.round((+it.value||0)/tot*100)+'%'}`; g+=`<rect x="${lx}" y="${ly-9}" width="11" height="11" rx="2" fill="${it.missing?'#cfd5d9':c}"/>`+txt(lx+16,ly,lab,{size:11,fill:PAL.sub,baseline:'middle'}); lx += 30+lab.length*7.2; });
+      $(elId).innerHTML = wrap(W,top+bH+40,g,b.title||'구성비'); return;
+    }
+    const lw=140, px=m.l+lw, pw=W-px-64, rowH=34, mx=Math.max(...items.map(it=>it.missing?0:(+it.value||0)),1)*1.14;
+    items.forEach((it,i)=>{ const y=top+i*rowH, c=it.color||cols[i%cols.length]; g+=txt(px-8,y+rowH/2+4,it.label,{size:11.5,anchor:'end',weight:600,baseline:'middle'});
+      if(it.missing){ g+=rect(px,y+6,Math.max(46,pw*0.14),rowH-15,'#f0f2f4',{rx:4,stroke:'#cfd5d9',sw:1}); g+=txt(px+9,y+rowH/2+4,'보강',{size:10.5,fill:'#9aa0a4',baseline:'middle'}); }
+      else { const w=pw*((+it.value||0)/mx); g+=rect(px,y+6,w,rowH-15,c,{rx:4,title:`${it.label}: ${it.value}${b.unit||''}`}); g+=txt(px+w+6,y+rowH/2+4,Number(it.value).toLocaleString()+(b.unit||''),{size:11,fill:PAL.sub,baseline:'middle'}); } });
+    $(elId).innerHTML = wrap(W,top+items.length*rowH+8,g,b.title||'비교');
+  }
+
+  /* ⑧ 밸류에이션 football field — 방법별 적정가치 범위 막대 + 현재가 라인 — §V (R-Dive 밸류에이션, 2026-06-05 신설)
+     d = { current, unit, methods:[{label,lo,hi,mid}] }. 막대색 = 현재가 vs 범위(위=빨강 고평가/아래=초록 저평가/내부=주황) */
+  function renderFootball(elId, d){
+    const u=d.unit||'', n=d.methods.length, m={l:208,r:64,t:20,b:28}, rowH=30, W=660, H=m.t+n*rowH+m.b;
+    const all=d.methods.flatMap(x=>[x.lo,x.hi]).concat(d.current), lo=Math.min(...all)*0.94, hi=Math.max(...all)*1.04;
+    const X=v=>m.l+(W-m.l-m.r)*((v-lo)/(hi-lo)); let g='';
+    for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4, x=X(v); g+=line(x,m.t,x,m.t+n*rowH,PAL.grid,1); g+=txt(x,H-9,u+Math.round(v).toLocaleString(),{size:9.5,anchor:'middle',fill:'#b0b6ba'}); }
+    d.methods.forEach((mm,i)=>{ const y=m.t+i*rowH+rowH/2, tone=d.current>mm.hi?PAL.bear:(d.current<mm.lo?PAL.bull:PAL.amber);
+      g+=txt(m.l-8,y+4,mm.label,{size:10.5,anchor:'end',weight:600});
+      g+=rect(X(mm.lo),y-7,Math.max(2,X(mm.hi)-X(mm.lo)),14,mix(tone,'#ffffff',0.55),{rx:3,stroke:tone,sw:1,title:`${mm.label}: ${u}${Math.round(mm.lo).toLocaleString()}~${u}${Math.round(mm.hi).toLocaleString()}`});
+      if(mm.mid!=null) g+=line(X(mm.mid),y-9,X(mm.mid),y+9,tone,2.2); });
+    const cx=X(d.current); g+=line(cx,m.t-4,cx,m.t+n*rowH+4,PAL.ink,2,'5 3')+txt(cx,m.t-7,`현재 ${u}${d.current.toLocaleString()}`,{size:10.5,anchor:'middle',weight:700});
+    $(elId).innerHTML=wrap(W,H,g,'밸류에이션 football field');
+  }
+
+  /* ⑨ 민감도 그리드 (2D 히트맵 테이블) — §V (성장률×멀티플→5년 IRR, 2026-06-05 신설)
+     d = { rowLabel,colLabel, rows:[], cols:[], values:[[]], unit:'%', threshold } — threshold 이상 셀 강조 */
+  function renderSensitivity(elId, d){
+    const u=d.unit||'', flat=d.values.flat().filter(v=>v!=null&&!isNaN(v)), mn=Math.min(...flat), mx=Math.max(...flat);
+    let h=`<table class="dd-heat"><thead><tr><th style="text-align:left">${esc(d.rowLabel||'')} \\ ${esc(d.colLabel||'')}</th>`;
+    d.cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`); h+='</tr></thead><tbody>';
+    d.rows.forEach((r,ri)=>{ h+=`<tr><td class="name">${esc(String(r))}</td>`;
+      d.cols.forEach((c,ci)=>{ const v=d.values[ri][ci]; let bg='#f0f2f4',fg='#9aa0a4',lab='n/a',extra='';
+        if(v!=null&&!isNaN(v)){ const tt=mx===mn?0.5:(v-mn)/(mx-mn); bg=tt<0.5?mix('#f6d3ce','#fbf3ec',tt/0.5):mix('#fbf3ec','#dcefe5',(tt-0.5)/0.5); fg='#1a1a1a'; lab=(v>0?'+':'')+(+v).toFixed(1)+u;
+          if(d.threshold!=null&&v>=d.threshold){ extra=';font-weight:800;box-shadow:inset 0 0 0 2px #1e8449'; } }
+        h+=`<td style="background:${bg};color:${fg}${extra}">${esc(lab)}</td>`; });
+      h+='</tr>'; });
+    $(elId).innerHTML=h+'</tbody></table>';
+  }
+
+  /* ⑩ value chain 모식도 (가치사슬 단계 가로 흐름 + 부가가치·Risk 뱃지) — tenbagger §1.6 ① (2026-06-14 신설)
+     d = { stages:[{name, sectors, company, vc, risk}] } — vc=부가가치포착 0~3, risk=Risk부담 0~3.
+     🎯 vc≥2 & risk≤1 = 강조 테두리(高VC·低R) / vc≤1 & risk≥2 = 흐리게(低VC·高R). 색=VC 인코딩 + VC↑/R↓ 텍스트 라벨 병기 */
+  function renderValueChain(elId, d){
+    const st=d.stages||[], n=st.length, perRow=n>5?Math.ceil(n/2):n, rows=Math.ceil(n/perRow);
+    const W=720, m={l:14,r:14,t:14}, gap=30, bw=(W-m.l-m.r-(perRow-1)*gap)/perRow, bh=86, rgap=34;
+    const H=m.t+rows*bh+(rows-1)*rgap+12;
+    const lvl=v=>Math.max(0,Math.min(3,+v||0)), bull3=v=>mix('#ffffff',PAL.bull,lvl(v)/3*0.82), bear3=v=>mix('#ffffff',PAL.bear,lvl(v)/3*0.78);
+    const vcWord=v=>['VC최저','VC낮음','VC높음','VC최고'][lvl(v)], rWord=v=>['R낮음','R낮음','R높음','R최고'][lvl(v)];
+    let g='';
+    st.forEach((s,i)=>{ const r=Math.floor(i/perRow), c=i%perRow, x=m.l+c*(bw+gap), y=m.t+r*(bh+rgap);
+      const vc=lvl(s.vc), rk=lvl(s.risk), hi=vc>=2&&rk<=1, lo=vc<=1&&rk>=2;
+      const bg=bull3(s.vc), stk=hi?PAL.bull:(lo?'#d8dde0':PAL.grid), sw=hi?2.6:1.2;
+      g+=rect(x,y,bw,bh,bg,{rx:7,stroke:stk,sw,title:`${s.name} · 부가가치 ${vc}/3 · Risk ${rk}/3`});
+      const op=lo?0.5:1;
+      g+=`<g opacity="${op}">`;
+      g+=txt(x+bw/2,y+22,(hi?'🎯 ':'')+s.name,{size:13,anchor:'middle',weight:700});
+      if(s.sectors) g+=txt(x+bw/2,y+39,s.sectors,{size:10,anchor:'middle',fill:PAL.sub});
+      if(s.company) g+=txt(x+bw/2,y+53,s.company,{size:10.5,anchor:'middle',weight:600,fill:PAL.base});
+      g+='</g>';
+      const vy=y+bh-12; g+=rect(x+8,vy-8,Math.max(0,(bw-16)*vc/3),5,PAL.bull,{rx:2.5}); g+=line(x+8,vy-5.5,x+bw-8,vy-5.5,PAL.grid,5);
+      g+=txt(x+8,vy+6,vcWord(s.vc)+(vc>=2?'↑':''),{size:8.5,fill:PAL.sub}); g+=txt(x+bw-8,vy+6,rWord(s.risk)+(rk<=1?'↓':'↑'),{size:8.5,anchor:'end',fill:rk>=2?PAL.bear:PAL.sub,weight:rk>=2?600:400});
+      if(c<perRow-1 && i<n-1){ const ax=x+bw+gap/2, ay=y+bh/2; g+=line(x+bw+3,ay,ax+4,ay,PAL.axis,1.6); g+=`<path d="M ${(ax+2).toFixed(1)} ${(ay-5).toFixed(1)} L ${(ax+9).toFixed(1)} ${ay.toFixed(1)} L ${(ax+2).toFixed(1)} ${(ay+5).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+      else if(c===perRow-1 && i<n-1){ const ay=y+bh, ny=y+bh+rgap; g+=`<path d="M ${(x+bw/2).toFixed(1)} ${(ay+4).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-7).toFixed(1)}" fill="none" stroke="${PAL.axis}" stroke-width="1.6"/>`; g+=`<path d="M ${(x+bw/2-5).toFixed(1)} ${(ny-9).toFixed(1)} L ${(x+bw/2).toFixed(1)} ${(ny-2).toFixed(1)} L ${(x+bw/2+5).toFixed(1)} ${(ny-9).toFixed(1)} Z" fill="${PAL.axis}"/>`; }
+    });
+    $(elId).innerHTML = wrap(W,H,g,d.label||'value chain 모식도');
+  }
+
+  root.DDViz = { renderRadar, renderTrajectory, renderHeatmap, renderScenario, renderMcapLadder, renderBars, renderFootball, renderSensitivity, renderValueChain };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const VIZ = {"score7": {"label": "확신도 7축", "max": 5, "axes": ["🌦️날씨", "⛰️산", "🌲숲", "🌳나무", "🌲🌳옆나무", "👤사람", "🔢숫자"], "series": [{"name": "FIX 7/30(구 체계)", "color": "#b0b0b0", "scores": [2.5, 4, 4, 4, 4.5, 4, 5]}, {"name": "FIX 11/22", "color": "#0068b5", "scores": [2.43, 3.9, 3.5, 3.88, 4.1, 4.0, 4.89]}], "score100": 66, "band": "양호(경계)", "composite": 3.64}, "narrative": {"label": "내러티브 5축", "max": 5, "axes": ["🔧기술", "👥사회", "🏛️정책", "🌐지정학", "💰자본"], "series": [{"name": "데이터센터 설비 시공", "color": "#8e44ad", "scores": [3, 4, 2, 2, 5]}]}, "trajectory": {"periods": ["FY21", "FY22", "FY23", "FY24", "FY25", "최근 1년"], "forecastFrom": 6, "series": [{"label": "매출(억 달러)", "axis": "left", "color": "#2980b9", "values": [30.7, 41.4, 52.1, 70.3, 91.0, 125.4]}, {"label": "영업이익률(%)", "axis": "right", "color": "#27ae60", "values": [6.1, 6.1, 8.0, 10.7, 14.4, 16.7]}]}, "peers": {"metrics": [{"key": "g", "label": "매출 증가율", "unit": "%", "better": "high"}, {"key": "om", "label": "영업이익률", "unit": "%", "better": "high"}, {"key": "ev", "label": "EV/EBITDA", "unit": "x", "better": "low"}, {"key": "r3", "label": "3개월 주가", "unit": "%", "better": "neutral"}], "rows": [{"name": "FIX", "g": 53.7, "om": 16.7, "ev": 15.2, "r3": -35.2}, {"name": "EMCOR", "g": 28.8, "om": 9.9, "ev": 12.1, "r3": -21.1}, {"name": "Quanta", "g": 57.4, "om": 7.1, "ev": 24.0, "r3": -9.3}, {"name": "IES", "g": 54.8, "om": 13.5, "ev": 8.8, "r3": -51.9}, {"name": "MYR", "g": 32.5, "om": 6.1, "ev": 12.1, "r3": -18.9}, {"name": "Legence", "g": 85.1, "om": 5.6, "ev": 9.2, "r3": -42.7}]}, "landmark": {"current": {"label": "FIX 지금", "mcap": 36.5}, "target": {"label": "×10", "mcap": 365}, "refs": [{"name": "EMCOR", "mcap": 26.4}, {"name": "Quanta", "mcap": 84.2}, {"name": "미국 전력 장비 최대(7월 확인)", "mcap": 239.8}], "sentence": "지금은 EMCOR과 Quanta 사이(365억 달러) → 열 배면 3,650억 달러 — 미국 전력 장비 최대 시총을 크게 넘는다(규모 비교일 뿐)"}, "h5": {"points": [{"label": "7/30 강한데 비싼", "x": 170, "y": 85, "prior": true}, {"label": "11/22 강한데 비싼(가운데 쪽)", "x": 235, "y": 90}], "caption": "중요도 中上(물리 제약층·준하드 병목) · 엣지 下→中下(주가 −31% · 단 이익의 일부가 추정 변경 이익)"}, "captions": {"fig-c3": "데이터센터 설비 시공 내러티브 — 자본·사회 축이 강하고, 자본 축이 사실상 단일 동력", "fig-g5": "매출 4년 4배·영업이익률 6.1% → 16.7% · 최근 1년은 연간+9개월 계산(SEC)", "fig-e1": "야후 최근 1년 값(FIX 성장률만 SEC) · 이익률은 FIX가 1위, 주가는 업종 전체가 함께 하락", "fig-g15": "규모 비교일 뿐 — 사업 유사성·값의 기준 아님"}};
+try{
+DDViz.renderRadar('fig-score7','fig-score7-leg',VIZ.score7);
+DDViz.renderRadar('fig-c3','fig-c3-leg',VIZ.narrative);
+DDViz.renderTrajectory('fig-g5','fig-g5-leg',VIZ.trajectory);
+DDViz.renderHeatmap('fig-e1',VIZ.peers);
+DDViz.renderMcapLadder('fig-g15','fig-g15-cap',VIZ.landmark);
+var c7=document.getElementById('fig-score7-cap'); if(c7)c7.textContent="7축 종합 66점 / 100 (⭐3.64 병기) · 양호(경계 양호/보통) · 5점 이내 차이 = 동급 · 사업·thesis 매력도·밸류 미반영";
+var CAPS={"fig-c3": "데이터센터 설비 시공 내러티브 — 자본·사회 축이 강하고, 자본 축이 사실상 단일 동력", "fig-g5": "매출 4년 4배·영업이익률 6.1% → 16.7% · 최근 1년은 연간+9개월 계산(SEC)", "fig-e1": "야후 최근 1년 값(FIX 성장률만 SEC) · 이익률은 FIX가 1위, 주가는 업종 전체가 함께 하락", "fig-g15": "규모 비교일 뿐 — 사업 유사성·값의 기준 아님"};
+for (var k in CAPS){ var el=document.getElementById(k+'-cap'); if(el) el.textContent=CAPS[k]; }
+}catch(e){console.error('viz',e);}
+</script></body></html>
