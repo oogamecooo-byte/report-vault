@@ -17,3 +17,9 @@
 - **Dive 계열은 메인 목록에 Deep-Dive만 올린다.** (사용자 지시 2026-09-29) R-Dive·History-Dive·People-Dive·one-page-thesis 보고서는
   `reports/`에 올리되 `<meta name="vault-unlisted" content="1">`를 달고 `index.html`에 카드를 넣지 않는다 — 같은 종목 Deep-Dive 본문 최상단
   「하위 Dive 모음」(`<!--dive-hub:start-->` … `<!--dive-hub:end-->`, `<body>` 바로 뒤) 상대 링크로만 연다. chart-dive 보고서는 `reports/`에도 올리지 않는다.
+
+- **🔒 vault는 비밀번호로 잠겨 있다.** (사용자 지시 2026-11-26)
+  메인 목록(`index.html`)과 2026-11-26 이후 새 이름으로 올리는 html은 저장소·공개 페이지에 **암호문**으로 들어간다(git 필터 `vaultlock` · 로컬 전용 스크립트가 `git add` 때 바꾼다).
+  작업 폴더의 html은 평문 그대로다 — 발행 절차는 전과 같다. 잠그기 전부터 있던 보고서는 `.gitattributes`에 `-filter`로 적혀 있어 그대로 공개다(그 목록에 새 줄을 더하지 않는다).
+  **비밀번호 파일이 없는 환경(클라우드 세션·다른 컴퓨터)에서는 html을 추가·수정해 푸시하지 않는다** — 필터가 없어 평문이 그대로 올라가고, 받아 온 `index.html`은 암호문이라 카드를 손으로 넣을 수도 없다. 그런 환경에서는 발행을 이 컴퓨터의 다음 실행으로 넘긴다.
+  유료 구독 그림은 잠기는 보고서에만 넣는다(규칙 = 사진 첨부 규약 §8-1).
